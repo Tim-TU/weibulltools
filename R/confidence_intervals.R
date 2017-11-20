@@ -1,4 +1,4 @@
-#' Estimation of Quantiles using a Parametric Survival Models
+#' Estimation of Quantiles using a Parametric Survival Model
 #'
 #' This function estimates the quantiles for a given set of estimated
 #' location-scale parameters and specified failure probabilities.
