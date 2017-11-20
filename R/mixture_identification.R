@@ -1,0 +1,112 @@
+#' Mixture Model Identification using Segmented Regression
+#'
+#' This method uses piecewise linear regression to separate the data in
+#' subgroups, if appropriate. Since this happens in an automated fashion
+#' the function tends to overestimate the number of breakpoints and
+#' therefore returns to many subgroups. This problem is already stated in
+#' the documentation of the function \link{segmented.lm}, which is part of
+#' the \emph{segmented} package.
+#'
+#' @param x a numeric vector which consists of lifetime data. Lifetime
+#'   data could be every characteristic influencing the reliability of a
+#'   product, e.g. operating time (days/months in service), mileage (km,
+#'   miles), load cycles.
+#' @param y a numeric vector which consists of estimated failure
+#'   probabilities regarding the lifetime data in \code{x}.
+#' @param event a vector of binary data (0 or 1) indicating whether
+#'   unit \emph{i} is a right censored observation (= 0) or a
+#'   failure (= 1).
+#' @param distribution supposed distribution of the random variable.
+#'   The default value is \code{"weibull"}.
+#' @param conf_level confidence level of the interval. The default value is
+#'   \code{conf_level = 0.95}
+#'
+#' @return Returns a list where the length of the list depends on
+#'   the number of identified subgroups. Each list contain the same
+#'   information as supplied by \link{rank_regression}.
+#' @export
+#'
+#' @examples
+#' hours = c(2, 28, 67, 119, 179, 236, 282, 317, 348, 387, 3, 31, 69, 135,
+#'           191, 241, 284, 318, 348, 392, 5, 31, 76, 144, 203, 257, 286,
+#'           320, 350, 412, 8, 52, 78, 157, 211, 261, 298, 327, 360, 446,
+#'           13, 53, 104, 160, 221, 264, 303, 328, 369, 21, 64, 113, 168,
+#'           226, 278, 314, 328, 377)
+#' state = c(1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1,
+#'           1, 0, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 0, 0,
+#'           1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+#'           0, 1, 1, 1, 1, 1, 1)
+#' john <- johnson_method(x = hours, event = state)
+#'
+#' mix_mod <- mixmod_regression(x = john$characteristic,
+#'                              y = john$prob,
+#'                              event = john$status)
+#'
+mixmod_regression <- function(x, y, event, distribution = "weibull",
+                              conf_level = .95) {
+  x_f <- x[event == 1]
+  y_f <- y[event == 1]
+
+  if (distribution == "weibull") {
+    mrr <- lm(log(x_f) ~ SPREDA::qsev(y_f))
+    seg_mrr <- try(segmented::segmented.lm(mrr,
+                              control = seg.control(it.max = 20,
+                                        n.boot = 0)),
+                   silent = TRUE)
+
+    if ("try-error" %in% class(seg_mrr)) {
+      mrr_output <- rank_regression(x = x, y = y, event = event,
+                                    distribution = distribution,
+                                    conf_level = conf_level)
+      message("An admissible breakpoint could not be found!
+               Simple linear regression model was estimated!")
+    } else {
+      groups <- seg_mrr$id.group
+
+      x_1 <- x_f[groups == 0]
+      y_1 <- y_f[groups == 0]
+      mrr_1 <- rank_regression(x = x_1, y = y_1,
+                               event = rep(1, length(x_1)),
+                               distribution = distribution,
+                               conf_level = conf_level)
+
+      x_rest <- x_f[groups != 0]
+      y_rest <- y_f[groups != 0]
+      mrr2 <- lm(log(x_rest) ~ SPREDA::qsev(y_rest))
+      seg_mrr2 <- try(segmented::segmented.lm(mrr2, psi = NA,
+                                 control = seg.control(it.max = 50,
+                                                       n.boot = 0)),
+                      silent = TRUE)
+
+      if ("try-error" %in% class(seg_mrr2)) {
+        mrr_2 <- rank_regression(x = x_rest, y = y_rest,
+                                 event = rep(1, length(x_rest)),
+                                 distribution = distribution,
+                                 conf_level = conf_level)
+
+        mrr_output <- list(mod_1 = mrr_1, mod_2 = mrr_2)
+      } else {
+        groups2 <- seg_mrr2$id.group
+
+        x_2 <- x_rest[groups == 0]
+        y_2 <- y_rest[groups == 0]
+
+        mrr_2 <- rank_regression(x = x_2, y = y_2, event = rep(1, length(x_2)),
+                                 distribution = distribution,
+                                 conf_level = conf_level)
+
+        x_3 <- x_rest[groups == 1]
+        y_3 <- y_rest[groups == 1]
+
+        mrr_3 <- rank_regression(x = x_3, y = y_3, event = rep(1, length(x_3)),
+                                 distribution = distribution,
+                                 conf_level = conf_level)
+
+        mrr_output <- list(mod_1 = mrr_1, mod_2 = mrr_2, mod_3 = mrr_3)
+        message("Problem of overestimation may have occured. Further
+                 investigations are recommended!")
+      }
+    }
+  }
+  return(mrr_output)
+}
