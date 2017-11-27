@@ -50,16 +50,26 @@ mixmod_regression <- function(x, y, event, distribution = "weibull",
   if (distribution == "weibull") {
     mrr <- lm(log(x_f) ~ SPREDA::qsev(y_f))
     seg_mrr <- try(segmented::segmented.lm(mrr,
-                              control = seg.control(it.max = 20,
+                              control = segmented::seg.control(it.max = 20,          #segmented::seg.control
                                         n.boot = 0)),
                    silent = TRUE)
 
-    if ("try-error" %in% class(seg_mrr)) {
+    if ("try-error" %in% class(seg_mrr) || length(x_f[seg_mrr$id.group != 0]) < 5) {
       mrr_output <- rank_regression(x = x, y = y, event = event,
                                     distribution = distribution,
                                     conf_level = conf_level)
+
+      if ("try-error" %in% class(seg_mrr)) {
+
       message("An admissible breakpoint could not be found!
                Simple linear regression model was estimated!")
+
+      } else if (length(x_f[seg_mrr$id.group != 0]) < 5) {
+
+        message("Second segment contains less than 5 elements.
+                Simple linear regression model was estimated!")
+
+      }
     } else {
       groups <- seg_mrr$id.group
 
@@ -73,30 +83,37 @@ mixmod_regression <- function(x, y, event, distribution = "weibull",
       x_rest <- x_f[groups != 0]
       y_rest <- y_f[groups != 0]
       mrr2 <- lm(log(x_rest) ~ SPREDA::qsev(y_rest))
-      seg_mrr2 <- try(segmented::segmented.lm(mrr2, psi = NA,
-                                 control = seg.control(it.max = 50,
-                                                       n.boot = 0)),
+      seg_mrr2 <- try(segmented::segmented.lm(mrr2, control = segmented::seg.control(it.max = 50,
+                                                                                     n.boot = 0)),
                       silent = TRUE)
 
-      if ("try-error" %in% class(seg_mrr2)) {
+      if ("try-error" %in% class(seg_mrr2) || length(x_rest[seg_mrr2$id.group != 0]) < 5) {
+
         mrr_2 <- rank_regression(x = x_rest, y = y_rest,
-                                 event = rep(1, length(x_rest)),
-                                 distribution = distribution,
-                                 conf_level = conf_level)
+                                event = rep(1, length(x_rest)),
+                                distribution = distribution,
+                                conf_level = conf_level)
 
         mrr_output <- list(mod_1 = mrr_1, mod_2 = mrr_2)
+
+        if (length(x_rest[seg_mrr2$id.group != 0]) < 5) {
+
+          message("Third segment contains less than 5 elements.
+                  Simple linear regression model was estimated for all elements after first breakpoint!")
+
+        }
       } else {
         groups2 <- seg_mrr2$id.group
 
-        x_2 <- x_rest[groups == 0]
-        y_2 <- y_rest[groups == 0]
+        x_2 <- x_rest[groups2 == 0]                                          #groups2
+        y_2 <- y_rest[groups2 == 0]
 
         mrr_2 <- rank_regression(x = x_2, y = y_2, event = rep(1, length(x_2)),
                                  distribution = distribution,
                                  conf_level = conf_level)
 
-        x_3 <- x_rest[groups == 1]
-        y_3 <- y_rest[groups == 1]
+        x_3 <- x_rest[groups2 == 1]
+        y_3 <- y_rest[groups2 == 1]
 
         mrr_3 <- rank_regression(x = x_3, y = y_3, event = rep(1, length(x_3)),
                                  distribution = distribution,
@@ -104,7 +121,7 @@ mixmod_regression <- function(x, y, event, distribution = "weibull",
 
         mrr_output <- list(mod_1 = mrr_1, mod_2 = mrr_2, mod_3 = mrr_3)
         message("Problem of overestimation may have occured. Further
-                 investigations are recommended!")
+                investigations are recommended!")
       }
     }
   }
