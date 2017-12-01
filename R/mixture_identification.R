@@ -50,28 +50,34 @@ mixmod_regression <- function(x, y, event, distribution = "weibull",
   if (distribution == "weibull") {
     mrr <- lm(log(x_f) ~ SPREDA::qsev(y_f))
     seg_mrr <- try(segmented::segmented.lm(mrr,
-                              control = segmented::seg.control(it.max = 20,          #segmented::seg.control
-                                        n.boot = 0)),
+                              control = segmented::seg.control(it.max = 20,
+                                        n.boot = 20)),
                    silent = TRUE)
 
-    if ("try-error" %in% class(seg_mrr) || length(x_f[seg_mrr$id.group != 0]) < 5) {
-      mrr_output <- rank_regression(x = x, y = y, event = event,
+#    if ("try-error" %in% class(seg_mrr) || length(x_f[seg_mrr$id.group != 0]) < 5) {
+      mrr_0 <- rank_regression(x = x, y = y, event = event,
                                     distribution = distribution,
                                     conf_level = conf_level)
+      r_sq0 <- mrr_0$r_squared
 
       if ("try-error" %in% class(seg_mrr)) {
 
-      message("An admissible breakpoint could not be found!
+        mrr_output <- mrr_0
+
+        message("An admissible breakpoint could not be found!
                Simple linear regression model was estimated!")
 
       } else if (length(x_f[seg_mrr$id.group != 0]) < 5) {
 
+        mrr_output <- mrr_0
+
         message("Second segment contains less than 5 elements.
                 Simple linear regression model was estimated!")
 
-      }
+#      }
     } else {
       groups <- seg_mrr$id.group
+
 
       x_1 <- x_f[groups == 0]
       y_1 <- y_f[groups == 0]
@@ -80,37 +86,65 @@ mixmod_regression <- function(x, y, event, distribution = "weibull",
                                distribution = distribution,
                                conf_level = conf_level)
 
+      r_sq1 <- mrr_1$r_squared
+
       x_rest <- x_f[groups != 0]
       y_rest <- y_f[groups != 0]
+
+      mrr_23 <- rank_regression(x = x_rest, y = y_rest,
+                               event = rep(1, length(x_rest)),
+                               distribution = distribution,
+                               conf_level = conf_level)
+      r_sq23 <- mrr_23$r_squared
+
       mrr2 <- lm(log(x_rest) ~ SPREDA::qsev(y_rest))
-      seg_mrr2 <- try(segmented::segmented.lm(mrr2, control = segmented::seg.control(it.max = 50,
-                                                                                     n.boot = 0)),
+      seg_mrr2 <- try(segmented::segmented.lm(mrr2, control = segmented::seg.control(it.max = 20,
+                                                                                     n.boot = 20)),
                       silent = TRUE)
 
       if ("try-error" %in% class(seg_mrr2) || length(x_rest[seg_mrr2$id.group != 0]) < 5) {
 
-        mrr_2 <- rank_regression(x = x_rest, y = y_rest,
-                                event = rep(1, length(x_rest)),
-                                distribution = distribution,
-                                conf_level = conf_level)
+        # mrr_2 <- rank_regression(x = x_rest, y = y_rest,
+        #                         event = rep(1, length(x_rest)),
+        #                         distribution = distribution,
+        #                         conf_level = conf_level)
+        # r_sq2 <- mrr_2$r_squared
 
-        mrr_output <- list(mod_1 = mrr_1, mod_2 = mrr_2)
+        if (mean(c(r_sq1, r_sq23)) < r_sq0) {
 
-        if (length(x_rest[seg_mrr2$id.group != 0]) < 5) {
+          print("1 statt 2 Segmente: lineare Regression")
+
+          mrr_output <- mrr_0
+
+        } else {
+
+        mrr_output <- list(mod_1 = mrr_1, mod_2 = mrr_23)
+
+        }
+
+        # if (length(x_rest[seg_mrr2$id.group != 0]) < 5) {
+        if (is.list(seg_mrr2)) {
 
           message("Third segment contains less than 5 elements.
                   Simple linear regression model was estimated for all elements after first breakpoint!")
 
         }
-      } else {
+       } else {
         groups2 <- seg_mrr2$id.group
 
-        x_2 <- x_rest[groups2 == 0]                                          #groups2
+
+        x_2 <- x_rest[groups2 == 0]
         y_2 <- y_rest[groups2 == 0]
 
         mrr_2 <- rank_regression(x = x_2, y = y_2, event = rep(1, length(x_2)),
                                  distribution = distribution,
                                  conf_level = conf_level)
+        r_sq2 <- mrr_2$r_squared
+
+        mrr_12 <- rank_regression(x = c(x_1, x_2), y = c(y_1, y_2), event = rep(1, length(c(x_1, x_2))),
+                                 distribution = distribution,
+                                 conf_level = conf_level)
+        r_sq12 <- mrr_12$r_squared
 
         x_3 <- x_rest[groups2 == 1]
         y_3 <- y_rest[groups2 == 1]
@@ -118,10 +152,50 @@ mixmod_regression <- function(x, y, event, distribution = "weibull",
         mrr_3 <- rank_regression(x = x_3, y = y_3, event = rep(1, length(x_3)),
                                  distribution = distribution,
                                  conf_level = conf_level)
+        r_sq3 <- mrr_3$r_squared
 
-        mrr_output <- list(mod_1 = mrr_1, mod_2 = mrr_2, mod_3 = mrr_3)
-        message("Problem of overestimation may have occured. Further
-                investigations are recommended!")
+        mean_r_sq <- mean(c(r_sq1, r_sq2, r_sq3))
+
+        print(r_sq0)
+        print(r_sq1)
+        print(r_sq2)
+        print(r_sq3)
+        print(r_sq12)
+        print(r_sq23)
+        print(mean(c(r_sq1, r_sq23)))
+        print(mean(c(r_sq12, r_sq3)))
+        print(mean_r_sq)
+
+
+        if (mean_r_sq < r_sq0 | mean_r_sq < mean(c(r_sq1, r_sq23)) | mean_r_sq < mean(c(r_sq12, r_sq3))) {
+
+          print("mean_r_sq nicht am größten")
+
+          if (mean(c(r_sq1, r_sq23)) > r_sq0 && mean(c(r_sq1, r_sq23)) > mean(c(r_sq12, r_sq3))) {
+
+            print("2 statt 3 Segmenten: 1 und 23")
+
+            mrr_output <- list(mod_1 = mrr_1, mod_2 = mrr_23)
+
+          } else if (mean(c(r_sq12, r_sq3)) > r_sq0) {
+
+            print("2 statt 3 Segmenten: 12 und 3")
+
+            mrr_output <- list(mod_1 = mrr_12, mod_2 = mrr_3)
+
+          } else {
+
+            print("lineare Regression")
+
+            mrr_output <- mrr_0
+            }
+
+        } else{
+
+          mrr_output <- list(mod_1 = mrr_1, mod_2 = mrr_2, mod_3 = mrr_3)
+          message("Problem of overestimation may have occured. Further
+                  investigations are recommended!")
+        }
       }
     }
   }
