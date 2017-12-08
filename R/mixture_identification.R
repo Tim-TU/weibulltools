@@ -59,17 +59,18 @@ mixmod_regression <- function(x, y, event, distribution = "weibull",
                                     distribution = distribution,
                                     conf_level = conf_level)
       r_sq0 <- mrr_0$r_squared
+      mrr_0$x_range <- range(x)
+
+      mrr_output <- mrr_0
 
       if ("try-error" %in% class(seg_mrr)) {
 
-        mrr_output <- mrr_0
 
         message("An admissible breakpoint could not be found!
                Simple linear regression model was estimated!")
 
       } else if (length(x_f[seg_mrr$id.group != 0]) < 5) {
 
-        mrr_output <- mrr_0
 
         message("Second segment contains less than 5 elements.
                 Simple linear regression model was estimated!")
@@ -87,6 +88,7 @@ mixmod_regression <- function(x, y, event, distribution = "weibull",
                                conf_level = conf_level)
 
       r_sq1 <- mrr_1$r_squared
+      mrr_1$x_range <- range(x_1)
 
       x_rest <- x_f[groups != 0]
       y_rest <- y_f[groups != 0]
@@ -96,6 +98,7 @@ mixmod_regression <- function(x, y, event, distribution = "weibull",
                                distribution = distribution,
                                conf_level = conf_level)
       r_sq23 <- mrr_23$r_squared
+      mrr_23$x_range <- range(x_rest)
 
       mrr2 <- lm(log(x_rest) ~ SPREDA::qsev(y_rest))
       seg_mrr2 <- try(segmented::segmented.lm(mrr2, control = segmented::seg.control(it.max = 20,
@@ -140,11 +143,13 @@ mixmod_regression <- function(x, y, event, distribution = "weibull",
                                  distribution = distribution,
                                  conf_level = conf_level)
         r_sq2 <- mrr_2$r_squared
+        mrr_2$x_range <- range(x_2)
 
         mrr_12 <- rank_regression(x = c(x_1, x_2), y = c(y_1, y_2), event = rep(1, length(c(x_1, x_2))),
                                  distribution = distribution,
                                  conf_level = conf_level)
         r_sq12 <- mrr_12$r_squared
+        mrr_12$x_range <- range(c(x_1, x_2))
 
         x_3 <- x_rest[groups2 == 1]
         y_3 <- y_rest[groups2 == 1]
@@ -153,6 +158,7 @@ mixmod_regression <- function(x, y, event, distribution = "weibull",
                                  distribution = distribution,
                                  conf_level = conf_level)
         r_sq3 <- mrr_3$r_squared
+        mrr_3$x_range <- range(x_3)
 
         mean_r_sq <- mean(c(r_sq1, r_sq2, r_sq3))
 
