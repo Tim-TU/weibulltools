@@ -22,12 +22,18 @@
 #' quants <- predict_quantile(p = c(0.01, 0.1, 0.5), loc_sc_params = c(5, 0.5),
 #'                            distribution = "weibull")
 
-predict_quantile <- function(p, loc_sc_params, distribution = "weibull") {
+predict_quantile <- function(p, loc_sc_params, distribution = c("weibull", "lognormal", "loglogistic")) {
   if (distribution == "weibull") {
-    x_pred <- exp(SPREDA::qsev(p) * loc_sc_params[[2]] + loc_sc_params[[1]])
+    quantiles <- SPREDA::qsev(p)
+  } else if (distribution == "lognormal") {
+    quantiles <- stats::qnorm(p)
+  } else if (distribution == "loglogistic") {
+    quantiles <- stats:qlogis(p)
   } else {
     stop("No valid distribution!")
   }
+
+  x_pred <- exp(quantiles * loc_sc_params[[2]] + loc_sc_params[[1]])
   return(x_pred)
 }
 
@@ -53,13 +59,21 @@ predict_quantile <- function(p, loc_sc_params, distribution = "weibull") {
 #' probs <- predict_prob(q = c(15, 48, 124), loc_sc_params = c(5, 0.5),
 #'                            distribution = "weibull")
 
-predict_prob <- function(q, loc_sc_params, distribution = "weibull") {
+predict_prob <- function(q, loc_sc_params, distribution = c("weibull", "lognormal", "loglogistic")) {
+
+  z <- (log(q) - loc_sc_params[[1]]) / loc_sc_params[[2]]
+
   if (distribution == "weibull") {
-    z <- (log(q) - loc_sc_params[[1]]) / loc_sc_params[[2]]
-    y_pred <- SPREDA::psev(z)
+    cd <- SPREDA::psev(z)
+  } else if (distribution == "lognormal") {
+    cd <- stats::pnorm(z)
+  } else if (distribution == "loglogistic") {
+    cd <- stats::plogis(z)
   } else {
     stop("No valid distribution!")
   }
+
+  y_pred <- cd
   return(y_pred)
 }
 
@@ -109,7 +123,7 @@ predict_prob <- function(q, loc_sc_params, distribution = "weibull") {
 #'                                   conf_level = 0.95,
 #'                                   direction = "y")
 
-confint_betabinom <- function(x, event, loc_sc_params, distribution = "weibull",
+confint_betabinom <- function(x, event, loc_sc_params, distribution = c("weibull", "lognormal", "loglogistic"),
                               bounds = c("two_sided", "lower", "upper"),
                               conf_level = .95, direction = c("y", "x")) {
 
@@ -215,35 +229,63 @@ confint_betabinom <- function(x, event, loc_sc_params, distribution = "weibull",
 #'                           direction = "y")
 
 delta_method <- function(p, loc_sc_params, loc_sc_varcov,
-                         distribution = "weibull", direction = c("y", "x")) {
+                         distribution = c("weibull", "lognormal", "loglogistic"), direction = c("y", "x")) {
 
   direction <- match.arg(direction)
 
   if (direction == "x") {
     if (distribution == "weibull") {
-      q <- exp(SPREDA::qsev(p) * loc_sc_params[[2]] + loc_sc_params[[1]])
-      dq_dmu <- q
-      dq_dsc <- SPREDA::qsev(p) * q
-      dq_dpar <- c(dq_dmu, dq_dsc)
+
+      quantiles <- SPREDA::qsev(p)
+
+    } else if (distribution == "lognormal") {
+
+      quantiles <- stats::qnorm(p)
+
+    } else if (distribution == "loglogistic") {
+
+      quantiles <- stats::qlogis(p)
+
     } else {
+
       stop("No valid distribution!")
     }
+
+    q <- exp(quantiles * loc_sc_params[[2]] + loc_sc_params[[1]])
+    dq_dmu <- q
+    dq_dsc <- quantiles * q
+    dq_dpar <- c(dq_dmu, dq_dsc)
+
     var_q <- t(dq_dpar) %*% loc_sc_varcov %*% dq_dpar
     std_err <- sqrt(var_q)
   } else {
     if (distribution == "weibull") {
-      z <- (log(p) - loc_sc_params[[1]]) / loc_sc_params[[2]]
-      dps_dmu <- (-1 / loc_sc_params[[2]]) * SPREDA::dsev(z)
-      dps_dsc <- (-1 / loc_sc_params[[2]]) * z * SPREDA::dsev(z)
-      dps_dpar <- c(dps_dmu, dps_dsc)
+
+      pd <- SPREDA::dsev(z)
+
+    } else if (distribution == "lognormal") {
+
+      pd <- stats::dnorm(z)
+
+    } else if (distribution == "loglogistic") {
+
+      pd <- stats::dlogis(z)
+
     } else {
       stop("No valid distribution!")
     }
+
+    z <- (log(p) - loc_sc_params[[1]]) / loc_sc_params[[2]]
+    dps_dmu <- (-1 / loc_sc_params[[2]]) * pd
+    dps_dsc <- (-1 / loc_sc_params[[2]]) * z * pd
+    dps_dpar <- c(dps_dmu, dps_dsc)
+
     var_ps <- t(dps_dpar) %*% loc_sc_varcov %*% dps_dpar
     std_err <- sqrt(var_ps)
   }
- return(std_err)
+  return(std_err)
 }
+
 
 
 #' Fisher Confidence Bounds for Quantiles and/or Probabilities
@@ -298,7 +340,7 @@ delta_method <- function(p, loc_sc_params, loc_sc_varcov,
 #'                             direction = "y")
 
 confint_fisher <- function(x, event, loc_sc_params, loc_sc_varcov,
-                           distribution = "weibull",
+                           distribution = c("weibull", "lognormal", "loglogistic"),
                            bounds = c("two_sided", "lower", "upper"),
                            conf_level = .95, direction = c("y", "x")) {
 
