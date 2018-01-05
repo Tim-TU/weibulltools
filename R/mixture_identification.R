@@ -42,13 +42,20 @@
 #'                              y = john$prob,
 #'                              event = john$status)
 #'
-mixmod_regression <- function(x, y, event, distribution = "weibull",
+mixmod_regression <- function(x, y, event, distribution = c("weibull", "lognormal", "loglogistic"),
                               conf_level = .95) {
   x_f <- x[event == 1]
   y_f <- y[event == 1]
 
   if (distribution == "weibull") {
     mrr <- lm(log(x_f) ~ SPREDA::qsev(y_f))
+  } else if (distribution == "lognormal") {
+    mrr <- lm(log(x_f) ~ stats::qnorm(y_f))
+  } else if (distribution == "loglogistic") {
+    mrr <- lm(log(x_f) ~ stats::qlogis(y_f))
+  } else {
+    stop("No valid distribution")
+  }
     seg_mrr <- try(segmented::segmented.lm(mrr,
                               control = segmented::seg.control(it.max = 20,
                                         n.boot = 20)),
@@ -100,7 +107,13 @@ mixmod_regression <- function(x, y, event, distribution = "weibull",
       r_sq23 <- mrr_23$r_squared
       mrr_23$x_range <- range(x_rest)
 
-      mrr2 <- lm(log(x_rest) ~ SPREDA::qsev(y_rest))
+      if (distribution == "weibull") {
+        mrr2 <- lm(log(x_rest) ~ SPREDA::qsev(y_rest))
+      } else if (distribution == "lognormal") {
+        mrr2 <- lm(log(x_rest) ~ stats::qnorm(y_rest))
+      } else if (distribution == "loglogistic") {
+        mrr2 <- lm(log(x_rest) ~ stats::qlogis(y_rest))
+      }
       seg_mrr2 <- try(segmented::segmented.lm(mrr2, control = segmented::seg.control(it.max = 20,
                                                                                      n.boot = 20)),
                       silent = TRUE)
@@ -204,6 +217,5 @@ mixmod_regression <- function(x, y, event, distribution = "weibull",
         }
       }
     }
-  }
   return(mrr_output)
 }

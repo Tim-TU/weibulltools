@@ -1,13 +1,13 @@
-#' Rank Regression for the Weibull distribution
+#' Rank Regression for the Weibull, Lognormal and Loglogistic distribution
 #'
 #' This method fits an \strong{x on y} regression to the linearized
-#' two-parameter Weibull cdf and is applicable for complete and (multiple) right
+#' two-parameter cdf and is applicable for complete and (multiple) right
 #' censored data. The weibull-specific parameters are estimated in the frequently
 #' used location-scale parametrization and afterwards are transformed such that
 #' they are in line with the parametrization provided by the \emph{stats} package
 #' like \code{\link{pweibull}}.
 #'
-#' When using this method, the approximated confidence intervals (based on p. 51
+#' When using this method, the approximated confidence intervals for the Weibull parameters (based on p. 51
 #' of Ralf Mock) can only be estimated for the following confidence levels:
 #' \itemize{
 #'   \item \code{conf_level} = 0.90,
@@ -25,8 +25,8 @@
 #'   regarding the lifetime data in \code{x}.
 #' @param event a vector of binary data (0 or 1) indicating whether unit \emph{i}
 #'   is a right censored observation (= 0) or a failure (= 1).
-#' @param distribution supposed distribution of the random variable. The default
-#'   value is \code{"weibull"}.
+#' @param distribution supposed distribution of the random variable. The
+#'   value can be \code{"weibull"}, \code{"lognormal"} or \code{"loglogistic"}.
 #' @param conf_level confidence level of the interval. The default value is
 #'   \code{conf_level = 0.95}
 #'
@@ -47,9 +47,10 @@
 #' mrr <- rank_regression(x = df_john$characteristic,
 #'                        y = df_john$prob,
 #'                        event = df_john$status,
+#'                        distribution = weibull,
 #'                        conf_level = .90)
 
-rank_regression <- function(x, y, event, distribution = "weibull",
+rank_regression <- function(x, y, event, distribution = c("weibull", "lognormal", "loglogistic"),
                             conf_level = .95, details = TRUE) {
   x_f <- x[event == 1]
   y_f <- y[event == 1]
@@ -77,10 +78,10 @@ rank_regression <- function(x, y, event, distribution = "weibull",
 
     conf_eta <- c(
       estimates[[1]] * (2 * length(x_f) / qchisq(p = (1 + conf_level) / 2,
-        df = 2 * length(x_f))) ^ (1 / estimates[[2]]),
+                                                 df = 2 * length(x_f))) ^ (1 / estimates[[2]]),
       estimates[[1]] * (2 * length(x_f) / qchisq(p = (1 - conf_level) / 2,
-        df = 2 * length(x_f))) ^ (1 / estimates[[2]])
-      )
+                                                 df = 2 * length(x_f))) ^ (1 / estimates[[2]])
+    )
 
     conf_ints <- matrix(c(conf_eta, conf_beta), byrow = TRUE, ncol = 2)
     colnames(conf_ints) <- c(paste(((1 - conf_level) / 2) * 100, "%"),
@@ -96,11 +97,47 @@ rank_regression <- function(x, y, event, distribution = "weibull",
 
     if (details == TRUE) {
       mrr_output <- list(coefficients = estimates, confint = conf_ints,
-        loc_sc_coefficients = estimates_loc_sc,
-        loc_sc_confint = conf_ints_loc_sc,
-        r_squared = r_sq)
+                         loc_sc_coefficients = estimates_loc_sc,
+                         loc_sc_confint = conf_ints_loc_sc,
+                         r_squared = r_sq)
     } else {
       mrr_output <- list(coefficients = estimates)
+    }
+  } else {
+    if (distribution == "lognormal") {
+      mrr <- lm(log(x_f) ~ stats::qnorm(y_f))
+    } else if (distribution =="loglogistic") {
+      mrr <- lm(log(x_f) ~ stats::qlogis(y_f))
+    } else {
+      stop("No valid distribution!")
+    }
+    estimates_loc_sc <- c(coef(mrr)[[1]], coef(mrr)[[2]])
+    names(estimates_loc_sc) <- c("mu", "sigma")
+
+    vcov <- sandwich::vcovHC(x = mrr, type = "HC1") #Änderungen
+    se <- sqrt(diag(vcov))
+    conf_mu <- c(
+      estimates_loc_sc[[1]] + qt((1 + conf_level) / 2, df = length(x_f) - 2) * se[[1]] / sqrt(length(x_f)),
+      estimates_loc_sc[[1]] - qt((1 + conf_level) / 2, df = length(x_f) - 2) * se[[1]] / sqrt(length(x_f)))
+
+    conf_sig <- c(
+      estimates_loc_sc[[2]] + qt((1 + conf_level) / 2, df = length(x_f) - 2) * se[[2]] / sqrt(length(x_f)),
+      estimates_loc_sc[[2]] - qt((1 + conf_level) / 2, df = length(x_f) - 2) * se[[2]] / sqrt(length(x_f)))
+
+    conf_ints_loc_sc <- matrix(c(conf_mu, conf_sig), byrow = TRUE,
+                               ncol = 2)
+    colnames(conf_ints_loc_sc) <- c(paste(((1 - conf_level) / 2) * 100, "%"),
+                                    paste(((1 + conf_level) / 2) * 100, "%"))
+    rownames(conf_ints_loc_sc) <- names(estimates_loc_sc)
+
+    r_sq <- summary(mrr)$r.squared
+
+    if (details == TRUE) {
+      mrr_output <- list(loc_sc_coefficients = estimates_loc_sc,
+                         loc_sc_confint = conf_ints_loc_sc,
+                         r_squared = r_sq)
+    } else {
+      mrr_output <- list(loc_sc_coefficients = estimates_loc_sc)
     }
   }
   return(mrr_output)
@@ -145,9 +182,9 @@ rank_regression <- function(x, y, event, distribution = "weibull",
 #' mle <- ml_estimation(x = obs, event = state,
 #'                      distribution = "weibull", conf_level = 0.90)
 #'
-ml_estimation <- function(x, event, distribution = "weibull",
+ml_estimation <- function(x, event, distribution = c("weibull", "lognormal", "loglogistic"),
                           conf_level = 0.95, details = TRUE) {
-  if (distribution == "weibull") {
+  if (distribution == "weibull" | distribution == "lognormal" | distribution == "loglogistic") {
     ml <- SPREDA::Lifedata.MLE(survival::Surv(x, event) ~ 1,
                                dist = distribution)
 
@@ -166,33 +203,43 @@ ml_estimation <- function(x, event, distribution = "weibull",
       estimates_loc_sc[[1]] + qnorm((1 + conf_level) / 2) * se_loc_sc[[1]])
 
     w <- exp(
-          (qnorm((1 + conf_level) / 2) * se_loc_sc[[2]]) / estimates_loc_sc[[2]]
-            )
+      (qnorm((1 + conf_level) / 2) * se_loc_sc[[2]]) / estimates_loc_sc[[2]]
+    )
     conf_sig <- c(estimates_loc_sc[[2]] /  w, estimates_loc_sc[[2]] * w)
 
     conf_ints_loc_sc <- matrix(c(conf_mu, conf_sig), byrow = TRUE,
-      ncol = 2)
+                               ncol = 2)
     colnames(conf_ints_loc_sc) <- c(paste(((1 - conf_level) / 2) * 100,
-      "%"),
-      paste(((1 + conf_level) / 2) * 100,
-        "%"))
+                                          "%"),
+                                    paste(((1 + conf_level) / 2) * 100,
+                                          "%"))
     rownames(conf_ints_loc_sc) <- names(estimates_loc_sc)
 
-    estimates <- c(exp(estimates_loc_sc[[1]]), 1 / estimates_loc_sc[[2]])
-    names(estimates) <- c("eta", "beta")
+    if (distribution == "lognormal" | distribution == "loglogistic") {
+      if (details == TRUE) {
+        ml_output <- list(coefficients = estimates_loc_sc,
+                          confint = conf_ints_loc_sc,
+                          vcov = vcov_loc_sc, logL = -ml$min)
+      } else {
+        ml_output <- list(coefficients = estimates_loc_sc)
+      }
+    } else if (distribution == "weibull") {
+      estimates <- c(exp(estimates_loc_sc[[1]]), 1 / estimates_loc_sc[[2]])
+      names(estimates) <- c("eta", "beta")
 
-    conf_ints <- matrix(c(exp(conf_mu), rev(1 / conf_sig)), byrow = TRUE,
-                        ncol = 2)
-    colnames(conf_ints) <- colnames(conf_ints_loc_sc)
-    rownames(conf_ints) <- names(estimates)
+      conf_ints <- matrix(c(exp(conf_mu), rev(1 / conf_sig)), byrow = TRUE,
+                          ncol = 2)
+      colnames(conf_ints) <- colnames(conf_ints_loc_sc)
+      rownames(conf_ints) <- names(estimates)
 
-    if (details == TRUE) {
-      ml_output <- list(coefficients = estimates, confint = conf_ints,
-        loc_sc_coefficients = estimates_loc_sc,
-        loc_sc_confint = conf_ints_loc_sc,
-        loc_sc_vcov = vcov_loc_sc, logL = -ml$min)
-    } else {
-      ml_output <- list(coefficients = estimates)
+      if (details == TRUE) {
+        ml_output <- list(coefficients = estimates, confint = conf_ints,
+                          loc_sc_coefficients = estimates_loc_sc,
+                          loc_sc_confint = conf_ints_loc_sc,
+                          loc_sc_vcov = vcov_loc_sc, logL = -ml$min)
+      } else {
+        ml_output <- list(coefficients = estimates)
+      }
     }
   }
   return(ml_output)

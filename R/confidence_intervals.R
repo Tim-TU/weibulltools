@@ -11,7 +11,7 @@
 #'   parameter \eqn{\mu} and the second element needs to be the scale
 #'   parameter \eqn{\sigma}.
 #' @param distribution supposed distribution of the random variable. The
-#'   default value is \code{"weibull"}.
+#'   value can be \code{"weibull"}, \code{"lognormal"} or \code{"loglogistic"}.
 #'
 #' @return A vector containing the estimated quantiles for a given set of
 #'   failure probabilities and estimated parameters.
@@ -48,8 +48,8 @@ predict_quantile <- function(p, loc_sc_params, distribution = c("weibull", "logn
 #'   elements is important. First entry needs to be the location
 #'   parameter \eqn{\mu} and the second element needs to be the scale
 #'   parameter \eqn{\sigma}.
-#' @param distribution supposed distribution of the random variable. The default
-#'   value is \code{"weibull"}.
+#' @param distribution supposed distribution of the random variable. The
+#'   value can be \code{"weibull"}, \code{"lognormal"} or \code{"loglogistic"}.
 #'
 #' @return A vector containing the estimated failure probabilities for a given
 #'   set of quantiles and estimated parameters.
@@ -92,8 +92,8 @@ predict_prob <- function(q, loc_sc_params, distribution = c("weibull", "lognorma
 #'   parameters for a specified distribution. The order of elements is
 #'   important. First entry needs to be the location parameter \eqn{\mu} and the
 #'   second element needs to be the scale parameter \eqn{\sigma}.
-#' @param distribution supposed distribution of the random variable. The default
-#'   value is \code{"weibull"}.
+#' @param distribution supposed distribution of the random variable. The
+#'   value can be \code{"weibull"}, \code{"lognormal"} or \code{"loglogistic"}.
 #' @param bounds a character string specifying the interval(s) which has/have to
 #'   be computed. Must be one of "two_sided" (default), "lower" or "upper".
 #' @param conf_level confidence level of the interval. The default value is
@@ -205,8 +205,8 @@ confint_betabinom <- function(x, event, loc_sc_params, distribution = c("weibull
 #'   of the diagonal needs to be the variance of the location parameter
 #'   Var(\eqn{\mu}) and the second element of the diagonal needs to be the
 #'   variance of the scale parameter Var(\eqn{\sigma}).
-#' @param distribution supposed distribution of the random variable. The default
-#'   value is \code{"weibull"}.
+#' @param distribution supposed distribution of the random variable. The
+#'   value can be \code{"weibull"}, \code{"lognormal"} or \code{"loglogistic"}.
 #' @param direction a character string specifying the direction of the computed
 #'   standard errors. Must be either "y" (failure probability) or "x"
 #'   (quantile). If \code{p} is a quantile then \emph{direction} needs to be "y"
@@ -310,8 +310,8 @@ delta_method <- function(p, loc_sc_params, loc_sc_varcov,
 #'   of the diagonal needs to be the variance of the location parameter
 #'   Var(\eqn{\mu}) and the second element of the diagonal needs to be the
 #'   variance of the scale parameter Var(\eqn{\sigma}).
-#' @param distribution supposed distribution of the random variable. The default
-#'   value is \code{"weibull"}.
+#' @param distribution supposed distribution of the random variable. The
+#'   value can be \code{"weibull"}, \code{"lognormal"}, \code{"loglogistic"}.
 #' @param bounds a character string specifying the interval(s) which has/have to
 #'   be computed. Must be one of "two_sided" (default), "lower" or "upper".
 #' @param conf_level confidence level of the interval. The default value is
