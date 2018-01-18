@@ -1,6 +1,8 @@
 ---
 title: "Wahrscheinlichkeitsschätzer"
-output: word_document
+output:
+  pdf_document: default
+  word_document: default
 ---
 
 ```{r setup, include=FALSE, cache=FALSE}
@@ -8,7 +10,7 @@ knitr::opts_chunk$set(echo = TRUE, error = TRUE)
 ```
 ## Schätzung von Ausfallwahrscheinlichkeiten mittels der Median-Rang-Methode (ohne Anwärter)
 
-Testet man alle Einheiten _n_ einer Stichprobe bis zu ihrem Aufall, kann man die Lebensdauer jeder Einheit genau bestimmen. Die Lebensdauer kann in diesem Fall zum Beispiel die Zeit bis zum Aufall, die zurückgelegte Distanz oder die Anzahl der Lastzyklen sein.  
+Testet man alle Einheiten _n_ einer Stichprobe bis zu ihrem Aufall, kann man die Lebensdauer jeder Einheit genau bestimmen. Die Lebensdauer kann in diesem Fall zum Beispiel die Zeit bis zum Ausfall, die zurückgelegte Distanz oder die Anzahl der Lastzyklen sein.  
 Ordnet man nun die Einheiten aufsteigend nach ihrer Lebensdauer, kann jeder ein ganzzahliger Rang _i_ zugeordnet werden. Anhand des Rangs kann dann die Ausfallwahrscheinlichkeit der jeweiligen Einheit geschätzt werden.  
 Dafür sind zwei Methoden implementiert:
 
@@ -49,7 +51,7 @@ mr_method(x, event = rep(1, length(x)),
     - ein Vektor, der die ID jeder Einheit als Character enthält. Falls kein Identifikationscode angegeben wird, erhält jede Einheit die ID "XXXXXX".
 
 * `method`
-    - Die Methode, mit der die Ausfallwahrscheinlichkeit berechnet werden soll kann entweder `"benard"` oder `"invbeta"` sein. Falls keine Methode angegeben wird, wird `"benard"` angenommen.
+    - Die Methode, mit der die Ausfallwahrscheinlichkeit berechnet werden soll, kann entweder `"benard"` oder `"invbeta"` sein. Falls keine Methode angegeben wird, wird `"benard"` angenommen.
 
 
 ### Anwendungsbeispiel
@@ -132,7 +134,7 @@ johnson_ranks
 
 ## Schätzung von Ausfallwahrscheinlichkeiten mittels der Methode nach Johnson (mit Anwärtern)
 
-Diese nicht-parametrische Annäherung wird benutzt, um Ausfallwahrscheinlichkeiten zu schätzen, wenn rechtszensierte Daten vorliegen.
+Diese nicht-parametrische Approximation wird benutzt, um Ausfallwahrscheinlichkeiten zu schätzen, wenn rechtszensierte Daten vorliegen.
 Im Gegensatz zu Fällen, in denen ausschließlich ausgefallene Einheiten auftreten, müssen hier die Ränge angepasst werden, um auch die Ausfallwahrscheinlichkeiten der zensierten Beobachtungen schätzen zu können.  
 Um die Ränge zu berechnen, wird innerhalb der Funktion `johnson_method` die Funktion `calculate_ranks` benutzt.  
 Der Output der Funktion ist ein Dataframe, der die ID, das Lebensdauermerkmal und den Status aller Einheiten sowie den adjustierten Rang und die geschätzte Ausfallwahrscheinlichkeit der Ausfälle enthält. Rang und Ausfallwahrscheinlichkeit werden bei zensierten Beobachtungen mit `NA` angegeben.
