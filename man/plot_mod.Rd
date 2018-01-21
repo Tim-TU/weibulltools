@@ -2,39 +2,34 @@
 % Please edit documentation in R/plot_functions.R
 \name{plot_mod}
 \alias{plot_mod}
-\title{Add estimated Regression line to Probability Plot}
+\title{Add estimated Regression line(s) to Probability Plot}
 \usage{
-plot_mod(p_obj, x, y = NULL, loc_sc_params, distribution = "weibull",
-  title_trace = "Fit")
+plot_mod(p_obj, x, y = NULL, mrr_output, distribution = c("weibull",
+  "lognormal", "loglogistic"), title_trace = "Fit")
 }
 \arguments{
-\item{p_obj}{a plotly object provided by function \code{\link{plot_prob}}.}
+\item{p_obj}{a plotly object provided by function \code{\link{plot_prob2}}}
 
 \item{x}{a numeric vector containing the x-coordinates of the Regression line.}
 
 \item{y}{a numeric vector containing the y-coordinates of the Regression line.
-The default value of \code{y} is \code{NULL}. If \code{y} is set \code{NULL}
-the y-coordinates with respect to \code{x} are calculated by
-\code{loc_sc_params}.}
+The default value of y is \code{NULL}. If \code{y} is set \code{NULL} the y-coordinates
+with respect to \code{x} are calculated by the \code{loc_sc_params} values in \code{mrr_output}.}
 
-\item{loc_sc_params}{a (named) numeric vector of estimated location and scale
-parameters for a specified distribution. The order of elements is
-important. First entry needs to be the location parameter \eqn{\mu} and the
-second element needs to be the scale parameter \eqn{\sigma}.}
+\item{mrr_output}{a list provided by \code{\link{rank_regression}} or \code{\link{mixmod_regression}} which consists
+of values necessary to estimate the regression lines.}
 
-\item{distribution}{supposed distribution of the random variable. The default
-value is \code{"weibull"}.}
+\item{distribution}{supposed distribution of the random variable. The value can be \code{"weibull"}, \code{"lognormal"}
+or \code{"loglogistic"}.}
 
-\item{title_trace}{a character string whis is assigned to the trace shown in
-the legend.}
+\item{title_trace}{a character string whis is assigned to the trace shown in the legend.}
 }
 \value{
-Returns a plotly object containing the probability plot with
-  plotting positions and the estimated regression line.
+Returns a plotly object containing the probability plot with plotting positions and the estimated regression line(s).
 }
 \description{
-This function is used to add an estimated regression line to an existing
-probability plot.
+This function is used to add one or multiple estimated regression lines to an existing probability plot using the
+regression models calculated by \code{\link{rank_regression}} or \code{\link{mixmod_regression}}.
 }
 \examples{
 obs   <- seq(10000, 100000, 10000)
@@ -45,17 +40,21 @@ df_john <- johnson_method(x = obs, event = state, id = id)
 mrr <- rank_regression(x = df_john$characteristic,
                        y = df_john$prob,
                        event = df_john$status,
+                       distribution = "weibull",
                        conf_level = .90)
 
 plot_weibull <- plot_prob(x = df_john$characteristic,
                           y = df_john$prob,
                           event = df_john$status,
+                          mrr_output = NULL,
                           id = df_john$id,
+                          distribution = "weibull",
                           title_main = "Weibull Analysis",
                           title_x = "Mileage in miles",
                           title_y = "Probability of Failure",
                           title_trace = "Failed Items")
 plot_reg_weibull <- plot_mod(p_obj = plot_weibull, x = obs,
-                             loc_sc_params = mrr$loc_sc_coefficients,
+                             mrr_output = mrr,
+                             distribution = "weibull",
                              title_trace = "Estimated Weibull CDF")
 }

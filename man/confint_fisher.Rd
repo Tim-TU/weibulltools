@@ -5,8 +5,9 @@
 \title{Fisher Confidence Bounds for Quantiles and/or Probabilities}
 \usage{
 confint_fisher(x, event, loc_sc_params, loc_sc_varcov,
-  distribution = "weibull", bounds = c("two_sided", "lower", "upper"),
-  conf_level = 0.95, direction = c("y", "x"))
+  distribution = c("weibull", "lognormal", "loglogistic"),
+  bounds = c("two_sided", "lower", "upper"), conf_level = 0.95,
+  direction = c("y", "x"))
 }
 \arguments{
 \item{x}{a numeric vector which consists of lifetime data. \code{x} is used to
@@ -28,8 +29,8 @@ of the diagonal needs to be the variance of the location parameter
 Var(\eqn{\mu}) and the second element of the diagonal needs to be the
 variance of the scale parameter Var(\eqn{\sigma}).}
 
-\item{distribution}{supposed distribution of the random variable. The default
-value is \code{"weibull"}.}
+\item{distribution}{supposed distribution of the random variable. The
+value can be \code{"weibull"}, \code{"lognormal"}, \code{"loglogistic"}.}
 
 \item{bounds}{a character string specifying the interval(s) which has/have to
 be computed. Must be one of "two_sided" (default), "lower" or "upper".}

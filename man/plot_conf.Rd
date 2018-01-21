@@ -4,8 +4,8 @@
 \alias{plot_conf}
 \title{Add Confidence Region(s) to Probability Plot}
 \usage{
-plot_conf(p_obj, x, y, direction = c("y", "x"),
-  title_trace = "Confidence Limit")
+plot_conf(p_obj, x, y, direction = c("y", "x"), distribution = c("weibull",
+  "lognormal", "loglogistic"), title_trace = "Confidence Limit")
 }
 \arguments{
 \item{p_obj}{a plotly object provided by function \code{\link{plot_mod}}.}
@@ -18,6 +18,9 @@ The list can be of length 1 or 2. For more information see \strong{Details}.}
 
 \item{direction}{a character string specifying the direction of the plotted
 interval(s). Must be either "y" (failure probabilities) or "x" (quantiles).}
+
+\item{distribution}{supposed distribution of the random variable. The
+value can be \code{"weibull"}, \code{"lognormal"} or \code{"loglogistic"}.}
 
 \item{title_trace}{a character string whis is assigned to the trace shown in
 the legend.}
@@ -40,6 +43,7 @@ df_john <- johnson_method(x = obs, event = state, id = id)
 mrr <- rank_regression(x = df_john$characteristic,
                        y = df_john$prob,
                        event = df_john$status,
+                       distribution = "weibull",
                        conf_level = .95)
 conf_betabin <- confint_betabinom(x = df_john$characteristic,
                                   event = df_john$status,
@@ -53,6 +57,7 @@ plot_weibull <- plot_prob(x = df_john$characteristic,
                           y = df_john$prob,
                           event = df_john$status,
                           id = df_john$id,
+                          distribution = "weibull",
                           title_main = "Weibull Analysis",
                           title_x = "Mileage in miles",
                           title_y = "Probability of Failure",
@@ -61,6 +66,7 @@ plot_reg_weibull <- plot_mod(p_obj = plot_weibull,
                              x = conf_betabin$characteristic,
                              y = conf_betabin$prob,
                              loc_sc_params = mrr$loc_sc_coefficients,
+                             distribution = "weibull",
                              title_trace = "Estimated Weibull CDF")
 plot_conf_beta <- plot_conf(p_obj = plot_reg_weibull,
                             x = list(conf_betabin$characteristic),

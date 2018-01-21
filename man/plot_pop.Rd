@@ -4,8 +4,8 @@
 \alias{plot_pop}
 \title{Add Population line to an existing Grid}
 \usage{
-plot_pop(p_obj, x, params, distribution = "weibull",
-  title_trace = "Population")
+plot_pop(p_obj, x, params, distribution = c("weibull", "lognormal",
+  "loglogistic"), title_trace = "Population")
 }
 \arguments{
 \item{p_obj}{a plotly object, which at least includes the layout provided
@@ -13,9 +13,11 @@ by \code{\link{plot_layout}}.}
 
 \item{x}{a numeric vector containing the x-coordinates of the regression line.}
 
-\item{params}{a (named) numeric vector, where the first entry is the scale
-parameter and the second entry is the shape parameter of a weibull
-distribution. Parametrization is the same used in \code{\link{rweibull}}.}
+\item{params}{a (named) numeric vector, where the first entry is the location parameter \eqn{\mu}
+and the second entry is the scale parameter \eqn{\sigma} of a lognormal or loglogistic
+distribution. If the distribution value is \code{"weibull"} the first entry must be the scale
+parameter \eqn{\eta} and the second entry must be the shape parameter \eqn{\beta}. Parametrization is
+the same used in \code{\link{rweibull}}.}
 
 \item{distribution}{supposed distribution of the random variable. The default
 value is \code{"weibull"}.}

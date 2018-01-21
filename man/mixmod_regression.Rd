@@ -4,7 +4,8 @@
 \alias{mixmod_regression}
 \title{Mixture Model Identification using Segmented Regression}
 \usage{
-mixmod_regression(x, y, event, distribution = "weibull", conf_level = 0.95)
+mixmod_regression(x, y, event, distribution = c("weibull", "lognormal",
+  "loglogistic"), conf_level = 0.95)
 }
 \arguments{
 \item{x}{a numeric vector which consists of lifetime data. Lifetime

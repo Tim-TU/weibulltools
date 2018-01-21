@@ -4,8 +4,8 @@
 \alias{ml_estimation}
 \title{ML Estimation for the Weibull distribution}
 \usage{
-ml_estimation(x, event, distribution = "weibull", conf_level = 0.95,
-  details = TRUE)
+ml_estimation(x, event, distribution = c("weibull", "lognormal",
+  "loglogistic"), conf_level = 0.95, details = TRUE)
 }
 \arguments{
 \item{x}{a numeric vector which consists of lifetime data. Lifetime

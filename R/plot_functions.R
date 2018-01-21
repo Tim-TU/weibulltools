@@ -549,7 +549,7 @@ plot_pop <- function(p_obj, x, params, distribution = c("weibull", "lognormal", 
   if (distribution == "weibull") {
     loc <- log(params[1])
     sc <- 1 / params[2]
-  } else if (distribution == "lognormal" | distribution = "loglogistic") {
+  } else if (distribution == "lognormal" | distribution == "loglogistic") {
     loc <- params[1]
     sc <- params[2]
   } else {

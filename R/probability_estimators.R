@@ -187,8 +187,7 @@ mr_method <- function(x, event = rep(1, length(x)),
                       id = rep("XXXXXX", length(x)),
                       method = "benard") {
   if (!all(event == 1)) {
-    stop("Use johnson_method() or kaplan_method() since there is a censored
-         data problem!")
+    stop("Use johnson_method() or kaplan_method() since there is a censored data problem!")
   }
   df <- data.frame(time = x, status = event)
   df <- dplyr::distinct(df, time, .keep_all = TRUE)

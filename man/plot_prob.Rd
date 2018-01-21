@@ -4,10 +4,10 @@
 \alias{plot_prob}
 \title{Probability Plot construction}
 \usage{
-plot_prob(x, y, event, id = rep("XXXXXX", length(x)),
-  distribution = "weibull", title_main = "Probability Plot",
-  title_x = "Characteristic", title_y = "Unreliability",
-  title_trace = "Sample")
+plot_prob(x, y, event, mrr_output = NULL, id = rep("XXXXXX", length(x)),
+  distribution = c("weibull", "lognormal", "loglogistic"),
+  title_main = "Probability Plot", title_x = "Characteristic",
+  title_y = "Unreliability", title_trace = "Sample")
 }
 \arguments{
 \item{x}{a numeric vector which consists of lifetime data. Lifetime
@@ -21,10 +21,14 @@ regarding the lifetime data in \code{x}.}
 \item{event}{a vector of binary data (0 or 1) indicating whether unit \emph{i}
 is a right censored observation (= 0) or a failure (= 1).}
 
+\item{mrr_output}{a list provided by \code{\link{mixmod_regression}} which consists
+of values necessary to visualize the segments calculated by \code{\link{mixmod_regression}}.
+The default value of \code{mrr_output} is \code{NULL}.}
+
 \item{id}{a character vector for the identification of every unit.}
 
-\item{distribution}{supposed distribution of the random variable. The default
-value is \code{"weibull"}.}
+\item{distribution}{supposed distribution of the random variable. The value can be \code{"weibull"},
+\code{"lognormal"} or \code{"loglogistic"}.}
 
 \item{title_main}{a character string which is assigned to the main title
 of the plot}
@@ -65,7 +69,9 @@ df_john <- johnson_method(x = obs, event = state, id = id)
 plot_weibull <- plot_prob(x = df_john$characteristic,
                           y = df_john$prob,
                           event = df_john$status,
+                          mrr_output = NULL,
                           id = df_john$id,
+                          distribution = "weibull",
                           title_main = "Weibull Analysis",
                           title_x = "Mileage in miles",
                           title_y = "Probability of Failure",
