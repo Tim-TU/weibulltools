@@ -1,0 +1,152 @@
+---
+title: "Parameterschätzung"
+output: word_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Rangregression
+
+Die Funktion `rank_regression` erstellt ein Regressionsmodell (`x ~ y`) auf Grundlage der linearisierten, zwei-parametrigen kumulierten Dichtefunktion und kann für vollständige wie auch für (multiple) rechtszensierte Daten verwendet werden.  
+Die Parameter werden in der Lage-Skalen-Parametrisierung ($\mu, \sigma$) geschätzt und danach transformiert, sodass sie der Weibull-spezifischen Skalen-Form-Parametrisierung ($\eta, \beta$) entsprechen, die im `stats`-Package verwendet wird, zum Beispiel in Funktionen wie `pweibull`.  
+Die approximierten Konfidenzintervalle der Weibull-Parameter können bei dieser Methode (basierend auf Ralf Mock[^note_call], S. 51) nur für folgende Konfidenzniveaus geschätzt werden:
+
+- `conf_level = 0.90` 
+- `conf_level = 0.95`
+- `conf_level = 0.99`
+
+[^note_call]: Mock, Ralf: _Methoden zur Datenhandhabung in Zuverlässigkeitsanalysen_, vdf Hochschulverlag AG an der ETH Zürich, 1995
+
+Der Output der Funktion ist eine Liste, die die Weibull-Parameter $\eta$ und $\beta$ angibt, bzw. eine Liste, die neben diesen Paramatern auch die Lage- und Skalen-Parameter $\mu$ und $\sigma$, die Konfidenzintervalle für beide Parametrisierungen und das Bestimmtheitsmaß der Regression $R^2$ enthält (siehe Abs. "Argumente", `details`).
+
+### Argumente
+
+Die Argumente der Funktion werden folgendermaßen angegeben:
+
+```
+rank_regression(x, y, event, distribution = "weibull", 
+                conf_level = 0.95, details = TRUE)
+```
+
+* `x`
+    - ein numerischer Vektor, der die Lebensdauern enthält. Die Lebensdauer kann zum Beispiel als Zeit bis zum Ausfall, zurückgelegte Distanz oder Anzahl der Lastzyklen angegeben werden.
+    
+* `y`
+    - ein numerischer Vektor, der die geschätzen Ausfallwahrscheinlichkeiten in Bezug auf die Lebensdauern aus `x` enthält. Die Ausfallwahrscheinlichkeiten können z.B. mit den Funktionen `johnson_method` oder `mr_method` geschätzt werden.
+    
+* `event`
+    - ein binärer Vektor, der wiedergibt, ob die Einheit _i_ eine rechtszensierte Beobachtung (= 0) oder ein Ausfall (= 1) ist
+    
+* `distribution`
+    - angenommene Verteilung der Zufallsvariable. Der Default-Wert ist `"weibull"`.
+    
+* `conf_level`
+    - Konfidenzniveau des Intervalls. Es kann die Werte `0.90`, `0.95` (Default) oder `0.99` annehmen.
+    
+* `details`
+    - eine logische Variable, deren Default-Wert `FALSE` ist. Wenn `details = FALSE`, ist der Output eine Liste, die die Weibull-Parameter $\eta$ und $\beta$ enthält. Wenn `details = TRUE` (Default), ist der Output eine Liste, die neben den zuvor genannten Elementen auch die Lage- und Skalen-Parameter $\mu$ und $\sigma$, die Konfidenzintervalle für beide Parametrisierungen und das Bestimmtheitsmaß der Regression $R^2$ enthält.
+    
+### Anwendungsbeispiel
+
+```{r}
+
+library(weibulltools)
+
+obs   <- seq(10000, 100000, 10000)
+
+state <- c(0, 1, 1, 0, 0, 0, 1, 0, 1, 0)
+
+# Berechnung der Ausfallwahrscheinlichkeiten
+
+df_john <- johnson_method(x = obs, event = state)
+
+# Parameterschätzung durch Rangregression, details = FALSE
+
+mrr <- rank_regression(x = df_john$characteristic,
+                       y = df_john$prob,
+                       event = df_john$status,
+                       distribution = "weibull",
+                       conf_level = .90,
+                       details = FALSE)
+
+# Ausgabe der undetaillierten Liste 
+
+mrr
+
+# Parameterschätzung durch Rangregression, details = TRUE
+
+mrr_details <- rank_regression(x = df_john$characteristic,
+                               y = df_john$prob,
+                               event = df_john$status,
+                               distribution = "weibull",
+                               conf_level = .90,
+                               details = TRUE)
+
+# Ausgabe der detaillierten Liste 
+
+mrr_details
+```
+
+## Maximum-Likelihood-Schätzung
+
+Mit der Funktion `ml_estimation` können die Parameter einer zwei-parametrigen Weibullverteilung und deren normal-approximierte Konfidenzintervalle geschätzt werden.  
+Die Parameter werden sowohl in der gebräuchlichen Lage-Skalen-Parametrisierung ($\mu, \sigma$) bestimmt, als auch in der Weibull-spezifischen Skalen-Form-Parametrisierung ($\eta, \beta$) (findet Verwendung in Funktionen wie z.B. `pweibull` aus dem `stats`-Package).
+Die Maximum-Likelihood-Schätzung verwendet die Funktion `Lifedata.MLE`, die im Package `SPREDA` definiert ist, und kann sowohl auf vollständige als auch auf (multiple) rechtszensierte Daten angewandt werden. Das Konfidenzniveau kann dabei beliebig zwischen 0 und 1 gewählt werden.  
+Der Output der Schätzung ist eine Liste, die die Weibull-Parameter $\eta$ und $\beta$ angibt, bzw. eine Liste, die neben diesen Paramatern auch die Lage- und Skalen-Parameter $\mu$ und $\sigma$, die Konfidenzintervalle für beide Parametrisierungen und den Log-Likelihood-Wert als Vergleichskriterium enthält (siehe Abs. "Argumente", `details`).
+
+### Argumente
+
+Die Argumente der Funktion `ml_estimation` werden folgendermaßen angegeben:
+
+```
+ml_estimation(x, event, distribution = "weibull",
+              conf_level = 0.95, details = TRUE)
+```
+* `x`
+    - ein numerischer Vektor, der die Lebensdauern enthält. Die Lebensdauer kann zum Beispiel als Zeit bis zum Ausfall, zurückgelegte Distanz oder Anzahl der Lastzyklen angegeben werden.
+    
+* `event`
+    - ein binärer Vektor, der wiedergibt, ob die Einheit _i_ eine rechtszensierte Beobachtung (= 0) oder ein Ausfall (= 1) ist
+    
+* `distribution`
+    - angenommene Verteilung der Zufallsvariable. Der Default-Wert ist `"weibull"`.
+    
+* `conf_level`
+    - Konfidenzniveau des Intervalls. Es kann beliebige Werte zwischen 0 und 1 annehmen, der Default-Wert ist 0,95.
+    
+* `details`
+    - eine logische Variable, deren Default-Wert `FALSE` ist. Wenn `details = FALSE`, ist der Output eine Liste, die die Weibull-Parameter $\eta$ und $\beta$ enthält. Wenn `details = TRUE` (Default), ist der Output eine Liste, die neben den zuvor genannten Elementen auch die Lage- und Skalen-Parameter $\mu$ und $\sigma$, die Konfidenzintervalle für beide Parametrisierungen und den Log-Likelihood-Wert als Vergleichskriterium enthält.
+    
+### Anwendungsbeispiel
+
+```{r}
+library(weibulltools)
+
+obs   <- seq(10000, 100000, 10000)
+
+state <- c(0, 1, 1, 0, 0, 0, 1, 0, 1, 0)
+
+# Parameterschätzung durch Maximum-Likelihood-Methode, details = FALSE
+
+mle <- ml_estimation(x = obs, event = state,
+                     distribution = "weibull", 
+                     conf_level = 0.90,
+                     details = FALSE)
+
+# Ausgabe der undetaillierten Liste
+
+mle
+
+# Parameterschätzung durch Maximum-Likelihood-Methode, details = TRUE
+
+mle_details <- ml_estimation(x = obs, event = state,
+                     distribution = "weibull", 
+                     conf_level = 0.90,
+                     details = TRUE)
+
+# Ausgabe der detaillierten Liste 
+
+mle_details
+```

@@ -1,0 +1,537 @@
+---
+title: "Schätzung der Einsatzdauer unter Berücksichtigung von Zulassungs- und Meldeverzug sowie der zurückgelegten Distanz rechtszensierter Beobachtungen mithilfe der Monte-Carlo-Simulation"
+output:
+  pdf_document: default
+  word_document: default
+vignette: |
+  %\VignetteIndexEntry{Vignette Title} %\VignetteEngine{knitr::rmarkdown} %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Einführung
+
+In den meisten Fällen gibt es nicht viele Informationen über Einheiten, die sich im Feld befinden und noch nicht ausgeschieden sind. Zum Beispiel weiß ein Zulieferer von Automobilteilen häufig nicht, ab wann ein Fahrzeug im Feld eingesetzt wurde, und kann daher nur ungenau die Einsatzdauer der von ihm hergestellten Teile bestimmen. Auf der anderen Seite melden Werkstätten Reparaturen häufig nicht sofort dem Hersteller, sondern geben die Informationen z.B. nur monatlich oder quartalsweise weiter.
+Bei der Betrachtung der Einsatzdauer von Fahrzeugen oder bestimmten Bauteilen muss man also immer den Verzug zwischen Produktions- und Zulassungsdatum bzw. zwischen Reparatur- und Meldedatum berücksichtigen, um genaue Aussagen treffen zu können. 
+
+Mithilfe der folgenden Funktionen sollen diese Verzüge abgeschätzt und die wahre Einsatzdauer sowie die zurückgelegte Distanz berechnet werden.
+Die Verzüge werden als log-normalverteilt angenommen, da die Zeitdifferenzen in den meisten Fällen eher klein sind und somit eine linkssteile Verteilung vorliegt. 
+Weiterhin wird zur Abschätzung der Verzüge die Monte-Carlo-Simulation (MCS) verwendet. Das bedeutet, dass zuerst die Parameter (Mittelwert und Standardabweichung) der Verteilung, die den Verzug bzw. die jährlich zurückgelegte Distanz der Einheiten beschreibt, mit den vollständigen Daten der abgeschlossenen Fälle geschätzt werden. Danach können mit diesen Parametern die Verzugszeiten der unvollständigen zensierten Beobachtungen durch die MCS simuliert werden.
+
+## Schätzung der Verteilungsparameter des Zulassungsverzugs
+
+Die Funktion `dist_delay_register` erzeugt eine Zufallsvariable, indem sie den Verzug zwischen Zulassungs- und Produktionsdatum berechnet. Danach werden mittels der Maximum-Likelihood-Methode die Parameter der angenommenen Verteilung geschätzt. Bei der Berechnung des Verzugs werden alle vollständig vorliegenden Daten genutzt unabhängig davon, ob sie einem Ausfall oder einer zensierten Beobachtung zugeordnet werden.
+Der Output dieser Funktion ist ein Vektor, der den Mittelwert und die Standardabweichung in dieser Reihenfolge enthält.
+
+### Argumente
+
+Die Argumente der Funktion werden folgendermaßen angegeben:
+```r
+dist_delay_register(date_prod, date_register, 
+                    distribution = "lognormal")
+```
+
+* `date_prod`
+      - ein Vektor der Klasse `"character"` oder `"date"`, der die Produktionsdaten der Einheiten enthält. Falls die Information nicht vorliegt, kann der Eintrag auch `NA` sein.
+      
+* `date_register`
+      - ein Vektor der Klasse `"character"` oder `"date"`, der die Zulassungsdaten der Einheiten enthält. Falls die Information nicht vorliegt, kann der Eintrag auch `NA` sein.
+      
+* `distribution`
+      - angenommene Verteilung der Zufallsvariable. Der Default-Wert ist `"lognormal"`. Da ausschließlich die Lognormal-Verteilung in der Funktion implementiert ist, sollte dieses Argument nicht verändert werden.
+      
+### Anwendungsbeispiel
+Die Daten können entweder per Hand als Vektoren eingegeben werden oder z. B. den Spalten einer Tabelle/eines Dataframes entstammen. Als Beispiel wird hier und in den folgenden Abschnitten ein Datensatz aus _Qualitätsmanagement in der Automobilindustrie_ (VDA)[^note_call] verwendet. 
+
+[^note_call]: Verband der Automobilindustrie e.V. (VDA): _Qualitätsmanagement in der Automobilindustrie_ Band 3. _Zuverlässigkeitssicherung bei Automobilherstellern und Lieferanten_ Teil 3. _Case-Studies im Zuverlässigkeitsregelkreis_, 1. Auflage, 2017, S. 112
+```{r}
+
+library(weibulltools)
+
+date_of_production   <- c("2014-07-28", "2014-02-17", "2014-07-14",
+                          "2014-06-26", "2014-03-10", "2014-05-14",
+                          "2014-05-06", "2014-03-07", "2014-03-09",
+                          "2014-04-13", "2014-05-20", "2014-07-07",
+                          "2014-01-27", "2014-01-30", "2014-03-17",
+                          "2014-02-09", "2014-04-14", "2014-04-20",
+                          "2014-03-13", "2014-02-23", "2014-04-03",
+                          "2014-01-08", "2014-01-08")
+
+date_of_registration <- c(NA, "2014-03-29", "2014-12-06", "2014-09-09", 
+                          NA, NA, "2014-06-16", NA, "2014-05-23", 
+                          "2014-05-09", "2014-05-31", NA, "2014-04-13",
+                          NA, NA, "2014-03-12", NA, "2014-06-02", 
+                          NA, "2014-03-21", "2014-06-19", NA, NA)
+
+params_delay_regist  <- dist_delay_register(
+                                    date_prod = date_of_production,
+                                    date_register = date_of_registration,
+                                    distribution = "lognormal")
+
+# Ausgabe der geschätzten Verteilungsparameter (Mittelwert und Standardabweichung)
+
+params_delay_regist
+```
+
+## Korrektur der Einsatzdauer unter Berücksichtigung des Zulassungsverzugs
+
+Mithilfe der Funktion `mcs_delay_register` werden die Einsatzdauern (multipler) rechtszensierter Beobachtungen um den Zulassungsverzug korrigiert. Zur Schätzung des Verzugs wird die Monte-Carlo-Simulation verwendet.
+Der Output der Funktion ist ein Vektor, der die gegebenen Einsatzdauern der Ausfälle sowie die korrigierten Einsatzdauern der zensierten Beobachtungen enthält bzw. eine Liste, die neben diesem Vektor noch weitere Details einschließt (s. Abschnitt "Argumente", `details`).
+
+### Argumente
+
+Die Argumente der Funktion werden folgendermaßen angegeben:
+```r
+mcs_delay_register(date_prod, date_register, x, event,
+                   distribution = "lognormal", seed = NULL,
+                   details = FALSE)
+```
+
+* `date_prod`
+    - ein Vektor der Klasse `"character"` oder `"date"`, der die Produktionsdaten der Einheiten enthält. Falls die Information nicht vorliegt, kann der Eintrag auch `NA` sein.
+
+* `date_register`
+    - ein Vektor der Klasse `"character"` oder `"date"`, der die Zulassungsdaten der Einheiten enthält. Falls die Information nicht vorliegt, kann der Eintrag auch `NA` sein.
+      
+* `x`
+    - ein numerischer Vektor, der die Einsatzdauern enthält
+    
+* `event`
+    - ein binärer Vektor, der wiedergibt, ob die Einheit _i_ eine rechtszensierte Beobachtung (= 0) oder ein Ausfall (= 1) ist
+      
+* `distribution`
+    - angenommene Verteilung der Zufallsvariable. Der Default-Wert ist `"lognormal"`. Da ausschließlich die Lognormal-Verteilung in der Funktion implementiert ist, sollte dieses Argument nicht verändert werden.
+      
+* `seed`
+    - Der Wert von `seed` wird benötigt, um die Berechnung reproduzieren zu können. Wenn `seed = NULL` (Default), wird der Seed zufällig generiert. Andernfalls kann der Benutzer einen beliebigen Integer als `seed` festlegen. 
+
+* `details`
+    - eine logische Variable, deren Default-Wert `FALSE` ist. Wenn `details = FALSE`, ist der Output ein Vektor, der die gegebenen Einsatzdauern der Ausfälle sowie die korrigierten Einsatzdauern der zensierten Beobachtungen enthält. Wenn `details = TRUE`, ist der Output eine Liste, die neben dem zuvor erwähnten Vektor auch die simulierten Verzugszeiten, die geschätzten Verteilungsparameter und den Seed für die Reproduzierbarkeit enthält.
+
+### Anwendungsbeispiel
+
+Als Einsatzdauer (`operation_time`) wurde hier für jede Einheit der Wert "1000" gewählt, um zu verdeutlichen, wo die Daten vollständig vorliegen, es also zum Aufall gekommen ist (`state = 1`), und wo die Daten unvollständig sind, also eine zensierte Beobachtung vorliegt (`state = 0`) und die Einsatzdauer simuliert werden muss.
+```{r}
+
+library(weibulltools)
+
+# Eingabe der Daten
+
+date_of_production   <- c("2014-07-28", "2014-02-17", "2014-07-14",
+                          "2014-06-26", "2014-03-10", "2014-05-14",
+                          "2014-05-06", "2014-03-07", "2014-03-09",
+                          "2014-04-13", "2014-05-20", "2014-07-07",
+                          "2014-01-27", "2014-01-30", "2014-03-17",
+                          "2014-02-09", "2014-04-14", "2014-04-20",
+                          "2014-03-13", "2014-02-23", "2014-04-03",
+                          "2014-01-08", "2014-01-08")
+
+
+date_of_registration <- c(NA, "2014-03-29", "2014-12-06", "2014-09-09", 
+                          NA, NA, "2014-06-16", NA, "2014-05-23", 
+                          "2014-05-09", "2014-05-31", NA, "2014-04-13",
+                          NA, NA, "2014-03-12", NA, "2014-06-02", 
+                          NA, "2014-03-21", "2014-06-19", NA, NA)
+
+operation_time <- rep(1000, length(date_of_production))
+
+state <- c(0, 1, 1, 1, 0, 0, 1, 0, 1, 1, 1, 0, 1, 0, 0, 1, 0, 1, 0, 1, 1, 0, 0)
+
+# Beispiel 1 - Vereinfachter Output: Vektor
+
+x_corrected <- mcs_delay_register(date_prod = date_of_production,
+                                  date_register = date_of_registration,
+                                  x = operation_time,
+                                  event = state,
+                                  distribution = "lognormal",
+                                  seed = NULL,
+                                  details = FALSE)
+
+# Ausgabe des Vektors
+
+x_corrected
+
+# Beispiel 2 - Detaillierter Output: Liste
+
+list_detail <- mcs_delay_register(date_prod = date_of_production,
+                                  date_register = date_of_registration,
+                                  x = operation_time,
+                                  event = state,
+                                  distribution = "lognormal",
+                                  seed = NULL,
+                                  details = TRUE)
+
+# Ausgabe der Liste
+
+list_detail
+```
+
+## Schätzung der Verteilungsparameter des Meldeverzugs
+
+Die Funktion `dist_delay_report` erzeugt eine Zufallsvariable, indem sie den Verzug zwischen Reparaturdatum und Datum, an dem die Reparatur gemeldet wurde, berechnet. Danach werden mittels der Maximum-Likelihood-Methode die Parameter der angenommenen Verteilung geschätzt. Bei der Berechnung des Verzugs werden alle vollständig vorliegenden Daten genutzt unabhängig davon, ob sie einem Ausfall oder einer zensierten Beobachtung zugeordnet werden.
+Der Output dieser Funktion ist ein Vektor, der den Mittelwert und die Standardabweichung in dieser Reihenfolge enthält.
+
+### Argumente
+
+Die Argumente der Funktion werden folgendermaßen angegeben:
+```r
+dist_delay_report(date_repair, date_report, 
+                    distribution = "lognormal")
+```
+
+* `date_repair`
+      - ein Vektor der Klasse `"character"` oder `"date"`, der die Reparaturdaten der Einheiten enthält. Falls die Information nicht vorliegt, kann der Eintrag auch `NA` sein.
+      
+* `date_report`
+      - ein Vektor der Klasse `"character"` oder `"date"`, der die Meldedaten der Einheiten enthält. Falls die Information nicht vorliegt, kann der Eintrag auch `NA` sein.
+      
+* `distribution`
+      - angenommene Verteilung der Zufallsvariable. Der Default-Wert ist `"lognormal"`. Da ausschließlich die   Lognormal-Verteilung in der Funktion implementiert ist, sollte dieses Argument nicht verändert werden.
+
+### Anwendungsbeispiel
+
+```{r}
+
+library(weibulltools)
+
+date_of_repair <- c(NA, "2014-09-15", "2015-07-04", "2015-04-10", NA,
+                    NA, "2015-04-24", NA, "2015-04-25", "2015-04-24", 
+                    "2015-06-12", NA, "2015-05-04", NA, NA, 
+                    "2015-05-22", NA, "2015-09-17", NA, "2015-08-15", 
+                    "2015-11-26", NA, NA)
+
+date_of_report <- c(NA, "2014-10-09", "2015-08-28", "2015-04-15", NA, 
+                    NA, "2015-05-16", NA, "2015-05-28", "2015-05-15", 
+                    "2015-07-11", NA, "2015-08-14", NA, NA, 
+                    "2015-06-05", NA, "2015-10-17", NA, "2015-08-21",
+                    "2015-12-02", NA, NA)
+
+params_delay_report  <- dist_delay_report(date_repair = date_of_repair,
+                                            date_report = date_of_report,
+                                            distribution = "lognormal")
+
+# Ausgabe der geschätzten Verteilungsparameter (Mittelwert und Standardabweichung)
+
+params_delay_report
+```
+
+## Korrektur der Einsatzdauer unter Berücksichtigung des Meldeverzugs
+
+Mithilfe der Funktion `mcs_delay_report` werden die Einsatzdauern (multipler) rechtszensierter Beobachtungen um den Meldeverzug korrigiert. Zur Schätzung des Verzugs wird die Monte-Carlo-Simulation verwendet.
+Der Output der Funktion ist ein Vektor, der die gegebenen Einsatzdauern der Ausfälle sowie die korrigierten Einsatzdauern der zensierten Beobachtungen enthält bzw. eine Liste, die neben diesem Vektor noch weitere Details einschließt (s. Abschnitt "Argumente", `details`).
+
+### Argumente
+
+Die Argumente der Funktion werden folgendermaßen angegeben:
+```r
+mcs_delay_report(date_repair, date_report, x, event,
+                   distribution = "lognormal", seed = NULL,
+                   details = FALSE)
+```
+
+* `date_repair`
+    - ein Vektor der Klasse `"character"` oder `"date"`, der die Reparaturdaten der Einheiten enthält. Falls die Information nicht vorliegt, kann der Eintrag auch `NA` sein.
+
+* `date_report`
+    - ein Vektor der Klasse `"character"` oder `"date"`, der die Meldedaten der Einheiten enthält. Falls die Information nicht vorliegt, kann der Eintrag auch `NA` sein.
+      
+* `x`
+    - ein numerischer Vektor, der die Einsatzdauern enthält
+    
+* `event`
+    - ein binärer Vektor, der wiedergibt, ob die Einheit _i_ eine rechtszensierte Beobachtung (= 0) oder ein Ausfall (= 1) ist
+      
+* `distribution`
+    - angenommene Verteilung der Zufallsvariable. Der Default-Wert ist `"lognormal"`. Da ausschließlich die Lognormal-Verteilung in der Funktion implementiert ist, sollte dieses Argument nicht verändert werden.
+      
+* `seed`
+    - Der Wert von `seed` wird benötigt, um die Berechnung reproduzieren zu können. Wenn `seed = NULL` (Default), wird der Seed zufällig generiert. Andernfalls kann der Benutzer einen beliebigen Integer als `seed` festlegen. 
+
+* `details`
+    - eine logische Variable, deren Default-Wert `FALSE` ist. Wenn `details = FALSE`, ist der Output ein Vektor, der die gegebenen Einsatzdauern der Ausfälle sowie die korrigierten Einsatzdauern der zensierten Beobachtungen enthält. Wenn `details = TRUE`, ist der Output eine Liste, die neben dem zuvor erwähnten Vektor auch die simulierten Verzugszeiten, die geschätzten Verteilungsparameter und den Seed für die Reproduzierbarkeit enthält.
+    
+### Anwendungsbeispiel
+
+Wie im Anwendungsbeispiel zu `mcs_delay_register` wurde hier für jede Einheit der Wert "1000" als Einsatzdauer (`operation_time`) angenommen, um zu veranschaulichen, wo abgeschlossene (`state = 1`) und wo zensierte Beobachtungen (`state = 0`) vorliegen, wo also die Daten vollständig sind und wo die Einsatzdauer geschätzt wird.
+```{r}
+
+library(weibulltools)
+
+# Eingabe der Daten
+
+date_of_repair <- c(NA, "2014-09-15", "2015-07-04", "2015-04-10", NA,
+                    NA, "2015-04-24", NA, "2015-04-25", "2015-04-24", 
+                    "2015-06-12", NA, "2015-05-04", NA, NA, 
+                    "2015-05-22", NA, "2015-09-17", NA, "2015-08-15", 
+                    "2015-11-26", NA, NA)
+
+date_of_report <- c(NA, "2014-10-09", "2015-08-28", "2015-04-15", NA, 
+                    NA, "2015-05-16", NA, "2015-05-28", "2015-05-15", 
+                    "2015-07-11", NA, "2015-08-14", NA, NA, 
+                    "2015-06-05", NA, "2015-10-17", NA, "2015-08-21",
+                    "2015-12-02", NA, NA)
+
+operation_time <- rep(1000, length(date_of_repair))
+
+state <- c(0, 1, 1, 1, 0, 0, 1, 0, 1, 1, 1, 0, 1, 0, 0, 1, 0, 1, 0, 1, 1, 0, 0)
+
+# Beispiel 1: Vereinfachter Output: Vektor
+
+x_corrected <- mcs_delay_report(date_repair = date_of_repair,
+                                date_report = date_of_report,
+                                x = operation_time,
+                                event = state,
+                                distribution = "lognormal",
+                                seed = NULL,
+                                details = FALSE)
+# Ausgabe des Vektors
+
+x_corrected
+
+# Beispiel 2 - Detaillierter Output: Liste
+
+list_detail <- mcs_delay_report(date_repair = date_of_repair,
+                                date_report = date_of_report,
+                                x = operation_time,
+                                event = state,
+                                distribution = "lognormal",
+                                seed = NULL,
+                                details = TRUE)
+
+# Ausgabe der Liste
+
+list_detail
+```
+
+## Korrektur der Einsatzdauer unter gleichzeitiger Berücksichtigung des Zulassungs- und des Meldeverzugs
+
+In der Funktion `mcs_delays` werden die Korrekturfunktionen `mcs_delay_register` und `mcs_delay_report` kombiniert, um gleichzeitig sowohl den Zulassungs- als auch den Meldeverzug der zensierten Beobachtungen abzuschätzen. 
+Der Output der Funktion ist entweder ein Vektor, der die gegebenen Einsatzdauern der Ausfälle sowie die korrigierten Einsatzdauern der zensierten Beobachtungen enthält, oder eine detailliertere Liste (s. Abschnitt "Argumente", `details`).
+
+### Argumente
+
+Die Argumente der Funktion werden folgendermaßen angegeben:
+```r
+mcs_delays(date_prod, date_register, date_repair, date_report, x,
+                       event, distribution = "lognormal", details = FALSE,
+                       seed = NULL)
+```
+
+* `date_prod`
+    - ein Vektor der Klasse `"character"` oder `"date"`, der die Produktionsdaten der Einheiten enthält. Falls die Information nicht vorliegt, kann der Eintrag auch `NA` sein.
+
+* `date_register`
+    - ein Vektor der Klasse `"character"` oder `"date"`, der die Zulassungsdaten der Einheiten enthält. Falls die Information nicht vorliegt, kann der Eintrag auch `NA` sein.
+      
+* `date_repair`
+    - ein Vektor der Klasse `"character"` oder `"date"`, der die Reparaturdaten der Einheiten enthält. Falls die Information nicht vorliegt, kann der Eintrag auch `NA` sein.
+
+* `date_report`
+    - ein Vektor der Klasse `"character"` oder `"date"`, der die Meldedaten der Einheiten enthält. Falls die Information nicht vorliegt, kann der Eintrag auch `NA` sein.
+      
+* `x`
+    - ein numerischer Vektor, der die Einsatzdauern enthält
+    
+* `event`
+    - ein binärer Vektor, der wiedergibt, ob die Einheit _i_ eine rechtszensierte Beobachtung (= 0) oder ein Ausfall (= 1) ist
+      
+* `distribution`
+    - angenommene Verteilung der Zufallsvariable. Der Default-Wert ist `"lognormal"`. Da ausschließlich die Lognormal-Verteilung in der Funktion implementiert ist, sollte dieses Argument nicht verändert werden.
+      
+* `seed`
+    - Der Wert von `seed` wird benötigt, um die Berechnung reproduzieren zu können. Wenn `seed = NULL` (Default), wird der Seed zufällig generiert. Andernfalls kann der Benutzer einen beliebigen Integer als `seed` festlegen. 
+
+* `details`
+    - eine logische Variable, deren Default-Wert `FALSE` ist. Wenn `details = FALSE`, ist der Output ein Vektor, der die gegebenen Einsatzdauern der Ausfälle sowie die korrigierten Einsatzdauern der zensierten Beobachtungen enthält. Wenn `details = TRUE`, ist der Output eine Liste, die neben dem zuvor erwähnten Vektor auch die simulierten Verzugszeiten sowohl für Zulassungs- als auch für Meldeverzug (`x_sim_regist` bzw. `x_sim_report`), die geschätzten Verteilungsparameter für Zulassungs- sowie für Meldeverzug (`coefficients_regist` bzw. `coefficients_report`) und den Seed für die Reproduzierbarkeit enthält.
+
+### Anwendungsbeispiel
+
+Erneut wurde hier wie in den vorangegangenen für jede Einheit der Wert "1000" als Einsatzdauer (`operation_time`) angenommen, um zu veranschaulichen, wo abgeschlossene (`state = 1`) und wo zensierte Beobachtungen (`state = 0`) vorliegen, wo also die Daten vollständig sind und wo die Einsatzdauer geschätzt wird.
+```{r}
+
+library(weibulltools)
+
+# Eingabe der Daten
+
+date_of_production   <- c("2014-07-28", "2014-02-17", "2014-07-14",
+                          "2014-06-26", "2014-03-10", "2014-05-14",
+                          "2014-05-06", "2014-03-07", "2014-03-09",
+                          "2014-04-13", "2014-05-20", "2014-07-07",
+                          "2014-01-27", "2014-01-30", "2014-03-17",
+                          "2014-02-09", "2014-04-14", "2014-04-20",
+                          "2014-03-13", "2014-02-23", "2014-04-03",
+                          "2014-01-08", "2014-01-08")
+
+date_of_registration <- c(NA, "2014-03-29", "2014-12-06", "2014-09-09", 
+                          NA, NA, "2014-06-16", NA, "2014-05-23", 
+                          "2014-05-09", "2014-05-31", NA, "2014-04-13",
+                          NA, NA, "2014-03-12", NA, "2014-06-02", 
+                          NA, "2014-03-21", "2014-06-19", NA, NA)
+
+date_of_repair <- c(NA, "2014-09-15", "2015-07-04", "2015-04-10", NA,
+                    NA, "2015-04-24", NA, "2015-04-25", "2015-04-24", 
+                    "2015-06-12", NA, "2015-05-04", NA, NA, 
+                    "2015-05-22", NA, "2015-09-17", NA, "2015-08-15", 
+                    "2015-11-26", NA, NA)
+
+date_of_report <- c(NA, "2014-10-09", "2015-08-28", "2015-04-15", NA, 
+                    NA, "2015-05-16", NA, "2015-05-28", "2015-05-15", 
+                    "2015-07-11", NA, "2015-08-14", NA, NA, 
+                    "2015-06-05", NA, "2015-10-17", NA, "2015-08-21",
+                    "2015-12-02", NA, NA)
+
+operation_time <- rep(1000, length(date_of_repair))
+
+state <- c(0, 1, 1, 1, 0, 0, 1, 0, 1, 1, 1, 0, 1, 0, 0, 1, 0, 1, 0, 1, 1, 0, 0)
+
+# Beispiel 1: Vereinfachter Output: Vektor
+
+x_corrected <- mcs_delays(date_prod = date_of_production,
+                          date_register = date_of_registration,
+                          date_repair = date_of_repair,
+                          date_report = date_of_report,
+                          x = operation_time,
+                          event = state,
+                          distribution = "lognormal",
+                          seed = 1,
+                          details = FALSE)
+
+# Ausgabe des Vektors
+
+x_corrected
+
+# Beispiel 2 - Detaillierter Output: Liste
+
+list_detail <- mcs_delays(date_prod = date_of_production,
+                                date_register = date_of_registration,
+                                date_repair = date_of_repair,
+                                date_report = date_of_report,
+                                x = operation_time,
+                                event = state,
+                                distribution = "lognormal",
+                                seed = 1,
+                                details = TRUE)
+
+# Ausgabe der Liste
+
+list_detail
+```
+
+## Schätzung der Verteilungsparameter der zurückgelegten Distanz
+
+Die Funktion `dist_mileage` erzeugt als Zufallsvariable die jährlich zurückgelegte Distanz einer Einheit anhand der Einsatzdauer sowie der zurückgelegten Distanz bis zum Ausfall. Danach werden mittels der Maximum-Likelihood-Methode die Parameter der angenommenen Verteilung geschätzt.
+Der Output dieser Funktion ist ein Vektor, der den Mittelwert und die Standardabweichung in dieser Reihenfolge enthält.
+
+### Argumente
+
+Die Argumente der Funktion werden folgendermaßen angegeben:
+```r
+dist_mileage(x, event, mileage, distribution = "lognormal")
+```
+
+* `x`
+    - ein numerischer Vektor, der die Einsatzdauer in Tagen enthält
+    
+* `event`
+    - ein binärer Vektor, der wiedergibt, ob die Einheit _i_ eine rechtszensierte Beobachtung (= 0) oder ein Ausfall (= 1) ist
+
+* `mileage`
+    - ein numerischer Vektor, der die zurückgelegte Distanz der Einheit _i_ enthält
+    
+* `distribution`
+    - angenommene Verteilung der Zufallsvariable. Der Default-Wert ist `"lognormal"`. Da ausschließlich die Lognormal-Verteilung in der Funktion implementiert ist, sollte dieses Argument nicht verändert werden.
+    
+### Anwendungsbeispiel
+
+```{r}
+library(weibulltools)
+
+operation_time <-  c(941.6576, 1000.0000, 1000.0000, 1000.0000,
+                     937.0247,  971.7675, 1000.0000,  807.3986, 
+                     1000.0000, 1000.0000, 1000.0000, 923.6513, 
+                     1000.0000,  954.2913,  888.6182, 1000.0000,  
+                     881.7313, 1000.0000,  897.7527, 1000.0000, 
+                     1000.0000,  916.4026, 830.2082)
+
+mileage <- c(NA, 15655, 13629, 18292, NA, NA, 33555, NA, 21737, 
+             29870, 21068, NA, 122283, NA, NA, 36088, NA, 11153, 
+             NA, 122842, 20349, NA, NA)
+
+state <- c(0, 1, 1, 1, 0, 0, 1, 0, 1, 1, 1, 0, 1, 0, 0, 1, 0, 1, 0, 1, 1, 0, 0)
+
+params_mileage_annual <- dist_mileage(x = operation_time, event = state,
+                                      mileage = mileage,
+                                      distribution = "lognormal")
+
+# Ausgabe der geschätzten Verteilungsparameter der jährlich zurückgelegten Distanz (Mittelwert und Standardabweichung)
+
+params_mileage_annual
+```
+
+## Berechnung der zurückgelegten Distanz zensierter Beobachtungen 
+
+Die Funktion `mcs_mileage` simuliert die zurückgelegte Distanz zensierter Beobachtungen unter der Bedingung, dass die Einsatzdauern dieser Einheiten bis zum Zeitpunkt der Analyse bekannt sind (zur Bestimmung der Einsatzdauern können z.B. die Funktionen `mcs_delay_register`, `mcs_delay_report` oder `mcs_delays` verwendet werden).
+Die vollständigen Daten der ausgefallenen Einheiten werden genutzt, um die Verteilung der jährlich zurückgelegten Distanzen zu schätzen. Mit den Parametern dieser Verteilung können unter Verwendung der Monte-Carlo-Simulation die jährlich zurückgelegte Distanz der zensierten Beobachtung simuliert und anhand der Einsatzdauer ihre tatsächlich zurückgelegte Distanz abgeschätzt werden.
+
+### Argumente
+
+Die Argumente der Funktion werden folgendermaßen angegeben:
+```r
+mcs_mileage(x, event, mileage, distribution = "lognormal",
+                        seed = NULL, details = FALSE)
+```
+
+* `x`
+    - ein numerischer Vektor, der die Einsatzdauer in Tagen enthält
+    
+* `event`
+    - ein binärer Vektor, der wiedergibt, ob die Einheit _i_ eine rechtszensierte Beobachtung (= 0) oder ein Ausfall (= 1) ist
+
+* `mileage`
+    - ein numerischer Vektor, der die zurückgelegte Distanz der Einheit _i_ enthält
+    
+* `distribution`
+    - angenommene Verteilung der Zufallsvariable. Der Default-Wert ist `"lognormal"`. Da ausschließlich die Lognormal-Verteilung in der Funktion implementiert ist, sollte dieses Argument nicht verändert werden.
+    
+* `seed`
+    - Der Wert von `seed` wird benötigt, um die Berechnung reproduzieren zu können. Wenn `seed = NULL` (Default), wird der Seed zufällig generiert. Andernfalls kann der Benutzer einen beliebigen Integer als `seed` festlegen.
+    
+* `details`
+    - eine logische Variable, deren Default-Wert `FALSE` ist. Wenn `details = FALSE`, ist der Output ein Vektor, der die gegebenen bzw. simulierten zurückgelegten Distanzen aller Einheiten enthält. Wenn `details = TRUE`, ist der Output eine Liste, die neben dem zuvor erwähnten Vektor auch die simulierten jährlich zurückgelegten Distanzen, die geschätzten Verteilungsparameter und den Seed für die Reproduzierbarkeit enthält.
+
+### Anwendungsbeispiel
+
+```{r}
+library(weibulltools)
+
+operation_time <-  c(941.6576, 1000.0000, 1000.0000, 1000.0000,
+                     937.0247,  971.7675, 1000.0000,  807.3986, 
+                     1000.0000, 1000.0000, 1000.0000, 923.6513, 
+                     1000.0000,  954.2913,  888.6182, 1000.0000,  
+                     881.7313, 1000.0000,  897.7527, 1000.0000, 
+                     1000.0000,  916.4026, 830.2082)
+
+mileage <- c(NA, 15655, 13629, 18292, NA, NA, 33555, NA, 21737, 
+             29870, 21068, NA, 122283, NA, NA, 36088, NA, 11153, 
+             NA, 122842, 20349, NA, NA)
+
+state <- c(0, 1, 1, 1, 0, 0, 1, 0, 1, 1, 1, 0, 1, 0, 0, 1, 0, 1, 0, 1, 1, 0, 0)
+
+
+# Beispiel 1: Vereinfachter Output: Vektor
+
+mileage_corrected <- mcs_mileage(x = operation_time, event = state,
+                                 mileage = mileage,
+                                 distribution = "lognormal", 
+                                 seed = NULL,
+                                 details = FALSE)
+
+# Beispiel 2 - Detaillierter Output: Liste
+
+list_detail <- mcs_mileage(x = operation_time, event = state, 
+                           mileage = mileage,
+                           distribution = "lognormal", 
+                           seed = NULL,
+                           details = TRUE)

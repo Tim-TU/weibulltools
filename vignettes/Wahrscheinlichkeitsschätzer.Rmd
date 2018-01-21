@@ -1,0 +1,187 @@
+---
+title: "Wahrscheinlichkeitsschätzer"
+output:
+  pdf_document: default
+  word_document: default
+---
+
+```{r setup, include=FALSE, cache=FALSE}
+knitr::opts_chunk$set(echo = TRUE, error = TRUE)
+```
+## Schätzung von Ausfallwahrscheinlichkeiten mittels der Median-Rang-Methode (ohne Anwärter)
+
+Testet man alle Einheiten _n_ einer Stichprobe bis zu ihrem Aufall, kann man die Lebensdauer jeder Einheit genau bestimmen. Die Lebensdauer kann in diesem Fall zum Beispiel die Zeit bis zum Ausfall, die zurückgelegte Distanz oder die Anzahl der Lastzyklen sein.  
+Ordnet man nun die Einheiten aufsteigend nach ihrer Lebensdauer, kann jeder ein ganzzahliger Rang _i_ zugeordnet werden. Anhand des Rangs kann dann die Ausfallwahrscheinlichkeit der jeweiligen Einheit geschätzt werden.  
+Dafür sind zwei Methoden implementiert:
+
+- `"benard"`
+
+    Approximation der Ausfallwahrscheinlichkeit anhand der Median-Ränge nach Benard
+    
+    Die Formel dafür lautet
+    $$P_A = \frac{i - 0.3} {n + 0.4} .$$
+- `"invbeta"`
+
+     Exakte Berechnung der Ausfallwahrscheinlichkeit anhand der Median-Ränge mittels der inversen Beta-Verteilung
+     
+     Die Berechnung erfolgt mit  
+     
+     `P_A = qbeta(p = 0.5, shape1 = i, shape2 = n - i + 1)`.
+
+Der Output der Funktion `mr_method` ist ein Dataframe, der die ID, das Lebensdauermerkmal, den Status, den Rang und die Ausfallwahrscheinlichkeit der ausgefallenen Einheiten enthält.
+
+### Argumente
+
+Die Argumente der Funktion werden folgendermaßen angegeben:
+
+```
+mr_method(x, event = rep(1, length(x)),
+                      id = rep("XXXXXX", length(x)),
+                      method = "benard")
+```
+
+* `x`
+    - ein numerischer Vektor, der die Lebensdauern enthält. Die Lebensdauer kann zum Beispiel als Zeit bis zum Ausfall, zurückgelegte Distanz oder Anzahl der Lastzyklen angegeben werden.
+    
+* `event`
+    - ein Vektor, der ausschließlich Einsen enthält, um zu indizieren, dass jede Einheit ausgefallen ist. Dieser Vektor muss nicht extra angegeben werden.  
+    Falls der Vektor auf zensierte Beobachtungen hinweist (also Nullen enthält), muss eine andere Funktion, z.B. die Methode nach Johnson (`johnson_method`), verwendet werden.
+
+* `id`
+    - ein Vektor, der die ID jeder Einheit als Character enthält. Falls kein Identifikationscode angegeben wird, erhält jede Einheit die ID "XXXXXX".
+
+* `method`
+    - Die Methode, mit der die Ausfallwahrscheinlichkeit berechnet werden soll, kann entweder `"benard"` oder `"invbeta"` sein. Falls keine Methode angegeben wird, wird `"benard"` angenommen.
+
+
+### Anwendungsbeispiel
+
+```{r}
+library(weibulltools)
+
+obs   <- seq(10000, 100000, 10000)
+
+state <- rep(1, length(obs))
+
+uic   <- c("3435", "1203", "958X", "XX71", "abcd", "tz46",
+           "fl29", "AX23", "Uy12", "kl1a")
+
+# Beispiel 1
+
+df_mr_benard <- mr_method(x = obs, event = state, id = uic,
+                   method = "benard")
+
+  # Ausgabe des Dataframes
+
+df_mr_benard
+
+# Beispiel 2
+
+df_mr_invbeta <- mr_method(x = obs, event = state, id = uic,
+                           method = "invbeta")
+  # Ausgabe des Dataframes
+
+df_mr_invbeta
+
+# Beispiel 3
+
+state_cens <- c(0, 1, 1, 0, 0, 0, 1, 0, 1, 0)
+
+  # Werden zensierte Daten in die Funktion eingegeben, wird eine Fehlermeldung erzeugt.
+
+df_mr_cens <- mr_method(x = obs_cens, event = state_cens, method = "benard")
+
+```
+## Berechnung der Johnson-Ränge
+
+Die Funktion `calculate_ranks` wird benutzt, um die Ränge zu adjustieren, wenn neben Ausfällen auch zensierte Beobachtungen vorkommen, und damit die Ausfallwahrscheinlichkeiten der Ausfälle schätzen zu können.  
+Der Output der Funktion ist ein Vektor, der die Johnson-Ränge enthält.
+
+### Argumente 
+
+Die Argumente der Funktion müssen folgendermaßen angegeben werden:
+
+```
+calculate_ranks(f, n_out, n)
+```
+
+* `f`
+    - ein numerischer Vektor, der die Anzahl der Ausfälle bei einer bestimmten Lebensdauer angibt
+    
+* `n_out`
+    - ein numerischer Vektor, der die Summe aller Ausfälle und zensierten Beobachtungen angibt, die eine geringere Lebensdauer haben als Einheit _i_
+
+* `n`
+    - ein Integer, der die Stichprobengröße angibt
+    
+### Anwendungsbeispiel
+
+```{r}
+
+defectives <- c(0, 1, 2, 0, 0, 0, 3, 0, 2, 0)
+
+n_out <- c(0, 2, 4, 8, 9, 11, 12, 16, 20, 22)
+
+n <- 23
+
+johnson_ranks <- calculate_ranks(f = defectives, n_out = n_out, n = n)
+
+# Ausgabe der Ränge als Vektor
+
+johnson_ranks
+```
+
+
+## Schätzung von Ausfallwahrscheinlichkeiten mittels der Methode nach Johnson (mit Anwärtern)
+
+Diese nicht-parametrische Approximation wird benutzt, um Ausfallwahrscheinlichkeiten zu schätzen, wenn rechtszensierte Daten vorliegen.
+Im Gegensatz zu Fällen, in denen ausschließlich ausgefallene Einheiten auftreten, müssen hier die Ränge angepasst werden, um auch die Ausfallwahrscheinlichkeiten der zensierten Beobachtungen schätzen zu können.  
+Um die Ränge zu berechnen, wird innerhalb der Funktion `johnson_method` die Funktion `calculate_ranks` benutzt.  
+Der Output der Funktion ist ein Dataframe, der die ID, das Lebensdauermerkmal und den Status aller Einheiten sowie den adjustierten Rang und die geschätzte Ausfallwahrscheinlichkeit der Ausfälle enthält. Rang und Ausfallwahrscheinlichkeit werden bei zensierten Beobachtungen mit `NA` angegeben.
+
+### Argumente
+
+Die Argumente der Funktion werden folgendermaßen angegeben:
+
+```
+johnson_method(x, event, id = rep("XXXXXX", length(x)))
+```
+
+* `x`
+    - ein numerischer Vektor, der die Lebensdauern enthält. Die Lebensdauer kann zum Beispiel als Zeit bis zum Ausfall, zurückgelegte Distanz oder Anzahl der Lastzyklen angegeben werden.
+    
+* `event`
+    - ein binärer Vektor, der angibt, ob die Einheit eine rechtszensierte Beobachtung (= 0) oder ein Ausfall (= 1) ist. Falls ausschließlich Ausfälle vorliegen, sollte die Median-Rang-Methode (`mr_method`) verwendet werden.
+    
+* `id`
+    - ein Vektor, der die ID jeder Einheit als Character enthält. Falls kein Identifikationscode angegeben wird, erhält jede Einheit die ID "XXXXXX".
+    
+### Anwendungsbeispiel
+
+```{r}
+
+library(weibulltools)
+
+obs   <- seq(10000, 100000, 10000)
+
+state <- c(0, 1, 1, 0, 0, 0, 1, 0, 1, 0)
+
+uic   <- c("3435", "1203", "958X", "XX71", "abcd", "tz46",
+           "fl29", "AX23", "Uy12", "kl1a")
+
+# Beispiel 1
+
+df_john <- johnson_method(x = obs, event = state, id = uic)
+
+  # Ausgabe des Dataframes
+
+df_john
+
+# Beispiel 2
+
+state_fail <- c(1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
+
+  # Ausgabe einer Warnung, da ausschließlich Ausfälle vorliegen
+
+df_john_fail <- johnson_method(x = obs, event = state_fail, id = uic)
+```
