@@ -161,18 +161,21 @@ mcs_delay_register <- function(date_prod, date_register, x, event,
 
   # Number of Monte Carlo simulated random numbers, i.e. number of censored
   # data.
-  n_rand <- sum(event == 0)
+  n_rand <- sum(is.na(date_register))
 
   if (!complete.cases(date_prod) || !complete.cases(date_register)) {
-    date_prod <- date_prod[(complete.cases(date_prod) &
+    prod_date <- date_prod[(complete.cases(date_prod) &
                             complete.cases(date_register))]
-    date_register <- date_register[(complete.cases(date_prod) &
+    register_date <- date_register[(complete.cases(date_prod) &
                                     complete.cases(date_register))]
+  } else {
+    prod_date <- date_prod
+    register_date <- date_register
   }
 
   if (distribution == "lognormal") {
-    params <- dist_delay_register(date_prod = date_prod,
-                                  date_register = date_register,
+    params <- dist_delay_register(date_prod = prod_date,
+                                  date_register = register_date,
                                   distribution = "lognormal")
 
     x_sim <- rlnorm(n = n_rand, meanlog = params[[1]], sdlog = params[[2]])
@@ -180,7 +183,7 @@ mcs_delay_register <- function(date_prod, date_register, x, event,
     stop("No valid distribution!")
   }
 
-  x[event == 0] <- x[event == 0] - x_sim
+  x[is.na(date_register)] <- x[is.na(date_register)] - x_sim
 
   if (details == FALSE) {
     output <- x
@@ -350,15 +353,18 @@ mcs_delay_report <- function(date_repair, date_report, x, event,
   n_rand <- sum(event == 0)
 
   if (!complete.cases(date_repair) || !complete.cases(date_report)) {
-    date_repair <- date_repair[(complete.cases(date_repair) &
+    repair_date <- date_repair[(complete.cases(date_repair) &
                                 complete.cases(date_report))]
-    date_report <- date_report[(complete.cases(date_repair) &
+    report_date <- date_report[(complete.cases(date_repair) &
                                 complete.cases(date_report))]
+  } else {
+    repair_date <- date_repair
+    report_date <- date_report
   }
 
   if (distribution == "lognormal") {
-    params <- dist_delay_report(date_repair = date_repair,
-                                date_report = date_report,
+    params <- dist_delay_report(date_repair = repair_date,
+                                date_report = report_date,
                                 distribution = "lognormal")
 
     x_sim <- rlnorm(n = n_rand, meanlog = params[[1]], sdlog = params[[2]])
@@ -498,28 +504,35 @@ mcs_delays <- function(date_prod, date_register, date_repair, date_report, x,
 
   # Number of Monte Carlo simulated random numbers, i.e. number of censored
   # data.
-  n_rand <- sum(event == 0)
+  n_rand_regist <- sum(is.na(date_register))
+  n_rand_report <- sum(event == 0)
 
   if (!complete.cases(date_prod) || !complete.cases(date_register)) {
-    date_prod <- date_prod[(complete.cases(date_prod) &
+    prod_date <- date_prod[(complete.cases(date_prod) &
         complete.cases(date_register))]
-    date_register <- date_register[(complete.cases(date_prod) &
+    register_date <- date_register[(complete.cases(date_prod) &
         complete.cases(date_register))]
+  } else {
+    prod_date <- date_prod
+    register_date <- date_register
   }
 
   if (!complete.cases(date_repair) || !complete.cases(date_report)) {
-    date_repair <- date_repair[(complete.cases(date_repair) &
+    repair_date <- date_repair[(complete.cases(date_repair) &
         complete.cases(date_report))]
-    date_report <- date_report[(complete.cases(date_repair) &
+    report_date <- date_report[(complete.cases(date_repair) &
         complete.cases(date_report))]
+  } else {
+    repair_date <- date_repair
+    report_date <- date_report
   }
 
   if (distribution == "lognormal") {
-    params_regist <- dist_delay_register(date_prod = date_prod,
-                                         date_register = date_register,
+    params_regist <- dist_delay_register(date_prod = prod_date,
+                                         date_register = register_date,
                                          distribution = "lognormal")
-    params_report <- dist_delay_report(date_repair = date_repair,
-                                       date_report = date_report,
+    params_report <- dist_delay_report(date_repair = repair_date,
+                                       date_report = report_date,
                                        distribution = "lognormal")
 
     x_sim_regist <- rlnorm(n = n_rand, meanlog = params_regist[[1]],
@@ -530,7 +543,8 @@ mcs_delays <- function(date_prod, date_register, date_repair, date_report, x,
     stop("No valid distribution!")
   }
 
-  x[event == 0] <- x[event == 0] - (x_sim_regist + x_sim_report)
+  x[is.na(date_register)] <- x[is.na(date_register)] - x_sim_regist
+  x[event == 0] <- x[event == 0] - x_sim_report
 
   if (details == FALSE) {
     output <- x
