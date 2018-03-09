@@ -3,7 +3,7 @@
 #' This method uses piecewise linear regression to separate the data in
 #' subgroups, if appropriate. Since this happens in an automated fashion
 #' the function tends to overestimate the number of breakpoints and
-#' therefore returns to many subgroups. This problem is already stated in
+#' therefore returns too many subgroups. This problem is already stated in
 #' the documentation of the function \link{segmented.lm}, which is part of
 #' the \emph{segmented} package.
 #'
@@ -22,7 +22,7 @@
 #'   \code{conf_level = 0.95}
 #'
 #' @return Returns a list where the length of the list depends on
-#'   the number of identified subgroups. Each list contain the same
+#'   the number of identified subgroups. Each list contains the same
 #'   information as supplied by \link{rank_regression}.
 #' @export
 #'
@@ -40,7 +40,8 @@
 #'
 #' mix_mod <- mixmod_regression(x = john$characteristic,
 #'                              y = john$prob,
-#'                              event = john$status)
+#'                              event = john$status,
+#'                              distribution = "weibull")
 #'
 mixmod_regression <- function(x, y, event, distribution = c("weibull", "lognormal", "loglogistic"),
                               conf_level = .95) {
@@ -48,11 +49,11 @@ mixmod_regression <- function(x, y, event, distribution = c("weibull", "lognorma
   y_f <- y[event == 1]
 
   if (distribution == "weibull") {
-    mrr <- lm(log(x_f) ~ SPREDA::qsev(y_f))
+    mrr <- stats::lm(log(x_f) ~ SPREDA::qsev(y_f))
   } else if (distribution == "lognormal") {
-    mrr <- lm(log(x_f) ~ stats::qnorm(y_f))
+    mrr <- stats::lm(log(x_f) ~ stats::qnorm(y_f))
   } else if (distribution == "loglogistic") {
-    mrr <- lm(log(x_f) ~ stats::qlogis(y_f))
+    mrr <- stats::lm(log(x_f) ~ stats::qlogis(y_f))
   } else {
     stop("No valid distribution")
   }
@@ -108,11 +109,11 @@ mixmod_regression <- function(x, y, event, distribution = c("weibull", "lognorma
       mrr_23$x_range <- range(x_rest)
 
       if (distribution == "weibull") {
-        mrr2 <- lm(log(x_rest) ~ SPREDA::qsev(y_rest))
+        mrr2 <- stats::lm(log(x_rest) ~ SPREDA::qsev(y_rest))
       } else if (distribution == "lognormal") {
-        mrr2 <- lm(log(x_rest) ~ stats::qnorm(y_rest))
+        mrr2 <- stats::lm(log(x_rest) ~ stats::qnorm(y_rest))
       } else if (distribution == "loglogistic") {
-        mrr2 <- lm(log(x_rest) ~ stats::qlogis(y_rest))
+        mrr2 <- stats::lm(log(x_rest) ~ stats::qlogis(y_rest))
       }
       seg_mrr2 <- try(segmented::segmented.lm(mrr2, control = segmented::seg.control(it.max = 20,
                                                                                      n.boot = 20)),
@@ -175,36 +176,36 @@ mixmod_regression <- function(x, y, event, distribution = c("weibull", "lognorma
 
         mean_r_sq <- mean(c(r_sq1, r_sq2, r_sq3))
 
-        print(r_sq0)
-        print(r_sq1)
-        print(r_sq2)
-        print(r_sq3)
-        print(r_sq12)
-        print(r_sq23)
-        print(mean(c(r_sq1, r_sq23)))
-        print(mean(c(r_sq12, r_sq3)))
-        print(mean_r_sq)
+        # print(r_sq0)
+        # print(r_sq1)
+        # print(r_sq2)
+        # print(r_sq3)
+        # print(r_sq12)
+        # print(r_sq23)
+        # print(mean(c(r_sq1, r_sq23)))
+        # print(mean(c(r_sq12, r_sq3)))
+        # print(mean_r_sq)
 
 
         if (mean_r_sq < r_sq0 | mean_r_sq < mean(c(r_sq1, r_sq23)) | mean_r_sq < mean(c(r_sq12, r_sq3))) {
 
-          print("mean_r_sq nicht am größten")
+          # print("mean_r_sq nicht am größten")
 
           if (mean(c(r_sq1, r_sq23)) > r_sq0 && mean(c(r_sq1, r_sq23)) > mean(c(r_sq12, r_sq3))) {
 
-            print("2 statt 3 Segmenten: 1 und 23")
+            # print("2 statt 3 Segmenten: 1 und 23")
 
             mrr_output <- list(mod_1 = mrr_1, mod_2 = mrr_23)
 
           } else if (mean(c(r_sq12, r_sq3)) > r_sq0) {
 
-            print("2 statt 3 Segmenten: 12 und 3")
+            # print("2 statt 3 Segmenten: 12 und 3")
 
             mrr_output <- list(mod_1 = mrr_12, mod_2 = mrr_3)
 
           } else {
 
-            print("lineare Regression")
+            # print("lineare Regression")
 
             mrr_output <- mrr_0
             }
@@ -212,8 +213,7 @@ mixmod_regression <- function(x, y, event, distribution = c("weibull", "lognorma
         } else{
 
           mrr_output <- list(mod_1 = mrr_1, mod_2 = mrr_2, mod_3 = mrr_3)
-          message("Problem of overestimation may have occured. Further
-                  investigations are recommended!")
+          message("Problem of overestimation may have occured. Further investigations are recommended!")
         }
       }
     }

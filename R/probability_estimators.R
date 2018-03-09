@@ -158,6 +158,8 @@ kaplan_method <- function(x, event, id = rep("XXXXXX", length(x))) {
 #'   cycles.
 #' @param event a vector of ones indicating that every unit \emph{i} has failed.
 #' @param id a character vector for the identification of every unit.
+#' @param method method for the estimation of the cdf. Can be "benard" (default)
+#' or "invbeta".
 #'
 #' @return A data frame containing id, lifetime characteristic, status of the
 #'   unit, the rank and the estimated failure probabilty.
@@ -176,12 +178,6 @@ kaplan_method <- function(x, event, id = rep("XXXXXX", length(x))) {
 #' # Example 2
 #' df_mr_invbeta <- mr_method(x = obs, event = state, id = uic,
 #'                            method = "invbeta")
-#'
-#' # Example 3
-#' obs_cens   <- seq(10000, 100000, 10000)
-#' state_cens <- c(0, 1, 1, 0, 0, 0, 1, 0, 1, 0)
-#'
-#' df_mr_cens <- mr_method(x = obs_cens, event = state_cens, method = "benard")
 
 mr_method <- function(x, event = rep(1, length(x)),
                       id = rep("XXXXXX", length(x)),
@@ -196,7 +192,7 @@ mr_method <- function(x, event = rep(1, length(x)),
   if (method == "benard") {
     df <- dplyr::mutate(df, prob = (rank - .3) / (length(x) + .4))
   } else {
-    df <- dplyr::mutate(df, prob = qbeta(.5, rank, length(x) - rank + 1))
+    df <- dplyr::mutate(df, prob = stats::qbeta(.5, rank, length(x) - rank + 1))
   }
 
   event <- event[order(x)]

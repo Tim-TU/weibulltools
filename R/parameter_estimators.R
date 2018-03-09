@@ -29,6 +29,11 @@
 #'   value can be \code{"weibull"}, \code{"lognormal"} or \code{"loglogistic"}.
 #' @param conf_level confidence level of the interval. The default value is
 #'   \code{conf_level = 0.95}
+#' @param details a logical variable, where the default value is \code{TRUE}.
+#'   If \code{FALSE} the output consists of a list that only contains the
+#'   distribution coefficients. If \code{TRUE} the output is a detailed list
+#'   that contains the distribution coefficients, their confidence intervals
+#'   and the r squared value of the regression model.
 #'
 #' @return Returns a list with the following components:
 #'   \itemize{
@@ -47,7 +52,7 @@
 #' mrr <- rank_regression(x = df_john$characteristic,
 #'                        y = df_john$prob,
 #'                        event = df_john$status,
-#'                        distribution = weibull,
+#'                        distribution = "weibull",
 #'                        conf_level = .90)
 
 rank_regression <- function(x, y, event, distribution = c("weibull", "lognormal", "loglogistic"),
@@ -56,11 +61,11 @@ rank_regression <- function(x, y, event, distribution = c("weibull", "lognormal"
   y_f <- y[event == 1]
 
   if (distribution == "weibull") {
-    mrr <- lm(log(x_f) ~ SPREDA::qsev(y_f))
-    estimates_loc_sc <- c(coef(mrr)[[1]], coef(mrr)[[2]])
+    mrr <- stats::lm(log(x_f) ~ SPREDA::qsev(y_f))
+    estimates_loc_sc <- c(stats::coef(mrr)[[1]], stats::coef(mrr)[[2]])
     names(estimates_loc_sc) <- c("mu", "sigma")
 
-    estimates <- c(exp(coef(mrr)[[1]]), 1 / coef(mrr)[[2]])
+    estimates <- c(exp(stats::coef(mrr)[[1]]), 1 / stats::coef(mrr)[[2]])
     names(estimates) <- c("eta", "beta")
 
     if (conf_level == 0.95) {
@@ -77,9 +82,9 @@ rank_regression <- function(x, y, event, distribution = c("weibull", "lognormal"
                    estimates[[2]] * (1 + sqrt(mock_val / length(x_f))))
 
     conf_eta <- c(
-      estimates[[1]] * (2 * length(x_f) / qchisq(p = (1 + conf_level) / 2,
+      estimates[[1]] * (2 * length(x_f) / stats::qchisq(p = (1 + conf_level) / 2,
                                                  df = 2 * length(x_f))) ^ (1 / estimates[[2]]),
-      estimates[[1]] * (2 * length(x_f) / qchisq(p = (1 - conf_level) / 2,
+      estimates[[1]] * (2 * length(x_f) / stats::qchisq(p = (1 - conf_level) / 2,
                                                  df = 2 * length(x_f))) ^ (1 / estimates[[2]])
     )
 
@@ -105,24 +110,24 @@ rank_regression <- function(x, y, event, distribution = c("weibull", "lognormal"
     }
   } else {
     if (distribution == "lognormal") {
-      mrr <- lm(log(x_f) ~ stats::qnorm(y_f))
+      mrr <- stats::lm(log(x_f) ~ stats::qnorm(y_f))
     } else if (distribution =="loglogistic") {
-      mrr <- lm(log(x_f) ~ stats::qlogis(y_f))
+      mrr <- stats::lm(log(x_f) ~ stats::qlogis(y_f))
     } else {
       stop("No valid distribution!")
     }
-    estimates_loc_sc <- c(coef(mrr)[[1]], coef(mrr)[[2]])
+    estimates_loc_sc <- c(stats::coef(mrr)[[1]], stats::coef(mrr)[[2]])
     names(estimates_loc_sc) <- c("mu", "sigma")
 
     vcov <- sandwich::vcovHC(x = mrr, type = "HC1") #Änderungen
     se <- sqrt(diag(vcov))
     conf_mu <- c(
-      estimates_loc_sc[[1]] + qt((1 + conf_level) / 2, df = length(x_f) - 2) * se[[1]] / sqrt(length(x_f)),
-      estimates_loc_sc[[1]] - qt((1 + conf_level) / 2, df = length(x_f) - 2) * se[[1]] / sqrt(length(x_f)))
+      estimates_loc_sc[[1]] + stats::qt((1 + conf_level) / 2, df = length(x_f) - 2) * se[[1]] / sqrt(length(x_f)),
+      estimates_loc_sc[[1]] - stats::qt((1 + conf_level) / 2, df = length(x_f) - 2) * se[[1]] / sqrt(length(x_f)))
 
     conf_sig <- c(
-      estimates_loc_sc[[2]] + qt((1 + conf_level) / 2, df = length(x_f) - 2) * se[[2]] / sqrt(length(x_f)),
-      estimates_loc_sc[[2]] - qt((1 + conf_level) / 2, df = length(x_f) - 2) * se[[2]] / sqrt(length(x_f)))
+      estimates_loc_sc[[2]] + stats::qt((1 + conf_level) / 2, df = length(x_f) - 2) * se[[2]] / sqrt(length(x_f)),
+      estimates_loc_sc[[2]] - stats::qt((1 + conf_level) / 2, df = length(x_f) - 2) * se[[2]] / sqrt(length(x_f)))
 
     conf_ints_loc_sc <- matrix(c(conf_mu, conf_sig), byrow = TRUE,
                                ncol = 2)
@@ -165,6 +170,11 @@ rank_regression <- function(x, y, event, distribution = c("weibull", "lognormal"
 #'   value is \code{"weibull"}.
 #' @param conf_level confidence level of the interval. The default value is
 #'   \code{conf_level = 0.95}
+#' @param details a logical variable, where the default value is \code{TRUE}.
+#'   If \code{FALSE} the output consists of a list that only contains the
+#'   distribution coefficients. If \code{TRUE} the output is a detailed list
+#'   that contains the distribution coefficients, their confidence intervals
+#'   and the log-likelihood value.
 #'
 #' @return Returns a list with the following components:
 #'   \itemize{
@@ -199,11 +209,11 @@ ml_estimation <- function(x, event, distribution = c("weibull", "lognormal", "lo
     se_loc_sc <- sqrt(diag(vcov_loc_sc))
 
     conf_mu <- c(
-      estimates_loc_sc[[1]] + qnorm((1 - conf_level) / 2) * se_loc_sc[[1]],
-      estimates_loc_sc[[1]] + qnorm((1 + conf_level) / 2) * se_loc_sc[[1]])
+      estimates_loc_sc[[1]] + stats::qnorm((1 - conf_level) / 2) * se_loc_sc[[1]],
+      estimates_loc_sc[[1]] + stats::qnorm((1 + conf_level) / 2) * se_loc_sc[[1]])
 
     w <- exp(
-      (qnorm((1 + conf_level) / 2) * se_loc_sc[[2]]) / estimates_loc_sc[[2]]
+      (stats::qnorm((1 + conf_level) / 2) * se_loc_sc[[2]]) / estimates_loc_sc[[2]]
     )
     conf_sig <- c(estimates_loc_sc[[2]] /  w, estimates_loc_sc[[2]] * w)
 

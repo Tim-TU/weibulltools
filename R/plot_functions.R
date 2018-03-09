@@ -209,35 +209,35 @@ plot_prob <- function(x, y, event, mrr_output = NULL, id = rep("XXXXXX", length(
     subset(x, x >= mrr_model$x_range[[1]] & x <= mrr_model$x_range[[2]])
   }
 
-  group_df <- data.frame(x = x)
+  x_s <- x[event == 1]
+  y_s <- y[event == 1]
+  x_s <- x_s[order(x_s)]
+  y_s <- y_s[order(x_s)]
+
+  group_df <- data.frame(x_s = x_s)
 
   if(!is.null(mrr_output)) {
     if(exists("mod_3", where = mrr_output)) {
 
-      x_1 <- subset_x(x = x, mrr_model = mrr_output$mod_1)
-      x_2 <- subset_x(x = x, mrr_model = mrr_output$mod_2)
-      x_3 <- subset_x(x = x, mrr_model = mrr_output$mod_3)
+      x_1 <- subset_x(x = x_s, mrr_model = mrr_output$mod_1)
+      x_2 <- subset_x(x = x_s, mrr_model = mrr_output$mod_2)
+      x_3 <- subset_x(x = x_s, mrr_model = mrr_output$mod_3)
 
-      group_df$groups = as.factor(c(rep("x_1", length(x_1)), rep("x_2", length(x_2)), rep("x_3", length(x_3))))
+      group_df$groups = as.factor(c(rep("Gruppe 1", length(x_1)), rep("Gruppe 2", length(x_2)), rep("Gruppe 3", length(x_3))))
 
     } else if(exists("mod_2", where = mrr_output)) {
 
-      x_1 <- subset_x(x = x, mrr_model = mrr_output$mod_1)
-      x_2 <- subset_x(x = x, mrr_model = mrr_output$mod_2)
+      x_1 <- subset_x(x = x_s, mrr_model = mrr_output$mod_1)
+      x_2 <- subset_x(x = x_s, mrr_model = mrr_output$mod_2)
 
-      group_df$groups = as.factor(c(rep("x_1", length(x_1)), rep("x_2", length(x_2))))
+      group_df$groups = as.factor(c(rep("Gruppe 1", length(x_1)), rep("Gruppe 2", length(x_2))))
 
-    } else  group_df$groups = as.factor(c(rep("x_1", length(x))))
-  } else  group_df$groups = as.factor(c(rep("x_1", length(x))))
+    } else  group_df$groups = as.factor(c(rep("Gruppe 1", length(x_s))))
+  } else  group_df$groups = as.factor(c(rep("Gruppe 1", length(x_s))))
 
   options(warn = -1)
 
-  x_s <- x[event == 1]
-  y_s <- y[event == 1]
-  x_s <- x[order(x)]
-  y_s <- y[order(x)]
-
-  p <- plot_layout(x = x, distribution = distribution,
+  p <- plot_layout(x = x_s, distribution = distribution,
                    title_main = title_main,
                    title_x = title_x,
                    title_y = title_y)
@@ -255,9 +255,9 @@ plot_prob <- function(x, y, event, mrr_output = NULL, id = rep("XXXXXX", length(
   plot <- p %>% plotly::add_trace(x = ~x_s, y = ~q, type = "scatter",
                                   mode = "markers", hoverinfo = "text",
                                   color = ~group_df$groups,
-                                  colors = c(x_1 = "blue", x_2 = "red", x_3 = "green"),
+                                  colors = c("Gruppe 1" = "blue", "Gruppe 2" = "red", "Gruppe 3" = "green"),
                                   name = title_trace,
-                                  text = ~paste("ID:", id,
+                                  text = ~paste("ID:", id[event == 1],
                                                 paste("<br>", paste0(mark_x, ":")), x_s,
                                                 paste("<br>", paste0(title_y, ":")), round(y_s, digits = 4))
   )
@@ -270,7 +270,7 @@ plot_prob <- function(x, y, event, mrr_output = NULL, id = rep("XXXXXX", length(
 #' This function is used to add one or multiple estimated regression lines to an existing probability plot using the
 #' regression models calculated by \code{\link{rank_regression}} or \code{\link{mixmod_regression}}.
 #'
-#' @param p_obj a plotly object provided by function \code{\link{plot_prob2}}
+#' @param p_obj a plotly object provided by function \code{\link{plot_prob}}
 #' @param x a numeric vector containing the x-coordinates of the Regression line.
 #' @param y a numeric vector containing the y-coordinates of the Regression line.
 #'  The default value of y is \code{NULL}. If \code{y} is set \code{NULL} the y-coordinates
@@ -330,9 +330,9 @@ plot_mod <- function(p_obj, x, y = NULL, mrr_output,
     }
   }
 
-  plot_mod_groups <- function(p_obj, x, y = y, loc_sc_params, color) {
+  plot_mod_groups <- function(p_obj, x, y. = y, loc_sc_params, color, title_trace.) {
 
-    if (is.null(y)) {
+    if (is.null(y.)) {
       x_min <- min(x, na.rm = TRUE)
       x_max <- max(x, na.rm = TRUE)
       x_low <- x_min - 10 ^ floor(log10(x_min)) * .5
@@ -343,7 +343,7 @@ plot_mod <- function(p_obj, x, y = NULL, mrr_output,
                           distribution = distribution)
     } else {
       x_p <- x
-      y_p <- y
+      y_p <- y.
     }
 
     df_p <- data.frame(x_p = x_p, y_p = y_p)
@@ -354,17 +354,17 @@ plot_mod <- function(p_obj, x, y = NULL, mrr_output,
                               " "))[1]
 
     if (distribution == "weibull") {
-      q = SPREDA::qsev(y_s)
+      q = SPREDA::qsev(y_p)
     } else if (distribution == "lognormal") {
-      q = stats::qnorm(y_s)
+      q = stats::qnorm(y_p)
     } else if (distribution == "loglogistic") {
-      q = stats::qlogis(y_s)
+      q = stats::qlogis(y_p)
     }
 
     p_mod <- plotly::add_lines(
       p = p_obj, data = df_p, x = ~x_p, y = ~q,
       type = "scatter", mode = "lines", hoverinfo = "text", line = list(color = color),
-      name = title_trace,
+      name = title_trace.,
       text = ~paste(paste0(x_mark, ":"), round(x_p, digits = 2),
                     paste("<br>", paste0(y_mark, ":")), round(y_p, digits = 4),
                     "<br> \u03B7:", round(exp(loc_sc_params[[1]]), digits = 2),
@@ -376,15 +376,15 @@ plot_mod <- function(p_obj, x, y = NULL, mrr_output,
 
   if(exists("mod_2", where = mrr_output)) {
 
-    plot <- p_obj %>% plot_mod_groups(x = x_1,loc_sc_params = mrr_output$mod_1$loc_sc_coefficients, color = "blue") %>%
-      plot_mod_groups(x = x_2, loc_sc_params = mrr_output$mod_2$loc_sc_coefficients, color = "red")
+    plot <- p_obj %>% plot_mod_groups(x = x_1,loc_sc_params = mrr_output$mod_1$loc_sc_coefficients, color = "blue", title_trace = paste(title_trace, "1", sep = " ")) %>%
+      plot_mod_groups(x = x_2, loc_sc_params = mrr_output$mod_2$loc_sc_coefficients, color = "red", title_trace. = paste(title_trace, "2", sep = " "))
 
     if(exists("mod_3", where = mrr_output)) {
 
-      plot <- plot_mod_groups(p_obj = plot, x = x_3, loc_sc_params = mrr_output$mod_3$loc_sc_coefficients, color = "limegreen")
+      plot <- plot_mod_groups(p_obj = plot, x = x_3, loc_sc_params = mrr_output$mod_3$loc_sc_coefficients, color = "limegreen", title_trace. = paste(title_trace, "3", sep = " "))
     }
   } else {
-    plot <- p_obj %>% plot_mod_groups(x = x,loc_sc_params = mrr_output$loc_sc_coefficients, color = "blue")
+    plot <- p_obj %>% plot_mod_groups(x = x,loc_sc_params = mrr_output$loc_sc_coefficients, color = "blue", title_trace. = title_trace)
   }
   return(plot)
 }
@@ -444,7 +444,7 @@ plot_mod <- function(p_obj, x, y = NULL, mrr_output,
 #' plot_reg_weibull <- plot_mod(p_obj = plot_weibull,
 #'                              x = conf_betabin$characteristic,
 #'                              y = conf_betabin$prob,
-#'                              loc_sc_params = mrr$loc_sc_coefficients,
+#'                              mrr_output = mrr,
 #'                              distribution = "weibull",
 #'                              title_trace = "Estimated Weibull CDF")
 #' plot_conf_beta <- plot_conf(p_obj = plot_reg_weibull,
@@ -452,6 +452,7 @@ plot_mod <- function(p_obj, x, y = NULL, mrr_output,
 #'                             y = list(conf_betabin$lower_bound,
 #'                                      conf_betabin$upper_bound),
 #'                             direction = "y",
+#'                             distribution = "weibull",
 #'                             title_trace = "Confidence Region")
 
 plot_conf <- function(p_obj, x, y, direction = c("y", "x"), distribution = c("weibull", "lognormal", "loglogistic"),
@@ -470,41 +471,51 @@ plot_conf <- function(p_obj, x, y, direction = c("y", "x"), distribution = c("we
     df_p$group <- ifelse(test = df_p$x < df_mod$x_p, yes = "Lower", no = "Upper")
   }
 
-  x_mark <- unlist(strsplit(p_obj$x$layoutAttrs[[1]]$xaxis$title,
-    " "))[1]
-  y_mark <- unlist(strsplit(p_obj$x$layoutAttrs[[1]]$yaxis$title,
-    " "))[1]
+  x_mark <- unlist(strsplit(p_obj$x$layoutAttrs[[2]]$xaxis$title,
+                            " "))[1]
+  y_mark <- unlist(strsplit(p_obj$x$layoutAttrs[[2]]$yaxis$title,
+                            " "))[1]
 
   if (distribution == "weibull") {
-    q = SPREDA::qsev(y)
+    q_1 = SPREDA::qsev(df_p$y[df_p$group == unique(df_p$group)[1]])
   } else if (distribution == "lognormal") {
-    q = stats::qnorm(y)
+    q_1 = stats::qnorm(df_p$y[df_p$group == unique(df_p$group)[1]])
   } else if (distribution == "loglogistic") {
-    q = stats::qlogis(y)
+    q_1 = stats::qlogis(df_p$y[df_p$group == unique(df_p$group)[1]])
   }
 
   p_conf <- plotly::add_lines(
     p = p_obj, data = dplyr::filter(df_p, group == unique(df_p$group)[1]),
-    x = ~x, y = ~q, type = "scatter", mode = "lines",
+    x = ~x, y = ~q_1, type = "scatter", mode = "lines",
     hoverinfo = "text", line = list(dash = "dash", width = 1),
     color = I("#CC2222"), name = title_trace, legendgroup = "Interval",
     text = ~paste(paste0(x_mark, ":"), round(x, digits = 2),
                   paste("<br>", paste0(y_mark, ":")), round(y, digits = 4)))
 
   if (length(unique(df_p$group)) > 1) {
+
+    if (distribution == "weibull") {
+      q_2 = SPREDA::qsev(df_p$y[df_p$group == unique(df_p$group)[2]])
+    } else if (distribution == "lognormal") {
+      q_2 = stats::qnorm(df_p$y[df_p$group == unique(df_p$group)[2]])
+    } else if (distribution == "loglogistic") {
+      q_2 = stats::qlogis(df_p$y[df_p$group == unique(df_p$group)[2]])
+    }
+
     p_conf <- p_conf %>%
       plotly::add_lines(
-      data = dplyr::filter(df_p, group == unique(df_p$group)[2]),
-      x = ~x, y = ~q, type = "scatter", mode = "lines",
-      hoverinfo = "text", line = list(dash = "dash", width = 1),
-      color = I("#CC2222"), name = title_trace, legendgroup = "Interval",
-      showlegend = FALSE,
-      text = ~paste(paste0(x_mark, ":"), round(x, digits = 2),
-                    paste("<br>", paste0(y_mark, ":")), round(y, digits = 4)))
+        data = dplyr::filter(df_p, group == unique(df_p$group)[2]),
+        x = ~x, y = ~q_2, type = "scatter", mode = "lines",
+        hoverinfo = "text", line = list(dash = "dash", width = 1),
+        color = I("#CC2222"), name = title_trace, legendgroup = "Interval",
+        showlegend = FALSE,
+        text = ~paste(paste0(x_mark, ":"), round(x, digits = 2),
+                      paste("<br>", paste0(y_mark, ":")), round(y, digits = 4)))
   }
 
   return(p_conf)
 }
+
 
 #' Add Population line to an existing Grid
 #'
@@ -530,11 +541,13 @@ plot_conf <- function(p_obj, x, y, direction = c("y", "x"), distribution = c("we
 #' @examples
 #' x <- rweibull(n = 100, shape = 1, scale = 20000)
 #' grid_weibull <- plot_layout(x = x,
+#'                             distribution = "weibull",
 #'                             title_main = "Weibull Analysis",
 #'                             title_x = "Time to Failure",
 #'                             title_y = "Failure Probability")
 #' pop_weibull <- plot_pop(p_obj = grid_weibull,
-#'                         x = x, params = c(20000, 1))
+#'                         x = x, params = c(20000, 1),
+#'                         distribution = "weibull")
 #'
 plot_pop <- function(p_obj, x, params, distribution = c("weibull", "lognormal", "loglogistic"),
   title_trace = "Population") {
@@ -549,7 +562,7 @@ plot_pop <- function(p_obj, x, params, distribution = c("weibull", "lognormal", 
   if (distribution == "weibull") {
     loc <- log(params[1])
     sc <- 1 / params[2]
-  } else if (distribution == "lognormal" | distribution = "loglogistic") {
+  } else if (distribution == "lognormal" | distribution == "loglogistic") {
     loc <- params[1]
     sc <- params[2]
   } else {
@@ -559,9 +572,9 @@ plot_pop <- function(p_obj, x, params, distribution = c("weibull", "lognormal", 
   y_s <- predict_prob(q = x_s, loc_sc_params = c(loc, sc),
     distribution = distribution)
 
-  x_mark <- unlist(strsplit(p_obj$x$layoutAttrs[[1]]$xaxis$title,
+  x_mark <- unlist(strsplit(p_obj$x$layoutAttrs[[2]]$xaxis$title,
     " "))[1]
-  y_mark <- unlist(strsplit(p_obj$x$layoutAttrs[[1]]$yaxis$title,
+  y_mark <- unlist(strsplit(p_obj$x$layoutAttrs[[2]]$yaxis$title,
     " "))[1]
 
   if (distribution == "lognormal") {

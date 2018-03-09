@@ -28,7 +28,7 @@ predict_quantile <- function(p, loc_sc_params, distribution = c("weibull", "logn
   } else if (distribution == "lognormal") {
     quantiles <- stats::qnorm(p)
   } else if (distribution == "loglogistic") {
-    quantiles <- stats:qlogis(p)
+    quantiles <- stats::qlogis(p)
   } else {
     stop("No valid distribution!")
   }
@@ -114,6 +114,7 @@ predict_prob <- function(q, loc_sc_params, distribution = c("weibull", "lognorma
 #' mrr <- rank_regression(x = df_john$characteristic,
 #'                        y = df_john$prob,
 #'                        event = df_john$status,
+#'                        distribution = "weibull",
 #'                        conf_level = .95)
 #' conf_betabin <- confint_betabinom(x = df_john$characteristic,
 #'                                   event = df_john$status,
@@ -156,14 +157,14 @@ confint_betabinom <- function(x, event, loc_sc_params, distribution = c("weibull
   virt_rank <- y_seq * (n + 0.4) + 0.3
 
   if (bounds == "two_sided") {
-    conf_up <- qbeta((1 + conf_level) / 2, virt_rank, n - virt_rank + 1)
-    conf_low <- qbeta((1 - conf_level) / 2, virt_rank, n - virt_rank + 1)
+    conf_up <- stats::qbeta((1 + conf_level) / 2, virt_rank, n - virt_rank + 1)
+    conf_low <- stats::qbeta((1 - conf_level) / 2, virt_rank, n - virt_rank + 1)
     list_confint <- list(lower_bound = conf_low, upper_bound = conf_up)
   } else if (bounds == "lower") {
-    conf_low <- qbeta(1 - conf_level, virt_rank, n - virt_rank + 1)
+    conf_low <- stats::qbeta(1 - conf_level, virt_rank, n - virt_rank + 1)
     list_confint <- list(lower_bound = conf_low)
   } else {
-    conf_up <- qbeta(conf_level, virt_rank, n - virt_rank + 1)
+    conf_up <- stats::qbeta(conf_level, virt_rank, n - virt_rank + 1)
     list_confint <- list(upper_bound = conf_up)
   }
 
@@ -261,15 +262,15 @@ delta_method <- function(p, loc_sc_params, loc_sc_varcov,
   } else {
     if (distribution == "weibull") {
 
-      pd <- SPREDA::dsev(z)
+      pd <- SPREDA::dsev(p)
 
     } else if (distribution == "lognormal") {
 
-      pd <- stats::dnorm(z)
+      pd <- stats::dnorm(p)
 
     } else if (distribution == "loglogistic") {
 
-      pd <- stats::dlogis(z)
+      pd <- stats::dlogis(p)
 
     } else {
       stop("No valid distribution!")
@@ -373,16 +374,16 @@ confint_fisher <- function(x, event, loc_sc_params, loc_sc_varcov,
                        distribution = distribution, direction = direction)
 
     if (bounds == "two_sided") {
-      w <- exp((qnorm((1 + conf_level) / 2) * se_delta) / x)
+      w <- exp((stats::qnorm((1 + conf_level) / 2) * se_delta) / x)
       conf_up <- x * w
       conf_low <- x / w
       list_confint <- list(lower_bound = conf_low, upper_bound = conf_up)
     } else if (bounds == "lower") {
-      w <- exp((qnorm(conf_level) * se_delta) / x)
+      w <- exp((stats::qnorm(conf_level) * se_delta) / x)
       conf_low <- x / w
       list_confint <- list(lower_bound = conf_low)
     } else {
-      w <- exp((qnorm(conf_level) * se_delta) / x)
+      w <- exp((stats::qnorm(conf_level) * se_delta) / x)
       conf_up <- x * w
       list_confint <- list(upper_bound = conf_up)
     }
@@ -397,16 +398,16 @@ confint_fisher <- function(x, event, loc_sc_params, loc_sc_varcov,
       distribution = distribution, direction = direction)
 
     if (bounds == "two_sided") {
-      w <- exp((qnorm((1 + conf_level) / 2) * se_delta) / (prob * (1 - prob)))
+      w <- exp((stats::qnorm((1 + conf_level) / 2) * se_delta) / (prob * (1 - prob)))
       conf_up <- prob / (prob + (1 - prob) / w)
       conf_low <- prob / (prob + (1 - prob) * w)
       list_confint <- list(lower_bound = conf_low, upper_bound = conf_up)
     } else if (bounds == "lower") {
-      w <- exp((qnorm(conf_level) * se_delta) / (prob * (1 - prob)))
+      w <- exp((stats::qnorm(conf_level) * se_delta) / (prob * (1 - prob)))
       conf_low <- prob / (prob + (1 - prob) * w)
       list_confint <- list(lower_bound = conf_low)
     } else {
-      w <- exp((qnorm(conf_level) * se_delta) / (prob * (1 - prob)))
+      w <- exp((stats::qnorm(conf_level) * se_delta) / (prob * (1 - prob)))
       conf_up <- prob / (prob + (1 - prob) / w)
       list_confint <- list(upper_bound = conf_up)
     }

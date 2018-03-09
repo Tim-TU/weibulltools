@@ -25,14 +25,11 @@
 #'                           "2014-02-09", "2014-04-14", "2014-04-20",
 #'                           "2014-03-13", "2014-02-23", "2014-04-03",
 #'                           "2014-01-08", "2014-01-08")
-#' date_of_registration <- c("2014-08-17", "2014-03-29", "2014-12-06",
-#'                           "2014-09-09", "2014-05-14", "2014-07-01",
-#'                           "2014-06-16", "2014-04-03", "2014-05-23",
-#'                           "2014-05-09", "2014-05-31", "2014-08-12",
-#'                           "2014-04-13", "2014-02-15", "2014-07-07",
-#'                           "2014-03-12", "2014-05-27", "2014-06-02",
-#'                           "2014-05-20", "2014-03-21", "2014-06-19",
-#'                           "2014-02-12", "2014-03-27")
+#' date_of_registration <- c(NA, "2014-03-29", "2014-12-06", "2014-09-09",
+#'                           NA, NA, "2014-06-16", NA, "2014-05-23",
+#'                           "2014-05-09", "2014-05-31", NA, "2014-04-13",
+#'                           NA, NA, "2014-03-12", NA, "2014-06-02",
+#'                           NA, "2014-03-21", "2014-06-19", NA, NA)
 #'
 #' params_delay_regist  <- dist_delay_register(
 #'                                     date_prod = date_of_production,
@@ -54,7 +51,7 @@ dist_delay_register <- function(date_prod, date_register,
 
   if (distribution == "lognormal") {
     logmu_regist <- mean(log(t_regist[t_regist > 0]), na.rm = TRUE)
-    logsd_regist <- sd(log(t_regist[t_regist > 0]), na.rm = TRUE)
+    logsd_regist <- stats::sd(log(t_regist[t_regist > 0]), na.rm = TRUE)
 
     estimates <- c(logmu_regist, logsd_regist)
     names(estimates) <- c("meanlog_register", "sdlog_register")
@@ -118,14 +115,11 @@ dist_delay_register <- function(date_prod, date_register,
 #'                           "2014-02-09", "2014-04-14", "2014-04-20",
 #'                           "2014-03-13", "2014-02-23", "2014-04-03",
 #'                           "2014-01-08", "2014-01-08")
-#' date_of_registration <- c("2014-08-17", "2014-03-29", "2014-12-06",
-#'                           "2014-09-09", "2014-05-14", "2014-07-01",
-#'                           "2014-06-16", "2014-04-03", "2014-05-23",
-#'                           "2014-05-09", "2014-05-31", "2014-08-12",
-#'                           "2014-04-13", "2014-02-15", "2014-07-07",
-#'                           "2014-03-12", "2014-05-27", "2014-06-02",
-#'                           "2014-05-20", "2014-03-21", "2014-06-19",
-#'                           "2014-02-12", "2014-03-27")
+#' date_of_registration <- c(NA, "2014-03-29", "2014-12-06", "2014-09-09",
+#'                           NA, NA, "2014-06-16", NA, "2014-05-23",
+#'                           "2014-05-09", "2014-05-31", NA, "2014-04-13",
+#'                           NA, NA, "2014-03-12", NA, "2014-06-02",
+#'                           NA, "2014-03-21", "2014-06-19", NA, NA)
 #'
 #' op_time <- rep(1000, length(date_of_production))
 #' state <- sample(c(0, 1), size = length(date_of_production), replace = TRUE)
@@ -156,31 +150,32 @@ mcs_delay_register <- function(date_prod, date_register, x, event,
   if (!is.null(seed)) {
     int_seed <- seed
   } else {
-    int_seed <- ceiling(runif(n = 1, min = 0, max = 1e6))
+    int_seed <- ceiling(stats::runif(n = 1, min = 0, max = 1e6))
   }
+  set.seed(int_seed)
 
   # Number of Monte Carlo simulated random numbers, i.e. number of censored
   # data.
-  n_rand <- sum(event == 0)
+  n_rand <- sum(is.na(date_register))
 
-  if (!complete.cases(date_prod) || !complete.cases(date_register)) {
-    date_prod <- date_prod[(complete.cases(date_prod) &
-                            complete.cases(date_register))]
-    date_register <- date_register[(complete.cases(date_prod) &
-                                    complete.cases(date_register))]
+  if (!stats::complete.cases(date_prod) || !stats::complete.cases(date_register)) {
+    prod_date <- date_prod[(stats::complete.cases(date_prod) &
+                            stats::complete.cases(date_register))]
+    register_date <- date_register[(stats::complete.cases(date_prod) &
+                                    stats::complete.cases(date_register))]
   }
 
   if (distribution == "lognormal") {
-    params <- dist_delay_register(date_prod = date_prod,
-                                  date_register = date_register,
+    params <- dist_delay_register(date_prod = prod_date,
+                                  date_register = register_date,
                                   distribution = "lognormal")
 
-    x_sim <- rlnorm(n = n_rand, meanlog = params[[1]], sdlog = params[[2]])
+    x_sim <- stats::rlnorm(n = n_rand, meanlog = params[[1]], sdlog = params[[2]])
   } else {
     stop("No valid distribution!")
   }
 
-  x[event == 0] <- x[event == 0] - x_sim
+  x[event == 0] <- x[is.na(date_register)] - x_sim
 
   if (details == FALSE) {
     output <- x
@@ -210,19 +205,17 @@ mcs_delay_register <- function(date_prod, date_register, x, event,
 #' @export
 #'
 #' @examples
-#' date_of_repair <- c("2014-10-21", "2014-09-15", "2015-07-04", "2015-04-10",
-#'                     "2015-02-15", "2015-04-14", "2015-04-24", "2015-02-27",
-#'                     "2015-04-25", "2015-04-24", "2015-06-12", "2015-08-26",
-#'                     "2015-05-04", "2015-04-04", "2015-09-06", "2015-05-22",
-#'                     "2015-08-21", "2015-09-17", "2015-09-15", "2015-08-15",
-#'                     "2015-11-26", "2015-08-22", "2015-10-05")
-
-#' date_of_report <- c("2014-11-14", "2014-10-09", "2015-08-28", "2015-04-15",
-#'                     "2015-02-28", "2015-07-03", "2015-05-16", "2015-03-08",
-#'                     "2015-05-28", "2015-05-15", "2015-07-11", "2015-09-12",
-#'                     "2015-08-14", "2015-05-06", "2015-09-10", "2015-06-05",
-#'                     "2015-09-03", "2015-10-17", "2015-10-01", "2015-08-21",
-#'                     "2015-12-02", "2015-08-28", "2015-11-01")
+#' date_of_repair <- c(NA, "2014-09-15", "2015-07-04", "2015-04-10", NA,
+#'                    NA, "2015-04-24", NA, "2015-04-25", "2015-04-24",
+#'                     "2015-06-12", NA, "2015-05-04", NA, NA,
+#'                     "2015-05-22", NA, "2015-09-17", NA, "2015-08-15",
+#'                     "2015-11-26", NA, NA)
+#'
+#' date_of_report <- c(NA, "2014-10-09", "2015-08-28", "2015-04-15", NA,
+#'                     NA, "2015-05-16", NA, "2015-05-28", "2015-05-15",
+#'                     "2015-07-11", NA, "2015-08-14", NA, NA,
+#'                     "2015-06-05", NA, "2015-10-17", NA, "2015-08-21",
+#'                     "2015-12-02", NA, NA)
 #'
 #' params_delay_report  <- dist_delay_report(date_repair = date_of_repair,
 #'                                             date_report = date_of_report,
@@ -243,7 +236,7 @@ dist_delay_report <- function(date_repair, date_report,
 
   if (distribution == "lognormal") {
     logmu_report <- mean(log(t_report[t_report > 0]), na.rm = TRUE)
-    logsd_report <- sd(log(t_report[t_report > 0]), na.rm = TRUE)
+    logsd_report <- stats::sd(log(t_report[t_report > 0]), na.rm = TRUE)
 
     estimates <- c(logmu_report, logsd_report)
     names(estimates) <- c("meanlog_report", "sdlog_report")
@@ -298,19 +291,17 @@ dist_delay_report <- function(date_repair, date_report,
 #' @export
 #'
 #' @examples
-#' date_of_repair <- c("2014-10-21", "2014-09-15", "2015-07-04", "2015-04-10",
-#'                     "2015-02-15", "2015-04-14", "2015-04-24", "2015-02-27",
-#'                     "2015-04-25", "2015-04-24", "2015-06-12", "2015-08-26",
-#'                     "2015-05-04", "2015-04-04", "2015-09-06", "2015-05-22",
-#'                     "2015-08-21", "2015-09-17", "2015-09-15", "2015-08-15",
-#'                     "2015-11-26", "2015-08-22", "2015-10-05")
-
-#' date_of_report <- c("2014-11-14", "2014-10-09", "2015-08-28", "2015-04-15",
-#'                     "2015-02-28", "2015-07-03", "2015-05-16", "2015-03-08",
-#'                     "2015-05-28", "2015-05-15", "2015-07-11", "2015-09-12",
-#'                     "2015-08-14", "2015-05-06", "2015-09-10", "2015-06-05",
-#'                     "2015-09-03", "2015-10-17", "2015-10-01", "2015-08-21",
-#'                     "2015-12-02", "2015-08-28", "2015-11-01")
+#' date_of_repair <- c(NA, "2014-09-15", "2015-07-04", "2015-04-10", NA,
+#'                    NA, "2015-04-24", NA, "2015-04-25", "2015-04-24",
+#'                     "2015-06-12", NA, "2015-05-04", NA, NA,
+#'                     "2015-05-22", NA, "2015-09-17", NA, "2015-08-15",
+#'                     "2015-11-26", NA, NA)
+#'
+#' date_of_report <- c(NA, "2014-10-09", "2015-08-28", "2015-04-15", NA,
+#'                     NA, "2015-05-16", NA, "2015-05-28", "2015-05-15",
+#'                     "2015-07-11", NA, "2015-08-14", NA, NA,
+#'                     "2015-06-05", NA, "2015-10-17", NA, "2015-08-21",
+#'                     "2015-12-02", NA, NA)
 #'
 #' op_time <- rep(1000, length(date_of_repair))
 #' state <- sample(c(0, 1), size = length(date_of_repair), replace = TRUE)
@@ -341,7 +332,7 @@ mcs_delay_report <- function(date_repair, date_report, x, event,
   if (!is.null(seed)) {
     int_seed <- seed
   } else {
-    int_seed <- ceiling(runif(n = 1, min = 0, max = 1e6))
+    int_seed <- ceiling(stats::runif(n = 1, min = 0, max = 1e6))
   }
   set.seed(int_seed)
 
@@ -349,19 +340,19 @@ mcs_delay_report <- function(date_repair, date_report, x, event,
   # data.
   n_rand <- sum(event == 0)
 
-  if (!complete.cases(date_repair) || !complete.cases(date_report)) {
-    date_repair <- date_repair[(complete.cases(date_repair) &
-                                complete.cases(date_report))]
-    date_report <- date_report[(complete.cases(date_repair) &
-                                complete.cases(date_report))]
+  if (!stats::complete.cases(date_repair) || !stats::complete.cases(date_report)) {
+    repair_date <- date_repair[(stats::complete.cases(date_repair) &
+                                stats::complete.cases(date_report))]
+    report_date <- date_report[(stats::complete.cases(date_repair) &
+                                stats::complete.cases(date_report))]
   }
 
   if (distribution == "lognormal") {
-    params <- dist_delay_report(date_repair = date_repair,
-                                date_report = date_report,
+    params <- dist_delay_report(date_repair = repair_date,
+                                date_report = report_date,
                                 distribution = "lognormal")
 
-    x_sim <- rlnorm(n = n_rand, meanlog = params[[1]], sdlog = params[[2]])
+    x_sim <- stats::rlnorm(n = n_rand, meanlog = params[[1]], sdlog = params[[2]])
   } else {
     stop("No valid distribution!")
   }
@@ -445,19 +436,17 @@ mcs_delay_report <- function(date_repair, date_report, x, event,
 #'                           "2014-03-12", "2014-05-27", "2014-06-02",
 #'                           "2014-05-20", "2014-03-21", "2014-06-19",
 #'                           "2014-02-12", "2014-03-27")
-#' date_of_repair <- c("2014-10-21", "2014-09-15", "2015-07-04", "2015-04-10",
-#'                     "2015-02-15", "2015-04-14", "2015-04-24", "2015-02-27",
-#'                     "2015-04-25", "2015-04-24", "2015-06-12", "2015-08-26",
-#'                     "2015-05-04", "2015-04-04", "2015-09-06", "2015-05-22",
-#'                     "2015-08-21", "2015-09-17", "2015-09-15", "2015-08-15",
-#'                     "2015-11-26", "2015-08-22", "2015-10-05")
-
-#' date_of_report <- c("2014-11-14", "2014-10-09", "2015-08-28", "2015-04-15",
-#'                     "2015-02-28", "2015-07-03", "2015-05-16", "2015-03-08",
-#'                     "2015-05-28", "2015-05-15", "2015-07-11", "2015-09-12",
-#'                     "2015-08-14", "2015-05-06", "2015-09-10", "2015-06-05",
-#'                     "2015-09-03", "2015-10-17", "2015-10-01", "2015-08-21",
-#'                     "2015-12-02", "2015-08-28", "2015-11-01")
+#' date_of_repair <- c(NA, "2014-09-15", "2015-07-04", "2015-04-10", NA,
+#'                    NA, "2015-04-24", NA, "2015-04-25", "2015-04-24",
+#'                     "2015-06-12", NA, "2015-05-04", NA, NA,
+#'                     "2015-05-22", NA, "2015-09-17", NA, "2015-08-15",
+#'                     "2015-11-26", NA, NA)
+#'
+#' date_of_report <- c(NA, "2014-10-09", "2015-08-28", "2015-04-15", NA,
+#'                     NA, "2015-05-16", NA, "2015-05-28", "2015-05-15",
+#'                     "2015-07-11", NA, "2015-08-14", NA, NA,
+#'                     "2015-06-05", NA, "2015-10-17", NA, "2015-08-21",
+#'                     "2015-12-02", NA, NA)
 #'
 #' op_time <- rep(1000, length(date_of_repair))
 #' state <- sample(c(0, 1), size = length(date_of_repair), replace = TRUE)
@@ -492,45 +481,48 @@ mcs_delays <- function(date_prod, date_register, date_repair, date_report, x,
   if (!is.null(seed)) {
     int_seed <- seed
   } else {
-    int_seed <- ceiling(runif(n = 1, min = 0, max = 1e6))
+    int_seed <- ceiling(stats::runif(n = 1, min = 0, max = 1e6))
   }
   set.seed(int_seed)
 
   # Number of Monte Carlo simulated random numbers, i.e. number of censored
   # data.
-  n_rand <- sum(event == 0)
 
-  if (!complete.cases(date_prod) || !complete.cases(date_register)) {
-    date_prod <- date_prod[(complete.cases(date_prod) &
-        complete.cases(date_register))]
-    date_register <- date_register[(complete.cases(date_prod) &
-        complete.cases(date_register))]
-  }
+  n_rand_regist <- sum(is.na(date_register))
+  n_rand_report <- sum(event == 0)
 
-  if (!complete.cases(date_repair) || !complete.cases(date_report)) {
-    date_repair <- date_repair[(complete.cases(date_repair) &
-        complete.cases(date_report))]
-    date_report <- date_report[(complete.cases(date_repair) &
-        complete.cases(date_report))]
+  #if (!stats::complete.cases(date_prod) || !stats::complete.cases(date_register)) {
+    prod_date <- date_prod[(stats::complete.cases(date_prod) &
+        stats::complete.cases(date_register))]
+    register_date <- date_register[(stats::complete.cases(date_prod) &
+        stats::complete.cases(date_register))]
+  #}
+
+  if (!stats::complete.cases(date_repair) || !stats::complete.cases(date_report)) {
+    repair_date <- date_repair[(stats::complete.cases(date_repair) &
+        stats::complete.cases(date_report))]
+    report_date <- date_report[(stats::complete.cases(date_repair) &
+        stats::complete.cases(date_report))]
   }
 
   if (distribution == "lognormal") {
-    params_regist <- dist_delay_register(date_prod = date_prod,
-                                         date_register = date_register,
+    params_regist <- dist_delay_register(date_prod = prod_date,
+                                         date_register = register_date,
                                          distribution = "lognormal")
-    params_report <- dist_delay_report(date_repair = date_repair,
-                                       date_report = date_report,
+    params_report <- dist_delay_report(date_repair = repair_date,
+                                       date_report = report_date,
                                        distribution = "lognormal")
 
-    x_sim_regist <- rlnorm(n = n_rand, meanlog = params_regist[[1]],
+    x_sim_regist <- stats::rlnorm(n = n_rand_regist, meanlog = params_regist[[1]],
                            sdlog = params_regist[[2]])
-    x_sim_report <- rlnorm(n = n_rand, meanlog = params_report[[1]],
+    x_sim_report <- stats::rlnorm(n = n_rand_report, meanlog = params_report[[1]],
                            sdlog = params_report[[2]])
   } else {
     stop("No valid distribution!")
   }
 
-  x[event == 0] <- x[event == 0] - (x_sim_regist + x_sim_report)
+  x[is.na(date_register)] <- x[is.na(date_register)] - x_sim_regist
+  x[event == 0] <- x[event == 0] - x_sim_report
 
   if (details == FALSE) {
     output <- x
