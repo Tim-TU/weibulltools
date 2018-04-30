@@ -4,7 +4,8 @@
 \alias{predict_quantile}
 \title{Estimation of Quantiles using a Parametric Survival Model}
 \usage{
-predict_quantile(p, loc_sc_params, distribution = "weibull")
+predict_quantile(p, loc_sc_params, distribution = c("weibull", "lognormal",
+  "loglogistic"))
 }
 \arguments{
 \item{p}{a numeric vector which consists of failure probabilities
@@ -17,7 +18,7 @@ parameter \eqn{\mu} and the second element needs to be the scale
 parameter \eqn{\sigma}.}
 
 \item{distribution}{supposed distribution of the random variable. The
-default value is \code{"weibull"}.}
+value can be \code{"weibull"}, \code{"lognormal"} or \code{"loglogistic"}.}
 }
 \value{
 A vector containing the estimated quantiles for a given set of

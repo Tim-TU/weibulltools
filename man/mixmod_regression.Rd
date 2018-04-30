@@ -4,7 +4,8 @@
 \alias{mixmod_regression}
 \title{Mixture Model Identification using Segmented Regression}
 \usage{
-mixmod_regression(x, y, event, distribution = "weibull", conf_level = 0.95)
+mixmod_regression(x, y, event, distribution = c("weibull", "lognormal",
+  "loglogistic"), conf_level = 0.95)
 }
 \arguments{
 \item{x}{a numeric vector which consists of lifetime data. Lifetime
@@ -27,14 +28,14 @@ The default value is \code{"weibull"}.}
 }
 \value{
 Returns a list where the length of the list depends on
-  the number of identified subgroups. Each list contain the same
+  the number of identified subgroups. Each list contains the same
   information as supplied by \link{rank_regression}.
 }
 \description{
 This method uses piecewise linear regression to separate the data in
 subgroups, if appropriate. Since this happens in an automated fashion
 the function tends to overestimate the number of breakpoints and
-therefore returns to many subgroups. This problem is already stated in
+therefore returns too many subgroups. This problem is already stated in
 the documentation of the function \link{segmented.lm}, which is part of
 the \emph{segmented} package.
 }
@@ -52,6 +53,7 @@ john <- johnson_method(x = hours, event = state)
 
 mix_mod <- mixmod_regression(x = john$characteristic,
                              y = john$prob,
-                             event = john$status)
+                             event = john$status,
+                             distribution = "weibull")
 
 }

@@ -21,6 +21,6 @@
 #'   n <- 23
 #'   johnson_ranks <- calculate_ranks(f = defectives, n_out = n_out, n = n)
 calculate_ranks <- function(f, n_out, n) {
-    .Call('_weibulltools_calculate_ranks', PACKAGE = 'weibulltools', f, n_out, n)
+    .Call(`_weibulltools_calculate_ranks`, f, n_out, n)
 }
 

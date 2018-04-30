@@ -16,6 +16,9 @@ cycles.}
 \item{event}{a vector of ones indicating that every unit \emph{i} has failed.}
 
 \item{id}{a character vector for the identification of every unit.}
+
+\item{method}{method for the estimation of the cdf. Can be "benard" (default)
+or "invbeta".}
 }
 \value{
 A data frame containing id, lifetime characteristic, status of the
@@ -43,10 +46,4 @@ df_mr <- mr_method(x = obs, event = state, id = uic,
 # Example 2
 df_mr_invbeta <- mr_method(x = obs, event = state, id = uic,
                            method = "invbeta")
-
-# Example 3
-obs_cens   <- seq(10000, 100000, 10000)
-state_cens <- c(0, 1, 1, 0, 0, 0, 1, 0, 1, 0)
-
-df_mr_cens <- mr_method(x = obs_cens, event = state_cens, method = "benard")
 }

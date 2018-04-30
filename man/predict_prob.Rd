@@ -4,7 +4,8 @@
 \alias{predict_prob}
 \title{Estimation of Failure Probabilities using a Parametric Survival Model}
 \usage{
-predict_prob(q, loc_sc_params, distribution = "weibull")
+predict_prob(q, loc_sc_params, distribution = c("weibull", "lognormal",
+  "loglogistic"))
 }
 \arguments{
 \item{q}{a numeric vector which consists of lifetime data.}
@@ -15,8 +16,8 @@ elements is important. First entry needs to be the location
 parameter \eqn{\mu} and the second element needs to be the scale
 parameter \eqn{\sigma}.}
 
-\item{distribution}{supposed distribution of the random variable. The default
-value is \code{"weibull"}.}
+\item{distribution}{supposed distribution of the random variable. The
+value can be \code{"weibull"}, \code{"lognormal"} or \code{"loglogistic"}.}
 }
 \value{
 A vector containing the estimated failure probabilities for a given

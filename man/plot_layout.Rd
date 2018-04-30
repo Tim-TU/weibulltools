@@ -4,15 +4,16 @@
 \alias{plot_layout}
 \title{Layout of the Probability Plot}
 \usage{
-plot_layout(x, distribution = "weibull", title_main = "Probability Plot",
-  title_x = "Characteristic", title_y = "Unreliability")
+plot_layout(x, distribution = c("weibull", "lognormal", "loglogistic"),
+  title_main = "Probability Plot", title_x = "Characteristic",
+  title_y = "Unreliability")
 }
 \arguments{
 \item{x}{a numeric vector which consists of lifetime data. \code{x} is used to
 specify the grid of the plot.}
 
-\item{distribution}{supposed distribution of the random variable. The default
-value is \code{"weibull"}.}
+\item{distribution}{supposed distribution of the random variable. The value
+can be \code{"weibull"}, \code{"lognormal"} or \code{"loglogistic"}.}
 
 \item{title_main}{a character string which is assigned to the main title
 of the plot}
@@ -33,6 +34,7 @@ This function is used to create the layout of the probability plot.
 \examples{
 x_layout <- seq(1e-5, 1e+07, length.out = 10)
 grid_weibull <- plot_layout(x = x_layout,
+                            distribution = "weibull",
                             title_main = "Weibull Analysis",
                             title_x = "Time to Failure",
                             title_y = "Failure Probability")

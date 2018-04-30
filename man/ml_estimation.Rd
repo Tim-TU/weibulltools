@@ -4,8 +4,8 @@
 \alias{ml_estimation}
 \title{ML Estimation for the Weibull distribution}
 \usage{
-ml_estimation(x, event, distribution = "weibull", conf_level = 0.95,
-  details = TRUE)
+ml_estimation(x, event, distribution = c("weibull", "lognormal",
+  "loglogistic"), conf_level = 0.95, details = TRUE)
 }
 \arguments{
 \item{x}{a numeric vector which consists of lifetime data. Lifetime
@@ -21,6 +21,12 @@ value is \code{"weibull"}.}
 
 \item{conf_level}{confidence level of the interval. The default value is
 \code{conf_level = 0.95}}
+
+\item{details}{a logical variable, where the default value is \code{TRUE}.
+If \code{FALSE} the output consists of a list that only contains the
+distribution coefficients. If \code{TRUE} the output is a detailed list
+that contains the distribution coefficients, their confidence intervals
+and the log-likelihood value.}
 }
 \value{
 Returns a list with the following components:

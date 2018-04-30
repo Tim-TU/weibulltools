@@ -2,10 +2,10 @@
 % Please edit documentation in R/parameter_estimators.R
 \name{rank_regression}
 \alias{rank_regression}
-\title{Rank Regression for the Weibull distribution}
+\title{Rank Regression for the Weibull, Lognormal and Loglogistic distribution}
 \usage{
-rank_regression(x, y, event, distribution = "weibull", conf_level = 0.95,
-  details = TRUE)
+rank_regression(x, y, event, distribution = c("weibull", "lognormal",
+  "loglogistic"), conf_level = 0.95, details = TRUE)
 }
 \arguments{
 \item{x}{a numeric vector which consists of lifetime data. Lifetime
@@ -19,11 +19,17 @@ regarding the lifetime data in \code{x}.}
 \item{event}{a vector of binary data (0 or 1) indicating whether unit \emph{i}
 is a right censored observation (= 0) or a failure (= 1).}
 
-\item{distribution}{supposed distribution of the random variable. The default
-value is \code{"weibull"}.}
+\item{distribution}{supposed distribution of the random variable. The
+value can be \code{"weibull"}, \code{"lognormal"} or \code{"loglogistic"}.}
 
 \item{conf_level}{confidence level of the interval. The default value is
 \code{conf_level = 0.95}}
+
+\item{details}{a logical variable, where the default value is \code{TRUE}.
+If \code{FALSE} the output consists of a list that only contains the
+distribution coefficients. If \code{TRUE} the output is a detailed list
+that contains the distribution coefficients, their confidence intervals
+and the r squared value of the regression model.}
 }
 \value{
 Returns a list with the following components:
@@ -36,14 +42,14 @@ Returns a list with the following components:
 }
 \description{
 This method fits an \strong{x on y} regression to the linearized
-two-parameter Weibull cdf and is applicable for complete and (multiple) right
+two-parameter cdf and is applicable for complete and (multiple) right
 censored data. The weibull-specific parameters are estimated in the frequently
 used location-scale parametrization and afterwards are transformed such that
 they are in line with the parametrization provided by the \emph{stats} package
 like \code{\link{pweibull}}.
 }
 \details{
-When using this method, the approximated confidence intervals (based on p. 51
+When using this method, the approximated confidence intervals for the Weibull parameters (based on p. 51
 of Ralf Mock) can only be estimated for the following confidence levels:
 \itemize{
   \item \code{conf_level} = 0.90,
@@ -58,6 +64,7 @@ df_john <- johnson_method(x = obs, event = state)
 mrr <- rank_regression(x = df_john$characteristic,
                        y = df_john$prob,
                        event = df_john$status,
+                       distribution = "weibull",
                        conf_level = .90)
 }
 \references{
