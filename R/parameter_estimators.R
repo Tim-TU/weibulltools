@@ -88,7 +88,7 @@ rank_regression <- function(x, y, event, distribution = c("weibull", "lognormal"
                              paste(((1 + conf_level) / 2) * 100, "%"))
     rownames(conf_ints) <- names(estimates)
 
-    conf_ints_loc_sc <- matrix(c(log(conf_eta), 1 / conf_beta), byrow = TRUE,
+    conf_ints_loc_sc <- matrix(c(log(conf_eta), rev(1 / conf_beta)), byrow = TRUE,
                                ncol = 2)
     colnames(conf_ints_loc_sc) <- colnames(conf_ints)
     rownames(conf_ints_loc_sc) <- names(estimates_loc_sc)

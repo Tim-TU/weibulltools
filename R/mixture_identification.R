@@ -128,7 +128,7 @@ mixmod_regression <- function(x, y, event, distribution = c("weibull", "lognorma
 
         if (mean(c(r_sq1, r_sq23)) < r_sq0) {
 
-          print("1 statt 2 Segmente: lineare Regression")
+          # print("1 statt 2 Segmente: lineare Regression")
 
           mrr_output <- mrr_0
 
@@ -175,36 +175,36 @@ mixmod_regression <- function(x, y, event, distribution = c("weibull", "lognorma
 
         mean_r_sq <- mean(c(r_sq1, r_sq2, r_sq3))
 
-        print(r_sq0)
-        print(r_sq1)
-        print(r_sq2)
-        print(r_sq3)
-        print(r_sq12)
-        print(r_sq23)
-        print(mean(c(r_sq1, r_sq23)))
-        print(mean(c(r_sq12, r_sq3)))
-        print(mean_r_sq)
+        # print(r_sq0)
+        # print(r_sq1)
+        # print(r_sq2)
+        # print(r_sq3)
+        # print(r_sq12)
+        # print(r_sq23)
+        # print(mean(c(r_sq1, r_sq23)))
+        # print(mean(c(r_sq12, r_sq3)))
+        # print(mean_r_sq)
 
 
         if (mean_r_sq < r_sq0 | mean_r_sq < mean(c(r_sq1, r_sq23)) | mean_r_sq < mean(c(r_sq12, r_sq3))) {
 
-          print("mean_r_sq nicht am größten")
+         # print("mean_r_sq nicht am größten")
 
           if (mean(c(r_sq1, r_sq23)) > r_sq0 && mean(c(r_sq1, r_sq23)) > mean(c(r_sq12, r_sq3))) {
 
-            print("2 statt 3 Segmenten: 1 und 23")
+            # print("2 statt 3 Segmenten: 1 und 23")
 
             mrr_output <- list(mod_1 = mrr_1, mod_2 = mrr_23)
 
           } else if (mean(c(r_sq12, r_sq3)) > r_sq0) {
 
-            print("2 statt 3 Segmenten: 12 und 3")
+            # print("2 statt 3 Segmenten: 12 und 3")
 
             mrr_output <- list(mod_1 = mrr_12, mod_2 = mrr_3)
 
           } else {
 
-            print("lineare Regression")
+            # print("lineare Regression")
 
             mrr_output <- mrr_0
             }

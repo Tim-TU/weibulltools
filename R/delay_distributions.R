@@ -535,9 +535,9 @@ mcs_delays <- function(date_prod, date_register, date_repair, date_report, x,
                                        date_report = report_date,
                                        distribution = "lognormal")
 
-    x_sim_regist <- rlnorm(n = n_rand, meanlog = params_regist[[1]],
+    x_sim_regist <- rlnorm(n = n_rand_regist, meanlog = params_regist[[1]],
                            sdlog = params_regist[[2]])
-    x_sim_report <- rlnorm(n = n_rand, meanlog = params_report[[1]],
+    x_sim_report <- rlnorm(n = n_rand_report, meanlog = params_report[[1]],
                            sdlog = params_report[[2]])
   } else {
     stop("No valid distribution!")
