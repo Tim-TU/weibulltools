@@ -1,4 +1,17 @@
 
+#' Title
+#'
+#' @param x
+#' @param y
+#' @param event
+#' @param distribution
+#' @param conf_level
+#' @param details
+#'
+#' @return
+#' @export
+#'
+#' @examples
 rank_regression_boot <- function(x, y, event, distribution = c("weibull", "lognormal", "loglogistic"),
                             conf_level = .95, details = TRUE) {
   x_f <- x[event == 1]
