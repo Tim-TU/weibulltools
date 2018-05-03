@@ -1,17 +1,44 @@
 
-#' Title
+#' Rank Regression for the Weibull, Lognormal and Loglogistic distribution using Bootstrap
 #'
-#' @param x
-#' @param y
-#' @param event
-#' @param distribution
-#' @param conf_level
-#' @param details
+#' @param x a numeric vector which consists of lifetime data. Lifetime
+#'   data could be every characteristic influencing the reliability of a product,
+#'   e.g. operating time (days/months in service), mileage (km, miles), load
+#'   cycles.
+#' @param y a numeric vector which consists of estimated failure probabilities
+#'   regarding the lifetime data in \code{x}.
+#' @param event a vector of binary data (0 or 1) indicating whether unit \emph{i}
+#'   is a right censored observation (= 0) or a failure (= 1).
+#' @param distribution supposed distribution of the random variable. The
+#'   value can be \code{"weibull"}, \code{"lognormal"} or \code{"loglogistic"}.
+#' @param conf_level confidence level of the interval. The default value is
+#'   \code{conf_level = 0.95}
+#' @param details a logical variable, where the default value is \code{TRUE}.
+#'   If \code{FALSE} the output consists of a list that only contains the
+#'   distribution coefficients. If \code{TRUE} the output is a detailed list
+#'   that contains the distribution coefficients, their confidence intervals
+#'   and the r squared value of the regression model.
 #'
-#' @return
+#' @return Returns a list with the following components:
+#'   \itemize{
+#'   \item \code{coefficients} : Where \eqn{\eta} is the scale parameter and
+#'     \eqn{\beta} is the shape parameter
+#'   \item \code{confint} : The estimated confidence intervals of the
+#'     parameters.
+#'   \item \code{r_squared} : Coefficient of determination.}
 #' @export
 #'
 #' @examples
+#' #' obs   <- seq(10000, 100000, 10000)
+#' state <- c(0, 1, 1, 0, 0, 0, 1, 0, 1, 0)
+#'
+#' df_john <- johnson_method(x = obs, event = state)
+#' mrr <- rank_regression_boot(x = df_john$characteristic,
+#'                        y = df_john$prob,
+#'                        event = df_john$status,
+#'                        distribution = "weibull",
+#'                        conf_level = .90)
+#'
 rank_regression_boot <- function(x, y, event, distribution = c("weibull", "lognormal", "loglogistic"),
                             conf_level = .95, details = TRUE) {
   x_f <- x[event == 1]

@@ -53,8 +53,10 @@ In general the amount of information about units in the field that have not
 failed yet are rare. For example it is common that a supplier, who provides
 parts to the automotive industry does not know when a vehicle was put in
 service and therefore does not know the exact operating time of the supplied
-parts. This function provides a method to get operating times of (multiple)
-right censored observations which are corrected by the delay in registration.
+parts. This function uses the Monte Carlo method for simulating the operating
+times of (multiple) right censored observations, taking account of registering
+delays. The simulation is based on the distribution of operating times that were
+calculated from complete data (see \code{\link{dist_delay_register}}).
 }
 \examples{
 date_of_production   <- c("2014-07-28", "2014-02-17", "2014-07-14",

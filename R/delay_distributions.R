@@ -69,8 +69,10 @@ dist_delay_register <- function(date_prod, date_register,
 #' failed yet are rare. For example it is common that a supplier, who provides
 #' parts to the automotive industry does not know when a vehicle was put in
 #' service and therefore does not know the exact operating time of the supplied
-#' parts. This function provides a method to get operating times of (multiple)
-#' right censored observations which are corrected by the delay in registration.
+#' parts. This function uses the Monte Carlo method for simulating the operating
+#' times of (multiple) right censored observations, taking account of registering
+#' delays. The simulation is based on the distribution of operating times that were
+#' calculated from complete data (see \code{\link{dist_delay_register}}).
 #'
 #' @param date_prod a vector of class \code{"character"} or \code{"Date"}
 #'   indicating the date of production of a unit.
@@ -253,8 +255,10 @@ dist_delay_report <- function(date_repair, date_report,
 #' the registration in the warranty database. For a given date where the analysis
 #' is made there could be units which had a failure but are not registered in the
 #' database and therefore treated as censored units. To overcome this problem
-#' this function provides a method to get operating times of (multiple) right
-#' censored observations which are corrected by the delay of report.
+#' this function uses the Monte Carlo method for simulating the operating
+#' times of (multiple) right censored observations, taking account of reporting
+#' delays. The simulation is based on the distribution of operating times that were
+#' calculated from complete data (see \code{\link{dist_delay_report}}).
 #'
 #' @param date_repair a vector of class \code{"character"} or \code{"Date"}
 #'   indicating the date of repair of a failed unit.
