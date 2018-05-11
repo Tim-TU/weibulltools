@@ -20,18 +20,22 @@ is a right censored observation (= 0) or a failure (= 1).}
 \value{
 A data frame containing id, lifetime characteristic, status of the
   unit and the estimated failure probabilty. For right censored observations
-  the cells of probabilty column is filled with NA.
+  the cells of probability column are filled with NA.
 }
 \description{
 Whereas the non-parametric Kaplan-Meier estimator is used to estimate the
 survival function \emph{S(t)} in terms of (multiple) right censored data, the
 complement is an estimate of the cumulative distribution function \emph{F(t)}.
-One modification is made in contrast to the orginial Kaplan-Meier estimator:
+One modification is made in contrast to the orginial Kaplan-Meier estimator
+(based on \emph{NIST/SEMATECH e-Handbook of Statistical Methods}, 8.2.1.5.):
 If the last unit (unit with highest observed lifetime) is a defective unit,
 the estimator is adjusted in such a way that the survival estimate for this
-unit is not \emph{zero} and hence the estimate for the failure probability is
+unit is not \emph{zero} and therefore the estimate for the failure probability is
 not equal to \emph{one}. Otherwise the estimate in this context would be very
 pessimisitc.
+Since the failure probability estimation in this function is not based on median ranks,
+the Betabinomial and Fisher confidence intervals cannot be estimated on the basis of
+Kaplan-Meier failure probabilities.
 }
 \examples{
 # Example 1
@@ -51,4 +55,9 @@ df_kap <- kaplan_method(x = obs, event = state, id = uic)
                  state = rep(1, 23))
 
 df_kap2 <- kaplan_method(x = df$obs, event = df$state)
+}
+\references{
+\emph{NIST/SEMATECH e-Handbook of Statistical Methods},
+\emph{8.2.1.5. Empirical model fitting - distribution free (Kaplan-Meier) approach},
+https://www.itl.nist.gov/div898/handbook/apr/section2/apr215.htm, 30/04/2018
 }

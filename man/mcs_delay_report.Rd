@@ -52,8 +52,10 @@ The delay in report describes the time between the occurence of a damage and
 the registration in the warranty database. For a given date where the analysis
 is made there could be units which had a failure but are not registered in the
 database and therefore treated as censored units. To overcome this problem
-this function provides a method to get operating times of (multiple) right
-censored observations which are corrected by the delay of report.
+this function uses the Monte Carlo method for simulating the operating
+times of (multiple) right censored observations, taking account of reporting
+delays. The simulation is based on the distribution of operating times that were
+calculated from complete data (see \code{\link{dist_delay_report}}).
 }
 \examples{
 date_of_repair <- c(NA, "2014-09-15", "2015-07-04", "2015-04-10", NA,

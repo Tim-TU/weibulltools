@@ -12,7 +12,7 @@ output: html_document
 
 ## R CMD check results
 
-There were no ERRORs, WARNINGs or NOTEs.
+There were no ERRORs or WARNINGs.
 
 There was 1 NOTE (only local windows install):
 
@@ -24,5 +24,5 @@ There was 1 NOTE (only local windows install):
   search.
   
 Only occurs due to an interaction between RStudio and devtools on a Windows machine.
-If the package is checked on winbuilder or on r-hub.io, the note doesn't appear.
+If the package is checked on winbuilder or on r-hub.io, the note does not appear.
 
