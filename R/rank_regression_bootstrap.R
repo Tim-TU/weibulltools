@@ -29,26 +29,42 @@
 #' @export
 #'
 #' @examples
-#' #' obs   <- seq(10000, 100000, 10000)
+#' obs   <- seq(10000, 100000, 10000)
 #' state <- c(0, 1, 1, 0, 0, 0, 1, 0, 1, 0)
 #'
-#' df_john <- johnson_method(x = obs, event = state)
-#' mrr <- rank_regression_boot(x = df_john$characteristic,
-#'                        y = df_john$prob,
-#'                        event = df_john$status,
+#' john_boot <- johnson_method(x = obs, event = state)
+#' rr_boot <- rank_regression_boot(x = john_boot$characteristic,
+#'                        y = john_boot$prob,
+#'                        event = john_boot$status,
 #'                        distribution = "weibull",
-#'                        conf_level = .90)
+#'                        conf_level = .95)
 #'
+
+
 rank_regression_boot <- function(x, y, event, distribution = c("weibull", "lognormal", "loglogistic"),
                             conf_level = .95, details = TRUE) {
+
+
+
   x_f <- x[event == 1]
   y_f <- y[event == 1]
 
+
   if (distribution == "weibull") {
 
+    print(SPREDA::qsev(y_f))
+    #l <- log(x_f)
+    #m <- SPREDA::qsev(y_f)
     mrr <- stats::lm(log(x_f) ~ SPREDA::qsev(y_f))
+    #mrr <- lm(l ~ m)
+    print(mrr)
+    #print(length(l))
+    #print(length(m))
 
-    mrr_boot <- hcci::Pboot(model = mrr, significance = 1 - conf_level, J = 1000, K = 100)
+
+
+    mrr_boot <- hcci::Pboot(model = mrr, significance = 1 - conf_level,
+                            J = 1000, K = 100, distribution = "rademacher")
 
     mu <- mrr_boot$beta[[1]]
     conf_mu <- c(mrr_boot$ci_lower_simple[[1]], mrr_boot$ci_upper_simple[[1]])
@@ -58,6 +74,9 @@ rank_regression_boot <- function(x, y, event, distribution = c("weibull", "logno
 
     estimates_loc_sc <- c(mu, sigma)
     names(estimates_loc_sc) <- c("mu", "sigma")
+
+    estimates <- c(exp(mu), 1/sigma)
+    names(estimates) <- c("eta", "beta")
 
     conf_eta <- c(exp(conf_mu[[1]]), exp(conf_mu[[2]]))
     conf_beta <- c(1 / conf_sigma[[2]],  1 / conf_sigma[[1]])

@@ -44,14 +44,14 @@ Returns a list with the following components:
 Rank Regression for the Weibull, Lognormal and Loglogistic distribution using Bootstrap
 }
 \examples{
-#' obs   <- seq(10000, 100000, 10000)
+obs   <- seq(10000, 100000, 10000)
 state <- c(0, 1, 1, 0, 0, 0, 1, 0, 1, 0)
 
-df_john <- johnson_method(x = obs, event = state)
-mrr <- rank_regression_boot(x = df_john$characteristic,
-                       y = df_john$prob,
-                       event = df_john$status,
+john_boot <- johnson_method(x = obs, event = state)
+rr_boot <- rank_regression_boot(x = john_boot$characteristic,
+                       y = john_boot$prob,
+                       event = john_boot$status,
                        distribution = "weibull",
-                       conf_level = .90)
+                       conf_level = .95)
 
 }

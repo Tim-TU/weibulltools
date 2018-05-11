@@ -459,9 +459,12 @@ plot_conf <- function(p_obj, x, y, direction = c("y", "x"), distribution = c("we
                       title_trace = "Confidence Limit") {
 
   direction <- match.arg(direction)
+  distribution <- match.arg(distribution)
 
   lst <- do.call(Map, c(data.frame, list(x = x, y = y)), quote = TRUE)
+  print(lst)
   df_p <- as.data.frame(dplyr::bind_rows(lst, .id = "group"))
+  print(df_p)
 
   df_mod <- plotly::plotly_data(p_obj)
 
@@ -477,12 +480,17 @@ plot_conf <- function(p_obj, x, y, direction = c("y", "x"), distribution = c("we
                             " "))[1]
 
   if (distribution == "weibull") {
-    q_1 = SPREDA::qsev(df_p$y[df_p$group == unique(df_p$group)[1]])
+    q_1 <- SPREDA::qsev(df_p$y[df_p$group == unique(df_p$group)[1]])
   } else if (distribution == "lognormal") {
-    q_1 = stats::qnorm(df_p$y[df_p$group == unique(df_p$group)[1]])
+    q_1 <- stats::qnorm(df_p$y[df_p$group == unique(df_p$group)[1]])
   } else if (distribution == "loglogistic") {
-    q_1 = stats::qlogis(df_p$y[df_p$group == unique(df_p$group)[1]])
+    q_1 <- stats::qlogis(df_p$y[df_p$group == unique(df_p$group)[1]])
   }
+
+  print(unique(df_p$group))
+  print(unique(df_p$group)[1])
+  print(dplyr::filter(df_p, group == unique(df_p$group)[1]))
+  print(length(q_1))
 
   p_conf <- plotly::add_lines(
     p = p_obj, data = dplyr::filter(df_p, group == unique(df_p$group)[1]),
@@ -495,11 +503,11 @@ plot_conf <- function(p_obj, x, y, direction = c("y", "x"), distribution = c("we
   if (length(unique(df_p$group)) > 1) {
 
     if (distribution == "weibull") {
-      q_2 = SPREDA::qsev(df_p$y[df_p$group == unique(df_p$group)[2]])
+      q_2 <- SPREDA::qsev(df_p$y[df_p$group == unique(df_p$group)[2]])
     } else if (distribution == "lognormal") {
-      q_2 = stats::qnorm(df_p$y[df_p$group == unique(df_p$group)[2]])
+      q_2 <- stats::qnorm(df_p$y[df_p$group == unique(df_p$group)[2]])
     } else if (distribution == "loglogistic") {
-      q_2 = stats::qlogis(df_p$y[df_p$group == unique(df_p$group)[2]])
+      q_2 <- stats::qlogis(df_p$y[df_p$group == unique(df_p$group)[2]])
     }
 
     p_conf <- p_conf %>%
