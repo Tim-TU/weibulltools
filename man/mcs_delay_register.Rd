@@ -2,26 +2,28 @@
 % Please edit documentation in R/delay_distributions.R
 \name{mcs_delay_register}
 \alias{mcs_delay_register}
-\title{Adjustment of operating times by delays in registration using Monte Carlo
-method}
+\title{Adjustment of operating times by delays in registration using a Monte Carlo
+approach}
 \usage{
 mcs_delay_register(date_prod, date_register, x, event,
   distribution = "lognormal", seed = NULL, details = FALSE)
 }
 \arguments{
 \item{date_prod}{a vector of class \code{"character"} or \code{"Date"}
-indicating the date of production of a unit.}
+indicating the date of production of a unit. If no date is available
+use \code{NA}.}
 
 \item{date_register}{a vector of class \code{"character"} or \code{"Date"}
-indicating the date of registration of a unit.}
+indicating the date of registration of a unit. If no date is available
+use \code{NA}.}
 
 \item{x}{a numeric vector of operating times.}
 
 \item{event}{a vector of binary data (0 or 1) indicating whether unit \emph{i}
 is a right censored observation (= 0) or a failure (= 1).}
 
-\item{distribution}{supposed distribution of delay in registration. The
-default value is \code{"lognormal"}.}
+\item{distribution}{supposed distribution of the random variable. The default
+value is \code{"lognormal"}. So far no other distribution is implemented.}
 
 \item{seed}{if \code{seed = NULL} a random seed is used. Otherwise the user
 can specify an integer for the seed.}
@@ -34,12 +36,12 @@ the same vector as described before, simulated random numbers, estimated
 distribution parameters and a seed for reproducibility.}
 }
 \value{
-A numerical vector of corrected operating times for the censored units
+A numeric vector of corrected operating times for the censored units
   and the input operating times for the failed units if
   \code{details = FALSE}. If \code{details = TRUE} the output is a list which
   consists of the following entries:
   \itemize{
-  \item \code{time} : Numerical vector of corrected operating times for the
+  \item \code{time} : Numeric vector of corrected operating times for the
     censored observations and input operating times for failed units.
   \item \code{x_sim} : Simulated random numbers of specified distribution with
     estimated parameters. The length of \code{x_sim} is equal to the number of
@@ -53,7 +55,7 @@ In general the amount of information about units in the field that have not
 failed yet are rare. For example it is common that a supplier, who provides
 parts to the automotive industry does not know when a vehicle was put in
 service and therefore does not know the exact operating time of the supplied
-parts. This function uses the Monte Carlo method for simulating the operating
+parts. This function uses a Monte Carlo approach for simulating the operating
 times of (multiple) right censored observations, taking account of registering
 delays. The simulation is based on the distribution of operating times that were
 calculated from complete data (see \code{\link{dist_delay_register}}).
@@ -74,7 +76,7 @@ date_of_registration <- c(NA, "2014-03-29", "2014-12-06", "2014-09-09",
                           NA, "2014-03-21", "2014-06-19", NA, NA)
 
 op_time <- rep(1000, length(date_of_production))
-state <- sample(c(0, 1), size = length(date_of_production), replace = TRUE)
+state <- c(0, 1, 1, 1, 0, 0, 1, 0, 1, 1, 1, 0, 1, 0, 0, 1, 0, 1, 0, 1, 1, 0, 0)
 
 # Example 1 - Simplified vector output:
 x_corrected <- mcs_delay_register(date_prod = date_of_production,

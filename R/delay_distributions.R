@@ -1,16 +1,18 @@
 #' Parameter estimation of the delay in registration distribution
 #'
-#' This function generates a delay random variable by calculating the time
+#' This function introduces a delay random variable by calculating the time
 #' difference between the registration and production date for the sample units
 #' and afterwards estimates the parameter(s) of a supposed distribution,
 #' using MLE.
 #'
 #' @param date_prod a vector of class \code{"character"} or \code{"Date"}
-#'   indicating the date of production of a unit.
+#'   indicating the date of production of a unit. If no date is available
+#'   use \code{NA}.
 #' @param date_register a vector of class \code{"character"} or \code{"Date"}
-#'   indicating the date of registration of a unit.
+#'   indicating the date of registration of a unit. If no date is available
+#'   use \code{NA}.
 #' @param distribution supposed distribution of the random variable. The default
-#'   value is \code{"lognormal"}.
+#'   value is \code{"lognormal"}. So far no other distribution is implemented.
 #'
 #' @return A named vector of estimated parameters for the specified
 #'   distribution.
@@ -51,7 +53,7 @@ dist_delay_register <- function(date_prod, date_register,
 
   if (distribution == "lognormal") {
     logmu_regist <- mean(log(t_regist[t_regist > 0]), na.rm = TRUE)
-    logsd_regist <- stats::sd(log(t_regist[t_regist > 0]), na.rm = TRUE)
+    logsd_regist <- sd(log(t_regist[t_regist > 0]), na.rm = TRUE)
 
     estimates <- c(logmu_regist, logsd_regist)
     names(estimates) <- c("meanlog_register", "sdlog_register")
@@ -62,27 +64,29 @@ dist_delay_register <- function(date_prod, date_register,
   return(estimates)
 }
 
-#' Adjustment of operating times by delays in registration using Monte Carlo
-#' method
+#' Adjustment of operating times by delays in registration using a Monte Carlo
+#' approach
 #'
 #' In general the amount of information about units in the field that have not
 #' failed yet are rare. For example it is common that a supplier, who provides
 #' parts to the automotive industry does not know when a vehicle was put in
 #' service and therefore does not know the exact operating time of the supplied
-#' parts. This function uses the Monte Carlo method for simulating the operating
+#' parts. This function uses a Monte Carlo approach for simulating the operating
 #' times of (multiple) right censored observations, taking account of registering
 #' delays. The simulation is based on the distribution of operating times that were
 #' calculated from complete data (see \code{\link{dist_delay_register}}).
 #'
 #' @param date_prod a vector of class \code{"character"} or \code{"Date"}
-#'   indicating the date of production of a unit.
+#'   indicating the date of production of a unit. If no date is available
+#'   use \code{NA}.
 #' @param date_register a vector of class \code{"character"} or \code{"Date"}
-#'   indicating the date of registration of a unit.
+#'   indicating the date of registration of a unit. If no date is available
+#'   use \code{NA}.
 #' @param x a numeric vector of operating times.
 #' @param event a vector of binary data (0 or 1) indicating whether unit \emph{i}
 #'   is a right censored observation (= 0) or a failure (= 1).
-#' @param distribution supposed distribution of delay in registration. The
-#'   default value is \code{"lognormal"}.
+#' @param distribution supposed distribution of the random variable. The default
+#'   value is \code{"lognormal"}. So far no other distribution is implemented.
 #' @param seed if \code{seed = NULL} a random seed is used. Otherwise the user
 #'   can specify an integer for the seed.
 #' @param details a logical variable, where the default value is \code{FALSE}.
@@ -92,12 +96,12 @@ dist_delay_register <- function(date_prod, date_register,
 #'   the same vector as described before, simulated random numbers, estimated
 #'   distribution parameters and a seed for reproducibility.
 #'
-#' @return A numerical vector of corrected operating times for the censored units
+#' @return A numeric vector of corrected operating times for the censored units
 #'   and the input operating times for the failed units if
 #'   \code{details = FALSE}. If \code{details = TRUE} the output is a list which
 #'   consists of the following entries:
 #'   \itemize{
-#'   \item \code{time} : Numerical vector of corrected operating times for the
+#'   \item \code{time} : Numeric vector of corrected operating times for the
 #'     censored observations and input operating times for failed units.
 #'   \item \code{x_sim} : Simulated random numbers of specified distribution with
 #'     estimated parameters. The length of \code{x_sim} is equal to the number of
@@ -124,7 +128,7 @@ dist_delay_register <- function(date_prod, date_register,
 #'                           NA, "2014-03-21", "2014-06-19", NA, NA)
 #'
 #' op_time <- rep(1000, length(date_of_production))
-#' state <- sample(c(0, 1), size = length(date_of_production), replace = TRUE)
+#' state <- c(0, 1, 1, 1, 0, 0, 1, 0, 1, 1, 1, 0, 1, 0, 0, 1, 0, 1, 0, 1, 1, 0, 0)
 #'
 #' # Example 1 - Simplified vector output:
 #' x_corrected <- mcs_delay_register(date_prod = date_of_production,
@@ -152,7 +156,7 @@ mcs_delay_register <- function(date_prod, date_register, x, event,
   if (!is.null(seed)) {
     int_seed <- seed
   } else {
-    int_seed <- ceiling(stats::runif(n = 1, min = 0, max = 1e6))
+    int_seed <- ceiling(runif(n = 1, min = 0, max = 1e6))
   }
   set.seed(int_seed)
 
@@ -160,11 +164,14 @@ mcs_delay_register <- function(date_prod, date_register, x, event,
   # data.
   n_rand <- sum(is.na(date_register))
 
-  if (!stats::complete.cases(date_prod) || !stats::complete.cases(date_register)) {
-    prod_date <- date_prod[(stats::complete.cases(date_prod) &
-                            stats::complete.cases(date_register))]
-    register_date <- date_register[(stats::complete.cases(date_prod) &
-                                    stats::complete.cases(date_register))]
+  if (!complete.cases(date_prod) || !complete.cases(date_register)) {
+    prod_date <- date_prod[(complete.cases(date_prod) &
+        complete.cases(date_register))]
+    register_date <- date_register[(complete.cases(date_prod) &
+        complete.cases(date_register))]
+  } else {
+    prod_date <- date_prod
+    register_date <- date_register
   }
 
   if (distribution == "lognormal") {
@@ -172,18 +179,18 @@ mcs_delay_register <- function(date_prod, date_register, x, event,
                                   date_register = register_date,
                                   distribution = "lognormal")
 
-    x_sim <- stats::rlnorm(n = n_rand, meanlog = params[[1]], sdlog = params[[2]])
+    x_sim <- rlnorm(n = n_rand, meanlog = params[[1]], sdlog = params[[2]])
   } else {
     stop("No valid distribution!")
   }
 
-  x[event == 0] <- x[is.na(date_register)] - x_sim
+  x[is.na(date_register)] <- x[is.na(date_register)] - x_sim
 
   if (details == FALSE) {
     output <- x
   } else {
     output <- list(time = x, x_sim = x_sim, coefficients = params,
-                   int_seed = int_seed)
+      int_seed = int_seed)
   }
   return(output)
 }
@@ -196,11 +203,13 @@ mcs_delay_register <- function(date_prod, date_register, x, event,
 #' using MLE.
 #'
 #' @param date_repair a vector of class \code{"character"} or \code{"Date"}
-#'   indicating the date of repair of a failed unit.
+#'   indicating the date of repair of a failed unit. If no date is available
+#'   use \code{NA}.
 #' @param date_report a vector of class \code{"character"} or \code{"Date"}
-#'   indicating the date of the report of a failed unit.
+#'   indicating the date of the report of a failed unit. If no date is available
+#'   use \code{NA}.
 #' @param distribution supposed distribution of the random variable. The default
-#'   value is \code{"lognormal"}.
+#'   value is \code{"lognormal"}. So far no other distribution is implemented.
 #'
 #' @return A named vector of estimated parameters for the specified
 #'   distribution.
@@ -249,26 +258,28 @@ dist_delay_report <- function(date_repair, date_report,
   return(estimates)
 }
 
-#' Adjustment of operating times by delays in report using Monte Carlo method
+#' Adjustment of operating times by delays in report using a Monte Carlo approach
 #'
 #' The delay in report describes the time between the occurence of a damage and
 #' the registration in the warranty database. For a given date where the analysis
 #' is made there could be units which had a failure but are not registered in the
 #' database and therefore treated as censored units. To overcome this problem
-#' this function uses the Monte Carlo method for simulating the operating
+#' this function uses a Monte Carlo approach for simulating the operating
 #' times of (multiple) right censored observations, taking account of reporting
 #' delays. The simulation is based on the distribution of operating times that were
 #' calculated from complete data (see \code{\link{dist_delay_report}}).
 #'
 #' @param date_repair a vector of class \code{"character"} or \code{"Date"}
-#'   indicating the date of repair of a failed unit.
+#'   indicating the date of repair of a failed unit. If no date is available
+#'   use \code{NA}.
 #' @param date_report a vector of class \code{"character"} or \code{"Date"}
-#'   indicating the date of the report of a failed unit.
+#'   indicating the date of the report of a failed unit. If no date is available
+#'   use \code{NA}.
 #' @param x a numeric vector of operating times.
 #' @param event a vector of binary data (0 or 1) indicating whether unit \emph{i}
 #'   is a right censored observation (= 0) or a failure (= 1).
 #' @param distribution supposed distribution of delay in registration. The
-#'   default value is \code{"lognormal"}.
+#'   default value is \code{"lognormal"}. So far no other distribution is implemented.
 #' @param seed if \code{seed = NULL} a random seed is used. Otherwise the user
 #'   can specify an integer for the seed.
 #' @param details a logical variable, where the default value is \code{FALSE}.
@@ -278,12 +289,12 @@ dist_delay_report <- function(date_repair, date_report,
 #'   the same vector as described before, simulated random numbers, estimated
 #'   distribution parameters and a seed for reproducibility.
 #'
-#' @return A numerical vector of corrected operating times for the censored units
+#' @return A numeric vector of corrected operating times for the censored units
 #'   and the input operating times for the failed units if
 #'   \code{details = FALSE}. If \code{details = TRUE} the output is a list which
 #'   consists of the following entries:
 #'   \itemize{
-#'   \item \code{time} : Numerical vector of corrected operating times for the
+#'   \item \code{time} : Numeric vector of corrected operating times for the
 #'     censored observations and input operating times for failed units.
 #'   \item \code{x_sim} : Simulated random numbers of specified distribution with
 #'     estimated parameters. The length of \code{x_sim} is equal to the number of
@@ -308,7 +319,7 @@ dist_delay_report <- function(date_repair, date_report,
 #'                     "2015-12-02", NA, NA)
 #'
 #' op_time <- rep(1000, length(date_of_repair))
-#' state <- sample(c(0, 1), size = length(date_of_repair), replace = TRUE)
+#' state <- c(0, 1, 1, 1, 0, 0, 1, 0, 1, 1, 1, 0, 1, 0, 0, 1, 0, 1, 0, 1, 1, 0, 0)
 #'
 #' # Example 1 - Simplified vector output:
 #' x_corrected <- mcs_delay_report(date_repair = date_of_repair,

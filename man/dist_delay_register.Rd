@@ -8,20 +8,22 @@ dist_delay_register(date_prod, date_register, distribution = "lognormal")
 }
 \arguments{
 \item{date_prod}{a vector of class \code{"character"} or \code{"Date"}
-indicating the date of production of a unit.}
+indicating the date of production of a unit. If no date is available
+use \code{NA}.}
 
 \item{date_register}{a vector of class \code{"character"} or \code{"Date"}
-indicating the date of registration of a unit.}
+indicating the date of registration of a unit. If no date is available
+use \code{NA}.}
 
 \item{distribution}{supposed distribution of the random variable. The default
-value is \code{"lognormal"}.}
+value is \code{"lognormal"}. So far no other distribution is implemented.}
 }
 \value{
 A named vector of estimated parameters for the specified
   distribution.
 }
 \description{
-This function generates a delay random variable by calculating the time
+This function introduces a delay random variable by calculating the time
 difference between the registration and production date for the sample units
 and afterwards estimates the parameter(s) of a supposed distribution,
 using MLE.

@@ -2,17 +2,19 @@
 % Please edit documentation in R/delay_distributions.R
 \name{mcs_delay_report}
 \alias{mcs_delay_report}
-\title{Adjustment of operating times by delays in report using Monte Carlo method}
+\title{Adjustment of operating times by delays in report using a Monte Carlo approach}
 \usage{
 mcs_delay_report(date_repair, date_report, x, event,
   distribution = "lognormal", details = FALSE, seed = NULL)
 }
 \arguments{
 \item{date_repair}{a vector of class \code{"character"} or \code{"Date"}
-indicating the date of repair of a failed unit.}
+indicating the date of repair of a failed unit. If no date is available
+use \code{NA}.}
 
 \item{date_report}{a vector of class \code{"character"} or \code{"Date"}
-indicating the date of the report of a failed unit.}
+indicating the date of the report of a failed unit. If no date is available
+use \code{NA}.}
 
 \item{x}{a numeric vector of operating times.}
 
@@ -20,7 +22,7 @@ indicating the date of the report of a failed unit.}
 is a right censored observation (= 0) or a failure (= 1).}
 
 \item{distribution}{supposed distribution of delay in registration. The
-default value is \code{"lognormal"}.}
+default value is \code{"lognormal"}. So far no other distribution is implemented.}
 
 \item{details}{a logical variable, where the default value is \code{FALSE}.
 If \code{FALSE} the output consists of a vector with corrected operating
@@ -33,12 +35,12 @@ distribution parameters and a seed for reproducibility.}
 can specify an integer for the seed.}
 }
 \value{
-A numerical vector of corrected operating times for the censored units
+A numeric vector of corrected operating times for the censored units
   and the input operating times for the failed units if
   \code{details = FALSE}. If \code{details = TRUE} the output is a list which
   consists of the following entries:
   \itemize{
-  \item \code{time} : Numerical vector of corrected operating times for the
+  \item \code{time} : Numeric vector of corrected operating times for the
     censored observations and input operating times for failed units.
   \item \code{x_sim} : Simulated random numbers of specified distribution with
     estimated parameters. The length of \code{x_sim} is equal to the number of
@@ -52,7 +54,7 @@ The delay in report describes the time between the occurence of a damage and
 the registration in the warranty database. For a given date where the analysis
 is made there could be units which had a failure but are not registered in the
 database and therefore treated as censored units. To overcome this problem
-this function uses the Monte Carlo method for simulating the operating
+this function uses a Monte Carlo approach for simulating the operating
 times of (multiple) right censored observations, taking account of reporting
 delays. The simulation is based on the distribution of operating times that were
 calculated from complete data (see \code{\link{dist_delay_report}}).
@@ -71,7 +73,7 @@ date_of_report <- c(NA, "2014-10-09", "2015-08-28", "2015-04-15", NA,
                     "2015-12-02", NA, NA)
 
 op_time <- rep(1000, length(date_of_repair))
-state <- sample(c(0, 1), size = length(date_of_repair), replace = TRUE)
+state <- c(0, 1, 1, 1, 0, 0, 1, 0, 1, 1, 1, 0, 1, 0, 0, 1, 0, 1, 0, 1, 1, 0, 0)
 
 # Example 1 - Simplified vector output:
 x_corrected <- mcs_delay_report(date_repair = date_of_repair,
