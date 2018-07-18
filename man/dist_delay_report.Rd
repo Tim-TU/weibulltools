@@ -7,13 +7,13 @@
 dist_delay_report(date_repair, date_report, distribution = "lognormal")
 }
 \arguments{
-\item{date_repair}{a vector of class \code{"character"} or \code{"Date"}
-indicating the date of repair of a failed unit. If no date is available
-use \code{NA}.}
+\item{date_repair}{a vector of class \code{"character"} or \code{"Date"}, in the
+format "yyyy-mm-dd", indicating the date of repair of a failed unit.
+If no date is available use \code{NA}.}
 
-\item{date_report}{a vector of class \code{"character"} or \code{"Date"}
-indicating the date of the report of a failed unit. If no date is available
-use \code{NA}.}
+\item{date_report}{a vector of class \code{"character"} or \code{"Date"}, in the
+format "yyyy-mm-dd", indicating the date of report of a failed unit.
+If no date is available use \code{NA}.}
 
 \item{distribution}{supposed distribution of the random variable. The default
 value is \code{"lognormal"}. So far no other distribution is implemented.}
@@ -23,7 +23,7 @@ A named vector of estimated parameters for the specified
   distribution.
 }
 \description{
-This function generates a delay random variable by calculating the time
+This function introduces a delay random variable by calculating the time
 difference between the report and repair date for the sample units
 and afterwards estimates the parameter(s) of a supposed distribution,
 using MLE.

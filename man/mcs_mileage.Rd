@@ -2,22 +2,22 @@
 % Please edit documentation in R/mileage_distribution.R
 \name{mcs_mileage}
 \alias{mcs_mileage}
-\title{Estimation of driving distances for censored observations using Monte Carlo
-method}
+\title{Estimation of driving distances for censored observations using a Monte Carlo
+approach}
 \usage{
 mcs_mileage(x, event, mileage, distribution = "lognormal", seed = NULL,
   details = FALSE)
 }
 \arguments{
-\item{x}{a numeric vector of operating times.}
+\item{x}{a numeric vector of operating times. If not available use \code{NA}.}
 
 \item{event}{a vector of binary data (0 or 1) indicating whether unit \emph{i}
 is a right censored observation (= 0) or a failure (= 1).}
 
-\item{mileage}{a numeric vector of driven distances.}
+\item{mileage}{a numeric vector of driven distances. If not available use \code{NA}.}
 
-\item{distribution}{supposed distribution of mileage. The default value is
-\code{"lognormal"}.}
+\item{distribution}{supposed distribution of the random variable. The default
+value is \code{"lognormal"}. So far no other distribution is implemented.}
 
 \item{seed}{if \code{seed = NULL} a random seed is used. Otherwise the user
 can specify an integer for the seed.}
@@ -48,11 +48,13 @@ A numerical vector of simulated driving distances for the censored
 \description{
 This function simulates driving distances for censored observations under the
 condition that the operating time of these items is known up to a certain date
-where analysis is made. The failed observations (where the driving distances
-are known) are used to estimate an annual mileage distribution. If the mileage
-distribution is fully specified annual random driving distances are drawn from
-this distribution and afterwards adjusted to the operating times of the
-censored observations.
+where analysis is made. Operating times for these units can be estimated with
+functions like \code{\link{mcs_delay_register}}, \code{\link{mcs_delay_report}}
+and \code{\link{mcs_delays}}.
+The failed observations (where the driving distances are known) are used to
+estimate an annual mileage distribution. If the mileage distribution is fully
+specified annual random driving distances are drawn from this distribution and
+afterwards adjusted to the operating times of the censored observations.
 }
 \examples{
 # Example 1 - Simplified vector output (complete data):

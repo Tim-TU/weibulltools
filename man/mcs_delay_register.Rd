@@ -9,13 +9,13 @@ mcs_delay_register(date_prod, date_register, x, event,
   distribution = "lognormal", seed = NULL, details = FALSE)
 }
 \arguments{
-\item{date_prod}{a vector of class \code{"character"} or \code{"Date"}
-indicating the date of production of a unit. If no date is available
-use \code{NA}.}
+\item{date_prod}{a vector of class \code{"character"} or \code{"Date"}, in the
+format "yyyy-mm-dd", indicating the date of production of a unit.
+If no date is available use \code{NA}.}
 
-\item{date_register}{a vector of class \code{"character"} or \code{"Date"}
-indicating the date of registration of a unit. If no date is available
-use \code{NA}.}
+\item{date_register}{a vector of class \code{"character"} or \code{"Date"}, in
+the format "yyyy-mm-dd", indicating the date of registration of a unit.
+If no date is available use \code{NA}.}
 
 \item{x}{a numeric vector of operating times.}
 
@@ -51,8 +51,8 @@ A numeric vector of corrected operating times for the censored units
   \item \code{int_seed} : Integer seed number for reproducibility.}
 }
 \description{
-In general the amount of information about units in the field that have not
-failed yet are rare. For example it is common that a supplier, who provides
+In general the amount of information about units in the field, that have not
+failed yet, are rare. For example it is common that a supplier, who provides
 parts to the automotive industry does not know when a vehicle was put in
 service and therefore does not know the exact operating time of the supplied
 parts. This function uses a Monte Carlo approach for simulating the operating

@@ -8,25 +8,29 @@ mcs_delays(date_prod, date_register, date_repair, date_report, x, event,
   distribution = "lognormal", details = FALSE, seed = NULL)
 }
 \arguments{
-\item{date_prod}{a vector of class \code{"character"} or \code{"Date"}
-indicating the date of production of a unit.}
+\item{date_prod}{a vector of class \code{"character"} or \code{"Date"}, in the
+format "yyyy-mm-dd", indicating the date of production of a unit.
+If no date is available use \code{NA}.}
 
-\item{date_register}{a vector of class \code{"character"} or \code{"Date"}
-indicating the date of registration of a unit.}
+\item{date_register}{a vector of class \code{"character"} or \code{"Date"}, in the
+format "yyyy-mm-dd", indicating the date of registration of a unit.
+If no date is available use \code{NA}.}
 
-\item{date_repair}{a vector of class \code{"character"} or \code{"Date"}
-indicating the date of repair of a failed unit.}
+\item{date_repair}{a vector of class \code{"character"} or \code{"Date"}, in the
+format "yyyy-mm-dd", indicating the date of repair of a failed unit.
+If no date is available use \code{NA}.}
 
-\item{date_report}{a vector of class \code{"character"} or \code{"Date"}
-indicating the date of the report of a failed unit.}
+\item{date_report}{a vector of class \code{"character"} or \code{"Date"}, in the
+format "yyyy-mm-dd", indicating the date of report of a failed unit.
+If no date is available use \code{NA}.}
 
 \item{x}{a numeric vector of operating times.}
 
 \item{event}{a vector of binary data (0 or 1) indicating whether unit \emph{i}
 is a right censored observation (= 0) or a failure (= 1).}
 
-\item{distribution}{supposed distribution of delay in registration. The
-default value is \code{"lognormal"}.}
+\item{distribution}{supposed distribution of the random variable. The default
+value is \code{"lognormal"}. So far no other distribution is implemented.}
 
 \item{details}{a logical variable, where the default value is \code{FALSE}.
 If \code{FALSE} the output consists of a vector with corrected operating

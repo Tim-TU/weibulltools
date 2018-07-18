@@ -9,7 +9,6 @@ Description: The weibulltools package contains methods for examining bench test 
 License: GPL-2
 Imports:
     dplyr, 
-    hcci,
     LearnBayes,
     magrittr, 
     plotly, 

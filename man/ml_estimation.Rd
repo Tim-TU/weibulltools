@@ -2,7 +2,7 @@
 % Please edit documentation in R/parameter_estimators.R
 \name{ml_estimation}
 \alias{ml_estimation}
-\title{ML Estimation for the Weibull distribution}
+\title{ML Estimation for Two-Parameter Lifetime Distributions}
 \usage{
 ml_estimation(x, event, distribution = c("weibull", "lognormal",
   "loglogistic"), conf_level = 0.95, details = TRUE)
@@ -16,35 +16,40 @@ cycles.}
 \item{event}{a vector of binary data (0 or 1) indicating whether unit \emph{i}
 is a right censored observation (= 0) or a failure (= 1).}
 
-\item{distribution}{supposed distribution of the random variable. The default
-value is \code{"weibull"}.}
+\item{distribution}{supposed distribution of the random variable. The
+value can be \code{"weibull"}, \code{"lognormal"} or \code{"loglogistic"}.
+Other distributions have not been implemented yet.}
 
 \item{conf_level}{confidence level of the interval. The default value is
-\code{conf_level = 0.95}}
+\code{conf_level = 0.95}.}
 
 \item{details}{a logical variable, where the default value is \code{TRUE}.
 If \code{FALSE} the output consists of a list that only contains the
-distribution coefficients. If \code{TRUE} the output is a detailed list
-that contains the distribution coefficients, their confidence intervals
-and the log-likelihood value.}
+estimated parameters. If \code{TRUE} the output is a detailed list with
+many more information. See below (\strong{Value}).}
 }
 \value{
-Returns a list with the following components:
+Returns a list with the following components (depending on
+\code{details} argument):
   \itemize{
-  \item \code{coefficients} : Where \eqn{\eta} is the scale parameter and
-    \eqn{\beta} is the shape parameter
-  \item \code{confint} : The estimated confidence intervals of the
-    parameters.
+  \item \code{coefficients} : Provided, if \code{distribution} is \code{"weibull"}.
+    \eqn{\eta} is the estimated scale and \eqn{\beta} the estimated shape parameter.
+  \item \code{confint} : Provided, if \code{distribution} is \code{"weibull"}.
+    Confidence interval for \eqn{\eta} and \eqn{\beta}.
+  \item \code{loc_sc_coefficients} : Estimated location-scale parameters.
+  \item \code{loc_sc_confint} : Confidence interval for location-scale parameters.
+  \item \code{loc_sc_vcov} : Estimated Variance-Covariance matrix of the used
+    location-scale distribution.
   \item \code{logL} : The log-likelihood value.}
 }
 \description{
-This method estimates the parameters and normal approximated confidence
-intervals of a two-parameter Weibull distribution in the frequently used
+This method estimates the parameters and calculates normal approximation confidence
+intervals for a two-parameter lifetime distribution in the frequently used
 location-scale parametrization. \code{ml_estimation} uses the
 \code{\link{Lifedata.MLE}} function that is defined in the
 \emph{SPREDA} package.
-Afterwards the estimates are transformed such that they are in line with the
-parametrization provided by the \emph{stats} package like
+For the Weibull the estimates are transformed such that they are in line with
+the parametrization provided by the \emph{stats} package like
 \code{\link{pweibull}}. The method is applicable for complete and (multiple)
 right censored data.
 }

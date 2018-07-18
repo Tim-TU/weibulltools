@@ -19,13 +19,13 @@ is a right censored observation (= 0) or a failure (= 1).}
 }
 \value{
 A data frame containing id, lifetime characteristic, status of the
-  unit, the adjusted rank and the estimated failure probabilty. For right
+  unit, the adjusted rank and the estimated failure probability. For right
   censored observations the cells of the rank and probabilty columns are
   filled with NA values.
 }
 \description{
-This non-parametric approach is used to estimate the failure probabilites in
-terms of (multiple) right censored data. Compared to complete cases the
+This non-parametric approach is used to estimate the failure probabilities in
+terms of (multiple) right censored data. Compared to complete data the
 correction is done by calculating adjusted ranks which takes non-defective
 units into account.
 }

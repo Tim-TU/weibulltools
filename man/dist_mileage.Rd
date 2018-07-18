@@ -7,48 +7,43 @@
 dist_mileage(x, event, mileage, distribution = "lognormal")
 }
 \arguments{
-\item{x}{a numeric vector of operating times.}
+\item{x}{a numeric vector of operating times. If not available use \code{NA}.}
 
 \item{event}{a vector of binary data (0 or 1) indicating whether unit \emph{i}
 is a right censored observation (= 0) or a failure (= 1).}
 
-\item{mileage}{a numeric vector of driven distances.}
+\item{mileage}{a numeric vector of driven distances. If not available use \code{NA}.}
 
-\item{distribution}{supposed distribution of mileage. The default value is
-\code{"lognormal"}.}
+\item{distribution}{supposed distribution of the random variable. The default
+value is \code{"lognormal"}. So far no other distribution is implemented.}
 }
 \value{
 A named vector of estimated parameters for the specified mileage
   distribution.
 }
 \description{
-This function generates a random variable of annual mileage using the units in
+This function introduces a random variable of annual mileage using the units in
 the sample that had a failure and afterwards estimates the parameter(s) of a
 supposed distribution, using MLE.
 }
 \examples{
-date_of_registration <- c("2014-08-17", "2014-03-29", "2014-12-06",
-                          "2014-09-09", "2014-05-14", "2014-07-01",
-                          "2014-06-16", "2014-04-03", "2014-05-23",
-                          "2014-05-09", "2014-05-31", "2014-08-12",
-                          "2014-04-13", "2014-02-15", "2014-07-07",
-                          "2014-03-12", "2014-05-27", "2014-06-02",
-                          "2014-05-20", "2014-03-21", "2014-06-19",
-                          "2014-02-12", "2014-03-27")
-date_of_repair <- c("2014-10-21", "2014-09-15", "2015-07-04", "2015-04-10",
-                    "2015-02-15", "2015-04-14", "2015-04-24", "2015-02-27",
-                    "2015-04-25", "2015-04-24", "2015-06-12", "2015-08-26",
-                    "2015-05-04", "2015-04-04", "2015-09-06", "2015-05-22",
-                    "2015-08-21", "2015-09-17", "2015-09-15", "2015-08-15",
-                    "2015-11-26", "2015-08-22", "2015-10-05")
+date_of_registration <- c(NA, "2014-03-29", "2014-12-06", "2014-09-09", NA,
+                          NA, "2014-06-16", NA, "2014-05-23", "2014-05-09",
+                          "2014-05-31", NA, "2014-04-13", NA, NA, "2014-03-12",
+                          NA, "2014-06-02", NA, "2014-03-21", "2014-06-19",
+                          NA, NA)
+date_of_repair <- c(NA, "2014-09-15", "2015-07-04", "2015-04-10", NA,
+                    NA, "2015-04-24", NA, "2015-04-25", "2015-04-24",
+                    "2015-06-12", NA, "2015-05-04", NA, NA, "2015-05-22",
+                    NA, "2015-09-17", NA, "2015-08-15", "2015-11-26", NA, NA)
 
 op_time <- as.numeric(difftime(as.Date(date_of_repair),
                                as.Date(date_of_registration),
                                units = "days"))
-mileage <- c(5227, 15655, 13629, 18292, 24291, 34455, 33555, 21659, 21737,
-             29870, 21068, 22986, 122283, 31592, 49050, 36088, 10918, 11153,
-             122437, 122842, 20349, 65656, 40777)
-state <- rep(1, length(op_time))
+mileage <- c(NA, 15655, 13629, 18292, NA, NA, 33555, NA, 21737,
+             29870, 21068, NA, 122283, NA, NA, 36088, NA, 11153,
+             NA, 122842, 20349, NA, NA)
+state <- c(0, 1, 1, 1, 0, 0, 1, 0, 1, 1, 1, 0, 1, 0, 0, 1, 0, 1, 0, 1, 1, 0, 0)
 
 params_mileage_annual <- dist_mileage(x = op_time, event = state,
                                       mileage = mileage,

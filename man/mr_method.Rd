@@ -22,11 +22,11 @@ or "invbeta".}
 }
 \value{
 A data frame containing id, lifetime characteristic, status of the
-  unit, the rank and the estimated failure probabilty.
+  unit, the rank and the estimated failure probability.
 }
 \description{
 This non-parametric approach (\emph{Median Ranks}) is used to estimate the
-failure probabilites in terms of complete data. Two methods are available to
+failure probabilities in terms of complete data. Two methods are available to
 estimate the cumulative distribution function \emph{F(t)}:
 \itemize{
   \item "benard"; Benard's approximation for Median Ranks

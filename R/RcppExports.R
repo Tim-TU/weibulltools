@@ -10,10 +10,10 @@
 #'   specific realization of the lifetime characteristic.
 #' @param n_out a numeric vector indicating the number of failed and censored
 #'   units that have a shorter realization of lifetime characteristic as unit
-#'   \emph{i}
-#' @param n an integer value indicating the sample size
+#'   \emph{i}.
+#' @param n an integer value indicating the sample size.
 #'
-#' @return A numeric vector including the computed Johnson ranks.
+#' @return A numeric vector containing the computed Johnson ranks.
 #' @export
 #' @examples
 #'   defectives <- c(0, 1, 2, 0, 0, 0, 3, 0, 2, 0)

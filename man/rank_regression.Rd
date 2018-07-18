@@ -2,7 +2,7 @@
 % Please edit documentation in R/parameter_estimators.R
 \name{rank_regression}
 \alias{rank_regression}
-\title{Rank Regression for the Weibull, Lognormal and Loglogistic distribution}
+\title{Rank Regression for Two-Parameter Lifetime Distributions}
 \usage{
 rank_regression(x, y, event, distribution = c("weibull", "lognormal",
   "loglogistic"), conf_level = 0.95, details = TRUE)
@@ -20,41 +20,51 @@ regarding the lifetime data in \code{x}.}
 is a right censored observation (= 0) or a failure (= 1).}
 
 \item{distribution}{supposed distribution of the random variable. The
-value can be \code{"weibull"}, \code{"lognormal"} or \code{"loglogistic"}.}
+value can be \code{"weibull"}, \code{"lognormal"} or \code{"loglogistic"}.
+Other distributions have not been implemented yet.}
 
 \item{conf_level}{confidence level of the interval. The default value is
-\code{conf_level = 0.95}}
+\code{conf_level = 0.95}.}
 
 \item{details}{a logical variable, where the default value is \code{TRUE}.
 If \code{FALSE} the output consists of a list that only contains the
-distribution coefficients. If \code{TRUE} the output is a detailed list
-that contains the distribution coefficients, their confidence intervals
-and the r squared value of the regression model.}
+estimated parameters. If \code{TRUE} the output is a detailed list with
+many more information. See below (\strong{Value}).}
 }
 \value{
-Returns a list with the following components:
+Returns a list with the following components (depending on
+  \code{details} argument):
   \itemize{
-  \item \code{coefficients} : Where \eqn{\eta} is the scale parameter and
-    \eqn{\beta} is the shape parameter
-  \item \code{confint} : The estimated confidence intervals of the
-    parameters.
+  \item \code{coefficients} : Provided, if \code{distribution} is \code{"weibull"}.
+    \eqn{\eta} is the estimated scale and \eqn{\beta} the estimated shape parameter.
+  \item \code{confint} : Provided, if \code{distribution} is \code{"weibull"}.
+    Confidence interval for \eqn{\eta} and \eqn{\beta}.
+  \item \code{loc_sc_coefficients} : Estimated location-scale parameters.
+  \item \code{loc_sc_confint} : Confidence interval for location-scale parameters.
+  \item \code{loc_sc_vcov} : Provided, if \code{distribution} is not
+    \code{"weibull"}. Estimated heteroscedasticity-consistent
+    Variance-Covariance matrix of the used location-scale distribution.
   \item \code{r_squared} : Coefficient of determination.}
 }
 \description{
 This method fits an \strong{x on y} regression to the linearized
 two-parameter cdf and is applicable for complete and (multiple) right
-censored data. The weibull-specific parameters are estimated in the frequently
-used location-scale parametrization and afterwards are transformed such that
+censored data. The parameters are estimated in the frequently used
+location-scale parametrization. For the Weibull, estimates are transformed such that
 they are in line with the parametrization provided by the \emph{stats} package
 like \code{\link{pweibull}}.
 }
 \details{
-When using this method, the approximated confidence intervals for the Weibull parameters (based on p. 51
-of Ralf Mock) can only be estimated for the following confidence levels:
+When using this method, the approximated confidence intervals for the Weibull
+parameters (based on p. 51 of Ralf Mock) can only be estimated for the
+following confidence levels:
 \itemize{
   \item \code{conf_level} = 0.90,
   \item \code{conf_level} = 0.95,
   \item \code{conf_level} = 0.99.}
+
+If the distribution is not the Weibull, the confidence intervals of the
+parameters are calculated using a heteroscedasticity-consistent covariance matrix.
 }
 \examples{
 obs   <- seq(10000, 100000, 10000)

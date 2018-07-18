@@ -23,7 +23,13 @@ A data frame containing id, lifetime characteristic, status of the
   the cells of probability column are filled with NA.
 }
 \description{
-Estimation of failure probabilities using the Nelson-Aalen estimator
+This non-parametric approach estimates the cumulative hazard rate in
+terms of (multiple) right censored data. By equating the definition of the
+hazard rate with the hazard rate according to Nelson-Aalen one can calculate
+the failure probabilities.
+Since the failure probability estimation in this function is not based on median ranks,
+the Betabinomial confidence intervals cannot be estimated on the basis of
+Nelson-Aalen failure probabilities.
 }
 \examples{
 obs   <- seq(10000, 100000, 10000)

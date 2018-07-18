@@ -31,10 +31,10 @@ One modification is made in contrast to the orginial Kaplan-Meier estimator
 If the last unit (unit with highest observed lifetime) is a defective unit,
 the estimator is adjusted in such a way that the survival estimate for this
 unit is not \emph{zero} and therefore the estimate for the failure probability is
-not equal to \emph{one}. Otherwise the estimate in this context would be very
+not equal to \emph{one}. Otherwise the estimate in this context would be too
 pessimisitc.
 Since the failure probability estimation in this function is not based on median ranks,
-the Betabinomial and Fisher confidence intervals cannot be estimated on the basis of
+the Betabinomial confidence intervals cannot be estimated on the basis of
 Kaplan-Meier failure probabilities.
 }
 \examples{

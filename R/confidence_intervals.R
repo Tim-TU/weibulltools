@@ -1,4 +1,4 @@
-#' Estimation of Quantiles using a Parametric Survival Model
+#' Estimation of Quantiles using a Parametric Lifetime Distribution
 #'
 #' This function estimates the quantiles for a given set of estimated
 #' location-scale parameters and specified failure probabilities.
@@ -12,6 +12,7 @@
 #'   parameter \eqn{\sigma}.
 #' @param distribution supposed distribution of the random variable. The
 #'   value can be \code{"weibull"}, \code{"lognormal"} or \code{"loglogistic"}.
+#'   Other distributions have not been implemented yet.
 #'
 #' @return A vector containing the estimated quantiles for a given set of
 #'   failure probabilities and estimated parameters.
@@ -22,13 +23,15 @@
 #' quants <- predict_quantile(p = c(0.01, 0.1, 0.5), loc_sc_params = c(5, 0.5),
 #'                            distribution = "weibull")
 
-predict_quantile <- function(p, loc_sc_params, distribution = c("weibull", "lognormal", "loglogistic")) {
+predict_quantile <- function(p, loc_sc_params,
+  distribution = c("weibull", "lognormal", "loglogistic")) {
+
   if (distribution == "weibull") {
     quantiles <- SPREDA::qsev(p)
   } else if (distribution == "lognormal") {
-    quantiles <- stats::qnorm(p)
+    quantiles <- qnorm(p)
   } else if (distribution == "loglogistic") {
-    quantiles <- stats::qlogis(p)
+    quantiles <- qlogis(p)
   } else {
     stop("No valid distribution!")
   }
@@ -37,7 +40,7 @@ predict_quantile <- function(p, loc_sc_params, distribution = c("weibull", "logn
   return(x_pred)
 }
 
-#' Estimation of Failure Probabilities using a Parametric Survival Model
+#' Estimation of Failure Probabilities using a Parametric Lifetime Distribution
 #'
 #' This function estimates the failure probabilities for a given set of
 #' estimated location-scale parameters and specified quantiles.
@@ -50,6 +53,7 @@ predict_quantile <- function(p, loc_sc_params, distribution = c("weibull", "logn
 #'   parameter \eqn{\sigma}.
 #' @param distribution supposed distribution of the random variable. The
 #'   value can be \code{"weibull"}, \code{"lognormal"} or \code{"loglogistic"}.
+#'   Other distributions have not been implemented yet.
 #'
 #' @return A vector containing the estimated failure probabilities for a given
 #'   set of quantiles and estimated parameters.
@@ -59,16 +63,17 @@ predict_quantile <- function(p, loc_sc_params, distribution = c("weibull", "logn
 #' probs <- predict_prob(q = c(15, 48, 124), loc_sc_params = c(5, 0.5),
 #'                            distribution = "weibull")
 
-predict_prob <- function(q, loc_sc_params, distribution = c("weibull", "lognormal", "loglogistic")) {
+predict_prob <- function(q, loc_sc_params,
+  distribution = c("weibull", "lognormal", "loglogistic")) {
 
   z <- (log(q) - loc_sc_params[[1]]) / loc_sc_params[[2]]
 
   if (distribution == "weibull") {
     cd <- SPREDA::psev(z)
   } else if (distribution == "lognormal") {
-    cd <- stats::pnorm(z)
+    cd <- pnorm(z)
   } else if (distribution == "loglogistic") {
-    cd <- stats::plogis(z)
+    cd <- plogis(z)
   } else {
     stop("No valid distribution!")
   }
@@ -94,10 +99,11 @@ predict_prob <- function(q, loc_sc_params, distribution = c("weibull", "lognorma
 #'   second element needs to be the scale parameter \eqn{\sigma}.
 #' @param distribution supposed distribution of the random variable. The
 #'   value can be \code{"weibull"}, \code{"lognormal"} or \code{"loglogistic"}.
+#'   Other distributions have not been implemented yet.
 #' @param bounds a character string specifying the interval(s) which has/have to
 #'   be computed. Must be one of "two_sided" (default), "lower" or "upper".
 #' @param conf_level confidence level of the interval. The default value is
-#'   \code{conf_level = 0.95}
+#'   \code{conf_level = 0.95}.
 #' @param direction a character string specifying the direction of the computed
 #'   interval(s). Must be either "y" (failure probabilities) or "x" (quantiles).
 #'
@@ -124,9 +130,10 @@ predict_prob <- function(q, loc_sc_params, distribution = c("weibull", "lognorma
 #'                                   conf_level = 0.95,
 #'                                   direction = "y")
 
-confint_betabinom <- function(x, event, loc_sc_params, distribution = c("weibull", "lognormal", "loglogistic"),
-                              bounds = c("two_sided", "lower", "upper"),
-                              conf_level = .95, direction = c("y", "x")) {
+confint_betabinom <- function(x, event, loc_sc_params,
+       distribution = c("weibull", "lognormal", "loglogistic"),
+       bounds = c("two_sided", "lower", "upper"),
+       conf_level = .95, direction = c("y", "x")) {
 
   bounds <- match.arg(bounds)
   direction <- match.arg(direction)
@@ -157,14 +164,14 @@ confint_betabinom <- function(x, event, loc_sc_params, distribution = c("weibull
   virt_rank <- y_seq * (n + 0.4) + 0.3
 
   if (bounds == "two_sided") {
-    conf_up <- stats::qbeta((1 + conf_level) / 2, virt_rank, n - virt_rank + 1)
-    conf_low <- stats::qbeta((1 - conf_level) / 2, virt_rank, n - virt_rank + 1)
+    conf_up <- qbeta((1 + conf_level) / 2, virt_rank, n - virt_rank + 1)
+    conf_low <- qbeta((1 - conf_level) / 2, virt_rank, n - virt_rank + 1)
     list_confint <- list(lower_bound = conf_low, upper_bound = conf_up)
   } else if (bounds == "lower") {
-    conf_low <- stats::qbeta(1 - conf_level, virt_rank, n - virt_rank + 1)
+    conf_low <- qbeta(1 - conf_level, virt_rank, n - virt_rank + 1)
     list_confint <- list(lower_bound = conf_low)
   } else {
-    conf_up <- stats::qbeta(conf_level, virt_rank, n - virt_rank + 1)
+    conf_up <- qbeta(conf_level, virt_rank, n - virt_rank + 1)
     list_confint <- list(upper_bound = conf_up)
   }
 
@@ -208,6 +215,7 @@ confint_betabinom <- function(x, event, loc_sc_params, distribution = c("weibull
 #'   variance of the scale parameter Var(\eqn{\sigma}).
 #' @param distribution supposed distribution of the random variable. The
 #'   value can be \code{"weibull"}, \code{"lognormal"} or \code{"loglogistic"}.
+#'   Other distributions have not been implemented yet.
 #' @param direction a character string specifying the direction of the computed
 #'   standard errors. Must be either "y" (failure probability) or "x"
 #'   (quantile). If \code{p} is a quantile then \emph{direction} needs to be "y"
@@ -241,11 +249,11 @@ delta_method <- function(p, loc_sc_params, loc_sc_varcov,
 
     } else if (distribution == "lognormal") {
 
-      quantiles <- stats::qnorm(p)
+      quantiles <- qnorm(p)
 
     } else if (distribution == "loglogistic") {
 
-      quantiles <- stats::qlogis(p)
+      quantiles <- qlogis(p)
 
     } else {
 
@@ -266,11 +274,11 @@ delta_method <- function(p, loc_sc_params, loc_sc_varcov,
 
     } else if (distribution == "lognormal") {
 
-      pd <- stats::dnorm(p)
+      pd <- dnorm(p)
 
     } else if (distribution == "loglogistic") {
 
-      pd <- stats::dlogis(p)
+      pd <- dlogis(p)
 
     } else {
       stop("No valid distribution!")

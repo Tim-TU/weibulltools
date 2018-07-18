@@ -8,21 +8,21 @@ mcs_delay_report(date_repair, date_report, x, event,
   distribution = "lognormal", details = FALSE, seed = NULL)
 }
 \arguments{
-\item{date_repair}{a vector of class \code{"character"} or \code{"Date"}
-indicating the date of repair of a failed unit. If no date is available
-use \code{NA}.}
+\item{date_repair}{a vector of class \code{"character"} or \code{"Date"}, in the
+format "yyyy-mm-dd", indicating the date of repair of a failed unit.
+If no date is available use \code{NA}.}
 
-\item{date_report}{a vector of class \code{"character"} or \code{"Date"}
-indicating the date of the report of a failed unit. If no date is available
-use \code{NA}.}
+\item{date_report}{a vector of class \code{"character"} or \code{"Date"}, in the
+format "yyyy-mm-dd", indicating the date of report of a failed unit.
+If no date is available use \code{NA}.}
 
 \item{x}{a numeric vector of operating times.}
 
 \item{event}{a vector of binary data (0 or 1) indicating whether unit \emph{i}
 is a right censored observation (= 0) or a failure (= 1).}
 
-\item{distribution}{supposed distribution of delay in registration. The
-default value is \code{"lognormal"}. So far no other distribution is implemented.}
+\item{distribution}{supposed distribution of the random variable. The default
+value is \code{"lognormal"}. So far no other distribution is implemented.}
 
 \item{details}{a logical variable, where the default value is \code{FALSE}.
 If \code{FALSE} the output consists of a vector with corrected operating
@@ -57,7 +57,7 @@ database and therefore treated as censored units. To overcome this problem
 this function uses a Monte Carlo approach for simulating the operating
 times of (multiple) right censored observations, taking account of reporting
 delays. The simulation is based on the distribution of operating times that were
-calculated from complete data (see \code{\link{dist_delay_report}}).
+calculated from complete data, i.e. failed items (see \code{\link{dist_delay_report}}).
 }
 \examples{
 date_of_repair <- c(NA, "2014-09-15", "2015-07-04", "2015-04-10", NA,

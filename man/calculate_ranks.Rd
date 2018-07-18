@@ -12,12 +12,12 @@ specific realization of the lifetime characteristic.}
 
 \item{n_out}{a numeric vector indicating the number of failed and censored
 units that have a shorter realization of lifetime characteristic as unit
-\emph{i}}
+\emph{i}.}
 
-\item{n}{an integer value indicating the sample size}
+\item{n}{an integer value indicating the sample size.}
 }
 \value{
-A numeric vector including the computed Johnson ranks.
+A numeric vector containing the computed Johnson ranks.
 }
 \description{
 This function calculates the Johnson ranks which are used to estimate the
