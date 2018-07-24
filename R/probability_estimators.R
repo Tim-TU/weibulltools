@@ -48,7 +48,7 @@ mr_method <- function(x, event = rep(1, length(x)),
   if (method == "benard") {
     df <- dplyr::mutate(df, prob = (rank - .3) / (length(x) + .4))
   } else {
-    df <- dplyr::mutate(df, prob = qbeta(.5, rank, length(x) - rank + 1))
+    df <- dplyr::mutate(df, prob = stats::qbeta(.5, rank, length(x) - rank + 1))
   }
 
   event <- event[order(x)]

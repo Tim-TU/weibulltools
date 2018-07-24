@@ -1,4 +1,4 @@
-#' Estimation of Quantiles using a Parametric Lifetime Distribution
+#' Estimation of Quantiles for Parametric Lifetime Distributions
 #'
 #' This function estimates the quantiles for a given set of estimated
 #' location-scale parameters and specified failure probabilities.
@@ -26,12 +26,14 @@
 predict_quantile <- function(p, loc_sc_params,
   distribution = c("weibull", "lognormal", "loglogistic")) {
 
+  distribution <- match.arg(distribution)
+
   if (distribution == "weibull") {
     quantiles <- SPREDA::qsev(p)
   } else if (distribution == "lognormal") {
-    quantiles <- qnorm(p)
+    quantiles <- stats::qnorm(p)
   } else if (distribution == "loglogistic") {
-    quantiles <- qlogis(p)
+    quantiles <- stats::qlogis(p)
   } else {
     stop("No valid distribution!")
   }
@@ -40,7 +42,8 @@ predict_quantile <- function(p, loc_sc_params,
   return(x_pred)
 }
 
-#' Estimation of Failure Probabilities using a Parametric Lifetime Distribution
+
+#' Estimation of Failure Probabilities for Parametric Lifetime Distributions
 #'
 #' This function estimates the failure probabilities for a given set of
 #' estimated location-scale parameters and specified quantiles.
@@ -66,14 +69,17 @@ predict_quantile <- function(p, loc_sc_params,
 predict_prob <- function(q, loc_sc_params,
   distribution = c("weibull", "lognormal", "loglogistic")) {
 
+  distribution <- match.arg(distribution)
+
+  # Standardize
   z <- (log(q) - loc_sc_params[[1]]) / loc_sc_params[[2]]
 
   if (distribution == "weibull") {
     cd <- SPREDA::psev(z)
   } else if (distribution == "lognormal") {
-    cd <- pnorm(z)
+    cd <- stats::pnorm(z)
   } else if (distribution == "loglogistic") {
-    cd <- plogis(z)
+    cd <- stats::plogis(z)
   } else {
     stop("No valid distribution!")
   }
@@ -81,6 +87,7 @@ predict_prob <- function(q, loc_sc_params,
   y_pred <- cd
   return(y_pred)
 }
+
 
 #' Beta Binomial Confidence Bounds for Quantiles and/or Probabilities
 #'
@@ -131,47 +138,60 @@ predict_prob <- function(q, loc_sc_params,
 #'                                   direction = "y")
 
 confint_betabinom <- function(x, event, loc_sc_params,
-       distribution = c("weibull", "lognormal", "loglogistic"),
-       bounds = c("two_sided", "lower", "upper"),
-       conf_level = .95, direction = c("y", "x")) {
+                              distribution = c("weibull", "lognormal", "loglogistic"),
+                              bounds = c("two_sided", "lower", "upper"),
+                              conf_level = .95, direction = c("y", "x")) {
 
   bounds <- match.arg(bounds)
   direction <- match.arg(direction)
+  distribution <- match.arg(distribution)
+
+  if (!(distribution %in% c("weibull", "lognormal", "loglogistic"))) {
+    stop("No valid distribution!")
+  }
 
   n <- length(x)
   x_ob <- x[event == 1]
 
+  # Range of failed items
   x_min <- min(x_ob, na.rm = TRUE)
   x_max <- max(x_ob, na.rm = TRUE)
   x_seq <- seq(x_min, x_max, length.out = 100)
 
+  # Range of probabilities calculated with estimated regression line
   y_seq <- predict_prob(q = x_seq, loc_sc_params = loc_sc_params,
                         distribution = distribution)
 
+  # Probabilities of special interest (B-Lives)
   b_perc <- c(0.01, 0.1, 0.50)
+  # Looking for these probabilities in range of estimated ones
   int_ind <- findInterval(x = b_perc, vec = c(y_seq[1], y_seq[length(y_seq)]),
                           rightmost.closed = TRUE)
 
+  # Add them
   y_seq <- unique(c(y_seq, b_perc[which(int_ind == 1)]))
   y_seq <- y_seq[order(y_seq)]
 
+  # Calculating and adding B-Lives to x-vector
   x_b <- predict_quantile(p = b_perc[which(int_ind == 1)],
                           loc_sc_params = loc_sc_params,
                           distribution = distribution)
   x_seq <- unique(c(x_seq, x_b))
   x_seq <- x_seq[order(x_seq)]
 
+  # Caluclating virtual ranks, i.e. interpolating between realisations
   virt_rank <- y_seq * (n + 0.4) + 0.3
 
+
   if (bounds == "two_sided") {
-    conf_up <- qbeta((1 + conf_level) / 2, virt_rank, n - virt_rank + 1)
-    conf_low <- qbeta((1 - conf_level) / 2, virt_rank, n - virt_rank + 1)
+    conf_up <- stats::qbeta((1 + conf_level) / 2, virt_rank, n - virt_rank + 1)
+    conf_low <- stats::qbeta((1 - conf_level) / 2, virt_rank, n - virt_rank + 1)
     list_confint <- list(lower_bound = conf_low, upper_bound = conf_up)
   } else if (bounds == "lower") {
-    conf_low <- qbeta(1 - conf_level, virt_rank, n - virt_rank + 1)
+    conf_low <- stats::qbeta(1 - conf_level, virt_rank, n - virt_rank + 1)
     list_confint <- list(lower_bound = conf_low)
   } else {
-    conf_up <- qbeta(conf_level, virt_rank, n - virt_rank + 1)
+    conf_up <- stats::qbeta(conf_level, virt_rank, n - virt_rank + 1)
     list_confint <- list(upper_bound = conf_up)
   }
 
@@ -191,8 +211,8 @@ confint_betabinom <- function(x, event, loc_sc_params,
   return(df_output)
 }
 
-#' Delta Method for time-to-failure distributions which are part of the
-#' location-scale family
+
+#' Delta Method for Parametric Lifetime Distributions
 #'
 #' The delta method estimates the standard error for quantities that can be
 #' written as non-linear functions of ML estimators like failure probabilities or
@@ -238,53 +258,47 @@ confint_betabinom <- function(x, event, loc_sc_params,
 #'                           direction = "y")
 
 delta_method <- function(p, loc_sc_params, loc_sc_varcov,
-                         distribution = c("weibull", "lognormal", "loglogistic"), direction = c("y", "x")) {
+                         distribution = c("weibull", "lognormal", "loglogistic"),
+                         direction = c("y", "x")) {
 
   direction <- match.arg(direction)
+  distribution <- match.arg(distribution)
+
+  if (!(distribution %in% c("weibull", "lognormal", "loglogistic"))) {
+    stop("No valid distribution!")
+  }
 
   if (direction == "x") {
     if (distribution == "weibull") {
-
-      quantiles <- SPREDA::qsev(p)
-
-    } else if (distribution == "lognormal") {
-
-      quantiles <- qnorm(p)
-
-    } else if (distribution == "loglogistic") {
-
-      quantiles <- qlogis(p)
-
-    } else {
-
-      stop("No valid distribution!")
+      z <- SPREDA::qsev(p)
+    }
+    if (distribution == "lognormal") {
+      z <- stats::qnorm(p)
+    }
+    if (distribution == "loglogistic") {
+      z <- stats::qlogis(p)
     }
 
-    q <- exp(quantiles * loc_sc_params[[2]] + loc_sc_params[[1]])
+    q <- predict_quantile(p = p, loc_sc_params = loc_sc_params,
+                          distribution = distribution)
     dq_dmu <- q
-    dq_dsc <- quantiles * q
+    dq_dsc <- z * q
     dq_dpar <- c(dq_dmu, dq_dsc)
 
     var_q <- t(dq_dpar) %*% loc_sc_varcov %*% dq_dpar
     std_err <- sqrt(var_q)
   } else {
+    z <- (log(p) - loc_sc_params[[1]]) / loc_sc_params[[2]]
     if (distribution == "weibull") {
-
-      pd <- SPREDA::dsev(p)
-
-    } else if (distribution == "lognormal") {
-
-      pd <- dnorm(p)
-
-    } else if (distribution == "loglogistic") {
-
-      pd <- dlogis(p)
-
-    } else {
-      stop("No valid distribution!")
+      pd <- SPREDA::dsev(z)
+    }
+    if (distribution == "lognormal") {
+      pd <- stats::dnorm(z)
+    }
+    if (distribution == "loglogistic") {
+      pd <- stats::dlogis(z)
     }
 
-    z <- (log(p) - loc_sc_params[[1]]) / loc_sc_params[[2]]
     dps_dmu <- (-1 / loc_sc_params[[2]]) * pd
     dps_dsc <- (-1 / loc_sc_params[[2]]) * z * pd
     dps_dpar <- c(dps_dmu, dps_dsc)
@@ -294,7 +308,6 @@ delta_method <- function(p, loc_sc_params, loc_sc_varcov,
   }
   return(std_err)
 }
-
 
 
 #' Fisher Confidence Bounds for Quantiles and/or Probabilities
@@ -324,7 +337,7 @@ delta_method <- function(p, loc_sc_params, loc_sc_varcov,
 #' @param bounds a character string specifying the interval(s) which has/have to
 #'   be computed. Must be one of "two_sided" (default), "lower" or "upper".
 #' @param conf_level confidence level of the interval. The default value is
-#'   \code{conf_level = 0.95}
+#'   \code{conf_level = 0.95}.
 #' @param direction a character string specifying the direction of the computed
 #'   interval(s). Must be either "y" (failure probabilities) or "x" (quantiles).
 #'
@@ -355,6 +368,11 @@ confint_fisher <- function(x, event, loc_sc_params, loc_sc_varcov,
 
   bounds <- match.arg(bounds)
   direction <- match.arg(direction)
+  distribution <- match.arg(distribution)
+
+  if (!(distribution %in% c("weibull", "lognormal", "loglogistic"))) {
+    stop("No valid distribution!")
+  }
 
   n <- length(x)
   x_ob <- x[event == 1]
@@ -424,4 +442,3 @@ confint_fisher <- function(x, event, loc_sc_params, loc_sc_varcov,
     df_output <- as.data.frame(list_output)
   }
 }
-

@@ -2,7 +2,7 @@
 % Please edit documentation in R/confidence_intervals.R
 \name{predict_quantile}
 \alias{predict_quantile}
-\title{Estimation of Quantiles using a Parametric Survival Model}
+\title{Estimation of Quantiles for Parametric Lifetime Distributions}
 \usage{
 predict_quantile(p, loc_sc_params, distribution = c("weibull", "lognormal",
   "loglogistic"))
@@ -18,7 +18,8 @@ parameter \eqn{\mu} and the second element needs to be the scale
 parameter \eqn{\sigma}.}
 
 \item{distribution}{supposed distribution of the random variable. The
-value can be \code{"weibull"}, \code{"lognormal"} or \code{"loglogistic"}.}
+value can be \code{"weibull"}, \code{"lognormal"} or \code{"loglogistic"}.
+Other distributions have not been implemented yet.}
 }
 \value{
 A vector containing the estimated quantiles for a given set of

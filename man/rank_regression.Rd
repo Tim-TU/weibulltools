@@ -65,6 +65,10 @@ following confidence levels:
 
 If the distribution is not the Weibull, the confidence intervals of the
 parameters are calculated using a heteroscedasticity-consistent covariance matrix.
+Here it should be said that there is no statistical foundation to calculate the
+standard errors for the parameters using \emph{Least Squares} in context of
+\emph{Median Rank Regression}. For an accepted statistical method use MLE
+(\code{\link{ml_estimation}}).
 }
 \examples{
 obs   <- seq(10000, 100000, 10000)

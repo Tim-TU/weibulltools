@@ -5,7 +5,7 @@
 #' the function tends to overestimate the number of breakpoints and
 #' therefore returns too many subgroups. This problem is already stated in
 #' the documentation of the function \link{segmented.lm}, which is part of
-#' the \emph{segmented} package.
+#' the \emph{segmented} package. A maximum of three subgroups can be obtained.
 #'
 #' @param x a numeric vector which consists of lifetime data. Lifetime
 #'   data could be every characteristic influencing the reliability of a
@@ -16,10 +16,11 @@
 #' @param event a vector of binary data (0 or 1) indicating whether
 #'   unit \emph{i} is a right censored observation (= 0) or a
 #'   failure (= 1).
-#' @param distribution supposed distribution of the random variable.
-#'   The default value is \code{"weibull"}.
+#' @param distribution supposed distribution of the random variable. The
+#'   value can be \code{"weibull"}, \code{"lognormal"} or \code{"loglogistic"}.
+#'   Other distributions have not been implemented yet.
 #' @param conf_level confidence level of the interval. The default value is
-#'   \code{conf_level = 0.95}
+#'   \code{conf_level = 0.95}.
 #'
 #' @return Returns a list where the length of the list depends on
 #'   the number of identified subgroups. Each list contains the same
@@ -27,12 +28,12 @@
 #' @export
 #'
 #' @examples
-#' hours = c(2, 28, 67, 119, 179, 236, 282, 317, 348, 387, 3, 31, 69, 135,
+#' hours <- c(2, 28, 67, 119, 179, 236, 282, 317, 348, 387, 3, 31, 69, 135,
 #'           191, 241, 284, 318, 348, 392, 5, 31, 76, 144, 203, 257, 286,
 #'           320, 350, 412, 8, 52, 78, 157, 211, 261, 298, 327, 360, 446,
 #'           13, 53, 104, 160, 221, 264, 303, 328, 369, 21, 64, 113, 168,
 #'           226, 278, 314, 328, 377)
-#' state = c(1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1,
+#' state <- c(1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1,
 #'           1, 0, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 0, 0,
 #'           1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1,
 #'           0, 1, 1, 1, 1, 1, 1)
@@ -43,113 +44,101 @@
 #'                              event = john$status,
 #'                              distribution = "weibull")
 #'
-mixmod_regression <- function(x, y, event, distribution = c("weibull", "lognormal", "loglogistic"),
+mixmod_regression <- function(x, y, event,
+                              distribution = c("weibull", "lognormal", "loglogistic"),
                               conf_level = .95) {
+
+  distribution <- match.arg(distribution)
+
+  if (!(distribution %in% c("weibull", "lognormal", "loglogistic"))) {
+    stop("No valid distribution!")
+  }
+
+  # Preparing for segmented regression
   x_f <- x[event == 1]
   y_f <- y[event == 1]
 
   if (distribution == "weibull") {
     mrr <- stats::lm(log(x_f) ~ SPREDA::qsev(y_f))
-  } else if (distribution == "lognormal") {
-    mrr <- stats::lm(log(x_f) ~ stats::qnorm(y_f))
-  } else if (distribution == "loglogistic") {
-    mrr <- stats::lm(log(x_f) ~ stats::qlogis(y_f))
-  } else {
-    stop("No valid distribution")
   }
-    seg_mrr <- try(segmented::segmented.lm(mrr,
-                              control = segmented::seg.control(it.max = 20,
-                                        n.boot = 20)),
+  if (distribution == "lognormal") {
+    mrr <- stats::lm(log(x_f) ~ qnorm(y_f))
+  }
+  if (distribution == "loglogistic") {
+    mrr <- stats::lm(log(x_f) ~ qlogis(y_f))
+  }
+
+  # segmented regression
+  seg_mrr <- try(segmented::segmented.lm(mrr,
+                   control = segmented::seg.control(it.max = 20, n.boot = 20)),
                    silent = TRUE)
+  mrr_0 <- rank_regression(x = x, y = y, event = event,
+                           distribution = distribution,
+                           conf_level = conf_level)
+  r_sq0 <- mrr_0$r_squared
+  mrr_0$x_range <- range(x)
 
-#    if ("try-error" %in% class(seg_mrr) || length(x_f[seg_mrr$id.group != 0]) < 5) {
-      mrr_0 <- rank_regression(x = x, y = y, event = event,
-                                    distribution = distribution,
-                                    conf_level = conf_level)
-      r_sq0 <- mrr_0$r_squared
-      mrr_0$x_range <- range(x)
+  mrr_output <- mrr_0
 
-      mrr_output <- mrr_0
-
-      if ("try-error" %in% class(seg_mrr)) {
-
-
-        message("An admissible breakpoint could not be found!
-               Simple linear regression model was estimated!")
-
-      } else if (length(x_f[seg_mrr$id.group != 0]) < 5) {
-
-
+  # test for successful segmentation
+  if ("try-error" %in% class(seg_mrr)) {
+    message("An admissible breakpoint could not be found!
+            Simple linear regression model was estimated!")
+  } else if (length(x_f[seg_mrr$id.group != 0]) < 5) {
         message("Second segment contains less than 5 elements.
                 Simple linear regression model was estimated!")
+  } else {
+    groups <- seg_mrr$id.group
+    x_1 <- x_f[groups == 0]
+    y_1 <- y_f[groups == 0]
+    mrr_1 <- rank_regression(x = x_1, y = y_1,
+                             event = rep(1, length(x_1)),
+                             distribution = distribution,
+                             conf_level = conf_level)
 
-#      }
-    } else {
-      groups <- seg_mrr$id.group
+    r_sq1 <- mrr_1$r_squared
+    mrr_1$x_range <- range(x_1)
 
+    x_rest <- x_f[groups != 0]
+    y_rest <- y_f[groups != 0]
 
-      x_1 <- x_f[groups == 0]
-      y_1 <- y_f[groups == 0]
-      mrr_1 <- rank_regression(x = x_1, y = y_1,
-                               event = rep(1, length(x_1)),
-                               distribution = distribution,
-                               conf_level = conf_level)
+    mrr_23 <- rank_regression(x = x_rest, y = y_rest,
+                              event = rep(1, length(x_rest)),
+                              distribution = distribution,
+                              conf_level = conf_level)
 
-      r_sq1 <- mrr_1$r_squared
-      mrr_1$x_range <- range(x_1)
+    r_sq23 <- mrr_23$r_squared
+    mrr_23$x_range <- range(x_rest)
 
-      x_rest <- x_f[groups != 0]
-      y_rest <- y_f[groups != 0]
+    if (distribution == "weibull") {
+      mrr2 <- stats::lm(log(x_rest) ~ SPREDA::qsev(y_rest))
+    }
+    if (distribution == "lognormal") {
+      mrr2 <- stats::lm(log(x_rest) ~ qnorm(y_rest))
+    }
+    if (distribution == "loglogistic") {
+      mrr2 <- stats::lm(log(x_rest) ~ qlogis(y_rest))
+    }
 
-      mrr_23 <- rank_regression(x = x_rest, y = y_rest,
-                               event = rep(1, length(x_rest)),
-                               distribution = distribution,
-                               conf_level = conf_level)
-      r_sq23 <- mrr_23$r_squared
-      mrr_23$x_range <- range(x_rest)
+    seg_mrr2 <- try(segmented::segmented.lm(mrr2,
+                    control = segmented::seg.control(it.max = 20, n.boot = 20)),
+                    silent = TRUE)
 
-      if (distribution == "weibull") {
-        mrr2 <- stats::lm(log(x_rest) ~ SPREDA::qsev(y_rest))
-      } else if (distribution == "lognormal") {
-        mrr2 <- stats::lm(log(x_rest) ~ stats::qnorm(y_rest))
-      } else if (distribution == "loglogistic") {
-        mrr2 <- stats::lm(log(x_rest) ~ stats::qlogis(y_rest))
-      }
-      seg_mrr2 <- try(segmented::segmented.lm(mrr2, control = segmented::seg.control(it.max = 20,
-                                                                                     n.boot = 20)),
-                      silent = TRUE)
+    if ("try-error" %in% class(seg_mrr2) || length(x_rest[seg_mrr2$id.group != 0]) < 5) {
 
-      if ("try-error" %in% class(seg_mrr2) || length(x_rest[seg_mrr2$id.group != 0]) < 5) {
-
-        # mrr_2 <- rank_regression(x = x_rest, y = y_rest,
-        #                         event = rep(1, length(x_rest)),
-        #                         distribution = distribution,
-        #                         conf_level = conf_level)
-        # r_sq2 <- mrr_2$r_squared
-
-        if (mean(c(r_sq1, r_sq23)) < r_sq0) {
-
-          print("1 statt 2 Segmente: lineare Regression")
-
+      if (mean(c(r_sq1, r_sq23)) < r_sq0) {
+        print("Simple linear regression model was estimated!")
           mrr_output <- mrr_0
-
-        } else {
-
+      } else {
         mrr_output <- list(mod_1 = mrr_1, mod_2 = mrr_23)
+      }
 
-        }
-
-        # if (length(x_rest[seg_mrr2$id.group != 0]) < 5) {
-        if (is.list(seg_mrr2)) {
-
-          message("Third segment contains less than 5 elements.
-                  Simple linear regression model was estimated for all elements after first breakpoint!")
-
-        }
-       } else {
-        groups2 <- seg_mrr2$id.group
-
-
+      if (is.list(seg_mrr2)) {
+        message("Third segment contains less than 5 elements.
+                Simple linear regression model was estimated for all elements after first breakpoint!")
+      }
+    } else {
+      groups2 <- seg_mrr2$id.group
         x_2 <- x_rest[groups2 == 0]
         y_2 <- y_rest[groups2 == 0]
 
@@ -164,7 +153,6 @@ mixmod_regression <- function(x, y, event, distribution = c("weibull", "lognorma
                                  conf_level = conf_level)
         r_sq12 <- mrr_12$r_squared
         mrr_12$x_range <- range(c(x_1, x_2))
-
         x_3 <- x_rest[groups2 == 1]
         y_3 <- y_rest[groups2 == 1]
 
@@ -176,44 +164,18 @@ mixmod_regression <- function(x, y, event, distribution = c("weibull", "lognorma
 
         mean_r_sq <- mean(c(r_sq1, r_sq2, r_sq3))
 
-        # print(r_sq0)
-        # print(r_sq1)
-        # print(r_sq2)
-        # print(r_sq3)
-        # print(r_sq12)
-        # print(r_sq23)
-        # print(mean(c(r_sq1, r_sq23)))
-        # print(mean(c(r_sq12, r_sq3)))
-        # print(mean_r_sq)
-
-
         if (mean_r_sq < r_sq0 | mean_r_sq < mean(c(r_sq1, r_sq23)) | mean_r_sq < mean(c(r_sq12, r_sq3))) {
-
-          # print("mean_r_sq nicht am größten")
-
           if (mean(c(r_sq1, r_sq23)) > r_sq0 && mean(c(r_sq1, r_sq23)) > mean(c(r_sq12, r_sq3))) {
-
-            # print("2 statt 3 Segmenten: 1 und 23")
-
             mrr_output <- list(mod_1 = mrr_1, mod_2 = mrr_23)
-
           } else if (mean(c(r_sq12, r_sq3)) > r_sq0) {
-
-            # print("2 statt 3 Segmenten: 12 und 3")
-
             mrr_output <- list(mod_1 = mrr_12, mod_2 = mrr_3)
-
           } else {
-
-            # print("lineare Regression")
-
             mrr_output <- mrr_0
-            }
-
-        } else{
-
+          }
+        } else {
           mrr_output <- list(mod_1 = mrr_1, mod_2 = mrr_2, mod_3 = mrr_3)
-          message("Problem of overestimation may have occured. Further investigations are recommended!")
+          message("Problem of overestimation may have occured.
+                   Further investigations are recommended!")
         }
       }
     }

@@ -5,7 +5,7 @@ output: html_document
 
 # Test environments
 
-* local windows install, R 3.4.3
+* local windows install, R 3.5.1
 * Windows Server 2008 R2 SP1, R-devel and R-release, 32/64 bit (via r-hub builder)
 * Debian Linux, R-devel and R-release, GCC (via r-hub builder)
 * macOS 10.11 El Capitan, R-release (via r-hub builder)

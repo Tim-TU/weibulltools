@@ -36,7 +36,7 @@ value can be \code{"weibull"}, \code{"lognormal"}, \code{"loglogistic"}.}
 be computed. Must be one of "two_sided" (default), "lower" or "upper".}
 
 \item{conf_level}{confidence level of the interval. The default value is
-\code{conf_level = 0.95}}
+\code{conf_level = 0.95}.}
 
 \item{direction}{a character string specifying the direction of the computed
 interval(s). Must be either "y" (failure probabilities) or "x" (quantiles).}

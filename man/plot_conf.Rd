@@ -2,7 +2,7 @@
 % Please edit documentation in R/plot_functions.R
 \name{plot_conf}
 \alias{plot_conf}
-\title{Add Confidence Region(s) to Probability Plot}
+\title{Add Confidence Region(s) for Quantiles or Probabilities}
 \usage{
 plot_conf(p_obj, x, y, direction = c("y", "x"), distribution = c("weibull",
   "lognormal", "loglogistic"), title_trace = "Confidence Limit")
@@ -20,9 +20,10 @@ The list can be of length 1 or 2. For more information see \strong{Details}.}
 interval(s). Must be either "y" (failure probabilities) or "x" (quantiles).}
 
 \item{distribution}{supposed distribution of the random variable. The
-value can be \code{"weibull"}, \code{"lognormal"} or \code{"loglogistic"}.}
+value can be \code{"weibull"}, \code{"lognormal"} or \code{"loglogistic"}.
+Other distributions have not been implemented yet.}
 
-\item{title_trace}{a character string whis is assigned to the trace shown in
+\item{title_trace}{a character string which is assigned to the trace shown in
 the legend.}
 }
 \value{
@@ -65,7 +66,7 @@ plot_weibull <- plot_prob(x = df_john$characteristic,
 plot_reg_weibull <- plot_mod(p_obj = plot_weibull,
                              x = conf_betabin$characteristic,
                              y = conf_betabin$prob,
-                             mrr_output = mrr,
+                             loc_sc_params = mrr$loc_sc_coefficients,
                              distribution = "weibull",
                              title_trace = "Estimated Weibull CDF")
 plot_conf_beta <- plot_conf(p_obj = plot_reg_weibull,

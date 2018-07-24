@@ -46,7 +46,7 @@ dist_mileage <- function(x, event, mileage, distribution = "lognormal") {
 
   if (distribution == "lognormal") {
     logmu_mileage <- mean(log(miles_annual[miles_annual > 0]), na.rm = TRUE)
-    logsd_mileage <- sd(log(miles_annual[miles_annual > 0]), na.rm = TRUE)
+    logsd_mileage <- stats::sd(log(miles_annual[miles_annual > 0]), na.rm = TRUE)
 
     estimates <- c(logmu_mileage, logsd_mileage)
     names(estimates) <- c("meanlog_mileage", "sdlog_mileage")
@@ -157,7 +157,7 @@ mcs_mileage <- function(x, event, mileage, distribution = "lognormal",
   if (!is.null(seed)) {
     int_seed <- seed
   } else {
-    int_seed <- ceiling(runif(n = 1, min = 0, max = 1e6))
+    int_seed <- ceiling(stats::runif(n = 1, min = 0, max = 1e6))
   }
   set.seed(int_seed)
 
@@ -168,7 +168,7 @@ mcs_mileage <- function(x, event, mileage, distribution = "lognormal",
     params <- dist_mileage(x = x, event = event, mileage = mileage,
                            distribution = "lognormal")
 
-    mileage_sim <- rlnorm(n = n_rand, meanlog = params[[1]],
+    mileage_sim <- stats::rlnorm(n = n_rand, meanlog = params[[1]],
                           sdlog = params[[2]])
   } else {
     stop("No valid distribution!")

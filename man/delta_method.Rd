@@ -2,8 +2,7 @@
 % Please edit documentation in R/confidence_intervals.R
 \name{delta_method}
 \alias{delta_method}
-\title{Delta Method for time-to-failure distributions which are part of the
-location-scale family}
+\title{Delta Method for Parametric Lifetime Distributions}
 \usage{
 delta_method(p, loc_sc_params, loc_sc_varcov, distribution = c("weibull",
   "lognormal", "loglogistic"), direction = c("y", "x"))
@@ -27,7 +26,8 @@ Var(\eqn{\mu}) and the second element of the diagonal needs to be the
 variance of the scale parameter Var(\eqn{\sigma}).}
 
 \item{distribution}{supposed distribution of the random variable. The
-value can be \code{"weibull"}, \code{"lognormal"} or \code{"loglogistic"}.}
+value can be \code{"weibull"}, \code{"lognormal"} or \code{"loglogistic"}.
+Other distributions have not been implemented yet.}
 
 \item{direction}{a character string specifying the direction of the computed
 standard errors. Must be either "y" (failure probability) or "x"

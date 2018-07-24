@@ -17,6 +17,10 @@
 #'
 #' If the distribution is not the Weibull, the confidence intervals of the
 #' parameters are calculated using a heteroscedasticity-consistent covariance matrix.
+#' Here it should be said that there is no statistical foundation to calculate the
+#' standard errors for the parameters using \emph{Least Squares} in context of
+#' \emph{Median Rank Regression}. For an accepted statistical method use MLE
+#' (\code{\link{ml_estimation}}).
 #'
 #' @references Mock, R., Methoden zur Datenhandhabung in
 #'   Zuverlässigkeitsanalysen, vdf Hochschulverlag AG an der ETH Zürich, 1995
@@ -68,6 +72,8 @@
 rank_regression <- function(x, y, event, distribution = c("weibull", "lognormal",
   "loglogistic"), conf_level = .95, details = TRUE) {
 
+  distribution <- match.arg(distribution)
+
   if (!(distribution %in% c("weibull", "lognormal", "loglogistic"))) {
     stop("No valid distribution!")
   }
@@ -78,12 +84,12 @@ rank_regression <- function(x, y, event, distribution = c("weibull", "lognormal"
   # Median-Rank-Regression Weibull:
   if (distribution == "weibull") {
     # Location-Scale
-    mrr <- lm(log(x_f) ~ SPREDA::qsev(y_f))
-    estimates_loc_sc <- c(coef(mrr)[[1]], coef(mrr)[[2]])
+    mrr <- stats::lm(log(x_f) ~ SPREDA::qsev(y_f))
+    estimates_loc_sc <- c(stats::coef(mrr)[[1]], stats::coef(mrr)[[2]])
     names(estimates_loc_sc) <- c("mu", "sigma")
 
     # Alternative Parametrization
-    estimates <- c(exp(coef(mrr)[[1]]), 1 / coef(mrr)[[2]])
+    estimates <- c(exp(stats::coef(mrr)[[1]]), 1 / stats::coef(mrr)[[2]])
     names(estimates) <- c("eta", "beta")
 
     if (conf_level == 0.95) {
@@ -99,9 +105,9 @@ rank_regression <- function(x, y, event, distribution = c("weibull", "lognormal"
     conf_beta <- c(estimates[[2]] * 1 / (1 + sqrt(mock_val / length(x_f))),
                    estimates[[2]] * (1 + sqrt(mock_val / length(x_f))))
     conf_eta <- c(
-      estimates[[1]] * (2 * length(x_f) / qchisq(p = (1 + conf_level) / 2,
+      estimates[[1]] * (2 * length(x_f) / stats::qchisq(p = (1 + conf_level) / 2,
                                                  df = 2 * length(x_f))) ^ (1 / estimates[[2]]),
-      estimates[[1]] * (2 * length(x_f) / qchisq(p = (1 - conf_level) / 2,
+      estimates[[1]] * (2 * length(x_f) / stats::qchisq(p = (1 - conf_level) / 2,
                                                  df = 2 * length(x_f))) ^ (1 / estimates[[2]])
     )
 
@@ -128,13 +134,13 @@ rank_regression <- function(x, y, event, distribution = c("weibull", "lognormal"
     }
   } else {
     if (distribution == "lognormal") {
-      mrr <- lm(log(x_f) ~ qnorm(y_f))
+      mrr <- stats::lm(log(x_f) ~ stats::qnorm(y_f))
     }
     if (distribution == "loglogistic") {
-      mrr <- lm(log(x_f) ~ qlogis(y_f))
+      mrr <- stats::lm(log(x_f) ~ stats::qlogis(y_f))
     }
 
-    estimates_loc_sc <- c(coef(mrr)[[1]], coef(mrr)[[2]])
+    estimates_loc_sc <- c(stats::coef(mrr)[[1]], stats::coef(mrr)[[2]])
     names(estimates_loc_sc) <- c("mu", "sigma")
 
     # Estimating a heteroscedasticity-consistent covariance matrix:
@@ -145,15 +151,15 @@ rank_regression <- function(x, y, event, distribution = c("weibull", "lognormal"
 
     # Confidence Intervals Location-Scale-Parametrization:
     conf_mu <- c(
-      estimates_loc_sc[[1]] - qt((1 + conf_level) / 2,
+      estimates_loc_sc[[1]] - stats::qt((1 + conf_level) / 2,
         df = length(x_f) - 2) * se[[1]] / sqrt(length(x_f)),
-      estimates_loc_sc[[1]] + qt((1 + conf_level) / 2,
+      estimates_loc_sc[[1]] + stats::qt((1 + conf_level) / 2,
         df = length(x_f) - 2) * se[[1]] / sqrt(length(x_f)))
 
     conf_sig <- c(
-      estimates_loc_sc[[2]] - qt((1 + conf_level) / 2,
+      estimates_loc_sc[[2]] - stats::qt((1 + conf_level) / 2,
         df = length(x_f) - 2) * se[[2]] / sqrt(length(x_f)),
-      estimates_loc_sc[[2]] + qt((1 + conf_level) / 2,
+      estimates_loc_sc[[2]] + stats::qt((1 + conf_level) / 2,
         df = length(x_f) - 2) * se[[2]] / sqrt(length(x_f)))
 
     conf_ints_loc_sc <- matrix(c(conf_mu, conf_sig), byrow = TRUE,
@@ -229,6 +235,8 @@ rank_regression <- function(x, y, event, distribution = c("weibull", "lognormal"
 ml_estimation <- function(x, event, distribution = c("weibull", "lognormal",
   "loglogistic"), conf_level = 0.95, details = TRUE) {
 
+  distribution <- match.arg(distribution)
+
   if (!(distribution %in% c("weibull", "lognormal", "loglogistic"))) {
     stop("No valid distribution!")
   }
@@ -249,11 +257,11 @@ ml_estimation <- function(x, event, distribution = c("weibull", "lognormal",
 
   # Confidence Intervals: Location and Scale
   conf_mu <- c(
-    estimates_loc_sc[[1]] + qnorm((1 - conf_level) / 2) * se_loc_sc[[1]],
-    estimates_loc_sc[[1]] + qnorm((1 + conf_level) / 2) * se_loc_sc[[1]])
+    estimates_loc_sc[[1]] + stats::qnorm((1 - conf_level) / 2) * se_loc_sc[[1]],
+    estimates_loc_sc[[1]] + stats::qnorm((1 + conf_level) / 2) * se_loc_sc[[1]])
 
   w <- exp(
-    (qnorm((1 + conf_level) / 2) * se_loc_sc[[2]]) / estimates_loc_sc[[2]])
+    (stats::qnorm((1 + conf_level) / 2) * se_loc_sc[[2]]) / estimates_loc_sc[[2]])
   conf_sig <- c(estimates_loc_sc[[2]] /  w, estimates_loc_sc[[2]] * w)
 
   conf_ints_loc_sc <- matrix(c(conf_mu, conf_sig), byrow = TRUE, ncol = 2)

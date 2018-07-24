@@ -21,13 +21,14 @@ important. First entry needs to be the location parameter \eqn{\mu} and the
 second element needs to be the scale parameter \eqn{\sigma}.}
 
 \item{distribution}{supposed distribution of the random variable. The
-value can be \code{"weibull"}, \code{"lognormal"} or \code{"loglogistic"}.}
+value can be \code{"weibull"}, \code{"lognormal"} or \code{"loglogistic"}.
+Other distributions have not been implemented yet.}
 
 \item{bounds}{a character string specifying the interval(s) which has/have to
 be computed. Must be one of "two_sided" (default), "lower" or "upper".}
 
 \item{conf_level}{confidence level of the interval. The default value is
-\code{conf_level = 0.95}}
+\code{conf_level = 0.95}.}
 
 \item{direction}{a character string specifying the direction of the computed
 interval(s). Must be either "y" (failure probabilities) or "x" (quantiles).}

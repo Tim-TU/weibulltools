@@ -12,11 +12,12 @@ plot_layout(x, distribution = c("weibull", "lognormal", "loglogistic"),
 \item{x}{a numeric vector which consists of lifetime data. \code{x} is used to
 specify the grid of the plot.}
 
-\item{distribution}{supposed distribution of the random variable. The value
-can be \code{"weibull"}, \code{"lognormal"} or \code{"loglogistic"}.}
+\item{distribution}{supposed distribution of the random variable. Can be
+\code{"weibull"}, \code{"lognormal"} or \code{"loglogistic"}. Other
+distributions have not been implemented yet.}
 
 \item{title_main}{a character string which is assigned to the main title
-of the plot}
+of the plot.}
 
 \item{title_x}{a character string which is assigned to the title of the
 x axis.}
@@ -29,7 +30,7 @@ Returns a plotly object which contains the layout
   that is used for probability plotting.
 }
 \description{
-This function is used to create the layout of the probability plot.
+This function is used to create the layout of a probability plot.
 }
 \examples{
 x_layout <- seq(1e-5, 1e+07, length.out = 10)
@@ -37,5 +38,5 @@ grid_weibull <- plot_layout(x = x_layout,
                             distribution = "weibull",
                             title_main = "Weibull Analysis",
                             title_x = "Time to Failure",
-                            title_y = "Failure Probability")
+                            title_y = "Failure Probability in \%")
 }

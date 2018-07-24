@@ -2,9 +2,9 @@
 % Please edit documentation in R/plot_functions.R
 \name{plot_prob}
 \alias{plot_prob}
-\title{Probability Plot construction}
+\title{Probability Plotting Method for Univariate Lifetime Distributions}
 \usage{
-plot_prob(x, y, event, mrr_output = NULL, id = rep("XXXXXX", length(x)),
+plot_prob(x, y, event, id = rep("XXXXXX", length(x)),
   distribution = c("weibull", "lognormal", "loglogistic"),
   title_main = "Probability Plot", title_x = "Characteristic",
   title_y = "Unreliability", title_trace = "Sample")
@@ -21,17 +21,14 @@ regarding the lifetime data in \code{x}.}
 \item{event}{a vector of binary data (0 or 1) indicating whether unit \emph{i}
 is a right censored observation (= 0) or a failure (= 1).}
 
-\item{mrr_output}{a list provided by \code{\link{mixmod_regression}} which consists
-of values necessary to visualize the segments calculated by \code{\link{mixmod_regression}}.
-The default value of \code{mrr_output} is \code{NULL}.}
-
 \item{id}{a character vector for the identification of every unit.}
 
-\item{distribution}{supposed distribution of the random variable. The value can be \code{"weibull"},
-\code{"lognormal"} or \code{"loglogistic"}.}
+\item{distribution}{supposed distribution of the random variable. Can be
+\code{"weibull"}, \code{"lognormal"} or \code{"loglogistic"}. Other
+distributions have not been implemented yet.}
 
 \item{title_main}{a character string which is assigned to the main title
-of the plot}
+of the plot.}
 
 \item{title_x}{a character string which is assigned to the title of the
 x axis.}
@@ -69,11 +66,10 @@ df_john <- johnson_method(x = obs, event = state, id = id)
 plot_weibull <- plot_prob(x = df_john$characteristic,
                           y = df_john$prob,
                           event = df_john$status,
-                          mrr_output = NULL,
                           id = df_john$id,
                           distribution = "weibull",
                           title_main = "Weibull Analysis",
                           title_x = "Mileage in miles",
-                          title_y = "Probability of Failure",
+                          title_y = "Probability of Failure in \%",
                           title_trace = "Failed Items")
 }

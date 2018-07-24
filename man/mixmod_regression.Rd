@@ -20,11 +20,12 @@ probabilities regarding the lifetime data in \code{x}.}
 unit \emph{i} is a right censored observation (= 0) or a
 failure (= 1).}
 
-\item{distribution}{supposed distribution of the random variable.
-The default value is \code{"weibull"}.}
+\item{distribution}{supposed distribution of the random variable. The
+value can be \code{"weibull"}, \code{"lognormal"} or \code{"loglogistic"}.
+Other distributions have not been implemented yet.}
 
 \item{conf_level}{confidence level of the interval. The default value is
-\code{conf_level = 0.95}}
+\code{conf_level = 0.95}.}
 }
 \value{
 Returns a list where the length of the list depends on
@@ -37,15 +38,15 @@ subgroups, if appropriate. Since this happens in an automated fashion
 the function tends to overestimate the number of breakpoints and
 therefore returns too many subgroups. This problem is already stated in
 the documentation of the function \link{segmented.lm}, which is part of
-the \emph{segmented} package.
+the \emph{segmented} package. A maximum of three subgroups can be obtained.
 }
 \examples{
-hours = c(2, 28, 67, 119, 179, 236, 282, 317, 348, 387, 3, 31, 69, 135,
+hours <- c(2, 28, 67, 119, 179, 236, 282, 317, 348, 387, 3, 31, 69, 135,
           191, 241, 284, 318, 348, 392, 5, 31, 76, 144, 203, 257, 286,
           320, 350, 412, 8, 52, 78, 157, 211, 261, 298, 327, 360, 446,
           13, 53, 104, 160, 221, 264, 303, 328, 369, 21, 64, 113, 168,
           226, 278, 314, 328, 377)
-state = c(1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1,
+state <- c(1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1,
           1, 0, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 0, 0,
           1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1,
           0, 1, 1, 1, 1, 1, 1)

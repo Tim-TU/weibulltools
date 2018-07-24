@@ -53,7 +53,7 @@ dist_delay_register <- function(date_prod, date_register,
 
   if (distribution == "lognormal") {
     logmu_regist <- mean(log(t_regist[t_regist > 0]), na.rm = TRUE)
-    logsd_regist <- sd(log(t_regist[t_regist > 0]), na.rm = TRUE)
+    logsd_regist <- stats::sd(log(t_regist[t_regist > 0]), na.rm = TRUE)
 
     estimates <- c(logmu_regist, logsd_regist)
     names(estimates) <- c("meanlog_register", "sdlog_register")
@@ -157,18 +157,18 @@ mcs_delay_register <- function(date_prod, date_register, x, event,
   if (!is.null(seed)) {
     int_seed <- seed
   } else {
-    int_seed <- ceiling(runif(n = 1, min = 0, max = 1e6))
+    int_seed <- ceiling(stats::runif(n = 1, min = 0, max = 1e6))
   }
   set.seed(int_seed)
 
   # Number of Monte Carlo simulated random numbers, i.e. number of censored data.
   n_rand <- sum(is.na(date_register))
 
-  if (!complete.cases(date_prod) || !complete.cases(date_register)) {
-    prod_date <- date_prod[(complete.cases(date_prod) &
-        complete.cases(date_register))]
-    register_date <- date_register[(complete.cases(date_prod) &
-        complete.cases(date_register))]
+  if (!stats::complete.cases(date_prod) || !stats::complete.cases(date_register)) {
+    prod_date <- date_prod[(stats::complete.cases(date_prod) &
+        stats::complete.cases(date_register))]
+    register_date <- date_register[(stats::complete.cases(date_prod) &
+        stats::complete.cases(date_register))]
   } else {
     prod_date <- date_prod
     register_date <- date_register
@@ -179,7 +179,7 @@ mcs_delay_register <- function(date_prod, date_register, x, event,
                                   date_register = register_date,
                                   distribution = "lognormal")
 
-    x_sim <- rlnorm(n = n_rand, meanlog = params[[1]], sdlog = params[[2]])
+    x_sim <- stats::rlnorm(n = n_rand, meanlog = params[[1]], sdlog = params[[2]])
   } else {
     stop("No valid distribution!")
   }
@@ -248,7 +248,7 @@ dist_delay_report <- function(date_repair, date_report,
 
   if (distribution == "lognormal") {
     logmu_report <- mean(log(t_report[t_report > 0]), na.rm = TRUE)
-    logsd_report <- sd(log(t_report[t_report > 0]), na.rm = TRUE)
+    logsd_report <- stats::sd(log(t_report[t_report > 0]), na.rm = TRUE)
 
     estimates <- c(logmu_report, logsd_report)
     names(estimates) <- c("meanlog_report", "sdlog_report")
@@ -349,18 +349,18 @@ mcs_delay_report <- function(date_repair, date_report, x, event,
   if (!is.null(seed)) {
     int_seed <- seed
   } else {
-    int_seed <- ceiling(runif(n = 1, min = 0, max = 1e6))
+    int_seed <- ceiling(stats::runif(n = 1, min = 0, max = 1e6))
   }
   set.seed(int_seed)
 
   # Number of Monte Carlo simulated random numbers, i.e. number of censored data.
   n_rand <- sum(event == 0)
 
-  if (!complete.cases(date_repair) || !complete.cases(date_report)) {
-    repair_date <- date_repair[(complete.cases(date_repair) &
-                                complete.cases(date_report))]
-    report_date <- date_report[(complete.cases(date_repair) &
-                                complete.cases(date_report))]
+  if (!stats::complete.cases(date_repair) || !stats::complete.cases(date_report)) {
+    repair_date <- date_repair[(stats::complete.cases(date_repair) &
+                                stats::complete.cases(date_report))]
+    report_date <- date_report[(stats::complete.cases(date_repair) &
+                                stats::complete.cases(date_report))]
   } else {
     repair_date <- date_repair
     report_date <- date_report
@@ -371,7 +371,7 @@ mcs_delay_report <- function(date_repair, date_report, x, event,
                                 date_report = report_date,
                                 distribution = "lognormal")
 
-    x_sim <- rlnorm(n = n_rand, meanlog = params[[1]], sdlog = params[[2]])
+    x_sim <- stats::rlnorm(n = n_rand, meanlog = params[[1]], sdlog = params[[2]])
   } else {
     stop("No valid distribution!")
   }
@@ -505,7 +505,7 @@ mcs_delays <- function(date_prod, date_register, date_repair, date_report, x,
   if (!is.null(seed)) {
     int_seed <- seed
   } else {
-    int_seed <- ceiling(runif(n = 1, min = 0, max = 1e6))
+    int_seed <- ceiling(stats::runif(n = 1, min = 0, max = 1e6))
   }
   set.seed(int_seed)
 
@@ -515,21 +515,21 @@ mcs_delays <- function(date_prod, date_register, date_repair, date_report, x,
   n_rand_regist <- sum(is.na(date_register))
   n_rand_report <- sum(event == 0)
 
-  if (!complete.cases(date_prod) || !complete.cases(date_register)) {
-    prod_date <- date_prod[(complete.cases(date_prod) &
-                           complete.cases(date_register))]
-    register_date <- date_register[(complete.cases(date_prod) &
-                                   complete.cases(date_register))]
+  if (!stats::complete.cases(date_prod) || !stats::complete.cases(date_register)) {
+    prod_date <- date_prod[(stats::complete.cases(date_prod) &
+                           stats::complete.cases(date_register))]
+    register_date <- date_register[(stats::complete.cases(date_prod) &
+                                   stats::complete.cases(date_register))]
   } else {
     prod_date <- date_prod
     register_date <- date_register
   }
 
-  if (!complete.cases(date_repair) || !complete.cases(date_report)) {
-    repair_date <- date_repair[(complete.cases(date_repair) &
-                               complete.cases(date_report))]
-    report_date <- date_report[(complete.cases(date_repair) &
-                               complete.cases(date_report))]
+  if (!stats::complete.cases(date_repair) || !stats::complete.cases(date_report)) {
+    repair_date <- date_repair[(stats::complete.cases(date_repair) &
+                               stats::complete.cases(date_report))]
+    report_date <- date_report[(stats::complete.cases(date_repair) &
+                               stats::complete.cases(date_report))]
   } else {
     repair_date <- date_repair
     report_date <- date_report
@@ -543,9 +543,9 @@ mcs_delays <- function(date_prod, date_register, date_repair, date_report, x,
                                        date_report = report_date,
                                        distribution = "lognormal")
 
-    x_sim_regist <- rlnorm(n = n_rand_regist, meanlog = params_regist[[1]],
+    x_sim_regist <- stats::rlnorm(n = n_rand_regist, meanlog = params_regist[[1]],
                            sdlog = params_regist[[2]])
-    x_sim_report <- rlnorm(n = n_rand_report, meanlog = params_report[[1]],
+    x_sim_report <- stats::rlnorm(n = n_rand_report, meanlog = params_report[[1]],
                            sdlog = params_report[[2]])
   } else {
     stop("No valid distribution!")
