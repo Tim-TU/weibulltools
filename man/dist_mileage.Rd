@@ -2,7 +2,7 @@
 % Please edit documentation in R/mileage_distribution.R
 \name{dist_mileage}
 \alias{dist_mileage}
-\title{Parameter estimation of the mileage distribution}
+\title{Parameter Estimation of the Mileage Distribution}
 \usage{
 dist_mileage(x, event, mileage, distribution = "lognormal")
 }

@@ -155,8 +155,8 @@ plot_layout <- function(x, distribution = c("weibull", "lognormal", "loglogistic
 #' of the marker is "Mileage".
 #'
 #' The marker label for y is determined by the string provided in the
-#' argument \code{title_y}, i.e. if \code{title_y = "Probability"} the y label
-#' of the marker is "Probability".
+#' argument \code{title_y}, i.e. if \code{title_y = "Probability in percent"} the y
+#' label of the marker is "Probability".
 #'
 #' @param x a numeric vector which consists of lifetime data. Lifetime
 #'   data could be every characteristic influencing the reliability of a product,
@@ -227,6 +227,7 @@ plot_prob <- function(x, y, event, id = rep("XXXXXX", length(x)),
     title_y = title_y)
 
   mark_x <- unlist(strsplit(title_x, " "))[1]
+  mark_y <- unlist(strsplit(title_y, " "))[1]
 
   # Choice of distribution:
   if (distribution == "weibull") {
@@ -244,13 +245,13 @@ plot_prob <- function(x, y, event, id = rep("XXXXXX", length(x)),
     name = title_trace,
     text = ~paste("ID:", id_s,
       paste("<br>", paste0(mark_x, ":")), x_s,
-      paste("<br>", paste0(title_y, ":")), round(y_s, digits = 5))
+      paste("<br>", paste0(mark_y, ":")), round(y_s, digits = 5))
   )
   return(plot)
 }
 
 
-#' Probability Plot for separated Mixture Models
+#' Probability Plot for Separated Mixture Models
 #'
 #' This function is used to apply the graphical technique of probability
 #' plotting to univariate mixture models that where separated with the function
@@ -263,8 +264,8 @@ plot_prob <- function(x, y, event, id = rep("XXXXXX", length(x)),
 #' of the marker is "Mileage".
 #'
 #' The marker label for y is determined by the string provided in the
-#' argument \code{title_y}, i.e. if \code{title_y = "Probability"} the y label
-#' of the marker is "Probability".
+#' argument \code{title_y}, i.e. if \code{title_y = "Probability in percent"} the y
+#' label of the marker is "Probability".
 #'
 #' @param x a numeric vector which consists of lifetime data. Lifetime
 #'   data could be every characteristic influencing the reliability of a product,
@@ -382,6 +383,7 @@ plot_prob_mix <- function(x, y, event, id = rep("XXXXXX", length(x)),
                    title_y = title_y)
 
   mark_x <- unlist(strsplit(title_x, " "))[1]
+  mark_y <- unlist(strsplit(title_y, " "))[1]
 
   # Choice of distribution:
   if (distribution == "weibull") {
@@ -404,13 +406,13 @@ plot_prob_mix <- function(x, y, event, id = rep("XXXXXX", length(x)),
                       name = title_trace,
                       text = ~paste("ID:", id_s,
                                     paste("<br>", paste0(mark_x, ":")), x_s,
-                                    paste("<br>", paste0(title_y, ":")),
+                                    paste("<br>", paste0(mark_y, ":")),
                                     round(y_s, digits = 5))
   )
   return(plot)
 }
 
-#' Adding an estimated Population Line to a Probability Plot
+#' Adding an Estimated Population Line to a Probability Plot
 #'
 #' This function adds a regression line to an existing probability plot using a
 #' model estimated by \code{\link{rank_regression}} or \code{\link{ml_estimation}}.
@@ -420,7 +422,9 @@ plot_prob_mix <- function(x, y, event, id = rep("XXXXXX", length(x)),
 #' @param y a numeric vector containing the y-coordinates of the regression line.
 #'   The default value of y is \code{NULL}. If \code{y} is set \code{NULL} the
 #'   y-coordinates with respect to \code{x} are calculated by function
-#'   \code{predict_prob} using estimated coefficients in \code{reg_output}.
+#'   \code{predict_prob} using estimated coefficients in \code{loc_sc_params}. If
+#'   confidence interval(s) should be added to the plot y should not be set to
+#'   \code{NULL}. For more information see \strong{Details} in \code{\link{plot_conf}}.
 #' @param loc_sc_params a (named) numeric vector of estimated location and scale
 #'   parameters for a specified distribution. The order of elements is
 #'   important. First entry needs to be the location parameter \eqn{\mu} and the
@@ -521,7 +525,7 @@ plot_mod <- function(p_obj, x, y = NULL, loc_sc_params,
 }
 
 
-#' Adding estimated Population Lines of a separated Mixture Model to a
+#' Adding Estimated Population Lines of a Separated Mixture Model to a
 #' Probability Plot
 #'
 #' This function adds one or multiple estimated regression lines to an existing
@@ -535,7 +539,7 @@ plot_mod <- function(p_obj, x, y = NULL, loc_sc_params,
 #'   y-coordinates with respect to \code{x} are calculated by function
 #'   \code{predict_prob} using estimated coefficients in \code{reg_output}.
 #' @param reg_output a list provided by \code{\link{mixmod_regression}} which
-#'   consists of values necessary to visualize the regression lines.
+#'   consists of elements necessary to visualize the regression lines.
 #' @param distribution supposed distribution of the random variable. The
 #'   value can be \code{"weibull"}, \code{"lognormal"} or \code{"loglogistic"}.
 #'   Other distributions have not been implemented yet.
@@ -648,7 +652,6 @@ plot_mod_mix <- function(p_obj, x, y = NULL, reg_output,
                     "<br>", paste(param_label[1], param_val[1]),
                     "<br>", paste(param_label[2], param_val[2])))
 
-
     return(p_mod)
   }
 
@@ -677,6 +680,18 @@ plot_mod_mix <- function(p_obj, x, y = NULL, reg_output,
 #'
 #' This function is used to add estimated confidence region(s) to an existing
 #' probability plot which also includes the estimated regression line.
+#'
+#' It is important that the length of the vectors provided as lists in \code{x}
+#' and \code{y} match with the length of the vectors \code{x} and \code{y} in
+#' the function \code{\link{plot_mod}}. For this reason the following procedure
+#' is recommended:
+#' \itemize{
+#'   \item Calculate confidence intervals with the function
+#'     \code{\link{confint_betabinom}} or \code{\link{confint_fisher}} and store
+#'     it in a \code{data.frame}. For instance call it df.
+#'   \item Inside \code{\link{plot_mod}} use the output \code{df$characteristic}
+#'     for \code{x} and \code{df$prob} for \code{y} of the function(s) named before.
+#'   \item In \strong{Examples} the described approach is shown with code.}
 #'
 #' @param p_obj a plotly object provided by function \code{\link{plot_mod}}.
 #' @param x a list containing the x-coordinates of the confidence region(s).
@@ -805,7 +820,7 @@ plot_conf <- function(p_obj, x, y, direction = c("y", "x"),
 }
 
 
-#' Add Population line to an existing Grid
+#' Add Population Line to an Existing Grid
 #'
 #' This function adds a linearized CDF to an existing plotly grid.
 #'
@@ -841,7 +856,8 @@ plot_conf <- function(p_obj, x, y, direction = c("y", "x"),
 #'                             title_y = "Failure Probability")
 #' pop_weibull <- plot_pop(p_obj = grid_weibull,
 #'                         x = x, params = c(20000, 1),
-#'                         distribution = "weibull")
+#'                         distribution = "weibull", color = I("green"),
+#'                         title_trace = "Population")
 #'
 plot_pop <- function(p_obj, x, params,
                      distribution = c("weibull", "lognormal", "loglogistic"),

@@ -2,7 +2,7 @@
 % Please edit documentation in R/plot_functions.R
 \name{plot_mod_mix}
 \alias{plot_mod_mix}
-\title{Adding estimated Population Lines of a separated Mixture Model to a
+\title{Adding Estimated Population Lines of a Separated Mixture Model to a
 Probability Plot}
 \usage{
 plot_mod_mix(p_obj, x, y = NULL, reg_output, distribution = c("weibull",
@@ -19,7 +19,7 @@ y-coordinates with respect to \code{x} are calculated by function
 \code{predict_prob} using estimated coefficients in \code{reg_output}.}
 
 \item{reg_output}{a list provided by \code{\link{mixmod_regression}} which
-consists of values necessary to visualize the regression lines.}
+consists of elements necessary to visualize the regression lines.}
 
 \item{distribution}{supposed distribution of the random variable. The
 value can be \code{"weibull"}, \code{"lognormal"} or \code{"loglogistic"}.

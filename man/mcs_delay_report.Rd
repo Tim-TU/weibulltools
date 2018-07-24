@@ -2,7 +2,7 @@
 % Please edit documentation in R/delay_distributions.R
 \name{mcs_delay_report}
 \alias{mcs_delay_report}
-\title{Adjustment of operating times by delays in report using a Monte Carlo approach}
+\title{Adjustment of Operating Times by Delays in Report using a Monte Carlo Approach}
 \usage{
 mcs_delay_report(date_repair, date_report, x, event,
   distribution = "lognormal", details = FALSE, seed = NULL)
@@ -38,7 +38,7 @@ can specify an integer for the seed.}
 A numeric vector of corrected operating times for the censored units
   and the input operating times for the failed units if
   \code{details = FALSE}. If \code{details = TRUE} the output is a list which
-  consists of the following entries:
+  consists of the following elements:
   \itemize{
   \item \code{time} : Numeric vector of corrected operating times for the
     censored observations and input operating times for failed units.

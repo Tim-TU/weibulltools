@@ -35,6 +35,19 @@ Returns a plotly object containing the probability plot with
 This function is used to add estimated confidence region(s) to an existing
 probability plot which also includes the estimated regression line.
 }
+\details{
+It is important that the length of the vectors provided as lists in \code{x}
+and \code{y} match with the length of the vectors \code{x} and \code{y} in
+the function \code{\link{plot_mod}}. For this reason the following procedure
+is recommended:
+\itemize{
+  \item Calculate confidence intervals with the function
+    \code{\link{confint_betabinom}} or \code{\link{confint_fisher}} and store
+    it in a \code{data.frame}. For instance call it df.
+  \item Inside \code{\link{plot_mod}} use the output \code{df$characteristic}
+    for \code{x} and \code{df$prob} for \code{y} of the function(s) named before.
+  \item In \strong{Examples} the described approach is shown with code.}
+}
 \examples{
 obs   <- seq(10000, 100000, 10000)
 state <- c(0, 1, 1, 0, 0, 0, 1, 0, 1, 0)

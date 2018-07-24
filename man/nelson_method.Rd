@@ -2,7 +2,7 @@
 % Please edit documentation in R/probability_estimators.R
 \name{nelson_method}
 \alias{nelson_method}
-\title{Estimation of failure probabilities using the Nelson-Aalen estimator}
+\title{Estimation of Failure Probabilities using the Nelson-Aalen Estimator}
 \usage{
 nelson_method(x, event, id = rep("XXXXXX", length(x)))
 }
@@ -27,9 +27,9 @@ This non-parametric approach estimates the cumulative hazard rate in
 terms of (multiple) right censored data. By equating the definition of the
 hazard rate with the hazard rate according to Nelson-Aalen one can calculate
 the failure probabilities.
-Since the failure probability estimation in this function is not based on median ranks,
-the Betabinomial confidence intervals cannot be estimated on the basis of
-Nelson-Aalen failure probabilities.
+Since the failure probability estimation in this function is not based on
+\emph{Median Ranks}, the Betabinomial confidence intervals cannot be calculated
+on the basis of Nelson-Aalen failure probabilities.
 }
 \examples{
 obs   <- seq(10000, 100000, 10000)

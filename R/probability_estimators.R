@@ -1,4 +1,4 @@
-#' Estimation of failure probabilities using Median Ranks
+#' Estimation of Failure Probabilities using Median Ranks
 #'
 #' This non-parametric approach (\emph{Median Ranks}) is used to estimate the
 #' failure probabilities in terms of complete data. Two methods are available to
@@ -66,7 +66,7 @@ mr_method <- function(x, event = rep(1, length(x)),
 }
 
 
-#' Estimation of failure probabilities using Johnson's method
+#' Estimation of Failure Probabilities using Johnson's Method
 #'
 #' This non-parametric approach is used to estimate the failure probabilities in
 #' terms of (multiple) right censored data. Compared to complete data the
@@ -129,7 +129,7 @@ johnson_method <- function(x, event, id = rep("XXXXXX", length(x))) {
 }
 
 
-#' Estimation of failure probabilities using Kaplan-Meier
+#' Estimation of Failure Probabilities using Kaplan-Meier
 #'
 #' Whereas the non-parametric Kaplan-Meier estimator is used to estimate the
 #' survival function \emph{S(t)} in terms of (multiple) right censored data, the
@@ -141,9 +141,9 @@ johnson_method <- function(x, event, id = rep("XXXXXX", length(x))) {
 #' unit is not \emph{zero} and therefore the estimate for the failure probability is
 #' not equal to \emph{one}. Otherwise the estimate in this context would be too
 #' pessimisitc.
-#' Since the failure probability estimation in this function is not based on median ranks,
-#' the Betabinomial confidence intervals cannot be estimated on the basis of
-#' Kaplan-Meier failure probabilities.
+#' Since the failure probability estimation in this function is not based on
+#' \emph{Median Ranks}, the Betabinomial confidence intervals cannot be
+#' calculated on the basis of Kaplan-Meier failure probabilities.
 #'
 #' @param x a numeric vector which consists of lifetime data. Lifetime
 #'   data could be every characteristic influencing the reliability of a product,
@@ -215,15 +215,15 @@ kaplan_method <- function(x, event, id = rep("XXXXXX", length(x))) {
 }
 
 
-#' Estimation of failure probabilities using the Nelson-Aalen estimator
+#' Estimation of Failure Probabilities using the Nelson-Aalen Estimator
 #'
 #' This non-parametric approach estimates the cumulative hazard rate in
 #' terms of (multiple) right censored data. By equating the definition of the
 #' hazard rate with the hazard rate according to Nelson-Aalen one can calculate
 #' the failure probabilities.
-#' Since the failure probability estimation in this function is not based on median ranks,
-#' the Betabinomial confidence intervals cannot be estimated on the basis of
-#' Nelson-Aalen failure probabilities.
+#' Since the failure probability estimation in this function is not based on
+#' \emph{Median Ranks}, the Betabinomial confidence intervals cannot be calculated
+#' on the basis of Nelson-Aalen failure probabilities.
 #'
 #' @param x a numeric vector which consists of lifetime data. Lifetime
 #'   data could be every characteristic influencing the reliability of a product,

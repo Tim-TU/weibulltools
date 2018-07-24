@@ -53,8 +53,8 @@ argument \code{title_x}, i.e. if \code{title_x = "Mileage in km"} the x label
 of the marker is "Mileage".
 
 The marker label for y is determined by the string provided in the
-argument \code{title_y}, i.e. if \code{title_y = "Probability"} the y label
-of the marker is "Probability".
+argument \code{title_y}, i.e. if \code{title_y = "Probability in percent"} the y
+label of the marker is "Probability".
 }
 \examples{
 obs   <- seq(10000, 100000, 10000)

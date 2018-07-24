@@ -2,7 +2,7 @@
 % Please edit documentation in R/plot_functions.R
 \name{plot_prob_mix}
 \alias{plot_prob_mix}
-\title{Probability Plot for separated Mixture Models}
+\title{Probability Plot for Separated Mixture Models}
 \usage{
 plot_prob_mix(x, y, event, id = rep("XXXXXX", length(x)),
   distribution = c("weibull", "lognormal", "loglogistic"),
@@ -62,8 +62,8 @@ argument \code{title_x}, i.e. if \code{title_x = "Mileage in km"} the x label
 of the marker is "Mileage".
 
 The marker label for y is determined by the string provided in the
-argument \code{title_y}, i.e. if \code{title_y = "Probability"} the y label
-of the marker is "Probability".
+argument \code{title_y}, i.e. if \code{title_y = "Probability in percent"} the y
+label of the marker is "Probability".
 }
 \examples{
 hours <- c(2, 28, 67, 119, 179, 236, 282, 317, 348, 387, 3, 31, 69, 135,

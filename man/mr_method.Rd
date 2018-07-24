@@ -2,7 +2,7 @@
 % Please edit documentation in R/probability_estimators.R
 \name{mr_method}
 \alias{mr_method}
-\title{Estimation of failure probabilities using Median Ranks}
+\title{Estimation of Failure Probabilities using Median Ranks}
 \usage{
 mr_method(x, event = rep(1, length(x)), id = rep("XXXXXX", length(x)),
   method = "benard")

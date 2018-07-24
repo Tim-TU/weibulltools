@@ -23,8 +23,10 @@
 #'   \code{conf_level = 0.95}.
 #'
 #' @return Returns a list where the length of the list depends on
-#'   the number of identified subgroups. Each list contains the same
-#'   information as supplied by \link{rank_regression}.
+#'   the number of identified subgroups. Each list has the same
+#'   information as provided by \link{rank_regression}. Additionally each list
+#'   has an element that specifies the range regarding the lifetime data for
+#'   every subgroup.
 #' @export
 #'
 #' @examples

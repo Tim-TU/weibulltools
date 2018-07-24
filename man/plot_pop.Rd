@@ -2,7 +2,7 @@
 % Please edit documentation in R/plot_functions.R
 \name{plot_pop}
 \alias{plot_pop}
-\title{Add Population line to an existing Grid}
+\title{Add Population Line to an Existing Grid}
 \usage{
 plot_pop(p_obj, x, params, distribution = c("weibull", "lognormal",
   "loglogistic"), color = I("#FF0000"), title_trace = "Population")
@@ -47,6 +47,7 @@ grid_weibull <- plot_layout(x = x,
                             title_y = "Failure Probability")
 pop_weibull <- plot_pop(p_obj = grid_weibull,
                         x = x, params = c(20000, 1),
-                        distribution = "weibull")
+                        distribution = "weibull", color = I("green"),
+                        title_trace = "Population")
 
 }

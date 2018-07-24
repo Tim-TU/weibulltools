@@ -1,4 +1,4 @@
-#' Parameter estimation of the mileage distribution
+#' Parameter Estimation of the Mileage Distribution
 #'
 #' This function introduces a random variable of annual mileage using the units in
 #' the sample that had a failure and afterwards estimates the parameter(s) of a
@@ -58,8 +58,8 @@ dist_mileage <- function(x, event, mileage, distribution = "lognormal") {
 }
 
 
-#' Estimation of driving distances for censored observations using a Monte Carlo
-#' approach
+#' Estimation of Driving Distances for Censored Observations using a Monte Carlo
+#' Approach
 #'
 #' This function simulates driving distances for censored observations under the
 #' condition that the operating time of these items is known up to a certain date
@@ -90,9 +90,9 @@ dist_mileage <- function(x, event, mileage, distribution = "lognormal") {
 #' @return A numerical vector of simulated driving distances for the censored
 #'   units and the input driving distances for the failed units if
 #'   \code{details = FALSE}. If \code{details = TRUE} the output is a list which
-#'   consists of the following entries:
+#'   consists of the following elements:
 #'   \itemize{
-#'   \item \code{mileage} : simulated driving distances for the censored
+#'   \item \code{mileage} : Simulated driving distances for the censored
 #'     units and the input driving distances for the failed units.
 #'   \item \code{mileage_sim_annual} : Simulated annual driving distances of
 #'     specified distribution with estimated parameters. The length of

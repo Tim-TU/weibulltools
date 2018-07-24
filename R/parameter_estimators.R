@@ -69,8 +69,9 @@
 #'                        distribution = "weibull",
 #'                        conf_level = .90)
 
-rank_regression <- function(x, y, event, distribution = c("weibull", "lognormal",
-  "loglogistic"), conf_level = .95, details = TRUE) {
+rank_regression <- function(x, y, event,
+                            distribution = c("weibull", "lognormal", "loglogistic"),
+                            conf_level = .95, details = TRUE) {
 
   distribution <- match.arg(distribution)
 
@@ -232,8 +233,9 @@ rank_regression <- function(x, y, event, distribution = c("weibull", "lognormal"
 #' mle <- ml_estimation(x = obs, event = state,
 #'                      distribution = "weibull", conf_level = 0.90)
 #'
-ml_estimation <- function(x, event, distribution = c("weibull", "lognormal",
-  "loglogistic"), conf_level = 0.95, details = TRUE) {
+ml_estimation <- function(x, event,
+                          distribution = c("weibull", "lognormal", "loglogistic"),
+                          conf_level = 0.95, details = TRUE) {
 
   distribution <- match.arg(distribution)
 

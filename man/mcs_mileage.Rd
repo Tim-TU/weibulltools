@@ -2,8 +2,8 @@
 % Please edit documentation in R/mileage_distribution.R
 \name{mcs_mileage}
 \alias{mcs_mileage}
-\title{Estimation of driving distances for censored observations using a Monte Carlo
-approach}
+\title{Estimation of Driving Distances for Censored Observations using a Monte Carlo
+Approach}
 \usage{
 mcs_mileage(x, event, mileage, distribution = "lognormal", seed = NULL,
   details = FALSE)
@@ -34,9 +34,9 @@ seed for reproducibility.}
 A numerical vector of simulated driving distances for the censored
   units and the input driving distances for the failed units if
   \code{details = FALSE}. If \code{details = TRUE} the output is a list which
-  consists of the following entries:
+  consists of the following elements:
   \itemize{
-  \item \code{mileage} : simulated driving distances for the censored
+  \item \code{mileage} : Simulated driving distances for the censored
     units and the input driving distances for the failed units.
   \item \code{mileage_sim_annual} : Simulated annual driving distances of
     specified distribution with estimated parameters. The length of

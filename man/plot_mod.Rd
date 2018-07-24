@@ -2,7 +2,7 @@
 % Please edit documentation in R/plot_functions.R
 \name{plot_mod}
 \alias{plot_mod}
-\title{Adding an estimated Population Line to a Probability Plot}
+\title{Adding an Estimated Population Line to a Probability Plot}
 \usage{
 plot_mod(p_obj, x, y = NULL, loc_sc_params, distribution = c("weibull",
   "lognormal", "loglogistic"), title_trace = "Fit")
@@ -15,7 +15,9 @@ plot_mod(p_obj, x, y = NULL, loc_sc_params, distribution = c("weibull",
 \item{y}{a numeric vector containing the y-coordinates of the regression line.
 The default value of y is \code{NULL}. If \code{y} is set \code{NULL} the
 y-coordinates with respect to \code{x} are calculated by function
-\code{predict_prob} using estimated coefficients in \code{reg_output}.}
+\code{predict_prob} using estimated coefficients in \code{loc_sc_params}. If
+confidence interval(s) should be added to the plot y should not be set to
+\code{NULL}. For more information see \strong{Details} in \code{\link{plot_conf}}.}
 
 \item{loc_sc_params}{a (named) numeric vector of estimated location and scale
 parameters for a specified distribution. The order of elements is

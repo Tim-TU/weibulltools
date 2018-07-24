@@ -2,7 +2,7 @@
 % Please edit documentation in R/delay_distributions.R
 \name{dist_delay_register}
 \alias{dist_delay_register}
-\title{Parameter estimation of the delay in registration distribution}
+\title{Parameter Estimation of the Delay in Registration Distribution}
 \usage{
 dist_delay_register(date_prod, date_register, distribution = "lognormal")
 }

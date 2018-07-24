@@ -28,14 +28,18 @@ predict_quantile <- function(p, loc_sc_params,
 
   distribution <- match.arg(distribution)
 
+  if (!(distribution %in% c("weibull", "lognormal", "loglogistic"))) {
+    stop("No valid distribution!")
+  }
+
   if (distribution == "weibull") {
     quantiles <- SPREDA::qsev(p)
-  } else if (distribution == "lognormal") {
+  }
+  if (distribution == "lognormal") {
     quantiles <- stats::qnorm(p)
-  } else if (distribution == "loglogistic") {
+  }
+  if (distribution == "loglogistic") {
     quantiles <- stats::qlogis(p)
-  } else {
-    stop("No valid distribution!")
   }
 
   x_pred <- exp(quantiles * loc_sc_params[[2]] + loc_sc_params[[1]])
@@ -71,17 +75,21 @@ predict_prob <- function(q, loc_sc_params,
 
   distribution <- match.arg(distribution)
 
+  if (!(distribution %in% c("weibull", "lognormal", "loglogistic"))) {
+    stop("No valid distribution!")
+  }
+
   # Standardize
   z <- (log(q) - loc_sc_params[[1]]) / loc_sc_params[[2]]
 
   if (distribution == "weibull") {
     cd <- SPREDA::psev(z)
-  } else if (distribution == "lognormal") {
+  }
+  if (distribution == "lognormal") {
     cd <- stats::pnorm(z)
-  } else if (distribution == "loglogistic") {
+  }
+  if (distribution == "loglogistic") {
     cd <- stats::plogis(z)
-  } else {
-    stop("No valid distribution!")
   }
 
   y_pred <- cd

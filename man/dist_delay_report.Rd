@@ -2,7 +2,7 @@
 % Please edit documentation in R/delay_distributions.R
 \name{dist_delay_report}
 \alias{dist_delay_report}
-\title{Parameter estimation of the delay in report distribution}
+\title{Parameter Estimation of the Delay in Report Distribution}
 \usage{
 dist_delay_report(date_repair, date_report, distribution = "lognormal")
 }

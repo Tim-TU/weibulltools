@@ -1,4 +1,4 @@
-#' Parameter estimation of the delay in registration distribution
+#' Parameter Estimation of the Delay in Registration Distribution
 #'
 #' This function introduces a delay random variable by calculating the time
 #' difference between the registration and production date for the sample units
@@ -65,8 +65,8 @@ dist_delay_register <- function(date_prod, date_register,
 }
 
 
-#' Adjustment of operating times by delays in registration using a Monte Carlo
-#' approach
+#' Adjustment of Operating Times by Delays in Registration using a Monte Carlo
+#' Approach
 #'
 #' In general the amount of information about units in the field, that have not
 #' failed yet, are rare. For example it is common that a supplier, who provides
@@ -100,7 +100,7 @@ dist_delay_register <- function(date_prod, date_register,
 #' @return A numeric vector of corrected operating times for the censored units
 #'   and the input operating times for the failed units if
 #'   \code{details = FALSE}. If \code{details = TRUE} the output is a list which
-#'   consists of the following entries:
+#'   consists of the following elements:
 #'   \itemize{
 #'   \item \code{time} : Numeric vector of corrected operating times for the
 #'     censored observations and input operating times for failed units.
@@ -196,7 +196,7 @@ mcs_delay_register <- function(date_prod, date_register, x, event,
 }
 
 
-#' Parameter estimation of the delay in report distribution
+#' Parameter Estimation of the Delay in Report Distribution
 #'
 #' This function introduces a delay random variable by calculating the time
 #' difference between the report and repair date for the sample units
@@ -260,7 +260,7 @@ dist_delay_report <- function(date_repair, date_report,
 }
 
 
-#' Adjustment of operating times by delays in report using a Monte Carlo approach
+#' Adjustment of Operating Times by Delays in Report using a Monte Carlo Approach
 #'
 #' The delay in report describes the time between the occurence of a damage and
 #' the registration in the warranty database. For a given date where the analysis
@@ -294,7 +294,7 @@ dist_delay_report <- function(date_repair, date_report,
 #' @return A numeric vector of corrected operating times for the censored units
 #'   and the input operating times for the failed units if
 #'   \code{details = FALSE}. If \code{details = TRUE} the output is a list which
-#'   consists of the following entries:
+#'   consists of the following elements:
 #'   \itemize{
 #'   \item \code{time} : Numeric vector of corrected operating times for the
 #'     censored observations and input operating times for failed units.
@@ -388,7 +388,7 @@ mcs_delay_report <- function(date_repair, date_report, x, event,
 }
 
 
-#' Adjustment of operating times by delays using Monte Carlo method
+#' Adjustment of Operating Times by Delays using a Monte Carlo Approach
 #'
 #' This function is a wrapper that combines both, the
 #' \code{\link{mcs_delay_register}} and \code{\link{mcs_delay_report}} function
@@ -423,7 +423,7 @@ mcs_delay_report <- function(date_repair, date_report, x, event,
 #' @return A numerical vector of corrected operating times for the censored units
 #'   and the input operating times for the failed units if
 #'   \code{details = FALSE}. If \code{details = TRUE} the output is a list which
-#'   consists of the following entries:
+#'   consists of the following elements:
 #'   \itemize{
 #'   \item \code{time} : Numerical vector of corrected operating times for the
 #'     censored observations and input operating times for failed units.

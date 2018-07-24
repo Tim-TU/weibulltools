@@ -2,7 +2,7 @@
 % Please edit documentation in R/probability_estimators.R
 \name{kaplan_method}
 \alias{kaplan_method}
-\title{Estimation of failure probabilities using Kaplan-Meier}
+\title{Estimation of Failure Probabilities using Kaplan-Meier}
 \usage{
 kaplan_method(x, event, id = rep("XXXXXX", length(x)))
 }
@@ -33,9 +33,9 @@ the estimator is adjusted in such a way that the survival estimate for this
 unit is not \emph{zero} and therefore the estimate for the failure probability is
 not equal to \emph{one}. Otherwise the estimate in this context would be too
 pessimisitc.
-Since the failure probability estimation in this function is not based on median ranks,
-the Betabinomial confidence intervals cannot be estimated on the basis of
-Kaplan-Meier failure probabilities.
+Since the failure probability estimation in this function is not based on
+\emph{Median Ranks}, the Betabinomial confidence intervals cannot be
+calculated on the basis of Kaplan-Meier failure probabilities.
 }
 \examples{
 # Example 1

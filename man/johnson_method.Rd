@@ -2,7 +2,7 @@
 % Please edit documentation in R/probability_estimators.R
 \name{johnson_method}
 \alias{johnson_method}
-\title{Estimation of failure probabilities using Johnson's method}
+\title{Estimation of Failure Probabilities using Johnson's Method}
 \usage{
 johnson_method(x, event, id = rep("XXXXXX", length(x)))
 }
