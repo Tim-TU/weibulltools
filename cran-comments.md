@@ -3,7 +3,10 @@ title: "CRAN comments"
 output: html_document
 ---
 
-# This is the first submission
+# This is a resubmission
+* I've omitted redundancy in the Description of the DESCRIPTION file  
+* I've added a more detailed description and references for the methods in the 
+  DESCRIPTION file
 
 # Test environments
 
