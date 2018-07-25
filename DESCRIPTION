@@ -14,7 +14,7 @@ Description: Contains methods for examining bench test or field data using the
              be estimated as well. 
              It also provides non-parametric estimators like Median Ranks, 
              Kaplan-Meier (Abernethy, 2006, <ISBN:978-0-9653062-3-2>), 
-             Johnson (Johnson, 1964, <ISBN:978-0444403223>), and Nelson-Aalon 
+             Johnson (Johnson, 1964, <ISBN:978-0444403223>), and Nelson-Aalen 
              for failure probability estimation within samples that contain 
              failures as well as censored data.   
              Methods for estimating the parameters of lifetime distributions, like 
