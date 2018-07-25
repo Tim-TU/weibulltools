@@ -5,8 +5,8 @@
 #' @docType package
 #' @name weibulltools
 #' @useDynLib weibulltools, .registration = TRUE
+#' @import Rcpp
 #' @importFrom Rcpp sourceCpp
-#' @import LearnBayes
 NULL
 
 utils::globalVariables(c('time', 'status', 'failure', 'survivor', 'n_i', 'n_out',

@@ -1,5 +1,7 @@
 #include <Rcpp.h>
+
 using namespace Rcpp;
+
 //' Computation of Johnson Ranks
 //'
 //' This function calculates the Johnson ranks which are used to estimate the
