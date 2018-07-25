@@ -1,12 +1,63 @@
 Package: weibulltools
 Type: Package
 Title: Statistical Methods for Life Data Analysis 
-Version: 0.5.3
+Version: 0.5.4
 Authors@R: person("Hensel", "Tim-Gunnar", 
            email = "tim-gunnar.hensel@tu-berlin.de", 
            role = c("aut", "cre")) 
-Description: The weibulltools package contains methods for examining bench test 
-             or field data using the well-known Weibull analysis.
+Description: Contains methods for examining bench test or field data using the 
+             well-known Weibull Analysis. It includes Monte Carlo simulation for 
+             estimating the life span of products that have not failed, taking 
+             account of registering and reporting delays as stated in [VDA 3.2 2016, p. 349–350]. 
+             If the products looked upon are vehicles, the covered mileage can be estimated as well. 
+             It also provides non-parametric estimators like Median Ranks, 
+             Kaplan-Meier [Abernethy 2006, chapter 2], Johnson [Johnson 1974, p. 38], 
+             and Nelson-Aalon for failure probability estimation within samples 
+             that contain failures as well as censored data.   
+             Methods for estimating the parameters of lifetime distributions, like 
+             Maximum Likelihood and Median-Rank Regression 
+             [Genschel and Meeker 2010, p. 1] as well as the computation of 
+             confidence intervals of quantiles and probabilities using the delta 
+             method related to Fisher's confidence intervals 
+             [Meeker und Escobar 1998, p. 236–237] and the beta-binomial confidence 
+             bounds are also included. 
+             If desired, the data can automatically be divided into subgroups 
+             using segmented regression. 
+             Besides the calculation, methods for interactive visualization of 
+             the edited data using *Plotly* are provided as well. These 
+             visualizations include the layout of a probability plot for a 
+             specified distribution, the graphical technique of probability plotting 
+             and adding regression lines and confidence bounds to existing plots. 
+  Bibliography: 
+    [Abernethy 2006]            Abernethy, Robert B. (2006): The new Weibull 
+                                handbook. Reliability & statistical analysis for 
+                                predicting life, safety, risk, support costs, 
+                                failures, and forecasting warranty claims, 
+                                substantiation and accelerated testing, using 
+                                Weibull, Log normal, crow-AMSAA, probit, and 
+                                Kaplan-Meier models. 5th ed. North Palm Beach, 
+                                Fla.: R.B. Abernethy. 
+    [Genschel and Meeker 2010]  Genschel, Ulrike; Meeker, William Q. (2010): A 
+                                Comparison of Maximum Likelihood and Median-Rank 
+                                Regression for Weibull Estimation. In: Quality 
+                                Engineering 22 (4), S. 236–255. 
+                                DOI: 10.1080/08982112.2010.503447. 
+    [Johnson 1974]              Johnson, Leonard G. (1974): The statistical 
+                                treatment of fatigue experiments. 1. reprint. 
+                                Amsterdam u.a.: Elsevier. 
+    [Meeker and Escobar 1998]   Meeker, William Q.; Escobar, Luis A. (1998): 
+                                Statistical methods for reliability data. 
+                                New York: Wiley (Wiley series in probability and 
+                                statistics. Applied probability and statistics section).
+    [Mock 1995]                 Mock, R. (1995): Methoden zur Datenhandhabung in 
+                                Zuverlässigkeitsanalysen. Zürich: 
+                                vdf Hochschulverlag AG an der ETH Zürich
+                                Probability and Statistics, v.577).
+    [VDA 3.2 2016]              Verband der Automobilindustrie e.V. (VDA) (2016): 
+                                Qualitätsmanagement in der Automobilindustrie. 
+                                Zuverlässigkeitssicherung bei Automobilherstellern 
+                                und Lieferanten.Zuverlässigkeits-Methoden und 
+                                -Hilfsmittel. 4. Aufl. 19 Bände. Frankfurt am Main (2).
 License: GPL-2
 Imports:
     dplyr, 
