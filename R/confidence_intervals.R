@@ -79,6 +79,7 @@ predict_prob <- function(q, loc_sc_params,
     stop("No valid distribution!")
   }
 
+
   # Standardize
   z <- (log(q) - loc_sc_params[[1]]) / loc_sc_params[[2]]
 
@@ -157,6 +158,7 @@ confint_betabinom <- function(x, event, loc_sc_params,
   if (!(distribution %in% c("weibull", "lognormal", "loglogistic"))) {
     stop("No valid distribution!")
   }
+
 
   n <- length(x)
   x_ob <- x[event == 1]

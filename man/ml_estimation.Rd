@@ -2,10 +2,11 @@
 % Please edit documentation in R/parameter_estimators.R
 \name{ml_estimation}
 \alias{ml_estimation}
-\title{ML Estimation for Two-Parameter Lifetime Distributions}
+\title{ML Estimation for Parametric Lifetime Distributions}
 \usage{
 ml_estimation(x, event, distribution = c("weibull", "lognormal",
-  "loglogistic"), conf_level = 0.95, details = TRUE)
+  "loglogistic", "normal", "logistic", "sev", "weibull3", "lognormal3",
+  "loglogistic3"), conf_level = 0.95, details = TRUE)
 }
 \arguments{
 \item{x}{a numeric vector which consists of lifetime data. Lifetime
@@ -17,7 +18,9 @@ cycles.}
 is a right censored observation (= 0) or a failure (= 1).}
 
 \item{distribution}{supposed distribution of the random variable. The
-value can be \code{"weibull"}, \code{"lognormal"} or \code{"loglogistic"}.
+value can be \code{"weibull"}, \code{"lognormal"}, \code{"loglogistic"},
+\code{"normal"}, \code{"logistic"}, \code{"sev"} \emph{(smallest extreme value)},
+\code{"weibull3"}, \code{"lognormal3"} or \code{"loglogistic3"}.
 Other distributions have not been implemented yet.}
 
 \item{conf_level}{confidence level of the interval. The default value is
@@ -40,13 +43,15 @@ Returns a list with the following components (depending on
   \item \code{loc_sc_confint} : Confidence interval for location-scale parameters.
   \item \code{loc_sc_vcov} : Estimated Variance-Covariance matrix of the used
     location-scale distribution.
-  \item \code{logL} : The log-likelihood value.}
+  \item \code{logL} : The log-likelihood value.
+  \item \code{aic} : Akaike Information Criterion.
+  \item \code{bic} : Bayesian Information Criterion.}
 }
 \description{
 This method estimates the parameters and calculates normal approximation confidence
-intervals for a two-parameter lifetime distribution in the frequently used
+intervals for a two- or three-parametric lifetime distribution in the frequently used
 location-scale parametrization. \code{ml_estimation} uses the
-\code{\link{Lifedata.MLE}} function that is defined in the
+\code{\link{Lifedata.MLE}} function which is defined in the
 \emph{SPREDA} package.
 For the Weibull the estimates are transformed such that they are in line with
 the parametrization provided by the \emph{stats} package like

@@ -4,8 +4,8 @@
 \alias{predict_quantile}
 \title{Estimation of Quantiles for Parametric Lifetime Distributions}
 \usage{
-predict_quantile(p, loc_sc_params, distribution = c("weibull", "lognormal",
-  "loglogistic"))
+predict_quantile(p, loc_sc_params, distribution = c("weibull",
+  "lognormal", "loglogistic"))
 }
 \arguments{
 \item{p}{a numeric vector which consists of failure probabilities

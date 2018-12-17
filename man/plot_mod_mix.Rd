@@ -5,8 +5,9 @@
 \title{Adding Estimated Population Lines of a Separated Mixture Model to a
 Probability Plot}
 \usage{
-plot_mod_mix(p_obj, x, y = NULL, reg_output, distribution = c("weibull",
-  "lognormal", "loglogistic"), title_trace = "Fit")
+plot_mod_mix(p_obj, x, y = NULL, reg_output,
+  distribution = c("weibull", "lognormal", "loglogistic"),
+  title_trace = "Fit")
 }
 \arguments{
 \item{p_obj}{a plotly object provided by function \code{\link{plot_prob_mix}}.}
