@@ -4,9 +4,11 @@
 #'
 #' @param x a numeric vector which consists of lifetime data. \code{x} is used to
 #'   specify the grid of the plot.
-#' @param distribution supposed distribution of the random variable. Can be
-#'   \code{"weibull"}, \code{"lognormal"} or \code{"loglogistic"}. Other
-#'   distributions have not been implemented yet.
+#' @param distribution supposed distribution of the random variable. The
+#'   value can be \code{"weibull"}, \code{"lognormal"}, \code{"loglogistic"},
+#'   \code{"normal"}, \code{"logistic"}, \code{"sev"} \emph{(smallest extreme value)},
+#'   \code{"weibull3"}, \code{"lognormal3"} or \code{"loglogistic3"}.
+#'   Other distributions have not been implemented yet.
 #' @param title_main a character string which is assigned to the main title
 #'   of the plot.
 #' @param title_x a character string which is assigned to the title of the
@@ -20,55 +22,90 @@
 #' @importFrom magrittr "%>%"
 #'
 #' @examples
+#' # Example 1: Weibull-Grid:
 #' x_layout <- seq(1e-5, 1e+07, length.out = 10)
 #' grid_weibull <- plot_layout(x = x_layout,
 #'                             distribution = "weibull",
 #'                             title_main = "Weibull Analysis",
 #'                             title_x = "Time to Failure",
 #'                             title_y = "Failure Probability in %")
+#'
+#' # Example 2: Grid of Normal Distribution:
+#' x_layout <- seq(1, 10, length.out = 10)
+#' grid_normal <- plot_layout(x = x_layout,
+#'                             distribution = "normal",
+#'                             title_main = "Normal Grid",
+#'                             title_x = "Time to Event",
+#'                             title_y = "Failure Probability in %")
 
-plot_layout <- function(x, distribution = c("weibull", "lognormal", "loglogistic"),
+plot_layout <- function(x,
+                        distribution = c("weibull", "lognormal", "loglogistic",
+                                         "normal", "logistic", "sev", "weibull3",
+                                         "lognormal3", "loglogistic3"),
                         title_main = "Probability Plot",
                         title_x = "Characteristic",
                         title_y = "Unreliability") {
 
   distribution <- match.arg(distribution)
 
-  if (!(distribution %in% c("weibull", "lognormal", "loglogistic"))) {
+  if (!(distribution %in% c("weibull", "lognormal", "loglogistic", "normal",
+                            "logistic", "sev", "weibull3", "lognormal3",
+                            "loglogistic3"))) {
     stop("No valid distribution!")
   }
 
-  # layout dependent on data x
-  # define x-ticks of logarithm to the base of 10
+  # Layout dependent on data x, function to build helpful sequences:
   x_base <- function(xb) floor(log10(xb))
-  xlog10_range <- (x_base(min(x)) - 1):x_base(max(x))
 
-  # x-ticks and x-labels
-  x_ticks <- sapply(xlog10_range, function(z) seq(10 ^ z, 10 ^ (z + 1), 10 ^ z),
-                    simplify = TRUE)
-  x_ticks <- round(as.numeric(x_ticks), digits = 10)
-  x_ticks <- x_ticks[!duplicated(x_ticks)]
-  x_labels <- x_ticks
-  x_labels[c(rep(F, 3), rep(T, 6))] <- ''
+  # Define x-ticks of logarithm to the base of 10 for Log-Location-Scale Distributions:
+  if (distribution %in% c("weibull", "weibull3", "lognormal", "lognormal3",
+                          "loglogistic", "loglogistic3")) {
+    xlog10_range <- (x_base(min(x)) - 1):x_base(max(x))
+    # x-ticks and x-labels
+    x_ticks <- sapply(xlog10_range, function(z) seq(10 ^ z, 10 ^ (z + 1), 10 ^ z),
+      simplify = TRUE)
+    x_ticks <- round(as.numeric(x_ticks), digits = 10)
+    x_ticks <- x_ticks[!duplicated(x_ticks)]
+    x_labels <- x_ticks
+    x_labels[c(rep(F, 3), rep(T, 6))] <- ''
+  }
+
+  # Define x-ticks for Location-Scale Distributions:
+  if (distribution %in% c("sev", "normal", "logistic")) {
+    x_diff <- x_base(max(x) - min(x))
+    x_range <- seq(from = max(0, x_base(max(min(x) - 1, 0))),
+                   to = 10 ^ (x_diff + 1),
+                   by = 10 ^ (x_diff))
+    # x-ticks x-labels:
+    x_ticks <- round(as.numeric(x_range), digits = 10)
+    x_labels <- x_ticks
+  }
+
 
   # y-ticks and y-labels
   # hard coded but it's okay since range is always between 0 and 1.
   y_s <- c(.0000001, .000001, .00001, .0001, .001, .01, .05, .1, .2, .3, .5, .6,
     .7, .8, .9, .95, .99, .999, .9999, .99999)
 
-  if (distribution == "weibull") {
+  if (distribution %in% c("weibull", "weibull3", "sev")) {
     y_ticks <- SPREDA::qsev(y_s)
   }
-  if (distribution == "lognormal") {
+  if (distribution %in% c("lognormal", "lognormal3", "normal")) {
     y_ticks <- stats::qnorm(y_s)
   }
-  if (distribution == "loglogistic") {
+  if (distribution %in% c("loglogistic", "loglogistic3", "logistic")) {
     y_ticks <- stats::qlogis(y_s)
   }
 
   y_labels <- y_s * 100
 
-  # configuration x axis
+  # Plot:
+  ## Type of x axis:
+  xaxs_type <- ifelse(test = distribution %in% c("sev", "normal", "logistic"),
+                      yes = "-",
+                      no = "log")
+
+  ## Configuration x axis:
   x_config <- list(
     color = "#000000",
     title = title_x,
@@ -76,7 +113,7 @@ plot_layout <- function(x, distribution = c("weibull", "lognormal", "loglogistic
       family = "Arial",
       size = 12,
       color = "#A3A3A3"),
-    type = "log",
+    type = xaxs_type,
     autorange = TRUE,
     rangemode = "nonnegative",
     tickvals = x_ticks,
@@ -94,7 +131,7 @@ plot_layout <- function(x, distribution = c("weibull", "lognormal", "loglogistic
     linecolor = "#a0a0a0"
   )
 
-  # configuration y axis
+  ## Configuration y axis:
   y_config <- list(
     color = "#000000",
     title = title_y,
@@ -158,6 +195,10 @@ plot_layout <- function(x, distribution = c("weibull", "lognormal", "loglogistic
 #' argument \code{title_y}, i.e. if \code{title_y = "Probability in percent"} the y
 #' label of the marker is "Probability".
 #'
+#' @encoding UTF-8
+#' @references Meeker, William Q; Escobar, Luis A., Statistical methods for
+#'   reliability data, New York: Wiley series in probability and statistics, 1998
+#'
 #' @param x a numeric vector which consists of lifetime data. Lifetime
 #'   data could be every characteristic influencing the reliability of a product,
 #'   e.g. operating time (days/months in service), mileage (km, miles), load
@@ -167,9 +208,11 @@ plot_layout <- function(x, distribution = c("weibull", "lognormal", "loglogistic
 #' @param event a vector of binary data (0 or 1) indicating whether unit \emph{i}
 #'   is a right censored observation (= 0) or a failure (= 1).
 #' @param id a character vector for the identification of every unit.
-#' @param distribution supposed distribution of the random variable. Can be
-#'   \code{"weibull"}, \code{"lognormal"} or \code{"loglogistic"}. Other
-#'   distributions have not been implemented yet.
+#' @param distribution supposed distribution of the random variable. The
+#'   value can be \code{"weibull"}, \code{"lognormal"}, \code{"loglogistic"},
+#'   \code{"normal"}, \code{"logistic"}, \code{"sev"} \emph{(smallest extreme value)},
+#'   \code{"weibull3"}, \code{"lognormal3"} or \code{"loglogistic3"}.
+#'   Other distributions have not been implemented yet.
 #' @param title_main a character string which is assigned to the main title
 #'   of the plot.
 #' @param title_x a character string which is assigned to the title of the
@@ -184,31 +227,52 @@ plot_layout <- function(x, distribution = c("weibull", "lognormal", "loglogistic
 #' @export
 #'
 #' @examples
-#' obs   <- seq(10000, 100000, 10000)
-#' state <- c(0, 1, 1, 0, 0, 0, 1, 0, 1, 0)
-#' id <- LETTERS[1:length(obs)]
+#' # Alloy T7987 dataset taken from Meeker and Escobar(1998, p. 131)
+#' cycles   <- c(300, 300, 300, 300, 300, 291, 274, 271, 269, 257, 256, 227, 226,
+#'               224, 213, 211, 205, 203, 197, 196, 190, 189, 188, 187, 184, 180,
+#'               180, 177, 176, 173, 172, 171, 170, 170, 169, 168, 168, 162, 159,
+#'               159, 159, 159, 152, 152, 149, 149, 144, 143, 141, 141, 140, 139,
+#'               139, 136, 135, 133, 131, 129, 123, 121, 121, 118, 117, 117, 114,
+#'               112, 108, 104, 99, 99, 96, 94)
+#' state <- c(rep(0, 5), rep(1, 67))
 #'
-#' df_john <- johnson_method(x = obs, event = state, id = id)
+#' df_john <- johnson_method(x = cycles, event = state)
 #'
+#' # Example 1: Probability Plot Weibull:
 #' plot_weibull <- plot_prob(x = df_john$characteristic,
 #'                           y = df_john$prob,
 #'                           event = df_john$status,
 #'                           id = df_john$id,
 #'                           distribution = "weibull",
 #'                           title_main = "Weibull Analysis",
-#'                           title_x = "Mileage in miles",
+#'                           title_x = "Cycles",
+#'                           title_y = "Probability of Failure in %",
+#'                           title_trace = "Failed Items")
+#'
+#' # Example 2: Probability Plot Lognormal:
+#' plot_lognormal <- plot_prob(x = df_john$characteristic,
+#'                           y = df_john$prob,
+#'                           event = df_john$status,
+#'                           id = df_john$id,
+#'                           distribution = "lognormal",
+#'                           title_main = "Lognormal Analysis",
+#'                           title_x = "Cycles",
 #'                           title_y = "Probability of Failure in %",
 #'                           title_trace = "Failed Items")
 
 plot_prob <- function(x, y, event, id = rep("XXXXXX", length(x)),
-                      distribution = c("weibull", "lognormal", "loglogistic"),
+                      distribution = c("weibull", "lognormal", "loglogistic",
+                                       "normal", "logistic", "sev", "weibull3",
+                                       "lognormal3", "loglogistic3"),
                       title_main = "Probability Plot",
                       title_x = "Characteristic", title_y = "Unreliability",
                       title_trace = "Sample") {
 
   distribution <- match.arg(distribution)
 
-  if (!(distribution %in% c("weibull", "lognormal", "loglogistic"))) {
+  if (!(distribution %in% c("weibull", "lognormal", "loglogistic", "normal",
+                            "logistic", "sev", "weibull3", "lognormal3",
+                            "loglogistic3"))) {
     stop("No valid distribution!")
   }
 
@@ -230,11 +294,13 @@ plot_prob <- function(x, y, event, id = rep("XXXXXX", length(x)),
   mark_y <- unlist(strsplit(title_y, " "))[1]
 
   # Choice of distribution:
-  if (distribution == "weibull") {
+  if (distribution %in% c("weibull", "weibull3", "sev")) {
     q <- SPREDA::qsev(y_s)
-  } else if (distribution == "lognormal") {
+  }
+  if (distribution %in% c("lognormal", "lognormal3", "normal")) {
     q <- stats::qnorm(y_s)
-  } else if (distribution == "loglogistic") {
+  }
+  if (distribution %in% c("loglogistic", "loglogistic3", "logistic")) {
     q <- stats::qlogis(y_s)
   }
 
@@ -267,6 +333,10 @@ plot_prob <- function(x, y, event, id = rep("XXXXXX", length(x)),
 #' argument \code{title_y}, i.e. if \code{title_y = "Probability in percent"} the y
 #' label of the marker is "Probability".
 #'
+#' @encoding UTF-8
+#' @references Doganaksoy, N.; Hahn, G.; Meeker, W. Q., Reliability Analysis by
+#'   Failure Mode, Quality Progress, 35(6), 47-52, 2002
+#'
 #' @param x a numeric vector which consists of lifetime data. Lifetime
 #'   data could be every characteristic influencing the reliability of a product,
 #'   e.g. operating time (days/months in service), mileage (km, miles), load
@@ -297,6 +367,7 @@ plot_prob <- function(x, y, event, id = rep("XXXXXX", length(x)),
 #' @export
 #'
 #' @examples
+#' # Data is taken from given reference:
 #' hours <- c(2, 28, 67, 119, 179, 236, 282, 317, 348, 387, 3, 31, 69, 135,
 #'           191, 241, 284, 318, 348, 392, 5, 31, 76, 144, 203, 257, 286,
 #'           320, 350, 412, 8, 52, 78, 157, 211, 261, 298, 327, 360, 446,
@@ -417,6 +488,10 @@ plot_prob_mix <- function(x, y, event, id = rep("XXXXXX", length(x)),
 #' This function adds a regression line to an existing probability plot using a
 #' model estimated by \code{\link{rank_regression}} or \code{\link{ml_estimation}}.
 #'
+#' @encoding UTF-8
+#' @references Meeker, William Q; Escobar, Luis A., Statistical methods for
+#'   reliability data, New York: Wiley series in probability and statistics, 1998
+#'
 #' @param p_obj a plotly object provided by function \code{\link{plot_prob}}.
 #' @param x a numeric vector containing the x-coordinates of the regression line.
 #' @param y a numeric vector containing the y-coordinates of the regression line.
@@ -425,12 +500,16 @@ plot_prob_mix <- function(x, y, event, id = rep("XXXXXX", length(x)),
 #'   \code{predict_prob} using estimated coefficients in \code{loc_sc_params}. If
 #'   confidence interval(s) should be added to the plot y should not be set to
 #'   \code{NULL}. For more information see \strong{Details} in \code{\link{plot_conf}}.
-#' @param loc_sc_params a (named) numeric vector of estimated location and scale
-#'   parameters for a specified distribution. The order of elements is
-#'   important. First entry needs to be the location parameter \eqn{\mu} and the
-#'   second element needs to be the scale parameter \eqn{\sigma}.
+#' @param loc_sc_params a (named) numeric vector of estimated location
+#'   and scale parameters for a specified distribution. The order of
+#'   elements is important. First entry needs to be the location
+#'   parameter \eqn{\mu} and the second element needs to be the scale
+#'   parameter \eqn{\sigma}. If a three-parametric model is used the third element
+#'   is the threshold parameter \eqn{\gamma}.
 #' @param distribution supposed distribution of the random variable. The
-#'   value can be \code{"weibull"}, \code{"lognormal"} or \code{"loglogistic"}.
+#'   value can be \code{"weibull"}, \code{"lognormal"}, \code{"loglogistic"},
+#'   \code{"normal"}, \code{"logistic"}, \code{"sev"} \emph{(smallest extreme value)},
+#'   \code{"weibull3"}, \code{"lognormal3"} or \code{"loglogistic3"}.
 #'   Other distributions have not been implemented yet.
 #' @param title_trace a character string whis is assigned to the trace shown in
 #'   the legend.
@@ -440,39 +519,75 @@ plot_prob_mix <- function(x, y, event, id = rep("XXXXXX", length(x)),
 #' @export
 #'
 #' @examples
-#' obs   <- seq(10000, 100000, 10000)
-#' state <- c(0, 1, 1, 0, 0, 0, 1, 0, 1, 0)
-#' id <- LETTERS[1:length(obs)]
+#' # Alloy T7987 dataset taken from Meeker and Escobar(1998, p. 131)
+#' cycles   <- c(300, 300, 300, 300, 300, 291, 274, 271, 269, 257, 256, 227, 226,
+#'               224, 213, 211, 205, 203, 197, 196, 190, 189, 188, 187, 184, 180,
+#'               180, 177, 176, 173, 172, 171, 170, 170, 169, 168, 168, 162, 159,
+#'               159, 159, 159, 152, 152, 149, 149, 144, 143, 141, 141, 140, 139,
+#'               139, 136, 135, 133, 131, 129, 123, 121, 121, 118, 117, 117, 114,
+#'               112, 108, 104, 99, 99, 96, 94)
+#' state <- c(rep(0, 5), rep(1, 67))
+#' id <- 1:length(cycles)
 #'
-#' df_john <- johnson_method(x = obs, event = state, id = id)
-#' mrr <- rank_regression(x = df_john$characteristic,
-#'                        y = df_john$prob,
-#'                        event = df_john$status,
-#'                        distribution = "weibull",
-#'                        conf_level = .90)
+#' df_john <- johnson_method(x = cycles, event = state, id = id)
 #'
+#' # Example 1: Probability Plot and Regression Line Three-Parameter-Weibull:
 #' plot_weibull <- plot_prob(x = df_john$characteristic,
 #'                           y = df_john$prob,
 #'                           event = df_john$status,
 #'                           id = df_john$id,
-#'                           distribution = "weibull",
-#'                           title_main = "Weibull Analysis",
-#'                           title_x = "Mileage in miles",
+#'                           distribution = "weibull3",
+#'                           title_main = "Three-Parametric Weibull",
+#'                           title_x = "Cycles",
 #'                           title_y = "Probability of Failure in %",
 #'                           title_trace = "Failed Items")
 #'
-#' plot_reg_weibull <- plot_mod(p_obj = plot_weibull, x = obs,
+#' mrr <- rank_regression(x = df_john$characteristic,
+#'                        y = df_john$prob,
+#'                        event = df_john$status,
+#'                        distribution = "weibull3",
+#'                        conf_level = .90)
+#'
+#' plot_reg_weibull <- plot_mod(p_obj = plot_weibull, x = cycles,
 #'                              loc_sc_params = mrr$loc_sc_coefficients,
-#'                              distribution = "weibull",
+#'                              distribution = "weibull3",
 #'                              title_trace = "Estimated Weibull CDF")
+#'
+#'
+#'
+#' # Example 2: Probability Plot and Regression Line Three-Parameter-Lognormal:
+#' plot_lognormal <- plot_prob(x = df_john$characteristic,
+#'                           y = df_john$prob,
+#'                           event = df_john$status,
+#'                           id = df_john$id,
+#'                           distribution = "lognormal3",
+#'                           title_main = "Three-Parametric Lognormal",
+#'                           title_x = "Cycles",
+#'                           title_y = "Probability of Failure in %",
+#'                           title_trace = "Failed Items")
+#'
+#' mrr_ln <- rank_regression(x = df_john$characteristic,
+#'                        y = df_john$prob,
+#'                        event = df_john$status,
+#'                        distribution = "lognormal3",
+#'                        conf_level = .90)
+#'
+#' plot_reg_lognormal <- plot_mod(p_obj = plot_lognormal, x = cycles,
+#'                              loc_sc_params = mrr_ln$loc_sc_coefficients,
+#'                              distribution = "lognormal3",
+#'                              title_trace = "Estimated Lognormal CDF")
 
 plot_mod <- function(p_obj, x, y = NULL, loc_sc_params,
-                     distribution = c("weibull", "lognormal", "loglogistic"),
+                     distribution = c("weibull", "lognormal", "loglogistic",
+                                      "normal", "logistic", "sev", "weibull3",
+                                      "lognormal3", "loglogistic3"),
                      title_trace = "Fit") {
 
   distribution <- match.arg(distribution)
 
-  if (!(distribution %in% c("weibull", "lognormal", "loglogistic"))) {
+  if (!(distribution %in% c("weibull", "lognormal", "loglogistic", "normal",
+                            "logistic", "sev", "weibull3", "lognormal3",
+                            "loglogistic3"))) {
     stop("No valid distribution!")
   }
 
@@ -495,32 +610,63 @@ plot_mod <- function(p_obj, x, y = NULL, loc_sc_params,
   x_mark <- unlist(strsplit(p_obj$x$layoutAttrs[[2]]$xaxis$title, " "))[1]
   y_mark <- unlist(strsplit(p_obj$x$layoutAttrs[[2]]$yaxis$title, " "))[1]
 
-  if (distribution == "weibull") {
+  if (distribution %in% c("weibull", "weibull3", "sev")) {
     q <- SPREDA::qsev(y_p)
-    param_val <- c(round(exp(loc_sc_params[[1]]), digits = 2),
-      round(1 / loc_sc_params[[2]], digits = 2))
-    param_label <- c("\u03B7:", "\u03B2:")
+
+    param_val <- c(round(loc_sc_params[[1]], digits = 2),
+      round(loc_sc_params[[2]], digits = 2))
+    param_label <- c("\u03BC:", "\u03C3:")
+
+    if (distribution == "weibull") {
+      param_val <- c(round(exp(loc_sc_params[[1]]), digits = 2),
+        round(1 / loc_sc_params[[2]], digits = 2))
+      param_label <- c("\u03B7:", "\u03B2:")
+    }
+    if (distribution == "weibull3") {
+      param_val <- c(round(exp(loc_sc_params[[1]]), digits = 2),
+        round(1 / loc_sc_params[[2]], digits = 2), round(loc_sc_params[[3]], digits = 2))
+      param_label <- c("\u03B7:", "\u03B2:", "\u03B3:")
+    }
+
   }
-  if (distribution == "lognormal") {
+  if (distribution %in% c("lognormal", "lognormal3", "normal")) {
     q <- stats::qnorm(y_p)
     param_val <- c(round(loc_sc_params[[1]], digits = 2),
       round(loc_sc_params[[2]], digits = 2))
     param_label <- c("\u03BC:", "\u03C3:")
+
+    if (distribution == "lognormal3") {
+      param_val <- c(param_val, round(loc_sc_params[[3]], digits = 2))
+      param_label <- c(param_label, "\u03B3:")
+    }
   }
-  if (distribution == "loglogistic") {
+  if (distribution %in% c("loglogistic", "loglogistic3", "logistic")) {
     q <- stats::qlogis(y_p)
     param_val <- c(round(loc_sc_params[[1]], digits = 2),
       round(loc_sc_params[[2]], digits = 2))
     param_label <- c("\u03BC:", "\u03C3:")
+
+    if (distribution == "loglogistic3") {
+      param_val <- c(param_val, round(loc_sc_params[[3]], digits = 2))
+      param_label <- c(param_label, "\u03B3:")
+    }
+  }
+
+  # Defining hovertext regarding amount of parameters:
+  hovertext <- paste(paste0(x_mark, ":"), round(x_p, digits = 2),
+    paste("<br>", paste0(y_mark, ":")), round(y_p, digits = 5),
+    "<br>", paste(param_label[1], param_val[1]),
+    "<br>", paste(param_label[2], param_val[2]))
+
+  if (length(loc_sc_params) == 3) {
+    hovertext <- paste(hovertext,
+      "<br>", paste(param_label[3], param_val[3]))
   }
 
   p_mod <- plotly::add_lines(p = p_obj, data = df_p, x = ~x_p, y = ~q,
       type = "scatter", mode = "lines", hoverinfo = "text",
     color = I("#CC2222"), name = title_trace,
-      text = ~paste(paste0(x_mark, ":"), round(x_p, digits = 2),
-                    paste("<br>", paste0(y_mark, ":")), round(y_p, digits = 5),
-                    "<br>", paste(param_label[1], param_val[1]),
-                    "<br>", paste(param_label[2], param_val[2])))
+      text = ~hovertext)
   return(p_mod)
 }
 
@@ -531,6 +677,10 @@ plot_mod <- function(p_obj, x, y = NULL, loc_sc_params,
 #' This function adds one or multiple estimated regression lines to an existing
 #' probability plot (\code{\link{plot_prob_mix}}). Depending on the output of the
 #' function \code{\link{mixmod_regression}} one or multiple lines are plotted.
+#'
+#' @encoding UTF-8
+#' @references Doganaksoy, N.; Hahn, G.; Meeker, W. Q., Reliability Analysis by
+#'   Failure Mode, Quality Progress, 35(6), 47-52, 2002
 #'
 #' @param p_obj a plotly object provided by function \code{\link{plot_prob_mix}}.
 #' @param x a numeric vector containing the x-coordinates of the regression line.
@@ -551,6 +701,7 @@ plot_mod <- function(p_obj, x, y = NULL, loc_sc_params,
 #' @export
 #'
 #' @examples
+#' # Data is taken from given reference:
 #' hours <- c(2, 28, 67, 119, 179, 236, 282, 317, 348, 387, 3, 31, 69, 135,
 #'           191, 241, 284, 318, 348, 392, 5, 31, 76, 144, 203, 257, 286,
 #'           320, 350, 412, 8, 52, 78, 157, 211, 261, 298, 327, 360, 446,
@@ -693,6 +844,10 @@ plot_mod_mix <- function(p_obj, x, y = NULL, reg_output,
 #'     for \code{x} and \code{df$prob} for \code{y} of the function(s) named before.
 #'   \item In \strong{Examples} the described approach is shown with code.}
 #'
+#' @encoding UTF-8
+#' @references Meeker, William Q; Escobar, Luis A., Statistical methods for
+#'   reliability data, New York: Wiley series in probability and statistics, 1998
+#'
 #' @param p_obj a plotly object provided by function \code{\link{plot_mod}}.
 #' @param x a list containing the x-coordinates of the confidence region(s).
 #'   The list can be of length 1 or 2. For more information see \strong{Details}.
@@ -701,7 +856,9 @@ plot_mod_mix <- function(p_obj, x, y = NULL, reg_output,
 #' @param direction a character string specifying the direction of the plotted
 #'   interval(s). Must be either "y" (failure probabilities) or "x" (quantiles).
 #' @param distribution supposed distribution of the random variable. The
-#'   value can be \code{"weibull"}, \code{"lognormal"} or \code{"loglogistic"}.
+#'   value can be \code{"weibull"}, \code{"lognormal"}, \code{"loglogistic"},
+#'   \code{"normal"}, \code{"logistic"}, \code{"sev"} \emph{(smallest extreme value)},
+#'   \code{"weibull3"}, \code{"lognormal3"} or \code{"loglogistic3"}.
 #'   Other distributions have not been implemented yet.
 #' @param title_trace a character string which is assigned to the trace shown in
 #'   the legend.
@@ -712,20 +869,29 @@ plot_mod_mix <- function(p_obj, x, y = NULL, reg_output,
 #' @export
 #'
 #' @examples
-#' obs   <- seq(10000, 100000, 10000)
-#' state <- c(0, 1, 1, 0, 0, 0, 1, 0, 1, 0)
-#' id <- LETTERS[1:length(obs)]
+#' # Alloy T7987 dataset taken from Meeker and Escobar(1998, p. 131)
+#' cycles   <- c(300, 300, 300, 300, 300, 291, 274, 271, 269, 257, 256, 227, 226,
+#'               224, 213, 211, 205, 203, 197, 196, 190, 189, 188, 187, 184, 180,
+#'               180, 177, 176, 173, 172, 171, 170, 170, 169, 168, 168, 162, 159,
+#'               159, 159, 159, 152, 152, 149, 149, 144, 143, 141, 141, 140, 139,
+#'               139, 136, 135, 133, 131, 129, 123, 121, 121, 118, 117, 117, 114,
+#'               112, 108, 104, 99, 99, 96, 94)
+#' state <- c(rep(0, 5), rep(1, 67))
+#' id <- 1:length(cycles)
 #'
-#' df_john <- johnson_method(x = obs, event = state, id = id)
+#' df_john <- johnson_method(x = cycles, event = state, id = id)
+
+#' # Example 1: Probability Plot, Regression Line and Confidence Bounds for Three-Parameter-Weibull:
 #' mrr <- rank_regression(x = df_john$characteristic,
 #'                        y = df_john$prob,
 #'                        event = df_john$status,
-#'                        distribution = "weibull",
-#'                        conf_level = .95)
+#'                        distribution = "weibull3",
+#'                        conf_level = .90)
+#'
 #' conf_betabin <- confint_betabinom(x = df_john$characteristic,
 #'                                   event = df_john$status,
 #'                                   loc_sc_params = mrr$loc_sc_coefficients,
-#'                                   distribution = "weibull",
+#'                                   distribution = "weibull3",
 #'                                   bounds = "two_sided",
 #'                                   conf_level = 0.95,
 #'                                   direction = "y")
@@ -734,33 +900,79 @@ plot_mod_mix <- function(p_obj, x, y = NULL, reg_output,
 #'                           y = df_john$prob,
 #'                           event = df_john$status,
 #'                           id = df_john$id,
-#'                           distribution = "weibull",
-#'                           title_main = "Weibull Analysis",
-#'                           title_x = "Mileage in miles",
-#'                           title_y = "Probability of Failure",
+#'                           distribution = "weibull3",
+#'                           title_main = "Three-Parametric Weibull",
+#'                           title_x = "Cycles",
+#'                           title_y = "Probability of Failure in %",
 #'                           title_trace = "Failed Items")
+#'
 #' plot_reg_weibull <- plot_mod(p_obj = plot_weibull,
 #'                              x = conf_betabin$characteristic,
 #'                              y = conf_betabin$prob,
 #'                              loc_sc_params = mrr$loc_sc_coefficients,
-#'                              distribution = "weibull",
+#'                              distribution = "weibull3",
 #'                              title_trace = "Estimated Weibull CDF")
+#'
 #' plot_conf_beta <- plot_conf(p_obj = plot_reg_weibull,
 #'                             x = list(conf_betabin$characteristic),
 #'                             y = list(conf_betabin$lower_bound,
 #'                                      conf_betabin$upper_bound),
 #'                             direction = "y",
-#'                             distribution = "weibull",
+#'                             distribution = "weibull3",
+#'                             title_trace = "Confidence Region")
+#'
+#' # Example 2: Probability Plot, Regression Line and Confidence Bounds for Three-Parameter-Lognormal:
+#' mrr_ln <- rank_regression(x = df_john$characteristic,
+#'                        y = df_john$prob,
+#'                        event = df_john$status,
+#'                        distribution = "lognormal3",
+#'                        conf_level = .90)
+#'
+#' conf_betabin_ln <- confint_betabinom(x = df_john$characteristic,
+#'                                   event = df_john$status,
+#'                                   loc_sc_params = mrr_ln$loc_sc_coefficients,
+#'                                   distribution = "lognormal3",
+#'                                   bounds = "two_sided",
+#'                                   conf_level = 0.95,
+#'                                   direction = "y")
+#'
+#' plot_lognormal <- plot_prob(x = df_john$characteristic,
+#'                           y = df_john$prob,
+#'                           event = df_john$status,
+#'                           id = df_john$id,
+#'                           distribution = "lognormal3",
+#'                           title_main = "Three-Parametric Lognormal",
+#'                           title_x = "Cycles",
+#'                           title_y = "Probability of Failure in %",
+#'                           title_trace = "Failed Items")
+#'
+#' plot_reg_lognormal <- plot_mod(p_obj = plot_lognormal,
+#'                              x = conf_betabin_ln$characteristic,
+#'                              y = conf_betabin_ln$prob,
+#'                              loc_sc_params = mrr_ln$loc_sc_coefficients,
+#'                              distribution = "lognormal3",
+#'                              title_trace = "Estimated Lognormal CDF")
+#'
+#' plot_conf_beta_ln <- plot_conf(p_obj = plot_reg_lognormal,
+#'                             x = list(conf_betabin_ln$characteristic),
+#'                             y = list(conf_betabin_ln$lower_bound,
+#'                                      conf_betabin_ln$upper_bound),
+#'                             direction = "y",
+#'                             distribution = "lognormal3",
 #'                             title_trace = "Confidence Region")
 
 plot_conf <- function(p_obj, x, y, direction = c("y", "x"),
-                      distribution = c("weibull", "lognormal", "loglogistic"),
+                      distribution = c("weibull", "lognormal", "loglogistic",
+                                       "normal", "logistic", "sev", "weibull3",
+                                       "lognormal3", "loglogistic3"),
                       title_trace = "Confidence Limit") {
 
   direction <- match.arg(direction)
   distribution <- match.arg(distribution)
 
-  if (!(distribution %in% c("weibull", "lognormal", "loglogistic"))) {
+  if (!(distribution %in% c("weibull", "lognormal", "loglogistic", "normal",
+                            "logistic", "sev", "weibull3", "lognormal3",
+                            "loglogistic3"))) {
     stop("No valid distribution!")
   }
 
@@ -780,11 +992,13 @@ plot_conf <- function(p_obj, x, y, direction = c("y", "x"),
   y_mark <- unlist(strsplit(p_obj$x$layoutAttrs[[2]]$yaxis$title,
                             " "))[1]
 
-  if (distribution == "weibull") {
+  if (distribution %in% c("weibull", "weibull3", "sev")) {
     q_1 <- SPREDA::qsev(df_p$y[df_p$group == unique(df_p$group)[1]])
-  } else if (distribution == "lognormal") {
+  }
+  if (distribution %in% c("lognormal", "lognormal3", "normal")) {
     q_1 <- stats::qnorm(df_p$y[df_p$group == unique(df_p$group)[1]])
-  } else if (distribution == "loglogistic") {
+  }
+  if (distribution %in% c("loglogistic", "loglogistic3", "logistic")) {
     q_1 <- stats::qlogis(df_p$y[df_p$group == unique(df_p$group)[1]])
   }
 
@@ -798,11 +1012,13 @@ plot_conf <- function(p_obj, x, y, direction = c("y", "x"),
 
   if (length(unique(df_p$group)) > 1) {
 
-    if (distribution == "weibull") {
+    if (distribution %in% c("weibull", "weibull3", "sev")) {
       q_2 <- SPREDA::qsev(df_p$y[df_p$group == unique(df_p$group)[2]])
-    } else if (distribution == "lognormal") {
+    }
+    if (distribution %in% c("lognormal", "lognormal3", "normal")) {
       q_2 <- stats::qnorm(df_p$y[df_p$group == unique(df_p$group)[2]])
-    } else if (distribution == "loglogistic") {
+    }
+    if (distribution %in% c("loglogistic", "loglogistic3", "logistic")) {
       q_2 <- stats::qlogis(df_p$y[df_p$group == unique(df_p$group)[2]])
     }
 
@@ -839,7 +1055,7 @@ plot_conf <- function(p_obj, x, y, direction = c("y", "x"),
 #' @param color the color of the population line should be added as follows:
 #'   For hexadecimal codes: \code{color = I("#3C8DBC")} and for a color specified
 #'   with a string: \code{color = I("blue")}.
-#' @param title_trace a character string whis is assigned to the trace shown in
+#' @param title_trace a character string which is assigned to the trace shown in
 #'   the legend.
 #'
 #' @return A plotly object which contains the supposed linearized population

@@ -5,7 +5,8 @@
 \title{Fisher Confidence Bounds for Quantiles and/or Probabilities}
 \usage{
 confint_fisher(x, event, loc_sc_params, loc_sc_varcov,
-  distribution = c("weibull", "lognormal", "loglogistic"),
+  distribution = c("weibull", "lognormal", "loglogistic", "normal",
+  "logistic", "sev", "weibull3", "lognormal3", "loglogistic3"),
   bounds = c("two_sided", "lower", "upper"), conf_level = 0.95,
   direction = c("y", "x"))
 }
@@ -20,17 +21,23 @@ is a right censored observation (= 0) or a failure (= 1).}
 (by Maximum Likelihood) location and scale parameters for a specified
 distribution. The order of elements is important. First entry needs to be
 the location parameter \eqn{\mu} and the second element needs to be the
-scale parameter \eqn{\sigma}.}
+scale parameter \eqn{\sigma}. If a three-parametric model is used the third element
+is the threshold parameter \eqn{\gamma}.}
 
 \item{loc_sc_varcov}{a (named) numeric matrix of estimated
 (by Maximum Likelihood) location and scale variances and covariances for a
 specified distribution. The order of elements is important. First entry
 of the diagonal needs to be the variance of the location parameter
 Var(\eqn{\mu}) and the second element of the diagonal needs to be the
-variance of the scale parameter Var(\eqn{\sigma}).}
+variance of the scale parameter Var(\eqn{\sigma}). If a three-parametric model
+is used the third element of the diagonal needs to be the variance of the
+threshold parameter Var(\eqn{\gamma}).}
 
 \item{distribution}{supposed distribution of the random variable. The
-value can be \code{"weibull"}, \code{"lognormal"}, \code{"loglogistic"}.}
+value can be \code{"weibull"}, \code{"lognormal"}, \code{"loglogistic"},
+\code{"normal"}, \code{"logistic"}, \code{"sev"} \emph{(smallest extreme value)},
+\code{"weibull3"}, \code{"lognormal3"} or \code{"loglogistic3"}.
+Other distributions have not been implemented yet.}
 
 \item{bounds}{a character string specifying the interval(s) which has/have to
 be computed. Must be one of "two_sided" (default), "lower" or "upper".}
@@ -49,8 +56,8 @@ A data frame containing the lifetime characteristic, the
 \description{
 This method computes normal-approximation confidence intervals for quantiles
 and/or failure probabilities using the \code{\link{delta_method}}. The
-required location-scale parameters and variance-covariance matrix need to be
-estimated by Maximum Likelihood.
+required location-scale (and threshold) parameters and variance-covariance matrix
+of these need to be estimated by Maximum Likelihood.
 }
 \examples{
 obs   <- seq(10000, 100000, 10000)

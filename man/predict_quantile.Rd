@@ -5,7 +5,8 @@
 \title{Estimation of Quantiles for Parametric Lifetime Distributions}
 \usage{
 predict_quantile(p, loc_sc_params, distribution = c("weibull",
-  "lognormal", "loglogistic"))
+  "lognormal", "loglogistic", "normal", "logistic", "sev", "weibull3",
+  "lognormal3", "loglogistic3"))
 }
 \arguments{
 \item{p}{a numeric vector which consists of failure probabilities
@@ -15,10 +16,13 @@ regarding the lifetime data.}
 and scale parameters for a specified distribution. The order of
 elements is important. First entry needs to be the location
 parameter \eqn{\mu} and the second element needs to be the scale
-parameter \eqn{\sigma}.}
+parameter \eqn{\sigma}. If a three-parametric model is used the third element
+is the threshold parameter \eqn{\gamma}.}
 
 \item{distribution}{supposed distribution of the random variable. The
-value can be \code{"weibull"}, \code{"lognormal"} or \code{"loglogistic"}.
+value can be \code{"weibull"}, \code{"lognormal"}, \code{"loglogistic"},
+\code{"normal"}, \code{"logistic"}, \code{"sev"} \emph{(smallest extreme value)},
+\code{"weibull3"}, \code{"lognormal3"} or \code{"loglogistic3"}.
 Other distributions have not been implemented yet.}
 }
 \value{
@@ -27,9 +31,14 @@ A vector containing the estimated quantiles for a given set of
 }
 \description{
 This function estimates the quantiles for a given set of estimated
-location-scale parameters and specified failure probabilities.
+location-scale (and threshold) parameters and specified failure probabilities.
 }
 \examples{
+# Example 1: Predicted quantiles for two-parameter Weibull:
 quants <- predict_quantile(p = c(0.01, 0.1, 0.5), loc_sc_params = c(5, 0.5),
                            distribution = "weibull")
+
+# Example 2: Predicted quantiles for three-parameter Weibull:
+quants_weib3 <- predict_quantile(p = c(0.01, 0.1, 0.5), loc_sc_params = c(5, 0.5, 10),
+                           distribution = "weibull3")
 }

@@ -2,8 +2,8 @@
 #'
 #' This method fits an \strong{x on y} regression to a linearized
 #' two- or three-parameter cdf and is applicable for complete and (multiple) right
-#' censored data. The parameters are estimated in the frequently used
-#' location-scale parametrization. For the Weibull, estimates are transformed such that
+#' censored data. The parameters are estimated in the frequently used (log-) location-scale
+#' parametrization. For the Weibull, estimates are transformed such that
 #' they are in line with the parametrization provided by the \emph{stats} package
 #' like \code{\link{pweibull}}.
 #'
@@ -115,7 +115,7 @@ rank_regression <- function(x, y, event,
     stop("No valid distribution!")
   }
 
-  # In terms of MRR only failed items can be used
+  # In terms of MRR only failed items can be used:
   x_f <- x[event == 1]
   y_f <- y[event == 1]
 
@@ -126,7 +126,7 @@ rank_regression <- function(x, y, event,
     estimates_loc_sc <- c(stats::coef(mrr)[[1]], stats::coef(mrr)[[2]])
     names(estimates_loc_sc) <- c("mu", "sigma")
 
-    # Alternative Parametrization
+    # Alternative Parametrization:
     estimates <- c(exp(stats::coef(mrr)[[1]]), 1 / stats::coef(mrr)[[2]])
     names(estimates) <- c("eta", "beta")
 
@@ -441,7 +441,7 @@ r_squared_profiling <- function(x, y, thres, distribution = c("weibull3", "logno
 #'
 #' This method estimates the parameters and calculates normal approximation confidence
 #' intervals for a two- or three-parametric lifetime distribution in the frequently used
-#' location-scale parametrization. \code{ml_estimation} uses the
+#' (log-) location-scale parametrization. \code{ml_estimation} uses the
 #' \code{\link{Lifedata.MLE}} function which is defined in the
 #' \emph{SPREDA} package.
 #' For the Weibull the estimates are transformed such that they are in line with
@@ -837,7 +837,7 @@ loglik_profiling <- function(x, event, thres, distribution = c("weibull3",
  -ml_thres$min
 }
 
-#' Log-Likelihood Function for (Log-)Location-Scale Distributions (with Threshold)
+#' Log-Likelihood Function for (Log-) Location-Scale Distributions (with Threshold)
 #'
 #' This function computes the log-likelihood value with respect to a given set
 #' of parameters. For two-parametric models the location and scale parameters

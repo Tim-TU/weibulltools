@@ -1,7 +1,7 @@
 Package: weibulltools
 Type: Package
 Title: Statistical Methods for Life Data Analysis 
-Version: 0.5.4
+Version: 0.6.0
 Authors@R: person("Hensel", "Tim-Gunnar", 
            email = "tim-gunnar.hensel@tu-berlin.de", 
            role = c("aut", "cre")) 

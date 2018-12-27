@@ -3,7 +3,7 @@
 \encoding{UTF-8}
 \name{loglik_function}
 \alias{loglik_function}
-\title{Log-Likelihood Function for (Log-)Location-Scale Distributions (with Threshold)}
+\title{Log-Likelihood Function for (Log-) Location-Scale Distributions (with Threshold)}
 \usage{
 loglik_function(x, event, pars, distribution = c("weibull", "lognormal",
   "loglogistic", "normal", "logistic", "sev", "weibull3", "lognormal3",

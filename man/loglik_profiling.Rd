@@ -27,7 +27,7 @@ Returns the log-likelihood value for a specified threshold value.
 }
 \description{
 This function evaluates the log-likelihood with respect to a given threshold
-parameter for a three-parametric lifetime distribution. In terms of
+parameter of a three-parametric lifetime distribution. In terms of
 \emph{Maximum Likelihood Estimation} this function can be optimized (\code{\link{optim}})
 to estimate the threshold parameter.
 }

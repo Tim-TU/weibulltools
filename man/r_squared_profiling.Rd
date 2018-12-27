@@ -3,7 +3,7 @@
 \encoding{UTF-8}
 \name{r_squared_profiling}
 \alias{r_squared_profiling}
-\title{\eqn{R²}-Profile Function for Threshold Parameter of Three-parametric Lifetime Distributions}
+\title{\eqn{R²}-Profile Function for Log-Location-Scale Distributions with Threshold}
 \usage{
 r_squared_profiling(x, y, thres, distribution = c("weibull3",
   "lognormal3", "loglogistic3"))
@@ -27,9 +27,9 @@ Returns the coefficient of determination for a specified threshold value.
 }
 \description{
 This function evaluates the coefficient of determination with respect to a
-given threshold parameter for a three-parametric lifetime distribution.
-In terms of \emph{Median Rank Regression} this function can be used to estimate
-the threshold parameter that maximizes the coefficient of determination.
+given threshold parameter of a three-parametric lifetime distribution.
+In terms of \emph{Median Rank Regression} this function can be optimized
+(\code{\link{optim}}) to estimate the threshold parameter.
 }
 \examples{
 # Alloy T7987 dataset taken from Meeker and Escobar(1998, p. 131)

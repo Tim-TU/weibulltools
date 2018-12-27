@@ -7,6 +7,10 @@
 #' the documentation of the function \link{segmented.lm}, which is part of
 #' the \emph{segmented} package. A maximum of three subgroups can be obtained.
 #'
+#' @encoding UTF-8
+#' @references Doganaksoy, N.; Hahn, G.; Meeker, W. Q., Reliability Analysis by
+#'   Failure Mode, Quality Progress, 35(6), 47-52, 2002
+#'
 #' @param x a numeric vector which consists of lifetime data. Lifetime
 #'   data could be every characteristic influencing the reliability of a
 #'   product, e.g. operating time (days/months in service), mileage (km,
@@ -30,6 +34,7 @@
 #' @export
 #'
 #' @examples
+#' # Data is taken from given reference:
 #' hours <- c(2, 28, 67, 119, 179, 236, 282, 317, 348, 387, 3, 31, 69, 135,
 #'           191, 241, 284, 318, 348, 392, 5, 31, 76, 144, 203, 257, 286,
 #'           320, 350, 412, 8, 52, 78, 157, 211, 261, 298, 327, 360, 446,

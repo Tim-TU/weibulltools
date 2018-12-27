@@ -28,7 +28,7 @@ Other distributions have not been implemented yet.}
 For hexadecimal codes: \code{color = I("#3C8DBC")} and for a color specified
 with a string: \code{color = I("blue")}.}
 
-\item{title_trace}{a character string whis is assigned to the trace shown in
+\item{title_trace}{a character string which is assigned to the trace shown in
 the legend.}
 }
 \value{

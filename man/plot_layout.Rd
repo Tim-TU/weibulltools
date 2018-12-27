@@ -4,7 +4,8 @@
 \alias{plot_layout}
 \title{Layout of the Probability Plot}
 \usage{
-plot_layout(x, distribution = c("weibull", "lognormal", "loglogistic"),
+plot_layout(x, distribution = c("weibull", "lognormal", "loglogistic",
+  "normal", "logistic", "sev", "weibull3", "lognormal3", "loglogistic3"),
   title_main = "Probability Plot", title_x = "Characteristic",
   title_y = "Unreliability")
 }
@@ -12,9 +13,11 @@ plot_layout(x, distribution = c("weibull", "lognormal", "loglogistic"),
 \item{x}{a numeric vector which consists of lifetime data. \code{x} is used to
 specify the grid of the plot.}
 
-\item{distribution}{supposed distribution of the random variable. Can be
-\code{"weibull"}, \code{"lognormal"} or \code{"loglogistic"}. Other
-distributions have not been implemented yet.}
+\item{distribution}{supposed distribution of the random variable. The
+value can be \code{"weibull"}, \code{"lognormal"}, \code{"loglogistic"},
+\code{"normal"}, \code{"logistic"}, \code{"sev"} \emph{(smallest extreme value)},
+\code{"weibull3"}, \code{"lognormal3"} or \code{"loglogistic3"}.
+Other distributions have not been implemented yet.}
 
 \item{title_main}{a character string which is assigned to the main title
 of the plot.}
@@ -33,10 +36,19 @@ Returns a plotly object which contains the layout
 This function is used to create the layout of a probability plot.
 }
 \examples{
+# Example 1: Weibull-Grid:
 x_layout <- seq(1e-5, 1e+07, length.out = 10)
 grid_weibull <- plot_layout(x = x_layout,
                             distribution = "weibull",
                             title_main = "Weibull Analysis",
                             title_x = "Time to Failure",
+                            title_y = "Failure Probability in \%")
+
+# Example 2: Grid of Normal Distribution:
+x_layout <- seq(1, 10, length.out = 10)
+grid_normal <- plot_layout(x = x_layout,
+                            distribution = "normal",
+                            title_main = "Normal Grid",
+                            title_x = "Time to Event",
                             title_y = "Failure Probability in \%")
 }
