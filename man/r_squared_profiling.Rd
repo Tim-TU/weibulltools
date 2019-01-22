@@ -46,7 +46,7 @@ df_john <- johnson_method(x = cycles, event = state)
 # Determining threshold parameter for which the coefficient of determination is
 # maximized subject to the condition that the threshold parameter must be smaller
 # as the first failure cycle, i.e 94:
-threshold <- seq(0, min(cycles[state == 1]) - 0.1, length.out = 1000)
+threshold <- seq(0, min(cycles[state == 1]) - 0.1, length.out = 100)
 profile_r2 <- sapply(threshold, r_squared_profiling,
                      x = df_john$characteristic[df_john$status == 1],
                      y = df_john$prob[df_john$status == 1],
