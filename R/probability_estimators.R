@@ -69,7 +69,7 @@ mr_method <- function(x, event = rep(1, length(x)),
 #' Estimation of Failure Probabilities using Johnson's Method
 #'
 #' This non-parametric approach is used to estimate the failure probabilities in
-#' terms of (multiple) right censored data. Compared to complete data the
+#' terms of uncensored or (multiple) right censored data. Compared to complete data the
 #' correction is done by calculating adjusted ranks which takes non-defective
 #' units into account.
 #'
@@ -96,9 +96,7 @@ mr_method <- function(x, event = rep(1, length(x)),
 #' df_john <- johnson_method(x = obs, event = state, id = uic)
 
 johnson_method <- function(x, event, id = rep("XXXXXX", length(x))) {
-  if (all(event == 1)) {
-    warning("Use mr_method() since there is no censored data problem!")
-  }
+
   df <- data.frame(time = x, status = event)
   df <- dplyr::group_by(df, time)
   df <- dplyr::mutate(df, failure = sum(status == 1),

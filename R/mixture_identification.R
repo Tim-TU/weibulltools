@@ -188,3 +188,139 @@ mixmod_regression <- function(x, y, event,
     }
   return(mrr_output)
 }
+
+#' Mixture Model Estimation using EM-Algorithm
+#'
+#' This method uses the EM-Algorithm to estimate the parameters of a univariate
+#' mixture model. Until now, the mixture model can consist of k two-parametric
+#' Weibull distributions. If no mixture of k components can be estimated,
+#' the function is forced to stop and a message with instructions is given.
+#'
+#' @encoding UTF-8
+#' @references
+#'   \itemize{
+#'     \item Doganaksoy, N.; Hahn, G.; Meeker, W. Q., Reliability Analysis by
+#'       Failure Mode, Quality Progress, 35(6), 47-52, 2002
+#'     \item Blog posts by Stefan Gelissen: \url{http://blogs2.datall-analyse.nl/2016/02/18/rcode_mixture_distribution_censored};
+#'       last access on 19th January 2019}
+#'
+#' @param x a numeric vector which consists of lifetime data. Lifetime
+#'  data could be every characteristic influencing the reliability of a product,
+#'  e.g. operating time (days/months in service), mileage (km, miles), load
+#'  cycles.
+#' @param event a vector of binary data (0 or 1) indicating whether unit \emph{i}
+#'   is a right censored observation (= 0) or a failure (= 1).
+#' @param post a numeric matrix specifiying initial a-posteriori probabilities.
+#'   If post is \code{NULL} (default) a-posteriori probabilities are assigned
+#'   randomly using the Dirichlet distribution (\code{\link{rdirichlet}} from
+#'   \emph{LearnBayes} Package), which is the conjugate prior of a Multinomial
+#'   distribution. This idea was taken from the blog post of Mr. Gelissen
+#'   (linked under \emph{references}).
+#' @param distribution supposed mixture model. Only \code{"weibull"} can be used.
+#'   Other distributions have not been implemented yet.
+#' @param conf_level confidence level for the confidence intervals of the parameters
+#'   of every component \code{k}. The default value is \code{conf_level = 0.95}.
+#' @param k integer of mixture components, default is 2.
+#' @param method default method is \code{"EM"}. Other methods have not been implemented
+#'   yet.
+#' @param n_iter numeric value defining the maximum number of iterations.
+#' @param conv_limit numeric value defining the convergence limit.
+#'
+#' @return Returns a list where the length of the list depends on the number of
+#'    k subgroups. The first \code{k} lists have the same information as provided by
+#'    \link{ml_estimation}, but the values \code{logL}, \code{aic} and \code{bic} are
+#'    the results of a log-likelihood function, which is weighted by a-posteriori
+#'    probabilities. The last list summarizes further results of the EM-Algorithm and
+#'    is therefore called \code{em_results}. It contains the following elements:
+#'   \itemize{
+#'   \item \code{a_priori} : Estimated a-priori probabilities.
+#'   \item \code{a_posteriori} : Estimated a-posteriori probabilities.
+#'   \item \code{groups} : Numeric vector specifying the group membership of every
+#'     observation.
+#'   \item \code{logL} : The value of the complete log-likelihood.
+#'   \item \code{aic} : Akaike Information Criterion.
+#'   \item \code{bic} : Bayesian Information Criterion.}
+#' @export
+#' @examples
+#' # Data is taken from given reference of Doganaksoy, Hahn and Meeker:
+#' hours <- c(2, 28, 67, 119, 179, 236, 282, 317, 348, 387, 3, 31, 69, 135,
+#'           191, 241, 284, 318, 348, 392, 5, 31, 76, 144, 203, 257, 286,
+#'           320, 350, 412, 8, 52, 78, 157, 211, 261, 298, 327, 360, 446,
+#'           13, 53, 104, 160, 221, 264, 303, 328, 369, 21, 64, 113, 168,
+#'           226, 278, 314, 328, 377)
+#' state <- c(1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1,
+#'          1, 0, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 0, 0,
+#'          1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+#'          0, 1, 1, 1, 1, 1, 1)
+#'
+#' mix_mod_em <- mixmod_em(x = hours,
+#'                         event = state,
+#'                         distribution = "weibull",
+#'                         conf_level = 0.95,
+#'                         k = 2,
+#'                         method = "EM",
+#'                         n_iter = 150)
+#'
+#'
+mixmod_em <- function(x, event, post = NULL, distribution = "weibull",
+                      conf_level = .95, k = 2, method = "EM", n_iter = 100L,
+                      conv_limit = 1e-6) {
+
+  distribution <- match.arg(distribution)
+  method <- match.arg(method)
+
+  if (!(distribution %in% "weibull")) {
+    stop("No valid distribution!")
+  }
+
+  # Providing initial random a-posteriors (see references, blog post Mr. Gelissen):
+  if (is.null(post)) {
+    post <- LearnBayes::rdirichlet(n = length(x), par = rep(0.1, k))
+  }
+
+  # mixture_em_cpp() for applying EM-Algorithm:
+  mix_est <- mixture_em_cpp(x = x,
+                            event = event,
+                            post = post,
+                            distribution = distribution,
+                            k = k,
+                            method = method,
+                            n_iter = n_iter,
+                            conv_limit = conv_limit)
+
+  ############## New Approach ##############
+  # Try to apply ml_estimation where observations are weighted with a-posterioris:
+  ml <- try(apply(mix_est$posteriori, MARGIN = 2, FUN = ml_estimation, x = x, event = event,
+    distribution = distribution, conf_level = conf_level), silent = TRUE)
+  if (class(ml) == "try-error") {
+        stop(paste(ml[1], sprintf("\n For k = %s subcomponents the above problem occured!", k),
+                   paste("\n Hint: Reduce k in function call and try again. If not",
+                         "succeed a mixture model seems not to be appropriate. \n Instead use k = 1 to perform ml_estimation().")))
+  }
+
+  # calculate complete log-likelihood and information criteria for EM.
+  logL_comps <- sapply(ml, "[[", "logL")
+  logL_complete <- sum(logL_comps) + sum(mix_est$posteriori %*% log(mix_est$priori))
+  aic_complete <- -2 * logL_complete + 2 * (2 * k + (k - 1))
+  bic_complete <- -2 * logL_complete + log(length(x)) * (2 * k + (k - 1))
+
+  # Check whether log-likelihood from mixture_em_cpp() and complete log-likelihood
+  # after recalculating parameters with ml_estimation() are close to each other.
+  # If so, appearance of a mixture is strengthen and a good fit is possible.
+  # Otherwise, stop() function should be called, since posterioris and prioris are
+  # not valid anymore!!!!
+
+  #  if (abs(logL_complete - mix_est$loglik) > 1e-4) {
+  #   stop("Parameter estimation was not successfull!")
+  # }
+
+  # separate observations using maximum a-posteriori method (MAP):
+  split_obs <- apply(mix_est$posteriori, 1, which.max)
+
+  names(ml) <- sprintf("mod_%i", 1:k)
+
+  ml$em_results <- list(a_priori = mix_est$priori, a_posteriori = mix_est$posteriori,
+    groups = split_obs, logL = logL_complete, aic = aic_complete, bic = bic_complete)
+
+  ml
+}

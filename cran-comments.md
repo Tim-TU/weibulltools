@@ -3,7 +3,43 @@ title: "CRAN comments"
 output: html_document
 ---
 
-# This is a resubmission
+# Announcement of a new package version v0.6.0 (2019-01-25, lines 6 - 39)
+* I've added new features described in NEWS.md file. 
+
+# Test environments
+
+* local windows install, 
+    R version 3.5.1, 
+    Platform: x86_64-w64-mingw32/x64 (64-bit)
+    
+* win-builder, 
+    R Under development (unstable) (2018-07-23 r75001)
+    Platform: x86_64-w64-mingw32 (64-bit)
+
+* Ubuntu Linux 16.04 LTS, R-release, GCC (via r-hub builder), 
+    R version 3.4.4, 
+    Platform: x86_64-pc-linux-gnu (64-bit)
+    
+* Ubuntu Linux 16.04 LTS, R-devel, GCC (via r-hub builder)
+    R Under development (unstable) (2018-07-21 r74997), 
+    Platform: x86_64-pc-linux-gnu (64-bit) 
+    
+* Debian Linux, R-release, GCC (via r-hub builder)
+    R version 3.5.1, 
+    Platform: x86_64-pc-linux-gnu (64-bit)
+    
+* Debian Linux, R-devel, GCC (via r-hub builder)
+    R Under development (unstable) (2018-07-21 r74997), 
+    Platform: x86_64-pc-linux-gnu (64-bit)
+    
+* macOS 10.11 El Capitan, R-release (experimental), (via r-hub builder)
+    R version 3.5.0, 
+    Platform: x86_64-apple-darwin15.6.0 (64-bit) 
+    
+* Windows Server 2008 R2 SP1, R-devel and R-release, 32/64 bit (via r-hub builder)
+
+
+# This is a resubmission (2018-07-25, lines 42 - 98)
 * I've omitted redundancy in the Description of the DESCRIPTION file  
 * I've added a more detailed description and references for the methods in the 
   DESCRIPTION file

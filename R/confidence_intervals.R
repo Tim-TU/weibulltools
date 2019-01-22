@@ -351,8 +351,8 @@ confint_betabinom <- function(x, event, loc_sc_params,
 #' Delta Method for Parametric Lifetime Distributions
 #'
 #' The Delta Method estimates the standard error for quantities that can be
-#' written as non-linear functions of ML estimators like failure probabilities or
-#' quantiles. I.e. the location-scale (and threshold) parameters and variance-covariance matrix
+#' written as non-linear functions of ML estimators like quantiles. I.e. the
+#' (log-)location-scale (and threshold) parameters and variance-covariance matrix
 #' of these need to be estimated by Maximum Likelihood.
 #'
 #' @encoding UTF-8
@@ -360,8 +360,9 @@ confint_betabinom <- function(x, event, loc_sc_params,
 #'   reliability data, New York: Wiley series in probability and statistics, 1998
 #'
 #' @param p a numeric value of a probability or a quantile. If the standard error
-#'   of probability is of interest a specific quantile needs to be supplied
-#'   and vice versa.
+#'   of quantile is of interest a specific probability needs to be supplied and if
+#'   the standard error of a standardized quantile (z-value) should be calculated
+#'   a specific quantile should be provided.
 #' @param loc_sc_params a (named) numeric vector of estimated
 #'   (by Maximum Likelihood) location and scale parameters for a specified
 #'   distribution. The order of elements is important. First entry needs to be
@@ -382,12 +383,16 @@ confint_betabinom <- function(x, event, loc_sc_params,
 #'   \code{"weibull3"}, \code{"lognormal3"} or \code{"loglogistic3"}.
 #'   Other distributions have not been implemented yet.
 #' @param direction a character string specifying the direction of the computed
-#'   standard errors. Must be either "y" (failure probability) or "x"
-#'   (quantile). If \code{p} is a quantile then \emph{direction} needs to be "y"
-#'   and vice versa.
+#'   standard errors. Must be either "y" (used for confidence intervals of failure
+#'   probabilities in \code{\link{confint_fisher}}) or "x" (used for confidence
+#'   intervals of quantiles in \code{\link{confint_fisher}}). If \code{p} is a
+#'   quantile then \emph{direction} needs to be "y" and vice versa.
 #'
-#' @return A numeric value with estimated standard error of failure probability
-#'   or quantiles.
+#' @return A numeric value with estimated standard errors of quantiles or standardized
+#'   z values. Both are required for the computation of normal approximation
+#'   confidence intervals. If standard errors of standardized z values are compueted
+#'   one can calculate confidence intervals for distribution probabilities (z-procedure,
+#'   which is used inside \code{\link{confint_fisher}}).
 #' @export
 #'
 #' @examples
@@ -460,7 +465,7 @@ delta_method <- function(p, loc_sc_params, loc_sc_varcov,
     var_q <- t(dq_dpar) %*% loc_sc_varcov %*% dq_dpar
     std_err <- sqrt(var_q)
 
-    # Standard Errors for probabilities:
+    # Standard Errors for z: The "z-Procedure":
   } else {
     # Standardized Random Variable:
     if (distribution %in% c("weibull", "lognormal", "loglogistic")) {
@@ -473,34 +478,23 @@ delta_method <- function(p, loc_sc_params, loc_sc_varcov,
       z <- (p - loc_sc_params[[1]]) / loc_sc_params[[2]]
     }
 
-    # Definition of pdf:
-    if (distribution %in% c("weibull", "weibull3", "sev")) {
-      pd <- SPREDA::dsev(z)
-    }
-    if (distribution %in% c("lognormal", "lognormal3", "normal")) {
-      pd <- stats::dnorm(z)
-    }
-    if (distribution %in% c("loglogistic", "loglogistic3", "logistic")) {
-      pd <- stats::dlogis(z)
-    }
-
-    # First derivatives of CDF regarding parameters:
+    # First derivatives of z regarding parameters:
     if (distribution %in% c("weibull", "lognormal", "loglogistic", "sev",
                             "normal", "logistic")) {
-      dps_dmu <- (-1 / loc_sc_params[[2]]) * pd
-      dps_dsc <- (-1 / loc_sc_params[[2]]) * z * pd
-      dps_dpar <- c(dps_dmu, dps_dsc)
+      dz_dmu <- (-1 / loc_sc_params[[2]])
+      dz_dsc <- (-1 / loc_sc_params[[2]]) * z
+      dz_dpar <- c(dz_dmu, dz_dsc)
     }
 
     if (distribution %in% c("weibull3", "lognormal3", "loglogistic3")) {
-      dps_dmu <- (-1 / loc_sc_params[[2]]) * pd
-      dps_dsc <- (-1 / loc_sc_params[[2]]) * z * pd
-      dps_dgam <- (-1 / loc_sc_params[[2]]) * (1 / log(p - loc_sc_params[[3]])) * pd
-      dps_dpar <- c(dps_dmu, dps_dsc, dps_dgam)
+      dz_dmu <- (-1 / loc_sc_params[[2]])
+      dz_dsc <- (-1 / loc_sc_params[[2]]) * z
+      dz_dgam <- (1 / loc_sc_params[[2]]) * (1 / (loc_sc_params[[3]] - p))
+      dz_dpar <- c(dz_dmu, dz_dsc, dz_dgam)
     }
 
-    var_ps <- t(dps_dpar) %*% loc_sc_varcov %*% dps_dpar
-    std_err <- sqrt(var_ps)
+    var_z <- t(dz_dpar) %*% loc_sc_varcov %*% dz_dpar
+    std_err <- sqrt(var_z)
   }
   return(std_err)
 }
@@ -510,7 +504,7 @@ delta_method <- function(p, loc_sc_params, loc_sc_varcov,
 #'
 #' This method computes normal-approximation confidence intervals for quantiles
 #' and/or failure probabilities using the \code{\link{delta_method}}. The
-#' required location-scale (and threshold) parameters and variance-covariance matrix
+#' required (log-)location-scale (and threshold) parameters and variance-covariance matrix
 #' of these need to be estimated by Maximum Likelihood.
 #'
 #' @param x a numeric vector which consists of lifetime data. \code{x} is used to
@@ -623,24 +617,63 @@ confint_fisher <- function(x, event, loc_sc_params, loc_sc_varcov,
                      list_confint)
     df_output <- as.data.frame(list_output)
   } else {
-    prob <- predict_prob(q = x, loc_sc_params = loc_sc_params,
-                         distribution = distribution)
+    # Standard errors for z:
     se_delta <- sapply(x, delta_method, loc_sc_params = loc_sc_params,
       loc_sc_varcov = loc_sc_varcov,
       distribution = distribution, direction = direction)
 
+    # Standardized Random Variable:
+    if (distribution %in% c("weibull", "lognormal", "loglogistic")) {
+      z <- (log(x) - loc_sc_params[[1]]) / loc_sc_params[[2]]
+    }
+    if (distribution %in% c("weibull3", "lognormal3", "loglogistic3")) {
+      z <- (log(x - loc_sc_params[[3]]) - loc_sc_params[[1]]) / loc_sc_params[[2]]
+    }
+    if (distribution %in% c("sev", "normal", "logistic")) {
+      z <- (x - loc_sc_params[[1]]) / loc_sc_params[[2]]
+    }
+
+    # Calculating confidence intervals:
     if (bounds == "two_sided") {
-      w <- exp((stats::qnorm((1 + conf_level) / 2) * se_delta) / (prob * (1 - prob)))
-      conf_up <- prob / (prob + (1 - prob) / w)
-      conf_low <- prob / (prob + (1 - prob) * w)
+      # Confidence Interval for z:
+      w <- stats::qnorm((1 + conf_level) / 2) * se_delta
+      if (distribution %in% c("weibull", "weibull3", "sev")) {
+        conf_up <- SPREDA::psev(z + w)
+        conf_low <- SPREDA::psev(z - w)
+      }
+      if (distribution %in% c("lognormal", "lognormal3", "normal")) {
+        conf_up <- stats::pnorm(z + w)
+        conf_low <- stats::pnorm(z - w)
+      }
+      if (distribution %in% c("loglogistic", "loglogistic3", "logistic")) {
+        conf_up <- stats::plogis(z + w)
+        conf_low <- stats::plogis(z - w)
+      }
       list_confint <- list(lower_bound = conf_low, upper_bound = conf_up)
+
     } else if (bounds == "lower") {
-      w <- exp((stats::qnorm(conf_level) * se_delta) / (prob * (1 - prob)))
-      conf_low <- prob / (prob + (1 - prob) * w)
+      w <- stats::qnorm(conf_level) * se_delta
+      if (distribution %in% c("weibull", "weibull3", "sev")) {
+        conf_low <- SPREDA::psev(z - w)
+      }
+      if (distribution %in% c("lognormal", "lognormal3", "normal")) {
+        conf_low <- stats::pnorm(z - w)
+      }
+      if (distribution %in% c("loglogistic", "loglogistic3", "logistic")) {
+        conf_low <- stats::plogis(z - w)
+      }
       list_confint <- list(lower_bound = conf_low)
     } else {
-      w <- exp((stats::qnorm(conf_level) * se_delta) / (prob * (1 - prob)))
-      conf_up <- prob / (prob + (1 - prob) / w)
+      w <- stats::qnorm(conf_level) * se_delta
+      if (distribution %in% c("weibull", "weibull3", "sev")) {
+        conf_up <- SPREDA::psev(z + w)
+      }
+      if (distribution %in% c("lognormal", "lognormal3", "normal")) {
+        conf_up <- stats::pnorm(z + w)
+      }
+      if (distribution %in% c("loglogistic", "loglogistic3", "logistic")) {
+        conf_up <- stats::plogis(z + w)
+      }
       list_confint <- list(upper_bound = conf_up)
     }
     list_output <- c(list(characteristic = x, prob = y_seq, std_err = se_delta),

@@ -7,9 +7,9 @@
 \usage{
 plot_prob(x, y, event, id = rep("XXXXXX", length(x)),
   distribution = c("weibull", "lognormal", "loglogistic", "normal",
-  "logistic", "sev", "weibull3", "lognormal3", "loglogistic3"),
-  title_main = "Probability Plot", title_x = "Characteristic",
-  title_y = "Unreliability", title_trace = "Sample")
+  "logistic", "sev"), title_main = "Probability Plot",
+  title_x = "Characteristic", title_y = "Unreliability",
+  title_trace = "Sample")
 }
 \arguments{
 \item{x}{a numeric vector which consists of lifetime data. Lifetime
@@ -27,8 +27,7 @@ is a right censored observation (= 0) or a failure (= 1).}
 
 \item{distribution}{supposed distribution of the random variable. The
 value can be \code{"weibull"}, \code{"lognormal"}, \code{"loglogistic"},
-\code{"normal"}, \code{"logistic"}, \code{"sev"} \emph{(smallest extreme value)},
-\code{"weibull3"}, \code{"lognormal3"} or \code{"loglogistic3"}.
+\code{"normal"}, \code{"logistic"} or \code{"sev"} \emph{(smallest extreme value)}.
 Other distributions have not been implemented yet.}
 
 \item{title_main}{a character string which is assigned to the main title

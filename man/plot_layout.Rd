@@ -5,9 +5,8 @@
 \title{Layout of the Probability Plot}
 \usage{
 plot_layout(x, distribution = c("weibull", "lognormal", "loglogistic",
-  "normal", "logistic", "sev", "weibull3", "lognormal3", "loglogistic3"),
-  title_main = "Probability Plot", title_x = "Characteristic",
-  title_y = "Unreliability")
+  "normal", "logistic", "sev"), title_main = "Probability Plot",
+  title_x = "Characteristic", title_y = "Unreliability")
 }
 \arguments{
 \item{x}{a numeric vector which consists of lifetime data. \code{x} is used to
@@ -15,8 +14,7 @@ specify the grid of the plot.}
 
 \item{distribution}{supposed distribution of the random variable. The
 value can be \code{"weibull"}, \code{"lognormal"}, \code{"loglogistic"},
-\code{"normal"}, \code{"logistic"}, \code{"sev"} \emph{(smallest extreme value)},
-\code{"weibull3"}, \code{"lognormal3"} or \code{"loglogistic3"}.
+\code{"normal"}, \code{"logistic"} or \code{"sev"} \emph{(smallest extreme value)}.
 Other distributions have not been implemented yet.}
 
 \item{title_main}{a character string which is assigned to the main title

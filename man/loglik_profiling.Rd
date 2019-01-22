@@ -44,7 +44,7 @@ state <- c(rep(0, 5), rep(1, 67))
 # Determining threshold parameter for which the log-likelihood is maximized
 # subject to the condition that the threshold parameter must be smaller
 # as the first failure cycle, i.e 94:
-threshold <- seq(0, min(cycles[state == 1]) - 0.1, length.out = 1000)
+threshold <- seq(0, min(cycles[state == 1]) - 0.1, length.out = 100)
 profile_logL <- sapply(threshold, loglik_profiling,
                      x = cycles,
                      event = state,

@@ -6,26 +6,25 @@
 \title{Adding Estimated Population Lines of a Separated Mixture Model to a
 Probability Plot}
 \usage{
-plot_mod_mix(p_obj, x, y = NULL, reg_output,
-  distribution = c("weibull", "lognormal", "loglogistic"),
-  title_trace = "Fit")
+plot_mod_mix(p_obj, x, event, mix_output, distribution = c("weibull",
+  "lognormal", "loglogistic"), title_trace = "Fit")
 }
 \arguments{
 \item{p_obj}{a plotly object provided by function \code{\link{plot_prob_mix}}.}
 
 \item{x}{a numeric vector containing the x-coordinates of the regression line.}
 
-\item{y}{a numeric vector containing the y-coordinates of the regression line.
-The default value of y is \code{NULL}. If \code{y} is set \code{NULL} the
-y-coordinates with respect to \code{x} are calculated by function
-\code{predict_prob} using estimated coefficients in \code{reg_output}.}
+\item{event}{a vector of binary data (0 or 1) indicating whether unit \emph{i}
+is a right censored observation (= 0) or a failure (= 1).}
 
-\item{reg_output}{a list provided by \code{\link{mixmod_regression}} which
-consists of elements necessary to visualize the regression lines.}
+\item{mix_output}{a list provided by \code{\link{mixmod_regression}} or
+\code{\link{mixmod_em}}, which consists of elements necessary to visualize
+the regression lines.}
 
-\item{distribution}{supposed distribution of the random variable. The
-value can be \code{"weibull"}, \code{"lognormal"} or \code{"loglogistic"}.
-Other distributions have not been implemented yet.}
+\item{distribution}{supposed distribution of the random variable. For output
+provided by \code{mixmod_em} distribution must be \code{"weibull"}. Can be
+\code{"weibull"}, \code{"lognormal"} or \code{"loglogistic"} for output provided
+\code{mixmod_regression}. Other distributions have not been implemented yet.}
 
 \item{title_trace}{a character string whis is assigned to the trace shown in
 the legend.}
@@ -37,7 +36,13 @@ Returns a plotly object containing the probability plot with
 \description{
 This function adds one or multiple estimated regression lines to an existing
 probability plot (\code{\link{plot_prob_mix}}). Depending on the output of the
-function \code{\link{mixmod_regression}} one or multiple lines are plotted.
+function \code{\link{mixmod_regression}} or \code{\link{mixmod_em}} one or
+multiple lines are plotted.
+}
+\details{
+The name of the legend entry is a combination of the \code{title_trace} and the
+number of determined subgroups. If \code{title_trace = "Line"} and the data
+could be splitted in two groups, the legend entries would be "Group 1" and "Line 2".
 }
 \examples{
 # Data is taken from given reference:
@@ -50,27 +55,52 @@ state <- c(1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1,
           1, 0, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 0, 0,
           1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1,
           0, 1, 1, 1, 1, 1, 1)
+id <- 1:length(hours)
+
+# Example 1 - Using result of mixmod_em in mix_output:
+mix_mod_em <- mixmod_em(x = hours, event = state, distribution = "weibull",
+                        conf_level = 0.95, k = 2, method = "EM", n_iter = 150)
+
+plot_weibull_em <- plot_prob_mix(x = hours,
+                                 event = state,
+                                 id = id,
+                                 distribution = "weibull",
+                                 mix_output = mix_mod_em,
+                                 title_main = "Weibull Mixture EM",
+                                 title_x = "Time in Hours",
+                                 title_y = "Probability of Failure",
+                                 title_trace = "Subgroup")
+
+plot_weibull_emlines <- plot_mod_mix(p_obj = plot_weibull_em,
+                                   x = hours,
+                                   event = state,
+                                   mix_output = mix_mod_em,
+                                   distribution = "weibull",
+                                   title_trace = "Fitted Line")
+
+# Example 2 - Using result of mixmod_regression in mix_output:
 john <- johnson_method(x = hours, event = state)
+mix_mod_reg <- mixmod_regression(x = john$characteristic,
+                                 y = john$prob,
+                                 event = john$status,
+                                 distribution = "weibull")
 
-mix_mod <- mixmod_regression(x = john$characteristic,
-                             y = john$prob,
-                             event = john$status,
-                             distribution = "weibull")
-
-plot_weibull_mix <- plot_prob_mix(x = john$characteristic,
-                                  y = john$prob,
-                                  event = john$status,
-                                  id = john$id,
+plot_weibull_reg <- plot_prob_mix(x = hours,
+                                  event = state,
+                                  id = id,
                                   distribution = "weibull",
-                                  reg_output = mix_mod,
-                                  title_main = "Mixture Weibull Analysis",
+                                  mix_output = mix_mod_reg,
+                                  title_main = "Weibull Mixture Regression",
                                   title_x = "Time in Hours",
                                   title_y = "Probability of Failure",
-                                  title_trace = "classification")
-plot_weibull_reg_mix <- plot_mod_mix(p_obj = plot_weibull_mix, x = hours,
-                             reg_output = mix_mod,
-                             distribution = "weibull",
-                             title_trace = "model")
+                                  title_trace = "Subgroup")
+
+plot_weibull_reglines <- plot_mod_mix(p_obj = plot_weibull_reg,
+                                   x = hours,
+                                   event = state,
+                                   mix_output = mix_mod_reg,
+                                   distribution = "weibull",
+                                   title_trace = "Fitted Line")
 }
 \references{
 Doganaksoy, N.; Hahn, G.; Meeker, W. Q., Reliability Analysis by

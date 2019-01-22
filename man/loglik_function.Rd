@@ -5,9 +5,9 @@
 \alias{loglik_function}
 \title{Log-Likelihood Function for (Log-) Location-Scale Distributions (with Threshold)}
 \usage{
-loglik_function(x, event, pars, distribution = c("weibull", "lognormal",
-  "loglogistic", "normal", "logistic", "sev", "weibull3", "lognormal3",
-  "loglogistic3"))
+loglik_function(x, event, wts = rep(1, length(x)), pars,
+  distribution = c("weibull", "lognormal", "loglogistic", "normal",
+  "logistic", "sev", "weibull3", "lognormal3", "loglogistic3"))
 }
 \arguments{
 \item{x}{a numeric vector which consists of lifetime data. Lifetime
@@ -17,6 +17,10 @@ cycles.}
 
 \item{event}{a vector of binary data (0 or 1) indicating whether unit \emph{i}
 is a right censored observation (= 0) or a failure (= 1).}
+
+\item{wts}{optional vector of case weights. The length of \code{wts} must be the
+same as the number of observations \code{x}. Default is that \code{wts} is a
+vector with all components being 1 (same weights).}
 
 \item{pars}{a numeric vector of parameters. The first element is the location
 parameter (\eqn{\mu}), the second is the scale parameter (\eqn{\sigma}) and if

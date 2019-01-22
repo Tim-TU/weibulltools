@@ -61,8 +61,8 @@ Returns a list with the following components (depending on
 This method fits an \strong{x on y} regression to a linearized
 two- or three-parameter cdf and is applicable for complete and (multiple) right
 censored data. The parameters are estimated in the frequently used (log-) location-scale
-parametrization. For the Weibull, estimates are transformed such that
-they are in line with the parametrization provided by the \emph{stats} package
+parameterization. For the Weibull, estimates are transformed such that
+they are in line with the parameterization provided by the \emph{stats} package
 like \code{\link{pweibull}}.
 }
 \details{

@@ -6,8 +6,7 @@
 #'   specify the grid of the plot.
 #' @param distribution supposed distribution of the random variable. The
 #'   value can be \code{"weibull"}, \code{"lognormal"}, \code{"loglogistic"},
-#'   \code{"normal"}, \code{"logistic"}, \code{"sev"} \emph{(smallest extreme value)},
-#'   \code{"weibull3"}, \code{"lognormal3"} or \code{"loglogistic3"}.
+#'   \code{"normal"}, \code{"logistic"} or \code{"sev"} \emph{(smallest extreme value)}.
 #'   Other distributions have not been implemented yet.
 #' @param title_main a character string which is assigned to the main title
 #'   of the plot.
@@ -40,8 +39,7 @@
 
 plot_layout <- function(x,
                         distribution = c("weibull", "lognormal", "loglogistic",
-                                         "normal", "logistic", "sev", "weibull3",
-                                         "lognormal3", "loglogistic3"),
+                                         "normal", "logistic", "sev"),
                         title_main = "Probability Plot",
                         title_x = "Characteristic",
                         title_y = "Unreliability") {
@@ -49,17 +47,16 @@ plot_layout <- function(x,
   distribution <- match.arg(distribution)
 
   if (!(distribution %in% c("weibull", "lognormal", "loglogistic", "normal",
-                            "logistic", "sev", "weibull3", "lognormal3",
-                            "loglogistic3"))) {
+                            "logistic", "sev"))) {
     stop("No valid distribution!")
   }
 
-  # Layout dependent on data x, function to build helpful sequences:
-  x_base <- function(xb) floor(log10(xb))
 
   # Define x-ticks of logarithm to the base of 10 for Log-Location-Scale Distributions:
-  if (distribution %in% c("weibull", "weibull3", "lognormal", "lognormal3",
-                          "loglogistic", "loglogistic3")) {
+  if (distribution %in% c("weibull", "lognormal", "loglogistic")) {
+
+    # Layout dependent on data x, function to build helpful sequences:
+    x_base <- function(xb) floor(log10(xb))
     xlog10_range <- (x_base(min(x)) - 1):x_base(max(x))
     # x-ticks and x-labels
     x_ticks <- sapply(xlog10_range, function(z) seq(10 ^ z, 10 ^ (z + 1), 10 ^ z),
@@ -70,30 +67,18 @@ plot_layout <- function(x,
     x_labels[c(rep(F, 3), rep(T, 6))] <- ''
   }
 
-  # Define x-ticks for Location-Scale Distributions:
-  if (distribution %in% c("sev", "normal", "logistic")) {
-    x_diff <- x_base(max(x) - min(x))
-    x_range <- seq(from = max(0, x_base(max(min(x) - 1, 0))),
-                   to = 10 ^ (x_diff + 1),
-                   by = 10 ^ (x_diff))
-    # x-ticks x-labels:
-    x_ticks <- round(as.numeric(x_range), digits = 10)
-    x_labels <- x_ticks
-  }
-
-
   # y-ticks and y-labels
   # hard coded but it's okay since range is always between 0 and 1.
   y_s <- c(.0000001, .000001, .00001, .0001, .001, .01, .05, .1, .2, .3, .5, .6,
     .7, .8, .9, .95, .99, .999, .9999, .99999)
 
-  if (distribution %in% c("weibull", "weibull3", "sev")) {
+  if (distribution %in% c("weibull", "sev")) {
     y_ticks <- SPREDA::qsev(y_s)
   }
-  if (distribution %in% c("lognormal", "lognormal3", "normal")) {
+  if (distribution %in% c("lognormal", "normal")) {
     y_ticks <- stats::qnorm(y_s)
   }
-  if (distribution %in% c("loglogistic", "loglogistic3", "logistic")) {
+  if (distribution %in% c("loglogistic", "logistic")) {
     y_ticks <- stats::qlogis(y_s)
   }
 
@@ -116,8 +101,6 @@ plot_layout <- function(x,
     type = xaxs_type,
     autorange = TRUE,
     rangemode = "nonnegative",
-    tickvals = x_ticks,
-    ticktext = x_labels,
     ticks = "inside",
     tickcolor = "#a0a0a0",
     tickwidth = 1,
@@ -130,6 +113,11 @@ plot_layout <- function(x,
     showline = TRUE,
     linecolor = "#a0a0a0"
   )
+
+  if (distribution %in% c("weibull", "lognormal", "loglogistic")) {
+    x_config <- c(x_config, list(tickvals = x_ticks,ticktext = x_labels))
+  }
+
 
   ## Configuration y axis:
   y_config <- list(
@@ -210,8 +198,7 @@ plot_layout <- function(x,
 #' @param id a character vector for the identification of every unit.
 #' @param distribution supposed distribution of the random variable. The
 #'   value can be \code{"weibull"}, \code{"lognormal"}, \code{"loglogistic"},
-#'   \code{"normal"}, \code{"logistic"}, \code{"sev"} \emph{(smallest extreme value)},
-#'   \code{"weibull3"}, \code{"lognormal3"} or \code{"loglogistic3"}.
+#'   \code{"normal"}, \code{"logistic"} or \code{"sev"} \emph{(smallest extreme value)}.
 #'   Other distributions have not been implemented yet.
 #' @param title_main a character string which is assigned to the main title
 #'   of the plot.
@@ -262,8 +249,7 @@ plot_layout <- function(x,
 
 plot_prob <- function(x, y, event, id = rep("XXXXXX", length(x)),
                       distribution = c("weibull", "lognormal", "loglogistic",
-                                       "normal", "logistic", "sev", "weibull3",
-                                       "lognormal3", "loglogistic3"),
+                                       "normal", "logistic", "sev"),
                       title_main = "Probability Plot",
                       title_x = "Characteristic", title_y = "Unreliability",
                       title_trace = "Sample") {
@@ -271,8 +257,7 @@ plot_prob <- function(x, y, event, id = rep("XXXXXX", length(x)),
   distribution <- match.arg(distribution)
 
   if (!(distribution %in% c("weibull", "lognormal", "loglogistic", "normal",
-                            "logistic", "sev", "weibull3", "lognormal3",
-                            "loglogistic3"))) {
+                            "logistic", "sev"))) {
     stop("No valid distribution!")
   }
 
@@ -294,13 +279,13 @@ plot_prob <- function(x, y, event, id = rep("XXXXXX", length(x)),
   mark_y <- unlist(strsplit(title_y, " "))[1]
 
   # Choice of distribution:
-  if (distribution %in% c("weibull", "weibull3", "sev")) {
+  if (distribution %in% c("weibull", "sev")) {
     q <- SPREDA::qsev(y_s)
   }
-  if (distribution %in% c("lognormal", "lognormal3", "normal")) {
+  if (distribution %in% c("lognormal", "normal")) {
     q <- stats::qnorm(y_s)
   }
-  if (distribution %in% c("loglogistic", "loglogistic3", "logistic")) {
+  if (distribution %in% c("loglogistic", "logistic")) {
     q <- stats::qlogis(y_s)
   }
 
@@ -312,7 +297,9 @@ plot_prob <- function(x, y, event, id = rep("XXXXXX", length(x)),
     text = ~paste("ID:", id_s,
       paste("<br>", paste0(mark_x, ":")), x_s,
       paste("<br>", paste0(mark_y, ":")), round(y_s, digits = 5))
-  )
+    ) %>%
+    plotly::layout(showlegend = TRUE)
+
   return(plot)
 }
 
@@ -320,10 +307,22 @@ plot_prob <- function(x, y, event, id = rep("XXXXXX", length(x)),
 #' Probability Plot for Separated Mixture Models
 #'
 #' This function is used to apply the graphical technique of probability
-#' plotting to univariate mixture models that where separated with the function
-#' \code{\link{mixmod_regression}}. A maximum of three subgroups can be plotted.
-#' The intention of this function is to give the user a hint for the existence
-#' of a mixture model. An in-depth analysis should be done afterwards.
+#' plotting to univariate mixture models that where separated with functions
+#' \code{\link{mixmod_regression}} or \code{\link{mixmod_em}}.
+#'
+#' Depending on the separation method the function \code{\link{johnson_method}}
+#' is called in various ways. If \code{mixmod_regression} is used, \code{johnson_method}
+#' is applied to all data. If data was splitted by \code{mixmod_em} the function
+#' \code{johnson_method} is applied to subgroup-specific data. The calculated plotting
+#' positions are colored regarding the obtained split of the used splitting function.
+#' If \code{mix_output = NULL} \code{johnson_method} is applied to all data, too.
+#' The obtained plot is then equal to \code{\link{plot_prob}}. See \strong{Examples}
+#' for all three cases.
+#'
+#' In \code{\link{mixmod_regression}} a maximum of three subgroups can be determined
+#' and thus being plotted. The intention of this function is to give the
+#' user a hint for the existence of a mixture model. An in-depth analysis should
+#' be done afterwards.
 #'
 #' The marker label for x is determined by the first word provided in the
 #' argument \code{title_x}, i.e. if \code{title_x = "Mileage in km"} the x label
@@ -333,6 +332,10 @@ plot_prob <- function(x, y, event, id = rep("XXXXXX", length(x)),
 #' argument \code{title_y}, i.e. if \code{title_y = "Probability in percent"} the y
 #' label of the marker is "Probability".
 #'
+#' The name of the legend entry is a combination of the \code{title_trace} and the
+#' number of determined subgroups. If \code{title_trace = "Group"} and the data
+#' could be splitted in two groups, the legend entries would be "Group 1" and "Group 2".
+#'
 #' @encoding UTF-8
 #' @references Doganaksoy, N.; Hahn, G.; Meeker, W. Q., Reliability Analysis by
 #'   Failure Mode, Quality Progress, 35(6), 47-52, 2002
@@ -341,18 +344,16 @@ plot_prob <- function(x, y, event, id = rep("XXXXXX", length(x)),
 #'   data could be every characteristic influencing the reliability of a product,
 #'   e.g. operating time (days/months in service), mileage (km, miles), load
 #'   cycles.
-#' @param y a numeric vector which consists of estimated failure probabilities
-#'   regarding the lifetime data in \code{x}.
 #' @param event a vector of binary data (0 or 1) indicating whether unit \emph{i}
 #'   is a right censored observation (= 0) or a failure (= 1).
 #' @param id a character vector for the identification of every unit.
-#' @param distribution supposed distribution of the random variable. Can be
-#'   \code{"weibull"}, \code{"lognormal"} or \code{"loglogistic"}. Other
-#'   distributions have not been implemented yet.
-#' @param reg_output a list provided by \code{\link{mixmod_regression}} which
-#'   consists of values necessary to visualize the segments calculated by
-#'   \code{\link{mixmod_regression}}.The default value of \code{reg_output} is
-#'   \code{NULL}.
+#' @param distribution supposed distribution of the random variable. For output
+#'   provided by \code{mixmod_em} distribution must be \code{"weibull"}. Can be
+#'   \code{"weibull"}, \code{"lognormal"} or \code{"loglogistic"} for output provided
+#'   \code{mixmod_regression}. Other distributions have not been implemented yet.
+#' @param mix_output a list provided by \code{\link{mixmod_regression}} or
+#'   \code{\link{mixmod_em}}, which consists of values necessary to visualize the
+#'   subgroups.The default value of \code{mix_output} is \code{NULL}.
 #' @param title_main a character string which is assigned to the main title
 #'   of the plot.
 #' @param title_x a character string which is assigned to the title of the
@@ -377,27 +378,53 @@ plot_prob <- function(x, y, event, id = rep("XXXXXX", length(x)),
 #'           1, 0, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 0, 0,
 #'           1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1,
 #'           0, 1, 1, 1, 1, 1, 1)
+#' id <- 1:length(hours)
+#'
+#' # Example 1 - mix_output = NULL:
+#' plot_weibull <- plot_prob_mix(x = hours,
+#'                               event = state,
+#'                               id = id,
+#'                               distribution = "weibull",
+#'                               mix_output = NULL,
+#'                               title_main = "Weibull Probability Plot",
+#'                               title_x = "Time in Hours",
+#'                               title_y = "Probability of Failure",
+#'                               title_trace = "Failed Items")
+#'
+#' # Example 2 - Using result of mixmod_em in mix_output:
+#' mix_mod_em <- mixmod_em(x = hours, event = state, distribution = "weibull",
+#'                         conf_level = 0.95, k = 2, method = "EM", n_iter = 150)
+#'
+#' plot_weibull_em <- plot_prob_mix(x = hours,
+#'                                  event = state,
+#'                                  id = id,
+#'                                  distribution = "weibull",
+#'                                  mix_output = mix_mod_em,
+#'                                  title_main = "Weibull Mixture EM",
+#'                                  title_x = "Time in Hours",
+#'                                  title_y = "Probability of Failure",
+#'                                  title_trace = "Subgroup")
+#'
+#' # Example 3 - Using result of mixmod_regression in mix_output:
 #' john <- johnson_method(x = hours, event = state)
+#' mix_mod_reg <- mixmod_regression(x = john$characteristic,
+#'                                  y = john$prob,
+#'                                  event = john$status,
+#'                                  distribution = "weibull")
 #'
-#' mix_mod <- mixmod_regression(x = john$characteristic,
-#'                              y = john$prob,
-#'                              event = john$status,
-#'                              distribution = "weibull")
-#'
-#' plot_weibull_mix <- plot_prob_mix(x = john$characteristic,
-#'                                   y = john$prob,
-#'                                   event = john$status,
-#'                                   id = john$id,
+#' plot_weibull_reg <- plot_prob_mix(x = hours,
+#'                                   event = state,
+#'                                   id = id,
 #'                                   distribution = "weibull",
-#'                                   reg_output = mix_mod,
-#'                                   title_main = "Mixture Weibull Analysis",
+#'                                   mix_output = mix_mod_reg,
+#'                                   title_main = "Weibull Mixture Regression",
 #'                                   title_x = "Time in Hours",
 #'                                   title_y = "Probability of Failure",
-#'                                   title_trace = "classification")
+#'                                   title_trace = "Subgroup")
 
-plot_prob_mix <- function(x, y, event, id = rep("XXXXXX", length(x)),
+plot_prob_mix <- function(x, event, id = rep("XXXXXX", length(x)),
                           distribution = c("weibull", "lognormal", "loglogistic"),
-                          reg_output = NULL,
+                          mix_output = NULL,
                           title_main = "Probability Plot",
                           title_x = "Characteristic",
                           title_y = "Unreliability",
@@ -409,77 +436,117 @@ plot_prob_mix <- function(x, y, event, id = rep("XXXXXX", length(x)),
     stop("No valid distribution!")
   }
 
-  # Function to split x values regarding determined subgroups:
-  subset_x <- function(x, mrr_model) {
-    subset(x, x >= mrr_model$x_range[[1]] & x <= mrr_model$x_range[[2]])
+  if (("em_results" %in%  names(mix_output)) & distribution != "weibull") {
+    stop("No valid distribution! Use weibull to visualize EM results")
   }
 
-  # Filtering failed units:
-  x_s <- x[event == 1]
-  y_s <- y[event == 1]
-  id_s <- id[event == 1]
-  x_s <- x_s[order(x_s)]
-  y_s <- y_s[order(x_s)]
-  id_s <- id_s[order(x_s)]
+  # check if mix_output is NULL or "em_results" is not a name of lists in mix_output!
+  if (is.null(mix_output) | !("em_results" %in%  names(mix_output))) {
 
-  group_df <- data.frame(x_s = x_s, y_s = y_s, id_s = id_s)
+    # applying johnson_method() to all data! Used for printing results of
+    # mixmod_regression() and for the case is mix_output = NULL.
+    john_df <- johnson_method(x = x, event = event, id = id) %>%
+      dplyr::filter(status == 1)
 
-  # Check for mixtures and separate data regarding results from segmented
-  # regression:
-  if (!is.null(reg_output)) {
-    if (exists("mod_3", where = reg_output)) {
-      x_1 <- subset_x(x = x_s, mrr_model = reg_output$mod_1)
-      x_2 <- subset_x(x = x_s, mrr_model = reg_output$mod_2)
-      x_3 <- subset_x(x = x_s, mrr_model = reg_output$mod_3)
+    x_s <- john_df$characteristic
+    y_s <- john_df$prob
+    id_s <- john_df$id
+    group_df <- data.frame(x_s = x_s, y_s = y_s, id_s = id_s)
+    group_df$groups <- as.factor(c(rep(title_trace, length(x_s))))
+  }
 
-      group_df$groups <- as.factor(c(rep("Subgroup 1", length(x_1)),
-                                    rep("Subgroup 2", length(x_2)),
-                                    rep("Subgroup 3", length(x_3))))
-    } else if (exists("mod_2", where = reg_output)) {
-      x_1 <- subset_x(x = x_s, mrr_model = reg_output$mod_1)
-      x_2 <- subset_x(x = x_s, mrr_model = reg_output$mod_2)
-      group_df$groups <- as.factor(c(rep("Subgroup 1", length(x_1)),
-                                    rep("Subgroup 2", length(x_2))))
-    } else {
-      group_df$groups <- as.factor(c(rep("Subgroup 1", length(x_s))))
+    # Check for mixtures and separate data regarding results from segmented
+    # regression:
+    if (!is.null(mix_output) & !("em_results" %in%  names(mix_output))) {
+
+       # Defining subset function for x_ranges provided by mixmod_regression():
+      subset_x <- function(x, mrr_model) {
+        subset(x, x >= mrr_model$x_range[[1]] & x <= mrr_model$x_range[[2]])
+      }
+
+      if (exists("mod_3", where = mix_output)) {
+        x_1 <- subset_x(x = x_s, mrr_model = mix_output$mod_1)
+        x_2 <- subset_x(x = x_s, mrr_model = mix_output$mod_2)
+        x_3 <- subset_x(x = x_s, mrr_model = mix_output$mod_3)
+
+        group_df$groups <- as.factor(c(rep(paste(title_trace, 1), length(x_1)),
+          rep(paste(title_trace, 2), length(x_2)),
+          rep(paste(title_trace, 3), length(x_3))))
+      } else if (exists("mod_2", where = mix_output)) {
+        x_1 <- subset_x(x = x_s, mrr_model = mix_output$mod_1)
+        x_2 <- subset_x(x = x_s, mrr_model = mix_output$mod_2)
+        group_df$groups <- as.factor(c(rep(paste(title_trace, 1), length(x_1)),
+          rep(paste(title_trace, 2), length(x_2))))
+      } else {
+        group_df$groups <- as.factor(c(rep(title_trace, length(x_s))))
+      }
     }
-  } else {
-    group_df$groups <- as.factor(c(rep("Subgroup 1", length(x_s))))
+
+  if (("em_results" %in%  names(mix_output))) {
+    # Split observations by maximum a-posteriori method (MAP) used in mixmod_em:
+    groups <- mix_output$em_results$groups
+    x_split <- split(x, groups, lex.order = T)
+    ev_split <- split(event, groups, lex.order = T)
+    id_split <- split(id, groups, lex.order = T)
+
+    # Apply johnson_method() for splitted observations:
+    john_lst <- mapply(x_split, ev_split, id_split,
+                       FUN = function(x, d, id) johnson_method(x = x, event = d, id = id),
+                       SIMPLIFY = FALSE)
+
+    # Store dataframes in one dataframe:
+    group_df <- do.call("rbind", john_lst)
+
+    # add group names using row.names() if splitted groups exist. Otherwise use
+    # title_trace:
+
+    if (length(john_lst) == 1) {
+      group_df$groups <- as.factor(title_trace)
+    } else {
+      group_df$groups <- as.factor(paste(title_trace,
+        floor(as.numeric(row.names(group_df)))))
+    }
+
+    # Preparation for plot:
+    group_df <- group_df %>%
+      dplyr::filter(status == 1) %>%
+      dplyr::rename(id_s = id, x_s = characteristic, y_s = prob)
   }
+
+  # Choice of distribution:
+  if (distribution == "weibull") {
+    q <- SPREDA::qsev(group_df$y_s)
+  } else if (distribution == "lognormal") {
+    q <- stats::qnorm(group_df$y_s)
+  } else if (distribution == "loglogistic") {
+    q <- stats::qlogis(group_df$y_s)
+  }
+  group_df$q <- q
 
   # Plot layout:
-  p <- plot_layout(x = x_s, distribution = distribution,
-                   title_main = title_main,
-                   title_x = title_x,
-                   title_y = title_y)
+  p <- plot_layout(x = group_df$x_s, distribution = distribution,
+    title_main = title_main,
+    title_x = title_x,
+    title_y = title_y)
 
   mark_x <- unlist(strsplit(title_x, " "))[1]
   mark_y <- unlist(strsplit(title_y, " "))[1]
 
-  # Choice of distribution:
-  if (distribution == "weibull") {
-    q <- SPREDA::qsev(y_s)
-  } else if (distribution == "lognormal") {
-    q <- stats::qnorm(y_s)
-  } else if (distribution == "loglogistic") {
-    q <- stats::qlogis(y_s)
-  }
-  group_df$q <- q
+  # Defining colors (max 5 subgroups):
+  cols <- c(I("#3C8DBC"), I("#FF0000"), I("#008000"), I("#ffa500"), I("#000000"))
+  cols <- cols[seq_along(unique(group_df$groups))]
 
   # Construct probability plot:
   plot <- p %>%
     plotly::add_trace(data = group_df, x = ~x_s, y = ~q, type = "scatter",
                       mode = "markers", hoverinfo = "text",
                       color = ~groups,
-                      colors = c("Subgroup 1" = I("#3C8DBC"),
-                        "Subgroup 2" = I("#FF0000"),
-                        "Subgroup 3" = I("#008000")),
-                      name = title_trace,
+                      colors = cols,
                       text = ~paste("ID:", id_s,
                                     paste("<br>", paste0(mark_x, ":")), x_s,
                                     paste("<br>", paste0(mark_y, ":")),
-                                    round(y_s, digits = 5))
-  )
+                                    round(y_s, digits = 5))) %>%
+    plotly::layout(showlegend = TRUE)
   return(plot)
 }
 
@@ -536,7 +603,7 @@ plot_prob_mix <- function(x, y, event, id = rep("XXXXXX", length(x)),
 #'                           y = df_john$prob,
 #'                           event = df_john$status,
 #'                           id = df_john$id,
-#'                           distribution = "weibull3",
+#'                           distribution = "weibull",
 #'                           title_main = "Three-Parametric Weibull",
 #'                           title_x = "Cycles",
 #'                           title_y = "Probability of Failure in %",
@@ -560,7 +627,7 @@ plot_prob_mix <- function(x, y, event, id = rep("XXXXXX", length(x)),
 #'                           y = df_john$prob,
 #'                           event = df_john$status,
 #'                           id = df_john$id,
-#'                           distribution = "lognormal3",
+#'                           distribution = "lognormal",
 #'                           title_main = "Three-Parametric Lognormal",
 #'                           title_x = "Cycles",
 #'                           title_y = "Probability of Failure in %",
@@ -590,6 +657,7 @@ plot_mod <- function(p_obj, x, y = NULL, loc_sc_params,
                             "loglogistic3"))) {
     stop("No valid distribution!")
   }
+
 
   if (is.null(y)) {
     x_min <- min(x, na.rm = TRUE)
@@ -676,7 +744,12 @@ plot_mod <- function(p_obj, x, y = NULL, loc_sc_params,
 #'
 #' This function adds one or multiple estimated regression lines to an existing
 #' probability plot (\code{\link{plot_prob_mix}}). Depending on the output of the
-#' function \code{\link{mixmod_regression}} one or multiple lines are plotted.
+#' function \code{\link{mixmod_regression}} or \code{\link{mixmod_em}} one or
+#' multiple lines are plotted.
+#'
+#' The name of the legend entry is a combination of the \code{title_trace} and the
+#' number of determined subgroups. If \code{title_trace = "Line"} and the data
+#' could be splitted in two groups, the legend entries would be "Group 1" and "Line 2".
 #'
 #' @encoding UTF-8
 #' @references Doganaksoy, N.; Hahn, G.; Meeker, W. Q., Reliability Analysis by
@@ -684,15 +757,15 @@ plot_mod <- function(p_obj, x, y = NULL, loc_sc_params,
 #'
 #' @param p_obj a plotly object provided by function \code{\link{plot_prob_mix}}.
 #' @param x a numeric vector containing the x-coordinates of the regression line.
-#' @param y a numeric vector containing the y-coordinates of the regression line.
-#'   The default value of y is \code{NULL}. If \code{y} is set \code{NULL} the
-#'   y-coordinates with respect to \code{x} are calculated by function
-#'   \code{predict_prob} using estimated coefficients in \code{reg_output}.
-#' @param reg_output a list provided by \code{\link{mixmod_regression}} which
-#'   consists of elements necessary to visualize the regression lines.
-#' @param distribution supposed distribution of the random variable. The
-#'   value can be \code{"weibull"}, \code{"lognormal"} or \code{"loglogistic"}.
-#'   Other distributions have not been implemented yet.
+#' @param event a vector of binary data (0 or 1) indicating whether unit \emph{i}
+#'   is a right censored observation (= 0) or a failure (= 1).
+#' @param mix_output a list provided by \code{\link{mixmod_regression}} or
+#'   \code{\link{mixmod_em}}, which consists of elements necessary to visualize
+#'   the regression lines.
+#' @param distribution supposed distribution of the random variable. For output
+#'   provided by \code{mixmod_em} distribution must be \code{"weibull"}. Can be
+#'   \code{"weibull"}, \code{"lognormal"} or \code{"loglogistic"} for output provided
+#'   \code{mixmod_regression}. Other distributions have not been implemented yet.
 #' @param title_trace a character string whis is assigned to the trace shown in
 #'   the legend.
 #'
@@ -711,31 +784,57 @@ plot_mod <- function(p_obj, x, y = NULL, loc_sc_params,
 #'           1, 0, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 0, 0,
 #'           1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1,
 #'           0, 1, 1, 1, 1, 1, 1)
+#' id <- 1:length(hours)
+#'
+#' # Example 1 - Using result of mixmod_em in mix_output:
+#' mix_mod_em <- mixmod_em(x = hours, event = state, distribution = "weibull",
+#'                         conf_level = 0.95, k = 2, method = "EM", n_iter = 150)
+#'
+#' plot_weibull_em <- plot_prob_mix(x = hours,
+#'                                  event = state,
+#'                                  id = id,
+#'                                  distribution = "weibull",
+#'                                  mix_output = mix_mod_em,
+#'                                  title_main = "Weibull Mixture EM",
+#'                                  title_x = "Time in Hours",
+#'                                  title_y = "Probability of Failure",
+#'                                  title_trace = "Subgroup")
+#'
+#' plot_weibull_emlines <- plot_mod_mix(p_obj = plot_weibull_em,
+#'                                    x = hours,
+#'                                    event = state,
+#'                                    mix_output = mix_mod_em,
+#'                                    distribution = "weibull",
+#'                                    title_trace = "Fitted Line")
+#'
+#' # Example 2 - Using result of mixmod_regression in mix_output:
 #' john <- johnson_method(x = hours, event = state)
+#' mix_mod_reg <- mixmod_regression(x = john$characteristic,
+#'                                  y = john$prob,
+#'                                  event = john$status,
+#'                                  distribution = "weibull")
 #'
-#' mix_mod <- mixmod_regression(x = john$characteristic,
-#'                              y = john$prob,
-#'                              event = john$status,
-#'                              distribution = "weibull")
-#'
-#' plot_weibull_mix <- plot_prob_mix(x = john$characteristic,
-#'                                   y = john$prob,
-#'                                   event = john$status,
-#'                                   id = john$id,
+#' plot_weibull_reg <- plot_prob_mix(x = hours,
+#'                                   event = state,
+#'                                   id = id,
 #'                                   distribution = "weibull",
-#'                                   reg_output = mix_mod,
-#'                                   title_main = "Mixture Weibull Analysis",
+#'                                   mix_output = mix_mod_reg,
+#'                                   title_main = "Weibull Mixture Regression",
 #'                                   title_x = "Time in Hours",
 #'                                   title_y = "Probability of Failure",
-#'                                   title_trace = "classification")
-#' plot_weibull_reg_mix <- plot_mod_mix(p_obj = plot_weibull_mix, x = hours,
-#'                              reg_output = mix_mod,
-#'                              distribution = "weibull",
-#'                              title_trace = "model")
+#'                                   title_trace = "Subgroup")
+#'
+#' plot_weibull_reglines <- plot_mod_mix(p_obj = plot_weibull_reg,
+#'                                    x = hours,
+#'                                    event = state,
+#'                                    mix_output = mix_mod_reg,
+#'                                    distribution = "weibull",
+#'                                    title_trace = "Fitted Line")
 
-plot_mod_mix <- function(p_obj, x, y = NULL, reg_output,
-                     distribution = c("weibull", "lognormal", "loglogistic"),
-                     title_trace = "Fit") {
+
+plot_mod_mix <- function(p_obj, x, event, mix_output,
+  distribution = c("weibull", "lognormal", "loglogistic"),
+  title_trace = "Fit") {
 
   distribution <- match.arg(distribution)
 
@@ -743,87 +842,137 @@ plot_mod_mix <- function(p_obj, x, y = NULL, reg_output,
     stop("No valid distribution!")
   }
 
-  subset_x <- function(x, mrr_model) {
-    subset(x, x >= mrr_model$x_range[[1]] & x <= mrr_model$x_range[[2]])
+  if (("em_results" %in%  names(mix_output)) & distribution != "weibull") {
+    stop("No valid distribution! Use weibull to visualize EM results")
   }
 
-  if (exists("mod_2", where = reg_output)) {
-    x_1 <- subset_x(x = x, mrr_model = reg_output$mod_1)
-    x_2 <- subset_x(x = x, mrr_model = reg_output$mod_2)
+  # Case where mixmod_regression() was used in mix_output!
+  if (!("em_results" %in%  names(mix_output))) {
 
-    if (exists("mod_3", where = reg_output)) {
-      x_3 <- subset_x(x = x, mrr_model = reg_output$mod_3)
+    # Defining subset function for x_ranges provided by mixmod_regression():
+    subset_x <- function(x, mod) {
+      subset(x, x >= mod$x_range[[1]] & x <= mod$x_range[[2]])
     }
-  }
 
-  plot_mod_groups <- function(p_obj, x, y. = y, loc_sc_params, color, title_trace.) {
-    if (is.null(y.)) {
-      x_min <- min(x, na.rm = TRUE)
-      x_max <- max(x, na.rm = TRUE)
-      x_low <- x_min - 10 ^ floor(log10(x_min)) * .5
+    # Defining function that calculates probabilities and store results in df.
+    compute_line <- function(x, mod, distribution) {
+      x_split <- subset_x(x = x, mod = mod)
+
+      x_min <- min(x_split, na.rm = TRUE)
+      x_max <- max(x_split, na.rm = TRUE)
+      x_low <- x_min - 10 ^ floor(log10(x_min)) * .25
       x_high <- x_max + 10 ^ floor(log10(x_max)) * .25
 
       x_p <- seq(x_low, x_high, length.out = 200)
-      y_p <- predict_prob(q = x_p, loc_sc_params = loc_sc_params,
-                          distribution = distribution)
-    } else {
-      x_p <- x
-      y_p <- y.
+      y_p <- predict_prob(q = x_p, loc_sc_params = mod$loc_sc_coefficients,
+        distribution = distribution)
+
+      # Prepare hovertexts for regression lines:
+      if (distribution == "weibull") {
+        param_1 <- round(mod$coefficients[[1]], digits = 2)
+        param_2 <- round(mod$coefficients[[2]], digits = 2)
+        label_1 <- "\u03B7:"
+        label_2 <- "\u03B2:"
+      } else {
+        param_1 <- round(mod$loc_sc_coefficients[[1]], digits = 2)
+        param_2 <- round(mod$loc_sc_coefficients[[2]], digits = 2)
+        label_1 <- "\u03BC:"
+        label_2 <- "\u03C3:"
+      }
+
+      df_p <- data.frame(x_p = x_p, y_p = y_p, par_1 = param_1, par_2 = param_2,
+        lab_1 = label_1, lab_2 = label_2)
     }
-
-    df_p <- data.frame(x_p = x_p, y_p = y_p)
-
-    x_mark <- unlist(strsplit(p_obj$x$layoutAttrs[[2]]$xaxis$title,  " "))[1]
-    y_mark <- unlist(strsplit(p_obj$x$layoutAttrs[[2]]$yaxis$title,  " "))[1]
-
-    if (distribution == "weibull") {
-      q <- SPREDA::qsev(y_p)
-      param_val <- c(round(exp(loc_sc_params[[1]]), digits = 2),
-        round(1 / loc_sc_params[[2]], digits = 2))
-      param_label <- c("\u03B7:", "\u03B2:")
-    }
-    if (distribution == "lognormal") {
-      q <- stats::qnorm(y_p)
-      param_val <- c(round(loc_sc_params[[1]], digits = 2),
-        round(loc_sc_params[[2]], digits = 2))
-      param_label <- c("\u03BC:", "\u03C3:")
-    }
-    if (distribution == "loglogistic") {
-      q <- stats::qlogis(y_p)
-      param_val <- c(round(loc_sc_params[[1]], digits = 2),
-        round(loc_sc_params[[2]], digits = 2))
-      param_label <- c("\u03BC:", "\u03C3:")
-    }
-
-    p_mod <- plotly::add_lines(p = p_obj, data = df_p, x = ~x_p, y = ~q,
-      type = "scatter", mode = "lines", hoverinfo = "text",
-      line = list(color = color), name = title_trace.,
-      text = ~paste(paste0(x_mark, ":"), round(x_p, digits = 2),
-                    paste("<br>", paste0(y_mark, ":")), round(y_p, digits = 5),
-                    "<br>", paste(param_label[1], param_val[1]),
-                    "<br>", paste(param_label[2], param_val[2])))
-
-    return(p_mod)
+    lines_split <- lapply(mix_output, compute_line, x = x,
+      distribution = distribution)
   }
 
-  if (exists("mod_2", where = reg_output)) {
-    plot <- p_obj %>% plot_mod_groups(x = x_1,
-      loc_sc_params = reg_output$mod_1$loc_sc_coefficients,
-      color = "blue", title_trace = paste(title_trace, "1", sep = " ")) %>%
-      plot_mod_groups(x = x_2, loc_sc_params = reg_output$mod_2$loc_sc_coefficients,
-        color = "#9a0808", title_trace. = paste(title_trace, "2", sep = " "))
+  # case where mixmod_regression() was used in mix_output!
+  if ("em_results" %in%  names(mix_output)) {
 
-    if (exists("mod_3", where = reg_output)) {
-      plot <- plot_mod_groups(p_obj = plot, x = x_3,
-        loc_sc_params = reg_output$mod_3$loc_sc_coefficients, color = "limegreen",
-        title_trace. = paste(title_trace, "3", sep = " "))
-    }
-  } else {
-    plot <- p_obj %>% plot_mod_groups(x = x,
-      loc_sc_params = reg_output$loc_sc_coefficients, color = "blue",
-      title_trace. = title_trace)
+    # Split observations by maximum a-posteriori method (MAP) used in mixmod_em:
+    groups <- mix_output$em_results$groups
+    x_split <- split(x, groups, lex.order = T)
+    ev_split <- split(event, groups, lex.order = T)
+
+    # Apply predict_prob() for splitted observations (which failed) and parameters.
+    lines_split <- mapply(x_split, ev_split, mix_output[-length(mix_output)],
+      FUN = function(x, d, mod) {
+        x_min <- min(x[d == 1], na.rm = TRUE)
+        x_max <- max(x[d == 1], na.rm = TRUE)
+        x_low <- x_min - 10 ^ floor(log10(x_min)) * .25
+        x_high <- x_max + 10 ^ floor(log10(x_max)) * .25
+        x_p <- seq(x_low, x_high, length.out = 200)
+
+        # Prepare hovertexts for regression lines:
+        if (distribution == "weibull") {
+          param_1 <- round(mod$coefficients[[1]], digits = 2)
+          param_2 <- round(mod$coefficients[[2]], digits = 2)
+          label_1 <- "\u03B7:"
+          label_2 <- "\u03B2:"
+        } else {
+          param_1 <- round(mod$loc_sc_coefficients[[1]], digits = 2)
+          param_2 <- round(mod$loc_sc_coefficients[[2]], digits = 2)
+          label_1 <- "\u03BC:"
+          label_2 <- "\u03C3:"
+        }
+
+        data.frame(x_p = x_p, y_p = predict_prob(q = x_p,
+          loc_sc_params = mod$loc_sc_coefficients,
+          distribution = distribution), par_1 = param_1, par_2 = param_2,
+          lab_1 = label_1, lab_2 = label_2)
+      }, SIMPLIFY = FALSE)
   }
-  return(plot)
+
+  # Bind stored dataframes in one dataframe:
+  group_df <- do.call("rbind", lines_split)
+
+  # Add group names using row.names() if splitted groups exist. Otherwise use
+  # title_trace:
+  if (length(lines_split) == 1) {
+    group_df$groups <- as.factor(title_trace)
+  }
+
+  if (!("em_results" %in%  names(mix_output)) & length(lines_split) > 1) {
+    group_df$groups <- as.factor(paste(title_trace,
+      floor(as.numeric(gsub(row.names(group_df), pattern = "mod_",
+        replacement = "")))))
+  }
+
+  if (("em_results" %in%  names(mix_output)) & length(lines_split) > 1) {
+    group_df$groups <- as.factor(paste(title_trace,
+      floor(as.numeric(row.names(group_df)))))
+  }
+
+  # Choice of distribution:
+  if (distribution == "weibull") {
+    q <- SPREDA::qsev(group_df$y_p)
+  } else if (distribution == "lognormal") {
+    q <- stats::qnorm(group_df$y_p)
+  } else if (distribution == "loglogistic") {
+    q <- stats::qlogis(group_df$y_p)
+  }
+  group_df$q <- q
+
+  # Defining colors (max 5 subgroups):
+  cols <- c(I("blue"), I("#9a0808"), I("#006400"), I("orange"), I("grey"))
+  cols <- cols[seq_along(unique(group_df$groups))]
+
+  # Add color to grouped data.frame to be in line with line colors:
+  group_df$cols <- rep(cols, each = 200)
+
+  # Get axis labels in hover:
+  x_mark <- unlist(strsplit(p_obj$x$layoutAttrs[[2]]$xaxis$title,  " "))[1]
+  y_mark <- unlist(strsplit(p_obj$x$layoutAttrs[[2]]$yaxis$title,  " "))[1]
+
+  p_mod <- p_obj %>% plotly::add_lines(data = group_df %>% dplyr::group_by(groups),
+    x = ~x_p, y = ~q, type = "scatter",
+    mode = "lines", line = list(color = ~cols), name = ~groups, hoverinfo = "text",
+    text = ~paste(paste0(x_mark, ":"), round(x_p, digits = 2),
+      paste("<br>", paste0(y_mark, ":")), round(y_p, digits = 5),
+      "<br>", paste(lab_1, par_1),
+      "<br>", paste(lab_2, par_2)))
+  return(p_mod)
 }
 
 
@@ -900,7 +1049,7 @@ plot_mod_mix <- function(p_obj, x, y = NULL, reg_output,
 #'                           y = df_john$prob,
 #'                           event = df_john$status,
 #'                           id = df_john$id,
-#'                           distribution = "weibull3",
+#'                           distribution = "weibull",
 #'                           title_main = "Three-Parametric Weibull",
 #'                           title_x = "Cycles",
 #'                           title_y = "Probability of Failure in %",
@@ -940,7 +1089,7 @@ plot_mod_mix <- function(p_obj, x, y = NULL, reg_output,
 #'                           y = df_john$prob,
 #'                           event = df_john$status,
 #'                           id = df_john$id,
-#'                           distribution = "lognormal3",
+#'                           distribution = "lognormal",
 #'                           title_main = "Three-Parametric Lognormal",
 #'                           title_x = "Cycles",
 #'                           title_y = "Probability of Failure in %",

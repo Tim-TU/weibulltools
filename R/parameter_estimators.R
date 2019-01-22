@@ -3,8 +3,8 @@
 #' This method fits an \strong{x on y} regression to a linearized
 #' two- or three-parameter cdf and is applicable for complete and (multiple) right
 #' censored data. The parameters are estimated in the frequently used (log-) location-scale
-#' parametrization. For the Weibull, estimates are transformed such that
-#' they are in line with the parametrization provided by the \emph{stats} package
+#' parameterization. For the Weibull, estimates are transformed such that
+#' they are in line with the parameterization provided by the \emph{stats} package
 #' like \code{\link{pweibull}}.
 #'
 #' When using this method, the approximated confidence intervals for the Weibull
@@ -126,7 +126,7 @@ rank_regression <- function(x, y, event,
     estimates_loc_sc <- c(stats::coef(mrr)[[1]], stats::coef(mrr)[[2]])
     names(estimates_loc_sc) <- c("mu", "sigma")
 
-    # Alternative Parametrization:
+    # Alternative Parameterization:
     estimates <- c(exp(stats::coef(mrr)[[1]]), 1 / stats::coef(mrr)[[2]])
     names(estimates) <- c("eta", "beta")
 
@@ -196,7 +196,7 @@ rank_regression <- function(x, y, event,
       estimates_loc_sc <- c(stats::coef(mrr)[[1]], stats::coef(mrr)[[2]], estimate_gamma)
       names(estimates_loc_sc) <- c("mu", "sigma", "gamma")
 
-      # Alternative Parametrization
+      # Alternative Parameterization
       estimates <- c(exp(stats::coef(mrr)[[1]]), 1 / stats::coef(mrr)[[2]], estimate_gamma)
       names(estimates) <- c("eta", "beta", "gamma")
 
@@ -269,7 +269,7 @@ rank_regression <- function(x, y, event,
       rownames(vcov_loc_sc) <- names(estimates_loc_sc)[-3]
       se <- sqrt(diag(vcov_loc_sc))
 
-      # Confidence Intervals Location-Scale-Parametrization:
+      # Confidence Intervals Location-Scale-Parameterization:
       conf_mu <- c(
         estimates_loc_sc[[1]] - stats::qt((1 + conf_level) / 2,
           df = length(x_gamma[subs]) - 2) * se[[1]] / sqrt(length(x_gamma[subs])),
@@ -330,7 +330,7 @@ rank_regression <- function(x, y, event,
     rownames(vcov_loc_sc) <- names(estimates_loc_sc)
     se <- sqrt(diag(vcov_loc_sc))
 
-    # Confidence Intervals Location-Scale-Parametrization:
+    # Confidence Intervals Location-Scale-Parameterization:
     conf_mu <- c(
       estimates_loc_sc[[1]] - stats::qt((1 + conf_level) / 2,
         df = length(x_f) - 2) * se[[1]] / sqrt(length(x_f)),
@@ -401,7 +401,7 @@ rank_regression <- function(x, y, event,
 #' # Determining threshold parameter for which the coefficient of determination is
 #' # maximized subject to the condition that the threshold parameter must be smaller
 #' # as the first failure cycle, i.e 94:
-#' threshold <- seq(0, min(cycles[state == 1]) - 0.1, length.out = 1000)
+#' threshold <- seq(0, min(cycles[state == 1]) - 0.1, length.out = 100)
 #' profile_r2 <- sapply(threshold, r_squared_profiling,
 #'                      x = df_john$characteristic[df_john$status == 1],
 #'                      y = df_john$prob[df_john$status == 1],
@@ -441,11 +441,11 @@ r_squared_profiling <- function(x, y, thres, distribution = c("weibull3", "logno
 #'
 #' This method estimates the parameters and calculates normal approximation confidence
 #' intervals for a two- or three-parametric lifetime distribution in the frequently used
-#' (log-) location-scale parametrization. \code{ml_estimation} uses the
+#' (log-) location-scale parameterization. \code{ml_estimation} uses the
 #' \code{\link{Lifedata.MLE}} function which is defined in the
 #' \emph{SPREDA} package.
 #' For the Weibull the estimates are transformed such that they are in line with
-#' the parametrization provided by the \emph{stats} package like
+#' the parameterization provided by the \emph{stats} package like
 #' \code{\link{pweibull}}. The method is applicable for complete and (multiple)
 #' right censored data.
 #'
@@ -459,6 +459,9 @@ r_squared_profiling <- function(x, y, thres, distribution = c("weibull3", "logno
 #'   cycles.
 #' @param event a vector of binary data (0 or 1) indicating whether unit \emph{i}
 #'   is a right censored observation (= 0) or a failure (= 1).
+#' @param wts optional vector of case weights. The length of \code{wts} must be the
+#'   same as the number of observations \code{x}. Default is that \code{wts} is a
+#'   vector with all components being 1 (same weights).
 #' @param distribution supposed distribution of the random variable. The
 #'   value can be \code{"weibull"}, \code{"lognormal"}, \code{"loglogistic"},
 #'   \code{"normal"}, \code{"logistic"}, \code{"sev"} \emph{(smallest extreme value)},
@@ -509,7 +512,7 @@ r_squared_profiling <- function(x, y, thres, distribution = c("weibull3", "logno
 #' mle_weib3 <- ml_estimation(x = cycles, event = state,
 #'                            distribution = "weibull3", conf_level = 0.95)
 #'
-ml_estimation <- function(x, event,
+ml_estimation <- function(x, event, wts = rep(1, length(x)),
                           distribution = c("weibull", "lognormal", "loglogistic",
                                            "normal", "logistic", "sev", "weibull3",
                                            "lognormal3", "loglogistic3"),
@@ -526,7 +529,8 @@ ml_estimation <- function(x, event,
   # Log-Location-Scale Models:
   if (distribution == "weibull" | distribution == "lognormal" | distribution == "loglogistic") {
     # ML - Estimation: Location-Scale Parameters
-    ml <- SPREDA::Lifedata.MLE(survival::Surv(x, event) ~ 1, dist = distribution)
+    ml <- SPREDA::Lifedata.MLE(survival::Surv(x, event) ~ 1, dist = distribution,
+                               weights = wts)
     estimates_loc_sc <- c(SPREDA::coef.Lifedata.MLE(ml)[[1]],
       SPREDA::coef.Lifedata.MLE(ml)[[2]])
     names(estimates_loc_sc) <- c("mu", "sigma")
@@ -554,7 +558,7 @@ ml_estimation <- function(x, event,
     rownames(conf_ints_loc_sc) <- names(estimates_loc_sc)
 
     if (distribution == "weibull") {
-      # Alternative Parametrization, only for Weibull:
+      # Alternative Parameterization, only for Weibull:
       estimates <- c(exp(estimates_loc_sc[[1]]), 1 / estimates_loc_sc[[2]])
       names(estimates) <- c("eta", "beta")
 
@@ -617,7 +621,8 @@ ml_estimation <- function(x, event,
     subs <- x_gamma > 0
 
     ml_init <- SPREDA::Lifedata.MLE(survival::Surv(x_gamma[subs], event[subs]) ~ 1,
-                                    dist = substr(distribution, start = 1, stop = nchar(distribution) - 1))
+                                    dist = substr(distribution, start = 1, stop = nchar(distribution) - 1),
+                                    weights = wts)
 
     ## Initial parameters:
     estimates_init <- c(SPREDA::coef.Lifedata.MLE(ml_init)[[1]],
@@ -627,7 +632,7 @@ ml_estimation <- function(x, event,
     ml <- stats::optim(par = c(estimates_init[[1]], estimates_init[[2]],
       estimates_init[[3]]), fn = loglik_function, method = "L-BFGS-B",
       lower = c(0, 0, 0), upper = c(Inf, Inf, (1 - (1 / 1e+5)) * min(x[event == 1])),
-      control = list(fnscale = -1), x = x, event = event,
+      control = list(fnscale = -1), x = x, event = event, wts = wts,
       distribution = distribution, hessian = TRUE)
 
     ## Estimated parameters:
@@ -661,7 +666,7 @@ ml_estimation <- function(x, event,
     rownames(conf_ints_loc_sc) <- names(estimates_loc_sc)
 
     if (distribution == "weibull3") {
-      # Alternative Parametrization, only for Weibull:
+      # Alternative Parameterization, only for Weibull:
       estimates <- c(exp(estimates_loc_sc[[1]]), 1 / estimates_loc_sc[[2]],
                      estimates_loc_sc[[3]])
       names(estimates) <- c("eta", "beta", "gamma")
@@ -719,7 +724,8 @@ ml_estimation <- function(x, event,
       distr = distribution
     }
     ## Initial estimation step:
-    ml_init <- survival::survreg(survival::Surv(x, event) ~ 1, dist = distr)
+    ml_init <- survival::survreg(survival::Surv(x, event) ~ 1, dist = distr,
+                                 weights = wts)
 
     ## Initial parameters:
     estimates_init <- c(stats::coef(ml_init)[[1]], ml_init$scale)
@@ -727,7 +733,7 @@ ml_estimation <- function(x, event,
     ## Optimization of log-likelihood function:
     ml <- stats::optim(par = c(estimates_init[[1]], estimates_init[[2]]),
                        fn = loglik_function, method = "BFGS",
-                       control = list(fnscale = -1), x = x, event = event,
+                       control = list(fnscale = -1), x = x, event = event, wts = wts,
                        distribution = distribution, hessian = TRUE)
 
     ## Estimated parameters:
@@ -807,7 +813,7 @@ ml_estimation <- function(x, event,
 #' # Determining threshold parameter for which the log-likelihood is maximized
 #' # subject to the condition that the threshold parameter must be smaller
 #' # as the first failure cycle, i.e 94:
-#' threshold <- seq(0, min(cycles[state == 1]) - 0.1, length.out = 1000)
+#' threshold <- seq(0, min(cycles[state == 1]) - 0.1, length.out = 100)
 #' profile_logL <- sapply(threshold, loglik_profiling,
 #'                      x = cycles,
 #'                      event = state,
@@ -856,6 +862,9 @@ loglik_profiling <- function(x, event, thres, distribution = c("weibull3",
 #'   cycles.
 #' @param event a vector of binary data (0 or 1) indicating whether unit \emph{i}
 #'   is a right censored observation (= 0) or a failure (= 1).
+#' @param wts optional vector of case weights. The length of \code{wts} must be the
+#'   same as the number of observations \code{x}. Default is that \code{wts} is a
+#'   vector with all components being 1 (same weights).
 #' @param pars a numeric vector of parameters. The first element is the location
 #'   parameter (\eqn{\mu}), the second is the scale parameter (\eqn{\sigma}) and if
 #'   a three-parametric model is used the third element is the threshold parameter
@@ -886,7 +895,7 @@ loglik_profiling <- function(x, event, thres, distribution = c("weibull3",
 #'                                 pars = c(4.54, 0.76, 92.99),
 #'                                 distribution = "weibull3")
 
-loglik_function <- function(x, event, pars,
+loglik_function <- function(x, event, wts = rep(1, length(x)), pars,
                             distribution = c("weibull", "lognormal", "loglogistic",
                                              "normal", "logistic", "sev", "weibull3",
                                              "lognormal3", "loglogistic3")) {
@@ -907,28 +916,28 @@ loglik_function <- function(x, event, pars,
   if (is.na(thres)) {
     # Log- and Location-Scale Models:
     if (distribution == "weibull") {
-      logL <- sum(log(((1 / (sig * x)) * SPREDA::dsev((log(x) - mu) / sig)) ^ d *
-                  (1 - SPREDA::psev((log(x) - mu) / sig)) ^ (1 - d)))
+      logL <- sum(wts * (log(((1 / (sig * x)) * SPREDA::dsev((log(x) - mu) / sig)) ^ d *
+                  (1 - SPREDA::psev((log(x) - mu) / sig)) ^ (1 - d))))
     }
     if (distribution == "lognormal") {
-      logL <- sum(log(((1 / (sig * x)) * stats::dnorm((log(x) - mu) / sig)) ^ d *
-                  (1 - stats::pnorm((log(x) - mu) / sig)) ^ (1 - d)))
+      logL <- sum(wts * (log(((1 / (sig * x)) * stats::dnorm((log(x) - mu) / sig)) ^ d *
+                  (1 - stats::pnorm((log(x) - mu) / sig)) ^ (1 - d))))
     }
     if (distribution == "loglogistic") {
-      logL <- sum(log(((1 / (sig * x)) * stats::dlogis((log(x) - mu) / sig)) ^ d *
-                  (1 - stats::plogis((log(x) - mu) / sig)) ^ (1 - d)))
+      logL <- sum(wts * (log(((1 / (sig * x)) * stats::dlogis((log(x) - mu) / sig)) ^ d *
+                  (1 - stats::plogis((log(x) - mu) / sig)) ^ (1 - d))))
     }
     if (distribution == "sev") {
-      logL <- sum(log(((1 / sig) * SPREDA::dsev((x - mu) / sig)) ^ d *
-                  (1 - SPREDA::psev((x - mu) / sig)) ^ (1 - d)))
+      logL <- sum(wts * (log(((1 / sig) * SPREDA::dsev((x - mu) / sig)) ^ d *
+                  (1 - SPREDA::psev((x - mu) / sig)) ^ (1 - d))))
     }
     if (distribution == "normal") {
-      logL <- sum(log(((1 / sig) * stats::dnorm((x - mu) / sig)) ^ d *
-                  (1 - stats::pnorm((x - mu) / sig)) ^ (1 - d)))
+      logL <- sum(wts * (log(((1 / sig) * stats::dnorm((x - mu) / sig)) ^ d *
+                  (1 - stats::pnorm((x - mu) / sig)) ^ (1 - d))))
     }
     if (distribution == "logistic") {
-      logL <- sum(log(((1 / sig) * stats::dlogis((x - mu) / sig)) ^ d *
-                  (1 - stats::plogis((x - mu) / sig)) ^ (1 - d)))
+      logL <- sum(wts * (log(((1 / sig) * stats::dlogis((x - mu) / sig)) ^ d *
+                  (1 - stats::plogis((x - mu) / sig)) ^ (1 - d))))
     }
   } else {
     # Log-Location-Scale Models with threshold parameter:
@@ -937,18 +946,19 @@ loglik_function <- function(x, event, pars,
     subs <- (x - thres) > 0
     xs <- x[subs]
     d <- d[subs]
+    wts <- wts[subs]
 
     if (distribution == "weibull3") {
-      logL <- sum(log(((1 / (sig * (xs - thres))) * SPREDA::dsev((log(xs - thres) - mu) / sig)) ^ d *
-                  (1 - SPREDA::psev((log(xs - thres) - mu) / sig)) ^ (1 - d)))
+      logL <- sum(wts * (log(((1 / (sig * (xs - thres))) * SPREDA::dsev((log(xs - thres) - mu) / sig)) ^ d *
+                  (1 - SPREDA::psev((log(xs - thres) - mu) / sig)) ^ (1 - d))))
     }
     if (distribution == "lognormal3") {
-      logL <- sum(log(((1 / (sig * (xs - thres))) * stats::dnorm((log(xs - thres) - mu) / sig)) ^ d *
-                  (1 - stats::pnorm((log(xs - thres) - mu) / sig)) ^ (1 - d)))
+      logL <- sum(wts * (log(((1 / (sig * (xs - thres))) * stats::dnorm((log(xs - thres) - mu) / sig)) ^ d *
+                  (1 - stats::pnorm((log(xs - thres) - mu) / sig)) ^ (1 - d))))
     }
     if (distribution == "loglogistic3") {
-      logL <- sum(log(((1 / (sig * (xs - thres))) * stats::dlogis((log(xs - thres) - mu) / sig)) ^ d *
-                  (1 - stats::plogis((log(xs - thres) - mu) / sig)) ^ (1 - d)))
+      logL <- sum(wts * (log(((1 / (sig * (xs - thres))) * stats::dlogis((log(xs - thres) - mu) / sig)) ^ d *
+                  (1 - stats::plogis((log(xs - thres) - mu) / sig)) ^ (1 - d))))
     }
   }
   logL

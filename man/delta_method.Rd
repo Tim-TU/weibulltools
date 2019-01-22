@@ -11,8 +11,9 @@ delta_method(p, loc_sc_params, loc_sc_varcov, distribution = c("weibull",
 }
 \arguments{
 \item{p}{a numeric value of a probability or a quantile. If the standard error
-of probability is of interest a specific quantile needs to be supplied
-and vice versa.}
+of quantile is of interest a specific probability needs to be supplied and if
+the standard error of a standardized quantile (z-value) should be calculated
+a specific quantile should be provided.}
 
 \item{loc_sc_params}{a (named) numeric vector of estimated
 (by Maximum Likelihood) location and scale parameters for a specified
@@ -37,18 +38,22 @@ value can be \code{"weibull"}, \code{"lognormal"}, \code{"loglogistic"},
 Other distributions have not been implemented yet.}
 
 \item{direction}{a character string specifying the direction of the computed
-standard errors. Must be either "y" (failure probability) or "x"
-(quantile). If \code{p} is a quantile then \emph{direction} needs to be "y"
-and vice versa.}
+standard errors. Must be either "y" (used for confidence intervals of failure
+probabilities in \code{\link{confint_fisher}}) or "x" (used for confidence
+intervals of quantiles in \code{\link{confint_fisher}}). If \code{p} is a
+quantile then \emph{direction} needs to be "y" and vice versa.}
 }
 \value{
-A numeric value with estimated standard error of failure probability
-  or quantiles.
+A numeric value with estimated standard errors of quantiles or standardized
+  z values. Both are required for the computation of normal approximation
+  confidence intervals. If standard errors of standardized z values are compueted
+  one can calculate confidence intervals for distribution probabilities (z-procedure,
+  which is used inside \code{\link{confint_fisher}}).
 }
 \description{
 The Delta Method estimates the standard error for quantities that can be
-written as non-linear functions of ML estimators like failure probabilities or
-quantiles. I.e. the location-scale (and threshold) parameters and variance-covariance matrix
+written as non-linear functions of ML estimators like quantiles. I.e. the
+(log-)location-scale (and threshold) parameters and variance-covariance matrix
 of these need to be estimated by Maximum Likelihood.
 }
 \examples{

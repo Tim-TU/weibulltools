@@ -5,9 +5,10 @@
 \alias{ml_estimation}
 \title{ML Estimation for Parametric Lifetime Distributions}
 \usage{
-ml_estimation(x, event, distribution = c("weibull", "lognormal",
-  "loglogistic", "normal", "logistic", "sev", "weibull3", "lognormal3",
-  "loglogistic3"), conf_level = 0.95, details = TRUE)
+ml_estimation(x, event, wts = rep(1, length(x)),
+  distribution = c("weibull", "lognormal", "loglogistic", "normal",
+  "logistic", "sev", "weibull3", "lognormal3", "loglogistic3"),
+  conf_level = 0.95, details = TRUE)
 }
 \arguments{
 \item{x}{a numeric vector which consists of lifetime data. Lifetime
@@ -17,6 +18,10 @@ cycles.}
 
 \item{event}{a vector of binary data (0 or 1) indicating whether unit \emph{i}
 is a right censored observation (= 0) or a failure (= 1).}
+
+\item{wts}{optional vector of case weights. The length of \code{wts} must be the
+same as the number of observations \code{x}. Default is that \code{wts} is a
+vector with all components being 1 (same weights).}
 
 \item{distribution}{supposed distribution of the random variable. The
 value can be \code{"weibull"}, \code{"lognormal"}, \code{"loglogistic"},
@@ -51,11 +56,11 @@ Returns a list with the following components (depending on
 \description{
 This method estimates the parameters and calculates normal approximation confidence
 intervals for a two- or three-parametric lifetime distribution in the frequently used
-(log-) location-scale parametrization. \code{ml_estimation} uses the
+(log-) location-scale parameterization. \code{ml_estimation} uses the
 \code{\link{Lifedata.MLE}} function which is defined in the
 \emph{SPREDA} package.
 For the Weibull the estimates are transformed such that they are in line with
-the parametrization provided by the \emph{stats} package like
+the parameterization provided by the \emph{stats} package like
 \code{\link{pweibull}}. The method is applicable for complete and (multiple)
 right censored data.
 }

@@ -56,7 +56,7 @@ A data frame containing the lifetime characteristic, the
 \description{
 This method computes normal-approximation confidence intervals for quantiles
 and/or failure probabilities using the \code{\link{delta_method}}. The
-required location-scale (and threshold) parameters and variance-covariance matrix
+required (log-)location-scale (and threshold) parameters and variance-covariance matrix
 of these need to be estimated by Maximum Likelihood.
 }
 \examples{
