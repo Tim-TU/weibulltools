@@ -5,7 +5,7 @@
 using namespace Rcpp;
 
 // [[Rcpp::export]]
-double getLambda(NumericVector x, NumericVector weights, NumericVector status,
+double getLambda(NumericVector& x, NumericVector& weights, NumericVector& status,
                  double beta) {
 
   NumericVector xBeta = pow(x, beta) * weights;
@@ -20,8 +20,8 @@ double getLambda(NumericVector x, NumericVector weights, NumericVector status,
 double g(NumericVector& x,NumericVector& weights, NumericVector& status,
          double beta) {
 
-  NumericVector failures = x[status ==1];
-  NumericVector failuresWeights = weights[status ==1];
+  NumericVector failures = x[status == 1];
+  NumericVector failuresWeights = weights[status == 1];
 
   double m = sum(failuresWeights);
   NumericVector logFailures = log(failures);
@@ -38,11 +38,9 @@ double g(NumericVector& x,NumericVector& weights, NumericVector& status,
 // [[Rcpp::export]]
 double gDiv(NumericVector& x, NumericVector& weights, double beta) {
 
-  // double n = x.length();
-
   NumericVector l = log(x);
   NumericVector l2 = pow(l, 2);
-  NumericVector xBeta =pow(x, beta);
+  NumericVector xBeta = pow(x, beta);
   xBeta = xBeta * weights;
 
   NumericVector xBetaLog = xBeta * l;
@@ -51,7 +49,7 @@ double gDiv(NumericVector& x, NumericVector& weights, double beta) {
   double v = sum(xBeta);
   double s = sum(xBetaLog2);
 
-  return (-1.0 / (beta * beta)) + (w * w)/(v * v) - (s / v);
+  return (-1.0 / (beta * beta)) + (w * w) / (v * v) - (s / v);
 }
 
 // [[Rcpp::export]]
@@ -84,8 +82,8 @@ NumericMatrix MStepWeibull(NumericVector& x, NumericMatrix& posterior,
     double beta_i = NewtonRaphson(x, p_i, status);
     double lambda_i = getLambda(x, p_i, status, beta_i);
 
-    parameter(0,i) = lambda_i;
-    parameter(1,i) = beta_i;
+    parameter(0, i) = lambda_i;
+    parameter(1, i) = beta_i;
   }
   return parameter;
 }
@@ -101,22 +99,23 @@ double weibullDensity(double x, double beta, double lambda, double censored) {
   if (censored < 1.0) {
     return exp(-t);
   }
-  return (beta/lambda) * s * exp(-t);
+  return (beta / lambda) * s * exp(-t);
 }
 
 // [[Rcpp::export]]
-NumericMatrix LikelihoodWeibull(NumericVector& x, NumericMatrix& parameter,
-                                NumericVector& status, NumericVector& prior) {
+void LikelihoodWeibull(NumericVector& x, NumericMatrix& parameter,
+                       NumericVector& status, NumericVector& prior,
+                       NumericMatrix& P,NumericMatrix& logL) {
 
   int nMixures = parameter.ncol();
-  NumericMatrix P(x.length(),nMixures);
 
   for (int i = 0; i < x.length(); i++) {
     for (int j = 0; j < nMixures; j++) {
-      P(i,j) = weibullDensity(x(i), parameter(1,j), parameter(0,j), status(i)) * prior(j);
+      double p = weibullDensity(x(i), parameter(0, j), parameter(1, j), status(i));
+      logL(i, j) = log(p);
+      P(i, j) = p * prior(j);
     }
   }
-  return P;
 }
 
 // [[Rcpp::export]]
@@ -126,6 +125,14 @@ void normalize(NumericMatrix& M) {
   for (int i = 0; i < M.rows(); ++i) {
     M(i,_) = M(i,_) / norm[i];
   }
+}
+
+// [[Rcpp::export]]
+double logLikelihood(arma::mat& posterior, arma::mat& logDensity, arma::vec& prior){
+  double Q = arma::accu(posterior % logDensity);
+  double r = arma::accu(posterior * prior);
+
+  return Q + r;
 }
 
 //' EM-Algorithm using Newton-Raphson method
@@ -189,43 +196,73 @@ void normalize(NumericMatrix& M) {
 //'                                  n_iter = 150)
 //'
 // [[Rcpp::export]]
-List mixture_em_cpp(NumericVector &x, NumericVector &event, NumericMatrix post,
+List mixture_em_cpp(NumericVector& x, NumericVector& event, NumericMatrix post,
   String distribution = "weibull", int k = 2, String method = "EM",  int n_iter = 100,
-  double conv_limit = 1e-6){
+  double conv_limit = 1e-6) {
 
 
   int n = x.length();
 
-  NumericMatrix posterior = post;
-  NumericMatrix P(n, k); // Likelihood P_ij of the data i belonging to sub-population j
+  NumericMatrix posterior = clone(post);
+  NumericMatrix logL(n, k); // Likelihood P_ij of the data i belonging to sub-population j
 
   NumericVector prior(k, 1.0);   // Mixing weight (relevance of cluster)
   prior = prior / k;
 
   NumericMatrix parameter(2, k);
 
-  for(int iter = 0; iter < n_iter; ++iter){
+  // double logLikelihood_old = -std::numeric_limits<double>::infinity();
+  double logLikelihood_old = 0;
+
+  for (int iter = 0; iter < n_iter; ++iter) {
 
     //######## M-Step ###########
-    if(method == "EM"){
+    if(method == "EM") {
       parameter = MStepWeibull(x, posterior, event);
     }
 
+    Rcout << parameter << std::endl;
+    Rcout << posterior << std::endl;
+    Rcout << prior << std::endl;
+    Rcout << logLikelihood_old << std::endl;
+
 
     //######## E-Step ###########
+    arma::mat posterior_old = as<arma::mat>(posterior);
 
-    P = LikelihoodWeibull(x, parameter, event, prior);
-    normalize(P);
-    posterior = P;
-    prior = colMeans(P);
+    LikelihoodWeibull(x, parameter, event, prior, posterior, logL);
 
-    // Complete Log-Likelihood
+    normalize(posterior);
 
-  }
+    prior = colMeans(posterior);
+
+    arma::mat logDensity = as<arma::mat>(logL);
+
+    NumericVector logPrior = log(prior);
+    arma::vec logPrio = as<arma::vec>(logPrior);
+
+    double logLikelihood_new = logLikelihood(posterior_old, logDensity, logPrio);
+
+    double convCrit = abs(logLikelihood_new - logLikelihood_old) / (abs(logLikelihood_old) + .001 * conv_limit);
+
+    if (convCrit < conv_limit) {
+      Rcout << "For given convergence limit, the algorithm is converged."<< std::endl;
+      logLikelihood_old = logLikelihood_new;
+      break;
+    }
+
+    if (iter == n_iter - 1) {
+      Rcout << "Maximum number of iterations was reached."<< std::endl;
+    }
+
+    logLikelihood_old = logLikelihood_new;
+    }
+
  // return parameter;
   return List::create(
     _["coefficients"]  = parameter,
     _["posteriori"]  = posterior,
-    _["priori"] = prior
+    _["priori"] = prior,
+    _["logL"] = logLikelihood_old
   );
 }
