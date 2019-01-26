@@ -662,7 +662,7 @@ plot_mod <- function(p_obj, x, y = NULL, loc_sc_params,
   if (is.null(y)) {
     x_min <- min(x, na.rm = TRUE)
     x_max <- max(x, na.rm = TRUE)
-    x_low <- x_min - 10 ^ floor(log10(x_min)) * .5
+    x_low <- x_min - 10 ^ floor(log10(x_min)) * .25
     x_high <- x_max + 10 ^ floor(log10(x_max)) * .25
 
     x_p <- seq(x_low, x_high, length.out = 200)
@@ -749,7 +749,7 @@ plot_mod <- function(p_obj, x, y = NULL, loc_sc_params,
 #'
 #' The name of the legend entry is a combination of the \code{title_trace} and the
 #' number of determined subgroups. If \code{title_trace = "Line"} and the data
-#' could be splitted in two groups, the legend entries would be "Group 1" and "Line 2".
+#' could be splitted in two groups, the legend entries would be "Line 1" and "Line 2".
 #'
 #' @encoding UTF-8
 #' @references Doganaksoy, N.; Hahn, G.; Meeker, W. Q., Reliability Analysis by
@@ -1287,7 +1287,8 @@ plot_pop <- function(p_obj, x, params,
     text = ~paste(paste0(x_mark, ":"), round(x_s, digits = 2),
       paste("<br>", paste0(y_mark, ":")), round(y_s, digits = 5),
       "<br>", paste(param_label[1], param_val[1]),
-      "<br>", paste(param_label[2], param_val[2])))
+      "<br>", paste(param_label[2], param_val[2]))) %>%
+    plotly::layout(showlegend = TRUE)
 
   return(p_pop)
 }

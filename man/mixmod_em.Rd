@@ -7,7 +7,7 @@
 \usage{
 mixmod_em(x, event, post = NULL, distribution = "weibull",
   conf_level = 0.95, k = 2, method = "EM", n_iter = 100L,
-  conv_limit = 1e-06)
+  conv_limit = 1e-06, diff_loglik = 0.5)
 }
 \arguments{
 \item{x}{a numeric vector which consists of lifetime data. Lifetime
@@ -36,9 +36,13 @@ of every component \code{k}. The default value is \code{conf_level = 0.95}.}
 \item{method}{default method is \code{"EM"}. Other methods have not been implemented
 yet.}
 
-\item{n_iter}{numeric value defining the maximum number of iterations.}
+\item{n_iter}{integer defining the maximum number of iterations.}
 
 \item{conv_limit}{numeric value defining the convergence limit.}
+
+\item{diff_loglik}{numeric value defining the maximum difference between
+log-likelihood values, which seems permissible. The default value is \code{0.5}.
+See \strong{Details} for the usage of this argument.}
 }
 \value{
 Returns a list where the length of the list depends on the number of
@@ -48,8 +52,8 @@ Returns a list where the length of the list depends on the number of
    probabilities. The last list summarizes further results of the EM-Algorithm and
    is therefore called \code{em_results}. It contains the following elements:
   \itemize{
-  \item \code{a_priori} : Estimated a-priori probabilities.
-  \item \code{a_posteriori} : Estimated a-posteriori probabilities.
+  \item \code{a_priori} : A vector with estimated a-priori probabilities.
+  \item \code{a_posteriori} : A matrix with estimated a-posteriori probabilities.
   \item \code{groups} : Numeric vector specifying the group membership of every
     observation.
   \item \code{logL} : The value of the complete log-likelihood.
@@ -61,6 +65,24 @@ This method uses the EM-Algorithm to estimate the parameters of a univariate
 mixture model. Until now, the mixture model can consist of k two-parametric
 Weibull distributions. If no mixture of k components can be estimated,
 the function is forced to stop and a message with instructions is given.
+}
+\details{
+In \code{mixmod_em} the function \code{\link{mixture_em_cpp}} is called. The
+computed posterior probabilities are then used as weights inside function
+\code{\link{ml_estimation}} to model a weighted log-likelihood. This strategy
+enables the computation of confidence intervals for the parameters of the
+separated sub-distributions, since \code{ml_estimation} provides a variance-covariance
+matrix. Using this strategy, a potential problem that can occur is,
+that the value of the complete log-likelihood, computed by \code{mixture_em_cpp},
+differs considerably from the complete log-likelihood after re-estimating
+parameters with \code{ml_estimation}. If so, the estimated quantities like
+prior and posterior probabilities, as well as the model parameters are not
+reliable anymore and the function is forced to stop with the message:
+"Parameter estimation was not successful!"
+But if the log-likelihood values are close to each other, the presence of the
+mixture is strengthened and a reasonable fit is provided.
+Thus, a check of the absolute differences in the log-likelihood values is made
+and the critical difference has to be specified in argument \code{diff_loglik}.
 }
 \examples{
 # Data is taken from given reference of Doganaksoy, Hahn and Meeker:

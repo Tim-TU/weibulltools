@@ -10,4 +10,5 @@
 NULL
 
 utils::globalVariables(c('time', 'status', 'failure', 'survivor', 'n_i', 'n_out',
-                         'n_in', 'group', 'estimates', 'lam_nel', 'H_nel'))
+                         'n_in', 'group', 'estimates', 'lam_nel', 'H_nel',
+                          'characteristic', 'prob'))

@@ -212,7 +212,7 @@ weibull_plot
 ```{r ML all distributions, message = FALSE}
 # Using all models which are provided in ml_estimation: 
 ml_list <- lapply(dists, ml_estimation, x = df_shock$characteristic, 
-                  event = df_shock$status,  wts = rep(1, nrow(shock)))
+                  event = df_shock$status)
 
 loglik_vec <- sapply(ml_list, "[[", "logL")
 names(loglik_vec) <- dists

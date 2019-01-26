@@ -459,14 +459,14 @@ r_squared_profiling <- function(x, y, thres, distribution = c("weibull3", "logno
 #'   cycles.
 #' @param event a vector of binary data (0 or 1) indicating whether unit \emph{i}
 #'   is a right censored observation (= 0) or a failure (= 1).
-#' @param wts optional vector of case weights. The length of \code{wts} must be the
-#'   same as the number of observations \code{x}. Default is that \code{wts} is a
-#'   vector with all components being 1 (same weights).
 #' @param distribution supposed distribution of the random variable. The
 #'   value can be \code{"weibull"}, \code{"lognormal"}, \code{"loglogistic"},
 #'   \code{"normal"}, \code{"logistic"}, \code{"sev"} \emph{(smallest extreme value)},
 #'   \code{"weibull3"}, \code{"lognormal3"} or \code{"loglogistic3"}.
 #'   Other distributions have not been implemented yet.
+#' @param wts optional vector of case weights. The length of \code{wts} must be the
+#'   same as the number of observations \code{x}. Default is that \code{wts} is a
+#'   vector with all components being 1 (same weights).
 #' @param conf_level confidence level of the interval. The default value is
 #'   \code{conf_level = 0.95}.
 #' @param details a logical variable, where the default value is \code{TRUE}.
@@ -512,10 +512,11 @@ r_squared_profiling <- function(x, y, thres, distribution = c("weibull3", "logno
 #' mle_weib3 <- ml_estimation(x = cycles, event = state,
 #'                            distribution = "weibull3", conf_level = 0.95)
 #'
-ml_estimation <- function(x, event, wts = rep(1, length(x)),
+ml_estimation <- function(x, event,
                           distribution = c("weibull", "lognormal", "loglogistic",
                                            "normal", "logistic", "sev", "weibull3",
                                            "lognormal3", "loglogistic3"),
+                          wts = rep(1, length(x)),
                           conf_level = .95, details = TRUE) {
 
   distribution <- match.arg(distribution)

@@ -3,43 +3,75 @@ title: "CRAN comments"
 output: html_document
 ---
 
-# Announcement of a new package version v0.6.0 (2019-01-25, lines 6 - 39)
-* I've added new features described in NEWS.md file. 
+# This is a resubmission for version v1.0.0 (2019-01-26, lines 6 - 68)
+* I've fixed the errors thrown in CRANS pre-test and checked for no errors in 
+  R-devel using win-builder for Windows and r-hub builder for Debian.
 
-# Test environments
+## Package Size 
+* Provided vignettes, where package _plotly_ was used to create interactive visualizsations 
+  increased the package size. But tarball is less than 5Mb (exactly 4.06Mb). 
+
+## Test environments
 
 * local windows install, 
-    R version 3.5.1, 
+    R version 3.5.2, 
     Platform: x86_64-w64-mingw32/x64 (64-bit)
     
 * win-builder, 
-    R Under development (unstable) (2018-07-23 r75001)
+    using R version 3.5.2 (2018-12-20) 
     Platform: x86_64-w64-mingw32 (64-bit)
-
+    
+    R Under development (unstable) (2019-01-25 r76015)
+    Platform: x86_64-w64-mingw32 (64-bit)
+    
 * Ubuntu Linux 16.04 LTS, R-release, GCC (via r-hub builder), 
     R version 3.4.4, 
     Platform: x86_64-pc-linux-gnu (64-bit)
     
 * Ubuntu Linux 16.04 LTS, R-devel, GCC (via r-hub builder)
-    R Under development (unstable) (2018-07-21 r74997), 
+    R Under development (unstable) (2019-01-18 r75994), 
     Platform: x86_64-pc-linux-gnu (64-bit) 
     
 * Debian Linux, R-release, GCC (via r-hub builder)
-    R version 3.5.1, 
+    R version 3.5.2, 
     Platform: x86_64-pc-linux-gnu (64-bit)
     
 * Debian Linux, R-devel, GCC (via r-hub builder)
-    R Under development (unstable) (2018-07-21 r74997), 
+    R Under development (unstable) (2019-01-18 r75994), 
     Platform: x86_64-pc-linux-gnu (64-bit)
     
-* macOS 10.11 El Capitan, R-release (experimental), (via r-hub builder)
-    R version 3.5.0, 
-    Platform: x86_64-apple-darwin15.6.0 (64-bit) 
-    
-* Windows Server 2008 R2 SP1, R-devel and R-release, 32/64 bit (via r-hub builder)
+* Windows Server 2008 R2 SP1, R-release and R-devel, 32/64 bit (via r-hub builder)
 
+## R CMD check results
 
-# This is a resubmission (2018-07-25, lines 42 - 98)
+There were no ERRORs or WARNINGs for 
+local windows install, Windows Server 2008 R2 SP1, win_builder, 
+Ubuntu Linux 16.04 LTS and Debian Linux
+
+There was 1 NOTE:
+
+* checking installed package size ... NOTE
+  installed size is 13.8Mb 
+  sub-directories of 1Mb or more: 
+    doc   11.9Mb
+    libs  1.6Mb
+ 
+ Package size increased by vignettes using interactive visualizations. 
+ But the tarbull is less than 5Mb (exactly 4.06Mb)
+
+There was an additional NOTE for win-builder: 
+* checking CRAN incoming feasibility ... NOTE
+
+Maintainer: 'Hensel Tim-Gunnar <tim-gunnar.hensel@tu-berlin.de>
+
+Possibly mis-spelled words in DESCRIPTION:
+  plotly (32:37)
+  
+<br><br><br><br>  
+
+[//]: # (Everything below this comment was for submission of v0.5.4)  
+# In the following the old CRAN comments are presented! 
+# This is a resubmission (2018-07-25, lines 73 - 130)
 * I've omitted redundancy in the Description of the DESCRIPTION file  
 * I've added a more detailed description and references for the methods in the 
   DESCRIPTION file

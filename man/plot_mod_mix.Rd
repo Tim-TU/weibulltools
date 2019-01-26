@@ -42,7 +42,7 @@ multiple lines are plotted.
 \details{
 The name of the legend entry is a combination of the \code{title_trace} and the
 number of determined subgroups. If \code{title_trace = "Line"} and the data
-could be splitted in two groups, the legend entries would be "Group 1" and "Line 2".
+could be splitted in two groups, the legend entries would be "Line 1" and "Line 2".
 }
 \examples{
 # Data is taken from given reference:

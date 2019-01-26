@@ -196,6 +196,23 @@ mixmod_regression <- function(x, y, event,
 #' Weibull distributions. If no mixture of k components can be estimated,
 #' the function is forced to stop and a message with instructions is given.
 #'
+#' In \code{mixmod_em} the function \code{\link{mixture_em_cpp}} is called. The
+#' computed posterior probabilities are then used as weights inside function
+#' \code{\link{ml_estimation}} to model a weighted log-likelihood. This strategy
+#' enables the computation of confidence intervals for the parameters of the
+#' separated sub-distributions, since \code{ml_estimation} provides a variance-covariance
+#' matrix. Using this strategy, a potential problem that can occur is,
+#' that the value of the complete log-likelihood, computed by \code{mixture_em_cpp},
+#' differs considerably from the complete log-likelihood after re-estimating
+#' parameters with \code{ml_estimation}. If so, the estimated quantities like
+#' prior and posterior probabilities, as well as the model parameters are not
+#' reliable anymore and the function is forced to stop with the message:
+#' "Parameter estimation was not successful!"
+#' But if the log-likelihood values are close to each other, the presence of the
+#' mixture is strengthened and a reasonable fit is provided.
+#' Thus, a check of the absolute differences in the log-likelihood values is made
+#' and the critical difference has to be specified in argument \code{diff_loglik}.
+#'
 #' @encoding UTF-8
 #' @references
 #'   \itemize{
@@ -223,8 +240,11 @@ mixmod_regression <- function(x, y, event,
 #' @param k integer of mixture components, default is 2.
 #' @param method default method is \code{"EM"}. Other methods have not been implemented
 #'   yet.
-#' @param n_iter numeric value defining the maximum number of iterations.
+#' @param n_iter integer defining the maximum number of iterations.
 #' @param conv_limit numeric value defining the convergence limit.
+#' @param diff_loglik numeric value defining the maximum difference between
+#'   log-likelihood values, which seems permissible. The default value is \code{0.5}.
+#'   See \strong{Details} for the usage of this argument.
 #'
 #' @return Returns a list where the length of the list depends on the number of
 #'    k subgroups. The first \code{k} lists have the same information as provided by
@@ -233,8 +253,8 @@ mixmod_regression <- function(x, y, event,
 #'    probabilities. The last list summarizes further results of the EM-Algorithm and
 #'    is therefore called \code{em_results}. It contains the following elements:
 #'   \itemize{
-#'   \item \code{a_priori} : Estimated a-priori probabilities.
-#'   \item \code{a_posteriori} : Estimated a-posteriori probabilities.
+#'   \item \code{a_priori} : A vector with estimated a-priori probabilities.
+#'   \item \code{a_posteriori} : A matrix with estimated a-posteriori probabilities.
 #'   \item \code{groups} : Numeric vector specifying the group membership of every
 #'     observation.
 #'   \item \code{logL} : The value of the complete log-likelihood.
@@ -264,7 +284,7 @@ mixmod_regression <- function(x, y, event,
 #'
 mixmod_em <- function(x, event, post = NULL, distribution = "weibull",
                       conf_level = .95, k = 2, method = "EM", n_iter = 100L,
-                      conv_limit = 1e-6) {
+                      conv_limit = 1e-6, diff_loglik = 0.5) {
 
   distribution <- match.arg(distribution)
   method <- match.arg(method)
@@ -306,13 +326,13 @@ mixmod_em <- function(x, event, post = NULL, distribution = "weibull",
 
   # Check whether log-likelihood from mixture_em_cpp() and complete log-likelihood
   # after recalculating parameters with ml_estimation() are close to each other.
-  # If so, appearance of a mixture is strengthen and a good fit is possible.
+  # If so, appearance of a mixture is strengthened and a good fit is reliable.
   # Otherwise, stop() function should be called, since posterioris and prioris are
   # not valid anymore!!!!
 
-  #  if (abs(logL_complete - mix_est$loglik) > 1e-4) {
-  #   stop("Parameter estimation was not successfull!")
-  # }
+   if (abs(logL_complete - mix_est$logL) > diff_loglik) {
+    stop("Parameter estimation was not successful!")
+  }
 
   # separate observations using maximum a-posteriori method (MAP):
   split_obs <- apply(mix_est$posteriori, 1, which.max)

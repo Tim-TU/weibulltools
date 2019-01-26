@@ -1,6 +1,6 @@
 ---
 title: "NEWS"
-subtitle: "Release of weibulltools v0.6.0"
+subtitle: "Release of weibulltools v1.0.0"
 output: html_document
 ---
 
@@ -10,9 +10,12 @@ output: html_document
 
 #### New Features: 
 * Vignettes for non-parametric probability estimation, parameter estimation using 
-  Median-Rank Regression and Maximum-Likelihood, the computation of Beta-Binomial 
-  confidence bounds and Fisher's confidence bounds and mixture model estimation 
+  Median-Rank Regression and Maximum-Likelihood and mixture model estimation 
   are provided. 
+* Argument _y_ in functions plot_prob_mix() and plot_mod_mix() is deprecated and 
+  not used anymore. 
+* Argument *reg_output* in functions plot_prob_mix() and plot_mod_mix() is 
+  deprecated; use *mix_output* instead. 
 * Function plot_mod_mix() was revised and updated in the way that the obtained 
   results of the function mixmod_em() can be visualized. 
 * Function plot_prob_mix() was revised and updated in the way that the obtained 
@@ -41,3 +44,4 @@ output: html_document
   "sev", "normal" and "logistic". The function is also used to estimate the 
   variance-covariance matrix of log-location-scale models with a threshold 
   parameter, i.e. "weibull3", "lognormal3" and "loglogistic3".
+* new argument in function ml_estimation(): _wts_ for case weights. 

@@ -7,14 +7,14 @@
 using namespace Rcpp;
 
 // getLambda
-double getLambda(NumericVector x, NumericVector weights, NumericVector status, double beta);
+double getLambda(NumericVector& x, NumericVector& weights, NumericVector& status, double beta);
 RcppExport SEXP _weibulltools_getLambda(SEXP xSEXP, SEXP weightsSEXP, SEXP statusSEXP, SEXP betaSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< NumericVector >::type x(xSEXP);
-    Rcpp::traits::input_parameter< NumericVector >::type weights(weightsSEXP);
-    Rcpp::traits::input_parameter< NumericVector >::type status(statusSEXP);
+    Rcpp::traits::input_parameter< NumericVector& >::type x(xSEXP);
+    Rcpp::traits::input_parameter< NumericVector& >::type weights(weightsSEXP);
+    Rcpp::traits::input_parameter< NumericVector& >::type status(statusSEXP);
     Rcpp::traits::input_parameter< double >::type beta(betaSEXP);
     rcpp_result_gen = Rcpp::wrap(getLambda(x, weights, status, beta));
     return rcpp_result_gen;
@@ -88,17 +88,18 @@ BEGIN_RCPP
 END_RCPP
 }
 // LikelihoodWeibull
-NumericMatrix LikelihoodWeibull(NumericVector& x, NumericMatrix& parameter, NumericVector& status, NumericVector& prior);
-RcppExport SEXP _weibulltools_LikelihoodWeibull(SEXP xSEXP, SEXP parameterSEXP, SEXP statusSEXP, SEXP priorSEXP) {
+void LikelihoodWeibull(NumericVector& x, NumericMatrix& parameter, NumericVector& status, NumericVector& prior, NumericMatrix& P, NumericMatrix& logL);
+RcppExport SEXP _weibulltools_LikelihoodWeibull(SEXP xSEXP, SEXP parameterSEXP, SEXP statusSEXP, SEXP priorSEXP, SEXP PSEXP, SEXP logLSEXP) {
 BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< NumericVector& >::type x(xSEXP);
     Rcpp::traits::input_parameter< NumericMatrix& >::type parameter(parameterSEXP);
     Rcpp::traits::input_parameter< NumericVector& >::type status(statusSEXP);
     Rcpp::traits::input_parameter< NumericVector& >::type prior(priorSEXP);
-    rcpp_result_gen = Rcpp::wrap(LikelihoodWeibull(x, parameter, status, prior));
-    return rcpp_result_gen;
+    Rcpp::traits::input_parameter< NumericMatrix& >::type P(PSEXP);
+    Rcpp::traits::input_parameter< NumericMatrix& >::type logL(logLSEXP);
+    LikelihoodWeibull(x, parameter, status, prior, P, logL);
+    return R_NilValue;
 END_RCPP
 }
 // normalize
@@ -150,7 +151,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_weibulltools_NewtonRaphson", (DL_FUNC) &_weibulltools_NewtonRaphson, 3},
     {"_weibulltools_MStepWeibull", (DL_FUNC) &_weibulltools_MStepWeibull, 3},
     {"_weibulltools_weibullDensity", (DL_FUNC) &_weibulltools_weibullDensity, 4},
-    {"_weibulltools_LikelihoodWeibull", (DL_FUNC) &_weibulltools_LikelihoodWeibull, 4},
+    {"_weibulltools_LikelihoodWeibull", (DL_FUNC) &_weibulltools_LikelihoodWeibull, 6},
     {"_weibulltools_normalize", (DL_FUNC) &_weibulltools_normalize, 1},
     {"_weibulltools_mixture_em_cpp", (DL_FUNC) &_weibulltools_mixture_em_cpp, 8},
     {"_weibulltools_calculate_ranks", (DL_FUNC) &_weibulltools_calculate_ranks, 3},

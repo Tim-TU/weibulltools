@@ -3,7 +3,7 @@
 \encoding{UTF-8}
 \name{mixture_em_cpp}
 \alias{mixture_em_cpp}
-\title{EM-Algorithm using Newton-Raphson method}
+\title{EM-Algorithm using Newton-Raphson Method}
 \usage{
 mixture_em_cpp(x, event, post, distribution = "weibull", k = 2L,
   method = "EM", n_iter = 100L, conv_limit = 1e-06)
@@ -21,15 +21,16 @@ is a right censored observation (= 0) or a failure (= 1).}
 The number of rows have to be in line with observations \code{x} and the
 number of columns must equal the mixture components \code{k}.}
 
-\item{distribution}{supposed mixture model. If \code{"weibull"} is used. Other
-distributions have not been implemented yet.}
+\item{distribution}{supposed distribution of mixture model components.
+The value must be \code{"weibull"}. Other distributions have not been
+implemented yet.}
 
 \item{k}{integer of mixture components, default is 2.}
 
-\item{method}{default method is \code{"EM"}. Other methods have not been implemented
-yet.}
+\item{method}{default method is \code{"EM"}. Other methods have not been
+implemented yet.}
 
-\item{n_iter}{numeric value defining the maximum number of iterations.}
+\item{n_iter}{integer defining the maximum number of iterations.}
 
 \item{conv_limit}{numeric value defining the convergence limit.}
 }
@@ -40,8 +41,9 @@ Returns a list with the following components:
     first row the estimated scale parameters \eqn{\eta} and in the second the
     estimated shape parameters \eqn{\beta} are provided. The first column belongs
     to the first mixture component and so forth.
-  \item \code{posteriori} : A matrix with a-posteriori probabilities.
-  \item \code{priori} : A vector with a-priori probabilities.}
+  \item \code{posteriori} : A matrix with estimated a-posteriori probabilities.
+  \item \code{priori} : A vector with estimated a-priori probabilities.
+  \item \code{logL} : The value of the complete log-likelihood.}
 }
 \description{
 This method uses the EM-Algorithm to estimate the parameters of a univariate
@@ -64,13 +66,13 @@ state <- c(1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1,
          0, 1, 1, 1, 1, 1, 1)
 post_dirichlet <- LearnBayes::rdirichlet(n = length(hours),
                                          par = rep(.1, 2))
-mix_mod_em_cpp <- mixture_em_cpp(x = hours,
-                                 event = state,
-                                 post = post_dirichlet,
-                                 distribution = "weibull",
-                                 k = 2,
-                                 method = "EM",
-                                 n_iter = 150)
+mix_mod_em <- mixture_em_cpp(x = hours,
+                             event = state,
+                             post = post_dirichlet,
+                             distribution = "weibull",
+                             k = 2,
+                             method = "EM",
+                             n_iter = 150)
 
 }
 \references{

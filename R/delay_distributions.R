@@ -163,8 +163,7 @@ mcs_delay_register <- function(date_prod, date_register, x, event,
 
   # Number of Monte Carlo simulated random numbers, i.e. number of censored data.
   n_rand <- sum(is.na(date_register))
-
-  if (!stats::complete.cases(date_prod) || !stats::complete.cases(date_register)) {
+  if (any(!stats::complete.cases(date_prod) | !stats::complete.cases(date_register))) {
     prod_date <- date_prod[(stats::complete.cases(date_prod) &
         stats::complete.cases(date_register))]
     register_date <- date_register[(stats::complete.cases(date_prod) &
@@ -356,7 +355,7 @@ mcs_delay_report <- function(date_repair, date_report, x, event,
   # Number of Monte Carlo simulated random numbers, i.e. number of censored data.
   n_rand <- sum(event == 0)
 
-  if (!stats::complete.cases(date_repair) || !stats::complete.cases(date_report)) {
+  if (any(!stats::complete.cases(date_repair) | !stats::complete.cases(date_report))) {
     repair_date <- date_repair[(stats::complete.cases(date_repair) &
                                 stats::complete.cases(date_report))]
     report_date <- date_report[(stats::complete.cases(date_repair) &
@@ -473,7 +472,7 @@ mcs_delay_report <- function(date_repair, date_report, x, event,
 #'                     "2015-12-02", NA, NA)
 #'
 #' op_time <- rep(1000, length(date_of_repair))
-#' state <- sample(c(0, 1), size = length(date_of_repair), replace = TRUE)
+#' state <- c(0, 1, 1, 1, 0, 0, 1, 0, 1, 1, 1, 0, 1, 0, 0, 1, 0, 1, 0, 1, 1, 0, 0)
 #'
 #' # Example 1 - Simplified vector output:
 #' x_corrected <- mcs_delays(date_prod = date_of_production,
@@ -515,7 +514,7 @@ mcs_delays <- function(date_prod, date_register, date_repair, date_report, x,
   n_rand_regist <- sum(is.na(date_register))
   n_rand_report <- sum(event == 0)
 
-  if (!stats::complete.cases(date_prod) || !stats::complete.cases(date_register)) {
+  if (any(!stats::complete.cases(date_prod) | !stats::complete.cases(date_register))) {
     prod_date <- date_prod[(stats::complete.cases(date_prod) &
                            stats::complete.cases(date_register))]
     register_date <- date_register[(stats::complete.cases(date_prod) &
@@ -525,7 +524,7 @@ mcs_delays <- function(date_prod, date_register, date_repair, date_report, x,
     register_date <- date_register
   }
 
-  if (!stats::complete.cases(date_repair) || !stats::complete.cases(date_report)) {
+  if (any(!stats::complete.cases(date_repair) | !stats::complete.cases(date_report))) {
     repair_date <- date_repair[(stats::complete.cases(date_repair) &
                                stats::complete.cases(date_report))]
     report_date <- date_report[(stats::complete.cases(date_repair) &
