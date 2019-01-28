@@ -3,9 +3,12 @@ title: "CRAN comments"
 output: html_document
 ---
 
-# This is a resubmission for version v1.0.0 (2019-01-26, lines 6 - 68)
-* I've fixed the errors thrown in CRANS pre-test and checked for no errors in 
-  R-devel using win-builder for Windows and r-hub builder for Debian.
+# This is a resubmission of version v1.0.0 (2019-01-28)
+CRAN Package Check Results for Package weibulltools has thrown the following error:  
+em_mixture.cpp:1:10: fatal error: 'ext/algorithm' file not found 
+#include <ext/algorithm> ^~~~~~~~~~~~~~~ 1 error generated.
+
+* I've fixed this error by removing lines 'ext/algorithm' and '#include <ext/algorithm>'
 
 ## Package Size 
 * Provided vignettes, where package _plotly_ was used to create interactive visualizsations 
@@ -71,7 +74,7 @@ Possibly mis-spelled words in DESCRIPTION:
 
 [//]: # (Everything below this comment was for submission of v0.5.4)  
 # In the following the old CRAN comments are presented! 
-# This is a resubmission (2018-07-25, lines 73 - 130)
+# This is a resubmission (2018-07-25)
 * I've omitted redundancy in the Description of the DESCRIPTION file  
 * I've added a more detailed description and references for the methods in the 
   DESCRIPTION file

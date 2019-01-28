@@ -1,5 +1,3 @@
-#include <ext/algorithm>
-#include <algorithm>
 #include "RcppArmadillo.h"
 
 using namespace Rcpp;
