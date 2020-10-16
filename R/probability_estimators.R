@@ -62,6 +62,9 @@ mr_method <- function(x, event = rep(1, length(x)),
     prob = ifelse(event == 1, df$prob[match(x[order(x)], df$time)],
       NA_real_)
   )
+
+  class(df_output) <- c("cdf_estimation", class(df_output))
+
   return(df_output)
 }
 
@@ -123,6 +126,9 @@ johnson_method <- function(x, event, id = rep("XXXXXX", length(x))) {
     prob = ifelse(event == 1, df$prob[match(x[order(x)], df$time)],
                   NA_real_)
     )
+
+  class(df_output) <- c("cdf_estimation", class(df_output))
+
   return(df_output)
 }
 
@@ -209,6 +215,9 @@ kaplan_method <- function(x, event, id = rep("XXXXXX", length(x))) {
     prob = ifelse(event == 1, df$prob[match(x[order(x)], df$time)],
                   NA_real_)
   )
+
+  class(df_output) <- c("cdf_estimation", class(df_output))
+
   return(df_output)
 }
 
@@ -270,5 +279,8 @@ nelson_method <- function(x, event, id = rep("XXXXXX", length(x))) {
     prob = ifelse(event == 1, df$prob[match(x[order(x)], df$time)],
       NA_real_)
   )
+
+  class(df_output) <- c("cdf_estimation", class(df_output))
+
   return(df_output)
 }
