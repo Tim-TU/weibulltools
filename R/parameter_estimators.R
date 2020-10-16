@@ -1,3 +1,8 @@
+#' @export
+rank_regression <- function(x, ...) {
+  UseMethod("rank_regression", x)
+}
+
 #' Rank Regression for Parametric Lifetime Distributions
 #'
 #' This method fits an \strong{x on y} regression to a linearized
@@ -101,7 +106,7 @@
 #'                        distribution = "weibull3",
 #'                        conf_level = .90)
 
-rank_regression <- function(x, y, event,
+rank_regression.default <- function(x, y, event,
                             distribution = c("weibull", "lognormal", "loglogistic",
                                              "normal", "logistic", "sev", "weibull3",
                                              "lognormal3", "loglogistic3"),
@@ -361,6 +366,18 @@ rank_regression <- function(x, y, event,
     }
   }
   return(mrr_output)
+}
+
+rank_regression.cdf_estimation <- function(
+  data,
+  distribution = c("weibull", "lognormal", "loglogistic", "normal", "logistic",
+                   "sev", "weibull3", "lognormal3"),
+  conf_level = 0.95, details = TRUE
+) {
+  rank_regression.default(
+    x = data$characteristic, y = data$prob, event = data$status,
+    distribution = match.arg(distribution), conf_level = conf_level, details = details
+  )
 }
 
 #' \eqn{R²}-Profile Function for Log-Location-Scale Distributions with Threshold
