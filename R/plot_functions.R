@@ -105,6 +105,7 @@ plot_layout <- function(x,
     tickcolor = "#a0a0a0",
     tickwidth = 1,
     tickfont = list(family = 'Arial', size = 10, color = "#a0a0a0"),
+    #tickmode = "array",
     showticklabels = TRUE,
     zeroline = FALSE,
     showgrid = TRUE,
@@ -115,7 +116,9 @@ plot_layout <- function(x,
   )
 
   if (distribution %in% c("weibull", "lognormal", "loglogistic")) {
-    x_config <- c(x_config, list(tickvals = x_ticks,ticktext = x_labels))
+    #x_config <- c(x_config, list(tickvals = x_ticks,ticktext = x_labels))
+    x_config <- c(x_config, list(tickvals = x_ticks,ticktext = x_ticks))
+
   }
 
 
