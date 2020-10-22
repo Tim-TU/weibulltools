@@ -1,8 +1,3 @@
-#' @export
-rank_regression <- function(x, ...) {
-  UseMethod("rank_regression", x)
-}
-
 #' Rank Regression for Parametric Lifetime Distributions
 #'
 #' This method fits an \strong{x on y} regression to a linearized
@@ -54,6 +49,7 @@ rank_regression <- function(x, ...) {
 #'   If \code{FALSE} the output consists of a list that only contains the
 #'   estimated parameters. If \code{TRUE} the output is a detailed list with
 #'   many more information. See below (\strong{Value}).
+#' @param data A data frame returned by \code{\link{estimate_cdf}}.
 #'
 #' @return Returns a list with the following components (depending on
 #'   \code{details} argument):
@@ -75,7 +71,6 @@ rank_regression <- function(x, ...) {
 #'     \code{"weibull"} or \code{"weibull3"}. Estimated heteroscedasticity-consistent
 #'     Variance-Covariance matrix of the used location-scale distribution.
 #'   \item \code{r_squared} : Coefficient of determination.}
-#' @export
 #'
 #' @examples
 #' # Example 1: Fitting a two-parameter Weibull:
@@ -105,7 +100,13 @@ rank_regression <- function(x, ...) {
 #'                        event = df_john$status,
 #'                        distribution = "weibull3",
 #'                        conf_level = .90)
+#' @export
+rank_regression <- function(x, ...) {
+  UseMethod("rank_regression", x)
+}
 
+#' @export
+#' @describeIn rank_regression Provide x, y and event manually.
 rank_regression.default <- function(x, y, event,
                             distribution = c("weibull", "lognormal", "loglogistic",
                                              "normal", "logistic", "sev", "weibull3",
@@ -368,6 +369,11 @@ rank_regression.default <- function(x, y, event,
   return(mrr_output)
 }
 
+#' @export
+#' @describeIn rank_regression Perform the rank regression as part of the
+#' reliability pipeline. \code{\link{estimate_cdf}} returns a data frame of class
+#' \code{"cdf_estimation"}, which contains all information regarding x, y and
+#' event.
 rank_regression.cdf_estimation <- function(
   data,
   distribution = c("weibull", "lognormal", "loglogistic", "normal", "logistic",
