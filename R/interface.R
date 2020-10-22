@@ -3,7 +3,12 @@
 #' This function prepares a dataset for the reliability pipeline.
 #'
 #' @param data A data frame.
-#' @param x,event,id Column names of columns containing reliability information.
+#' @param x The name of a column holding lifetime data. Lifetime data could
+#' be every characteristic influencing the reliability of a product, e.g.
+#' operating time (days/months in service), mileage (km, miles), load cycles.
+#' @param event The name of a column holding binary data (0 or 1) indicating
+#' whether unit \emph{i} is a right censored observation (= 0) or a failure (= 1).
+#' @param id The name of a column holding the identification for every unit.
 #' @export
 reliability_data <- function(data, x, event, id) {
   data <- dplyr::select(data, x = {{x}}, event = {{event}}, id = {{id}})
@@ -14,11 +19,24 @@ reliability_data <- function(data, x, event, id) {
 }
 
 #' Estimation of Failure Probabilities
+#'
+#' Estimate failure probabilities for uncensored or (multiple) right-censored
+#' data.
+#'
+#' Depending on the \code{method} argument one of the following functions is
+#' called:
+#' \itemize{
+#'   \item \code{"mr"}: \code{\link{mr_method}}. Works only for uncensored data.
+#'   \item \code{"johnson"}: \code{\link{johnson_method}}.
+#'   \item \code{"kaplan"}: \code{\link{kaplan_method}}.
+#'   \item \code{"nelson"}: \code{\link{nelson_method}}.
+#' }
+#'
 #' @param data A standardised data frame returned by \link{reliability_data}.
-#' @param method Method used for estimating the failure probablities. A detailed
-#' explanation can be found with \code{?<method>_method}.
+#' @param method Method used for estimating the failure probablities. See 'Details'.
 #' @param options A list of named options passed to \code{<method>_method}. For
-#' now there is the option "method" with \code{method = "mr"}.
+#' now there is just the option "method" with \code{method = "mr"}. See
+#' \code{\link{mr_method}}.
 #' @export
 estimate_cdf <- function(
   data, method = c("mr", "johnson", "kaplan", "nelson"), options = list()
@@ -42,9 +60,7 @@ estimate_cdf <- function(
   )
 
   if (method == "mr") {
-    mr_method <- if (is.null(options$method)) "benard" else options$method
-
-    args$method <- mr_method
+    args$method <- if (is.null(options$method)) "benard" else options$method
   }
 
   do.call(method_fun, args)
