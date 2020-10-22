@@ -5,8 +5,15 @@
 \title{Adjustment of Operating Times by Delays in Registration using a Monte Carlo
 Approach}
 \usage{
-mcs_delay_register(date_prod, date_register, x, event,
-  distribution = "lognormal", seed = NULL, details = FALSE)
+mcs_delay_register(
+  date_prod,
+  date_register,
+  x,
+  event,
+  distribution = "lognormal",
+  seed = NULL,
+  details = FALSE
+)
 }
 \arguments{
 \item{date_prod}{a vector of class \code{"character"} or \code{"Date"}, in the

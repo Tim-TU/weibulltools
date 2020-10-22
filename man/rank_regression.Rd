@@ -3,11 +3,29 @@
 \encoding{UTF-8}
 \name{rank_regression}
 \alias{rank_regression}
+\alias{rank_regression.default}
+\alias{rank_regression.cdf_estimation}
 \title{Rank Regression for Parametric Lifetime Distributions}
 \usage{
-rank_regression(x, y, event, distribution = c("weibull", "lognormal",
-  "loglogistic", "normal", "logistic", "sev", "weibull3", "lognormal3",
-  "loglogistic3"), conf_level = 0.95, details = TRUE)
+rank_regression(x, ...)
+
+\method{rank_regression}{default}(
+  x,
+  y,
+  event,
+  distribution = c("weibull", "lognormal", "loglogistic", "normal", "logistic", "sev",
+    "weibull3", "lognormal3", "loglogistic3"),
+  conf_level = 0.95,
+  details = TRUE
+)
+
+\method{rank_regression}{cdf_estimation}(
+  data,
+  distribution = c("weibull", "lognormal", "loglogistic", "normal", "logistic", "sev",
+    "weibull3", "lognormal3"),
+  conf_level = 0.95,
+  details = TRUE
+)
 }
 \arguments{
 \item{x}{a numeric vector which consists of lifetime data. Lifetime
@@ -34,6 +52,8 @@ Other distributions have not been implemented yet.}
 If \code{FALSE} the output consists of a list that only contains the
 estimated parameters. If \code{TRUE} the output is a detailed list with
 many more information. See below (\strong{Value}).}
+
+\item{data}{A data frame returned by \code{\link{estimate_cdf}}.}
 }
 \value{
 Returns a list with the following components (depending on
@@ -81,6 +101,16 @@ standard errors for the parameters using \emph{Least Squares} in context of
 \emph{Median Rank Regression}. For an accepted statistical method use MLE
 (\code{\link{ml_estimation}}).
 }
+\section{Methods (by class)}{
+\itemize{
+\item \code{default}: Provide x, y and event manually.
+
+\item \code{cdf_estimation}: Perform the rank regression as part of the
+reliability pipeline. \code{\link{estimate_cdf}} returns a data frame of class
+\code{"cdf_estimation"}, which contains all information regarding x, y and
+event.
+}}
+
 \examples{
 # Example 1: Fitting a two-parameter Weibull:
 obs   <- seq(10000, 100000, 10000)

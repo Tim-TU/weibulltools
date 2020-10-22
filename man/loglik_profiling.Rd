@@ -5,8 +5,12 @@
 \alias{loglik_profiling}
 \title{Log-Likelihood Profile Function for Log-Location-Scale Distributions with Threshold}
 \usage{
-loglik_profiling(x, event, thres, distribution = c("weibull3",
-  "lognormal3", "loglogistic3"))
+loglik_profiling(
+  x,
+  event,
+  thres,
+  distribution = c("weibull3", "lognormal3", "loglogistic3")
+)
 }
 \arguments{
 \item{x}{a numeric vector which consists of lifetime data. Lifetime

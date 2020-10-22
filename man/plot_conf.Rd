@@ -5,10 +5,15 @@
 \alias{plot_conf}
 \title{Add Confidence Region(s) for Quantiles or Probabilities}
 \usage{
-plot_conf(p_obj, x, y, direction = c("y", "x"),
-  distribution = c("weibull", "lognormal", "loglogistic", "normal",
-  "logistic", "sev", "weibull3", "lognormal3", "loglogistic3"),
-  title_trace = "Confidence Limit")
+plot_conf(
+  p_obj,
+  x,
+  y,
+  direction = c("y", "x"),
+  distribution = c("weibull", "lognormal", "loglogistic", "normal", "logistic", "sev",
+    "weibull3", "lognormal3", "loglogistic3"),
+  title_trace = "Confidence Limit"
+)
 }
 \arguments{
 \item{p_obj}{a plotly object provided by function \code{\link{plot_mod}}.}

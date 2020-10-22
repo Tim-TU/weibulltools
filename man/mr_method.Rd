@@ -4,8 +4,12 @@
 \alias{mr_method}
 \title{Estimation of Failure Probabilities using Median Ranks}
 \usage{
-mr_method(x, event = rep(1, length(x)), id = rep("XXXXXX", length(x)),
-  method = "benard")
+mr_method(
+  x,
+  event = rep(1, length(x)),
+  id = rep("XXXXXX", length(x)),
+  method = "benard"
+)
 }
 \arguments{
 \item{x}{a numeric vector which consists of lifetime data. Lifetime

@@ -5,9 +5,14 @@
 \alias{loglik_function}
 \title{Log-Likelihood Function for (Log-) Location-Scale Distributions (with Threshold)}
 \usage{
-loglik_function(x, event, wts = rep(1, length(x)), pars,
-  distribution = c("weibull", "lognormal", "loglogistic", "normal",
-  "logistic", "sev", "weibull3", "lognormal3", "loglogistic3"))
+loglik_function(
+  x,
+  event,
+  wts = rep(1, length(x)),
+  pars,
+  distribution = c("weibull", "lognormal", "loglogistic", "normal", "logistic", "sev",
+    "weibull3", "lognormal3", "loglogistic3")
+)
 }
 \arguments{
 \item{x}{a numeric vector which consists of lifetime data. Lifetime

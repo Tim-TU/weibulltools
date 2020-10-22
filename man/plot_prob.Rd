@@ -5,11 +5,17 @@
 \alias{plot_prob}
 \title{Probability Plotting Method for Univariate Lifetime Distributions}
 \usage{
-plot_prob(x, y, event, id = rep("XXXXXX", length(x)),
-  distribution = c("weibull", "lognormal", "loglogistic", "normal",
-  "logistic", "sev"), title_main = "Probability Plot",
-  title_x = "Characteristic", title_y = "Unreliability",
-  title_trace = "Sample")
+plot_prob(
+  x,
+  y,
+  event,
+  id = rep("XXXXXX", length(x)),
+  distribution = c("weibull", "lognormal", "loglogistic", "normal", "logistic", "sev"),
+  title_main = "Probability Plot",
+  title_x = "Characteristic",
+  title_y = "Unreliability",
+  title_trace = "Sample"
+)
 }
 \arguments{
 \item{x}{a numeric vector which consists of lifetime data. Lifetime

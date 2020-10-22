@@ -5,11 +5,17 @@
 \alias{plot_prob_mix}
 \title{Probability Plot for Separated Mixture Models}
 \usage{
-plot_prob_mix(x, event, id = rep("XXXXXX", length(x)),
+plot_prob_mix(
+  x,
+  event,
+  id = rep("XXXXXX", length(x)),
   distribution = c("weibull", "lognormal", "loglogistic"),
-  mix_output = NULL, title_main = "Probability Plot",
-  title_x = "Characteristic", title_y = "Unreliability",
-  title_trace = "Sample")
+  mix_output = NULL,
+  title_main = "Probability Plot",
+  title_x = "Characteristic",
+  title_y = "Unreliability",
+  title_trace = "Sample"
+)
 }
 \arguments{
 \item{x}{a numeric vector which consists of lifetime data. Lifetime

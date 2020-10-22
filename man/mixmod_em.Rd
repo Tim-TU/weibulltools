@@ -5,9 +5,18 @@
 \alias{mixmod_em}
 \title{Mixture Model Estimation using EM-Algorithm}
 \usage{
-mixmod_em(x, event, post = NULL, distribution = "weibull",
-  conf_level = 0.95, k = 2, method = "EM", n_iter = 100L,
-  conv_limit = 1e-06, diff_loglik = 0.5)
+mixmod_em(
+  x,
+  event,
+  post = NULL,
+  distribution = "weibull",
+  conf_level = 0.95,
+  k = 2,
+  method = "EM",
+  n_iter = 100L,
+  conv_limit = 1e-06,
+  diff_loglik = 0.5
+)
 }
 \arguments{
 \item{x}{a numeric vector which consists of lifetime data. Lifetime

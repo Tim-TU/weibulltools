@@ -4,9 +4,13 @@
 \alias{plot_layout}
 \title{Layout of the Probability Plot}
 \usage{
-plot_layout(x, distribution = c("weibull", "lognormal", "loglogistic",
-  "normal", "logistic", "sev"), title_main = "Probability Plot",
-  title_x = "Characteristic", title_y = "Unreliability")
+plot_layout(
+  x,
+  distribution = c("weibull", "lognormal", "loglogistic", "normal", "logistic", "sev"),
+  title_main = "Probability Plot",
+  title_x = "Characteristic",
+  title_y = "Unreliability"
+)
 }
 \arguments{
 \item{x}{a numeric vector which consists of lifetime data. \code{x} is used to

@@ -4,8 +4,17 @@
 \alias{mcs_delays}
 \title{Adjustment of Operating Times by Delays using a Monte Carlo Approach}
 \usage{
-mcs_delays(date_prod, date_register, date_repair, date_report, x, event,
-  distribution = "lognormal", details = FALSE, seed = NULL)
+mcs_delays(
+  date_prod,
+  date_register,
+  date_repair,
+  date_report,
+  x,
+  event,
+  distribution = "lognormal",
+  details = FALSE,
+  seed = NULL
+)
 }
 \arguments{
 \item{date_prod}{a vector of class \code{"character"} or \code{"Date"}, in the

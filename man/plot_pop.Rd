@@ -4,8 +4,14 @@
 \alias{plot_pop}
 \title{Add Population Line to an Existing Grid}
 \usage{
-plot_pop(p_obj, x, params, distribution = c("weibull", "lognormal",
-  "loglogistic"), color = I("#FF0000"), title_trace = "Population")
+plot_pop(
+  p_obj,
+  x,
+  params,
+  distribution = c("weibull", "lognormal", "loglogistic"),
+  color = I("#FF0000"),
+  title_trace = "Population"
+)
 }
 \arguments{
 \item{p_obj}{a plotly object, which at least includes the layout provided

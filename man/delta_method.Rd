@@ -5,9 +5,14 @@
 \alias{delta_method}
 \title{Delta Method for Parametric Lifetime Distributions}
 \usage{
-delta_method(p, loc_sc_params, loc_sc_varcov, distribution = c("weibull",
-  "lognormal", "loglogistic", "normal", "logistic", "sev", "weibull3",
-  "lognormal3", "loglogistic3"), direction = c("y", "x"))
+delta_method(
+  p,
+  loc_sc_params,
+  loc_sc_varcov,
+  distribution = c("weibull", "lognormal", "loglogistic", "normal", "logistic", "sev",
+    "weibull3", "lognormal3", "loglogistic3"),
+  direction = c("y", "x")
+)
 }
 \arguments{
 \item{p}{a numeric value of a probability or a quantile. If the standard error

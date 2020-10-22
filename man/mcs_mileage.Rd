@@ -5,8 +5,14 @@
 \title{Estimation of Driving Distances for Censored Observations using a Monte Carlo
 Approach}
 \usage{
-mcs_mileage(x, event, mileage, distribution = "lognormal", seed = NULL,
-  details = FALSE)
+mcs_mileage(
+  x,
+  event,
+  mileage,
+  distribution = "lognormal",
+  seed = NULL,
+  details = FALSE
+)
 }
 \arguments{
 \item{x}{a numeric vector of operating times. If not available use \code{NA}.}

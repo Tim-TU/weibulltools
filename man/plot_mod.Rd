@@ -5,9 +5,15 @@
 \alias{plot_mod}
 \title{Adding an Estimated Population Line to a Probability Plot}
 \usage{
-plot_mod(p_obj, x, y = NULL, loc_sc_params, distribution = c("weibull",
-  "lognormal", "loglogistic", "normal", "logistic", "sev", "weibull3",
-  "lognormal3", "loglogistic3"), title_trace = "Fit")
+plot_mod(
+  p_obj,
+  x,
+  y = NULL,
+  loc_sc_params,
+  distribution = c("weibull", "lognormal", "loglogistic", "normal", "logistic", "sev",
+    "weibull3", "lognormal3", "loglogistic3"),
+  title_trace = "Fit"
+)
 }
 \arguments{
 \item{p_obj}{a plotly object provided by function \code{\link{plot_prob}}.}

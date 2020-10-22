@@ -4,9 +4,12 @@
 \alias{predict_prob}
 \title{Estimation of Failure Probabilities for Parametric Lifetime Distributions}
 \usage{
-predict_prob(q, loc_sc_params, distribution = c("weibull", "lognormal",
-  "loglogistic", "normal", "logistic", "sev", "weibull3", "lognormal3",
-  "loglogistic3"))
+predict_prob(
+  q,
+  loc_sc_params,
+  distribution = c("weibull", "lognormal", "loglogistic", "normal", "logistic", "sev",
+    "weibull3", "lognormal3", "loglogistic3")
+)
 }
 \arguments{
 \item{q}{a numeric vector which consists of lifetime data.}

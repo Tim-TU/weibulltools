@@ -4,11 +4,17 @@
 \alias{confint_fisher}
 \title{Fisher Confidence Bounds for Quantiles and/or Probabilities}
 \usage{
-confint_fisher(x, event, loc_sc_params, loc_sc_varcov,
-  distribution = c("weibull", "lognormal", "loglogistic", "normal",
-  "logistic", "sev", "weibull3", "lognormal3", "loglogistic3"),
-  bounds = c("two_sided", "lower", "upper"), conf_level = 0.95,
-  direction = c("y", "x"))
+confint_fisher(
+  x,
+  event,
+  loc_sc_params,
+  loc_sc_varcov,
+  distribution = c("weibull", "lognormal", "loglogistic", "normal", "logistic", "sev",
+    "weibull3", "lognormal3", "loglogistic3"),
+  bounds = c("two_sided", "lower", "upper"),
+  conf_level = 0.95,
+  direction = c("y", "x")
+)
 }
 \arguments{
 \item{x}{a numeric vector which consists of lifetime data. \code{x} is used to

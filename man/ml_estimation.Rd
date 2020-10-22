@@ -5,10 +5,15 @@
 \alias{ml_estimation}
 \title{ML Estimation for Parametric Lifetime Distributions}
 \usage{
-ml_estimation(x, event, distribution = c("weibull", "lognormal",
-  "loglogistic", "normal", "logistic", "sev", "weibull3", "lognormal3",
-  "loglogistic3"), wts = rep(1, length(x)), conf_level = 0.95,
-  details = TRUE)
+ml_estimation(
+  x,
+  event,
+  distribution = c("weibull", "lognormal", "loglogistic", "normal", "logistic", "sev",
+    "weibull3", "lognormal3", "loglogistic3"),
+  wts = rep(1, length(x)),
+  conf_level = 0.95,
+  details = TRUE
+)
 }
 \arguments{
 \item{x}{a numeric vector which consists of lifetime data. Lifetime
