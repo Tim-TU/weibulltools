@@ -93,11 +93,14 @@ plot_layout <- function(x,
   ## Configuration x axis:
   x_config <- list(
     color = "#000000",
-    title = title_x,
-    titlefont = list(
-      family = "Arial",
-      size = 12,
-      color = "#A3A3A3"),
+    title = list(
+      text = title_x,
+      font = list(
+        family = "Arial",
+        size = 12,
+        color = "#A3A3A3"
+      )
+    ),
     type = xaxs_type,
     autorange = TRUE,
     rangemode = "nonnegative",
@@ -125,11 +128,14 @@ plot_layout <- function(x,
   ## Configuration y axis:
   y_config <- list(
     color = "#000000",
-    title = title_y,
-    titlefont = list(
-      family = "Arial",
-      size = 12,
-      color = "#A3A3A3"),
+    title = list(
+      text = title_y,
+      font = list(
+        family = "Arial",
+        size = 12,
+        color = "#A3A3A3"
+      )
+    ),
     autorange = TRUE,
     tickvals = y_ticks,
     ticktext = y_labels,
@@ -148,10 +154,13 @@ plot_layout <- function(x,
 
   # configuration legend
   l <- list(
-    titlefont = list(
-      family = "Arial",
-      size = 10,
-      color = "#000000")
+    title = list(
+      font = list(
+        family = "Arial",
+        size = 10,
+        color = "#000000"
+      )
+    )
   )
 
   # margins layout
@@ -163,11 +172,19 @@ plot_layout <- function(x,
     pad = 4
   )
 
+  title <- list(
+    text = title_main,
+    font = list(
+      family = "Arial",
+      size = 16,
+      color = "#000000"
+    )
+  )
+
 
   # create grid
   p <- plotly::plotly_empty() %>%
-       plotly::layout(title = title_main, titlefont = list(family = "Arial",
-                      size = 16, color = "#000000"), separators = ".",
+       plotly::layout(title = title, separators = ".",
                       legend = l, xaxis = x_config, yaxis = y_config, margin = m)
   return(p)
 }
