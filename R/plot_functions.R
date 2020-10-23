@@ -695,8 +695,8 @@ plot_mod <- function(p_obj, x, y = NULL, loc_sc_params,
 
   df_p <- data.frame(x_p = x_p, y_p = y_p)
 
-  x_mark <- unlist(strsplit(p_obj$x$layoutAttrs[[2]]$xaxis$title, " "))[1]
-  y_mark <- unlist(strsplit(p_obj$x$layoutAttrs[[2]]$yaxis$title, " "))[1]
+  x_mark <- unlist(strsplit(p_obj$x$layoutAttrs[[2]]$xaxis$title$text, " "))[1]
+  y_mark <- unlist(strsplit(p_obj$x$layoutAttrs[[2]]$yaxis$title$text, " "))[1]
 
   if (distribution %in% c("weibull", "weibull3", "sev")) {
     q <- SPREDA::qsev(y_p)
@@ -982,8 +982,8 @@ plot_mod_mix <- function(p_obj, x, event, mix_output,
   group_df$cols <- rep(cols, each = 200)
 
   # Get axis labels in hover:
-  x_mark <- unlist(strsplit(p_obj$x$layoutAttrs[[2]]$xaxis$title,  " "))[1]
-  y_mark <- unlist(strsplit(p_obj$x$layoutAttrs[[2]]$yaxis$title,  " "))[1]
+  x_mark <- unlist(strsplit(p_obj$x$layoutAttrs[[2]]$xaxis$title$text,  " "))[1]
+  y_mark <- unlist(strsplit(p_obj$x$layoutAttrs[[2]]$yaxis$title$text,  " "))[1]
 
   p_mod <- p_obj %>% plotly::add_lines(data = group_df %>% dplyr::group_by(groups),
     x = ~x_p, y = ~q, type = "scatter",
@@ -1156,9 +1156,9 @@ plot_conf <- function(p_obj, x, y, direction = c("y", "x"),
     df_p$group <- ifelse(test = df_p$x < df_mod$x_p, yes = "Lower", no = "Upper")
   }
 
-  x_mark <- unlist(strsplit(p_obj$x$layoutAttrs[[2]]$xaxis$title,
+  x_mark <- unlist(strsplit(p_obj$x$layoutAttrs[[2]]$xaxis$title$text,
                             " "))[1]
-  y_mark <- unlist(strsplit(p_obj$x$layoutAttrs[[2]]$yaxis$title,
+  y_mark <- unlist(strsplit(p_obj$x$layoutAttrs[[2]]$yaxis$title$text,
                             " "))[1]
 
   if (distribution %in% c("weibull", "weibull3", "sev")) {
@@ -1277,9 +1277,9 @@ plot_pop <- function(p_obj, x, params,
   y_s <- y_s[y_s < 1]
   x_s <- x_s[y_s < 1]
 
-  x_mark <- unlist(strsplit(p_obj$x$layoutAttrs[[2]]$xaxis$title,
+  x_mark <- unlist(strsplit(p_obj$x$layoutAttrs[[2]]$xaxis$title$text,
     " "))[1]
-  y_mark <- unlist(strsplit(p_obj$x$layoutAttrs[[2]]$yaxis$title,
+  y_mark <- unlist(strsplit(p_obj$x$layoutAttrs[[2]]$yaxis$title$text,
     " "))[1]
 
   if (distribution == "weibull") {
