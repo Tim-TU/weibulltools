@@ -46,11 +46,6 @@ plot_layout <- function(x,
 
   distribution <- match.arg(distribution)
 
-  if (!(distribution %in% c("weibull", "lognormal", "loglogistic", "normal",
-                            "logistic", "sev"))) {
-    stop("No valid distribution!")
-  }
-
 
   # Define x-ticks of logarithm to the base of 10 for Log-Location-Scale Distributions:
   if (distribution %in% c("weibull", "lognormal", "loglogistic")) {
@@ -452,10 +447,6 @@ plot_prob_mix <- function(x, event, id = rep("XXXXXX", length(x)),
 
   distribution <- match.arg(distribution)
 
-  if (!(distribution %in% c("weibull", "lognormal", "loglogistic"))) {
-    stop("No valid distribution!")
-  }
-
   if (("em_results" %in%  names(mix_output)) & distribution != "weibull") {
     stop("No valid distribution! Use weibull to visualize EM results")
   }
@@ -672,12 +663,6 @@ plot_mod <- function(p_obj, x, y = NULL, loc_sc_params,
 
   distribution <- match.arg(distribution)
 
-  if (!(distribution %in% c("weibull", "lognormal", "loglogistic", "normal",
-                            "logistic", "sev", "weibull3", "lognormal3",
-                            "loglogistic3"))) {
-    stop("No valid distribution!")
-  }
-
 
   if (is.null(y)) {
     x_min <- min(x, na.rm = TRUE)
@@ -857,10 +842,6 @@ plot_mod_mix <- function(p_obj, x, event, mix_output,
   title_trace = "Fit") {
 
   distribution <- match.arg(distribution)
-
-  if (!(distribution %in% c("weibull", "lognormal", "loglogistic"))) {
-    stop("No valid distribution!")
-  }
 
   if (("em_results" %in%  names(mix_output)) & distribution != "weibull") {
     stop("No valid distribution! Use weibull to visualize EM results")
@@ -1139,12 +1120,6 @@ plot_conf <- function(p_obj, x, y, direction = c("y", "x"),
   direction <- match.arg(direction)
   distribution <- match.arg(distribution)
 
-  if (!(distribution %in% c("weibull", "lognormal", "loglogistic", "normal",
-                            "logistic", "sev", "weibull3", "lognormal3",
-                            "loglogistic3"))) {
-    stop("No valid distribution!")
-  }
-
   lst <- do.call(Map, c(data.frame, list(x = x, y = y)), quote = TRUE)
   df_p <- as.data.frame(dplyr::bind_rows(lst, .id = "group"))
 
@@ -1250,10 +1225,6 @@ plot_pop <- function(p_obj, x, params,
                      title_trace = "Population") {
 
   distribution <- match.arg(distribution)
-
-  if (!(distribution %in% c("weibull", "lognormal", "loglogistic"))) {
-    stop("No valid distribution!")
-  }
 
   x_min <- min(x, na.rm = TRUE)
   x_max <- max(x, na.rm = TRUE)
