@@ -37,151 +37,33 @@
 #'                             title_x = "Time to Event",
 #'                             title_y = "Failure Probability in %")
 
-plot_layout <- function(x,
-                        distribution = c("weibull", "lognormal", "loglogistic",
-                                         "normal", "logistic", "sev"),
-                        title_main = "Probability Plot",
-                        title_x = "Characteristic",
-                        title_y = "Unreliability") {
+plot_layout <- function(
+  x,
+  distribution = c(
+    "weibull", "lognormal", "loglogistic", "normal", "logistic", "sev"
+  ),
+  title_main = "Probability Plot",
+  title_x = "Characteristic",
+  title_y = "Unreliability",
+  plot_method = c("plotly", "ggplot2")
+) {
 
   distribution <- match.arg(distribution)
+  plot_method <- match.arg(plot_method)
 
+  plot_layout_fun <- if (plot_method == "plotly") plot_layout_plotly else
+    plot_layout_ggplot2
 
-  # Define x-ticks of logarithm to the base of 10 for Log-Location-Scale Distributions:
-  if (distribution %in% c("weibull", "lognormal", "loglogistic")) {
-
-    # Layout dependent on data x, function to build helpful sequences:
-    x_base <- function(xb) floor(log10(xb))
-    xlog10_range <- (x_base(min(x)) - 1):x_base(max(x))
-    # x-ticks and x-labels
-    x_ticks <- sapply(xlog10_range, function(z) seq(10 ^ z, 10 ^ (z + 1), 10 ^ z),
-      simplify = TRUE)
-    x_ticks <- round(as.numeric(x_ticks), digits = 10)
-    x_ticks <- x_ticks[!duplicated(x_ticks)]
-    x_labels <- x_ticks
-    x_labels[c(rep(F, 3), rep(T, 6))] <- ''
-  }
-
-  # y-ticks and y-labels
-  # hard coded but it's okay since range is always between 0 and 1.
-  y_s <- c(.0000001, .000001, .00001, .0001, .001, .01, .05, .1, .2, .3, .5, .6,
-    .7, .8, .9, .95, .99, .999, .9999, .99999)
-
-  if (distribution %in% c("weibull", "sev")) {
-    y_ticks <- SPREDA::qsev(y_s)
-  }
-  if (distribution %in% c("lognormal", "normal")) {
-    y_ticks <- stats::qnorm(y_s)
-  }
-  if (distribution %in% c("loglogistic", "logistic")) {
-    y_ticks <- stats::qlogis(y_s)
-  }
-
-  y_labels <- y_s * 100
-
-  # Plot:
-  ## Type of x axis:
-  xaxs_type <- ifelse(test = distribution %in% c("sev", "normal", "logistic"),
-                      yes = "-",
-                      no = "log")
-
-  ## Configuration x axis:
-  x_config <- list(
-    color = "#000000",
-    title = list(
-      text = title_x,
-      font = list(
-        family = "Arial",
-        size = 12,
-        color = "#A3A3A3"
-      )
-    ),
-    type = xaxs_type,
-    autorange = TRUE,
-    rangemode = "nonnegative",
-    ticks = "inside",
-    tickcolor = "#a0a0a0",
-    tickwidth = 1,
-    tickfont = list(family = 'Arial', size = 10, color = "#a0a0a0"),
-    #tickmode = "array",
-    showticklabels = TRUE,
-    zeroline = FALSE,
-    showgrid = TRUE,
-    gridwidth = 1,
-    exponentformat = "none",
-    showline = TRUE,
-    linecolor = "#a0a0a0"
-  )
-
-  if (distribution %in% c("weibull", "lognormal", "loglogistic")) {
-    #x_config <- c(x_config, list(tickvals = x_ticks,ticktext = x_labels))
-    x_config <- c(x_config, list(tickvals = x_ticks,ticktext = x_ticks))
-
-  }
-
-
-  ## Configuration y axis:
-  y_config <- list(
-    color = "#000000",
-    title = list(
-      text = title_y,
-      font = list(
-        family = "Arial",
-        size = 12,
-        color = "#A3A3A3"
-      )
-    ),
-    autorange = TRUE,
-    tickvals = y_ticks,
-    ticktext = y_labels,
-    ticks = "inside",
-    tickcolor = "#a0a0a0",
-    tickwidth = 1,
-    tickfont = list(family = 'Arial', size = 10, color = "#a0a0a0"),
-    showticklabels = TRUE,
-    zeroline = FALSE,
-    showgrid = TRUE,
-    gridwidth = 1,
-    exponentformat = "none",
-    showline = TRUE,
-    linecolor = "#a0a0a0"
-  )
-
-  # configuration legend
-  l <- list(
-    title = list(
-      font = list(
-        family = "Arial",
-        size = 10,
-        color = "#000000"
-      )
+  do.call(
+    plot_layout_fun,
+    list(
+      x = x,
+      distribution = distribution,
+      title_main = title_main,
+      title_x = title_x,
+      title_y = title_y
     )
   )
-
-  # margins layout
-  m <- list(
-    l = 55,
-    r = 10,
-    b = 55,
-    t = 25,
-    pad = 4
-  )
-
-  title <- list(
-    text = title_main,
-    font = list(
-      family = "Arial",
-      size = 16,
-      color = "#000000"
-    )
-  )
-
-
-  # create grid
-  p <- plotly::plotly_empty() %>%
-       plotly::layout(title = title, separators = ".",
-                      legend = l, xaxis = x_config, yaxis = y_config, margin = m)
-  return(p)
 }
 
 
@@ -262,67 +144,43 @@ plot_layout <- function(x,
 #'                           title_y = "Probability of Failure in %",
 #'                           title_trace = "Failed Items")
 
-plot_prob <- function(x, y, event, id = rep("XXXXXX", length(x)),
-                      distribution = c("weibull", "lognormal", "loglogistic",
-                                       "normal", "logistic", "sev"),
-                      title_main = "Probability Plot",
-                      title_x = "Characteristic", title_y = "Unreliability",
-                      title_trace = "Sample") {
+plot_prob <- function(
+  x, y, event,
+  id = rep("XXXXXX", length(x)),
+  distribution = c("weibull", "lognormal", "loglogistic",
+                   "normal", "logistic", "sev"),
+  title_main = "Probability Plot",
+  title_x = "Characteristic", title_y = "Unreliability",
+  title_trace = "Sample",
+  plot_method = c("plotly", "ggplot2")
+) {
 
   distribution <- match.arg(distribution)
+  plot_method <- match.arg(plot_method)
 
-  if (!(distribution %in% c("weibull", "lognormal", "loglogistic", "normal",
-                            "logistic", "sev"))) {
-    stop("No valid distribution!")
-  }
+  plot_prob_fun <- if (plot_method == "plotly") plot_prob_plotly else
+    plot_prob_ggplot2
 
-  # Filtering failed units:
-  x_s <- x[event == 1]
-  y_s <- y[event == 1]
-  id_s <- id[event == 1]
-  x_s <- x_s[order(x_s)]
-  y_s <- y_s[order(x_s)]
-  id_s <- id_s[order(x_s)]
-
-  # Plot layout:
-  p <- plot_layout(x = x, distribution = distribution,
-    title_main = title_main,
-    title_x = title_x,
-    title_y = title_y)
-
-  mark_x <- unlist(strsplit(title_x, " "))[1]
-  mark_y <- unlist(strsplit(title_y, " "))[1]
-
-  # Choice of distribution:
-  if (distribution %in% c("weibull", "sev")) {
-    q <- SPREDA::qsev(y_s)
-  }
-  if (distribution %in% c("lognormal", "normal")) {
-    q <- stats::qnorm(y_s)
-  }
-  if (distribution %in% c("loglogistic", "logistic")) {
-    q <- stats::qlogis(y_s)
-  }
-
-  # Construct probability plot:
-  plot <- p %>%
-    plotly::add_trace(x = ~x_s, y = ~q, type = "scatter",
-    mode = "markers", hoverinfo = "text", color = I("#3C8DBC"),
-    name = title_trace,
-    text = ~paste("ID:", id_s,
-      paste("<br>", paste0(mark_x, ":")), x_s,
-      paste("<br>", paste0(mark_y, ":")), round(y_s, digits = 5))
-    ) %>%
-    plotly::layout(showlegend = TRUE)
-
-  return(plot)
+  do.call(
+    plot_prob_fun,
+    list(
+      x = x,
+      y = y,
+      event = event,
+      id = id,
+      distribution = distribution,
+      title_main = title_main,
+      title_x = title_x,
+      title_y = title_y
+    )
+  )
 }
 
 
 #' Probability Plot for Separated Mixture Models
 #'
 #' This function is used to apply the graphical technique of probability
-#' plotting to univariate mixture models that where separated with functions
+#' plotting to univariate mixture models that were separated with functions
 #' \code{\link{mixmod_regression}} or \code{\link{mixmod_em}}.
 #'
 #' Depending on the separation method the function \code{\link{johnson_method}}
@@ -662,7 +520,6 @@ plot_mod <- function(p_obj, x, y = NULL, loc_sc_params,
                      title_trace = "Fit") {
 
   distribution <- match.arg(distribution)
-
 
   if (is.null(y)) {
     x_min <- min(x, na.rm = TRUE)
