@@ -305,12 +305,12 @@ plot_prob_mix <- function(x, event, id = rep("XXXXXX", length(x)),
 
   distribution <- match.arg(distribution)
 
-  if (("em_results" %in%  names(mix_output)) & distribution != "weibull") {
+  if (("em_results" %in%  names(mix_output)) && distribution != "weibull") {
     stop("No valid distribution! Use weibull to visualize EM results")
   }
 
   # check if mix_output is NULL or "em_results" is not a name of lists in mix_output!
-  if (is.null(mix_output) | !("em_results" %in%  names(mix_output))) {
+  if (is.null(mix_output) || !("em_results" %in%  names(mix_output))) {
 
     # applying johnson_method() to all data! Used for printing results of
     # mixmod_regression() and for the case is mix_output = NULL.
@@ -326,7 +326,7 @@ plot_prob_mix <- function(x, event, id = rep("XXXXXX", length(x)),
 
     # Check for mixtures and separate data regarding results from segmented
     # regression:
-    if (!is.null(mix_output) & !("em_results" %in%  names(mix_output))) {
+    if (!is.null(mix_output) && !("em_results" %in%  names(mix_output))) {
 
        # Defining subset function for x_ranges provided by mixmod_regression():
       subset_x <- function(x, mrr_model) {
@@ -700,7 +700,7 @@ plot_mod_mix <- function(p_obj, x, event, mix_output,
 
   distribution <- match.arg(distribution)
 
-  if (("em_results" %in%  names(mix_output)) & distribution != "weibull") {
+  if (("em_results" %in%  names(mix_output)) && distribution != "weibull") {
     stop("No valid distribution! Use weibull to visualize EM results")
   }
 
@@ -791,13 +791,13 @@ plot_mod_mix <- function(p_obj, x, event, mix_output,
     group_df$groups <- as.factor(title_trace)
   }
 
-  if (!("em_results" %in%  names(mix_output)) & length(lines_split) > 1) {
+  if (!("em_results" %in%  names(mix_output)) && length(lines_split) > 1) {
     group_df$groups <- as.factor(paste(title_trace,
       floor(as.numeric(gsub(row.names(group_df), pattern = "mod_",
         replacement = "")))))
   }
 
-  if (("em_results" %in%  names(mix_output)) & length(lines_split) > 1) {
+  if (("em_results" %in%  names(mix_output)) && length(lines_split) > 1) {
     group_df$groups <- as.factor(paste(title_trace,
       floor(as.numeric(row.names(group_df)))))
   }
@@ -1094,7 +1094,7 @@ plot_pop <- function(p_obj, x, params,
     loc <- log(params[1])
     sc <- 1 / params[2]
   }
-  if (distribution == "lognormal" | distribution == "loglogistic") {
+  if (distribution %in% c("lognormal", "loglogistic")) {
     loc <- params[1]
     sc <- params[2]
   }
