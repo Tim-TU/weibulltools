@@ -118,8 +118,7 @@ plot_layout_plotly <- function(
 }
 
 plot_prob_plotly <- function(
-  x, y, event,
-  id = rep("XXXXXX", length(x)),
+  x, prob_df,
   distribution = c(
     "weibull", "lognormal", "loglogistic", "normal", "logistic", "sev"
   ),
@@ -133,15 +132,11 @@ plot_prob_plotly <- function(
 
   # Plot layout:
   p <- plot_layout(
-    x = x,
+    x = prob_df$x,
     distribution = distribution,
     title_main = title_main,
     title_x = title_x,
     title_y = title_y
-  )
-
-  prob_helper <- plot_prob_helper(
-    x, y, event, id, distribution
   )
 
   mark_x <- unlist(strsplit(title_x, " "))[1]
@@ -149,14 +144,110 @@ plot_prob_plotly <- function(
 
   # Construct probability plot:
   plot <- p %>%
-    plotly::add_trace(x = prob_helper$x, y = prob_helper$q, type = "scatter",
+    plotly::add_trace(data = prob_df, x = ~x_s, y = ~q, type = "scatter",
                       mode = "markers", hoverinfo = "text", color = I("#3C8DBC"),
                       name = title_trace,
-                      text = ~paste("ID:", prob_helper$id,
-                                    paste("<br>", paste0(mark_x, ":")), prob_helper$x,
-                                    paste("<br>", paste0(mark_y, ":")), round(prob_helper$y, digits = 5))
+                      text = ~paste("ID:", ~id,
+                                    paste("<br>", paste0(mark_x, ":")), prob_df$x_s,
+                                    paste("<br>", paste0(mark_y, ":")), round(prob_df$y_s, digits = 5))
     ) %>%
     plotly::layout(showlegend = TRUE)
 
   return(plot)
+}
+
+plot_prob_mix_plotly <- function(
+  group_df,
+  distribution = c(
+    "weibull", "lognormal", "loglogistic", "normal", "logistic", "sev"
+  ),
+  title_main = "Probability Plot",
+  title_x = "Characteristic",
+  title_y = "Unreliability"
+) {
+
+  distribution <- match.arg(distribution)
+
+  # Plot layout:
+  p <- plot_layout(
+    x = group_df$x_s,
+    distribution = distribution,
+    title_main = title_main,
+    title_x = title_x,
+    title_y = title_y,
+    plot_method = "plotly"
+  )
+
+  mark_x <- unlist(strsplit(title_x, " "))[1]
+  mark_y <- unlist(strsplit(title_y, " "))[1]
+
+  # Defining colors (max 5 subgroups):
+  cols <- c(I("#3C8DBC"), I("#FF0000"), I("#008000"), I("#ffa500"), I("#000000"))
+  cols <- cols[seq_along(unique(group_df$groups))]
+
+  # Construct probability plot:
+  plot <- p %>%
+    plotly::add_trace(
+      data = group_df,
+      x = ~x_s,
+      y = ~q,
+      type = "scatter",
+      mode = "markers",
+      hoverinfo = "text",
+      color = ~groups,
+      colors = cols,
+      text = ~paste(
+        "ID:", id_s,
+        paste("<br>", paste0(mark_x, ":")),
+        x_s,
+        paste("<br>", paste0(mark_y, ":")),
+        round(y_s, digits = 5)
+      )
+    ) %>%
+    plotly::layout(showlegend = TRUE)
+
+  return(plot)
+}
+
+plot_mod_plotly <- function(
+  p_obj, df_pred, param_val, param_label, title_trace = "Fit"
+) {
+
+  x_mark <- unlist(strsplit(p_obj$x$layoutAttrs[[2]]$xaxis$title$text, " "))[1]
+  y_mark <- unlist(strsplit(p_obj$x$layoutAttrs[[2]]$yaxis$title$text, " "))[1]
+
+  # Defining hovertext regarding amount of parameters:
+  hovertext <- paste(
+    paste0(x_mark, ":"),
+    round(df_pred$x_p, digits = 2),
+    paste("<br>", paste0(y_mark, ":")),
+    round(df_pred$y_p, digits = 5),
+    "<br>",
+    paste(param_label[1], param_val[1]),
+    "<br>",
+    paste(param_label[2], param_val[2])
+  )
+
+  if (length(param_val) == 3) {
+    hovertext <- paste(
+      hovertext,
+      "<br>",
+      paste(param_label[3], param_val[3])
+    )
+  }
+
+  p_mod <- plotly::add_lines(
+    p = p_obj,
+    data = df_pred,
+    x = ~x_p,
+    y = ~q,
+    type = "scatter",
+    mode = "lines",
+    hoverinfo = "text",
+    color = I("#CC2222"),
+    name = title_trace,
+    text = hovertext
+  )
+
+  return(p_mod)
 }

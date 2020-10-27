@@ -51,18 +51,18 @@ plot_layout <- function(
   distribution <- match.arg(distribution)
   plot_method <- match.arg(plot_method)
 
+  # Here it makes sense to call the helper method in the plot_format methods
+  ###
+
   plot_layout_fun <- if (plot_method == "plotly") plot_layout_plotly else
     plot_layout_ggplot2
 
-  do.call(
-    plot_layout_fun,
-    list(
-      x = x,
-      distribution = distribution,
-      title_main = title_main,
-      title_x = title_x,
-      title_y = title_y
-    )
+  plot_layout_fun(
+    x = x,
+    distribution = distribution,
+    title_main = title_main,
+    title_x = title_x,
+    title_y = title_y
   )
 }
 
@@ -147,8 +147,9 @@ plot_layout <- function(
 plot_prob <- function(
   x, y, event,
   id = rep("XXXXXX", length(x)),
-  distribution = c("weibull", "lognormal", "loglogistic",
-                   "normal", "logistic", "sev"),
+  distribution = c(
+    "weibull", "lognormal", "loglogistic", "normal", "logistic", "sev"
+  ),
   title_main = "Probability Plot",
   title_x = "Characteristic", title_y = "Unreliability",
   title_trace = "Sample",
@@ -158,21 +159,20 @@ plot_prob <- function(
   distribution <- match.arg(distribution)
   plot_method <- match.arg(plot_method)
 
+  prob_df <- plot_prob_helper(
+    x, y, event, id, distribution
+  )
+
   plot_prob_fun <- if (plot_method == "plotly") plot_prob_plotly else
     plot_prob_ggplot2
 
-  do.call(
-    plot_prob_fun,
-    list(
-      x = x,
-      y = y,
-      event = event,
-      id = id,
-      distribution = distribution,
-      title_main = title_main,
-      title_x = title_x,
-      title_y = title_y
-    )
+  plot_prob_fun(
+    x = x,
+    prob_df = prob_df,
+    distribution = distribution,
+    title_main = title_main,
+    title_x = title_x,
+    title_y = title_y
   )
 }
 
@@ -294,129 +294,40 @@ plot_prob <- function(
 #'                                   title_x = "Time in Hours",
 #'                                   title_y = "Probability of Failure",
 #'                                   title_trace = "Subgroup")
-
-plot_prob_mix <- function(x, event, id = rep("XXXXXX", length(x)),
-                          distribution = c("weibull", "lognormal", "loglogistic"),
-                          mix_output = NULL,
-                          title_main = "Probability Plot",
-                          title_x = "Characteristic",
-                          title_y = "Unreliability",
-                          title_trace = "Sample") {
+plot_prob_mix <- function(
+  x,
+  event,
+  id = rep("XXXXXX", length(x)),
+  distribution = c("weibull", "lognormal", "loglogistic"),
+  mix_output = NULL,
+  title_main = "Probability Plot",
+  title_x = "Characteristic",
+  title_y = "Unreliability",
+  title_trace = "Sample",
+  plot_method = c("plotly", "ggplot2")
+) {
 
   distribution <- match.arg(distribution)
+  plot_method <- match.arg(plot_method)
 
   if (("em_results" %in%  names(mix_output)) && distribution != "weibull") {
     stop("No valid distribution! Use weibull to visualize EM results")
   }
 
-  # check if mix_output is NULL or "em_results" is not a name of lists in mix_output!
-  if (is.null(mix_output) || !("em_results" %in%  names(mix_output))) {
+  group_df <- plot_prob_mix_helper(
+    x, event, id, distribution, mix_output, title_trace
+  )
 
-    # applying johnson_method() to all data! Used for printing results of
-    # mixmod_regression() and for the case is mix_output = NULL.
-    john_df <- johnson_method(x = x, event = event, id = id) %>%
-      dplyr::filter(status == 1)
+  plot_prob_mix_fun <- if (plot_method == "plotly") plot_prob_mix_plotly else
+    plot_prob_mix_ggplot2
 
-    x_s <- john_df$characteristic
-    y_s <- john_df$prob
-    id_s <- john_df$id
-    group_df <- data.frame(x_s = x_s, y_s = y_s, id_s = id_s)
-    group_df$groups <- as.factor(c(rep(title_trace, length(x_s))))
-  }
-
-    # Check for mixtures and separate data regarding results from segmented
-    # regression:
-    if (!is.null(mix_output) && !("em_results" %in%  names(mix_output))) {
-
-       # Defining subset function for x_ranges provided by mixmod_regression():
-      subset_x <- function(x, mrr_model) {
-        subset(x, x >= mrr_model$x_range[[1]] & x <= mrr_model$x_range[[2]])
-      }
-
-      if (exists("mod_3", where = mix_output)) {
-        x_1 <- subset_x(x = x_s, mrr_model = mix_output$mod_1)
-        x_2 <- subset_x(x = x_s, mrr_model = mix_output$mod_2)
-        x_3 <- subset_x(x = x_s, mrr_model = mix_output$mod_3)
-
-        group_df$groups <- as.factor(c(rep(paste(title_trace, 1), length(x_1)),
-          rep(paste(title_trace, 2), length(x_2)),
-          rep(paste(title_trace, 3), length(x_3))))
-      } else if (exists("mod_2", where = mix_output)) {
-        x_1 <- subset_x(x = x_s, mrr_model = mix_output$mod_1)
-        x_2 <- subset_x(x = x_s, mrr_model = mix_output$mod_2)
-        group_df$groups <- as.factor(c(rep(paste(title_trace, 1), length(x_1)),
-          rep(paste(title_trace, 2), length(x_2))))
-      } else {
-        group_df$groups <- as.factor(c(rep(title_trace, length(x_s))))
-      }
-    }
-
-  if (("em_results" %in%  names(mix_output))) {
-    # Split observations by maximum a-posteriori method (MAP) used in mixmod_em:
-    groups <- mix_output$em_results$groups
-    x_split <- split(x, groups, lex.order = T)
-    ev_split <- split(event, groups, lex.order = T)
-    id_split <- split(id, groups, lex.order = T)
-
-    # Apply johnson_method() for splitted observations:
-    john_lst <- mapply(x_split, ev_split, id_split,
-                       FUN = function(x, d, id) johnson_method(x = x, event = d, id = id),
-                       SIMPLIFY = FALSE)
-
-    # Store dataframes in one dataframe:
-    group_df <- do.call("rbind", john_lst)
-
-    # add group names using row.names() if splitted groups exist. Otherwise use
-    # title_trace:
-
-    if (length(john_lst) == 1) {
-      group_df$groups <- as.factor(title_trace)
-    } else {
-      group_df$groups <- as.factor(paste(title_trace,
-        floor(as.numeric(row.names(group_df)))))
-    }
-
-    # Preparation for plot:
-    group_df <- group_df %>%
-      dplyr::filter(status == 1) %>%
-      dplyr::rename(id_s = id, x_s = characteristic, y_s = prob)
-  }
-
-  # Choice of distribution:
-  if (distribution == "weibull") {
-    q <- SPREDA::qsev(group_df$y_s)
-  } else if (distribution == "lognormal") {
-    q <- stats::qnorm(group_df$y_s)
-  } else if (distribution == "loglogistic") {
-    q <- stats::qlogis(group_df$y_s)
-  }
-  group_df$q <- q
-
-  # Plot layout:
-  p <- plot_layout(x = group_df$x_s, distribution = distribution,
+  plot_prob_mix_fun(
+    group_df = group_df,
+    distribution = distribution,
     title_main = title_main,
     title_x = title_x,
-    title_y = title_y)
-
-  mark_x <- unlist(strsplit(title_x, " "))[1]
-  mark_y <- unlist(strsplit(title_y, " "))[1]
-
-  # Defining colors (max 5 subgroups):
-  cols <- c(I("#3C8DBC"), I("#FF0000"), I("#008000"), I("#ffa500"), I("#000000"))
-  cols <- cols[seq_along(unique(group_df$groups))]
-
-  # Construct probability plot:
-  plot <- p %>%
-    plotly::add_trace(data = group_df, x = ~x_s, y = ~q, type = "scatter",
-                      mode = "markers", hoverinfo = "text",
-                      color = ~groups,
-                      colors = cols,
-                      text = ~paste("ID:", id_s,
-                                    paste("<br>", paste0(mark_x, ":")), x_s,
-                                    paste("<br>", paste0(mark_y, ":")),
-                                    round(y_s, digits = 5))) %>%
-    plotly::layout(showlegend = TRUE)
-  return(plot)
+    title_y = title_y
+  )
 }
 
 #' Adding an Estimated Population Line to a Probability Plot
@@ -513,91 +424,44 @@ plot_prob_mix <- function(x, event, id = rep("XXXXXX", length(x)),
 #'                              distribution = "lognormal3",
 #'                              title_trace = "Estimated Lognormal CDF")
 
-plot_mod <- function(p_obj, x, y = NULL, loc_sc_params,
-                     distribution = c("weibull", "lognormal", "loglogistic",
-                                      "normal", "logistic", "sev", "weibull3",
-                                      "lognormal3", "loglogistic3"),
-                     title_trace = "Fit") {
+plot_mod <- function(
+  p_obj, x,
+  y = NULL, loc_sc_params,
+  distribution = c(
+    "weibull", "lognormal", "loglogistic", "normal", "logistic", "sev", "weibull3",
+    "lognormal3", "loglogistic3"
+  ),
+  title_trace = "Fit"
+) {
 
   distribution <- match.arg(distribution)
 
-  if (is.null(y)) {
-    x_min <- min(x, na.rm = TRUE)
-    x_max <- max(x, na.rm = TRUE)
-    x_low <- x_min - 10 ^ floor(log10(x_min)) * .25
-    x_high <- x_max + 10 ^ floor(log10(x_max)) * .25
-
-    x_p <- seq(x_low, x_high, length.out = 200)
-    y_p <- predict_prob(q = x_p, loc_sc_params = loc_sc_params,
-                        distribution = distribution)
-  } else {
-    x_p <- x
-    y_p <- y
+  # Plot method is determined by p_obj
+  plot_method <- if ("gg" %in% class(p_obj)) {
+    "ggplot2"
+  } else if ("plotly" %in% class(p_obj)) {
+    "plotly"
+  }  else {
+    stop(
+      "p_obj is not a valid plot object. Provide either a ggplot2 or a plotly
+      plot object."
+    )
   }
 
-  df_p <- data.frame(x_p = x_p, y_p = y_p)
+  mod_helper <- plot_mod_helper(
+    x, y, loc_sc_params, distribution
+  )
 
-  x_mark <- unlist(strsplit(p_obj$x$layoutAttrs[[2]]$xaxis$title$text, " "))[1]
-  y_mark <- unlist(strsplit(p_obj$x$layoutAttrs[[2]]$yaxis$title$text, " "))[1]
+  plot_mod_fun <- if (plot_method == "plotly") plot_mod_plotly else
+    plot_mod_ggplot2
 
-  if (distribution %in% c("weibull", "weibull3", "sev")) {
-    q <- SPREDA::qsev(y_p)
-
-    param_val <- c(round(loc_sc_params[[1]], digits = 2),
-      round(loc_sc_params[[2]], digits = 2))
-    param_label <- c("\u03BC:", "\u03C3:")
-
-    if (distribution == "weibull") {
-      param_val <- c(round(exp(loc_sc_params[[1]]), digits = 2),
-        round(1 / loc_sc_params[[2]], digits = 2))
-      param_label <- c("\u03B7:", "\u03B2:")
-    }
-    if (distribution == "weibull3") {
-      param_val <- c(round(exp(loc_sc_params[[1]]), digits = 2),
-        round(1 / loc_sc_params[[2]], digits = 2), round(loc_sc_params[[3]], digits = 2))
-      param_label <- c("\u03B7:", "\u03B2:", "\u03B3:")
-    }
-
-  }
-  if (distribution %in% c("lognormal", "lognormal3", "normal")) {
-    q <- stats::qnorm(y_p)
-    param_val <- c(round(loc_sc_params[[1]], digits = 2),
-      round(loc_sc_params[[2]], digits = 2))
-    param_label <- c("\u03BC:", "\u03C3:")
-
-    if (distribution == "lognormal3") {
-      param_val <- c(param_val, round(loc_sc_params[[3]], digits = 2))
-      param_label <- c(param_label, "\u03B3:")
-    }
-  }
-  if (distribution %in% c("loglogistic", "loglogistic3", "logistic")) {
-    q <- stats::qlogis(y_p)
-    param_val <- c(round(loc_sc_params[[1]], digits = 2),
-      round(loc_sc_params[[2]], digits = 2))
-    param_label <- c("\u03BC:", "\u03C3:")
-
-    if (distribution == "loglogistic3") {
-      param_val <- c(param_val, round(loc_sc_params[[3]], digits = 2))
-      param_label <- c(param_label, "\u03B3:")
-    }
-  }
-
-  # Defining hovertext regarding amount of parameters:
-  hovertext <- paste(paste0(x_mark, ":"), round(x_p, digits = 2),
-    paste("<br>", paste0(y_mark, ":")), round(y_p, digits = 5),
-    "<br>", paste(param_label[1], param_val[1]),
-    "<br>", paste(param_label[2], param_val[2]))
-
-  if (length(loc_sc_params) == 3) {
-    hovertext <- paste(hovertext,
-      "<br>", paste(param_label[3], param_val[3]))
-  }
-
-  p_mod <- plotly::add_lines(p = p_obj, data = df_p, x = ~x_p, y = ~q,
-      type = "scatter", mode = "lines", hoverinfo = "text",
-    color = I("#CC2222"), name = title_trace,
-      text = ~hovertext)
-  return(p_mod)
+  plot_mod_fun(
+    p_obj = p_obj,
+    df_pred = mod_helper$df_pred,
+    param_val = mod_helper$param_val,
+    param_label = mod_helper$param_label,
+    title_trace = title_trace
+  )
 }
 
 
@@ -823,13 +687,28 @@ plot_mod_mix <- function(p_obj, x, event, mix_output,
   x_mark <- unlist(strsplit(p_obj$x$layoutAttrs[[2]]$xaxis$title$text,  " "))[1]
   y_mark <- unlist(strsplit(p_obj$x$layoutAttrs[[2]]$yaxis$title$text,  " "))[1]
 
-  p_mod <- p_obj %>% plotly::add_lines(data = group_df %>% dplyr::group_by(groups),
-    x = ~x_p, y = ~q, type = "scatter",
-    mode = "lines", line = list(color = ~cols), name = ~groups, hoverinfo = "text",
-    text = ~paste(paste0(x_mark, ":"), round(x_p, digits = 2),
-      paste("<br>", paste0(y_mark, ":")), round(y_p, digits = 5),
-      "<br>", paste(lab_1, par_1),
-      "<br>", paste(lab_2, par_2)))
+  p_mod <- p_obj %>% plotly::add_lines(
+    data = group_df %>% dplyr::group_by(groups),
+    x = ~x_p,
+    y = ~q,
+    type = "scatter",
+    mode = "lines",
+    line = list(color = ~cols),
+    name = ~groups,
+    hoverinfo = "text",
+    text = paste(
+      paste0(x_mark, ":"),
+      round(x_p, digits = 2),
+      paste(
+        "<br>",
+        paste0(y_mark, ":")
+      ),
+      round(y_p, digits = 5),
+      "<br>",
+      paste(lab_1, par_1),
+      "<br>",
+      paste(lab_2, par_2))
+    )
   return(p_mod)
 }
 
