@@ -19,16 +19,14 @@ plot_layout_ggplot2 <- function(
       ggplot2::scale_x_continuous(
         breaks = layout_helper$x_ticks,
         minor_breaks = NULL,
-        labels = layout_helper$x_labels,
-        limits = range(x)
+        labels = layout_helper$x_labels
       )
   } else {
     p +
       ggplot2::scale_x_log10(
         breaks = layout_helper$x_ticks,
         minor_breaks = NULL,
-        labels = layout_helper$x_labels,
-        limits = range(x)
+        labels = layout_helper$x_labels
       )
   }
 
@@ -37,10 +35,14 @@ plot_layout_ggplot2 <- function(
       breaks = layout_helper$y_ticks,
       minor_breaks = NULL,
       labels = layout_helper$y_labels,
-      limits = range(layout_helper$y_ticks)
-    )
-
-  p <- p +
+    ) +
+    # Use coord for limits as we just want a visual limit
+    # Limit in scale_x/y_xxx would cut off data
+    # ggplot2::coord_cartesian(
+    #   xlim = range(x),
+    #   ylim = range(layout_helper$y_ticks),
+    #   default = TRUE
+    # ) +
     ggplot2::theme_bw() +
     ggplot2::theme(
       # Rotate x axis labels
@@ -76,9 +78,11 @@ plot_prob_ggplot2 <- function(
   )
 
   p <- p +
-    ggplot2::geom_point(data = prob_df, mapping = ggplot2::aes(x = x_s, y = q)) +
+    ggplot2::geom_point(
+      data = prob_df, mapping = ggplot2::aes(x = x_s, y = q), color = I("#3C8DBC")
+    ) #+
     # Ensure meaningful y limits
-    ggplot2::coord_cartesian(ylim = range(prob_df$q))
+    # ggplot2::coord_cartesian(ylim = range(prob_df$q))
 
   return(p)
 }
@@ -106,9 +110,9 @@ plot_prob_mix_ggplot2 <- function(
 
   p <- p + ggplot2::geom_point(
       data = group_df, mapping = ggplot2::aes(x = x_s, y = q, color = groups)
-    ) +
+    ) #+
     # Ensure meaningful y limits
-    ggplot2::coord_cartesian(ylim = range(group_df$q))
+    # ggplot2::coord_cartesian(ylim = range(group_df$q))
 
   return(p)
 }
@@ -117,4 +121,32 @@ plot_mod_ggplot2 <- function(
   p_obj, df_pred, param_val, param_label, title_trace = "Fit"
 ) {
 
+  # Compute limits, if prediction limits goes beyond current limits
+  xlim <- ggplot_build(p_obj)$layout$coord$limits$x
+  ylim <- ggplot_build(p_obj)$layout$coord$limits$y
+
+  if (is.null(xlim)) {
+    xlim <- range(df_pred$x_p)
+  } else {
+    pred_range <- range(df_pred$x_p)
+    xlim[1] <- min(xlim[1], pred_range[1])
+    xlim[2] <- max(xlim[2], pred_range[2])
+  }
+
+  if (is.null(ylim)) {
+    ylim <- range(df_pred$q)
+  } else {
+    pred_range <- range(df_pred$q)
+    ylim[1] <- min(ylim[1], pred_range[1])
+    ylim[2] <- max(ylim[2], pred_range[2])
+  }
+
+  p <- p_obj +
+    ggplot2::geom_line(
+      data = df_pred, mapping = ggplot2::aes(x = x_p, y = q),
+      color = I("#CC2222")
+    ) #+
+    # ggplot2::coord_cartesian(xlim = xlim, ylim = ylim)
+
+  return(p)
 }
