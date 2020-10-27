@@ -36,13 +36,6 @@ plot_layout_ggplot2 <- function(
       minor_breaks = NULL,
       labels = layout_helper$y_labels,
     ) +
-    # Use coord for limits as we just want a visual limit
-    # Limit in scale_x/y_xxx would cut off data
-    # ggplot2::coord_cartesian(
-    #   xlim = range(x),
-    #   ylim = range(layout_helper$y_ticks),
-    #   default = TRUE
-    # ) +
     ggplot2::theme_bw() +
     ggplot2::theme(
       # Rotate x axis labels
@@ -80,9 +73,7 @@ plot_prob_ggplot2 <- function(
   p <- p +
     ggplot2::geom_point(
       data = prob_df, mapping = ggplot2::aes(x = x_s, y = q), color = I("#3C8DBC")
-    ) #+
-    # Ensure meaningful y limits
-    # ggplot2::coord_cartesian(ylim = range(prob_df$q))
+    )
 
   return(p)
 }
@@ -110,9 +101,7 @@ plot_prob_mix_ggplot2 <- function(
 
   p <- p + ggplot2::geom_point(
       data = group_df, mapping = ggplot2::aes(x = x_s, y = q, color = groups)
-    ) #+
-    # Ensure meaningful y limits
-    # ggplot2::coord_cartesian(ylim = range(group_df$q))
+    )
 
   return(p)
 }
@@ -145,8 +134,7 @@ plot_mod_ggplot2 <- function(
     ggplot2::geom_line(
       data = df_pred, mapping = ggplot2::aes(x = x_p, y = q),
       color = I("#CC2222")
-    ) #+
-    # ggplot2::coord_cartesian(xlim = xlim, ylim = ylim)
+    )
 
   return(p)
 }
