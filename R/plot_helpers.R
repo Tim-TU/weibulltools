@@ -170,7 +170,7 @@ plot_prob_mix_helper <- function(
 }
 
 plot_mod_helper <- function(
-  x, y, log_sc_params, distribution
+  x, y, loc_sc_params, distribution
 ) {
   if (is.null(y)) {
     x_min <- min(x, na.rm = TRUE)
@@ -242,4 +242,154 @@ plot_mod_helper <- function(
     param_val = param_val,
     param_label = param_label
   )
+}
+
+plot_mod_mix_helper <- function(
+  x, event, mix_output, distribution, title_trace
+) {
+  # Case where mixmod_regression() was used in mix_output!
+  if (!("em_results" %in%  names(mix_output))) {
+
+    # Defining subset function for x_ranges provided by mixmod_regression():
+    subset_x <- function(x, mod) {
+      subset(x, x >= mod$x_range[[1]] & x <= mod$x_range[[2]])
+    }
+
+    # Defining function that calculates probabilities and store results in df.
+    compute_line <- function(x, mod, distribution) {
+      x_split <- subset_x(x = x, mod = mod)
+
+      x_min <- min(x_split, na.rm = TRUE)
+      x_max <- max(x_split, na.rm = TRUE)
+      x_low <- x_min - 10 ^ floor(log10(x_min)) * .25
+      x_high <- x_max + 10 ^ floor(log10(x_max)) * .25
+
+      x_p <- seq(x_low, x_high, length.out = 200)
+      y_p <- predict_prob(
+        q = x_p,
+        loc_sc_params = mod$loc_sc_coefficients,
+        distribution = distribution
+      )
+
+      # Prepare hovertexts for regression lines:
+      if (distribution == "weibull") {
+        param_1 <- round(mod$coefficients[[1]], digits = 2)
+        param_2 <- round(mod$coefficients[[2]], digits = 2)
+        label_1 <- "\u03B7:"
+        label_2 <- "\u03B2:"
+      } else {
+        param_1 <- round(mod$loc_sc_coefficients[[1]], digits = 2)
+        param_2 <- round(mod$loc_sc_coefficients[[2]], digits = 2)
+        label_1 <- "\u03BC:"
+        label_2 <- "\u03C3:"
+      }
+
+      df_p <- data.frame(
+        x_p = x_p, y_p = y_p, par_1 = param_1, par_2 = param_2, lab_1 = label_1,
+        lab_2 = label_2
+      )
+    }
+
+    lines_split <- lapply(
+      mix_output, compute_line, x = x, distribution = distribution
+    )
+  }
+
+  # case where mixmod_regression() was used in mix_output!
+  if ("em_results" %in%  names(mix_output)) {
+
+    # Split observations by maximum a-posteriori method (MAP) used in mixmod_em:
+    groups <- mix_output$em_results$groups
+    x_split <- split(x, groups, lex.order = T)
+    ev_split <- split(event, groups, lex.order = T)
+
+    # Apply predict_prob() for splitted observations (which failed) and parameters.
+    lines_split <- mapply(
+      x_split, ev_split, mix_output[-length(mix_output)],
+      FUN = function(x, d, mod) {
+        x_min <- min(x[d == 1], na.rm = TRUE)
+        x_max <- max(x[d == 1], na.rm = TRUE)
+        x_low <- x_min - 10 ^ floor(log10(x_min)) * .25
+        x_high <- x_max + 10 ^ floor(log10(x_max)) * .25
+        x_p <- seq(x_low, x_high, length.out = 200)
+
+        # Prepare hovertexts for regression lines:
+        if (distribution == "weibull") {
+          param_1 <- round(mod$coefficients[[1]], digits = 2)
+          param_2 <- round(mod$coefficients[[2]], digits = 2)
+          label_1 <- "\u03B7:"
+          label_2 <- "\u03B2:"
+        } else {
+          param_1 <- round(mod$loc_sc_coefficients[[1]], digits = 2)
+          param_2 <- round(mod$loc_sc_coefficients[[2]], digits = 2)
+          label_1 <- "\u03BC:"
+          label_2 <- "\u03C3:"
+        }
+
+        y_p <- predict_prob(
+          q = x_p,
+          loc_sc_params = mod$loc_sc_coefficients,
+          distribution = distribution
+        )
+
+        data.frame(
+          x_p = x_p, y_p = y_p, par_1 = param_1, par_2 = param_2,
+          lab_1 = label_1, lab_2 = label_2
+        )
+      },
+      SIMPLIFY = FALSE
+    )
+  }
+
+  # Bind stored dataframes in one dataframe:
+  group_df <- do.call("rbind", lines_split)
+
+  # Add group names using row.names() if splitted groups exist. Otherwise use
+  # title_trace:
+  if (length(lines_split) == 1) {
+    group_df$groups <- as.factor(title_trace)
+  }
+
+  if (!("em_results" %in%  names(mix_output)) && length(lines_split) > 1) {
+    group_df$groups <- as.factor(
+      paste(
+        title_trace,
+        floor(
+          as.numeric(
+            gsub(row.names(group_df), pattern = "mod_", replacement = "")
+          )
+        )
+      )
+    )
+  }
+
+  if (("em_results" %in%  names(mix_output)) && length(lines_split) > 1) {
+    group_df$groups <- as.factor(
+      paste(
+        title_trace,
+        floor(
+          as.numeric(row.names(group_df))
+        )
+      )
+    )
+  }
+
+  # Choice of distribution:
+  if (distribution == "weibull") {
+    q <- SPREDA::qsev(group_df$y_p)
+  } else if (distribution == "lognormal") {
+    q <- stats::qnorm(group_df$y_p)
+  } else if (distribution == "loglogistic") {
+    q <- stats::qlogis(group_df$y_p)
+  }
+  group_df$q <- q
+
+  # Defining colors (max 5 subgroups):
+  cols <- c(I("blue"), I("#9a0808"), I("#006400"), I("orange"), I("grey"))
+  cols <- cols[seq_along(unique(group_df$groups))]
+
+  # Add color to grouped data.frame to be in line with line colors:
+  group_df$cols <- rep(cols, each = 200)
+
+  return(group_df)
 }

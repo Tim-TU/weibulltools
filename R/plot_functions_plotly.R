@@ -251,3 +251,35 @@ plot_mod_plotly <- function(
 
   return(p_mod)
 }
+
+plot_mod_mix_plotly <- function(p_obj, group_df) {
+
+  # Get axis labels in hover:
+  x_mark <- unlist(strsplit(p_obj$x$layoutAttrs[[2]]$xaxis$title$text,  " "))[1]
+  y_mark <- unlist(strsplit(p_obj$x$layoutAttrs[[2]]$yaxis$title$text,  " "))[1]
+
+  p_mod <- p_obj %>% plotly::add_lines(
+    data = group_df %>% dplyr::group_by(groups),
+    x = ~x_p,
+    y = ~q,
+    type = "scatter",
+    mode = "lines",
+    line = list(color = ~cols),
+    name = ~groups,
+    hoverinfo = "text",
+    text = paste(
+      paste0(x_mark, ":"),
+      round(group_df$x_p, digits = 2),
+      paste(
+        "<br>",
+        paste0(y_mark, ":")
+      ),
+      round(group_df$y_p, digits = 5),
+      "<br>",
+      paste(group_df$lab_1, group_df$par_1),
+      "<br>",
+      paste(group_df$lab_2, group_df$par_2))
+  )
+
+  return(p_mod)
+}

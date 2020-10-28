@@ -4,16 +4,14 @@
 #'
 #' @param x a numeric vector which consists of lifetime data. \code{x} is used to
 #'   specify the grid of the plot.
-#' @param distribution supposed distribution of the random variable. The
-#'   value can be \code{"weibull"}, \code{"lognormal"}, \code{"loglogistic"},
-#'   \code{"normal"}, \code{"logistic"} or \code{"sev"} \emph{(smallest extreme value)}.
-#'   Other distributions have not been implemented yet.
+#' @param distribution supposed distribution of the random variable.
 #' @param title_main a character string which is assigned to the main title
 #'   of the plot.
 #' @param title_x a character string which is assigned to the title of the
 #'   x axis.
 #' @param title_y a character string which is assigned to the title of the
 #'   y axis.
+#' @param plot_method the package, which is used for generating the plot output.
 #'
 #' @return Returns a plotly object which contains the layout
 #'   that is used for probability plotting.
@@ -93,16 +91,7 @@ plot_layout <- function(
 #' @param event a vector of binary data (0 or 1) indicating whether unit \emph{i}
 #'   is a right censored observation (= 0) or a failure (= 1).
 #' @param id a character vector for the identification of every unit.
-#' @param distribution supposed distribution of the random variable. The
-#'   value can be \code{"weibull"}, \code{"lognormal"}, \code{"loglogistic"},
-#'   \code{"normal"}, \code{"logistic"} or \code{"sev"} \emph{(smallest extreme value)}.
-#'   Other distributions have not been implemented yet.
-#' @param title_main a character string which is assigned to the main title
-#'   of the plot.
-#' @param title_x a character string which is assigned to the title of the
-#'   x axis.
-#' @param title_y a character string which is assigned to the title of the
-#'   y axis.
+#' @inheritParams plot_layout
 #' @param title_trace a character string whis is assigned to the trace shown in
 #'   the legend.
 #'
@@ -213,28 +202,10 @@ plot_prob <- function(
 #' @references Doganaksoy, N.; Hahn, G.; Meeker, W. Q., Reliability Analysis by
 #'   Failure Mode, Quality Progress, 35(6), 47-52, 2002
 #'
-#' @param x a numeric vector which consists of lifetime data. Lifetime
-#'   data could be every characteristic influencing the reliability of a product,
-#'   e.g. operating time (days/months in service), mileage (km, miles), load
-#'   cycles.
-#' @param event a vector of binary data (0 or 1) indicating whether unit \emph{i}
-#'   is a right censored observation (= 0) or a failure (= 1).
-#' @param id a character vector for the identification of every unit.
-#' @param distribution supposed distribution of the random variable. For output
-#'   provided by \code{mixmod_em} distribution must be \code{"weibull"}. Can be
-#'   \code{"weibull"}, \code{"lognormal"} or \code{"loglogistic"} for output provided
-#'   \code{mixmod_regression}. Other distributions have not been implemented yet.
+#' @inheritParams plot_prob
 #' @param mix_output a list provided by \code{\link{mixmod_regression}} or
 #'   \code{\link{mixmod_em}}, which consists of values necessary to visualize the
 #'   subgroups.The default value of \code{mix_output} is \code{NULL}.
-#' @param title_main a character string which is assigned to the main title
-#'   of the plot.
-#' @param title_x a character string which is assigned to the title of the
-#'   x axis.
-#' @param title_y a character string which is assigned to the title of the
-#'   y axis.
-#' @param title_trace a character string whis is assigned to the trace shown in
-#'   the legend.
 #'
 #' @return Returns a plotly object containing the layout of the probability plot
 #'   provided by \code{\link{plot_layout}} and the plotting positions.
@@ -353,13 +324,7 @@ plot_prob_mix <- function(
 #'   parameter \eqn{\mu} and the second element needs to be the scale
 #'   parameter \eqn{\sigma}. If a three-parametric model is used the third element
 #'   is the threshold parameter \eqn{\gamma}.
-#' @param distribution supposed distribution of the random variable. The
-#'   value can be \code{"weibull"}, \code{"lognormal"}, \code{"loglogistic"},
-#'   \code{"normal"}, \code{"logistic"}, \code{"sev"} \emph{(smallest extreme value)},
-#'   \code{"weibull3"}, \code{"lognormal3"} or \code{"loglogistic3"}.
-#'   Other distributions have not been implemented yet.
-#' @param title_trace a character string whis is assigned to the trace shown in
-#'   the legend.
+#' @inheritParams plot_prob
 #'
 #' @return Returns a plotly object containing the probability plot with
 #'   plotting positions and the estimated regression line.
@@ -482,18 +447,11 @@ plot_mod <- function(
 #'   Failure Mode, Quality Progress, 35(6), 47-52, 2002
 #'
 #' @param p_obj a plotly object provided by function \code{\link{plot_prob_mix}}.
-#' @param x a numeric vector containing the x-coordinates of the regression line.
-#' @param event a vector of binary data (0 or 1) indicating whether unit \emph{i}
-#'   is a right censored observation (= 0) or a failure (= 1).
 #' @param mix_output a list provided by \code{\link{mixmod_regression}} or
 #'   \code{\link{mixmod_em}}, which consists of elements necessary to visualize
 #'   the regression lines.
-#' @param distribution supposed distribution of the random variable. For output
-#'   provided by \code{mixmod_em} distribution must be \code{"weibull"}. Can be
-#'   \code{"weibull"}, \code{"lognormal"} or \code{"loglogistic"} for output provided
-#'   \code{mixmod_regression}. Other distributions have not been implemented yet.
-#' @param title_trace a character string whis is assigned to the trace shown in
-#'   the legend.
+#' @inheritParams plot_mod
+#' @inheritParams plot_prob
 #'
 #' @return Returns a plotly object containing the probability plot with
 #'   plotting positions and estimated regression line(s).
@@ -568,148 +526,28 @@ plot_mod_mix <- function(p_obj, x, event, mix_output,
     stop("No valid distribution! Use weibull to visualize EM results")
   }
 
-  # Case where mixmod_regression() was used in mix_output!
-  if (!("em_results" %in%  names(mix_output))) {
-
-    # Defining subset function for x_ranges provided by mixmod_regression():
-    subset_x <- function(x, mod) {
-      subset(x, x >= mod$x_range[[1]] & x <= mod$x_range[[2]])
-    }
-
-    # Defining function that calculates probabilities and store results in df.
-    compute_line <- function(x, mod, distribution) {
-      x_split <- subset_x(x = x, mod = mod)
-
-      x_min <- min(x_split, na.rm = TRUE)
-      x_max <- max(x_split, na.rm = TRUE)
-      x_low <- x_min - 10 ^ floor(log10(x_min)) * .25
-      x_high <- x_max + 10 ^ floor(log10(x_max)) * .25
-
-      x_p <- seq(x_low, x_high, length.out = 200)
-      y_p <- predict_prob(q = x_p, loc_sc_params = mod$loc_sc_coefficients,
-        distribution = distribution)
-
-      # Prepare hovertexts for regression lines:
-      if (distribution == "weibull") {
-        param_1 <- round(mod$coefficients[[1]], digits = 2)
-        param_2 <- round(mod$coefficients[[2]], digits = 2)
-        label_1 <- "\u03B7:"
-        label_2 <- "\u03B2:"
-      } else {
-        param_1 <- round(mod$loc_sc_coefficients[[1]], digits = 2)
-        param_2 <- round(mod$loc_sc_coefficients[[2]], digits = 2)
-        label_1 <- "\u03BC:"
-        label_2 <- "\u03C3:"
-      }
-
-      df_p <- data.frame(x_p = x_p, y_p = y_p, par_1 = param_1, par_2 = param_2,
-        lab_1 = label_1, lab_2 = label_2)
-    }
-    lines_split <- lapply(mix_output, compute_line, x = x,
-      distribution = distribution)
-  }
-
-  # case where mixmod_regression() was used in mix_output!
-  if ("em_results" %in%  names(mix_output)) {
-
-    # Split observations by maximum a-posteriori method (MAP) used in mixmod_em:
-    groups <- mix_output$em_results$groups
-    x_split <- split(x, groups, lex.order = T)
-    ev_split <- split(event, groups, lex.order = T)
-
-    # Apply predict_prob() for splitted observations (which failed) and parameters.
-    lines_split <- mapply(x_split, ev_split, mix_output[-length(mix_output)],
-      FUN = function(x, d, mod) {
-        x_min <- min(x[d == 1], na.rm = TRUE)
-        x_max <- max(x[d == 1], na.rm = TRUE)
-        x_low <- x_min - 10 ^ floor(log10(x_min)) * .25
-        x_high <- x_max + 10 ^ floor(log10(x_max)) * .25
-        x_p <- seq(x_low, x_high, length.out = 200)
-
-        # Prepare hovertexts for regression lines:
-        if (distribution == "weibull") {
-          param_1 <- round(mod$coefficients[[1]], digits = 2)
-          param_2 <- round(mod$coefficients[[2]], digits = 2)
-          label_1 <- "\u03B7:"
-          label_2 <- "\u03B2:"
-        } else {
-          param_1 <- round(mod$loc_sc_coefficients[[1]], digits = 2)
-          param_2 <- round(mod$loc_sc_coefficients[[2]], digits = 2)
-          label_1 <- "\u03BC:"
-          label_2 <- "\u03C3:"
-        }
-
-        data.frame(x_p = x_p, y_p = predict_prob(q = x_p,
-          loc_sc_params = mod$loc_sc_coefficients,
-          distribution = distribution), par_1 = param_1, par_2 = param_2,
-          lab_1 = label_1, lab_2 = label_2)
-      }, SIMPLIFY = FALSE)
-  }
-
-  # Bind stored dataframes in one dataframe:
-  group_df <- do.call("rbind", lines_split)
-
-  # Add group names using row.names() if splitted groups exist. Otherwise use
-  # title_trace:
-  if (length(lines_split) == 1) {
-    group_df$groups <- as.factor(title_trace)
-  }
-
-  if (!("em_results" %in%  names(mix_output)) && length(lines_split) > 1) {
-    group_df$groups <- as.factor(paste(title_trace,
-      floor(as.numeric(gsub(row.names(group_df), pattern = "mod_",
-        replacement = "")))))
-  }
-
-  if (("em_results" %in%  names(mix_output)) && length(lines_split) > 1) {
-    group_df$groups <- as.factor(paste(title_trace,
-      floor(as.numeric(row.names(group_df)))))
-  }
-
-  # Choice of distribution:
-  if (distribution == "weibull") {
-    q <- SPREDA::qsev(group_df$y_p)
-  } else if (distribution == "lognormal") {
-    q <- stats::qnorm(group_df$y_p)
-  } else if (distribution == "loglogistic") {
-    q <- stats::qlogis(group_df$y_p)
-  }
-  group_df$q <- q
-
-  # Defining colors (max 5 subgroups):
-  cols <- c(I("blue"), I("#9a0808"), I("#006400"), I("orange"), I("grey"))
-  cols <- cols[seq_along(unique(group_df$groups))]
-
-  # Add color to grouped data.frame to be in line with line colors:
-  group_df$cols <- rep(cols, each = 200)
-
-  # Get axis labels in hover:
-  x_mark <- unlist(strsplit(p_obj$x$layoutAttrs[[2]]$xaxis$title$text,  " "))[1]
-  y_mark <- unlist(strsplit(p_obj$x$layoutAttrs[[2]]$yaxis$title$text,  " "))[1]
-
-  p_mod <- p_obj %>% plotly::add_lines(
-    data = group_df %>% dplyr::group_by(groups),
-    x = ~x_p,
-    y = ~q,
-    type = "scatter",
-    mode = "lines",
-    line = list(color = ~cols),
-    name = ~groups,
-    hoverinfo = "text",
-    text = paste(
-      paste0(x_mark, ":"),
-      round(x_p, digits = 2),
-      paste(
-        "<br>",
-        paste0(y_mark, ":")
-      ),
-      round(y_p, digits = 5),
-      "<br>",
-      paste(lab_1, par_1),
-      "<br>",
-      paste(lab_2, par_2))
+  # Plot method is determined by p_obj
+  plot_method <- if ("gg" %in% class(p_obj)) {
+    "ggplot2"
+  } else if ("plotly" %in% class(p_obj)) {
+    "plotly"
+  }  else {
+    stop(
+      "p_obj is not a valid plot object. Provide either a ggplot2 or a plotly
+      plot object."
     )
-  return(p_mod)
+  }
+
+  group_df <- plot_mod_mix_helper(
+    x, event, mix_output, distribution, title_trace
+  )
+
+  plot_mod_mix_fun <- if (plot_method == "plotly") plot_mod_mix_plotly else
+    plot_mod_mix_ggplot2
+
+  plot_mod_mix_fun(
+    p_obj, group_df
+  )
 }
 
 
