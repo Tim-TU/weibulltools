@@ -9,17 +9,15 @@ plot_layout(
   distribution = c("weibull", "lognormal", "loglogistic", "normal", "logistic", "sev"),
   title_main = "Probability Plot",
   title_x = "Characteristic",
-  title_y = "Unreliability"
+  title_y = "Unreliability",
+  plot_method = c("plotly", "ggplot2")
 )
 }
 \arguments{
 \item{x}{a numeric vector which consists of lifetime data. \code{x} is used to
 specify the grid of the plot.}
 
-\item{distribution}{supposed distribution of the random variable. The
-value can be \code{"weibull"}, \code{"lognormal"}, \code{"loglogistic"},
-\code{"normal"}, \code{"logistic"} or \code{"sev"} \emph{(smallest extreme value)}.
-Other distributions have not been implemented yet.}
+\item{distribution}{supposed distribution of the random variable.}
 
 \item{title_main}{a character string which is assigned to the main title
 of the plot.}
@@ -29,6 +27,8 @@ x axis.}
 
 \item{title_y}{a character string which is assigned to the title of the
 y axis.}
+
+\item{plot_method}{the package, which is used for generating the plot output.}
 }
 \value{
 Returns a plotly object which contains the layout

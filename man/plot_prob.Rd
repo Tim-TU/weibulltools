@@ -14,7 +14,8 @@ plot_prob(
   title_main = "Probability Plot",
   title_x = "Characteristic",
   title_y = "Unreliability",
-  title_trace = "Sample"
+  title_trace = "Sample",
+  plot_method = c("plotly", "ggplot2")
 )
 }
 \arguments{
@@ -31,10 +32,7 @@ is a right censored observation (= 0) or a failure (= 1).}
 
 \item{id}{a character vector for the identification of every unit.}
 
-\item{distribution}{supposed distribution of the random variable. The
-value can be \code{"weibull"}, \code{"lognormal"}, \code{"loglogistic"},
-\code{"normal"}, \code{"logistic"} or \code{"sev"} \emph{(smallest extreme value)}.
-Other distributions have not been implemented yet.}
+\item{distribution}{supposed distribution of the random variable.}
 
 \item{title_main}{a character string which is assigned to the main title
 of the plot.}
@@ -47,6 +45,8 @@ y axis.}
 
 \item{title_trace}{a character string whis is assigned to the trace shown in
 the legend.}
+
+\item{plot_method}{the package, which is used for generating the plot output.}
 }
 \value{
 Returns a plotly object containing the layout of the probability plot

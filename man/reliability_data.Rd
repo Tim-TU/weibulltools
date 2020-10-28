@@ -9,7 +9,14 @@ reliability_data(data, x, event, id)
 \arguments{
 \item{data}{A data frame.}
 
-\item{x, event, id}{Column names of columns containing reliability information.}
+\item{x}{The name of a column holding lifetime data. Lifetime data could
+be every characteristic influencing the reliability of a product, e.g.
+operating time (days/months in service), mileage (km, miles), load cycles.}
+
+\item{event}{The name of a column holding binary data (0 or 1) indicating
+whether unit \emph{i} is a right censored observation (= 0) or a failure (= 1).}
+
+\item{id}{The name of a column holding the identification for every unit.}
 }
 \description{
 This function prepares a dataset for the reliability pipeline.
