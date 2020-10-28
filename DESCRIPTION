@@ -37,6 +37,8 @@ Description: Contains methods for examining bench test or field data using the
 License: GPL-2
 Imports:
     dplyr, 
+    ggnewscales,
+    ggplot2,
     LearnBayes,
     magrittr, 
     plotly, 
@@ -50,8 +52,7 @@ Depends: R (>= 3.3.0)
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 7.1.0
-Suggests: ggplot2, 
-  knitr, 
-  rmarkdown, 
-  tidyverse
+Suggests:
+    knitr, 
+    rmarkdown
 VignetteBuilder: knitr
