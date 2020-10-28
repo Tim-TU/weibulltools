@@ -85,7 +85,8 @@ plot_prob_mix_ggplot2 <- function(
   ),
   title_main = "Probability Plot",
   title_x = "Characteristic",
-  title_y = "Unreliability"
+  title_y = "Unreliability",
+  title_trace = "Sample"
 ) {
 
   distribution <- match.arg(distribution)
@@ -101,7 +102,8 @@ plot_prob_mix_ggplot2 <- function(
 
   p <- p + ggplot2::geom_point(
       data = group_df, mapping = ggplot2::aes(x = x_s, y = q, color = groups)
-    )
+    ) +
+    ggplot2::labs(color = title_trace)
 
   return(p)
 }
@@ -109,32 +111,22 @@ plot_prob_mix_ggplot2 <- function(
 plot_mod_ggplot2 <- function(
   p_obj, df_pred, param_val, param_label, title_trace = "Fit"
 ) {
-
-  # Compute limits, if prediction limits goes beyond current limits
-  xlim <- ggplot_build(p_obj)$layout$coord$limits$x
-  ylim <- ggplot_build(p_obj)$layout$coord$limits$y
-
-  if (is.null(xlim)) {
-    xlim <- range(df_pred$x_p)
-  } else {
-    pred_range <- range(df_pred$x_p)
-    xlim[1] <- min(xlim[1], pred_range[1])
-    xlim[2] <- max(xlim[2], pred_range[2])
-  }
-
-  if (is.null(ylim)) {
-    ylim <- range(df_pred$q)
-  } else {
-    pred_range <- range(df_pred$q)
-    ylim[1] <- min(ylim[1], pred_range[1])
-    ylim[2] <- max(ylim[2], pred_range[2])
-  }
-
-  p <- p_obj +
+  p_mod <- p_obj +
     ggplot2::geom_line(
       data = df_pred, mapping = ggplot2::aes(x = x_p, y = q),
       color = I("#CC2222")
     )
 
-  return(p)
+  return(p_mod)
+}
+
+plot_mod_mix_ggplot2 <- function(p_obj, group_df, title_trace) {
+  p_mod <- p_obj +
+    ggnewscale::new_scale_color() +
+    ggplot2::geom_line(
+      data = group_df, mapping = ggplot2::aes(x = x_p, y = q, color = groups)
+    ) +
+    ggplot2::labs(color = title_trace)
+
+  return(p_mod)
 }

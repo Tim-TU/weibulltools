@@ -297,7 +297,8 @@ plot_prob_mix <- function(
     distribution = distribution,
     title_main = title_main,
     title_x = title_x,
-    title_y = title_y
+    title_y = title_y,
+    title_trace = title_trace
   )
 }
 
@@ -546,7 +547,7 @@ plot_mod_mix <- function(p_obj, x, event, mix_output,
     plot_mod_mix_ggplot2
 
   plot_mod_mix_fun(
-    p_obj, group_df
+    p_obj, group_df, title_trace
   )
 }
 

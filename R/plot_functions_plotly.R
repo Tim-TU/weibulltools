@@ -163,7 +163,8 @@ plot_prob_mix_plotly <- function(
   ),
   title_main = "Probability Plot",
   title_x = "Characteristic",
-  title_y = "Unreliability"
+  title_y = "Unreliability",
+  title_trace = "Sample"
 ) {
 
   distribution <- match.arg(distribution)
@@ -252,7 +253,7 @@ plot_mod_plotly <- function(
   return(p_mod)
 }
 
-plot_mod_mix_plotly <- function(p_obj, group_df) {
+plot_mod_mix_plotly <- function(p_obj, group_df, title_trace) {
 
   # Get axis labels in hover:
   x_mark <- unlist(strsplit(p_obj$x$layoutAttrs[[2]]$xaxis$title$text,  " "))[1]
