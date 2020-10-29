@@ -264,6 +264,27 @@ predict_prob <- function(q, loc_sc_params,
 #'                                   bounds = "two_sided",
 #'                                   conf_level = 0.95,
 #'                                   direction = "y")
+confint_betabinom_2.parameter_estimation <- function(
+  parameter_estimation,
+  bounds = c("two_sided", "lower", "upper"),
+  conf_level = 0.95,
+  direction = c("y", "x")
+) {
+  rel_df <- attr(parameter_estimation, "data")
+  distribution <- attr(parameter_estimation, "distribution")
+
+  confint_betabinom_2.default(
+    x = rel_df$x,
+    event = rel_df$event,
+    loc_sc_params = parameter_estimation$loc_sc_coefficients,
+    distribution = distribution,
+    bounds = bounds,
+    conf_level = conf_level,
+    direction = direction
+  )
+}
+
+confint_betabinom_2.default <- confint_betabinom
 
 confint_betabinom <- function(x, event, loc_sc_params,
                               distribution = c("weibull", "lognormal", "loglogistic",
@@ -346,6 +367,10 @@ confint_betabinom <- function(x, event, loc_sc_params,
   }
 
   class(df_output) <- c("confint", class(df_output))
+
+  attr(df_output, "distribution") <- distribution
+  attr(df_output, "bounds") <- bounds
+  attr(df_output, "direction") <- direction
 
   return(df_output)
 }
@@ -512,8 +537,6 @@ delta_method <- function(p, loc_sc_params, loc_sc_varcov,
 #'
 #' @param x a numeric vector which consists of lifetime data. \code{x} is used to
 #'   specify the range of confidence region(s).
-#' @param event a vector of binary data (0 or 1) indicating whether unit \emph{i}
-#'   is a right censored observation (= 0) or a failure (= 1).
 #' @param loc_sc_params a (named) numeric vector of estimated
 #'   (by Maximum Likelihood) location and scale parameters for a specified
 #'   distribution. The order of elements is important. First entry needs to be
@@ -528,17 +551,13 @@ delta_method <- function(p, loc_sc_params, loc_sc_varcov,
 #'   variance of the scale parameter Var(\eqn{\sigma}). If a three-parametric model
 #'   is used the third element of the diagonal needs to be the variance of the
 #'   threshold parameter Var(\eqn{\gamma}).
-#' @param distribution supposed distribution of the random variable. The
-#'   value can be \code{"weibull"}, \code{"lognormal"}, \code{"loglogistic"},
-#'   \code{"normal"}, \code{"logistic"}, \code{"sev"} \emph{(smallest extreme value)},
-#'   \code{"weibull3"}, \code{"lognormal3"} or \code{"loglogistic3"}.
-#'   Other distributions have not been implemented yet.
 #' @param bounds a character string specifying the interval(s) which has/have to
-#'   be computed. Must be one of "two_sided" (default), "lower" or "upper".
+#'   be computed.
 #' @param conf_level confidence level of the interval. The default value is
 #'   \code{conf_level = 0.95}.
 #' @param direction a character string specifying the direction of the computed
 #'   interval(s). Must be either "y" (failure probabilities) or "x" (quantiles).
+#' @inheritParams plot_prob
 #'
 #' @return A data frame containing the lifetime characteristic, the
 #'   probabilities, estimated standard errors by the delta method and computed
@@ -559,6 +578,32 @@ delta_method <- function(p, loc_sc_params, loc_sc_varcov,
 #'                             bounds = "two_sided",
 #'                             conf_level = 0.95,
 #'                             direction = "y")
+confint_fisher_2 <- function(x, ...) {
+  UseMethod("confint_fisher_2")
+}
+
+confint_fisher_2.parameter_estimation <- function(
+  parameter_estimation,
+  bounds = c("two_sided", "lower", "upper"),
+  conf_level = 0.95,
+  direction = c("y", "x")
+) {
+  rel_df <- attr(parameter_estimation, "data")
+  distribution <- attr(parameter_estimation, "distribution")
+
+  confint_fisher_2.default(
+    x = rel_df$x,
+    event = rel_df$event,
+    loc_sc_params = parameter_estimation$loc_sc_coefficients,
+    los_sc_varcov = parameter_estimation$loc_sc_vcov,
+    distribution = distribution,
+    bounds = bounds,
+    conf_level = conf_level,
+    direction = direction
+  )
+}
+
+confint_fisher_2.default <- confint_fisher
 
 confint_fisher <- function(x, event, loc_sc_params, loc_sc_varcov,
                            distribution = c("weibull", "lognormal", "loglogistic",

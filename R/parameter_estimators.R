@@ -369,6 +369,11 @@ rank_regression.default <- function(x, y, event,
 
   class(mrr_output) <- c("parameter_estimation", class(mrr_output))
 
+  attr(mrr_output, "data") <- data.frame(
+    x = x, event = event
+  )
+  attr(mrr_output, "distribution") <- distribution
+
   return(mrr_output)
 }
 
