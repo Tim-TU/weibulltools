@@ -728,7 +728,7 @@ plot_conf.default <- function(
     plot_conf_ggplot2
 
   plot_conf_fun(
-    p_obj
+    p_obj, df_p, title_trace
   )
 }
 

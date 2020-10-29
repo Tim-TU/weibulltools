@@ -396,24 +396,26 @@ plot_mod_mix_helper <- function(
 
 plot_conf_helper <- function(df_mod, x, y, direction, distribution) {
   # Construct x, y from x/y, upper/lower bounds (depending on direction and bounds)
-  lst <- do.call(Map, c(data.frame, list(x = x, y = y)), quote = TRUE)
-  df_p <- as.data.frame(dplyr::bind_rows(lst, .id = "group"))
+  lst <- Map(data.frame, x = x, y = y)
+  df_p <- dplyr::bind_rows(lst, .id = "bound")
 
   if (direction == "y") {
-    df_p$group <- ifelse(test = df_p$y < df_mod$y_p, yes = "Lower", no = "Upper")
+    df_p$bound <- ifelse(test = df_p$y < df_mod$y_p, yes = "Lower", no = "Upper")
   } else {
-    df_p$group <- ifelse(test = df_p$x < df_mod$x_p, yes = "Lower", no = "Upper")
+    df_p$bound <- ifelse(test = df_p$x < df_mod$x_p, yes = "Lower", no = "Upper")
   }
 
   if (distribution %in% c("weibull", "weibull3", "sev")) {
-    q_1 <- SPREDA::qsev(df_p$y[df_p$group == unique(df_p$group)[1]])
+    df_p$q <- SPREDA::qsev(df_p$y)
   }
   if (distribution %in% c("lognormal", "lognormal3", "normal")) {
-    q_1 <- stats::qnorm(df_p$y[df_p$group == unique(df_p$group)[1]])
+    df_p$q <- stats::qnorm(df_p$y)
   }
   if (distribution %in% c("loglogistic", "loglogistic3", "logistic")) {
-    q_1 <- stats::qlogis(df_p$y[df_p$group == unique(df_p$group)[1]])
+    df_p$q <- stats::qlogis(df_p$y)
   }
+
+  df_p <- dplyr::group_by(df_p, bound)
 
   return(df_p)
 }

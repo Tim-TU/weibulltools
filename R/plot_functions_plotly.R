@@ -285,40 +285,30 @@ plot_mod_mix_plotly <- function(p_obj, group_df, title_trace) {
   return(p_mod)
 }
 
-plot_conf_plotly <- function(p_obj, df_p) {
+plot_conf_plotly <- function(p_obj, df_p, title_trace) {
   # Get axis labels in hover:
   x_mark <- unlist(strsplit(p_obj$x$layoutAttrs[[2]]$xaxis$title$text,  " "))[1]
   y_mark <- unlist(strsplit(p_obj$x$layoutAttrs[[2]]$yaxis$title$text,  " "))[1]
 
   p_conf <- plotly::add_lines(
-    p = p_obj, data = dplyr::filter(df_p, group == unique(df_p$group)[1]),
-    x = ~x, y = ~q_1, type = "scatter", mode = "lines",
-    hoverinfo = "text", line = list(dash = "dash", width = 1),
-    color = I("#CC2222"), name = title_trace, legendgroup = "Interval",
-    text = ~paste(paste0(x_mark, ":"), round(x, digits = 2),
-                  paste("<br>", paste0(y_mark, ":")), round(y, digits = 5)))
+    p = p_obj,
+    # df_p is grouped by bound. Therefore two separate lines are drawn
+    # for two-sided confidence intervals
+    data = df_p,
+    x = ~x, y = ~q,
+    type = "scatter", mode = "lines",
+    hoverinfo = "text",
+    line = list(dash = "dash", width = 1),
+    color = I("#CC2222"),
+    name = title_trace,
+    legendgroup = "Interval",
+    text = ~paste(
+      paste0(x_mark, ":"),
+      round(x, digits = 2),
+      paste("<br>", paste0(y_mark, ":")),
+      round(y, digits = 5)
+    )
+  )
 
-  if (length(unique(df_p$group)) > 1) {
-
-    if (distribution %in% c("weibull", "weibull3", "sev")) {
-      q_2 <- SPREDA::qsev(df_p$y[df_p$group == unique(df_p$group)[2]])
-    }
-    if (distribution %in% c("lognormal", "lognormal3", "normal")) {
-      q_2 <- stats::qnorm(df_p$y[df_p$group == unique(df_p$group)[2]])
-    }
-    if (distribution %in% c("loglogistic", "loglogistic3", "logistic")) {
-      q_2 <- stats::qlogis(df_p$y[df_p$group == unique(df_p$group)[2]])
-    }
-
-    p_conf <- p_conf %>%
-      plotly::add_lines(
-        data = dplyr::filter(df_p, group == unique(df_p$group)[2]),
-        x = ~x, y = ~q_2, type = "scatter", mode = "lines",
-        hoverinfo = "text", line = list(dash = "dash", width = 1),
-        color = I("#CC2222"), name = title_trace, legendgroup = "Interval",
-        showlegend = FALSE,
-        text = ~paste(paste0(x_mark, ":"), round(x, digits = 2),
-                      paste("<br>", paste0(y_mark, ":")), round(y, digits = 5)))
-  }
   return(p_conf)
 }
