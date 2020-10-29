@@ -777,14 +777,10 @@ plot_conf.confint <- function(p_obj, confint, title_trace) {
 #'   \code{"weibull"} the first entry must be the scale parameter \eqn{\eta} and
 #'   the second entry must be the shape parameter \eqn{\beta}. Parametrization
 #'   is the same used in \code{\link{rweibull}}.
-#' @param distribution supposed distribution of the random variable. The
-#'   value can be \code{"weibull"}, \code{"lognormal"} or \code{"loglogistic"}.
-#'   Other distributions have not been implemented yet.
 #' @param color the color of the population line should be added as follows:
 #'   For hexadecimal codes: \code{color = I("#3C8DBC")} and for a color specified
 #'   with a string: \code{color = I("blue")}.
-#' @param title_trace a character string which is assigned to the trace shown in
-#'   the legend.
+#' @inheritParams plot_prob
 #'
 #' @return A plotly object which contains the supposed linearized population
 #'   CDF. Failure probabilities must be strictly below 1 and for this very reason
@@ -810,60 +806,27 @@ plot_pop <- function(p_obj, x, params,
 
   distribution <- match.arg(distribution)
 
-  x_min <- min(x, na.rm = TRUE)
-  x_max <- max(x, na.rm = TRUE)
-  x_low <- x_min - 10 ^ floor(log10(x_min)) * .5
-  x_high <- x_max + 10 ^ floor(log10(x_max)) * .25
-
-  x_s <- seq(x_low, x_high, length.out = 200)
-
-  if (distribution == "weibull") {
-    loc <- log(params[1])
-    sc <- 1 / params[2]
-  }
-  if (distribution %in% c("lognormal", "loglogistic")) {
-    loc <- params[1]
-    sc <- params[2]
+  # Plot method is determined by p_obj
+  plot_method <- if ("gg" %in% class(p_obj)) {
+    "ggplot2"
+  } else if ("plotly" %in% class(p_obj)) {
+    "plotly"
+  }  else {
+    stop(
+      "p_obj is not a valid plot object. Provide either a ggplot2 or a plotly
+      plot object."
+    )
   }
 
-  y_s <- predict_prob(q = x_s, loc_sc_params = c(loc, sc),
-    distribution = distribution)
+  pop_helper <- plot_pop_helper(x, params, distribution)
+  df_pop <- pop_helper$df_pop
+  param_val <- pop_helper$param_val
+  param_label <- pop_helper$param_label
 
-  y_s <- y_s[y_s < 1]
-  x_s <- x_s[y_s < 1]
+  plot_pop_fun <- if (plot_method == "plotly") plot_pop_plotly else
+    plot_pop_ggplot2
 
-  x_mark <- unlist(strsplit(p_obj$x$layoutAttrs[[2]]$xaxis$title$text,
-    " "))[1]
-  y_mark <- unlist(strsplit(p_obj$x$layoutAttrs[[2]]$yaxis$title$text,
-    " "))[1]
-
-  if (distribution == "weibull") {
-    q <- SPREDA::qsev(y_s)
-    param_val <- c(round(exp(loc), digits = 2),
-      round(1 / sc, digits = 2))
-    param_label <- c("\u03B7:", "\u03B2:")
-  }
-  if (distribution == "lognormal") {
-    q <- stats::qnorm(y_s)
-    param_val <- c(round(loc, digits = 2),
-      round(sc, digits = 2))
-    param_label <- c("\u03BC:", "\u03C3:")
-  }
-  if (distribution == "loglogistic") {
-    q <- stats::qlogis(y_s)
-    param_val <- c(round(loc, digits = 2),
-      round(sc, digits = 2))
-    param_label <- c("\u03BC:", "\u03C3:")
-  }
-
-  p_pop <- plotly::add_lines(p = p_obj, x = ~x_s, y = ~q,
-    type = "scatter", mode = "lines", hoverinfo = "text", color = color,
-    name = title_trace, line = list(width = 1),
-    text = ~paste(paste0(x_mark, ":"), round(x_s, digits = 2),
-      paste("<br>", paste0(y_mark, ":")), round(y_s, digits = 5),
-      "<br>", paste(param_label[1], param_val[1]),
-      "<br>", paste(param_label[2], param_val[2]))) %>%
-    plotly::layout(showlegend = TRUE)
-
-  return(p_pop)
+  plot_pop_fun(
+    p_obj, df_pop, param_val, param_label, color, title_trace
+  )
 }

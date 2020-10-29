@@ -147,4 +147,19 @@ plot_conf_ggplot2 <- function(p_obj, df_p, title_trace) {
     ) +
     ggplot2::labs(color = title_trace) +
     ggplot2::scale_color_identity(guide = "legend", labels = "")
+
+  return(p_conf)
+}
+
+plot_pop_ggplot2 <- function(
+  p_obj, df_pop, param_val, param_label, color, title_trace
+) {
+  p_pop <- p_obj +
+    ggplot2::geom_line(
+      data = df_pop, mapping = ggplot2::aes(x = x_s, y = q, color = color)
+    ) +
+    ggplot2::labs(color = title_trace) +
+    ggplot2::scale_color_identity(guide = "legend", labels = "")
+
+  return(p_pop)
 }

@@ -302,7 +302,7 @@ plot_conf_plotly <- function(p_obj, df_p, title_trace) {
     color = I("#CC2222"),
     name = title_trace,
     legendgroup = "Interval",
-    text = ~paste(
+    text = paste(
       paste0(x_mark, ":"),
       round(x, digits = 2),
       paste("<br>", paste0(y_mark, ":")),
@@ -311,4 +311,36 @@ plot_conf_plotly <- function(p_obj, df_p, title_trace) {
   )
 
   return(p_conf)
+}
+
+plot_pop_plotly <- function(
+  p_obj, df_pop, param_val, param_label, color, title_trace
+) {
+  # Get axis labels in hover:
+  x_mark <- unlist(strsplit(p_obj$x$layoutAttrs[[2]]$xaxis$title$text,  " "))[1]
+  y_mark <- unlist(strsplit(p_obj$x$layoutAttrs[[2]]$yaxis$title$text,  " "))[1]
+
+  p_pop <- plotly::add_lines(
+    p = p_obj, data = df_pop,
+    x = ~x_s, y = ~q,
+    type = "scatter",
+    mode = "lines",
+    hoverinfo = "text",
+    color = color,
+    name = title_trace,
+    line = list(width = 1),
+    text = paste(
+      paste0(x_mark, ":"),
+      round(df_pop$x_s, digits = 2),
+      paste("<br>", paste0(y_mark, ":")),
+      round(df_pop$y_s, digits = 5),
+      "<br>",
+      paste(param_label[1], param_val[1]),
+      "<br>",
+      paste(param_label[2], param_val[2])
+    )
+  ) %>%
+    plotly::layout(showlegend = TRUE)
+
+  return(p_pop)
 }
