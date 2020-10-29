@@ -130,3 +130,7 @@ plot_mod_mix_ggplot2 <- function(p_obj, group_df, title_trace) {
 
   return(p_mod)
 }
+
+plot_conf_ggplot2 <- function() {
+
+}

@@ -580,13 +580,9 @@ plot_mod_mix <- function(p_obj, x, event, mix_output,
 #'   The list can be of length 1 or 2. For more information see \strong{Details}.
 #' @param direction a character string specifying the direction of the plotted
 #'   interval(s). Must be either "y" (failure probabilities) or "x" (quantiles).
-#' @param distribution supposed distribution of the random variable. The
-#'   value can be \code{"weibull"}, \code{"lognormal"}, \code{"loglogistic"},
-#'   \code{"normal"}, \code{"logistic"}, \code{"sev"} \emph{(smallest extreme value)},
-#'   \code{"weibull3"}, \code{"lognormal3"} or \code{"loglogistic3"}.
-#'   Other distributions have not been implemented yet.
-#' @param title_trace a character string which is assigned to the trace shown in
-#'   the legend.
+#' @inheritParams plot_prob
+#' @param confint Confindence interval as returned by \code{\link{confint_betabinom}}
+#'   or \code{\link{confint_fisher}}.
 #'
 #' @return Returns a plotly object containing the probability plot with
 #'   plotting positions, the estimated regression line and the estimated
@@ -686,72 +682,85 @@ plot_mod_mix <- function(p_obj, x, event, mix_output,
 #'                             distribution = "lognormal3",
 #'                             title_trace = "Confidence Region")
 
-plot_conf <- function(p_obj, x, y, direction = c("y", "x"),
-                      distribution = c("weibull", "lognormal", "loglogistic",
-                                       "normal", "logistic", "sev", "weibull3",
-                                       "lognormal3", "loglogistic3"),
-                      title_trace = "Confidence Limit") {
+plot_conf <- function(p_obj, x, ...) {
+  # Dispatch on x, dispatch on p_obj is done in plot_conf.default
+  UseMethod("plot_conf", x)
+}
+
+#' @export
+plot_conf.default <- function(
+  p_obj, x, y,
+  direction = c("y", "x"),
+  distribution = c(
+    "weibull", "lognormal", "loglogistic", "normal", "logistic", "sev",
+    "weibull3", "lognormal3", "loglogistic3"
+  ),
+  title_trace = "Confidence Limit"
+) {
 
   direction <- match.arg(direction)
   distribution <- match.arg(distribution)
 
-  lst <- do.call(Map, c(data.frame, list(x = x, y = y)), quote = TRUE)
-  df_p <- as.data.frame(dplyr::bind_rows(lst, .id = "group"))
+  # Plot method is determined by p_obj
+  plot_method <- if ("gg" %in% class(p_obj)) {
+    "ggplot2"
+  } else if ("plotly" %in% class(p_obj)) {
+    "plotly"
+  }  else {
+    stop(
+      "p_obj is not a valid plot object. Provide either a ggplot2 or a plotly
+      plot object."
+    )
+  }
 
-  df_mod <- plotly::plotly_data(p_obj)
-
-  if (direction == "y") {
-    df_p$group <- ifelse(test = df_p$y < df_mod$y_p, yes = "Lower", no = "Upper")
+  # Extracting df_mod
+  df_mod <- if (plot_method == "plotly") {
+    plotly::plotly_data(p_obj)
   } else {
-    df_p$group <- ifelse(test = df_p$x < df_mod$x_p, yes = "Lower", no = "Upper")
+    p_obj$layers[[2]]$data
   }
 
-  x_mark <- unlist(strsplit(p_obj$x$layoutAttrs[[2]]$xaxis$title$text,
-                            " "))[1]
-  y_mark <- unlist(strsplit(p_obj$x$layoutAttrs[[2]]$yaxis$title$text,
-                            " "))[1]
+  df_p <- plot_conf_helper(
+    df_mod, x, y, direction, distribution
+  )
 
-  if (distribution %in% c("weibull", "weibull3", "sev")) {
-    q_1 <- SPREDA::qsev(df_p$y[df_p$group == unique(df_p$group)[1]])
+  plot_conf_fun <- if (plot_method == "plotly") plot_conf_plotly else
+    plot_conf_ggplot2
+
+  plot_conf_fun(
+    p_obj
+  )
+}
+
+#' @export
+plot_conf.confint <- function(p_obj, confint, title_trace) {
+  bounds <- attr(confint, "bounds")
+  direction <- attr(confint, "direction")
+  distribution <- attr(confint, "distribution")
+
+  if (direction == "x") {
+    x <- switch(
+      bounds,
+      "two_sided" = list(confint$lower_bound, confint$upper_bound),
+      "lower" = list(confint$lower_bound),
+      "upper" = list(confint$upper_bound)
+    )
+
+    y <- confint$characteristic
+  } else {
+    x <- confint$characteristic
+
+    y <- switch(
+      bounds,
+      "two_sided" = list(confint$lower_bound, confint$upper_bound),
+      "lower" = list(confint$lower_bound),
+      "upper" = list(confint$upper_bound)
+    )
   }
-  if (distribution %in% c("lognormal", "lognormal3", "normal")) {
-    q_1 <- stats::qnorm(df_p$y[df_p$group == unique(df_p$group)[1]])
-  }
-  if (distribution %in% c("loglogistic", "loglogistic3", "logistic")) {
-    q_1 <- stats::qlogis(df_p$y[df_p$group == unique(df_p$group)[1]])
-  }
 
-  p_conf <- plotly::add_lines(
-    p = p_obj, data = dplyr::filter(df_p, group == unique(df_p$group)[1]),
-    x = ~x, y = ~q_1, type = "scatter", mode = "lines",
-    hoverinfo = "text", line = list(dash = "dash", width = 1),
-    color = I("#CC2222"), name = title_trace, legendgroup = "Interval",
-    text = ~paste(paste0(x_mark, ":"), round(x, digits = 2),
-                  paste("<br>", paste0(y_mark, ":")), round(y, digits = 5)))
-
-  if (length(unique(df_p$group)) > 1) {
-
-    if (distribution %in% c("weibull", "weibull3", "sev")) {
-      q_2 <- SPREDA::qsev(df_p$y[df_p$group == unique(df_p$group)[2]])
-    }
-    if (distribution %in% c("lognormal", "lognormal3", "normal")) {
-      q_2 <- stats::qnorm(df_p$y[df_p$group == unique(df_p$group)[2]])
-    }
-    if (distribution %in% c("loglogistic", "loglogistic3", "logistic")) {
-      q_2 <- stats::qlogis(df_p$y[df_p$group == unique(df_p$group)[2]])
-    }
-
-    p_conf <- p_conf %>%
-      plotly::add_lines(
-        data = dplyr::filter(df_p, group == unique(df_p$group)[2]),
-        x = ~x, y = ~q_2, type = "scatter", mode = "lines",
-        hoverinfo = "text", line = list(dash = "dash", width = 1),
-        color = I("#CC2222"), name = title_trace, legendgroup = "Interval",
-        showlegend = FALSE,
-        text = ~paste(paste0(x_mark, ":"), round(x, digits = 2),
-                      paste("<br>", paste0(y_mark, ":")), round(y, digits = 5)))
-  }
-  return(p_conf)
+  plot_conf.default(
+    p_obj, x, y, direction, distribution, title_trace
+  )
 }
 
 

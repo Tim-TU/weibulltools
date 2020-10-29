@@ -690,7 +690,12 @@ confint_fisher <- function(x, event, loc_sc_params, loc_sc_varcov,
     df_output <- as.data.frame(list_output)
   }
 
+  # Make output usable for generics
   class(df_output) <- c("confint", class(df_output))
+
+  attr(df_output, "distribution") <- distribution
+  attr(df_output, "bounds") <- bounds
+  attr(df_output, "direction") <- direction
 
   return(df_output)
 }
