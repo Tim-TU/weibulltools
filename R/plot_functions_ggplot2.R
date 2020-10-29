@@ -72,8 +72,10 @@ plot_prob_ggplot2 <- function(
 
   p <- p +
     ggplot2::geom_point(
-      data = prob_df, mapping = ggplot2::aes(x = x_s, y = q), color = I("#3C8DBC")
-    )
+      data = prob_df, mapping = ggplot2::aes(x = x_s, y = q, color = I("#3C8DBC"))
+    ) +
+    ggplot2::labs(color = title_trace) +
+    ggplot2::scale_color_identity(guide = "legend", labels = "")
 
   return(p)
 }
@@ -112,10 +114,12 @@ plot_mod_ggplot2 <- function(
   p_obj, df_pred, param_val, param_label, title_trace = "Fit"
 ) {
   p_mod <- p_obj +
+    ggnewscale::new_scale_color() +
     ggplot2::geom_line(
-      data = df_pred, mapping = ggplot2::aes(x = x_p, y = q),
-      color = I("#CC2222")
-    )
+      data = df_pred, mapping = ggplot2::aes(x = x_p, y = q, color = I("#CC2222"))
+    ) +
+    ggplot2::labs(color = title_trace) +
+    ggplot2::scale_color_identity(guide = "legend", labels = "")
 
   return(p_mod)
 }
@@ -131,6 +135,16 @@ plot_mod_mix_ggplot2 <- function(p_obj, group_df, title_trace) {
   return(p_mod)
 }
 
-plot_conf_ggplot2 <- function() {
-
+plot_conf_ggplot2 <- function(p_obj, df_p, title_trace) {
+  p_conf <- p_obj +
+    ggnewscale::new_scale_color() +
+    ggplot2::geom_line(
+      data = df_p,
+      mapping = ggplot2::aes(
+        x = x, y = q, group = bound, color = I("#CC2222")
+      ),
+      linetype = "CC"
+    ) +
+    ggplot2::labs(color = title_trace) +
+    ggplot2::scale_color_identity(guide = "legend", labels = "")
 }
