@@ -115,12 +115,6 @@ rank_regression.default <- function(x, y, event,
 
   distribution <- match.arg(distribution)
 
-  if (!(distribution %in% c("weibull", "lognormal", "loglogistic", "normal",
-                            "logistic", "sev", "weibull3", "lognormal3",
-                            "loglogistic3"))) {
-    stop("No valid distribution!")
-  }
-
   # In terms of MRR only failed items can be used:
   x_f <- x[event == 1]
   y_f <- y[event == 1]
@@ -543,20 +537,17 @@ r_squared_profiling <- function(x, y, thres, distribution = c("weibull3", "logno
 #' mle_weib3 <- ml_estimation(x = cycles, event = state,
 #'                            distribution = "weibull3", conf_level = 0.95)
 #'
-ml_estimation <- function(x, event,
-                          distribution = c("weibull", "lognormal", "loglogistic",
-                                           "normal", "logistic", "sev", "weibull3",
-                                           "lognormal3", "loglogistic3"),
-                          wts = rep(1, length(x)),
-                          conf_level = .95, details = TRUE) {
+ml_estimation <- function(
+  x, event,
+  distribution = c(
+    "weibull", "lognormal", "loglogistic", "normal", "logistic", "sev",
+    "weibull3", "lognormal3", "loglogistic3"),
+  wts = rep(1, length(x)),
+  conf_level = .95,
+  details = TRUE
+) {
 
   distribution <- match.arg(distribution)
-
-  if (!(distribution %in% c("weibull", "lognormal", "loglogistic", "normal",
-                            "logistic", "sev", "weibull3", "lognormal3",
-                            "loglogistic3"))) {
-    stop("No valid distribution!")
-  }
 
   # Log-Location-Scale Models:
   if (distribution == "weibull" | distribution == "lognormal" | distribution == "loglogistic") {
@@ -808,6 +799,11 @@ ml_estimation <- function(x, event,
   }
 
   class(ml_output) <- c("parameter_estimation", class(ml_output))
+
+  attr(ml_output, "data") <- data.frame(
+    x = x, event = event
+  )
+  attr(ml_output, "distribution") <- distribution
 
   return(ml_output)
 }

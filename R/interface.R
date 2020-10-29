@@ -38,10 +38,15 @@ reliability_data <- function(data, x, event, id) {
 #' now there is just the option "method" with \code{method = "mr"}. See
 #' \code{\link{mr_method}}.
 #' @export
-estimate_cdf <- function(
+estimate_cdf <- function(data, ...) {
+  UseMethod("estimate_cdf")
+}
+
+#' @export
+estimate_cdf.default <- function(
   data, method = c("mr", "johnson", "kaplan", "nelson"), options = list()
 ) {
-  stopifnot(inherits(data, "reliability_data"))
+  # Use of generic saves test for class of data
 
   method <- match.arg(method)
 
