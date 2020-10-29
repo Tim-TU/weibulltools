@@ -366,6 +366,9 @@ rank_regression.default <- function(x, y, event,
       mrr_output <- list(loc_sc_coefficients = estimates_loc_sc)
     }
   }
+
+  class(mrr_output) <- c("parameter_estimation", class(mrr_output))
+
   return(mrr_output)
 }
 
@@ -798,6 +801,9 @@ ml_estimation <- function(x, event,
       ml_output <- list(loc_sc_coefficients = estimates_loc_sc)
     }
   }
+
+  class(ml_output) <- c("parameter_estimation", class(ml_output))
+
   return(ml_output)
 }
 
