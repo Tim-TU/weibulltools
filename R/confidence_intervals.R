@@ -344,6 +344,9 @@ confint_betabinom <- function(x, event, loc_sc_params,
 
     df_output <- as.data.frame(list_output)
   }
+
+  class(df_output) <- c("confint", class(df_output))
+
   return(df_output)
 }
 
@@ -613,8 +616,10 @@ confint_fisher <- function(x, event, loc_sc_params, loc_sc_varcov,
       conf_up <- x * w
       list_confint <- list(upper_bound = conf_up)
     }
+
     list_output <- c(list(characteristic = x, prob = y_seq, std_err = se_delta),
                      list_confint)
+
     df_output <- as.data.frame(list_output)
   } else {
     # Standard errors for z:
@@ -663,6 +668,7 @@ confint_fisher <- function(x, event, loc_sc_params, loc_sc_varcov,
         conf_low <- stats::plogis(z - w)
       }
       list_confint <- list(lower_bound = conf_low)
+
     } else {
       w <- stats::qnorm(conf_level) * se_delta
       if (distribution %in% c("weibull", "weibull3", "sev")) {
@@ -675,9 +681,16 @@ confint_fisher <- function(x, event, loc_sc_params, loc_sc_varcov,
         conf_up <- stats::plogis(z + w)
       }
       list_confint <- list(upper_bound = conf_up)
+
     }
+
     list_output <- c(list(characteristic = x, prob = y_seq, std_err = se_delta),
       list_confint)
+
     df_output <- as.data.frame(list_output)
   }
+
+  class(df_output) <- c("confint", class(df_output))
+
+  return(df_output)
 }
