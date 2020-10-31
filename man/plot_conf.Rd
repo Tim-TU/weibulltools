@@ -5,15 +5,7 @@
 \alias{plot_conf}
 \title{Add Confidence Region(s) for Quantiles or Probabilities}
 \usage{
-plot_conf(
-  p_obj,
-  x,
-  y,
-  direction = c("y", "x"),
-  distribution = c("weibull", "lognormal", "loglogistic", "normal", "logistic", "sev",
-    "weibull3", "lognormal3", "loglogistic3"),
-  title_trace = "Confidence Limit"
-)
+plot_conf(p_obj, x, ...)
 }
 \arguments{
 \item{p_obj}{a plotly object provided by function \code{\link{plot_mod}}.}
@@ -27,14 +19,8 @@ The list can be of length 1 or 2. For more information see \strong{Details}.}
 \item{direction}{a character string specifying the direction of the plotted
 interval(s). Must be either "y" (failure probabilities) or "x" (quantiles).}
 
-\item{distribution}{supposed distribution of the random variable. The
-value can be \code{"weibull"}, \code{"lognormal"}, \code{"loglogistic"},
-\code{"normal"}, \code{"logistic"}, \code{"sev"} \emph{(smallest extreme value)},
-\code{"weibull3"}, \code{"lognormal3"} or \code{"loglogistic3"}.
-Other distributions have not been implemented yet.}
-
-\item{title_trace}{a character string which is assigned to the trace shown in
-the legend.}
+\item{confint}{Confindence interval as returned by \code{\link{confint_betabinom}}
+or \code{\link{confint_fisher}}.}
 }
 \value{
 Returns a plotly object containing the probability plot with

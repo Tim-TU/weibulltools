@@ -5,18 +5,7 @@
 \alias{plot_prob}
 \title{Probability Plotting Method for Univariate Lifetime Distributions}
 \usage{
-plot_prob(
-  x,
-  y,
-  event,
-  id = rep("XXXXXX", length(x)),
-  distribution = c("weibull", "lognormal", "loglogistic", "normal", "logistic", "sev"),
-  title_main = "Probability Plot",
-  title_x = "Characteristic",
-  title_y = "Unreliability",
-  title_trace = "Sample",
-  plot_method = c("plotly", "ggplot2")
-)
+plot_prob(x, ...)
 }
 \arguments{
 \item{x}{a numeric vector which consists of lifetime data. Lifetime
@@ -32,21 +21,8 @@ is a right censored observation (= 0) or a failure (= 1).}
 
 \item{id}{a character vector for the identification of every unit.}
 
-\item{distribution}{supposed distribution of the random variable.}
-
-\item{title_main}{a character string which is assigned to the main title
-of the plot.}
-
-\item{title_x}{a character string which is assigned to the title of the
-x axis.}
-
-\item{title_y}{a character string which is assigned to the title of the
-y axis.}
-
 \item{title_trace}{a character string whis is assigned to the trace shown in
 the legend.}
-
-\item{plot_method}{the package, which is used for generating the plot output.}
 }
 \value{
 Returns a plotly object containing the layout of the probability plot

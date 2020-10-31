@@ -37,7 +37,7 @@ Description: Contains methods for examining bench test or field data using the
 License: GPL-2
 Imports:
     dplyr, 
-    ggnewscales,
+    ggnewscale,
     ggplot2,
     LearnBayes,
     magrittr, 

@@ -27,8 +27,6 @@ is a right censored observation (= 0) or a failure (= 1).}
 \code{\link{mixmod_em}}, which consists of elements necessary to visualize
 the regression lines.}
 
-\item{distribution}{supposed distribution of the random variable.}
-
 \item{title_trace}{a character string whis is assigned to the trace shown in
 the legend.}
 }

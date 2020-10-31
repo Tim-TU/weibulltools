@@ -4,11 +4,7 @@
 \alias{estimate_cdf}
 \title{Estimation of Failure Probabilities}
 \usage{
-estimate_cdf(
-  data,
-  method = c("mr", "johnson", "kaplan", "nelson"),
-  options = list()
-)
+estimate_cdf(data, ...)
 }
 \arguments{
 \item{data}{A standardised data frame returned by \link{reliability_data}.}
