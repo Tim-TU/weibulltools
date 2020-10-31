@@ -264,28 +264,6 @@ predict_prob <- function(q, loc_sc_params,
 #'                                   bounds = "two_sided",
 #'                                   conf_level = 0.95,
 #'                                   direction = "y")
-confint_betabinom_2.parameter_estimation <- function(
-  parameter_estimation,
-  bounds = c("two_sided", "lower", "upper"),
-  conf_level = 0.95,
-  direction = c("y", "x")
-) {
-  rel_df <- attr(parameter_estimation, "data")
-  distribution <- attr(parameter_estimation, "distribution")
-
-  confint_betabinom_2.default(
-    x = rel_df$x,
-    event = rel_df$event,
-    loc_sc_params = parameter_estimation$loc_sc_coefficients,
-    distribution = distribution,
-    bounds = bounds,
-    conf_level = conf_level,
-    direction = direction
-  )
-}
-
-confint_betabinom_2.default <- confint_betabinom
-
 confint_betabinom <- function(x, event, loc_sc_params,
                               distribution = c("weibull", "lognormal", "loglogistic",
                                                "normal", "logistic", "sev", "weibull3",
@@ -375,6 +353,27 @@ confint_betabinom <- function(x, event, loc_sc_params,
   return(df_output)
 }
 
+confint_betabinom_2.parameter_estimation <- function(
+  parameter_estimation,
+  bounds = c("two_sided", "lower", "upper"),
+  conf_level = 0.95,
+  direction = c("y", "x")
+) {
+  rel_df <- attr(parameter_estimation, "data")
+  distribution <- attr(parameter_estimation, "distribution")
+
+  confint_betabinom_2.default(
+    x = rel_df$x,
+    event = rel_df$event,
+    loc_sc_params = parameter_estimation$loc_sc_coefficients,
+    distribution = distribution,
+    bounds = bounds,
+    conf_level = conf_level,
+    direction = direction
+  )
+}
+
+confint_betabinom_2.default <- confint_betabinom
 
 #' Delta Method for Parametric Lifetime Distributions
 #'
@@ -578,33 +577,6 @@ delta_method <- function(p, loc_sc_params, loc_sc_varcov,
 #'                             bounds = "two_sided",
 #'                             conf_level = 0.95,
 #'                             direction = "y")
-confint_fisher_2 <- function(x, ...) {
-  UseMethod("confint_fisher_2")
-}
-
-confint_fisher_2.parameter_estimation <- function(
-  parameter_estimation,
-  bounds = c("two_sided", "lower", "upper"),
-  conf_level = 0.95,
-  direction = c("y", "x")
-) {
-  rel_df <- attr(parameter_estimation, "data")
-  distribution <- attr(parameter_estimation, "distribution")
-
-  confint_fisher_2.default(
-    x = rel_df$x,
-    event = rel_df$event,
-    loc_sc_params = parameter_estimation$loc_sc_coefficients,
-    los_sc_varcov = parameter_estimation$loc_sc_vcov,
-    distribution = distribution,
-    bounds = bounds,
-    conf_level = conf_level,
-    direction = direction
-  )
-}
-
-confint_fisher_2.default <- confint_fisher
-
 confint_fisher <- function(x, event, loc_sc_params, loc_sc_varcov,
                            distribution = c("weibull", "lognormal", "loglogistic",
                                             "normal", "logistic", "sev", "weibull3",
@@ -744,3 +716,30 @@ confint_fisher <- function(x, event, loc_sc_params, loc_sc_varcov,
 
   return(df_output)
 }
+
+confint_fisher_2 <- function(x, ...) {
+  UseMethod("confint_fisher_2")
+}
+
+confint_fisher_2.parameter_estimation <- function(
+  parameter_estimation,
+  bounds = c("two_sided", "lower", "upper"),
+  conf_level = 0.95,
+  direction = c("y", "x")
+) {
+  rel_df <- attr(parameter_estimation, "data")
+  distribution <- attr(parameter_estimation, "distribution")
+
+  confint_fisher_2.default(
+    x = rel_df$x,
+    event = rel_df$event,
+    loc_sc_params = parameter_estimation$loc_sc_coefficients,
+    los_sc_varcov = parameter_estimation$loc_sc_vcov,
+    distribution = distribution,
+    bounds = bounds,
+    conf_level = conf_level,
+    direction = direction
+  )
+}
+
+confint_fisher_2.default <- confint_fisher
