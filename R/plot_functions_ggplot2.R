@@ -49,7 +49,7 @@ plot_layout_ggplot2 <- function(
 }
 
 plot_prob_ggplot2 <- function(
-  x, prob_df,
+  p_obj, x, prob_df,
   distribution = c(
     "weibull", "lognormal", "loglogistic", "normal", "logistic", "sev"
   ),
@@ -61,23 +61,14 @@ plot_prob_ggplot2 <- function(
 
   distribution <- match.arg(distribution)
 
-  # Plot layout:
-  p <- plot_layout_ggplot2(
-    x = x,
-    distribution = distribution,
-    title_main = title_main,
-    title_x = title_x,
-    title_y = title_y
-  )
-
-  p <- p +
+  p_prob <- p_obj +
     ggplot2::geom_point(
       data = prob_df, mapping = ggplot2::aes(x = x_s, y = q, color = I("#3C8DBC"))
     ) +
     ggplot2::labs(color = title_trace) +
     ggplot2::scale_color_identity(guide = "legend", labels = "")
 
-  return(p)
+  return(p_prob)
 }
 
 plot_prob_mix_ggplot2 <- function(
@@ -94,7 +85,7 @@ plot_prob_mix_ggplot2 <- function(
   distribution <- match.arg(distribution)
 
   # Plot layout:
-  p <- plot_layout_ggplot2(
+  p_obj <- plot_layout_ggplot2(
     x = group_df$x_s,
     distribution = distribution,
     title_main = title_main,
@@ -102,12 +93,12 @@ plot_prob_mix_ggplot2 <- function(
     title_y = title_y
   )
 
-  p <- p + ggplot2::geom_point(
+  p_prob_mix <- p_obj + ggplot2::geom_point(
       data = group_df, mapping = ggplot2::aes(x = x_s, y = q, color = groups)
     ) +
     ggplot2::labs(color = title_trace)
 
-  return(p)
+  return(p_prob_mix)
 }
 
 plot_mod_ggplot2 <- function(

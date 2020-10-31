@@ -17,8 +17,8 @@ plot_layout_helper <- function(x, distribution, plot_method = c("plotly", "ggplo
     x_labels[c(rep(F, 3), rep(T, 6))] <- ''
   } else {
     # We don't need these values, therefore we return NULL
-    x_ticks <- if (method == "plotly") NULL else ggplot2::waiver()
-    x_labels <- if (method == "plotly") NULL else ggplot2::waiver()
+    x_ticks <- if (plot_method == "plotly") NULL else ggplot2::waiver()
+    x_labels <- if (plot_method == "plotly") NULL else ggplot2::waiver()
   }
 
   # y-ticks and y-labels
@@ -76,7 +76,9 @@ plot_prob_helper <- function(
     x_s = x_s,
     y_s = y_s,
     q = q,
-    id_s = id_s
+    id_s = id_s,
+    # Add distribution as column to simplify support of multiple distributions
+    distribution = distribution
   )
 }
 

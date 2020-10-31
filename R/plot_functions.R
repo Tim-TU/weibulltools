@@ -132,8 +132,14 @@ plot_layout <- function(
 #'                           title_x = "Cycles",
 #'                           title_y = "Probability of Failure in %",
 #'                           title_trace = "Failed Items")
-
 plot_prob <- function(
+  x, ...
+) {
+  UseMethod("plot_prob")
+}
+
+#' @export
+plot_prob.default <- function(
   x, y, event,
   id = rep("XXXXXX", length(x)),
   distribution = c(
@@ -152,16 +158,56 @@ plot_prob <- function(
     x, y, event, id, distribution
   )
 
+  # Plot layout:
+  p_obj <- plot_layout(
+    x = prob_df$x,
+    distribution = distribution,
+    title_main = title_main,
+    title_x = title_x,
+    title_y = title_y,
+    plot_method = plot_method
+  )
+
   plot_prob_fun <- if (plot_method == "plotly") plot_prob_plotly else
     plot_prob_ggplot2
 
   plot_prob_fun(
+    p_obj = p_obj,
     x = x,
     prob_df = prob_df,
     distribution = distribution,
     title_main = title_main,
     title_x = title_x,
-    title_y = title_y
+    title_y = title_y,
+    title_trace = title_trace
+  )
+}
+
+#' @export
+plot_prob.cdf_estimation <- function(
+  cdf_estimation,
+  distribution = c(
+    "weibull", "lognormal", "loglogistic", "normal", "logistic", "sev"
+  ),
+  title_main = "Probability Plot",
+  title_x = "Characteristic",
+  title_y = "Unreliability",
+  title_trace = "Sample",
+  plot_method = c("plotly", "ggplot2")
+) {
+  distribution <- match.arg(distribution)
+  plot_method <- match.arg(plot_method)
+
+  plot_prob.default(
+    x = cdf_estimation$characteristic,
+    y = cdf_estimation$prob,
+    event = cdf_estimation$status,
+    id = cdf_estimation$id,
+    distribution = distribution,
+    title_main = title_main,
+    title_x = title_x,
+    title_y = title_y,
+    title_trace = title_trace
   )
 }
 
