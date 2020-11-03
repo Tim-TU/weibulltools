@@ -741,11 +741,11 @@ plot_conf <- function(p_obj, x, ...) {
 #' @describeIn plot_conf Provide x,y, direction and distribution manually.
 plot_conf.default <- function(
   p_obj, x, y,
-  direction = c("y", "x"),
   distribution = c(
     "weibull", "lognormal", "loglogistic", "normal", "logistic", "sev",
     "weibull3", "lognormal3", "loglogistic3"
   ),
+  direction = c("y", "x"),
   title_trace = "Confidence Limit"
 ) {
 
