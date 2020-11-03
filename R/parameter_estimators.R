@@ -56,13 +56,13 @@
 #'   \item \code{confint} : Provided, if \code{distribution} is \code{"weibull"}
 #'     or \code{"weibull3"}. Confidence intervals for \eqn{\eta} and \eqn{\beta}
 #'     (and \eqn{\gamma} if the three-parametric weibull is used).
-#'   \item \code{loc_sc_coefficients} : Estimated location-scale parameters.
+#'   \item \code{loc_sc_params} : Estimated location-scale parameters.
 #'     Threshold parameter is provided for \code{"weibull3"}, \code{"lognormal3"}
 #'     and \code{"loglogistic3"}.
 #'   \item \code{loc_sc_confint} : Confidence intervals for location-scale parameters.
 #'     If distribution is \code{"lognormal3"} or \code{"loglogistic3"} a confidence
 #'     interval for the threshold is not computed.
-#'   \item \code{loc_sc_vcov} : Provided, if \code{distribution} is not
+#'   \item \code{loc_sc_varcov} : Provided, if \code{distribution} is not
 #'     \code{"weibull"} or \code{"weibull3"}. Estimated heteroscedasticity-consistent
 #'     Variance-Covariance matrix of the used location-scale distribution.
 #'   \item \code{r_squared} : Coefficient of determination.}
@@ -159,7 +159,7 @@ rank_regression.default <- function(x, y, event,
     r_sq <- summary(mrr)$r.squared
 
     mrr_output <- list(coefficients = estimates, confint = conf_ints,
-                       loc_sc_coefficients = estimates_loc_sc,
+                       loc_sc_params = estimates_loc_sc,
                        loc_sc_confint = conf_ints_loc_sc,
                        r_squared = r_sq)
   }
@@ -230,7 +230,7 @@ rank_regression.default <- function(x, y, event,
       r_sq <- summary(mrr)$r.squared
 
       mrr_output <- list(coefficients = estimates, confint = conf_ints,
-                         loc_sc_coefficients = estimates_loc_sc,
+                         loc_sc_params = estimates_loc_sc,
                          loc_sc_confint = conf_ints_loc_sc,
                          r_squared = r_sq)
 
@@ -275,9 +275,9 @@ rank_regression.default <- function(x, y, event,
 
       r_sq <- summary(mrr)$r.squared
 
-      mrr_output <- list(loc_sc_coefficients = estimates_loc_sc,
+      mrr_output <- list(loc_sc_params = estimates_loc_sc,
                          loc_sc_confint = conf_ints_loc_sc,
-                         loc_sc_vcov = vcov_loc_sc,
+                         loc_sc_varcov = vcov_loc_sc,
                          r_squared = r_sq)
     }
   }
@@ -331,9 +331,9 @@ rank_regression.default <- function(x, y, event,
 
     r_sq <- summary(mrr)$r.squared
 
-    mrr_output <- list(loc_sc_coefficients = estimates_loc_sc,
+    mrr_output <- list(loc_sc_params = estimates_loc_sc,
                        loc_sc_confint = conf_ints_loc_sc,
-                       loc_sc_vcov = vcov_loc_sc,
+                       loc_sc_varcov = vcov_loc_sc,
                        r_squared = r_sq)
   }
 
@@ -478,9 +478,9 @@ r_squared_profiling <- function(x, y, thres, distribution = c("weibull3", "logno
 #'     \eqn{\eta} is the estimated scale and \eqn{\beta} the estimated shape parameter.
 #'   \item \code{confint} : Provided, if \code{distribution} is \code{"weibull"}.
 #'     Confidence interval for \eqn{\eta} and \eqn{\beta}.
-#'   \item \code{loc_sc_coefficients} : Estimated location-scale parameters.
+#'   \item \code{loc_sc_params} : Estimated location-scale parameters.
 #'   \item \code{loc_sc_confint} : Confidence interval for location-scale parameters.
-#'   \item \code{loc_sc_vcov} : Estimated Variance-Covariance matrix of the used
+#'   \item \code{loc_sc_varcov} : Estimated Variance-Covariance matrix of the used
 #'     location-scale distribution.
 #'   \item \code{logL} : The log-likelihood value.
 #'   \item \code{aic} : Akaike Information Criterion.
@@ -561,17 +561,17 @@ ml_estimation <- function(
       rownames(conf_ints) <- names(estimates)
 
       ml_output <- list(coefficients = estimates, confint = conf_ints,
-                        loc_sc_coefficients = estimates_loc_sc,
+                        loc_sc_params = estimates_loc_sc,
                         loc_sc_confint = conf_ints_loc_sc,
-                        loc_sc_vcov = vcov_loc_sc, logL = -ml$min,
+                        loc_sc_varcov = vcov_loc_sc, logL = -ml$min,
                         aic = -2 * (-ml$min) + 2 * length(estimates_loc_sc),
                         bic = (-2 * (-ml$min) +
                                  log(length(x)) * length(estimates_loc_sc))
       )
     } else {
-      ml_output <- list(loc_sc_coefficients = estimates_loc_sc,
+      ml_output <- list(loc_sc_params = estimates_loc_sc,
                         loc_sc_confint = conf_ints_loc_sc,
-                        loc_sc_vcov = vcov_loc_sc, logL = -ml$min,
+                        loc_sc_varcov = vcov_loc_sc, logL = -ml$min,
                         aic = -2 * (-ml$min) + 2 * length(estimates_loc_sc),
                         bic = (-2 * (-ml$min) +
                                  log(length(x)) * length(estimates_loc_sc))
@@ -662,18 +662,18 @@ ml_estimation <- function(
       rownames(conf_ints) <- names(estimates)
 
       ml_output <- list(coefficients = estimates, confint = conf_ints,
-                        loc_sc_coefficients = estimates_loc_sc,
+                        loc_sc_params = estimates_loc_sc,
                         loc_sc_confint = conf_ints_loc_sc,
-                        loc_sc_vcov = vcov_loc_sc, logL = ml$value,
+                        loc_sc_varcov = vcov_loc_sc, logL = ml$value,
                         aic = -2 * (ml$value) + 2 * length(estimates_loc_sc),
                         bic = (-2 * (ml$value) +
                                  log(length(x)) * length(estimates_loc_sc))
       )
 
     } else {
-      ml_output <- list(loc_sc_coefficients = estimates_loc_sc,
+      ml_output <- list(loc_sc_params = estimates_loc_sc,
                         loc_sc_confint = conf_ints_loc_sc,
-                        loc_sc_vcov = vcov_loc_sc, logL = ml$value,
+                        loc_sc_varcov = vcov_loc_sc, logL = ml$value,
                         aic = -2 * (ml$value) + 2 * length(estimates_loc_sc),
                         bic = (-2 * (ml$value) +
                                  log(length(x)) * length(estimates_loc_sc))
@@ -738,9 +738,9 @@ ml_estimation <- function(
       paste(((1 + conf_level) / 2) * 100, "%"))
     rownames(conf_ints_loc_sc) <- names(estimates_loc_sc)
 
-    ml_output <- list(loc_sc_coefficients = estimates_loc_sc,
+    ml_output <- list(loc_sc_params = estimates_loc_sc,
                       loc_sc_confint = conf_ints_loc_sc,
-                      loc_sc_vcov = vcov_loc_sc, logL = ml$value,
+                      loc_sc_varcov = vcov_loc_sc, logL = ml$value,
                       aic = -2 * (ml$value) + 2 * length(estimates_loc_sc),
                       bic = (-2 * (ml$value) +
                                log(length(x)) * length(estimates_loc_sc))
