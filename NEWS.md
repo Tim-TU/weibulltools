@@ -1,9 +1,17 @@
 ---
 title: "NEWS"
-subtitle: "Release of weibulltools v1.0.0"
 output: html_document
 ---
 
+#### Planned Release of weibulltools v1.1.0
+* Fixed bug inside plot_mod_mix() for the case of no mixture distribution
+* Fixed bug inside confint_betabinom(); many cases near one -> unique()
+* Fixed bug inside mr_method(): Assigning a rank for the same lifetime 
+
+#### Release of weibulltools v1.0.1 
+* Fixed installation error when using clang compiler
+
+#### Release of weibulltools v1.0.0 
 #### Prerequisite for Package Usage:
 * Since RcppArmadillo is used, the R version should be at least 3.3.0 
   (listed under Depends in DESCRIPTION file)
@@ -33,14 +41,14 @@ output: html_document
   normal ("normal") and logistic ("logistic"). 
 * Implementation of _Log-Likelihood Profiling_ for three-parametric models in 
   function loglik_profiling(). In general this function is used inside 
-  ml_estimation() for purpose of estimating threshold parameter of 
+  ml_estimation() for the purpose of estimating threshold parameter of 
   three-parametric models. 
 * Implementation of _R-Squared Profiling_ for three-parametric models in function 
   r_squared_profiling(). In general this function is used inside rank_regression() 
-  for purpose of estimating threshold parameter of three-parametric models.
+  for the purpose of estimating threshold parameter of three-parametric models.
 * Implementation of _Log-Likelihood Function_ for all implemented models in function 
   loglik_function(). In general this function is used inside ml_estimation() for 
-  purpose of estimating the variance-covariance matrix of location-scale models 
+  the purpose of estimating the variance-covariance matrix of location-scale models 
   "sev", "normal" and "logistic". The function is also used to estimate the 
   variance-covariance matrix of log-location-scale models with a threshold 
   parameter, i.e. "weibull3", "lognormal3" and "loglogistic3".
