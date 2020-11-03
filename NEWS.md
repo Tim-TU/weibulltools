@@ -3,20 +3,34 @@ title: "NEWS"
 output: html_document
 ---
 
-#### Planned Release of weibulltools v1.1.0
+# Release of weibulltools v1.1.0
+## Breaking Changes
+* `plot_conf`: Switched arguments distribution and direction.
+* `rank_regression`, `ml_estimation`: Removed details argument.
+* `rank_regression`, `ml_estimation`: Renamed output: `loc_sc_coefficients` ->
+  `loc_sc_params`, `loc_sc_vcov` -> `loc_sc_varcov`
+
+## Major Changes
+* Added support for ggplot2 in all plot_xxx functions.
+* Added S3 interface to cdf estimation, parameter estimation and
+  plotting (See Minor Changes for details).
+
+## Minor Changes
+* Added trace type "scatter" and scatter mode "markers" to `plot_layout`.
+* Added function `reliability_data`: Combine x, y, event and id in a data.frame.
+* Added function `estimate_cdf`: Unite functionality of `mr_method`, `johnson_method`,
+  `kaplan_method` and `nelson_method`.
+* Added `rank_regression.cdf_estimation`. `rank_regression` -> `rank_regression.default`
+
+## Bugfixes
 * Fixed bug inside plot_mod_mix() for the case of no mixture distribution
 * Fixed bug inside confint_betabinom(); many cases near one -> unique()
 * Fixed bug inside mr_method(): Assigning a rank for the same lifetime 
 
-#### Release of weibulltools v1.0.1 
+# Release of weibulltools v1.0.1 
 * Fixed installation error when using clang compiler
 
-#### Release of weibulltools v1.0.0 
-#### Prerequisite for Package Usage:
-* Since RcppArmadillo is used, the R version should be at least 3.3.0 
-  (listed under Depends in DESCRIPTION file)
-
-#### New Features: 
+# Release of weibulltools v1.0.0 
 * Vignettes for non-parametric probability estimation, parameter estimation using 
   Median-Rank Regression and Maximum-Likelihood and mixture model estimation 
   are provided. 
