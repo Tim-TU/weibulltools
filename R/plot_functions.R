@@ -82,17 +82,18 @@ plot_layout <- function(
 #' @references Meeker, William Q; Escobar, Luis A., Statistical methods for
 #'   reliability data, New York: Wiley series in probability and statistics, 1998
 #'
-#' @param x a numeric vector which consists of lifetime data. Lifetime
+#' @param x A numeric vector which consists of lifetime data. Lifetime
 #'   data could be every characteristic influencing the reliability of a product,
 #'   e.g. operating time (days/months in service), mileage (km, miles), load
 #'   cycles.
-#' @param y a numeric vector which consists of estimated failure probabilities
+#' @param y A numeric vector which consists of estimated failure probabilities
 #'   regarding the lifetime data in \code{x}.
-#' @param event a vector of binary data (0 or 1) indicating whether unit \emph{i}
+#' @param event A vector of binary data (0 or 1) indicating whether unit \emph{i}
 #'   is a right censored observation (= 0) or a failure (= 1).
-#' @param id a character vector for the identification of every unit.
+#' @param id A character vector for the identification of every unit.
+#' @param cdf_estimation CDF estimation returned by \code{\link{estimate_cdf}}.
 #' @inheritParams plot_layout
-#' @param title_trace a character string whis is assigned to the trace shown in
+#' @param title_trace A character string whis is assigned to the trace shown in
 #'   the legend.
 #'
 #' @return Returns a plotly object containing the layout of the probability plot
@@ -139,6 +140,7 @@ plot_prob <- function(
 }
 
 #' @export
+#' @describeIn plot_prob Provide x, y, event and id manually
 plot_prob.default <- function(
   x, y, event,
   id = rep("XXXXXX", length(x)),
@@ -184,6 +186,8 @@ plot_prob.default <- function(
 }
 
 #' @export
+#' @describeIn plot_prob Create a probability plot based on a CDF estimation
+#' returned by \code{\link{estimate_cdf}}.
 plot_prob.cdf_estimation <- function(
   cdf_estimation,
   distribution = c(
@@ -734,6 +738,7 @@ plot_conf <- function(p_obj, x, ...) {
 }
 
 #' @export
+#' @describeIn plot_conf Provide x,y, direction and distribution manually.
 plot_conf.default <- function(
   p_obj, x, y,
   direction = c("y", "x"),
@@ -779,6 +784,8 @@ plot_conf.default <- function(
 }
 
 #' @export
+#' @describeIn plot_conf Add a confidence interval to \code{p_obj} based on the
+#' output of \code{\link{confint_fisher}} or \code{\link{confint_betabinom}}.
 plot_conf.confint <- function(p_obj, confint, title_trace) {
   bounds <- attr(confint, "bounds")
   direction <- attr(confint, "direction")

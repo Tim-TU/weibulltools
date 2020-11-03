@@ -299,9 +299,9 @@ plot_conf_plotly <- function(p_obj, df_p, title_trace) {
     legendgroup = "Interval",
     text = paste(
       paste0(x_mark, ":"),
-      round(x, digits = 2),
+      round(df_p$x, digits = 2),
       paste("<br>", paste0(y_mark, ":")),
-      round(y, digits = 5)
+      round(df_p$y, digits = 5)
     )
   )
 

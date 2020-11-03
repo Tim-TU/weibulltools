@@ -3,26 +3,66 @@
 \encoding{UTF-8}
 \name{plot_prob}
 \alias{plot_prob}
+\alias{plot_prob.default}
+\alias{plot_prob.cdf_estimation}
 \title{Probability Plotting Method for Univariate Lifetime Distributions}
 \usage{
 plot_prob(x, ...)
+
+\method{plot_prob}{default}(
+  x,
+  y,
+  event,
+  id = rep("XXXXXX", length(x)),
+  distribution = c("weibull", "lognormal", "loglogistic", "normal", "logistic", "sev"),
+  title_main = "Probability Plot",
+  title_x = "Characteristic",
+  title_y = "Unreliability",
+  title_trace = "Sample",
+  plot_method = c("plotly", "ggplot2")
+)
+
+\method{plot_prob}{cdf_estimation}(
+  cdf_estimation,
+  distribution = c("weibull", "lognormal", "loglogistic", "normal", "logistic", "sev"),
+  title_main = "Probability Plot",
+  title_x = "Characteristic",
+  title_y = "Unreliability",
+  title_trace = "Sample",
+  plot_method = c("plotly", "ggplot2")
+)
 }
 \arguments{
-\item{x}{a numeric vector which consists of lifetime data. Lifetime
+\item{x}{A numeric vector which consists of lifetime data. Lifetime
 data could be every characteristic influencing the reliability of a product,
 e.g. operating time (days/months in service), mileage (km, miles), load
 cycles.}
 
-\item{y}{a numeric vector which consists of estimated failure probabilities
+\item{y}{A numeric vector which consists of estimated failure probabilities
 regarding the lifetime data in \code{x}.}
 
-\item{event}{a vector of binary data (0 or 1) indicating whether unit \emph{i}
+\item{event}{A vector of binary data (0 or 1) indicating whether unit \emph{i}
 is a right censored observation (= 0) or a failure (= 1).}
 
-\item{id}{a character vector for the identification of every unit.}
+\item{id}{A character vector for the identification of every unit.}
 
-\item{title_trace}{a character string whis is assigned to the trace shown in
+\item{distribution}{supposed distribution of the random variable.}
+
+\item{title_main}{a character string which is assigned to the main title
+of the plot.}
+
+\item{title_x}{a character string which is assigned to the title of the
+x axis.}
+
+\item{title_y}{a character string which is assigned to the title of the
+y axis.}
+
+\item{title_trace}{A character string whis is assigned to the trace shown in
 the legend.}
+
+\item{plot_method}{the package, which is used for generating the plot output.}
+
+\item{cdf_estimation}{CDF estimation returned by \code{\link{estimate_cdf}}.}
 }
 \value{
 Returns a plotly object containing the layout of the probability plot
@@ -41,6 +81,13 @@ The marker label for y is determined by the string provided in the
 argument \code{title_y}, i.e. if \code{title_y = "Probability in percent"} the y
 label of the marker is "Probability".
 }
+\section{Methods (by class)}{
+\itemize{
+\item \code{default}: Default
+
+\item \code{cdf_estimation}: CDF Estimation
+}}
+
 \examples{
 # Alloy T7987 dataset taken from Meeker and Escobar(1998, p. 131)
 cycles   <- c(300, 300, 300, 300, 300, 291, 274, 271, 269, 257, 256, 227, 226,

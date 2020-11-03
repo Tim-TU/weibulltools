@@ -20,7 +20,7 @@ confint_fisher(
 \item{x}{a numeric vector which consists of lifetime data. \code{x} is used to
 specify the range of confidence region(s).}
 
-\item{event}{a vector of binary data (0 or 1) indicating whether unit \emph{i}
+\item{event}{A vector of binary data (0 or 1) indicating whether unit \emph{i}
 is a right censored observation (= 0) or a failure (= 1).}
 
 \item{loc_sc_params}{a (named) numeric vector of estimated
@@ -38,6 +38,8 @@ Var(\eqn{\mu}) and the second element of the diagonal needs to be the
 variance of the scale parameter Var(\eqn{\sigma}). If a three-parametric model
 is used the third element of the diagonal needs to be the variance of the
 threshold parameter Var(\eqn{\gamma}).}
+
+\item{distribution}{supposed distribution of the random variable.}
 
 \item{bounds}{a character string specifying the interval(s) which has/have to
 be computed.}
