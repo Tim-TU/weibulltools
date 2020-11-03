@@ -339,10 +339,21 @@ plot_prob_mix <- function(
     x, event, id, distribution, mix_output, title_trace
   )
 
+  # Plot layout:
+  p_obj <- plot_layout(
+    x = x,
+    distribution = distribution,
+    title_main = title_main,
+    title_x = title_x,
+    title_y = title_y,
+    plot_method = plot_method
+  )
+
   plot_prob_mix_fun <- if (plot_method == "plotly") plot_prob_mix_plotly else
     plot_prob_mix_ggplot2
 
   plot_prob_mix_fun(
+    p_obj = p_obj,
     group_df = group_df,
     distribution = distribution,
     title_main = title_main,

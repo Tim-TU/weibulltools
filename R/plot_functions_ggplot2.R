@@ -72,6 +72,7 @@ plot_prob_ggplot2 <- function(
 }
 
 plot_prob_mix_ggplot2 <- function(
+  p_obj,
   group_df,
   distribution = c(
     "weibull", "lognormal", "loglogistic", "normal", "logistic", "sev"
@@ -83,15 +84,6 @@ plot_prob_mix_ggplot2 <- function(
 ) {
 
   distribution <- match.arg(distribution)
-
-  # Plot layout:
-  p_obj <- plot_layout_ggplot2(
-    x = group_df$x_s,
-    distribution = distribution,
-    title_main = title_main,
-    title_x = title_x,
-    title_y = title_y
-  )
 
   p_prob_mix <- p_obj + ggplot2::geom_point(
       data = group_df, mapping = ggplot2::aes(x = x_s, y = q, color = groups)
