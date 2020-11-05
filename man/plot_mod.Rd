@@ -34,7 +34,9 @@ parameter \eqn{\mu} and the second element needs to be the scale
 parameter \eqn{\sigma}. If a three-parametric model is used the third element
 is the threshold parameter \eqn{\gamma}.}
 
-\item{title_trace}{a character string whis is assigned to the trace shown in
+\item{distribution}{supposed distribution of the random variable.}
+
+\item{title_trace}{A character string whis is assigned to the trace shown in
 the legend.}
 }
 \value{

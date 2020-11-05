@@ -3,9 +3,23 @@
 \encoding{UTF-8}
 \name{plot_conf}
 \alias{plot_conf}
+\alias{plot_conf.default}
+\alias{plot_conf.confint}
 \title{Add Confidence Region(s) for Quantiles or Probabilities}
 \usage{
 plot_conf(p_obj, x, ...)
+
+\method{plot_conf}{default}(
+  p_obj,
+  x,
+  y,
+  direction = c("y", "x"),
+  distribution = c("weibull", "lognormal", "loglogistic", "normal", "logistic", "sev",
+    "weibull3", "lognormal3", "loglogistic3"),
+  title_trace = "Confidence Limit"
+)
+
+\method{plot_conf}{confint}(p_obj, confint, title_trace)
 }
 \arguments{
 \item{p_obj}{a plotly object provided by function \code{\link{plot_mod}}.}
@@ -18,6 +32,11 @@ The list can be of length 1 or 2. For more information see \strong{Details}.}
 
 \item{direction}{a character string specifying the direction of the plotted
 interval(s). Must be either "y" (failure probabilities) or "x" (quantiles).}
+
+\item{distribution}{supposed distribution of the random variable.}
+
+\item{title_trace}{A character string whis is assigned to the trace shown in
+the legend.}
 
 \item{confint}{Confindence interval as returned by \code{\link{confint_betabinom}}
 or \code{\link{confint_fisher}}.}
@@ -44,6 +63,13 @@ is recommended:
     for \code{x} and \code{df$prob} for \code{y} of the function(s) named before.
   \item In \strong{Examples} the described approach is shown with code.}
 }
+\section{Methods (by class)}{
+\itemize{
+\item \code{default}: Default
+
+\item \code{confint}: Confint
+}}
+
 \examples{
 # Alloy T7987 dataset taken from Meeker and Escobar(1998, p. 131)
 cycles   <- c(300, 300, 300, 300, 300, 291, 274, 271, 269, 257, 256, 227, 226,

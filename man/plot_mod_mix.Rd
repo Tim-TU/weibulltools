@@ -20,14 +20,16 @@ plot_mod_mix(
 
 \item{x}{a numeric vector containing the x-coordinates of the regression line.}
 
-\item{event}{a vector of binary data (0 or 1) indicating whether unit \emph{i}
+\item{event}{A vector of binary data (0 or 1) indicating whether unit \emph{i}
 is a right censored observation (= 0) or a failure (= 1).}
 
 \item{mix_output}{a list provided by \code{\link{mixmod_regression}} or
 \code{\link{mixmod_em}}, which consists of elements necessary to visualize
 the regression lines.}
 
-\item{title_trace}{a character string whis is assigned to the trace shown in
+\item{distribution}{supposed distribution of the random variable.}
+
+\item{title_trace}{A character string whis is assigned to the trace shown in
 the legend.}
 }
 \value{

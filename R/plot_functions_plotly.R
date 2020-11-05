@@ -111,9 +111,18 @@ plot_layout_plotly <- function(
 
 
   # create grid
-  p <- plotly::plotly_empty() %>%
-    plotly::layout(title = title, separators = ".",
-                   legend = l, xaxis = x_config, yaxis = y_config, margin = m)
+  p <- plotly::plotly_empty(
+    type = "scatter",
+    mode = "markers"
+  ) %>%
+    plotly::layout(
+      title = title,
+      separators = ".",
+      legend = l,
+      xaxis = x_config,
+      yaxis = y_config,
+      margin = m
+    )
   return(p)
 }
 
@@ -152,6 +161,7 @@ plot_prob_plotly <- function(
 }
 
 plot_prob_mix_plotly <- function(
+  p_obj,
   group_df,
   distribution = c(
     "weibull", "lognormal", "loglogistic", "normal", "logistic", "sev"
@@ -164,16 +174,6 @@ plot_prob_mix_plotly <- function(
 
   distribution <- match.arg(distribution)
 
-  # Plot layout:
-  p <- plot_layout(
-    x = group_df$x_s,
-    distribution = distribution,
-    title_main = title_main,
-    title_x = title_x,
-    title_y = title_y,
-    plot_method = "plotly"
-  )
-
   mark_x <- unlist(strsplit(title_x, " "))[1]
   mark_y <- unlist(strsplit(title_y, " "))[1]
 
@@ -182,7 +182,7 @@ plot_prob_mix_plotly <- function(
   cols <- cols[seq_along(unique(group_df$groups))]
 
   # Construct probability plot:
-  plot <- p %>%
+  plot <- p_obj %>%
     plotly::add_trace(
       data = group_df,
       x = ~x_s,
@@ -299,9 +299,9 @@ plot_conf_plotly <- function(p_obj, df_p, title_trace) {
     legendgroup = "Interval",
     text = paste(
       paste0(x_mark, ":"),
-      round(x, digits = 2),
+      round(df_p$x, digits = 2),
       paste("<br>", paste0(y_mark, ":")),
-      round(y, digits = 5)
+      round(df_p$y, digits = 5)
     )
   )
 

@@ -26,11 +26,13 @@ of a lognormal or loglogistic distribution. If the distribution value is
 the second entry must be the shape parameter \eqn{\beta}. Parametrization
 is the same used in \code{\link{rweibull}}.}
 
+\item{distribution}{supposed distribution of the random variable.}
+
 \item{color}{the color of the population line should be added as follows:
 For hexadecimal codes: \code{color = I("#3C8DBC")} and for a color specified
 with a string: \code{color = I("blue")}.}
 
-\item{title_trace}{a character string whis is assigned to the trace shown in
+\item{title_trace}{A character string whis is assigned to the trace shown in
 the legend.}
 }
 \value{

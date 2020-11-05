@@ -45,14 +45,9 @@
 #'   Other distributions have not been implemented yet.
 #' @param conf_level confidence level of the interval. The default value is
 #'   \code{conf_level = 0.95}.
-#' @param details a logical variable, where the default value is \code{TRUE}.
-#'   If \code{FALSE} the output consists of a list that only contains the
-#'   estimated parameters. If \code{TRUE} the output is a detailed list with
-#'   many more information. See below (\strong{Value}).
 #' @param data A data frame returned by \code{\link{estimate_cdf}}.
 #'
-#' @return Returns a list with the following components (depending on
-#'   \code{details} argument):
+#' @return Returns a list with the following components:
 #'   \itemize{
 #'   \item \code{coefficients} : Provided, if \code{distribution} is \code{"weibull"}
 #'     or \code{"weibull3"}. \eqn{\eta} is the estimated scale and \eqn{\beta}
@@ -61,13 +56,13 @@
 #'   \item \code{confint} : Provided, if \code{distribution} is \code{"weibull"}
 #'     or \code{"weibull3"}. Confidence intervals for \eqn{\eta} and \eqn{\beta}
 #'     (and \eqn{\gamma} if the three-parametric weibull is used).
-#'   \item \code{loc_sc_coefficients} : Estimated location-scale parameters.
+#'   \item \code{loc_sc_params} : Estimated location-scale parameters.
 #'     Threshold parameter is provided for \code{"weibull3"}, \code{"lognormal3"}
 #'     and \code{"loglogistic3"}.
 #'   \item \code{loc_sc_confint} : Confidence intervals for location-scale parameters.
 #'     If distribution is \code{"lognormal3"} or \code{"loglogistic3"} a confidence
 #'     interval for the threshold is not computed.
-#'   \item \code{loc_sc_vcov} : Provided, if \code{distribution} is not
+#'   \item \code{loc_sc_varcov} : Provided, if \code{distribution} is not
 #'     \code{"weibull"} or \code{"weibull3"}. Estimated heteroscedasticity-consistent
 #'     Variance-Covariance matrix of the used location-scale distribution.
 #'   \item \code{r_squared} : Coefficient of determination.}
@@ -111,7 +106,7 @@ rank_regression.default <- function(x, y, event,
                             distribution = c("weibull", "lognormal", "loglogistic",
                                              "normal", "logistic", "sev", "weibull3",
                                              "lognormal3", "loglogistic3"),
-                            conf_level = .95, details = TRUE) {
+                            conf_level = .95) {
 
   distribution <- match.arg(distribution)
 
@@ -163,15 +158,10 @@ rank_regression.default <- function(x, y, event,
 
     r_sq <- summary(mrr)$r.squared
 
-    if (details == TRUE) {
-      mrr_output <- list(coefficients = estimates, confint = conf_ints,
-                         loc_sc_coefficients = estimates_loc_sc,
-                         loc_sc_confint = conf_ints_loc_sc,
-                         r_squared = r_sq)
-    } else {
-      mrr_output <- list(coefficients = estimates,
-        loc_sc_coefficients = estimates_loc_sc)
-    }
+    mrr_output <- list(coefficients = estimates, confint = conf_ints,
+                       loc_sc_params = estimates_loc_sc,
+                       loc_sc_confint = conf_ints_loc_sc,
+                       r_squared = r_sq)
   }
   if (distribution == "weibull3" | distribution == "lognormal3" | distribution == "loglogistic3") {
     # Log-Location-Scale with threshold:
@@ -239,15 +229,10 @@ rank_regression.default <- function(x, y, event,
 
       r_sq <- summary(mrr)$r.squared
 
-      if (details == TRUE) {
-        mrr_output <- list(coefficients = estimates, confint = conf_ints,
-          loc_sc_coefficients = estimates_loc_sc,
-          loc_sc_confint = conf_ints_loc_sc,
-          r_squared = r_sq)
-      } else {
-        mrr_output <- list(coefficients = estimates,
-          loc_sc_coefficients = estimates_loc_sc)
-      }
+      mrr_output <- list(coefficients = estimates, confint = conf_ints,
+                         loc_sc_params = estimates_loc_sc,
+                         loc_sc_confint = conf_ints_loc_sc,
+                         r_squared = r_sq)
 
     } else if (distribution == "lognormal3" | distribution == "loglogistic3") {
 
@@ -290,15 +275,10 @@ rank_regression.default <- function(x, y, event,
 
       r_sq <- summary(mrr)$r.squared
 
-      if (details == TRUE) {
-        mrr_output <- list(loc_sc_coefficients = estimates_loc_sc,
-          loc_sc_confint = conf_ints_loc_sc,
-          loc_sc_vcov = vcov_loc_sc,
-          r_squared = r_sq)
-      } else {
-        mrr_output <- list(loc_sc_coefficients = estimates_loc_sc)
-      }
-
+      mrr_output <- list(loc_sc_params = estimates_loc_sc,
+                         loc_sc_confint = conf_ints_loc_sc,
+                         loc_sc_varcov = vcov_loc_sc,
+                         r_squared = r_sq)
     }
   }
 
@@ -351,14 +331,10 @@ rank_regression.default <- function(x, y, event,
 
     r_sq <- summary(mrr)$r.squared
 
-    if (details == TRUE) {
-      mrr_output <- list(loc_sc_coefficients = estimates_loc_sc,
-                         loc_sc_confint = conf_ints_loc_sc,
-                         loc_sc_vcov = vcov_loc_sc,
-                         r_squared = r_sq)
-    } else {
-      mrr_output <- list(loc_sc_coefficients = estimates_loc_sc)
-    }
+    mrr_output <- list(loc_sc_params = estimates_loc_sc,
+                       loc_sc_confint = conf_ints_loc_sc,
+                       loc_sc_varcov = vcov_loc_sc,
+                       r_squared = r_sq)
   }
 
   class(mrr_output) <- c("parameter_estimation", class(mrr_output))
@@ -380,11 +356,11 @@ rank_regression.cdf_estimation <- function(
   data,
   distribution = c("weibull", "lognormal", "loglogistic", "normal", "logistic",
                    "sev", "weibull3", "lognormal3"),
-  conf_level = 0.95, details = TRUE
+  conf_level = 0.95
 ) {
   rank_regression.default(
     x = data$characteristic, y = data$prob, event = data$status,
-    distribution = match.arg(distribution), conf_level = conf_level, details = details
+    distribution = match.arg(distribution), conf_level = conf_level
   )
 }
 
@@ -494,22 +470,17 @@ r_squared_profiling <- function(x, y, thres, distribution = c("weibull3", "logno
 #'   vector with all components being 1 (same weights).
 #' @param conf_level confidence level of the interval. The default value is
 #'   \code{conf_level = 0.95}.
-#' @param details a logical variable, where the default value is \code{TRUE}.
-#'   If \code{FALSE} the output consists of a list that only contains the
-#'   estimated parameters. If \code{TRUE} the output is a detailed list with
-#'   many more information. See below (\strong{Value}).
 #'
 #'
-#' @return Returns a list with the following components (depending on
-#' \code{details} argument):
+#' @return Returns a list with the following components:
 #'   \itemize{
 #'   \item \code{coefficients} : Provided, if \code{distribution} is \code{"weibull"}.
 #'     \eqn{\eta} is the estimated scale and \eqn{\beta} the estimated shape parameter.
 #'   \item \code{confint} : Provided, if \code{distribution} is \code{"weibull"}.
 #'     Confidence interval for \eqn{\eta} and \eqn{\beta}.
-#'   \item \code{loc_sc_coefficients} : Estimated location-scale parameters.
+#'   \item \code{loc_sc_params} : Estimated location-scale parameters.
 #'   \item \code{loc_sc_confint} : Confidence interval for location-scale parameters.
-#'   \item \code{loc_sc_vcov} : Estimated Variance-Covariance matrix of the used
+#'   \item \code{loc_sc_varcov} : Estimated Variance-Covariance matrix of the used
 #'     location-scale distribution.
 #'   \item \code{logL} : The log-likelihood value.
 #'   \item \code{aic} : Akaike Information Criterion.
@@ -543,8 +514,7 @@ ml_estimation <- function(
     "weibull", "lognormal", "loglogistic", "normal", "logistic", "sev",
     "weibull3", "lognormal3", "loglogistic3"),
   wts = rep(1, length(x)),
-  conf_level = .95,
-  details = TRUE
+  conf_level = .95
 ) {
 
   distribution <- match.arg(distribution)
@@ -589,31 +559,23 @@ ml_estimation <- function(
         ncol = 2)
       colnames(conf_ints) <- colnames(conf_ints_loc_sc)
       rownames(conf_ints) <- names(estimates)
-      if (details == TRUE) {
-        ml_output <- list(coefficients = estimates, confint = conf_ints,
-          loc_sc_coefficients = estimates_loc_sc,
-          loc_sc_confint = conf_ints_loc_sc,
-          loc_sc_vcov = vcov_loc_sc, logL = -ml$min,
-          aic = -2 * (-ml$min) + 2 * length(estimates_loc_sc),
-          bic = (-2 * (-ml$min) +
-                log(length(x)) * length(estimates_loc_sc))
-        )
-      } else {
-        ml_output <- list(coefficients = estimates,
-          loc_sc_coefficients = estimates_loc_sc)
-      }
+
+      ml_output <- list(coefficients = estimates, confint = conf_ints,
+                        loc_sc_params = estimates_loc_sc,
+                        loc_sc_confint = conf_ints_loc_sc,
+                        loc_sc_varcov = vcov_loc_sc, logL = -ml$min,
+                        aic = -2 * (-ml$min) + 2 * length(estimates_loc_sc),
+                        bic = (-2 * (-ml$min) +
+                                 log(length(x)) * length(estimates_loc_sc))
+      )
     } else {
-      if (details == TRUE) {
-        ml_output <- list(loc_sc_coefficients = estimates_loc_sc,
-          loc_sc_confint = conf_ints_loc_sc,
-          loc_sc_vcov = vcov_loc_sc, logL = -ml$min,
-          aic = -2 * (-ml$min) + 2 * length(estimates_loc_sc),
-          bic = (-2 * (-ml$min) +
-            log(length(x)) * length(estimates_loc_sc))
-        )
-      } else {
-        ml_output <- list(loc_sc_coefficients = estimates_loc_sc)
-      }
+      ml_output <- list(loc_sc_params = estimates_loc_sc,
+                        loc_sc_confint = conf_ints_loc_sc,
+                        loc_sc_varcov = vcov_loc_sc, logL = -ml$min,
+                        aic = -2 * (-ml$min) + 2 * length(estimates_loc_sc),
+                        bic = (-2 * (-ml$min) +
+                                 log(length(x)) * length(estimates_loc_sc))
+      )
     }
   }
 
@@ -699,32 +661,23 @@ ml_estimation <- function(
       colnames(conf_ints) <- colnames(conf_ints_loc_sc)
       rownames(conf_ints) <- names(estimates)
 
-      if (details == TRUE) {
-        ml_output <- list(coefficients = estimates, confint = conf_ints,
-          loc_sc_coefficients = estimates_loc_sc,
-          loc_sc_confint = conf_ints_loc_sc,
-          loc_sc_vcov = vcov_loc_sc, logL = ml$value,
-          aic = -2 * (ml$value) + 2 * length(estimates_loc_sc),
-          bic = (-2 * (ml$value) +
-              log(length(x)) * length(estimates_loc_sc))
-        )
-      } else {
-        ml_output <- list(coefficients = estimates,
-          loc_sc_coefficients = estimates_loc_sc)
-      }
+      ml_output <- list(coefficients = estimates, confint = conf_ints,
+                        loc_sc_params = estimates_loc_sc,
+                        loc_sc_confint = conf_ints_loc_sc,
+                        loc_sc_varcov = vcov_loc_sc, logL = ml$value,
+                        aic = -2 * (ml$value) + 2 * length(estimates_loc_sc),
+                        bic = (-2 * (ml$value) +
+                                 log(length(x)) * length(estimates_loc_sc))
+      )
 
     } else {
-      if (details == TRUE) {
-        ml_output <- list(loc_sc_coefficients = estimates_loc_sc,
-          loc_sc_confint = conf_ints_loc_sc,
-          loc_sc_vcov = vcov_loc_sc, logL = ml$value,
-          aic = -2 * (ml$value) + 2 * length(estimates_loc_sc),
-          bic = (-2 * (ml$value) +
-              log(length(x)) * length(estimates_loc_sc))
-        )
-      } else {
-        ml_output <- list(loc_sc_coefficients = estimates_loc_sc)
-      }
+      ml_output <- list(loc_sc_params = estimates_loc_sc,
+                        loc_sc_confint = conf_ints_loc_sc,
+                        loc_sc_varcov = vcov_loc_sc, logL = ml$value,
+                        aic = -2 * (ml$value) + 2 * length(estimates_loc_sc),
+                        bic = (-2 * (ml$value) +
+                                 log(length(x)) * length(estimates_loc_sc))
+      )
     }
   }
   # Location-Scale Models:
@@ -785,17 +738,13 @@ ml_estimation <- function(
       paste(((1 + conf_level) / 2) * 100, "%"))
     rownames(conf_ints_loc_sc) <- names(estimates_loc_sc)
 
-    if (details == TRUE) {
-      ml_output <- list(loc_sc_coefficients = estimates_loc_sc,
-        loc_sc_confint = conf_ints_loc_sc,
-        loc_sc_vcov = vcov_loc_sc, logL = ml$value,
-        aic = -2 * (ml$value) + 2 * length(estimates_loc_sc),
-        bic = (-2 * (ml$value) +
-            log(length(x)) * length(estimates_loc_sc))
-      )
-    } else {
-      ml_output <- list(loc_sc_coefficients = estimates_loc_sc)
-    }
+    ml_output <- list(loc_sc_params = estimates_loc_sc,
+                      loc_sc_confint = conf_ints_loc_sc,
+                      loc_sc_varcov = vcov_loc_sc, logL = ml$value,
+                      aic = -2 * (ml$value) + 2 * length(estimates_loc_sc),
+                      bic = (-2 * (ml$value) +
+                               log(length(x)) * length(estimates_loc_sc))
+    )
   }
 
   class(ml_output) <- c("parameter_estimation", class(ml_output))
