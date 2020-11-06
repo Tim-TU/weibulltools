@@ -549,8 +549,8 @@ confint_fisher.parameter_estimation <- function(
   confint_fisher.default(
     x = rel_df$x,
     event = rel_df$event,
-    loc_sc_params = parameter_estimation$loc_sc_coefficients,
-    los_sc_varcov = parameter_estimation$loc_sc_vcov,
+    loc_sc_params = parameter_estimation$loc_sc_params,
+    loc_sc_varcov = parameter_estimation$loc_sc_varcov,
     distribution = distribution,
     bounds = bounds,
     conf_level = conf_level,
@@ -560,22 +560,23 @@ confint_fisher.parameter_estimation <- function(
 
 #' @export
 #' @describeIn confint_fisher Provide all arguments manually.
-confint_fisher.default <- function(x, event, loc_sc_params, loc_sc_varcov,
-                           distribution = c("weibull", "lognormal", "loglogistic",
-                                            "normal", "logistic", "sev", "weibull3",
-                                            "lognormal3", "loglogistic3"),
-                           bounds = c("two_sided", "lower", "upper"),
-                           conf_level = .95, direction = c("y", "x")) {
+confint_fisher.default <- function(
+  x,
+  event,
+  loc_sc_params,
+  loc_sc_varcov,
+  distribution = c(
+    "weibull", "lognormal", "loglogistic", "normal", "logistic", "sev",
+    "weibull3", "lognormal3", "loglogistic3"
+  ),
+  bounds = c("two_sided", "lower", "upper"),
+  conf_level = .95,
+  direction = c("y", "x")
+) {
 
   bounds <- match.arg(bounds)
   direction <- match.arg(direction)
   distribution <- match.arg(distribution)
-
-  if (!(distribution %in% c("weibull", "lognormal", "loglogistic", "normal",
-                            "logistic", "sev", "weibull3", "lognormal3",
-                            "loglogistic3"))) {
-    stop("No valid distribution!")
-  }
 
   n <- length(x)
   x_ob <- x[event == 1]
