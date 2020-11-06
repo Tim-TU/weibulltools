@@ -8,8 +8,8 @@ reliability_data(data = NULL, x, status, id)
 }
 \arguments{
 \item{data}{Either NULL or a data frame/tibble. If data is NULL, x, status and
-id must be vectors containing the data. Otherwise x, status and id must be
-column names present in data.}
+id must be vectors containing the data. Otherwise x, status and id can be either
+column names or column positions.}
 
 \item{x}{Lifetime data, that means any characteristic influencing the reliability
 of a product, e.g. operating time (days/months in service), mileage (km, miles),
