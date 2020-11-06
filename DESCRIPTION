@@ -46,7 +46,8 @@ Imports:
     sandwich,
     segmented, 
     SPREDA, 
-    survival
+    survival,
+    tibble
 LinkingTo: Rcpp (>= 0.12.18), RcppArmadillo
 Depends: R (>= 3.3.0)
 Encoding: UTF-8
