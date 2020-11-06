@@ -11,8 +11,7 @@ ml_estimation(
   distribution = c("weibull", "lognormal", "loglogistic", "normal", "logistic", "sev",
     "weibull3", "lognormal3", "loglogistic3"),
   wts = rep(1, length(x)),
-  conf_level = 0.95,
-  details = TRUE
+  conf_level = 0.95
 )
 }
 \arguments{
@@ -36,23 +35,17 @@ vector with all components being 1 (same weights).}
 
 \item{conf_level}{confidence level of the interval. The default value is
 \code{conf_level = 0.95}.}
-
-\item{details}{a logical variable, where the default value is \code{TRUE}.
-If \code{FALSE} the output consists of a list that only contains the
-estimated parameters. If \code{TRUE} the output is a detailed list with
-many more information. See below (\strong{Value}).}
 }
 \value{
-Returns a list with the following components (depending on
-\code{details} argument):
+Returns a list with the following components:
   \itemize{
   \item \code{coefficients} : Provided, if \code{distribution} is \code{"weibull"}.
     \eqn{\eta} is the estimated scale and \eqn{\beta} the estimated shape parameter.
   \item \code{confint} : Provided, if \code{distribution} is \code{"weibull"}.
     Confidence interval for \eqn{\eta} and \eqn{\beta}.
-  \item \code{loc_sc_coefficients} : Estimated location-scale parameters.
+  \item \code{loc_sc_params} : Estimated location-scale parameters.
   \item \code{loc_sc_confint} : Confidence interval for location-scale parameters.
-  \item \code{loc_sc_vcov} : Estimated Variance-Covariance matrix of the used
+  \item \code{loc_sc_varcov} : Estimated Variance-Covariance matrix of the used
     location-scale distribution.
   \item \code{logL} : The log-likelihood value.
   \item \code{aic} : Akaike Information Criterion.

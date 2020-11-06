@@ -18,7 +18,7 @@ is a right censored observation (= 0) or a failure (= 1).}
 \item{id}{a character vector for the identification of every unit.}
 }
 \value{
-A data frame containing id, lifetime characteristic, status of the
+A tibble containing id, lifetime characteristic, status of the
   unit, the adjusted rank and the estimated failure probability. For right
   censored observations the cells of the rank and probabilty columns are
   filled with NA values.
@@ -35,5 +35,5 @@ state <- c(0, 1, 1, 0, 0, 0, 1, 0, 1, 0)
 uic   <- c("3435", "1203", "958X", "XX71", "abcd", "tz46",
            "fl29", "AX23", "Uy12", "kl1a")
 
-df_john <- johnson_method(x = obs, event = state, id = uic)
+tbl_john <- johnson_method(x = obs, event = state, id = uic)
 }

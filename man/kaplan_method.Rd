@@ -18,7 +18,7 @@ is a right censored observation (= 0) or a failure (= 1).}
 \item{id}{a character vector for the identification of every unit.}
 }
 \value{
-A data frame containing id, lifetime characteristic, status of the
+A tibble containing id, lifetime characteristic, status of the
   unit and the estimated failure probabilty. For right censored observations
   the cells of probability column are filled with NA.
 }
@@ -44,17 +44,17 @@ state <- c(0, 1, 1, 0, 0, 0, 1, 0, 1, 0)
 uic   <- c("3435", "1203", "958X", "XX71", "abcd", "tz46",
            "fl29", "AX23","Uy12", "kl1a")
 
-df_kap <- kaplan_method(x = obs, event = state, id = uic)
+tbl_kap <- kaplan_method(x = obs, event = state, id = uic)
 
 # Example 2
- df <- data.frame(obs = c(10000, 10000, 20000, 20000, 30000,
+tbl <- tibble(obs = c(10000, 10000, 20000, 20000, 30000,
                          30000, 30000, 30000, 40000, 50000,
                          50000, 60000, 70000, 70000, 70000,
                          70000, 80000, 80000, 80000, 80000,
                          90000, 90000, 100000),
                  state = rep(1, 23))
 
-df_kap2 <- kaplan_method(x = df$obs, event = df$state)
+tbl_kap2 <- kaplan_method(x = tbl$obs, event = tbl$state)
 }
 \references{
 \emph{NIST/SEMATECH e-Handbook of Statistical Methods},

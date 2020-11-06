@@ -25,7 +25,7 @@ cycles.}
 or "invbeta".}
 }
 \value{
-A data frame containing id, lifetime characteristic, status of the
+A tibble containing id, lifetime characteristic, status of the
   unit, the rank and the estimated failure probability.
 }
 \description{
@@ -44,10 +44,10 @@ state <- rep(1, length(obs))
 uic   <- c("3435", "1203", "958X", "XX71", "abcd", "tz46",
            "fl29", "AX23", "Uy12", "kl1a")
 
-df_mr <- mr_method(x = obs, event = state, id = uic,
+tbl_mr <- mr_method(x = obs, event = state, id = uic,
                    method = "benard")
 
 # Example 2
-df_mr_invbeta <- mr_method(x = obs, event = state, id = uic,
+tbl_mr_invbeta <- mr_method(x = obs, event = state, id = uic,
                            method = "invbeta")
 }

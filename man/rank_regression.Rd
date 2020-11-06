@@ -15,16 +15,14 @@ rank_regression(x, ...)
   event,
   distribution = c("weibull", "lognormal", "loglogistic", "normal", "logistic", "sev",
     "weibull3", "lognormal3", "loglogistic3"),
-  conf_level = 0.95,
-  details = TRUE
+  conf_level = 0.95
 )
 
 \method{rank_regression}{cdf_estimation}(
   data,
   distribution = c("weibull", "lognormal", "loglogistic", "normal", "logistic", "sev",
     "weibull3", "lognormal3"),
-  conf_level = 0.95,
-  details = TRUE
+  conf_level = 0.95
 )
 }
 \arguments{
@@ -48,16 +46,10 @@ Other distributions have not been implemented yet.}
 \item{conf_level}{confidence level of the interval. The default value is
 \code{conf_level = 0.95}.}
 
-\item{details}{a logical variable, where the default value is \code{TRUE}.
-If \code{FALSE} the output consists of a list that only contains the
-estimated parameters. If \code{TRUE} the output is a detailed list with
-many more information. See below (\strong{Value}).}
-
 \item{data}{A data frame returned by \code{\link{estimate_cdf}}.}
 }
 \value{
-Returns a list with the following components (depending on
-  \code{details} argument):
+Returns a list with the following components:
   \itemize{
   \item \code{coefficients} : Provided, if \code{distribution} is \code{"weibull"}
     or \code{"weibull3"}. \eqn{\eta} is the estimated scale and \eqn{\beta}
@@ -66,13 +58,13 @@ Returns a list with the following components (depending on
   \item \code{confint} : Provided, if \code{distribution} is \code{"weibull"}
     or \code{"weibull3"}. Confidence intervals for \eqn{\eta} and \eqn{\beta}
     (and \eqn{\gamma} if the three-parametric weibull is used).
-  \item \code{loc_sc_coefficients} : Estimated location-scale parameters.
+  \item \code{loc_sc_params} : Estimated location-scale parameters.
     Threshold parameter is provided for \code{"weibull3"}, \code{"lognormal3"}
     and \code{"loglogistic3"}.
   \item \code{loc_sc_confint} : Confidence intervals for location-scale parameters.
     If distribution is \code{"lognormal3"} or \code{"loglogistic3"} a confidence
     interval for the threshold is not computed.
-  \item \code{loc_sc_vcov} : Provided, if \code{distribution} is not
+  \item \code{loc_sc_varcov} : Provided, if \code{distribution} is not
     \code{"weibull"} or \code{"weibull3"}. Estimated heteroscedasticity-consistent
     Variance-Covariance matrix of the used location-scale distribution.
   \item \code{r_squared} : Coefficient of determination.}

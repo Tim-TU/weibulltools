@@ -83,9 +83,10 @@ label of the marker is "Probability".
 }
 \section{Methods (by class)}{
 \itemize{
-\item \code{default}: Default
+\item \code{default}: Provide x, y, event and id manually
 
-\item \code{cdf_estimation}: CDF Estimation
+\item \code{cdf_estimation}: Create a probability plot based on a CDF estimation
+returned by \code{\link{estimate_cdf}}.
 }}
 
 \examples{
