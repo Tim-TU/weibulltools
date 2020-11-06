@@ -31,9 +31,9 @@
 #' status <- c(rep(0, 5), rep(1, 67))
 #' id <- "XXXXXX"
 #'
-#' tbl <- tibble(cycles = cycles, status = status, id = id)
+#' tbl <- tibble::tibble(cycles = cycles, status = status, id = id)
 #'
-#' rel_tbl <- reliability_data(tibble, x = cycles, status = status, id = id)
+#' rel_tbl <- reliability_data(tbl, x = cycles, status = status, id = id)
 #'
 #' @export
 reliability_data <- function(data = NULL, x, status, id) {

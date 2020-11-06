@@ -156,32 +156,19 @@ plot_prob.default <- function(
   distribution <- match.arg(distribution)
   plot_method <- match.arg(plot_method)
 
-  prob_df <- plot_prob_helper(
-    x, y, event, id, distribution
+  tbl <- tibble::tibble(
+    characteristic = x, prob = y, status = event, id = id,
+    method = title_trace
   )
 
-  # Plot layout:
-  p_obj <- plot_layout(
-    x = prob_df$x,
+  plot_prob_(
+    tbl = tbl,
     distribution = distribution,
     title_main = title_main,
     title_x = title_x,
     title_y = title_y,
+    title_trace = title_trace,
     plot_method = plot_method
-  )
-
-  plot_prob_fun <- if (plot_method == "plotly") plot_prob_plotly else
-    plot_prob_ggplot2
-
-  plot_prob_fun(
-    p_obj = p_obj,
-    x = x,
-    prob_df = prob_df,
-    distribution = distribution,
-    title_main = title_main,
-    title_x = title_x,
-    title_y = title_y,
-    title_trace = title_trace
   )
 }
 
@@ -202,11 +189,40 @@ plot_prob.cdf_estimation <- function(
   distribution <- match.arg(distribution)
   plot_method <- match.arg(plot_method)
 
-  plot_prob.default(
-    x = cdf_estimation$characteristic,
-    y = cdf_estimation$prob,
-    event = cdf_estimation$status,
-    id = cdf_estimation$id,
+  plot_prob_(
+    tbl = cdf_estimation,
+    distribution = distribution,
+    title_main = title_main,
+    title_x = title_x,
+    title_y = title_y,
+    title_trace = title_trace,
+    plot_method = plot_method
+  )
+}
+
+plot_prob_ <- function(
+  tbl, distribution, title_main, title_x, title_y, title_trace, plot_method
+) {
+
+  prob_tbl <- plot_prob_helper(
+    tbl, distribution
+  )
+
+  p_obj <- plot_layout(
+    x = prob_tbl$characteristic,
+    distribution = distribution,
+    title_main = title_main,
+    title_x = title_x,
+    title_y = title_y,
+    plot_method = plot_method
+  )
+
+  plot_prob_fun <- if (plot_method == "plotly") plot_prob_plotly else
+    plot_prob_ggplot2
+
+  plot_prob_fun(
+    p_obj = p_obj,
+    prob_tbl = prob_tbl,
     distribution = distribution,
     title_main = title_main,
     title_x = title_x,

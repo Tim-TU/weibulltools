@@ -54,14 +54,14 @@ estimate_cdf <- function(
     if (method == "mr") {
       method_funs[[method]](
         x = data$x,
-        event = data$event,
+        event = data$status,
         id = data$id,
         method = if (is.null(options$method)) "benard" else options$method
       )
     } else {
       method_funs[[method]](
         x = data$x,
-        event = data$event,
+        event = data$status,
         id = data$id
       )
     }

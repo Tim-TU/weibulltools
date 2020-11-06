@@ -127,7 +127,7 @@ plot_layout_plotly <- function(
 }
 
 plot_prob_plotly <- function(
-  p_obj, x, prob_df,
+  p_obj, prob_tbl,
   distribution = c(
     "weibull", "lognormal", "loglogistic", "normal", "logistic", "sev"
   ),
@@ -142,18 +142,24 @@ plot_prob_plotly <- function(
   mark_x <- unlist(strsplit(title_x, " "))[1]
   mark_y <- unlist(strsplit(title_y, " "))[1]
 
-  color <- if (length(unique(prob_df$distribution)) == 1) I("#3C8DBC") else
-    ~distribution
+  #color <- I("#3C8DBC")
 
   # Construct probability plot:
   p_prob <- p_obj %>%
-    plotly::add_trace(data = prob_df, x = ~x_s, y = ~q, type = "scatter",
-                      mode = "markers", hoverinfo = "text",
-                      color = color,
-                      name = title_trace,
-                      text = ~paste("ID:", ~id,
-                                    paste("<br>", paste0(mark_x, ":")), prob_df$x_s,
-                                    paste("<br>", paste0(mark_y, ":")), round(prob_df$y_s, digits = 5))
+    plotly::add_trace(
+      data = prob_tbl,
+      x = ~characteristic,
+      y = ~q,
+      type = "scatter",
+      mode = "markers",
+      hoverinfo = "text",
+      color = ~method,
+      name = ~method,
+      text = paste(
+        "ID:", prob_tbl$id,
+        paste("<br>", paste0(mark_x, ":")), prob_tbl$characteristic,
+        paste("<br>", paste0(mark_y, ":")), round(prob_tbl$prob, digits = 5)
+      )
     ) %>%
     plotly::layout(showlegend = TRUE)
 
