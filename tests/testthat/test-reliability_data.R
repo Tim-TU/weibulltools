@@ -6,7 +6,7 @@ stat_2 <- c(0, 0, 0, 0, 1, 1, 1, 1, 1, 1)
 id_1 <- "XXXXXX"
 id_2 <- LETTERS[1:10]
 
-tbl <- tibble(a = x, b = stat_2, c = id_2)
+tbl <- tibble::tibble(a = x, b = stat_2, c = id_2)
 
 # General tests ----
 test_that("reliability_data fails if x, status or id are not provided", {
