@@ -12,16 +12,16 @@ mr_method(
 )
 }
 \arguments{
-\item{x}{a numeric vector which consists of lifetime data. Lifetime
+\item{x}{A numeric vector which consists of lifetime data. Lifetime
 data could be every characteristic influencing the reliability of a product,
 e.g. operating time (days/months in service), mileage (km, miles), load
 cycles.}
 
-\item{event}{a vector of ones indicating that every unit \emph{i} has failed.}
+\item{event}{A vector of ones indicating that every unit \emph{i} has failed.}
 
-\item{id}{a character vector for the identification of every unit.}
+\item{id}{A character vector for the identification of every unit.}
 
-\item{method}{method for the estimation of the cdf. Can be "benard" (default)
+\item{method}{Method for the estimation of the cdf. Can be "benard" (default)
 or "invbeta".}
 }
 \value{

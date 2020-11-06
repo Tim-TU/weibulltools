@@ -7,14 +7,14 @@
 dist_mileage(x, event, mileage, distribution = "lognormal")
 }
 \arguments{
-\item{x}{a numeric vector of operating times. If not available use \code{NA}.}
+\item{x}{A numeric vector of operating times. If not available use \code{NA}.}
 
-\item{event}{a vector of binary data (0 or 1) indicating whether unit \emph{i}
+\item{event}{A vector of binary data (0 or 1) indicating whether unit \emph{i}
 is a right censored observation (= 0) or a failure (= 1).}
 
-\item{mileage}{a numeric vector of driven distances. If not available use \code{NA}.}
+\item{mileage}{A numeric vector of driven distances. If not available use \code{NA}.}
 
-\item{distribution}{supposed distribution of the random variable. The default
+\item{distribution}{Supposed distribution of the random variable. The default
 value is \code{"lognormal"}. So far no other distribution is implemented.}
 }
 \value{

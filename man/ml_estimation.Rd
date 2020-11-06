@@ -15,25 +15,25 @@ ml_estimation(
 )
 }
 \arguments{
-\item{x}{a numeric vector which consists of lifetime data. Lifetime
+\item{x}{A numeric vector which consists of lifetime data. Lifetime
 data could be every characteristic influencing the reliability of a product,
 e.g. operating time (days/months in service), mileage (km, miles), load
 cycles.}
 
-\item{event}{a vector of binary data (0 or 1) indicating whether unit \emph{i}
+\item{event}{A vector of binary data (0 or 1) indicating whether unit \emph{i}
 is a right censored observation (= 0) or a failure (= 1).}
 
-\item{distribution}{supposed distribution of the random variable. The
+\item{distribution}{Supposed distribution of the random variable. The
 value can be \code{"weibull"}, \code{"lognormal"}, \code{"loglogistic"},
 \code{"normal"}, \code{"logistic"}, \code{"sev"} \emph{(smallest extreme value)},
 \code{"weibull3"}, \code{"lognormal3"} or \code{"loglogistic3"}.
 Other distributions have not been implemented yet.}
 
-\item{wts}{optional vector of case weights. The length of \code{wts} must be the
+\item{wts}{Optional vector of case weights. The length of \code{wts} must be the
 same as the number of observations \code{x}. Default is that \code{wts} is a
 vector with all components being 1 (same weights).}
 
-\item{conf_level}{confidence level of the interval. The default value is
+\item{conf_level}{Confidence level of the interval. The default value is
 \code{conf_level = 0.95}.}
 }
 \value{

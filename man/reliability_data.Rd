@@ -43,8 +43,8 @@ cycles   <- c(300, 300, 300, 300, 300, 291, 274, 271, 269, 257, 256, 227, 226,
 status <- c(rep(0, 5), rep(1, 67))
 id <- "XXXXXX"
 
-tbl <- tibble(cycles = cycles, status = status, id = id)
+tbl <- tibble::tibble(cycles = cycles, status = status, id = id)
 
-rel_tbl <- reliability_data(tibble, x = cycles, status = status, id = id)
+rel_tbl <- reliability_data(tbl, x = cycles, status = status, id = id)
 
 }

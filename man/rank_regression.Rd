@@ -3,11 +3,18 @@
 \encoding{UTF-8}
 \name{rank_regression}
 \alias{rank_regression}
-\alias{rank_regression.default}
 \alias{rank_regression.cdf_estimation}
+\alias{rank_regression.default}
 \title{Rank Regression for Parametric Lifetime Distributions}
 \usage{
 rank_regression(x, ...)
+
+\method{rank_regression}{cdf_estimation}(
+  cdf_estimation,
+  distribution = c("weibull", "lognormal", "loglogistic", "normal", "logistic", "sev",
+    "weibull3", "lognormal3"),
+  conf_level = 0.95
+)
 
 \method{rank_regression}{default}(
   x,
@@ -17,36 +24,29 @@ rank_regression(x, ...)
     "weibull3", "lognormal3", "loglogistic3"),
   conf_level = 0.95
 )
-
-\method{rank_regression}{cdf_estimation}(
-  data,
-  distribution = c("weibull", "lognormal", "loglogistic", "normal", "logistic", "sev",
-    "weibull3", "lognormal3"),
-  conf_level = 0.95
-)
 }
 \arguments{
-\item{x}{a numeric vector which consists of lifetime data. Lifetime
+\item{x}{A numeric vector which consists of lifetime data. Lifetime
 data could be every characteristic influencing the reliability of a product,
 e.g. operating time (days/months in service), mileage (km, miles), load
 cycles.}
 
-\item{y}{a numeric vector which consists of estimated failure probabilities
-regarding the lifetime data in \code{x}.}
-
-\item{event}{a vector of binary data (0 or 1) indicating whether unit \emph{i}
-is a right censored observation (= 0) or a failure (= 1).}
-
-\item{distribution}{supposed distribution of the random variable. The
+\item{distribution}{Supposed distribution of the random variable. The
 value can be \code{"weibull"}, \code{"lognormal"}, \code{"loglogistic"},
 \code{"normal"}, \code{"logistic"}, \code{"sev"} \emph{(smallest extreme value)},
 \code{"weibull3"}, \code{"lognormal3"} or \code{"loglogistic3"}.
 Other distributions have not been implemented yet.}
 
-\item{conf_level}{confidence level of the interval. The default value is
+\item{conf_level}{Confidence level of the interval. The default value is
 \code{conf_level = 0.95}.}
 
-\item{data}{A data frame returned by \code{\link{estimate_cdf}}.}
+\item{y}{A numeric vector which consists of estimated failure probabilities
+regarding the lifetime data in \code{x}.}
+
+\item{event}{A vector of binary data (0 or 1) indicating whether unit \emph{i}
+is a right censored observation (= 0) or a failure (= 1).}
+
+\item{data}{A tibble returned by \code{\link{estimate_cdf}}.}
 }
 \value{
 Returns a list with the following components:
@@ -95,12 +95,12 @@ standard errors for the parameters using \emph{Least Squares} in context of
 }
 \section{Methods (by class)}{
 \itemize{
-\item \code{default}: Provide x, y and event manually.
-
 \item \code{cdf_estimation}: Perform the rank regression as part of the
 reliability pipeline. \code{\link{estimate_cdf}} returns a data frame of class
 \code{"cdf_estimation"}, which contains all information regarding x, y and
 event.
+
+\item \code{default}: Provide x, y and event manually.
 }}
 
 \examples{

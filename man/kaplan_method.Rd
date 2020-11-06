@@ -7,15 +7,15 @@
 kaplan_method(x, event, id = rep("XXXXXX", length(x)))
 }
 \arguments{
-\item{x}{a numeric vector which consists of lifetime data. Lifetime
+\item{x}{A numeric vector which consists of lifetime data. Lifetime
 data could be every characteristic influencing the reliability of a product,
 e.g. operating time (days/months in service), mileage (km, miles), load
 cycles.}
 
-\item{event}{a vector of binary data (0 or 1) indicating whether unit \emph{i}
+\item{event}{A vector of binary data (0 or 1) indicating whether unit \emph{i}
 is a right censored observation (= 0) or a failure (= 1).}
 
-\item{id}{a character vector for the identification of every unit.}
+\item{id}{A character vector for the identification of every unit.}
 }
 \value{
 A tibble containing id, lifetime characteristic, status of the
