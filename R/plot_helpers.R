@@ -464,3 +464,71 @@ plot_pop_helper <- function(x, params, distribution) {
 
   return(l)
 }
+
+plot_pop_2_helper <- function(x, param_tbl, distribution) {
+  x_min <- min(x, na.rm = TRUE)
+  x_max <- max(x, na.rm = TRUE)
+
+  x_s <- seq(x_min, x_max, length.out = 200)
+
+  if (distribution == "weibull") {
+    param_tbl <- param_tbl %>%
+      dplyr::transmute(loc = log(param_1), sc = 1 / param_2)
+  }
+  if (distribution %in% c("lognormal", "loglogistic")) {
+    param_tbl <- param_tbl %>%
+      dplyr::transmute(loc = param_1, sc = param_2)
+  }
+
+  tbl_pop <- param_tbl
+  # column x_y is list column that contains a tibble each
+  tbl_pop$x_y <- purrr::pmap(param_tbl, function(loc, sc, x_s, distribution) {
+    tibble::tibble(
+      x_s = x_s,
+      y_s = predict_prob(q = x_s, loc_sc_params = c(loc, sc), distribution = distribution)
+    )
+  }, x_s, distribution)
+
+  tbl_pop <- tbl_pop %>%
+    tidyr::unnest(cols = x_y) %>%
+    dplyr::filter(y_s < 1)
+
+  if (distribution == "weibull") {
+    tbl_pop <- tbl_pop %>%
+      dplyr::mutate(q = SPREDA::qsev(y_s))
+  }
+  if (distribution == "lognormal") {
+    tbl_pop <- tbl_pop %>%
+      dplyr::mutate(q = stats::qnorm(y_s))
+  }
+  if (distribution == "loglogistic") {
+    tbl_pop <- tbl_pop %>%
+      dplyr::mutate(q = stats::qlogis(y_s))
+  }
+
+  if (distribution == "weibull") {
+    param_val_1 <- round(exp(loc), digits = 2)
+    param_val_2 <- round(1 / sc, digits = 2)
+
+    param_label_1 <- "\u03B7:"
+    param_label_2 <- "\u03B2:"
+
+  }
+  if (distribution %in% c("lognormal", "loglogistic")) {
+    param_val_1 <- round(loc, digits = 2)
+    param_val_2 <- round(sc, digits = 2)
+
+    param_label_1 <- "\u03BC:"
+    param_label_2 <- "\u03C3:"
+  }
+
+  tbl_pop <- tbl_pop %>%
+    dplyr::mutate(
+      param_val_1 = param_val_1,
+      param_val_2 = param_val_2,
+      param_label_1 = param_label_1,
+      param_label_2 = param_label_2
+    )
+
+  return(tbl_pop)
+}

@@ -29,8 +29,8 @@ test_that("all methods fail for vectors of different length", {
 })
 
 test_that("all methods return cdf_estimations", {
-  expect_is(mr_method(obs, rep(1, times = length(obs))), "cdf_estimation")
-  expect_is(johnson_method(obs, rep(0, times = length(obs))), "cdf_estimation")
-  expect_is(kaplan_method(obs, rep(0, times = length(obs))), "cdf_estimation")
-  expect_is(nelson_method(obs, rep(0, times = length(obs))), "cdf_estimation")
+  expect_s3_class(mr_method(obs, rep(1, times = length(obs))), "cdf_estimation")
+  expect_s3_class(johnson_method(obs, rep(0, times = length(obs))), "cdf_estimation")
+  expect_s3_class(kaplan_method(obs, rep(0, times = length(obs))), "cdf_estimation")
+  expect_s3_class(nelson_method(obs, rep(0, times = length(obs))), "cdf_estimation")
 })

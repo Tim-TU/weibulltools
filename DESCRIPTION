@@ -48,7 +48,8 @@ Imports:
     segmented, 
     SPREDA, 
     survival,
-    tibble
+    tibble,
+    tidyr
 LinkingTo: Rcpp (>= 0.12.18), RcppArmadillo
 Depends: R (>= 3.3.0)
 Encoding: UTF-8
@@ -59,3 +60,4 @@ Suggests:
     rmarkdown,
     testthat
 VignetteBuilder: knitr
+Config/testthat/edition: 3

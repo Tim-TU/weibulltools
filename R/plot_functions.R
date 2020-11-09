@@ -927,10 +927,28 @@ plot_pop <- function(
 #'
 #' @param x A numeric vector containing the x-coordinates of the population line.
 #' @param param_tbl A tibble. See 'Details'.
+#' @param distribution Supposed distribution of the random variable
 #'
 #' @export
 plot_pop_2 <- function(
-  x, param_tbl
+  x, param_tbl,
+  distribution = c("weibull", "lognormal", "loglogistic"),
+  title_main = "Failure Analysis",
+  title_x = "Failure Characteristic",
+  title_y = "Failure Probability",
+  plot_method = c("plotly", "ggplot2")
 ) {
+
+  distribution <- match.arg(distribution)
+  plot_method <- match.arg(plot_method)
+
+  p_obj <- plot_layout(
+    x = x,
+    distribution = distribution,
+    title_main = title_main,
+    title_x = title_x,
+    title_y = title_y
+  )
+
 
 }
