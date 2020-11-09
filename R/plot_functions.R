@@ -2,7 +2,7 @@
 #'
 #' This function is used to create the layout of a probability plot.
 #'
-#' @param x a numeric vector which consists of lifetime data. \code{x} is used to
+#' @param x A numeric vector which consists of lifetime data. \code{x} is used to
 #'   specify the grid of the plot.
 #' @param distribution supposed distribution of the random variable.
 #' @param title_main a character string which is assigned to the main title
@@ -863,10 +863,12 @@ plot_conf.confint <- function(p_obj, confint, title_trace) {
 #'                         distribution = "weibull", color = I("green"),
 #'                         title_trace = "Population")
 #'
-plot_pop <- function(p_obj, x, params,
-                     distribution = c("weibull", "lognormal", "loglogistic"),
-                     color = I("#FF0000"),
-                     title_trace = "Population") {
+plot_pop <- function(
+  p_obj, x, params,
+  distribution = c("weibull", "lognormal", "loglogistic"),
+  color = I("#FF0000"),
+  title_trace = "Population"
+) {
 
   distribution <- match.arg(distribution)
 
@@ -893,4 +895,26 @@ plot_pop <- function(p_obj, x, params,
   plot_pop_fun(
     p_obj, df_pop, param_val, param_label, color, title_trace
   )
+}
+
+#' Add Population Line to an Existing Grid
+#'
+#' This function adds a linearized CDF to an existing plotly grid.
+#'
+#' \code{param_tbl} must be a tibble with the following columns:
+#' \itemize{
+#'   \item \code{param_1}: Location parameter \eqn{\mu} for \code{lognormal} and
+#'     \code{loglogistic}. Scale parameter \eqn{\eta} for \code{weibull}.
+#'   \item \code{param_2}: Scale parameter \eqn{\sigma} for \code{lognormal} and
+#'     \code{loglogistic}. Shape parameter \eqn{\beta} for \code{weibull}.
+#' }
+#'
+#' @param x A numeric vector containing the x-coordinates of the population line.
+#' @param param_tbl A tibble. See 'Details'.
+#'
+#' @export
+plot_pop_2 <- function(
+  x, param_tbl
+) {
+
 }
