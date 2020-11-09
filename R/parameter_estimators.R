@@ -30,22 +30,22 @@
 #'     \item Meeker, William Q; Escobar, Luis A., Statistical methods for
 #'   reliability data, New York: Wiley series in probability and statistics, 1998}
 #'
-#' @param x a numeric vector which consists of lifetime data. Lifetime
+#' @param x A numeric vector which consists of lifetime data. Lifetime
 #'   data could be every characteristic influencing the reliability of a product,
 #'   e.g. operating time (days/months in service), mileage (km, miles), load
 #'   cycles.
-#' @param y a numeric vector which consists of estimated failure probabilities
+#' @param y A numeric vector which consists of estimated failure probabilities
 #'   regarding the lifetime data in \code{x}.
-#' @param event a vector of binary data (0 or 1) indicating whether unit \emph{i}
+#' @param event A vector of binary data (0 or 1) indicating whether unit \emph{i}
 #'   is a right censored observation (= 0) or a failure (= 1).
-#' @param distribution supposed distribution of the random variable. The
+#' @param distribution Supposed distribution of the random variable. The
 #'   value can be \code{"weibull"}, \code{"lognormal"}, \code{"loglogistic"},
 #'   \code{"normal"}, \code{"logistic"}, \code{"sev"} \emph{(smallest extreme value)},
 #'   \code{"weibull3"}, \code{"lognormal3"} or \code{"loglogistic3"}.
 #'   Other distributions have not been implemented yet.
-#' @param conf_level confidence level of the interval. The default value is
+#' @param conf_level Confidence level of the interval. The default value is
 #'   \code{conf_level = 0.95}.
-#' @param data A data frame returned by \code{\link{estimate_cdf}}.
+#' @param data A tibble returned by \code{\link{estimate_cdf}}.
 #'
 #' @return Returns a list with the following components:
 #'   \itemize{
@@ -101,12 +101,37 @@ rank_regression <- function(x, ...) {
 }
 
 #' @export
+#' @describeIn rank_regression Perform the rank regression as part of the
+#' reliability pipeline. \code{\link{estimate_cdf}} returns a data frame of class
+#' \code{"cdf_estimation"}, which contains all information regarding x, y and
+#' event.
+rank_regression.cdf_estimation <- function(
+  cdf_estimation,
+  distribution = c("weibull", "lognormal", "loglogistic", "normal", "logistic",
+                   "sev", "weibull3", "lognormal3"),
+  conf_level = 0.95
+) {
+  rank_regression.default(
+    x = cdf_estimation$characteristic,
+    y = cdf_estimation$prob,
+    event = cdf_estimation$status,
+    distribution = match.arg(distribution),
+    conf_level = conf_level
+  )
+}
+
+#' @export
 #' @describeIn rank_regression Provide x, y and event manually.
-rank_regression.default <- function(x, y, event,
-                            distribution = c("weibull", "lognormal", "loglogistic",
-                                             "normal", "logistic", "sev", "weibull3",
-                                             "lognormal3", "loglogistic3"),
-                            conf_level = .95) {
+rank_regression.default <- function(
+  x,
+  y,
+  event,
+  distribution = c(
+    "weibull", "lognormal", "loglogistic", "normal", "logistic", "sev",
+    "weibull3", "lognormal3", "loglogistic3"
+  ),
+  conf_level = .95
+) {
 
   distribution <- match.arg(distribution)
 
@@ -347,23 +372,6 @@ rank_regression.default <- function(x, y, event,
   return(mrr_output)
 }
 
-#' @export
-#' @describeIn rank_regression Perform the rank regression as part of the
-#' reliability pipeline. \code{\link{estimate_cdf}} returns a data frame of class
-#' \code{"cdf_estimation"}, which contains all information regarding x, y and
-#' event.
-rank_regression.cdf_estimation <- function(
-  data,
-  distribution = c("weibull", "lognormal", "loglogistic", "normal", "logistic",
-                   "sev", "weibull3", "lognormal3"),
-  conf_level = 0.95
-) {
-  rank_regression.default(
-    x = data$characteristic, y = data$prob, event = data$status,
-    distribution = match.arg(distribution), conf_level = conf_level
-  )
-}
-
 #' \eqn{R²}-Profile Function for Log-Location-Scale Distributions with Threshold
 #'
 #' This function evaluates the coefficient of determination with respect to a
@@ -375,14 +383,14 @@ rank_regression.cdf_estimation <- function(
 #' @references Meeker, William Q; Escobar, Luis A., Statistical methods for
 #'   reliability data, New York: Wiley series in probability and statistics, 1998
 #'
-#' @param x a numeric vector which consists of lifetime data. Lifetime
+#' @param x A numeric vector which consists of lifetime data. Lifetime
 #'   data could be every characteristic influencing the reliability of a product,
 #'   e.g. operating time (days/months in service), mileage (km, miles), load
 #'   cycles.
-#' @param y a numeric vector which consists of estimated failure probabilities
+#' @param y A numeric vector which consists of estimated failure probabilities
 #'   regarding the lifetime data in \code{x}.
-#' @param thres a numeric value of the threshold parameter.
-#' @param distribution supposed distribution of the random variable. The
+#' @param thres A numeric value of the threshold parameter.
+#' @param distribution Supposed distribution of the random variable. The
 #'   value can be \code{"weibull3"}, \code{"lognormal3"} or \code{"loglogistic3"}.
 #' @return Returns the coefficient of determination for a specified threshold value.
 #' @export
@@ -454,21 +462,21 @@ r_squared_profiling <- function(x, y, thres, distribution = c("weibull3", "logno
 #' @references Meeker, William Q; Escobar, Luis A., Statistical methods for
 #'   reliability data, New York: Wiley series in probability and statistics, 1998
 #'
-#' @param x a numeric vector which consists of lifetime data. Lifetime
+#' @param x A numeric vector which consists of lifetime data. Lifetime
 #'   data could be every characteristic influencing the reliability of a product,
 #'   e.g. operating time (days/months in service), mileage (km, miles), load
 #'   cycles.
-#' @param event a vector of binary data (0 or 1) indicating whether unit \emph{i}
+#' @param event A vector of binary data (0 or 1) indicating whether unit \emph{i}
 #'   is a right censored observation (= 0) or a failure (= 1).
-#' @param distribution supposed distribution of the random variable. The
+#' @param distribution Supposed distribution of the random variable. The
 #'   value can be \code{"weibull"}, \code{"lognormal"}, \code{"loglogistic"},
 #'   \code{"normal"}, \code{"logistic"}, \code{"sev"} \emph{(smallest extreme value)},
 #'   \code{"weibull3"}, \code{"lognormal3"} or \code{"loglogistic3"}.
 #'   Other distributions have not been implemented yet.
-#' @param wts optional vector of case weights. The length of \code{wts} must be the
+#' @param wts Optional vector of case weights. The length of \code{wts} must be the
 #'   same as the number of observations \code{x}. Default is that \code{wts} is a
 #'   vector with all components being 1 (same weights).
-#' @param conf_level confidence level of the interval. The default value is
+#' @param conf_level Confidence level of the interval. The default value is
 #'   \code{conf_level = 0.95}.
 #'
 #'
@@ -768,14 +776,14 @@ ml_estimation <- function(
 #' @references Meeker, William Q; Escobar, Luis A., Statistical methods for
 #'   reliability data, New York: Wiley series in probability and statistics, 1998
 #'
-#' @param x a numeric vector which consists of lifetime data. Lifetime
+#' @param x A numeric vector which consists of lifetime data. Lifetime
 #'   data could be every characteristic influencing the reliability of a product,
 #'   e.g. operating time (days/months in service), mileage (km, miles), load
 #'   cycles.
-#' @param event a vector of binary data (0 or 1) indicating whether unit \emph{i}
+#' @param event A vector of binary data (0 or 1) indicating whether unit \emph{i}
 #'   is a right censored observation (= 0) or a failure (= 1).
-#' @param thres a numeric value of the threshold parameter.
-#' @param distribution supposed distribution of the random variable. The
+#' @param thres A numeric value of the threshold parameter.
+#' @param distribution Supposed distribution of the random variable. The
 #'   value can be \code{"weibull3"}, \code{"lognormal3"} or \code{"loglogistic3"}.
 #' @return Returns the log-likelihood value for a specified threshold value.
 #' @export
@@ -803,16 +811,16 @@ ml_estimation <- function(
 #' # plot:
 #' # plot(threshold, profile_logL, type = "l")
 #' # abline(v = threshold[which.max(profile_logL)], h = max(profile_logL), col = "red")
-
-loglik_profiling <- function(x, event, thres, distribution = c("weibull3",
-                                                               "lognormal3",
-                                                               "loglogistic3")) {
+loglik_profiling <- function(
+  x,
+  event,
+  thres,
+  distribution = c(
+    "weibull3", "lognormal3", "loglogistic3"
+  )
+) {
 
   distribution <- match.arg(distribution)
-
-  if (!(distribution %in% c("weibull3", "lognormal3", "loglogistic3"))) {
-    stop("No valid distribution!")
-  }
 
   # Subtracting value of threshold, i.e. influence of threshold is eliminated:
   x_thres <- x - thres
@@ -836,20 +844,20 @@ loglik_profiling <- function(x, event, thres, distribution = c("weibull3",
 #' @references Meeker, William Q; Escobar, Luis A., Statistical methods for
 #'   reliability data, New York: Wiley series in probability and statistics, 1998
 #'
-#' @param x a numeric vector which consists of lifetime data. Lifetime
+#' @param x A numeric vector which consists of lifetime data. Lifetime
 #'   data could be every characteristic influencing the reliability of a product,
 #'   e.g. operating time (days/months in service), mileage (km, miles), load
 #'   cycles.
-#' @param event a vector of binary data (0 or 1) indicating whether unit \emph{i}
+#' @param event A vector of binary data (0 or 1) indicating whether unit \emph{i}
 #'   is a right censored observation (= 0) or a failure (= 1).
-#' @param wts optional vector of case weights. The length of \code{wts} must be the
+#' @param wts Optional vector of case weights. The length of \code{wts} must be the
 #'   same as the number of observations \code{x}. Default is that \code{wts} is a
 #'   vector with all components being 1 (same weights).
-#' @param pars a numeric vector of parameters. The first element is the location
+#' @param pars A numeric vector of parameters. The first element is the location
 #'   parameter (\eqn{\mu}), the second is the scale parameter (\eqn{\sigma}) and if
 #'   a three-parametric model is used the third element is the threshold parameter
 #'   (\eqn{\gamma}).
-#' @param distribution supposed distribution of the random variable. The
+#' @param distribution Supposed distribution of the random variable. The
 #'   value can be \code{"weibull"}, \code{"lognormal"}, \code{"loglogistic"},
 #'   \code{"normal"}, \code{"logistic"}, \code{"sev"} \emph{(smallest extreme value)},
 #'   \code{"weibull3"}, \code{"lognormal3"} or \code{"loglogistic3"}.
@@ -875,18 +883,18 @@ loglik_profiling <- function(x, event, thres, distribution = c("weibull3",
 #'                                 pars = c(4.54, 0.76, 92.99),
 #'                                 distribution = "weibull3")
 
-loglik_function <- function(x, event, wts = rep(1, length(x)), pars,
-                            distribution = c("weibull", "lognormal", "loglogistic",
-                                             "normal", "logistic", "sev", "weibull3",
-                                             "lognormal3", "loglogistic3")) {
+loglik_function <- function(
+  x,
+  event,
+  wts = rep(1, length(x)),
+  pars,
+  distribution = c(
+    "weibull", "lognormal", "loglogistic", "normal", "logistic", "sev",
+    "weibull3", "lognormal3", "loglogistic3"
+  )
+) {
 
   distribution <- match.arg(distribution)
-
-  if (!(distribution %in% c("weibull", "lognormal", "loglogistic", "normal",
-                            "logistic", "sev", "weibull3", "lognormal3",
-                            "loglogistic3"))) {
-    stop("No valid distribution!")
-  }
 
   d <- event
   mu <- pars[1]

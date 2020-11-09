@@ -36,7 +36,7 @@ variance of the scale parameter Var(\eqn{\sigma}). If a three-parametric model
 is used the third element of the diagonal needs to be the variance of the
 threshold parameter Var(\eqn{\gamma}).}
 
-\item{distribution}{supposed distribution of the random variable. The
+\item{distribution}{Supposed distribution of the random variable. The
 value can be \code{"weibull"}, \code{"lognormal"}, \code{"loglogistic"},
 \code{"normal"}, \code{"logistic"}, \code{"sev"} \emph{(smallest extreme value)},
 \code{"weibull3"}, \code{"lognormal3"} or \code{"loglogistic3"}.

@@ -4,14 +4,14 @@
 #'
 #' @param x A numeric vector which consists of lifetime data. \code{x} is used to
 #'   specify the grid of the plot.
-#' @param distribution supposed distribution of the random variable.
-#' @param title_main a character string which is assigned to the main title
+#' @param distribution Supposed distribution of the random variable.
+#' @param title_main A character string which is assigned to the main title
 #'   of the plot.
-#' @param title_x a character string which is assigned to the title of the
+#' @param title_x A character string which is assigned to the title of the
 #'   x axis.
-#' @param title_y a character string which is assigned to the title of the
+#' @param title_y A character string which is assigned to the title of the
 #'   y axis.
-#' @param plot_method the package, which is used for generating the plot output.
+#' @param plot_method Package, which is used for generating the plot output.
 #'
 #' @return Returns a plotly object which contains the layout
 #'   that is used for probability plotting.
@@ -156,32 +156,19 @@ plot_prob.default <- function(
   distribution <- match.arg(distribution)
   plot_method <- match.arg(plot_method)
 
-  prob_df <- plot_prob_helper(
-    x, y, event, id, distribution
+  tbl <- tibble::tibble(
+    characteristic = x, prob = y, status = event, id = id,
+    method = title_trace
   )
 
-  # Plot layout:
-  p_obj <- plot_layout(
-    x = prob_df$x,
+  plot_prob_(
+    tbl = tbl,
     distribution = distribution,
     title_main = title_main,
     title_x = title_x,
     title_y = title_y,
+    title_trace = title_trace,
     plot_method = plot_method
-  )
-
-  plot_prob_fun <- if (plot_method == "plotly") plot_prob_plotly else
-    plot_prob_ggplot2
-
-  plot_prob_fun(
-    p_obj = p_obj,
-    x = x,
-    prob_df = prob_df,
-    distribution = distribution,
-    title_main = title_main,
-    title_x = title_x,
-    title_y = title_y,
-    title_trace = title_trace
   )
 }
 
@@ -202,11 +189,40 @@ plot_prob.cdf_estimation <- function(
   distribution <- match.arg(distribution)
   plot_method <- match.arg(plot_method)
 
-  plot_prob.default(
-    x = cdf_estimation$characteristic,
-    y = cdf_estimation$prob,
-    event = cdf_estimation$status,
-    id = cdf_estimation$id,
+  plot_prob_(
+    tbl = cdf_estimation,
+    distribution = distribution,
+    title_main = title_main,
+    title_x = title_x,
+    title_y = title_y,
+    title_trace = title_trace,
+    plot_method = plot_method
+  )
+}
+
+plot_prob_ <- function(
+  tbl, distribution, title_main, title_x, title_y, title_trace, plot_method
+) {
+
+  prob_tbl <- plot_prob_helper(
+    tbl, distribution
+  )
+
+  p_obj <- plot_layout(
+    x = prob_tbl$characteristic,
+    distribution = distribution,
+    title_main = title_main,
+    title_x = title_x,
+    title_y = title_y,
+    plot_method = plot_method
+  )
+
+  plot_prob_fun <- if (plot_method == "plotly") plot_prob_plotly else
+    plot_prob_ggplot2
+
+  plot_prob_fun(
+    p_obj = p_obj,
+    prob_tbl = prob_tbl,
     distribution = distribution,
     title_main = title_main,
     title_x = title_x,
@@ -253,7 +269,7 @@ plot_prob.cdf_estimation <- function(
 #'   Failure Mode, Quality Progress, 35(6), 47-52, 2002
 #'
 #' @inheritParams plot_prob
-#' @param mix_output a list provided by \code{\link{mixmod_regression}} or
+#' @param mix_output A list provided by \code{\link{mixmod_regression}} or
 #'   \code{\link{mixmod_em}}, which consists of values necessary to visualize the
 #'   subgroups.The default value of \code{mix_output} is \code{NULL}.
 #'
@@ -372,15 +388,15 @@ plot_prob_mix <- function(
 #' @references Meeker, William Q; Escobar, Luis A., Statistical methods for
 #'   reliability data, New York: Wiley series in probability and statistics, 1998
 #'
-#' @param p_obj a plotly object provided by function \code{\link{plot_prob}}.
-#' @param x a numeric vector containing the x-coordinates of the regression line.
-#' @param y a numeric vector containing the y-coordinates of the regression line.
+#' @param p_obj A plotly object provided by function \code{\link{plot_prob}}.
+#' @param x A numeric vector containing the x-coordinates of the regression line.
+#' @param y A numeric vector containing the y-coordinates of the regression line.
 #'   The default value of y is \code{NULL}. If \code{y} is set \code{NULL} the
 #'   y-coordinates with respect to \code{x} are calculated by function
 #'   \code{predict_prob} using estimated coefficients in \code{loc_sc_params}. If
 #'   confidence interval(s) should be added to the plot y should not be set to
 #'   \code{NULL}. For more information see \strong{Details} in \code{\link{plot_conf}}.
-#' @param loc_sc_params a (named) numeric vector of estimated location
+#' @param loc_sc_params A (named) numeric vector of estimated location
 #'   and scale parameters for a specified distribution. The order of
 #'   elements is important. First entry needs to be the location
 #'   parameter \eqn{\mu} and the second element needs to be the scale
@@ -508,8 +524,8 @@ plot_mod <- function(
 #' @references Doganaksoy, N.; Hahn, G.; Meeker, W. Q., Reliability Analysis by
 #'   Failure Mode, Quality Progress, 35(6), 47-52, 2002
 #'
-#' @param p_obj a plotly object provided by function \code{\link{plot_prob_mix}}.
-#' @param mix_output a list provided by \code{\link{mixmod_regression}} or
+#' @param p_obj A plotly object provided by function \code{\link{plot_prob_mix}}.
+#' @param mix_output A list provided by \code{\link{mixmod_regression}} or
 #'   \code{\link{mixmod_em}}, which consists of elements necessary to visualize
 #'   the regression lines.
 #' @inheritParams plot_mod
@@ -634,12 +650,12 @@ plot_mod_mix <- function(p_obj, x, event, mix_output,
 #' @references Meeker, William Q; Escobar, Luis A., Statistical methods for
 #'   reliability data, New York: Wiley series in probability and statistics, 1998
 #'
-#' @param p_obj a plotly object provided by function \code{\link{plot_mod}}.
-#' @param x a list containing the x-coordinates of the confidence region(s).
+#' @param p_obj A plotly object provided by \code{\link{plot_mod}}.
+#' @param x A list containing the x-coordinates of the confidence region(s).
 #'   The list can be of length 1 or 2. For more information see \strong{Details}.
-#' @param y a list containing the y-coordinates of the Confidence Region(s).
+#' @param y A list containing the y-coordinates of the Confidence Region(s).
 #'   The list can be of length 1 or 2. For more information see \strong{Details}.
-#' @param direction a character string specifying the direction of the plotted
+#' @param direction A character string specifying the direction of the plotted
 #'   interval(s). Must be either "y" (failure probabilities) or "x" (quantiles).
 #' @inheritParams plot_prob
 #' @param confint Confindence interval as returned by \code{\link{confint_betabinom}}
@@ -832,16 +848,16 @@ plot_conf.confint <- function(p_obj, confint, title_trace) {
 #'
 #' This function adds a linearized CDF to an existing plotly grid.
 #'
-#' @param p_obj a plotly object, which at least includes the layout provided
+#' @param p_obj A plotly object, which at least includes the layout provided
 #'   by \code{\link{plot_layout}}.
-#' @param x a numeric vector containing the x-coordinates of the population line.
-#' @param params a (named) numeric vector, where the first entry is the location
+#' @param x A numeric vector containing the x-coordinates of the population line.
+#' @param params A (named) numeric vector, where the first entry is the location
 #'   parameter \eqn{\mu} and the second entry is the scale parameter \eqn{\sigma}
 #'   of a lognormal or loglogistic distribution. If the distribution value is
 #'   \code{"weibull"} the first entry must be the scale parameter \eqn{\eta} and
 #'   the second entry must be the shape parameter \eqn{\beta}. Parametrization
 #'   is the same used in \code{\link{rweibull}}.
-#' @param color the color of the population line should be added as follows:
+#' @param color The color of the population line should be added as follows:
 #'   For hexadecimal codes: \code{color = I("#3C8DBC")} and for a color specified
 #'   with a string: \code{color = I("blue")}.
 #' @inheritParams plot_prob

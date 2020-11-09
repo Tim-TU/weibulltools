@@ -12,20 +12,20 @@ mr_method(
 )
 }
 \arguments{
-\item{x}{a numeric vector which consists of lifetime data. Lifetime
+\item{x}{A numeric vector which consists of lifetime data. Lifetime
 data could be every characteristic influencing the reliability of a product,
 e.g. operating time (days/months in service), mileage (km, miles), load
 cycles.}
 
-\item{event}{a vector of ones indicating that every unit \emph{i} has failed.}
+\item{event}{A vector of ones indicating that every unit \emph{i} has failed.}
 
-\item{id}{a character vector for the identification of every unit.}
+\item{id}{A character vector for the identification of every unit.}
 
-\item{method}{method for the estimation of the cdf. Can be "benard" (default)
+\item{method}{Method for the estimation of the cdf. Can be "benard" (default)
 or "invbeta".}
 }
 \value{
-A data frame containing id, lifetime characteristic, status of the
+A tibble containing id, lifetime characteristic, status of the
   unit, the rank and the estimated failure probability.
 }
 \description{
@@ -44,10 +44,10 @@ state <- rep(1, length(obs))
 uic   <- c("3435", "1203", "958X", "XX71", "abcd", "tz46",
            "fl29", "AX23", "Uy12", "kl1a")
 
-df_mr <- mr_method(x = obs, event = state, id = uic,
+tbl_mr <- mr_method(x = obs, event = state, id = uic,
                    method = "benard")
 
 # Example 2
-df_mr_invbeta <- mr_method(x = obs, event = state, id = uic,
+tbl_mr_invbeta <- mr_method(x = obs, event = state, id = uic,
                            method = "invbeta")
 }

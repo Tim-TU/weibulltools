@@ -14,21 +14,21 @@ plot_pop(
 )
 }
 \arguments{
-\item{p_obj}{a plotly object, which at least includes the layout provided
+\item{p_obj}{A plotly object, which at least includes the layout provided
 by \code{\link{plot_layout}}.}
 
-\item{x}{a numeric vector containing the x-coordinates of the population line.}
+\item{x}{A numeric vector containing the x-coordinates of the population line.}
 
-\item{params}{a (named) numeric vector, where the first entry is the location
+\item{params}{A (named) numeric vector, where the first entry is the location
 parameter \eqn{\mu} and the second entry is the scale parameter \eqn{\sigma}
 of a lognormal or loglogistic distribution. If the distribution value is
 \code{"weibull"} the first entry must be the scale parameter \eqn{\eta} and
 the second entry must be the shape parameter \eqn{\beta}. Parametrization
 is the same used in \code{\link{rweibull}}.}
 
-\item{distribution}{supposed distribution of the random variable.}
+\item{distribution}{Supposed distribution of the random variable.}
 
-\item{color}{the color of the population line should be added as follows:
+\item{color}{The color of the population line should be added as follows:
 For hexadecimal codes: \code{color = I("#3C8DBC")} and for a color specified
 with a string: \code{color = I("blue")}.}
 

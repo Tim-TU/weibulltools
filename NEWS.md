@@ -1,9 +1,4 @@
----
-title: "NEWS"
-output: html_document
----
-
-# Release of weibulltools v1.1.0
+# weibulltools 1.1.0
 ## Breaking Changes
 * `plot_conf`: Switched arguments distribution and direction.
 * `rank_regression`, `ml_estimation`: Removed details argument.
@@ -21,16 +16,17 @@ output: html_document
 * Added function `estimate_cdf`: Unite functionality of `mr_method`, `johnson_method`,
   `kaplan_method` and `nelson_method`.
 * Added `rank_regression.cdf_estimation`. `rank_regression` -> `rank_regression.default`
+* Capitalized parameter documentation.
 
 ## Bugfixes
 * Fixed bug inside plot_mod_mix() for the case of no mixture distribution
 * Fixed bug inside confint_betabinom(); many cases near one -> unique()
 * Fixed bug inside mr_method(): Assigning a rank for the same lifetime 
 
-# Release of weibulltools v1.0.1 
+# weibulltools 1.0.1
 * Fixed installation error when using clang compiler
 
-# Release of weibulltools v1.0.0 
+# weibulltools 1.0.0 
 * Vignettes for non-parametric probability estimation, parameter estimation using 
   Median-Rank Regression and Maximum-Likelihood and mixture model estimation 
   are provided. 

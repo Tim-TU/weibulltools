@@ -51,35 +51,25 @@ plot_layout_helper <- function(x, distribution, plot_method = c("plotly", "ggplo
 }
 
 plot_prob_helper <- function(
-  x, y, event, id, distribution
+  tbl, distribution
 ) {
-  # Filtering failed units:
-  x_s <- x[event == 1]
-  y_s <- y[event == 1]
-  id_s <- id[event == 1]
-  x_s <- x_s[order(x_s)]
-  y_s <- y_s[order(x_s)]
-  id_s <- id_s[order(x_s)]
+  tbl <- tbl %>%
+    dplyr::filter(status == 1) %>%
+    dplyr::arrange(characteristic)
 
   # Choice of distribution:
   if (distribution %in% c("weibull", "sev")) {
-    q <- SPREDA::qsev(y_s)
+    q <- SPREDA::qsev(tbl$prob)
   }
   if (distribution %in% c("lognormal", "normal")) {
-    q <- stats::qnorm(y_s)
+    q <- stats::qnorm(tbl$prob)
   }
   if (distribution %in% c("loglogistic", "logistic")) {
-    q <- stats::qlogis(y_s)
+    q <- stats::qlogis(tbl$prob)
   }
+  tbl$q <- q
 
-  data.frame(
-    x_s = x_s,
-    y_s = y_s,
-    q = q,
-    id_s = id_s,
-    # Add distribution as column to simplify support of multiple distributions
-    distribution = distribution
-  )
+  tbl
 }
 
 plot_prob_mix_helper <- function(

@@ -12,17 +12,17 @@ predict_quantile(
 )
 }
 \arguments{
-\item{p}{a numeric vector which consists of failure probabilities
+\item{p}{A numeric vector which consists of failure probabilities
 regarding the lifetime data.}
 
-\item{loc_sc_params}{a (named) numeric vector of estimated location
+\item{loc_sc_params}{A (named) numeric vector of estimated location
 and scale parameters for a specified distribution. The order of
 elements is important. First entry needs to be the location
 parameter \eqn{\mu} and the second element needs to be the scale
 parameter \eqn{\sigma}. If a three-parametric model is used the third element
 is the threshold parameter \eqn{\gamma}.}
 
-\item{distribution}{supposed distribution of the random variable. The
+\item{distribution}{Supposed distribution of the random variable. The
 value can be \code{"weibull"}, \code{"lognormal"}, \code{"loglogistic"},
 \code{"normal"}, \code{"logistic"}, \code{"sev"} \emph{(smallest extreme value)},
 \code{"weibull3"}, \code{"lognormal3"} or \code{"loglogistic3"}.

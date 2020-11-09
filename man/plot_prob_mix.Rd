@@ -29,25 +29,25 @@ is a right censored observation (= 0) or a failure (= 1).}
 
 \item{id}{A character vector for the identification of every unit.}
 
-\item{distribution}{supposed distribution of the random variable.}
+\item{distribution}{Supposed distribution of the random variable.}
 
-\item{mix_output}{a list provided by \code{\link{mixmod_regression}} or
+\item{mix_output}{A list provided by \code{\link{mixmod_regression}} or
 \code{\link{mixmod_em}}, which consists of values necessary to visualize the
 subgroups.The default value of \code{mix_output} is \code{NULL}.}
 
-\item{title_main}{a character string which is assigned to the main title
+\item{title_main}{A character string which is assigned to the main title
 of the plot.}
 
-\item{title_x}{a character string which is assigned to the title of the
+\item{title_x}{A character string which is assigned to the title of the
 x axis.}
 
-\item{title_y}{a character string which is assigned to the title of the
+\item{title_y}{A character string which is assigned to the title of the
 y axis.}
 
 \item{title_trace}{A character string whis is assigned to the trace shown in
 the legend.}
 
-\item{plot_method}{the package, which is used for generating the plot output.}
+\item{plot_method}{Package, which is used for generating the plot output.}
 }
 \value{
 Returns a plotly object containing the layout of the probability plot

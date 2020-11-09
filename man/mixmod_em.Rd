@@ -19,37 +19,37 @@ mixmod_em(
 )
 }
 \arguments{
-\item{x}{a numeric vector which consists of lifetime data. Lifetime
+\item{x}{A numeric vector which consists of lifetime data. Lifetime
 data could be every characteristic influencing the reliability of a product,
 e.g. operating time (days/months in service), mileage (km, miles), load
 cycles.}
 
-\item{event}{a vector of binary data (0 or 1) indicating whether unit \emph{i}
+\item{event}{A vector of binary data (0 or 1) indicating whether unit \emph{i}
 is a right censored observation (= 0) or a failure (= 1).}
 
-\item{post}{a numeric matrix specifiying initial a-posteriori probabilities.
+\item{post}{A numeric matrix specifiying initial a-posteriori probabilities.
 If post is \code{NULL} (default) a-posteriori probabilities are assigned
 randomly using the Dirichlet distribution (\code{\link{rdirichlet}} from
 \emph{LearnBayes} Package), which is the conjugate prior of a Multinomial
 distribution. This idea was taken from the blog post of Mr. Gelissen
 (linked under \emph{references}).}
 
-\item{distribution}{supposed mixture model. Only \code{"weibull"} can be used.
+\item{distribution}{Supposed mixture model. Only \code{"weibull"} can be used.
 Other distributions have not been implemented yet.}
 
-\item{conf_level}{confidence level for the confidence intervals of the parameters
+\item{conf_level}{Confidence level for the confidence intervals of the parameters
 of every component \code{k}. The default value is \code{conf_level = 0.95}.}
 
-\item{k}{integer of mixture components, default is 2.}
+\item{k}{Integer of mixture components, default is 2.}
 
-\item{method}{default method is \code{"EM"}. Other methods have not been implemented
+\item{method}{Default method is \code{"EM"}. Other methods have not been implemented
 yet.}
 
-\item{n_iter}{integer defining the maximum number of iterations.}
+\item{n_iter}{Integer defining the maximum number of iterations.}
 
-\item{conv_limit}{numeric value defining the convergence limit.}
+\item{conv_limit}{Numeric value defining the convergence limit.}
 
-\item{diff_loglik}{numeric value defining the maximum difference between
+\item{diff_loglik}{Numeric value defining the maximum difference between
 log-likelihood values, which seems permissible. The default value is \code{0.5}.
 See \strong{Details} for the usage of this argument.}
 }

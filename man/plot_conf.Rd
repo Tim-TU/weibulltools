@@ -13,27 +13,27 @@ plot_conf(p_obj, x, ...)
   p_obj,
   x,
   y,
-  direction = c("y", "x"),
   distribution = c("weibull", "lognormal", "loglogistic", "normal", "logistic", "sev",
     "weibull3", "lognormal3", "loglogistic3"),
+  direction = c("y", "x"),
   title_trace = "Confidence Limit"
 )
 
 \method{plot_conf}{confint}(p_obj, confint, title_trace)
 }
 \arguments{
-\item{p_obj}{a plotly object provided by function \code{\link{plot_mod}}.}
+\item{p_obj}{A plotly object provided by \code{\link{plot_mod}}.}
 
-\item{x}{a list containing the x-coordinates of the confidence region(s).
+\item{x}{A list containing the x-coordinates of the confidence region(s).
 The list can be of length 1 or 2. For more information see \strong{Details}.}
 
-\item{y}{a list containing the y-coordinates of the Confidence Region(s).
+\item{y}{A list containing the y-coordinates of the Confidence Region(s).
 The list can be of length 1 or 2. For more information see \strong{Details}.}
 
-\item{direction}{a character string specifying the direction of the plotted
+\item{distribution}{Supposed distribution of the random variable.}
+
+\item{direction}{A character string specifying the direction of the plotted
 interval(s). Must be either "y" (failure probabilities) or "x" (quantiles).}
-
-\item{distribution}{supposed distribution of the random variable.}
 
 \item{title_trace}{A character string whis is assigned to the trace shown in
 the legend.}
@@ -65,9 +65,10 @@ is recommended:
 }
 \section{Methods (by class)}{
 \itemize{
-\item \code{default}: Default
+\item \code{default}: Provide x,y, direction and distribution manually.
 
-\item \code{confint}: Confint
+\item \code{confint}: Add a confidence interval to \code{p_obj} based on the
+output of \code{\link{confint_fisher}} or \code{\link{confint_betabinom}}.
 }}
 
 \examples{
