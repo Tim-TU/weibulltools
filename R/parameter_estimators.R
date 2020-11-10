@@ -364,7 +364,7 @@ rank_regression.default <- function(
 
   class(mrr_output) <- c("parameter_estimation", class(mrr_output))
 
-  attr(mrr_output, "data") <- data.frame(
+  attr(mrr_output, "data") <- tibble::tibble(
     x = x, event = event
   )
   attr(mrr_output, "distribution") <- distribution
@@ -757,7 +757,7 @@ ml_estimation <- function(
 
   class(ml_output) <- c("parameter_estimation", class(ml_output))
 
-  attr(ml_output, "data") <- data.frame(
+  attr(ml_output, "data") <- tibble::tibble(
     x = x, event = event
   )
   attr(ml_output, "distribution") <- distribution

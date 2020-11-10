@@ -330,7 +330,7 @@ confint_betabinom.default <- function(x, event, loc_sc_params,
   if (direction == "y") {
     list_output <- c(list(characteristic = x_seq, rank = virt_rank, prob = y_seq),
                      list_confint)
-    df_output <- as.data.frame(list_output)
+    tbl_out <- tibble::as_tibble(list_output)
   } else {
     x_confint <- lapply(list_confint, predict_quantile,
                         loc_sc_params = loc_sc_params,
@@ -338,16 +338,16 @@ confint_betabinom.default <- function(x, event, loc_sc_params,
     list_output <- c(list(characteristic = x_seq, rank = virt_rank, prob = y_seq),
                      x_confint)
 
-    df_output <- as.data.frame(list_output)
+    tbl_out <- tibble::as_tibble(list_output)
   }
 
-  class(df_output) <- c("confint", class(df_output))
+  class(tbl_out) <- c("confint", class(tbl_out))
 
-  attr(df_output, "distribution") <- distribution
-  attr(df_output, "bounds") <- bounds
-  attr(df_output, "direction") <- direction
+  attr(tbl_out, "distribution") <- distribution
+  attr(tbl_out, "bounds") <- bounds
+  attr(tbl_out, "direction") <- direction
 
-  return(df_output)
+  return(tbl_out)
 }
 
 #' Delta Method for Parametric Lifetime Distributions
@@ -621,7 +621,7 @@ confint_fisher.default <- function(
     list_output <- c(list(characteristic = x, prob = y_seq, std_err = se_delta),
                      list_confint)
 
-    df_output <- as.data.frame(list_output)
+    tbl_out <- tibble::as_tibble(list_output)
   } else {
     # Standard errors for z:
     se_delta <- sapply(x, delta_method, loc_sc_params = loc_sc_params,
@@ -688,15 +688,15 @@ confint_fisher.default <- function(
     list_output <- c(list(characteristic = x, prob = y_seq, std_err = se_delta),
       list_confint)
 
-    df_output <- as.data.frame(list_output)
+    tbl_out <- tibble::as_tibble(list_output)
   }
 
   # Make output usable for generics
-  class(df_output) <- c("confint", class(df_output))
+  class(tbl_out) <- c("confint", class(tbl_out))
 
-  attr(df_output, "distribution") <- distribution
-  attr(df_output, "bounds") <- bounds
-  attr(df_output, "direction") <- direction
+  attr(tbl_out, "distribution") <- distribution
+  attr(tbl_out, "bounds") <- bounds
+  attr(tbl_out, "direction") <- direction
 
-  return(df_output)
+  return(tbl_out)
 }

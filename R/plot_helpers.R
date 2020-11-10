@@ -86,8 +86,8 @@ plot_prob_mix_helper <- function(
     x_s <- john_df$characteristic
     y_s <- john_df$prob
     id_s <- john_df$id
-    group_df <- data.frame(x_s = x_s, y_s = y_s, id_s = id_s)
-    group_df$groups <- as.factor(c(rep(title_trace, length(x_s))))
+    tbl_group <- tibble::tibble(x_s = x_s, y_s = y_s, id_s = id_s)
+    tbl_group$groups <- as.factor(c(rep(title_trace, length(x_s))))
   }
 
   # Check for mixtures and separate data regarding results from segmented
@@ -104,16 +104,16 @@ plot_prob_mix_helper <- function(
       x_2 <- subset_x(x = x_s, mrr_model = mix_output$mod_2)
       x_3 <- subset_x(x = x_s, mrr_model = mix_output$mod_3)
 
-      group_df$groups <- as.factor(c(rep(paste(title_trace, 1), length(x_1)),
+      tbl_group$groups <- as.factor(c(rep(paste(title_trace, 1), length(x_1)),
                                      rep(paste(title_trace, 2), length(x_2)),
                                      rep(paste(title_trace, 3), length(x_3))))
     } else if (exists("mod_2", where = mix_output)) {
       x_1 <- subset_x(x = x_s, mrr_model = mix_output$mod_1)
       x_2 <- subset_x(x = x_s, mrr_model = mix_output$mod_2)
-      group_df$groups <- as.factor(c(rep(paste(title_trace, 1), length(x_1)),
+      tbl_group$groups <- as.factor(c(rep(paste(title_trace, 1), length(x_1)),
                                      rep(paste(title_trace, 2), length(x_2))))
     } else {
-      group_df$groups <- as.factor(c(rep(title_trace, length(x_s))))
+      tbl_group$groups <- as.factor(c(rep(title_trace, length(x_s))))
     }
   }
 
@@ -130,35 +130,35 @@ plot_prob_mix_helper <- function(
                        SIMPLIFY = FALSE)
 
     # Store dataframes in one dataframe:
-    group_df <- do.call("rbind", john_lst)
+    tbl_group <- do.call("rbind", john_lst)
 
     # add group names using row.names() if splitted groups exist. Otherwise use
     # title_trace:
 
     if (length(john_lst) == 1) {
-      group_df$groups <- as.factor(title_trace)
+      tbl_group$groups <- as.factor(title_trace)
     } else {
-      group_df$groups <- as.factor(paste(title_trace,
-                                         floor(as.numeric(row.names(group_df)))))
+      tbl_group$groups <- as.factor(paste(title_trace,
+                                         floor(as.numeric(row.names(tbl_group)))))
     }
 
     # Preparation for plot:
-    group_df <- group_df %>%
+    tbl_group <- tbl_group %>%
       dplyr::filter(status == 1) %>%
       dplyr::rename(id_s = id, x_s = characteristic, y_s = prob)
   }
 
   # Choice of distribution:
   if (distribution == "weibull") {
-    q <- SPREDA::qsev(group_df$y_s)
+    q <- SPREDA::qsev(tbl_group$y_s)
   } else if (distribution == "lognormal") {
-    q <- stats::qnorm(group_df$y_s)
+    q <- stats::qnorm(tbl_group$y_s)
   } else if (distribution == "loglogistic") {
-    q <- stats::qlogis(group_df$y_s)
+    q <- stats::qlogis(tbl_group$y_s)
   }
-  group_df$q <- q
+  tbl_group$q <- q
 
-  return(group_df)
+  return(tbl_group)
 }
 
 plot_mod_helper <- function(
@@ -181,7 +181,7 @@ plot_mod_helper <- function(
     y_p <- y
   }
 
-  df_pred <- data.frame(x_p = x_p, y_p = y_p)
+  tbl_pred <- tibble::tibble(x_p = x_p, y_p = y_p)
 
   if (distribution %in% c("weibull", "weibull3", "sev")) {
     q <- SPREDA::qsev(y_p)
@@ -227,10 +227,10 @@ plot_mod_helper <- function(
     }
   }
 
-  df_pred$q <- q
+  tbl_pred$q <- q
 
   list(
-    df_pred = df_pred,
+    tbl_pred = tbl_pred,
     param_val = param_val,
     param_label = param_label
   )
@@ -276,7 +276,7 @@ plot_mod_mix_helper <- function(
         label_2 <- "\u03C3:"
       }
 
-      df_p <- data.frame(
+      tbl_p <- tibble::tibble(
         x_p = x_p, y_p = y_p, par_1 = param_1, par_2 = param_2, lab_1 = label_1,
         lab_2 = label_2
       )
@@ -324,7 +324,7 @@ plot_mod_mix_helper <- function(
           distribution = distribution
         )
 
-        data.frame(
+        tibble::tibble(
           x_p = x_p, y_p = y_p, par_1 = param_1, par_2 = param_2,
           lab_1 = label_1, lab_2 = label_2
         )
@@ -334,21 +334,21 @@ plot_mod_mix_helper <- function(
   }
 
   # Bind stored dataframes in one dataframe:
-  group_df <- do.call("rbind", lines_split)
+  tbl_group <- do.call("rbind", lines_split)
 
   # Add group names using row.names() if splitted groups exist. Otherwise use
   # title_trace:
   if (length(lines_split) == 1) {
-    group_df$groups <- as.factor(title_trace)
+    tbl_group$groups <- as.factor(title_trace)
   }
 
   if (!("em_results" %in%  names(mix_output)) && length(lines_split) > 1) {
-    group_df$groups <- as.factor(
+    tbl_group$groups <- as.factor(
       paste(
         title_trace,
         floor(
           as.numeric(
-            gsub(row.names(group_df), pattern = "mod_", replacement = "")
+            gsub(row.names(tbl_group), pattern = "mod_", replacement = "")
           )
         )
       )
@@ -356,11 +356,11 @@ plot_mod_mix_helper <- function(
   }
 
   if (("em_results" %in%  names(mix_output)) && length(lines_split) > 1) {
-    group_df$groups <- as.factor(
+    tbl_group$groups <- as.factor(
       paste(
         title_trace,
         floor(
-          as.numeric(row.names(group_df))
+          as.numeric(row.names(tbl_group))
         )
       )
     )
@@ -368,48 +368,48 @@ plot_mod_mix_helper <- function(
 
   # Choice of distribution:
   if (distribution == "weibull") {
-    q <- SPREDA::qsev(group_df$y_p)
+    q <- SPREDA::qsev(tbl_group$y_p)
   } else if (distribution == "lognormal") {
-    q <- stats::qnorm(group_df$y_p)
+    q <- stats::qnorm(tbl_group$y_p)
   } else if (distribution == "loglogistic") {
-    q <- stats::qlogis(group_df$y_p)
+    q <- stats::qlogis(tbl_group$y_p)
   }
-  group_df$q <- q
+  tbl_group$q <- q
 
   # Defining colors (max 5 subgroups):
   cols <- c(I("blue"), I("#9a0808"), I("#006400"), I("orange"), I("grey"))
-  cols <- cols[seq_along(unique(group_df$groups))]
+  cols <- cols[seq_along(unique(tbl_group$groups))]
 
-  # Add color to grouped data.frame to be in line with line colors:
-  group_df$cols <- rep(cols, each = 200)
+  # Add color to grouped tibble to be in line with line colors:
+  tbl_group$cols <- rep(cols, each = 200)
 
-  return(group_df)
+  return(tbl_group)
 }
 
-plot_conf_helper <- function(df_mod, x, y, direction, distribution) {
+plot_conf_helper <- function(tbl_mod, x, y, direction, distribution) {
   # Construct x, y from x/y, upper/lower bounds (depending on direction and bounds)
-  lst <- Map(data.frame, x = x, y = y)
-  df_p <- dplyr::bind_rows(lst, .id = "bound")
+  lst <- Map(tibble::tibble, x = x, y = y)
+  tbl_p <- dplyr::bind_rows(lst, .id = "bound")
 
   if (direction == "y") {
-    df_p$bound <- ifelse(test = df_p$y < df_mod$y_p, yes = "Lower", no = "Upper")
+    tbl_p$bound <- ifelse(test = tbl_p$y < tbl_mod$y_p, yes = "Lower", no = "Upper")
   } else {
-    df_p$bound <- ifelse(test = df_p$x < df_mod$x_p, yes = "Lower", no = "Upper")
+    tbl_p$bound <- ifelse(test = tbl_p$x < tbl_mod$x_p, yes = "Lower", no = "Upper")
   }
 
   if (distribution %in% c("weibull", "weibull3", "sev")) {
-    df_p$q <- SPREDA::qsev(df_p$y)
+    tbl_p$q <- SPREDA::qsev(tbl_p$y)
   }
   if (distribution %in% c("lognormal", "lognormal3", "normal")) {
-    df_p$q <- stats::qnorm(df_p$y)
+    tbl_p$q <- stats::qnorm(tbl_p$y)
   }
   if (distribution %in% c("loglogistic", "loglogistic3", "logistic")) {
-    df_p$q <- stats::qlogis(df_p$y)
+    tbl_p$q <- stats::qlogis(tbl_p$y)
   }
 
-  df_p <- dplyr::group_by(df_p, bound)
+  tbl_p <- dplyr::group_by(tbl_p, bound)
 
-  return(df_p)
+  return(tbl_p)
 }
 
 plot_pop_helper <- function(x, params, distribution) {
@@ -454,10 +454,10 @@ plot_pop_helper <- function(x, params, distribution) {
     param_label <- c("\u03BC:", "\u03C3:")
   }
 
-  df_pop <- data.frame(x_s = x_s, y_s = y_s, q = q)
+  tbl_pop <- data.frame(x_s = x_s, y_s = y_s, q = q)
 
   l <- list(
-    df_pop = df_pop,
+    tbl_pop = tbl_pop,
     param_val = param_val,
     param_label = param_label
   )

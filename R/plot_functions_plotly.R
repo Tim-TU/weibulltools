@@ -168,7 +168,7 @@ plot_prob_plotly <- function(
 
 plot_prob_mix_plotly <- function(
   p_obj,
-  group_df,
+  tbl_group,
   distribution = c(
     "weibull", "lognormal", "loglogistic", "normal", "logistic", "sev"
   ),
@@ -185,12 +185,12 @@ plot_prob_mix_plotly <- function(
 
   # Defining colors (max 5 subgroups):
   cols <- c(I("#3C8DBC"), I("#FF0000"), I("#008000"), I("#ffa500"), I("#000000"))
-  cols <- cols[seq_along(unique(group_df$groups))]
+  cols <- cols[seq_along(unique(tbl_group$groups))]
 
   # Construct probability plot:
   plot <- p_obj %>%
     plotly::add_trace(
-      data = group_df,
+      data = tbl_group,
       x = ~x_s,
       y = ~q,
       type = "scatter",
@@ -212,7 +212,7 @@ plot_prob_mix_plotly <- function(
 }
 
 plot_mod_plotly <- function(
-  p_obj, df_pred, param_val, param_label, title_trace = "Fit"
+  p_obj, tbl_pred, param_val, param_label, title_trace = "Fit"
 ) {
 
   x_mark <- unlist(strsplit(p_obj$x$layoutAttrs[[2]]$xaxis$title$text, " "))[1]
@@ -254,14 +254,14 @@ plot_mod_plotly <- function(
   return(p_mod)
 }
 
-plot_mod_mix_plotly <- function(p_obj, group_df, title_trace) {
+plot_mod_mix_plotly <- function(p_obj, tbl_group, title_trace) {
 
   # Get axis labels in hover:
   x_mark <- unlist(strsplit(p_obj$x$layoutAttrs[[2]]$xaxis$title$text,  " "))[1]
   y_mark <- unlist(strsplit(p_obj$x$layoutAttrs[[2]]$yaxis$title$text,  " "))[1]
 
   p_mod <- p_obj %>% plotly::add_lines(
-    data = group_df %>% dplyr::group_by(groups),
+    data = tbl_group %>% dplyr::group_by(groups),
     x = ~x_p,
     y = ~q,
     type = "scatter",
@@ -271,16 +271,16 @@ plot_mod_mix_plotly <- function(p_obj, group_df, title_trace) {
     hoverinfo = "text",
     text = paste(
       paste0(x_mark, ":"),
-      round(group_df$x_p, digits = 2),
+      round(tbl_group$x_p, digits = 2),
       paste(
         "<br>",
         paste0(y_mark, ":")
       ),
-      round(group_df$y_p, digits = 5),
+      round(tbl_group$y_p, digits = 5),
       "<br>",
-      paste(group_df$lab_1, group_df$par_1),
+      paste(tbl_group$lab_1, tbl_group$par_1),
       "<br>",
-      paste(group_df$lab_2, group_df$par_2))
+      paste(tbl_group$lab_2, tbl_group$par_2))
   )
 
   return(p_mod)

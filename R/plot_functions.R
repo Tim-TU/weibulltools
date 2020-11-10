@@ -351,7 +351,7 @@ plot_prob_mix <- function(
     stop("No valid distribution! Use weibull to visualize EM results")
   }
 
-  group_df <- plot_prob_mix_helper(
+  tbl_group <- plot_prob_mix_helper(
     x, event, id, distribution, mix_output, title_trace
   )
 
@@ -370,7 +370,7 @@ plot_prob_mix <- function(
 
   plot_prob_mix_fun(
     p_obj = p_obj,
-    group_df = group_df,
+    tbl_group = tbl_group,
     distribution = distribution,
     title_main = title_main,
     title_x = title_x,
@@ -500,7 +500,7 @@ plot_mod <- function(
 
   plot_mod_fun(
     p_obj = p_obj,
-    df_pred = mod_helper$df_pred,
+    tbl_pred = mod_helper$tbl_pred,
     param_val = mod_helper$param_val,
     param_label = mod_helper$param_label,
     title_trace = title_trace
@@ -616,7 +616,7 @@ plot_mod_mix <- function(p_obj, x, event, mix_output,
     )
   }
 
-  group_df <- plot_mod_mix_helper(
+  tbl_group <- plot_mod_mix_helper(
     x, event, mix_output, distribution, title_trace
   )
 
@@ -624,7 +624,7 @@ plot_mod_mix <- function(p_obj, x, event, mix_output,
     plot_mod_mix_ggplot2
 
   plot_mod_mix_fun(
-    p_obj, group_df, title_trace
+    p_obj, tbl_group, title_trace
   )
 }
 
@@ -791,22 +791,22 @@ plot_conf.default <- function(
     )
   }
 
-  # Extracting df_mod
-  df_mod <- if (plot_method == "plotly") {
+  # Extracting tbl_mod
+  tbl_mod <- if (plot_method == "plotly") {
     plotly::plotly_data(p_obj)
   } else {
     p_obj$layers[[2]]$data
   }
 
-  df_p <- plot_conf_helper(
-    df_mod, x, y, direction, distribution
+  tbl_p <- plot_conf_helper(
+    tbl_mod, x, y, direction, distribution
   )
 
   plot_conf_fun <- if (plot_method == "plotly") plot_conf_plotly else
     plot_conf_ggplot2
 
   plot_conf_fun(
-    p_obj, df_p, title_trace
+    p_obj, tbl_p, title_trace
   )
 }
 
@@ -901,7 +901,7 @@ plot_pop <- function(
   }
 
   pop_helper <- plot_pop_helper(x, params, distribution)
-  df_pop <- pop_helper$df_pop
+  tbl_pop <- pop_helper$tbl_pop
   param_val <- pop_helper$param_val
   param_label <- pop_helper$param_label
 
@@ -909,7 +909,7 @@ plot_pop <- function(
     plot_pop_ggplot2
 
   plot_pop_fun(
-    p_obj, df_pop, param_val, param_label, color, title_trace
+    p_obj, tbl_pop, param_val, param_label, color, title_trace
   )
 }
 

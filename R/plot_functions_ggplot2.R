@@ -72,7 +72,7 @@ plot_prob_ggplot2 <- function(
 
 plot_prob_mix_ggplot2 <- function(
   p_obj,
-  group_df,
+  tbl_group,
   distribution = c(
     "weibull", "lognormal", "loglogistic", "normal", "logistic", "sev"
   ),
@@ -85,7 +85,7 @@ plot_prob_mix_ggplot2 <- function(
   distribution <- match.arg(distribution)
 
   p_prob_mix <- p_obj + ggplot2::geom_point(
-      data = group_df, mapping = ggplot2::aes(x = x_s, y = q, color = groups)
+      data = tbl_group, mapping = ggplot2::aes(x = x_s, y = q, color = groups)
     ) +
     ggplot2::labs(color = title_trace)
 
@@ -93,7 +93,7 @@ plot_prob_mix_ggplot2 <- function(
 }
 
 plot_mod_ggplot2 <- function(
-  p_obj, df_pred, param_val, param_label, title_trace = "Fit"
+  p_obj, tbl_pred, param_val, param_label, title_trace = "Fit"
 ) {
   p_mod <- p_obj +
     ggnewscale::new_scale_color() +
@@ -106,11 +106,11 @@ plot_mod_ggplot2 <- function(
   return(p_mod)
 }
 
-plot_mod_mix_ggplot2 <- function(p_obj, group_df, title_trace) {
+plot_mod_mix_ggplot2 <- function(p_obj, tbl_group, title_trace) {
   p_mod <- p_obj +
     ggnewscale::new_scale_color() +
     ggplot2::geom_line(
-      data = group_df, mapping = ggplot2::aes(x = x_p, y = q, color = groups)
+      data = tbl_group, mapping = ggplot2::aes(x = x_p, y = q, color = groups)
     ) +
     ggplot2::labs(color = title_trace)
 
