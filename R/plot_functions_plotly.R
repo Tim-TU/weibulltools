@@ -221,9 +221,9 @@ plot_mod_plotly <- function(
   # Defining hovertext regarding amount of parameters:
   hovertext <- paste(
     paste0(x_mark, ":"),
-    round(df_pred$x_p, digits = 2),
+    round(tbl_pred$x_p, digits = 2),
     paste("<br>", paste0(y_mark, ":")),
-    round(df_pred$y_p, digits = 5),
+    round(tbl_pred$y_p, digits = 5),
     "<br>",
     paste(param_label[1], param_val[1]),
     "<br>",
@@ -240,7 +240,7 @@ plot_mod_plotly <- function(
 
   p_mod <- plotly::add_lines(
     p = p_obj,
-    data = df_pred,
+    data = tbl_pred,
     x = ~x_p,
     y = ~q,
     type = "scatter",
@@ -286,16 +286,16 @@ plot_mod_mix_plotly <- function(p_obj, tbl_group, title_trace) {
   return(p_mod)
 }
 
-plot_conf_plotly <- function(p_obj, df_p, title_trace) {
+plot_conf_plotly <- function(p_obj, tbl_p, title_trace) {
   # Get axis labels in hover:
   x_mark <- unlist(strsplit(p_obj$x$layoutAttrs[[2]]$xaxis$title$text,  " "))[1]
   y_mark <- unlist(strsplit(p_obj$x$layoutAttrs[[2]]$yaxis$title$text,  " "))[1]
 
   p_conf <- plotly::add_lines(
     p = p_obj,
-    # df_p is grouped by bound. Therefore two separate lines are drawn
+    # tbl_p is grouped by bound. Therefore two separate lines are drawn
     # for two-sided confidence intervals
-    data = df_p,
+    data = tbl_p,
     x = ~x, y = ~q,
     type = "scatter", mode = "lines",
     hoverinfo = "text",
@@ -305,9 +305,9 @@ plot_conf_plotly <- function(p_obj, df_p, title_trace) {
     legendgroup = "Interval",
     text = paste(
       paste0(x_mark, ":"),
-      round(df_p$x, digits = 2),
+      round(tbl_p$x, digits = 2),
       paste("<br>", paste0(y_mark, ":")),
-      round(df_p$y, digits = 5)
+      round(tbl_p$y, digits = 5)
     )
   )
 
@@ -315,14 +315,14 @@ plot_conf_plotly <- function(p_obj, df_p, title_trace) {
 }
 
 plot_pop_plotly <- function(
-  p_obj, df_pop, param_val, param_label, color, title_trace
+  p_obj, tbl_pop, color, title_trace
 ) {
   # Get axis labels in hover:
   x_mark <- unlist(strsplit(p_obj$x$layoutAttrs[[2]]$xaxis$title$text,  " "))[1]
   y_mark <- unlist(strsplit(p_obj$x$layoutAttrs[[2]]$yaxis$title$text,  " "))[1]
 
   p_pop <- plotly::add_lines(
-    p = p_obj, data = df_pop,
+    p = p_obj, data = tbl_pop,
     x = ~x_s, y = ~q,
     type = "scatter",
     mode = "lines",
@@ -332,13 +332,13 @@ plot_pop_plotly <- function(
     line = list(width = 1),
     text = paste(
       paste0(x_mark, ":"),
-      round(df_pop$x_s, digits = 2),
+      round(tbl_pop$x_s, digits = 2),
       paste("<br>", paste0(y_mark, ":")),
-      round(df_pop$y_s, digits = 5),
+      round(tbl_pop$y_s, digits = 5),
       "<br>",
-      paste(param_label[1], param_val[1]),
+      paste(tbl_pop$param_label_1, tbl_pop$param_val_1),
       "<br>",
-      paste(param_label[2], param_val[2])
+      paste(tbl_pop$param_label_2, tbl_pop$param_val_2)
     )
   ) %>%
     plotly::layout(showlegend = TRUE)

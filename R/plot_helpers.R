@@ -412,60 +412,7 @@ plot_conf_helper <- function(tbl_mod, x, y, direction, distribution) {
   return(tbl_p)
 }
 
-plot_pop_helper <- function(x, params, distribution) {
-  x_min <- min(x, na.rm = TRUE)
-  x_max <- max(x, na.rm = TRUE)
-  x_low <- x_min - 10 ^ floor(log10(x_min)) * .5
-  x_high <- x_max + 10 ^ floor(log10(x_max)) * .25
-
-  x_s <- seq(x_low, x_high, length.out = 200)
-
-  if (distribution == "weibull") {
-    loc <- log(params[1])
-    sc <- 1 / params[2]
-  }
-  if (distribution %in% c("lognormal", "loglogistic")) {
-    loc <- params[1]
-    sc <- params[2]
-  }
-
-  y_s <- predict_prob(q = x_s, loc_sc_params = c(loc, sc),
-                      distribution = distribution)
-
-  y_s <- y_s[y_s < 1]
-  x_s <- x_s[y_s < 1]
-
-  if (distribution == "weibull") {
-    q <- SPREDA::qsev(y_s)
-    param_val <- c(round(exp(loc), digits = 2),
-                   round(1 / sc, digits = 2))
-    param_label <- c("\u03B7:", "\u03B2:")
-  }
-  if (distribution == "lognormal") {
-    q <- stats::qnorm(y_s)
-    param_val <- c(round(loc, digits = 2),
-                   round(sc, digits = 2))
-    param_label <- c("\u03BC:", "\u03C3:")
-  }
-  if (distribution == "loglogistic") {
-    q <- stats::qlogis(y_s)
-    param_val <- c(round(loc, digits = 2),
-                   round(sc, digits = 2))
-    param_label <- c("\u03BC:", "\u03C3:")
-  }
-
-  tbl_pop <- data.frame(x_s = x_s, y_s = y_s, q = q)
-
-  l <- list(
-    tbl_pop = tbl_pop,
-    param_val = param_val,
-    param_label = param_label
-  )
-
-  return(l)
-}
-
-plot_pop_2_helper <- function(x, param_tbl, distribution) {
+plot_pop_helper <- function(x, param_tbl, distribution) {
   x_min <- min(x, na.rm = TRUE)
   x_max <- max(x, na.rm = TRUE)
 
@@ -507,16 +454,16 @@ plot_pop_2_helper <- function(x, param_tbl, distribution) {
   }
 
   if (distribution == "weibull") {
-    param_val_1 <- round(exp(loc), digits = 2)
-    param_val_2 <- round(1 / sc, digits = 2)
+    param_val_1 <- round(exp(tbl_pop$loc), digits = 2)
+    param_val_2 <- round(1 / tbl_pop$sc, digits = 2)
 
     param_label_1 <- "\u03B7:"
     param_label_2 <- "\u03B2:"
 
   }
   if (distribution %in% c("lognormal", "loglogistic")) {
-    param_val_1 <- round(loc, digits = 2)
-    param_val_2 <- round(sc, digits = 2)
+    param_val_1 <- round(tbl_pop$loc, digits = 2)
+    param_val_2 <- round(tbl_pop$sc, digits = 2)
 
     param_label_1 <- "\u03BC:"
     param_label_2 <- "\u03C3:"

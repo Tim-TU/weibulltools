@@ -900,16 +900,15 @@ plot_pop <- function(
     )
   }
 
-  pop_helper <- plot_pop_helper(x, params, distribution)
-  tbl_pop <- pop_helper$tbl_pop
-  param_val <- pop_helper$param_val
-  param_label <- pop_helper$param_label
+  param_tbl <- tibble::tibble(param_1 = params[1], param_2 = params[2])
+
+  tbl_pop <- plot_pop_helper(x, param_tbl, distribution)
 
   plot_pop_fun <- if (plot_method == "plotly") plot_pop_plotly else
     plot_pop_ggplot2
 
   plot_pop_fun(
-    p_obj, tbl_pop, param_val, param_label, color, title_trace
+    p_obj, tbl_pop, color, title_trace
   )
 }
 

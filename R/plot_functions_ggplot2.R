@@ -98,7 +98,7 @@ plot_mod_ggplot2 <- function(
   p_mod <- p_obj +
     ggnewscale::new_scale_color() +
     ggplot2::geom_line(
-      data = df_pred, mapping = ggplot2::aes(x = x_p, y = q, color = I("#CC2222"))
+      data = tbl_pred, mapping = ggplot2::aes(x = x_p, y = q, color = I("#CC2222"))
     ) +
     ggplot2::labs(color = title_trace) +
     ggplot2::scale_color_identity(guide = "legend", labels = "")
@@ -117,11 +117,11 @@ plot_mod_mix_ggplot2 <- function(p_obj, tbl_group, title_trace) {
   return(p_mod)
 }
 
-plot_conf_ggplot2 <- function(p_obj, df_p, title_trace) {
+plot_conf_ggplot2 <- function(p_obj, tbl_p, title_trace) {
   p_conf <- p_obj +
     ggnewscale::new_scale_color() +
     ggplot2::geom_line(
-      data = df_p,
+      data = tbl_p,
       mapping = ggplot2::aes(
         x = x, y = q, group = bound, color = I("#CC2222")
       ),
@@ -134,11 +134,11 @@ plot_conf_ggplot2 <- function(p_obj, df_p, title_trace) {
 }
 
 plot_pop_ggplot2 <- function(
-  p_obj, df_pop, param_val, param_label, color, title_trace
+  p_obj, tbl_pop, color, title_trace
 ) {
   p_pop <- p_obj +
     ggplot2::geom_line(
-      data = df_pop, mapping = ggplot2::aes(x = x_s, y = q, color = color)
+      data = tbl_pop, mapping = ggplot2::aes(x = x_s, y = q, color = color)
     ) +
     ggplot2::labs(color = title_trace) +
     ggplot2::scale_color_identity(guide = "legend", labels = "")
