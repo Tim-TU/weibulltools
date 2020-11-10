@@ -113,39 +113,38 @@ mr_method <- function(x, event = rep(1, length(x)),
   }
 
   if (!all(event == 1)) {
-    stop("Use johnson_method, kaplan_method or nelson_method since there is a censored data problem!")
+    message("The mr method only considers failed units (event == 1).")
   }
 
-  tbl <- tibble::tibble(time = x, status = event)
-  tbl <- dplyr::distinct(tbl, time, .keep_all = TRUE)
-  tbl <- dplyr::arrange(tbl, time)
-  tbl <- dplyr::mutate(tbl, rank = rank(time, ties.method = "first"))
+  tbl_in <- tibble::tibble(id = id, x = x, status = event)
+
+  tbl_calc <- tbl_in %>%
+    dplyr::filter(status == 1) %>%
+    dplyr::distinct(x, .keep_all = TRUE) %>%
+    dplyr::arrange(x) %>%
+    dplyr::mutate(rank = rank(x, ties.method = "first"))
 
   if (method == "benard") {
-    tbl <- dplyr::mutate(tbl, prob = (rank - .3) / (length(x) + .4))
+    tbl_calc <- dplyr::mutate(tbl_calc, prob = (rank - .3) / (length(x) + .4))
   } else {
-    tbl <- dplyr::mutate(tbl, prob = stats::qbeta(.5, rank, length(x) - rank + 1))
+    tbl_calc <- dplyr::mutate(tbl_calc, prob = stats::qbeta(.5, rank, length(x) - rank + 1))
   }
 
-  # Sort event by x
-  event <- event[order(x)]
-
-  tbl_out <- tibble::tibble(
-    id = id[order(x)],
-    characteristic = x[order(x)],
-    status = event,
-    rank = ifelse(
-      event == 1,
-      tbl$rank[match(x[order(x)], tbl$time)],
-      NA_real_
-    ),
-    prob = ifelse(
-      event == 1,
-      tbl$prob[match(x[order(x)], tbl$time)],
-      NA_real_
-    ),
-    method = "mr"
-  )
+  tbl_out <- tbl_in %>%
+    dplyr::mutate(
+      rank = ifelse(
+        status == 1,
+        tbl_calc$rank[match(x[order(x)], tbl_calc$x)],
+        NA_real_
+      ),
+      prob = ifelse(
+        status == 1,
+        tbl_calc$prob[match(x[order(x)], tbl_calc$x)],
+        NA_real_
+      )
+    ) %>%
+    dplyr::rename(characteristic = x) %>%
+    dplyr::mutate(method = "mr")
 
   class(tbl_out) <- c("cdf_estimation", class(tbl_out))
 
@@ -184,39 +183,43 @@ johnson_method <- function(x, event, id = rep("XXXXXX", length(x))) {
     stop("x, event and id must be of same length.")
   }
 
-  tbl <- tibble::tibble(time = x, status = event)
-  tbl <- dplyr::group_by(tbl, time)
-  tbl <- dplyr::mutate(tbl, failure = sum(status == 1),
-                      survivor = sum(status == 0))
-  tbl <- dplyr::distinct(tbl, time, .keep_all = TRUE)
-  tbl <- dplyr::arrange(tbl, time)
-  tbl <- dplyr::ungroup(tbl)
-  tbl <- dplyr::mutate(tbl, n_i = failure + survivor,
-                      n_out = dplyr::lag(cumsum(n_i), n = 1L, default = 0),
-                      rank = failure)
-  tbl <- dplyr::mutate(tbl, rank = calculate_ranks(f = failure,
-                                                 n_out = n_out,
-                                                 n = sum(n_i)))
-  tbl <- dplyr::mutate(tbl, prob = (rank - .3) / (sum(n_i) + .4))
+  tbl_in <- tibble::tibble(id = id, x = x, status = event)
 
-  event <- event[order(x)]
+  tbl_calc <- tbl_in %>%
+    dplyr::group_by(x) %>%
+    dplyr::mutate(failure = sum(status == 1), survivor = sum(status == 0)) %>%
+    dplyr::distinct(x, .keep_all = TRUE) %>%
+    dplyr::arrange(x) %>%
+    dplyr::ungroup() %>%
+    dplyr::mutate(
+      n_i = failure + survivor,
+      n_out = dplyr::lag(cumsum(n_i), n = 1L, default = 0),
+      rank = failure
+    ) %>%
+    dplyr::mutate(
+      rank = calculate_ranks(
+        f = failure,
+        n_out = n_out,
+        n = sum(n_i)
+      )
+    ) %>%
+    dplyr::mutate(prob = (rank - .3) / (sum(n_i) + .4))
 
-  tbl_out <- tibble::tibble(
-    id = id[order(x)],
-    characteristic = x[order(x)],
-    status = event,
-    rank = ifelse(
-      event == 1,
-      tbl$rank[match(x[order(x)], tbl$time)],
-      NA_real_
-    ),
-    prob = ifelse(
-      event == 1,
-      tbl$prob[match(x[order(x)], tbl$time)],
-      NA_real_
-    ),
-    method = "johnson"
-  )
+  tbl_out <- tbl_in %>%
+    dplyr::mutate(
+      rank = ifelse(
+        status == 1,
+        tbl_calc$rank[match(x[order(x)], tbl_calc$x)],
+        NA_real_
+      ),
+      prob = ifelse(
+        status == 1,
+        tbl_calc$prob[match(x[order(x)], tbl_calc$x)],
+        NA_real_
+      )
+    ) %>%
+    dplyr::rename(characteristic = x) %>%
+    dplyr::mutate(method = "johnson")
 
   class(tbl_out) <- c("cdf_estimation", class(tbl_out))
 
@@ -280,39 +283,47 @@ kaplan_method <- function(x, event, id = rep("XXXXXX", length(x))) {
     warning("Use mr_method since there is no censored data problem!")
   }
 
-  tbl <- tibble::tibble(time = x, status = event)
-  tbl <- dplyr::group_by(tbl, time)
-  tbl <- dplyr::mutate(tbl, failure = sum(status == 1),
-                      survivor = sum(status == 0))
-  tbl <- dplyr::distinct(tbl, time, .keep_all = TRUE)
-  tbl <- dplyr::arrange(tbl, time)
-  tbl <- dplyr::ungroup(tbl)
-  tbl <- dplyr::mutate(tbl, n_i = failure + survivor,
-                      n_out = dplyr::lag(cumsum(n_i), n = 1L, default = 0),
-                      n_in = sum(n_i) - n_out)
+  tbl_in <- tibble::tibble(id = id, x = x, status = event)
+
+  tbl_calc <- tbl_in %>%
+    dplyr::group_by(x) %>%
+    dplyr::mutate(
+      failure = sum(status == 1),
+      survivor = sum(status == 0)
+    ) %>%
+    dplyr::distinct(x, .keep_all = TRUE) %>%
+    dplyr::arrange(x) %>%
+    dplyr::ungroup() %>%
+    dplyr::mutate(
+      n_i = failure + survivor,
+      n_out = dplyr::lag(cumsum(n_i), n = 1L, default = 0),
+      n_in = sum(n_i) - n_out
+    )
 
   if (event[which.max(x)] == 0) {
-    tbl <- dplyr::mutate(tbl, prob = 1 - cumprod((n_in - failure) / n_in))
+    tbl_calc <- tbl_calc %>%
+      dplyr::mutate(
+        prob = 1 - cumprod((n_in - failure) / n_in)
+      )
   } else {
-    tbl <- dplyr::mutate(tbl,
-          prob = 1 - (((n_in + .7) / (n_in + .4)) *
-              cumprod(((n_in + .7) - failure) / (n_in + 1.7))))
+    tbl_calc <- tbl_calc %>%
+      dplyr::mutate(
+        prob = 1 - (((n_in + .7) / (n_in + .4)) *
+                      cumprod(((n_in + .7) - failure) / (n_in + 1.7)))
+      )
   }
 
-  event <- event[order(x)]
-
-  tbl_out <- tibble::tibble(
-    id = id[order(x)],
-    characteristic = x[order(x)],
-    status = event,
-    rank = NA_real_,
-    prob = ifelse(
-      event == 1,
-      tbl$prob[match(x[order(x)], tbl$time)],
-      NA_real_
-    ),
-    method = "kaplan"
-  )
+  tbl_out <- tbl_in %>%
+    dplyr::mutate(
+      rank = NA_real_,
+      prob = ifelse(
+        status == 1,
+        tbl_calc$prob[match(x[order(x)], tbl_calc$x)],
+        NA_real_
+      ),
+      method = "kaplan"
+    ) %>%
+    dplyr::rename(characteristic = x)
 
   class(tbl_out) <- c("cdf_estimation", class(tbl_out))
 
@@ -355,33 +366,36 @@ nelson_method <- function(x, event, id = rep("XXXXXX", length(x))) {
     warning("Use mr_method since there is no censored data problem!")
   }
 
-  tbl <- tibble::tibble(time = x, status = event)
-  tbl <- dplyr::group_by(tbl, time)
-  tbl <- dplyr::mutate(tbl, failure = sum(status == 1),
-    survivor = sum(status == 0))
-  tbl <- dplyr::distinct(tbl, time, .keep_all = TRUE)
-  tbl <- dplyr::arrange(tbl, time)
-  tbl <- dplyr::ungroup(tbl)
-  tbl <- dplyr::mutate(tbl, n_out = failure + survivor,
+  tbl_in <- tibble::tibble(id = id, x = x, status = event)
+
+  tbl_calc <- tbl_in %>%
+    dplyr::group_by(x) %>%
+    dplyr::mutate(
+      failure = sum(status == 1),
+      survivor = sum(status == 0)
+    ) %>%
+  dplyr::distinct(x, .keep_all = TRUE) %>%
+  dplyr::arrange(x) %>%
+  dplyr::ungroup(x) %>%
+  dplyr::mutate(
+    n_out = failure + survivor,
     n_in = length(x) - dplyr::lag(cumsum(n_out), n = 1L, default = 0),
     lam_nel = ifelse(status == 1, failure / n_in, 0),
     H_nel = cumsum(lam_nel),
-    prob = 1 - exp(-H_nel))
-
-  event <- event[order(x)]
-
-  tbl_out <- tibble::tibble(
-    id = id[order(x)],
-    characteristic = x[order(x)],
-    status = event,
-    rank = NA_real_,
-    prob = ifelse(
-      event == 1,
-      tbl$prob[match(x[order(x)], tbl$time)],
-      NA_real_
-    ),
-    method = "nelson"
+    prob = 1 - exp(-H_nel)
   )
+
+  tbl_out <- tbl_in %>%
+    dplyr::mutate(
+      rank = NA_real_,
+      prob = ifelse(
+        status == 1,
+        tbl_calc$prob[match(x[order(x)], tbl_calc$x)],
+        NA_real_
+      ),
+      method = "nelson"
+    ) %>%
+    dplyr::rename(characteristic = x)
 
   class(tbl_out) <- c("cdf_estimation", class(tbl_out))
 
