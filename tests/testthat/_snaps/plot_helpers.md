@@ -1,6 +1,6 @@
 # plot_pop_helper snapshot
 
-    # A tibble: 200 x 9
+    # A tibble: 200 x 10
          loc    sc   x_s     y_s     q param_val_1 param_val_2 param_label_1
        <dbl> <dbl> <dbl>   <dbl> <dbl>       <dbl>       <dbl> <chr>        
      1  9.90     1  163. 0.00809 -4.81       20000           1 <U+03B7>:           
@@ -13,5 +13,6 @@
      8  9.90     1 3191. 0.147   -1.84       20000           1 <U+03B7>:           
      9  9.90     1 3624. 0.166   -1.71       20000           1 <U+03B7>:           
     10  9.90     1 4057. 0.184   -1.60       20000           1 <U+03B7>:           
-    # ... with 190 more rows, and 1 more variable: param_label_2 <chr>
+    # ... with 190 more rows, and 2 more variables: param_label_2 <chr>,
+    #   group <chr>
 

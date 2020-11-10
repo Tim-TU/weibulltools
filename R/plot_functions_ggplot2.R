@@ -138,10 +138,9 @@ plot_pop_ggplot2 <- function(
 ) {
   p_pop <- p_obj +
     ggplot2::geom_line(
-      data = tbl_pop, mapping = ggplot2::aes(x = x_s, y = q, color = color)
+      data = tbl_pop, mapping = ggplot2::aes(x = x_s, y = q, color = group)
     ) +
-    ggplot2::labs(color = title_trace) +
-    ggplot2::scale_color_identity(guide = "legend", labels = "")
+    ggplot2::labs(color = title_trace)
 
   return(p_pop)
 }

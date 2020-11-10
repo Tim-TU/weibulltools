@@ -321,14 +321,15 @@ plot_pop_plotly <- function(
   x_mark <- unlist(strsplit(p_obj$x$layoutAttrs[[2]]$xaxis$title$text,  " "))[1]
   y_mark <- unlist(strsplit(p_obj$x$layoutAttrs[[2]]$yaxis$title$text,  " "))[1]
 
+  tbl_pop <- dplyr::group_by(tbl_pop, group)
+
   p_pop <- plotly::add_lines(
     p = p_obj, data = tbl_pop,
     x = ~x_s, y = ~q,
     type = "scatter",
     mode = "lines",
     hoverinfo = "text",
-    color = color,
-    name = title_trace,
+    color = ~group,
     line = list(width = 1),
     text = paste(
       paste0(x_mark, ":"),

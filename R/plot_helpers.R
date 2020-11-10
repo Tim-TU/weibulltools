@@ -477,5 +477,8 @@ plot_pop_helper <- function(x, param_tbl, distribution) {
       param_label_2 = param_label_2
     )
 
+  tbl_pop <- tbl_pop %>%
+    dplyr::mutate(group = paste0(param_label_1, " ", param_val_1, ", ", param_label_2, " ", param_val_2))
+
   return(tbl_pop)
 }

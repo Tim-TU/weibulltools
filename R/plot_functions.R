@@ -935,6 +935,7 @@ plot_pop_2 <- function(
   title_main = "Failure Analysis",
   title_x = "Failure Characteristic",
   title_y = "Failure Probability",
+  title_trace = "Population",
   plot_method = c("plotly", "ggplot2")
 ) {
 
@@ -946,8 +947,16 @@ plot_pop_2 <- function(
     distribution = distribution,
     title_main = title_main,
     title_x = title_x,
-    title_y = title_y
+    title_y = title_y,
+    plot_method = plot_method
   )
 
+  tbl_pop <- plot_pop_helper(x, param_tbl, distribution)
 
+  plot_pop_fun <- if (plot_method == "plotly") plot_pop_plotly else
+    plot_pop_ggplot2
+
+  plot_pop_fun(
+    p_obj, tbl_pop, NULL, title_trace
+  )
 }
