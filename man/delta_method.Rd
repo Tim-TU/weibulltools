@@ -5,9 +5,14 @@
 \alias{delta_method}
 \title{Delta Method for Parametric Lifetime Distributions}
 \usage{
-delta_method(p, loc_sc_params, loc_sc_varcov, distribution = c("weibull",
-  "lognormal", "loglogistic", "normal", "logistic", "sev", "weibull3",
-  "lognormal3", "loglogistic3"), direction = c("y", "x"))
+delta_method(
+  p,
+  loc_sc_params,
+  loc_sc_varcov,
+  distribution = c("weibull", "lognormal", "loglogistic", "normal", "logistic", "sev",
+    "weibull3", "lognormal3", "loglogistic3"),
+  direction = c("y", "x")
+)
 }
 \arguments{
 \item{p}{a numeric value of a probability or a quantile. If the standard error
@@ -31,7 +36,7 @@ variance of the scale parameter Var(\eqn{\sigma}). If a three-parametric model
 is used the third element of the diagonal needs to be the variance of the
 threshold parameter Var(\eqn{\gamma}).}
 
-\item{distribution}{supposed distribution of the random variable. The
+\item{distribution}{Supposed distribution of the random variable. The
 value can be \code{"weibull"}, \code{"lognormal"}, \code{"loglogistic"},
 \code{"normal"}, \code{"logistic"}, \code{"sev"} \emph{(smallest extreme value)},
 \code{"weibull3"}, \code{"lognormal3"} or \code{"loglogistic3"}.

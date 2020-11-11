@@ -1,3 +1,77 @@
+#' Estimation of Failure Probabilities
+#'
+#' Estimate failure probabilities for uncensored or (multiple) right-censored
+#' data.
+#'
+#' Depending on the \code{methods} argument one or more of the following functions
+#' are called:
+#' \itemize{
+#'   \item \code{"mr"}: \code{\link{mr_method}}. Works only for uncensored data.
+#'   \item \code{"johnson"}: \code{\link{johnson_method}}.
+#'   \item \code{"kaplan"}: \code{\link{kaplan_method}}.
+#'   \item \code{"nelson"}: \code{\link{nelson_method}}.
+#' }
+#'
+#' @param data A tibble returned by \link{reliability_data}.
+#' @param methods Character vector of methods used for estimating the failure
+#' probabilities. See 'Details'.
+#' @param options A list of named options passed to \code{<method>_method}. For
+#' now there is just the option "method" with \code{method = "mr"}. See
+#' \code{\link{mr_method}}.
+#'
+#' @return A tibble containing the following columns:
+#' \itemize{
+#'   \item \code{id}: Identification.
+#'   \item \code{characteristic}: Lifetime characteristic.
+#'   \item \code{status}: Binary data (0 or 1) indicating whether a unit is a
+#'   right censored observation (=0) or a failure (=1).
+#'   \item \code{rank}: Adjusted rank. Applicable for method \code{"mr"}
+#'   and \code{"johnson"}, otherwise \code{NA}.
+#'   \item \code{prob}: Estimated failure probability.
+#'   \item \code{method}: Method for estimating the failure probability.
+#' }
+#'
+#' @export
+estimate_cdf <- function(
+  data, methods, options = list()
+) {
+
+  if (!inherits(data, "reliability_data")) {
+    stop("data must be a tibble returned from reliability_data().")
+  }
+
+  # Remove duplicates
+  methods <- unique(methods)
+
+  if (!all(methods %in% c("mr", "johnson", "kaplan", "nelson"))) {
+    stop('methods must be one or more of "mr", "johnson", "kaplan" or "nelson".')
+  }
+
+  method_funs <- list(
+    mr = mr_method,
+    johnson = johnson_method,
+    kaplan = kaplan_method,
+    nelson = nelson_method
+  )
+
+  purrr::map_dfr(methods, function(method) {
+    if (method == "mr") {
+      method_funs[[method]](
+        x = data$x,
+        event = data$status,
+        id = data$id,
+        method = if (is.null(options$method)) "benard" else options$method
+      )
+    } else {
+      method_funs[[method]](
+        x = data$x,
+        event = data$status,
+        id = data$id
+      )
+    }
+  })
+}
+
 #' Estimation of Failure Probabilities using Median Ranks
 #'
 #' This non-parametric approach (\emph{Median Ranks}) is used to estimate the
@@ -8,16 +82,16 @@
 #'   \item "invbeta"; Exact Median Ranks using the inverse beta distribution
 #' }
 #'
-#' @param x a numeric vector which consists of lifetime data. Lifetime
+#' @param x A numeric vector which consists of lifetime data. Lifetime
 #'   data could be every characteristic influencing the reliability of a product,
 #'   e.g. operating time (days/months in service), mileage (km, miles), load
 #'   cycles.
-#' @param event a vector of ones indicating that every unit \emph{i} has failed.
-#' @param id a character vector for the identification of every unit.
-#' @param method method for the estimation of the cdf. Can be "benard" (default)
+#' @param event A vector of ones indicating that every unit \emph{i} has failed.
+#' @param id A character vector for the identification of every unit.
+#' @param method Method for the estimation of the cdf. Can be "benard" (default)
 #' or "invbeta".
 #'
-#' @return A data frame containing id, lifetime characteristic, status of the
+#' @return A tibble containing id, lifetime characteristic, status of the
 #'   unit, the rank and the estimated failure probability.
 #'
 #' @export
@@ -28,41 +102,58 @@
 #' uic   <- c("3435", "1203", "958X", "XX71", "abcd", "tz46",
 #'            "fl29", "AX23", "Uy12", "kl1a")
 #'
-#' df_mr <- mr_method(x = obs, event = state, id = uic,
+#' tbl_mr <- mr_method(x = obs, event = state, id = uic,
 #'                    method = "benard")
 #'
 #' # Example 2
-#' df_mr_invbeta <- mr_method(x = obs, event = state, id = uic,
+#' tbl_mr_invbeta <- mr_method(x = obs, event = state, id = uic,
 #'                            method = "invbeta")
 
 mr_method <- function(x, event = rep(1, length(x)),
                       id = rep("XXXXXX", length(x)), method = "benard") {
+
+  if (!((length(x) == length(event)) && (length(x) == length(id)))) {
+    stop("x, event and id must be of same length.")
+  }
+
   if (!all(event == 1)) {
-    stop("Use johnson_method(), kaplan_method() or nelson_method since there is
-         a censored data problem!")
+    message("The mr method only considers failed units (event == 1).")
   }
-  df <- data.frame(time = x, status = event)
-  df <- dplyr::distinct(df, time, .keep_all = TRUE)
-  df <- dplyr::arrange(df, time)
-  df <- dplyr::mutate(df, rank = rank(time, ties.method = "first"))
+
+  tbl_in <- tibble::tibble(id = id, x = x, status = event)
+
+  tbl_calc <- tbl_in %>%
+    dplyr::filter(status == 1) %>%
+    dplyr::distinct(x, .keep_all = TRUE) %>%
+    dplyr::arrange(x) %>%
+    dplyr::mutate(rank = rank(x, ties.method = "first"))
+
   if (method == "benard") {
-    df <- dplyr::mutate(df, prob = (rank - .3) / (length(x) + .4))
+    tbl_calc <- dplyr::mutate(tbl_calc, prob = (rank - .3) / (length(x) + .4))
   } else {
-    df <- dplyr::mutate(df, prob = stats::qbeta(.5, rank, length(x) - rank + 1))
+    tbl_calc <- dplyr::mutate(tbl_calc, prob = stats::qbeta(.5, rank, length(x) - rank + 1))
   }
 
-  event <- event[order(x)]
+  tbl_out <- tbl_in %>%
+    dplyr::arrange(x) %>%
+    dplyr::mutate(
+      rank = ifelse(
+        status == 1,
+        tbl_calc$rank[match(x[order(x)], tbl_calc$x)],
+        NA_real_
+      ),
+      prob = ifelse(
+        status == 1,
+        tbl_calc$prob[match(x[order(x)], tbl_calc$x)],
+        NA_real_
+      )
+    ) %>%
+    dplyr::rename(characteristic = x) %>%
+    dplyr::mutate(method = "mr")
 
-  df_output <- data.frame(
-    id = id[order(x)],
-    characteristic = x[order(x)],
-    status = event,
-    rank = ifelse(event == 1, df$rank[match(x[order(x)], df$time)],
-      NA_real_),
-    prob = ifelse(event == 1, df$prob[match(x[order(x)], df$time)],
-      NA_real_)
-  )
-  return(df_output)
+  class(tbl_out) <- c("cdf_estimation", class(tbl_out))
+
+  return(tbl_out)
 }
 
 
@@ -73,15 +164,11 @@ mr_method <- function(x, event = rep(1, length(x)),
 #' correction is done by calculating adjusted ranks which takes non-defective
 #' units into account.
 #'
-#' @param x a numeric vector which consists of lifetime data. Lifetime
-#'   data could be every characteristic influencing the reliability of a product,
-#'   e.g. operating time (days/months in service), mileage (km, miles), load
-#'   cycles.
-#' @param event a vector of binary data (0 or 1) indicating whether unit \emph{i}
+#' @param event A vector of binary data (0 or 1) indicating whether unit \emph{i}
 #'   is a right censored observation (= 0) or a failure (= 1).
-#' @param id a character vector for the identification of every unit.
+#' @inheritParams mr_method
 #'
-#' @return A data frame containing id, lifetime characteristic, status of the
+#' @return A tibble containing id, lifetime characteristic, status of the
 #'   unit, the adjusted rank and the estimated failure probability. For right
 #'   censored observations the cells of the rank and probabilty columns are
 #'   filled with NA values.
@@ -93,37 +180,56 @@ mr_method <- function(x, event = rep(1, length(x)),
 #' uic   <- c("3435", "1203", "958X", "XX71", "abcd", "tz46",
 #'            "fl29", "AX23", "Uy12", "kl1a")
 #'
-#' df_john <- johnson_method(x = obs, event = state, id = uic)
+#' tbl_john <- johnson_method(x = obs, event = state, id = uic)
 
 johnson_method <- function(x, event, id = rep("XXXXXX", length(x))) {
 
-  df <- data.frame(time = x, status = event)
-  df <- dplyr::group_by(df, time)
-  df <- dplyr::mutate(df, failure = sum(status == 1),
-                      survivor = sum(status == 0))
-  df <- dplyr::distinct(df, time, .keep_all = TRUE)
-  df <- dplyr::arrange(df, time)
-  df <- dplyr::ungroup(df)
-  df <- dplyr::mutate(df, n_i = failure + survivor,
-                      n_out = dplyr::lag(cumsum(n_i), n = 1L, default = 0),
-                      rank = failure)
-  df <- dplyr::mutate(df, rank = calculate_ranks(f = failure,
-                                                 n_out = n_out,
-                                                 n = sum(n_i)))
-  df <- dplyr::mutate(df, prob = (rank - .3) / (sum(n_i) + .4))
+  if (!((length(x) == length(event)) && (length(x) == length(id)))) {
+    stop("x, event and id must be of same length.")
+  }
 
-  event <- event[order(x)]
+  tbl_in <- tibble::tibble(id = id, x = x, status = event)
 
-  df_output <- data.frame(
-    id = id[order(x)],
-    characteristic = x[order(x)],
-    status = event,
-    rank = ifelse(event == 1, df$rank[match(x[order(x)], df$time)],
-                  NA_real_),
-    prob = ifelse(event == 1, df$prob[match(x[order(x)], df$time)],
-                  NA_real_)
-    )
-  return(df_output)
+  tbl_calc <- tbl_in %>%
+    dplyr::group_by(x) %>%
+    dplyr::mutate(failure = sum(status == 1), survivor = sum(status == 0)) %>%
+    dplyr::distinct(x, .keep_all = TRUE) %>%
+    dplyr::arrange(x) %>%
+    dplyr::ungroup() %>%
+    dplyr::mutate(
+      n_i = failure + survivor,
+      n_out = dplyr::lag(cumsum(n_i), n = 1L, default = 0),
+      rank = failure
+    ) %>%
+    dplyr::mutate(
+      rank = calculate_ranks(
+        f = failure,
+        n_out = n_out,
+        n = sum(n_i)
+      )
+    ) %>%
+    dplyr::mutate(prob = (rank - .3) / (sum(n_i) + .4))
+
+  tbl_out <- tbl_in %>%
+    dplyr::arrange(x) %>%
+    dplyr::mutate(
+      rank = ifelse(
+        status == 1,
+        tbl_calc$rank[match(x[order(x)], tbl_calc$x)],
+        NA_real_
+      ),
+      prob = ifelse(
+        status == 1,
+        tbl_calc$prob[match(x[order(x)], tbl_calc$x)],
+        NA_real_
+      )
+    ) %>%
+    dplyr::rename(characteristic = x) %>%
+    dplyr::mutate(method = "johnson")
+
+  class(tbl_out) <- c("cdf_estimation", class(tbl_out))
+
+  return(tbl_out)
 }
 
 
@@ -143,15 +249,9 @@ johnson_method <- function(x, event, id = rep("XXXXXX", length(x))) {
 #' \emph{Median Ranks}, the Betabinomial confidence intervals cannot be
 #' calculated on the basis of Kaplan-Meier failure probabilities.
 #'
-#' @param x a numeric vector which consists of lifetime data. Lifetime
-#'   data could be every characteristic influencing the reliability of a product,
-#'   e.g. operating time (days/months in service), mileage (km, miles), load
-#'   cycles.
-#' @param event a vector of binary data (0 or 1) indicating whether unit \emph{i}
-#'   is a right censored observation (= 0) or a failure (= 1).
-#' @param id a character vector for the identification of every unit.
+#' @inheritParams johnson_method
 #'
-#' @return A data frame containing id, lifetime characteristic, status of the
+#' @return A tibble containing id, lifetime characteristic, status of the
 #'   unit and the estimated failure probabilty. For right censored observations
 #'   the cells of probability column are filled with NA.
 #'
@@ -167,49 +267,74 @@ johnson_method <- function(x, event, id = rep("XXXXXX", length(x))) {
 #' uic   <- c("3435", "1203", "958X", "XX71", "abcd", "tz46",
 #'            "fl29", "AX23","Uy12", "kl1a")
 #'
-#' df_kap <- kaplan_method(x = obs, event = state, id = uic)
+#' tbl_kap <- kaplan_method(x = obs, event = state, id = uic)
 #'
 #'# Example 2
-#'  df <- data.frame(obs = c(10000, 10000, 20000, 20000, 30000,
+#' tbl <- tibble(obs = c(10000, 10000, 20000, 20000, 30000,
 #'                          30000, 30000, 30000, 40000, 50000,
 #'                          50000, 60000, 70000, 70000, 70000,
 #'                          70000, 80000, 80000, 80000, 80000,
 #'                          90000, 90000, 100000),
 #'                  state = rep(1, 23))
 #'
-#' df_kap2 <- kaplan_method(x = df$obs, event = df$state)
+#' tbl_kap2 <- kaplan_method(x = tbl$obs, event = tbl$state)
 
 kaplan_method <- function(x, event, id = rep("XXXXXX", length(x))) {
-  if (all(event == 1)) {
-    warning("Use mr_method() since there is no censored data problem!")
-  }
-  df <- data.frame(time = x, status = event)
-  df <- dplyr::group_by(df, time)
-  df <- dplyr::mutate(df, failure = sum(status == 1),
-                      survivor = sum(status == 0))
-  df <- dplyr::distinct(df, time, .keep_all = TRUE)
-  df <- dplyr::arrange(df, time)
-  df <- dplyr::ungroup(df)
-  df <- dplyr::mutate(df, n_i = failure + survivor,
-                      n_out = dplyr::lag(cumsum(n_i), n = 1L, default = 0),
-                      n_in = sum(n_i) - n_out)
-  if (event[which.max(x)] == 0) {
-    df <- dplyr::mutate(df, prob = 1 - cumprod((n_in - failure) / n_in))
-  } else {
-    df <- dplyr::mutate(df,
-          prob = 1 - (((n_in + .7) / (n_in + .4)) *
-              cumprod(((n_in + .7) - failure) / (n_in + 1.7))))
-  }
-  event <- event[order(x)]
 
-  df_output <- data.frame(
-    id = id[order(x)],
-    characteristic = x[order(x)],
-    status = event,
-    prob = ifelse(event == 1, df$prob[match(x[order(x)], df$time)],
-                  NA_real_)
-  )
-  return(df_output)
+  if (!((length(x) == length(event)) && (length(x) == length(id)))) {
+    stop("x, event and id must be of same length.")
+  }
+
+  if (all(event == 1)) {
+    warning("Use mr_method since there is no censored data problem!")
+  }
+
+  tbl_in <- tibble::tibble(id = id, x = x, status = event)
+
+  tbl_calc <- tbl_in %>%
+    dplyr::group_by(x) %>%
+    dplyr::mutate(
+      failure = sum(status == 1),
+      survivor = sum(status == 0)
+    ) %>%
+    dplyr::distinct(x, .keep_all = TRUE) %>%
+    dplyr::arrange(x) %>%
+    dplyr::ungroup() %>%
+    dplyr::mutate(
+      n_i = failure + survivor,
+      n_out = dplyr::lag(cumsum(n_i), n = 1L, default = 0),
+      n_in = sum(n_i) - n_out
+    )
+
+  if (event[which.max(x)] == 0) {
+    tbl_calc <- tbl_calc %>%
+      dplyr::mutate(
+        prob = 1 - cumprod((n_in - failure) / n_in)
+      )
+  } else {
+    tbl_calc <- tbl_calc %>%
+      dplyr::mutate(
+        prob = 1 - (((n_in + .7) / (n_in + .4)) *
+                      cumprod(((n_in + .7) - failure) / (n_in + 1.7)))
+      )
+  }
+
+  tbl_out <- tbl_in %>%
+    dplyr::arrange(x) %>%
+    dplyr::mutate(
+      rank = NA_real_,
+      prob = ifelse(
+        status == 1,
+        tbl_calc$prob[match(x[order(x)], tbl_calc$x)],
+        NA_real_
+      ),
+      method = "kaplan"
+    ) %>%
+    dplyr::rename(characteristic = x)
+
+  class(tbl_out) <- c("cdf_estimation", class(tbl_out))
+
+  return(tbl_out)
 }
 
 
@@ -223,15 +348,9 @@ kaplan_method <- function(x, event, id = rep("XXXXXX", length(x))) {
 #' \emph{Median Ranks}, the Betabinomial confidence intervals cannot be calculated
 #' on the basis of Nelson-Aalen failure probabilities.
 #'
-#' @param x a numeric vector which consists of lifetime data. Lifetime
-#'   data could be every characteristic influencing the reliability of a product,
-#'   e.g. operating time (days/months in service), mileage (km, miles), load
-#'   cycles.
-#' @param event a vector of binary data (0 or 1) indicating whether unit \emph{i}
-#'   is a right censored observation (= 0) or a failure (= 1).
-#' @param id a character vector for the identification of every unit.
+#' @inheritParams johnson_method
 #'
-#' @return A data frame containing id, lifetime characteristic, status of the
+#' @return A tibble containing id, lifetime characteristic, status of the
 #'   unit and the estimated failure probabilty. For right censored observations
 #'   the cells of probability column are filled with NA.
 #' @export
@@ -242,33 +361,51 @@ kaplan_method <- function(x, event, id = rep("XXXXXX", length(x))) {
 #' uic   <- c("3435", "1203", "958X", "XX71", "abcd", "tz46",
 #'            "fl29", "AX23","Uy12", "kl1a")
 #'
-#' df_nel <- nelson_method(x = obs, event = state, id = uic)
+#' tbl_nel <- nelson_method(x = obs, event = state, id = uic)
 #'
 nelson_method <- function(x, event, id = rep("XXXXXX", length(x))) {
-  if (all(event == 1)) {
-    warning("Use mr_method() since there is no censored data problem!")
+
+  if (!((length(x) == length(event)) && (length(x) == length(id)))) {
+    stop("x, event and id must be of same length.")
   }
-  df <- data.frame(time = x, status = event)
-  df <- dplyr::group_by(df, time)
-  df <- dplyr::mutate(df, failure = sum(status == 1),
-    survivor = sum(status == 0))
-  df <- dplyr::distinct(df, time, .keep_all = TRUE)
-  df <- dplyr::arrange(df, time)
-  df <- dplyr::ungroup(df)
-  df <- dplyr::mutate(df, n_out = failure + survivor,
+
+  if (all(event == 1)) {
+    warning("Use mr_method since there is no censored data problem!")
+  }
+
+  tbl_in <- tibble::tibble(id = id, x = x, status = event)
+
+  tbl_calc <- tbl_in %>%
+    dplyr::group_by(x) %>%
+    dplyr::mutate(
+      failure = sum(status == 1),
+      survivor = sum(status == 0)
+    ) %>%
+  dplyr::distinct(x, .keep_all = TRUE) %>%
+  dplyr::arrange(x) %>%
+  dplyr::ungroup(x) %>%
+  dplyr::mutate(
+    n_out = failure + survivor,
     n_in = length(x) - dplyr::lag(cumsum(n_out), n = 1L, default = 0),
     lam_nel = ifelse(status == 1, failure / n_in, 0),
     H_nel = cumsum(lam_nel),
-    prob = 1 - exp(-H_nel))
-
-  event <- event[order(x)]
-
-  df_output <- data.frame(
-    id = id[order(x)],
-    characteristic = x[order(x)],
-    status = event,
-    prob = ifelse(event == 1, df$prob[match(x[order(x)], df$time)],
-      NA_real_)
+    prob = 1 - exp(-H_nel)
   )
-  return(df_output)
+
+  tbl_out <- tbl_in %>%
+    dplyr::arrange(x) %>%
+    dplyr::mutate(
+      rank = NA_real_,
+      prob = ifelse(
+        status == 1,
+        tbl_calc$prob[match(x[order(x)], tbl_calc$x)],
+        NA_real_
+      ),
+      method = "nelson"
+    ) %>%
+    dplyr::rename(characteristic = x)
+
+  class(tbl_out) <- c("cdf_estimation", class(tbl_out))
+
+  return(tbl_out)
 }

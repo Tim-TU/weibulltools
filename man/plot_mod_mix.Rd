@@ -6,27 +6,30 @@
 \title{Adding Estimated Population Lines of a Separated Mixture Model to a
 Probability Plot}
 \usage{
-plot_mod_mix(p_obj, x, event, mix_output, distribution = c("weibull",
-  "lognormal", "loglogistic"), title_trace = "Fit")
+plot_mod_mix(
+  p_obj,
+  x,
+  event,
+  mix_output,
+  distribution = c("weibull", "lognormal", "loglogistic"),
+  title_trace = "Fit"
+)
 }
 \arguments{
-\item{p_obj}{a plotly object provided by function \code{\link{plot_prob_mix}}.}
+\item{p_obj}{A plotly object provided by function \code{\link{plot_prob_mix}}.}
 
-\item{x}{a numeric vector containing the x-coordinates of the regression line.}
+\item{x}{A numeric vector containing the x-coordinates of the regression line.}
 
-\item{event}{a vector of binary data (0 or 1) indicating whether unit \emph{i}
+\item{event}{A vector of binary data (0 or 1) indicating whether unit \emph{i}
 is a right censored observation (= 0) or a failure (= 1).}
 
-\item{mix_output}{a list provided by \code{\link{mixmod_regression}} or
+\item{mix_output}{A list provided by \code{\link{mixmod_regression}} or
 \code{\link{mixmod_em}}, which consists of elements necessary to visualize
 the regression lines.}
 
-\item{distribution}{supposed distribution of the random variable. For output
-provided by \code{mixmod_em} distribution must be \code{"weibull"}. Can be
-\code{"weibull"}, \code{"lognormal"} or \code{"loglogistic"} for output provided
-\code{mixmod_regression}. Other distributions have not been implemented yet.}
+\item{distribution}{Supposed distribution of the random variable.}
 
-\item{title_trace}{a character string whis is assigned to the trace shown in
+\item{title_trace}{A character string whis is assigned to the trace shown in
 the legend.}
 }
 \value{

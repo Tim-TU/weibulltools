@@ -2,19 +2,48 @@
 % Please edit documentation in R/confidence_intervals.R
 \name{confint_fisher}
 \alias{confint_fisher}
+\alias{confint_fisher.parameter_estimation}
+\alias{confint_fisher.default}
 \title{Fisher Confidence Bounds for Quantiles and/or Probabilities}
 \usage{
-confint_fisher(x, event, loc_sc_params, loc_sc_varcov,
-  distribution = c("weibull", "lognormal", "loglogistic", "normal",
-  "logistic", "sev", "weibull3", "lognormal3", "loglogistic3"),
-  bounds = c("two_sided", "lower", "upper"), conf_level = 0.95,
-  direction = c("y", "x"))
+confint_fisher(x, ...)
+
+\method{confint_fisher}{parameter_estimation}(
+  parameter_estimation,
+  bounds = c("two_sided", "lower", "upper"),
+  conf_level = 0.95,
+  direction = c("y", "x")
+)
+
+\method{confint_fisher}{default}(
+  x,
+  event,
+  loc_sc_params,
+  loc_sc_varcov,
+  distribution = c("weibull", "lognormal", "loglogistic", "normal", "logistic", "sev",
+    "weibull3", "lognormal3", "loglogistic3"),
+  bounds = c("two_sided", "lower", "upper"),
+  conf_level = 0.95,
+  direction = c("y", "x")
+)
 }
 \arguments{
 \item{x}{a numeric vector which consists of lifetime data. \code{x} is used to
 specify the range of confidence region(s).}
 
-\item{event}{a vector of binary data (0 or 1) indicating whether unit \emph{i}
+\item{bounds}{a character string specifying the interval(s) which has/have to
+be computed. Must be one of "two_sided" (default), "lower" or "upper".}
+
+\item{conf_level}{confidence level of the interval. The default value is
+\code{conf_level = 0.95}.}
+
+\item{direction}{a character string specifying the direction of the computed
+standard errors. Must be either "y" (used for confidence intervals of failure
+probabilities in \code{\link{confint_fisher}}) or "x" (used for confidence
+intervals of quantiles in \code{\link{confint_fisher}}). If \code{p} is a
+quantile then \emph{direction} needs to be "y" and vice versa.}
+
+\item{event}{A vector of binary data (0 or 1) indicating whether unit \emph{i}
 is a right censored observation (= 0) or a failure (= 1).}
 
 \item{loc_sc_params}{a (named) numeric vector of estimated
@@ -33,20 +62,11 @@ variance of the scale parameter Var(\eqn{\sigma}). If a three-parametric model
 is used the third element of the diagonal needs to be the variance of the
 threshold parameter Var(\eqn{\gamma}).}
 
-\item{distribution}{supposed distribution of the random variable. The
+\item{distribution}{Supposed distribution of the random variable. The
 value can be \code{"weibull"}, \code{"lognormal"}, \code{"loglogistic"},
 \code{"normal"}, \code{"logistic"}, \code{"sev"} \emph{(smallest extreme value)},
 \code{"weibull3"}, \code{"lognormal3"} or \code{"loglogistic3"}.
 Other distributions have not been implemented yet.}
-
-\item{bounds}{a character string specifying the interval(s) which has/have to
-be computed. Must be one of "two_sided" (default), "lower" or "upper".}
-
-\item{conf_level}{confidence level of the interval. The default value is
-\code{conf_level = 0.95}.}
-
-\item{direction}{a character string specifying the direction of the computed
-interval(s). Must be either "y" (failure probabilities) or "x" (quantiles).}
 }
 \value{
 A data frame containing the lifetime characteristic, the
@@ -59,6 +79,14 @@ and/or failure probabilities using the \code{\link{delta_method}}. The
 required (log-)location-scale (and threshold) parameters and variance-covariance matrix
 of these need to be estimated by Maximum Likelihood.
 }
+\section{Methods (by class)}{
+\itemize{
+\item \code{parameter_estimation}: Based on parameter estimation returned by
+\code{\link{ml_estimation}}.
+
+\item \code{default}: Provide all arguments manually.
+}}
+
 \examples{
 obs   <- seq(10000, 100000, 10000)
 state <- c(0, 1, 1, 0, 0, 0, 1, 0, 1, 0)

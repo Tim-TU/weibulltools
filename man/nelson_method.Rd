@@ -7,18 +7,18 @@
 nelson_method(x, event, id = rep("XXXXXX", length(x)))
 }
 \arguments{
-\item{x}{a numeric vector which consists of lifetime data. Lifetime
+\item{x}{A numeric vector which consists of lifetime data. Lifetime
 data could be every characteristic influencing the reliability of a product,
 e.g. operating time (days/months in service), mileage (km, miles), load
 cycles.}
 
-\item{event}{a vector of binary data (0 or 1) indicating whether unit \emph{i}
+\item{event}{A vector of binary data (0 or 1) indicating whether unit \emph{i}
 is a right censored observation (= 0) or a failure (= 1).}
 
-\item{id}{a character vector for the identification of every unit.}
+\item{id}{A character vector for the identification of every unit.}
 }
 \value{
-A data frame containing id, lifetime characteristic, status of the
+A tibble containing id, lifetime characteristic, status of the
   unit and the estimated failure probabilty. For right censored observations
   the cells of probability column are filled with NA.
 }
@@ -37,6 +37,6 @@ state <- c(0, 1, 1, 0, 0, 0, 1, 0, 1, 0)
 uic   <- c("3435", "1203", "958X", "XX71", "abcd", "tz46",
            "fl29", "AX23","Uy12", "kl1a")
 
-df_nel <- nelson_method(x = obs, event = state, id = uic)
+tbl_nel <- nelson_method(x = obs, event = state, id = uic)
 
 }

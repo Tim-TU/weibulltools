@@ -2,4 +2,7 @@ inst/doc
 /.Rproj.user/
 .Rproj.user
 .Rhistory
+docs
+src-i386
+src-x64
 .RData

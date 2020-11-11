@@ -3,41 +3,53 @@
 \encoding{UTF-8}
 \name{rank_regression}
 \alias{rank_regression}
+\alias{rank_regression.cdf_estimation}
+\alias{rank_regression.default}
 \title{Rank Regression for Parametric Lifetime Distributions}
 \usage{
-rank_regression(x, y, event, distribution = c("weibull", "lognormal",
-  "loglogistic", "normal", "logistic", "sev", "weibull3", "lognormal3",
-  "loglogistic3"), conf_level = 0.95, details = TRUE)
+rank_regression(x, ...)
+
+\method{rank_regression}{cdf_estimation}(
+  cdf_estimation,
+  distribution = c("weibull", "lognormal", "loglogistic", "normal", "logistic", "sev",
+    "weibull3", "lognormal3"),
+  conf_level = 0.95
+)
+
+\method{rank_regression}{default}(
+  x,
+  y,
+  event,
+  distribution = c("weibull", "lognormal", "loglogistic", "normal", "logistic", "sev",
+    "weibull3", "lognormal3", "loglogistic3"),
+  conf_level = 0.95
+)
 }
 \arguments{
-\item{x}{a numeric vector which consists of lifetime data. Lifetime
+\item{x}{A numeric vector which consists of lifetime data. Lifetime
 data could be every characteristic influencing the reliability of a product,
 e.g. operating time (days/months in service), mileage (km, miles), load
 cycles.}
 
-\item{y}{a numeric vector which consists of estimated failure probabilities
-regarding the lifetime data in \code{x}.}
-
-\item{event}{a vector of binary data (0 or 1) indicating whether unit \emph{i}
-is a right censored observation (= 0) or a failure (= 1).}
-
-\item{distribution}{supposed distribution of the random variable. The
+\item{distribution}{Supposed distribution of the random variable. The
 value can be \code{"weibull"}, \code{"lognormal"}, \code{"loglogistic"},
 \code{"normal"}, \code{"logistic"}, \code{"sev"} \emph{(smallest extreme value)},
 \code{"weibull3"}, \code{"lognormal3"} or \code{"loglogistic3"}.
 Other distributions have not been implemented yet.}
 
-\item{conf_level}{confidence level of the interval. The default value is
+\item{conf_level}{Confidence level of the interval. The default value is
 \code{conf_level = 0.95}.}
 
-\item{details}{a logical variable, where the default value is \code{TRUE}.
-If \code{FALSE} the output consists of a list that only contains the
-estimated parameters. If \code{TRUE} the output is a detailed list with
-many more information. See below (\strong{Value}).}
+\item{y}{A numeric vector which consists of estimated failure probabilities
+regarding the lifetime data in \code{x}.}
+
+\item{event}{A vector of binary data (0 or 1) indicating whether unit \emph{i}
+is a right censored observation (= 0) or a failure (= 1).}
+
+\item{data}{A tibble returned by \code{\link{estimate_cdf}}.}
 }
 \value{
-Returns a list with the following components (depending on
-  \code{details} argument):
+Returns a list with the following components:
   \itemize{
   \item \code{coefficients} : Provided, if \code{distribution} is \code{"weibull"}
     or \code{"weibull3"}. \eqn{\eta} is the estimated scale and \eqn{\beta}
@@ -46,13 +58,13 @@ Returns a list with the following components (depending on
   \item \code{confint} : Provided, if \code{distribution} is \code{"weibull"}
     or \code{"weibull3"}. Confidence intervals for \eqn{\eta} and \eqn{\beta}
     (and \eqn{\gamma} if the three-parametric weibull is used).
-  \item \code{loc_sc_coefficients} : Estimated location-scale parameters.
+  \item \code{loc_sc_params} : Estimated location-scale parameters.
     Threshold parameter is provided for \code{"weibull3"}, \code{"lognormal3"}
     and \code{"loglogistic3"}.
   \item \code{loc_sc_confint} : Confidence intervals for location-scale parameters.
     If distribution is \code{"lognormal3"} or \code{"loglogistic3"} a confidence
     interval for the threshold is not computed.
-  \item \code{loc_sc_vcov} : Provided, if \code{distribution} is not
+  \item \code{loc_sc_varcov} : Provided, if \code{distribution} is not
     \code{"weibull"} or \code{"weibull3"}. Estimated heteroscedasticity-consistent
     Variance-Covariance matrix of the used location-scale distribution.
   \item \code{r_squared} : Coefficient of determination.}
@@ -81,6 +93,16 @@ standard errors for the parameters using \emph{Least Squares} in context of
 \emph{Median Rank Regression}. For an accepted statistical method use MLE
 (\code{\link{ml_estimation}}).
 }
+\section{Methods (by class)}{
+\itemize{
+\item \code{cdf_estimation}: Perform the rank regression as part of the
+reliability pipeline. \code{\link{estimate_cdf}} returns a data frame of class
+\code{"cdf_estimation"}, which contains all information regarding x, y and
+event.
+
+\item \code{default}: Provide x, y and event manually.
+}}
+
 \examples{
 # Example 1: Fitting a two-parameter Weibull:
 obs   <- seq(10000, 100000, 10000)

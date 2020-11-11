@@ -5,8 +5,16 @@
 \alias{mixture_em_cpp}
 \title{EM-Algorithm using Newton-Raphson Method}
 \usage{
-mixture_em_cpp(x, event, post, distribution = "weibull", k = 2L,
-  method = "EM", n_iter = 100L, conv_limit = 1e-06)
+mixture_em_cpp(
+  x,
+  event,
+  post,
+  distribution = "weibull",
+  k = 2L,
+  method = "EM",
+  n_iter = 100L,
+  conv_limit = 1e-06
+)
 }
 \arguments{
 \item{x}{a numeric vector which consists of lifetime data. Lifetime

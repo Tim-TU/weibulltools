@@ -3,32 +3,33 @@
 \encoding{UTF-8}
 \name{confint_betabinom}
 \alias{confint_betabinom}
+\alias{confint_betabinom.parameter_estimation}
+\alias{confint_betabinom.default}
 \title{Beta Binomial Confidence Bounds for Quantiles and/or Probabilities}
 \usage{
-confint_betabinom(x, event, loc_sc_params, distribution = c("weibull",
-  "lognormal", "loglogistic", "normal", "logistic", "sev", "weibull3",
-  "lognormal3", "loglogistic3"), bounds = c("two_sided", "lower",
-  "upper"), conf_level = 0.95, direction = c("y", "x"))
+confint_betabinom(x, ...)
+
+\method{confint_betabinom}{parameter_estimation}(
+  parameter_estimation,
+  bounds = c("two_sided", "lower", "upper"),
+  conf_level = 0.95,
+  direction = c("y", "x")
+)
+
+\method{confint_betabinom}{default}(
+  x,
+  event,
+  loc_sc_params,
+  distribution = c("weibull", "lognormal", "loglogistic", "normal", "logistic", "sev",
+    "weibull3", "lognormal3", "loglogistic3"),
+  bounds = c("two_sided", "lower", "upper"),
+  conf_level = 0.95,
+  direction = c("y", "x")
+)
 }
 \arguments{
-\item{x}{a numeric vector which consists of lifetime data. \code{x} is used to
+\item{x}{A numeric vector which consists of lifetime data. \code{x} is used to
 specify the range of confidence region(s).}
-
-\item{event}{a vector of binary data (0 or 1) indicating whether unit \emph{i}
-is a right censored observation (= 0) or a failure (= 1).}
-
-\item{loc_sc_params}{a (named) numeric vector of estimated location
-and scale parameters for a specified distribution. The order of
-elements is important. First entry needs to be the location
-parameter \eqn{\mu} and the second element needs to be the scale
-parameter \eqn{\sigma}. If a three-parametric model is used the third element
-is the threshold parameter \eqn{\gamma}.}
-
-\item{distribution}{supposed distribution of the random variable. The
-value can be \code{"weibull"}, \code{"lognormal"}, \code{"loglogistic"},
-\code{"normal"}, \code{"logistic"}, \code{"sev"} \emph{(smallest extreme value)},
-\code{"weibull3"}, \code{"lognormal3"} or \code{"loglogistic3"}.
-Other distributions have not been implemented yet.}
 
 \item{bounds}{a character string specifying the interval(s) which has/have to
 be computed. Must be one of "two_sided" (default), "lower" or "upper".}
@@ -38,6 +39,22 @@ be computed. Must be one of "two_sided" (default), "lower" or "upper".}
 
 \item{direction}{a character string specifying the direction of the computed
 interval(s). Must be either "y" (failure probabilities) or "x" (quantiles).}
+
+\item{event}{A vector of binary data (0 or 1) indicating whether unit \emph{i}
+is a right censored observation (= 0) or a failure (= 1).}
+
+\item{loc_sc_params}{A (named) numeric vector of estimated location
+and scale parameters for a specified distribution. The order of
+elements is important. First entry needs to be the location
+parameter \eqn{\mu} and the second element needs to be the scale
+parameter \eqn{\sigma}. If a three-parametric model is used the third element
+is the threshold parameter \eqn{\gamma}.}
+
+\item{distribution}{Supposed distribution of the random variable. The
+value can be \code{"weibull"}, \code{"lognormal"}, \code{"loglogistic"},
+\code{"normal"}, \code{"logistic"}, \code{"sev"} \emph{(smallest extreme value)},
+\code{"weibull3"}, \code{"lognormal3"} or \code{"loglogistic3"}.
+Other distributions have not been implemented yet.}
 }
 \value{
 A data frame containing the lifetime characteristic, interpolated
@@ -50,6 +67,14 @@ failure probabilities using a procedure that is similar to that used in
 calculating median ranks. The location-scale (and threshold) parameters estimated
 by rank regression are needed.
 }
+\section{Methods (by class)}{
+\itemize{
+\item \code{parameter_estimation}: Based on parameter_estimation returned by
+\code{\link{rank_regression}}.
+
+\item \code{default}: Provide all arguments manually.
+}}
+
 \examples{
 # Example 1: Beta-Binomial Confidence Bounds for two-parameter Weibull:
 obs   <- seq(10000, 100000, 10000)

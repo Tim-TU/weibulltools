@@ -5,27 +5,32 @@
 \alias{mixmod_regression}
 \title{Mixture Model Identification using Segmented Regression}
 \usage{
-mixmod_regression(x, y, event, distribution = c("weibull", "lognormal",
-  "loglogistic"), conf_level = 0.95)
+mixmod_regression(
+  x,
+  y,
+  event,
+  distribution = c("weibull", "lognormal", "loglogistic"),
+  conf_level = 0.95
+)
 }
 \arguments{
-\item{x}{a numeric vector which consists of lifetime data. Lifetime
+\item{x}{A numeric vector which consists of lifetime data. Lifetime
 data could be every characteristic influencing the reliability of a
 product, e.g. operating time (days/months in service), mileage (km,
 miles), load cycles.}
 
-\item{y}{a numeric vector which consists of estimated failure
+\item{y}{A numeric vector which consists of estimated failure
 probabilities regarding the lifetime data in \code{x}.}
 
-\item{event}{a vector of binary data (0 or 1) indicating whether
+\item{event}{A vector of binary data (0 or 1) indicating whether
 unit \emph{i} is a right censored observation (= 0) or a
 failure (= 1).}
 
-\item{distribution}{supposed distribution of the random variable. The
+\item{distribution}{Supposed distribution of the random variable. The
 value can be \code{"weibull"}, \code{"lognormal"} or \code{"loglogistic"}.
 Other distributions have not been implemented yet.}
 
-\item{conf_level}{confidence level of the interval. The default value is
+\item{conf_level}{Confidence level of the interval. The default value is
 \code{conf_level = 0.95}.}
 }
 \value{

@@ -11,19 +11,19 @@
 #' @references Doganaksoy, N.; Hahn, G.; Meeker, W. Q., Reliability Analysis by
 #'   Failure Mode, Quality Progress, 35(6), 47-52, 2002
 #'
-#' @param x a numeric vector which consists of lifetime data. Lifetime
+#' @param x A numeric vector which consists of lifetime data. Lifetime
 #'   data could be every characteristic influencing the reliability of a
 #'   product, e.g. operating time (days/months in service), mileage (km,
 #'   miles), load cycles.
-#' @param y a numeric vector which consists of estimated failure
+#' @param y A numeric vector which consists of estimated failure
 #'   probabilities regarding the lifetime data in \code{x}.
-#' @param event a vector of binary data (0 or 1) indicating whether
+#' @param event A vector of binary data (0 or 1) indicating whether
 #'   unit \emph{i} is a right censored observation (= 0) or a
 #'   failure (= 1).
-#' @param distribution supposed distribution of the random variable. The
+#' @param distribution Supposed distribution of the random variable. The
 #'   value can be \code{"weibull"}, \code{"lognormal"} or \code{"loglogistic"}.
 #'   Other distributions have not been implemented yet.
-#' @param conf_level confidence level of the interval. The default value is
+#' @param conf_level Confidence level of the interval. The default value is
 #'   \code{conf_level = 0.95}.
 #'
 #' @return Returns a list where the length of the list depends on
@@ -221,28 +221,28 @@ mixmod_regression <- function(x, y, event,
 #'     \item Blog posts by Stefan Gelissen: \url{http://blogs2.datall-analyse.nl/2016/02/18/rcode_mixture_distribution_censored};
 #'       last access on 19th January 2019}
 #'
-#' @param x a numeric vector which consists of lifetime data. Lifetime
+#' @param x A numeric vector which consists of lifetime data. Lifetime
 #'  data could be every characteristic influencing the reliability of a product,
 #'  e.g. operating time (days/months in service), mileage (km, miles), load
 #'  cycles.
-#' @param event a vector of binary data (0 or 1) indicating whether unit \emph{i}
+#' @param event A vector of binary data (0 or 1) indicating whether unit \emph{i}
 #'   is a right censored observation (= 0) or a failure (= 1).
-#' @param post a numeric matrix specifiying initial a-posteriori probabilities.
+#' @param post A numeric matrix specifiying initial a-posteriori probabilities.
 #'   If post is \code{NULL} (default) a-posteriori probabilities are assigned
 #'   randomly using the Dirichlet distribution (\code{\link{rdirichlet}} from
 #'   \emph{LearnBayes} Package), which is the conjugate prior of a Multinomial
 #'   distribution. This idea was taken from the blog post of Mr. Gelissen
 #'   (linked under \emph{references}).
-#' @param distribution supposed mixture model. Only \code{"weibull"} can be used.
+#' @param distribution Supposed mixture model. Only \code{"weibull"} can be used.
 #'   Other distributions have not been implemented yet.
-#' @param conf_level confidence level for the confidence intervals of the parameters
+#' @param conf_level Confidence level for the confidence intervals of the parameters
 #'   of every component \code{k}. The default value is \code{conf_level = 0.95}.
-#' @param k integer of mixture components, default is 2.
-#' @param method default method is \code{"EM"}. Other methods have not been implemented
+#' @param k Integer of mixture components, default is 2.
+#' @param method Default method is \code{"EM"}. Other methods have not been implemented
 #'   yet.
-#' @param n_iter integer defining the maximum number of iterations.
-#' @param conv_limit numeric value defining the convergence limit.
-#' @param diff_loglik numeric value defining the maximum difference between
+#' @param n_iter Integer defining the maximum number of iterations.
+#' @param conv_limit Numeric value defining the convergence limit.
+#' @param diff_loglik Numeric value defining the maximum difference between
 #'   log-likelihood values, which seems permissible. The default value is \code{0.5}.
 #'   See \strong{Details} for the usage of this argument.
 #'

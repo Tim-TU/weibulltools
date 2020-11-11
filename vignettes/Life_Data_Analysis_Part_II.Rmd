@@ -203,7 +203,7 @@ weibull_grid <- plot_prob(x = df_shock$characteristic, y = df_shock$prob,
 library(plotly) # pipe operator
 # Add regression line: 
 weibull_plot <- weibull_grid %>% 
-  plot_mod(x = df_shock$characteristic, loc_sc_params = mrr_weibull$loc_sc_coefficients,
+  plot_mod(x = df_shock$characteristic, loc_sc_params = mrr_weibull$loc_sc_params,
                              distribution = "weibull",
                              title_trace = "Median Rank Regression")
 weibull_plot
@@ -237,7 +237,7 @@ ml_weibull
 # Add ML estimation to weibull_plot: 
 ## predict_prob to calculate CDF with ML-parameters:  
 ml_prob <- predict_prob(q = seq(6200, 30600, length.out = 100), 
-                        loc_sc_params = ml_weibull$loc_sc_coefficients, 
+                        loc_sc_params = ml_weibull$loc_sc_params, 
                         distribution = "weibull")
 
 weibull_both <- weibull_plot %>% 
@@ -302,7 +302,7 @@ lognormal_grid <- plot_prob(x = df_alloy$characteristic, y = df_alloy$prob,
 
 # Add three-parametric model to grid: 
 lognormal_plot <- lognormal_grid %>% 
-  plot_mod(x = df_alloy$characteristic, loc_sc_params = ml_lognormal3$loc_sc_coefficients,
+  plot_mod(x = df_alloy$characteristic, loc_sc_params = ml_lognormal3$loc_sc_params,
                              distribution = "lognormal3",
                              title_trace = "Three-parametric Log-normal")
 lognormal_plot
@@ -312,16 +312,16 @@ lognormal_plot
 # Add two-parametric model to lognormal_plot: 
 ## predict_prob to calculate CDF with ML-parameters:  
 ml_prob_lognormal <- predict_prob(q = seq(85, 325, length.out = 100),
-                        loc_sc_params = ml_lognormal$loc_sc_coefficients,
+                        loc_sc_params = ml_lognormal$loc_sc_params,
                         distribution = "lognormal")
 
 lognormal_both <- lognormal_plot %>%
   add_lines(x = seq(85, 325, length.out = 100), y = qnorm(ml_prob_lognormal),
             name = "Two-parametric Log-normal", color = I("#006400"), hoverinfo = "text",
             text = ~paste(paste("\u03BC<sub>ML</sub>", ":",
-                                round(ml_lognormal$loc_sc_coefficients[[1]], digits = 2)),
+                                round(ml_lognormal$loc_sc_params[[1]], digits = 2)),
                           "<br>", paste("\u03C3<sub>ML</sub>", ":",
-                                        round(ml_lognormal$loc_sc_coefficients[[2]], digits = 2))))
+                                        round(ml_lognormal$loc_sc_params[[2]], digits = 2))))
 lognormal_both
 ```
 <br> 
