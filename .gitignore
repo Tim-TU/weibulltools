@@ -3,3 +3,6 @@ inst/doc
 .Rproj.user
 .Rhistory
 .RData
+docs
+src-i386
+src-x64
