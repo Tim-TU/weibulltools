@@ -9,10 +9,10 @@
 * Added support for ggplot2 in all plot_xxx functions.
 * Added S3 interface to cdf estimation, parameter estimation and
   plotting (See Minor Changes for details).
+* Added function `reliability_data`: Combine x, y, event and id in a tibble.
 
 ## Minor Changes
 * Added trace type "scatter" and scatter mode "markers" to `plot_layout`.
-* Added function `reliability_data`: Combine x, y, event and id in a data.frame.
 * Added function `estimate_cdf`: Unite functionality of `mr_method`, `johnson_method`,
   `kaplan_method` and `nelson_method`.
 * Added `rank_regression.cdf_estimation`. `rank_regression` -> `rank_regression.default`

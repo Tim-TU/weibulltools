@@ -33,7 +33,7 @@ plot_layout_plotly <- function(
     tickcolor = "#a0a0a0",
     tickwidth = 1,
     tickfont = list(family = 'Arial', size = 10, color = "#a0a0a0"),
-    #tickmode = "array",
+    tickmode = "array",
     showticklabels = TRUE,
     zeroline = FALSE,
     showgrid = TRUE,
@@ -48,7 +48,7 @@ plot_layout_plotly <- function(
       x_config,
       list(
         tickvals = layout_helper$x_ticks,
-        ticktext = layout_helper$x_ticks
+        ticktext = layout_helper$x_labels
       )
     )
   }
