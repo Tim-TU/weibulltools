@@ -2,14 +2,8 @@ inst/doc
 /.Rproj.user/
 .Rproj.user
 .Rhistory
-<<<<<<< HEAD
 .RData
 docs
 src-i386
 src-x64
-=======
-docs
-src-i386
-src-x64
-.RData
->>>>>>> d33b389bad4620e38bda459bae07b1a1d3377ae5
+
