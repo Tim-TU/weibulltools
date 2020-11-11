@@ -8,7 +8,7 @@ Authors@R:
       role = c("aut", "cre")),
       person("Barkemeyer", "David",
       email = "david.barkemeyer@campus.tu-berlin.de",
-      role = c("aut", "cre"))
+      role = "aut")
     )
 Description: Contains methods for examining bench test or field data using the 
              well-known Weibull Analysis. It includes Monte Carlo simulation for 
