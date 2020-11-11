@@ -34,7 +34,6 @@
 #'                             title_main = "Normal Grid",
 #'                             title_x = "Time to Event",
 #'                             title_y = "Failure Probability in %")
-
 plot_layout <- function(
   x,
   distribution = c(
