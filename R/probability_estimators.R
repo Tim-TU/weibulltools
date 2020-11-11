@@ -36,6 +36,10 @@ estimate_cdf <- function(
   data, methods, options = list()
 ) {
 
+  if (!inherits(data, "reliability_data")) {
+    stop("data must be a tibble returned from reliability_data().")
+  }
+
   # Remove duplicates
   methods <- unique(methods)
 
@@ -131,6 +135,7 @@ mr_method <- function(x, event = rep(1, length(x)),
   }
 
   tbl_out <- tbl_in %>%
+    dplyr::arrange(x) %>%
     dplyr::mutate(
       rank = ifelse(
         status == 1,
@@ -206,6 +211,7 @@ johnson_method <- function(x, event, id = rep("XXXXXX", length(x))) {
     dplyr::mutate(prob = (rank - .3) / (sum(n_i) + .4))
 
   tbl_out <- tbl_in %>%
+    dplyr::arrange(x) %>%
     dplyr::mutate(
       rank = ifelse(
         status == 1,
@@ -314,6 +320,7 @@ kaplan_method <- function(x, event, id = rep("XXXXXX", length(x))) {
   }
 
   tbl_out <- tbl_in %>%
+    dplyr::arrange(x) %>%
     dplyr::mutate(
       rank = NA_real_,
       prob = ifelse(
@@ -386,6 +393,7 @@ nelson_method <- function(x, event, id = rep("XXXXXX", length(x))) {
   )
 
   tbl_out <- tbl_in %>%
+    dplyr::arrange(x) %>%
     dplyr::mutate(
       rank = NA_real_,
       prob = ifelse(
