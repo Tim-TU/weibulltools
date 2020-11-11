@@ -412,7 +412,7 @@ plot_conf_helper <- function(tbl_mod, x, y, direction, distribution) {
   return(tbl_p)
 }
 
-plot_pop_helper <- function(x, param_tbl, distribution) {
+plot_pop_helper <- function(x, param_tbl, distribution, tol = 1e-6) {
   x_min <- min(x, na.rm = TRUE)
   x_max <- max(x, na.rm = TRUE)
 
@@ -478,7 +478,8 @@ plot_pop_helper <- function(x, param_tbl, distribution) {
     )
 
   tbl_pop <- tbl_pop %>%
-    dplyr::mutate(group = paste0(param_label_1, " ", param_val_1, ", ", param_label_2, " ", param_val_2))
+    dplyr::mutate(group = paste0(param_label_1, " ", param_val_1, ", ", param_label_2, " ", param_val_2)) %>%
+    dplyr::filter(y_s <= 1 - tol, y_s >= tol)
 
   return(tbl_pop)
 }

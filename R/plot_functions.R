@@ -857,31 +857,18 @@ plot_conf.confint <- function(p_obj, confint, title_trace) {
 #'   \code{"weibull"} the first entry must be the scale parameter \eqn{\eta} and
 #'   the second entry must be the shape parameter \eqn{\beta}. Parametrization
 #'   is the same used in \code{\link{rweibull}}.
+#' @param tol The failure probability is restricted to the interval
+#'   \eqn{[tol, 1 - tol]}. The default value is in accordance with the decimal
+#'   places shown in the hover for \code{plot_method = "plotly"}.
 #' @param color The color of the population line should be added as follows:
 #'   For hexadecimal codes: \code{color = I("#3C8DBC")} and for a color specified
 #'   with a string: \code{color = I("blue")}.
 #' @inheritParams plot_prob
 #'
-#' @return A plotly object which contains the supposed linearized population
-#'   CDF. Failure probabilities must be strictly below 1 and for this very reason
-#'
-#' @export
-#'
-#' @examples
-#' x <- rweibull(n = 100, shape = 1, scale = 20000)
-#' grid_weibull <- plot_layout(x = x,
-#'                             distribution = "weibull",
-#'                             title_main = "Weibull Analysis",
-#'                             title_x = "Time to Failure",
-#'                             title_y = "Failure Probability")
-#' pop_weibull <- plot_pop(p_obj = grid_weibull,
-#'                         x = x, params = c(20000, 1),
-#'                         distribution = "weibull", color = I("green"),
-#'                         title_trace = "Population")
-#'
 plot_pop <- function(
   p_obj, x, params,
   distribution = c("weibull", "lognormal", "loglogistic"),
+  tol = 1e-6,
   color = I("#FF0000"),
   title_trace = "Population"
 ) {
@@ -902,7 +889,7 @@ plot_pop <- function(
 
   param_tbl <- tibble::tibble(param_1 = params[1], param_2 = params[2])
 
-  tbl_pop <- plot_pop_helper(x, param_tbl, distribution)
+  tbl_pop <- plot_pop_helper(x, param_tbl, distribution, tol)
 
   plot_pop_fun <- if (plot_method == "plotly") plot_pop_plotly else
     plot_pop_ggplot2
@@ -912,9 +899,9 @@ plot_pop <- function(
   )
 }
 
-#' Add Population Line to an Existing Grid
+#' Add Population Lines to an Existing Grid
 #'
-#' This function adds a linearized CDF to an existing plotly grid.
+#' This function adds one or multiple linearized CDF to an existing plotly grid.
 #'
 #' \code{param_tbl} must be a tibble with the following columns:
 #' \itemize{
@@ -924,39 +911,64 @@ plot_pop <- function(
 #'     \code{loglogistic}. Shape parameter \eqn{\beta} for \code{weibull}.
 #' }
 #'
+#' @param p_obj A plotly object, which at least includes the layout provided
+#'   by \code{\link{plot_layout}}.
 #' @param x A numeric vector containing the x-coordinates of the population line.
 #' @param param_tbl A tibble. See 'Details'.
-#' @param distribution Supposed distribution of the random variable
+#' @param tol The failure probability is restricted to the interval
+#'   \eqn{[tol, 1 - tol]}. The default value is in accordance with the decimal
+#'   places shown in the hover for \code{plot_method = "plotly"}.
+#' @inheritParams plot_prob
+#'
+#' @return A plotly object which contains the supposed linearized population
+#'   CDF. Failure probabilities must be strictly below 1 and for this very reason
+#'
+#'
+#' @examples
+#' x <- rweibull(n = 100, shape = 1, scale = 20000)
+#' grid_weibull <- plot_layout(x = x,
+#'                             distribution = "weibull",
+#'                             title_main = "Weibull Analysis",
+#'                             title_x = "Time to Failure",
+#'                             title_y = "Failure Probability")
+#' pop_weibull <- plot_pop(p_obj = grid_weibull,
+#'                         x = x, param_tbl = c(20000, 1),
+#'                         distribution = "weibull", color = I("green"),
+#'                         title_trace = "Population")
 #'
 #' @export
-plot_pop_2 <- function(
-  x, param_tbl,
+plot_pop <- function(
+  p_obj, x, param_tbl,
   distribution = c("weibull", "lognormal", "loglogistic"),
-  title_main = "Failure Analysis",
-  title_x = "Failure Characteristic",
-  title_y = "Failure Probability",
-  title_trace = "Population",
-  plot_method = c("plotly", "ggplot2")
+  tol = 1e-6,
+  title_trace = "Population"
 ) {
 
   distribution <- match.arg(distribution)
-  plot_method <- match.arg(plot_method)
 
-  p_obj <- plot_layout(
-    x = x,
-    distribution = distribution,
-    title_main = title_main,
-    title_x = title_x,
-    title_y = title_y,
-    plot_method = plot_method
-  )
+  # Plot method is determined by p_obj
+  plot_method <- if ("gg" %in% class(p_obj)) {
+    "ggplot2"
+  } else if ("plotly" %in% class(p_obj)) {
+    "plotly"
+  }  else {
+    stop(
+      "p_obj is not a valid plot object. Provide either a ggplot2 or a plotly
+      plot object."
+    )
+  }
 
-  tbl_pop <- plot_pop_helper(x, param_tbl, distribution)
+  # Support vector instead of tibble for ease of use in param_tbl
+  if (!inherits(param_tbl, "data.frame")) {
+    param_tbl <- tibble::tibble(param_1 = param_tbl[1], param_2 = param_tbl[2])
+  }
+
+  tbl_pop <- plot_pop_helper(x, param_tbl, distribution, tol)
 
   plot_pop_fun <- if (plot_method == "plotly") plot_pop_plotly else
     plot_pop_ggplot2
 
   plot_pop_fun(
-    p_obj, tbl_pop, NULL, title_trace
+    p_obj, tbl_pop, title_trace
   )
 }
