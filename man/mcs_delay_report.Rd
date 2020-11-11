@@ -4,8 +4,15 @@
 \alias{mcs_delay_report}
 \title{Adjustment of Operating Times by Delays in Report using a Monte Carlo Approach}
 \usage{
-mcs_delay_report(date_repair, date_report, x, event,
-  distribution = "lognormal", details = FALSE, seed = NULL)
+mcs_delay_report(
+  date_repair,
+  date_report,
+  x,
+  event,
+  distribution = "lognormal",
+  details = FALSE,
+  seed = NULL
+)
 }
 \arguments{
 \item{date_repair}{a vector of class \code{"character"} or \code{"Date"}, in the
@@ -16,22 +23,21 @@ If no date is available use \code{NA}.}
 format "yyyy-mm-dd", indicating the date of report of a failed unit.
 If no date is available use \code{NA}.}
 
-\item{x}{a numeric vector of operating times.}
+\item{x}{A numeric vector of operating times.}
 
-\item{event}{a vector of binary data (0 or 1) indicating whether unit \emph{i}
+\item{event}{A vector of binary data (0 or 1) indicating whether unit \emph{i}
 is a right censored observation (= 0) or a failure (= 1).}
 
-\item{distribution}{supposed distribution of the random variable. The default
+\item{distribution}{Supposed distribution of the random variable. The default
 value is \code{"lognormal"}. So far no other distribution is implemented.}
 
-\item{details}{a logical variable, where the default value is \code{FALSE}.
-If \code{FALSE} the output consists of a vector with corrected operating
-times for the censored units and the input operating times for the
-failed units. If \code{TRUE} the output consists of a detailed list, i.e
-the same vector as described before, simulated random numbers, estimated
-distribution parameters and a seed for reproducibility.}
+\item{details}{A logical. If \code{FALSE} the output consists of a vector with
+corrected operating times for the censored units and the input operating
+times for the failed units. If \code{TRUE} the output consists of a detailed
+list, i.e the same vector as described before, simulated random numbers,
+estimated distribution parameters and a seed for reproducibility.}
 
-\item{seed}{if \code{seed = NULL} a random seed is used. Otherwise the user
+\item{seed}{If \code{seed = NULL} a random seed is used. Otherwise the user
 can specify an integer for the seed.}
 }
 \value{

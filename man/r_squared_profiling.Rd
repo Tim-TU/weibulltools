@@ -5,21 +5,25 @@
 \alias{r_squared_profiling}
 \title{\eqn{R²}-Profile Function for Log-Location-Scale Distributions with Threshold}
 \usage{
-r_squared_profiling(x, y, thres, distribution = c("weibull3",
-  "lognormal3", "loglogistic3"))
+r_squared_profiling(
+  x,
+  y,
+  thres,
+  distribution = c("weibull3", "lognormal3", "loglogistic3")
+)
 }
 \arguments{
-\item{x}{a numeric vector which consists of lifetime data. Lifetime
+\item{x}{A numeric vector which consists of lifetime data. Lifetime
 data could be every characteristic influencing the reliability of a product,
 e.g. operating time (days/months in service), mileage (km, miles), load
 cycles.}
 
-\item{y}{a numeric vector which consists of estimated failure probabilities
+\item{y}{A numeric vector which consists of estimated failure probabilities
 regarding the lifetime data in \code{x}.}
 
-\item{thres}{a numeric value of the threshold parameter.}
+\item{thres}{A numeric value of the threshold parameter.}
 
-\item{distribution}{supposed distribution of the random variable. The
+\item{distribution}{Supposed distribution of the random variable. The
 value can be \code{"weibull3"}, \code{"lognormal3"} or \code{"loglogistic3"}.}
 }
 \value{

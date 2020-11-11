@@ -1,10 +1,15 @@
 Package: weibulltools
 Type: Package
 Title: Statistical Methods for Life Data Analysis 
-Version: 1.1.0
-Authors@R: person("Hensel", "Tim-Gunnar", 
-           email = "tim-gunnar.hensel@tu-berlin.de", 
-           role = c("aut", "cre")) 
+Version: 1.0.1.9000
+Authors@R:
+    c(person("Hensel", "Tim-Gunnar", 
+      email = "tim-gunnar.hensel@tu-berlin.de", 
+      role = c("aut", "cre")),
+      person("Barkemeyer", "David",
+      email = "david.barkemeyer@campus.tu-berlin.de",
+      role = "aut")
+    )
 Description: Contains methods for examining bench test or field data using the 
              well-known Weibull Analysis. It includes Monte Carlo simulation for 
              estimating the life span of products that have not failed, taking 
@@ -37,21 +42,26 @@ Description: Contains methods for examining bench test or field data using the
 License: GPL-2
 Imports:
     dplyr, 
+    ggplot2,
     LearnBayes,
     magrittr, 
     plotly, 
+    purrr,
     Rcpp,
     sandwich,
     segmented, 
     SPREDA, 
-    survival
-LinkingTo:  Rcpp (>= 0.12.18), RcppArmadillo
+    survival,
+    tibble,
+    tidyr
+LinkingTo: Rcpp (>= 0.12.18), RcppArmadillo
 Depends: R (>= 3.3.0)
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 6.1.1
-Suggests: ggplot2, 
-  knitr, 
-  rmarkdown, 
-  tidyverse
+RoxygenNote: 7.1.1
+Suggests:
+    knitr,
+    rmarkdown,
+    testthat
 VignetteBuilder: knitr
+Config/testthat/edition: 3

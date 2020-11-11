@@ -5,49 +5,47 @@
 \alias{ml_estimation}
 \title{ML Estimation for Parametric Lifetime Distributions}
 \usage{
-ml_estimation(x, event, distribution = c("weibull", "lognormal",
-  "loglogistic", "normal", "logistic", "sev", "weibull3", "lognormal3",
-  "loglogistic3"), wts = rep(1, length(x)), conf_level = 0.95,
-  details = TRUE)
+ml_estimation(
+  x,
+  event,
+  distribution = c("weibull", "lognormal", "loglogistic", "normal", "logistic", "sev",
+    "weibull3", "lognormal3", "loglogistic3"),
+  wts = rep(1, length(x)),
+  conf_level = 0.95
+)
 }
 \arguments{
-\item{x}{a numeric vector which consists of lifetime data. Lifetime
+\item{x}{A numeric vector which consists of lifetime data. Lifetime
 data could be every characteristic influencing the reliability of a product,
 e.g. operating time (days/months in service), mileage (km, miles), load
 cycles.}
 
-\item{event}{a vector of binary data (0 or 1) indicating whether unit \emph{i}
+\item{event}{A vector of binary data (0 or 1) indicating whether unit \emph{i}
 is a right censored observation (= 0) or a failure (= 1).}
 
-\item{distribution}{supposed distribution of the random variable. The
+\item{distribution}{Supposed distribution of the random variable. The
 value can be \code{"weibull"}, \code{"lognormal"}, \code{"loglogistic"},
 \code{"normal"}, \code{"logistic"}, \code{"sev"} \emph{(smallest extreme value)},
 \code{"weibull3"}, \code{"lognormal3"} or \code{"loglogistic3"}.
 Other distributions have not been implemented yet.}
 
-\item{wts}{optional vector of case weights. The length of \code{wts} must be the
+\item{wts}{Optional vector of case weights. The length of \code{wts} must be the
 same as the number of observations \code{x}. Default is that \code{wts} is a
 vector with all components being 1 (same weights).}
 
-\item{conf_level}{confidence level of the interval. The default value is
+\item{conf_level}{Confidence level of the interval. The default value is
 \code{conf_level = 0.95}.}
-
-\item{details}{a logical variable, where the default value is \code{TRUE}.
-If \code{FALSE} the output consists of a list that only contains the
-estimated parameters. If \code{TRUE} the output is a detailed list with
-many more information. See below (\strong{Value}).}
 }
 \value{
-Returns a list with the following components (depending on
-\code{details} argument):
+Returns a list with the following components:
   \itemize{
   \item \code{coefficients} : Provided, if \code{distribution} is \code{"weibull"}.
     \eqn{\eta} is the estimated scale and \eqn{\beta} the estimated shape parameter.
   \item \code{confint} : Provided, if \code{distribution} is \code{"weibull"}.
     Confidence interval for \eqn{\eta} and \eqn{\beta}.
-  \item \code{loc_sc_coefficients} : Estimated location-scale parameters.
+  \item \code{loc_sc_params} : Estimated location-scale parameters.
   \item \code{loc_sc_confint} : Confidence interval for location-scale parameters.
-  \item \code{loc_sc_vcov} : Estimated Variance-Covariance matrix of the used
+  \item \code{loc_sc_varcov} : Estimated Variance-Covariance matrix of the used
     location-scale distribution.
   \item \code{logL} : The log-likelihood value.
   \item \code{aic} : Akaike Information Criterion.

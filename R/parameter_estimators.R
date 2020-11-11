@@ -30,28 +30,24 @@
 #'     \item Meeker, William Q; Escobar, Luis A., Statistical methods for
 #'   reliability data, New York: Wiley series in probability and statistics, 1998}
 #'
-#' @param x a numeric vector which consists of lifetime data. Lifetime
+#' @param x A numeric vector which consists of lifetime data. Lifetime
 #'   data could be every characteristic influencing the reliability of a product,
 #'   e.g. operating time (days/months in service), mileage (km, miles), load
 #'   cycles.
-#' @param y a numeric vector which consists of estimated failure probabilities
+#' @param y A numeric vector which consists of estimated failure probabilities
 #'   regarding the lifetime data in \code{x}.
-#' @param event a vector of binary data (0 or 1) indicating whether unit \emph{i}
+#' @param event A vector of binary data (0 or 1) indicating whether unit \emph{i}
 #'   is a right censored observation (= 0) or a failure (= 1).
-#' @param distribution supposed distribution of the random variable. The
+#' @param distribution Supposed distribution of the random variable. The
 #'   value can be \code{"weibull"}, \code{"lognormal"}, \code{"loglogistic"},
 #'   \code{"normal"}, \code{"logistic"}, \code{"sev"} \emph{(smallest extreme value)},
 #'   \code{"weibull3"}, \code{"lognormal3"} or \code{"loglogistic3"}.
 #'   Other distributions have not been implemented yet.
-#' @param conf_level confidence level of the interval. The default value is
+#' @param conf_level Confidence level of the interval. The default value is
 #'   \code{conf_level = 0.95}.
-#' @param details a logical variable, where the default value is \code{TRUE}.
-#'   If \code{FALSE} the output consists of a list that only contains the
-#'   estimated parameters. If \code{TRUE} the output is a detailed list with
-#'   many more information. See below (\strong{Value}).
+#' @param data A tibble returned by \code{\link{estimate_cdf}}.
 #'
-#' @return Returns a list with the following components (depending on
-#'   \code{details} argument):
+#' @return Returns a list with the following components:
 #'   \itemize{
 #'   \item \code{coefficients} : Provided, if \code{distribution} is \code{"weibull"}
 #'     or \code{"weibull3"}. \eqn{\eta} is the estimated scale and \eqn{\beta}
@@ -60,17 +56,16 @@
 #'   \item \code{confint} : Provided, if \code{distribution} is \code{"weibull"}
 #'     or \code{"weibull3"}. Confidence intervals for \eqn{\eta} and \eqn{\beta}
 #'     (and \eqn{\gamma} if the three-parametric weibull is used).
-#'   \item \code{loc_sc_coefficients} : Estimated location-scale parameters.
+#'   \item \code{loc_sc_params} : Estimated location-scale parameters.
 #'     Threshold parameter is provided for \code{"weibull3"}, \code{"lognormal3"}
 #'     and \code{"loglogistic3"}.
 #'   \item \code{loc_sc_confint} : Confidence intervals for location-scale parameters.
 #'     If distribution is \code{"lognormal3"} or \code{"loglogistic3"} a confidence
 #'     interval for the threshold is not computed.
-#'   \item \code{loc_sc_vcov} : Provided, if \code{distribution} is not
+#'   \item \code{loc_sc_varcov} : Provided, if \code{distribution} is not
 #'     \code{"weibull"} or \code{"weibull3"}. Estimated heteroscedasticity-consistent
 #'     Variance-Covariance matrix of the used location-scale distribution.
 #'   \item \code{r_squared} : Coefficient of determination.}
-#' @export
 #'
 #' @examples
 #' # Example 1: Fitting a two-parameter Weibull:
@@ -100,20 +95,45 @@
 #'                        event = df_john$status,
 #'                        distribution = "weibull3",
 #'                        conf_level = .90)
+#' @export
+rank_regression <- function(x, ...) {
+  UseMethod("rank_regression", x)
+}
 
-rank_regression <- function(x, y, event,
-                            distribution = c("weibull", "lognormal", "loglogistic",
-                                             "normal", "logistic", "sev", "weibull3",
-                                             "lognormal3", "loglogistic3"),
-                            conf_level = .95, details = TRUE) {
+#' @export
+#' @describeIn rank_regression Perform the rank regression as part of the
+#' reliability pipeline. \code{\link{estimate_cdf}} returns a data frame of class
+#' \code{"cdf_estimation"}, which contains all information regarding x, y and
+#' event.
+rank_regression.cdf_estimation <- function(
+  cdf_estimation,
+  distribution = c("weibull", "lognormal", "loglogistic", "normal", "logistic",
+                   "sev", "weibull3", "lognormal3"),
+  conf_level = 0.95
+) {
+  rank_regression.default(
+    x = cdf_estimation$characteristic,
+    y = cdf_estimation$prob,
+    event = cdf_estimation$status,
+    distribution = match.arg(distribution),
+    conf_level = conf_level
+  )
+}
+
+#' @export
+#' @describeIn rank_regression Provide x, y and event manually.
+rank_regression.default <- function(
+  x,
+  y,
+  event,
+  distribution = c(
+    "weibull", "lognormal", "loglogistic", "normal", "logistic", "sev",
+    "weibull3", "lognormal3", "loglogistic3"
+  ),
+  conf_level = .95
+) {
 
   distribution <- match.arg(distribution)
-
-  if (!(distribution %in% c("weibull", "lognormal", "loglogistic", "normal",
-                            "logistic", "sev", "weibull3", "lognormal3",
-                            "loglogistic3"))) {
-    stop("No valid distribution!")
-  }
 
   # In terms of MRR only failed items can be used:
   x_f <- x[event == 1]
@@ -163,15 +183,10 @@ rank_regression <- function(x, y, event,
 
     r_sq <- summary(mrr)$r.squared
 
-    if (details == TRUE) {
-      mrr_output <- list(coefficients = estimates, confint = conf_ints,
-                         loc_sc_coefficients = estimates_loc_sc,
-                         loc_sc_confint = conf_ints_loc_sc,
-                         r_squared = r_sq)
-    } else {
-      mrr_output <- list(coefficients = estimates,
-        loc_sc_coefficients = estimates_loc_sc)
-    }
+    mrr_output <- list(coefficients = estimates, confint = conf_ints,
+                       loc_sc_params = estimates_loc_sc,
+                       loc_sc_confint = conf_ints_loc_sc,
+                       r_squared = r_sq)
   }
   if (distribution == "weibull3" | distribution == "lognormal3" | distribution == "loglogistic3") {
     # Log-Location-Scale with threshold:
@@ -239,15 +254,10 @@ rank_regression <- function(x, y, event,
 
       r_sq <- summary(mrr)$r.squared
 
-      if (details == TRUE) {
-        mrr_output <- list(coefficients = estimates, confint = conf_ints,
-          loc_sc_coefficients = estimates_loc_sc,
-          loc_sc_confint = conf_ints_loc_sc,
-          r_squared = r_sq)
-      } else {
-        mrr_output <- list(coefficients = estimates,
-          loc_sc_coefficients = estimates_loc_sc)
-      }
+      mrr_output <- list(coefficients = estimates, confint = conf_ints,
+                         loc_sc_params = estimates_loc_sc,
+                         loc_sc_confint = conf_ints_loc_sc,
+                         r_squared = r_sq)
 
     } else if (distribution == "lognormal3" | distribution == "loglogistic3") {
 
@@ -290,15 +300,10 @@ rank_regression <- function(x, y, event,
 
       r_sq <- summary(mrr)$r.squared
 
-      if (details == TRUE) {
-        mrr_output <- list(loc_sc_coefficients = estimates_loc_sc,
-          loc_sc_confint = conf_ints_loc_sc,
-          loc_sc_vcov = vcov_loc_sc,
-          r_squared = r_sq)
-      } else {
-        mrr_output <- list(loc_sc_coefficients = estimates_loc_sc)
-      }
-
+      mrr_output <- list(loc_sc_params = estimates_loc_sc,
+                         loc_sc_confint = conf_ints_loc_sc,
+                         loc_sc_varcov = vcov_loc_sc,
+                         r_squared = r_sq)
     }
   }
 
@@ -351,15 +356,19 @@ rank_regression <- function(x, y, event,
 
     r_sq <- summary(mrr)$r.squared
 
-    if (details == TRUE) {
-      mrr_output <- list(loc_sc_coefficients = estimates_loc_sc,
-                         loc_sc_confint = conf_ints_loc_sc,
-                         loc_sc_vcov = vcov_loc_sc,
-                         r_squared = r_sq)
-    } else {
-      mrr_output <- list(loc_sc_coefficients = estimates_loc_sc)
-    }
+    mrr_output <- list(loc_sc_params = estimates_loc_sc,
+                       loc_sc_confint = conf_ints_loc_sc,
+                       loc_sc_varcov = vcov_loc_sc,
+                       r_squared = r_sq)
   }
+
+  class(mrr_output) <- c("parameter_estimation", class(mrr_output))
+
+  attr(mrr_output, "data") <- tibble::tibble(
+    x = x, event = event
+  )
+  attr(mrr_output, "distribution") <- distribution
+
   return(mrr_output)
 }
 
@@ -374,14 +383,14 @@ rank_regression <- function(x, y, event,
 #' @references Meeker, William Q; Escobar, Luis A., Statistical methods for
 #'   reliability data, New York: Wiley series in probability and statistics, 1998
 #'
-#' @param x a numeric vector which consists of lifetime data. Lifetime
+#' @param x A numeric vector which consists of lifetime data. Lifetime
 #'   data could be every characteristic influencing the reliability of a product,
 #'   e.g. operating time (days/months in service), mileage (km, miles), load
 #'   cycles.
-#' @param y a numeric vector which consists of estimated failure probabilities
+#' @param y A numeric vector which consists of estimated failure probabilities
 #'   regarding the lifetime data in \code{x}.
-#' @param thres a numeric value of the threshold parameter.
-#' @param distribution supposed distribution of the random variable. The
+#' @param thres A numeric value of the threshold parameter.
+#' @param distribution Supposed distribution of the random variable. The
 #'   value can be \code{"weibull3"}, \code{"lognormal3"} or \code{"loglogistic3"}.
 #' @return Returns the coefficient of determination for a specified threshold value.
 #' @export
@@ -453,38 +462,33 @@ r_squared_profiling <- function(x, y, thres, distribution = c("weibull3", "logno
 #' @references Meeker, William Q; Escobar, Luis A., Statistical methods for
 #'   reliability data, New York: Wiley series in probability and statistics, 1998
 #'
-#' @param x a numeric vector which consists of lifetime data. Lifetime
+#' @param x A numeric vector which consists of lifetime data. Lifetime
 #'   data could be every characteristic influencing the reliability of a product,
 #'   e.g. operating time (days/months in service), mileage (km, miles), load
 #'   cycles.
-#' @param event a vector of binary data (0 or 1) indicating whether unit \emph{i}
+#' @param event A vector of binary data (0 or 1) indicating whether unit \emph{i}
 #'   is a right censored observation (= 0) or a failure (= 1).
-#' @param distribution supposed distribution of the random variable. The
+#' @param distribution Supposed distribution of the random variable. The
 #'   value can be \code{"weibull"}, \code{"lognormal"}, \code{"loglogistic"},
 #'   \code{"normal"}, \code{"logistic"}, \code{"sev"} \emph{(smallest extreme value)},
 #'   \code{"weibull3"}, \code{"lognormal3"} or \code{"loglogistic3"}.
 #'   Other distributions have not been implemented yet.
-#' @param wts optional vector of case weights. The length of \code{wts} must be the
+#' @param wts Optional vector of case weights. The length of \code{wts} must be the
 #'   same as the number of observations \code{x}. Default is that \code{wts} is a
 #'   vector with all components being 1 (same weights).
-#' @param conf_level confidence level of the interval. The default value is
+#' @param conf_level Confidence level of the interval. The default value is
 #'   \code{conf_level = 0.95}.
-#' @param details a logical variable, where the default value is \code{TRUE}.
-#'   If \code{FALSE} the output consists of a list that only contains the
-#'   estimated parameters. If \code{TRUE} the output is a detailed list with
-#'   many more information. See below (\strong{Value}).
 #'
 #'
-#' @return Returns a list with the following components (depending on
-#' \code{details} argument):
+#' @return Returns a list with the following components:
 #'   \itemize{
 #'   \item \code{coefficients} : Provided, if \code{distribution} is \code{"weibull"}.
 #'     \eqn{\eta} is the estimated scale and \eqn{\beta} the estimated shape parameter.
 #'   \item \code{confint} : Provided, if \code{distribution} is \code{"weibull"}.
 #'     Confidence interval for \eqn{\eta} and \eqn{\beta}.
-#'   \item \code{loc_sc_coefficients} : Estimated location-scale parameters.
+#'   \item \code{loc_sc_params} : Estimated location-scale parameters.
 #'   \item \code{loc_sc_confint} : Confidence interval for location-scale parameters.
-#'   \item \code{loc_sc_vcov} : Estimated Variance-Covariance matrix of the used
+#'   \item \code{loc_sc_varcov} : Estimated Variance-Covariance matrix of the used
 #'     location-scale distribution.
 #'   \item \code{logL} : The log-likelihood value.
 #'   \item \code{aic} : Akaike Information Criterion.
@@ -512,20 +516,16 @@ r_squared_profiling <- function(x, y, thres, distribution = c("weibull3", "logno
 #' mle_weib3 <- ml_estimation(x = cycles, event = state,
 #'                            distribution = "weibull3", conf_level = 0.95)
 #'
-ml_estimation <- function(x, event,
-                          distribution = c("weibull", "lognormal", "loglogistic",
-                                           "normal", "logistic", "sev", "weibull3",
-                                           "lognormal3", "loglogistic3"),
-                          wts = rep(1, length(x)),
-                          conf_level = .95, details = TRUE) {
+ml_estimation <- function(
+  x, event,
+  distribution = c(
+    "weibull", "lognormal", "loglogistic", "normal", "logistic", "sev",
+    "weibull3", "lognormal3", "loglogistic3"),
+  wts = rep(1, length(x)),
+  conf_level = .95
+) {
 
   distribution <- match.arg(distribution)
-
-  if (!(distribution %in% c("weibull", "lognormal", "loglogistic", "normal",
-                            "logistic", "sev", "weibull3", "lognormal3",
-                            "loglogistic3"))) {
-    stop("No valid distribution!")
-  }
 
   # Log-Location-Scale Models:
   if (distribution == "weibull" | distribution == "lognormal" | distribution == "loglogistic") {
@@ -567,31 +567,23 @@ ml_estimation <- function(x, event,
         ncol = 2)
       colnames(conf_ints) <- colnames(conf_ints_loc_sc)
       rownames(conf_ints) <- names(estimates)
-      if (details == TRUE) {
-        ml_output <- list(coefficients = estimates, confint = conf_ints,
-          loc_sc_coefficients = estimates_loc_sc,
-          loc_sc_confint = conf_ints_loc_sc,
-          loc_sc_vcov = vcov_loc_sc, logL = -ml$min,
-          aic = -2 * (-ml$min) + 2 * length(estimates_loc_sc),
-          bic = (-2 * (-ml$min) +
-                log(length(x)) * length(estimates_loc_sc))
-        )
-      } else {
-        ml_output <- list(coefficients = estimates,
-          loc_sc_coefficients = estimates_loc_sc)
-      }
+
+      ml_output <- list(coefficients = estimates, confint = conf_ints,
+                        loc_sc_params = estimates_loc_sc,
+                        loc_sc_confint = conf_ints_loc_sc,
+                        loc_sc_varcov = vcov_loc_sc, logL = -ml$min,
+                        aic = -2 * (-ml$min) + 2 * length(estimates_loc_sc),
+                        bic = (-2 * (-ml$min) +
+                                 log(length(x)) * length(estimates_loc_sc))
+      )
     } else {
-      if (details == TRUE) {
-        ml_output <- list(loc_sc_coefficients = estimates_loc_sc,
-          loc_sc_confint = conf_ints_loc_sc,
-          loc_sc_vcov = vcov_loc_sc, logL = -ml$min,
-          aic = -2 * (-ml$min) + 2 * length(estimates_loc_sc),
-          bic = (-2 * (-ml$min) +
-            log(length(x)) * length(estimates_loc_sc))
-        )
-      } else {
-        ml_output <- list(loc_sc_coefficients = estimates_loc_sc)
-      }
+      ml_output <- list(loc_sc_params = estimates_loc_sc,
+                        loc_sc_confint = conf_ints_loc_sc,
+                        loc_sc_varcov = vcov_loc_sc, logL = -ml$min,
+                        aic = -2 * (-ml$min) + 2 * length(estimates_loc_sc),
+                        bic = (-2 * (-ml$min) +
+                                 log(length(x)) * length(estimates_loc_sc))
+      )
     }
   }
 
@@ -677,32 +669,23 @@ ml_estimation <- function(x, event,
       colnames(conf_ints) <- colnames(conf_ints_loc_sc)
       rownames(conf_ints) <- names(estimates)
 
-      if (details == TRUE) {
-        ml_output <- list(coefficients = estimates, confint = conf_ints,
-          loc_sc_coefficients = estimates_loc_sc,
-          loc_sc_confint = conf_ints_loc_sc,
-          loc_sc_vcov = vcov_loc_sc, logL = ml$value,
-          aic = -2 * (ml$value) + 2 * length(estimates_loc_sc),
-          bic = (-2 * (ml$value) +
-              log(length(x)) * length(estimates_loc_sc))
-        )
-      } else {
-        ml_output <- list(coefficients = estimates,
-          loc_sc_coefficients = estimates_loc_sc)
-      }
+      ml_output <- list(coefficients = estimates, confint = conf_ints,
+                        loc_sc_params = estimates_loc_sc,
+                        loc_sc_confint = conf_ints_loc_sc,
+                        loc_sc_varcov = vcov_loc_sc, logL = ml$value,
+                        aic = -2 * (ml$value) + 2 * length(estimates_loc_sc),
+                        bic = (-2 * (ml$value) +
+                                 log(length(x)) * length(estimates_loc_sc))
+      )
 
     } else {
-      if (details == TRUE) {
-        ml_output <- list(loc_sc_coefficients = estimates_loc_sc,
-          loc_sc_confint = conf_ints_loc_sc,
-          loc_sc_vcov = vcov_loc_sc, logL = ml$value,
-          aic = -2 * (ml$value) + 2 * length(estimates_loc_sc),
-          bic = (-2 * (ml$value) +
-              log(length(x)) * length(estimates_loc_sc))
-        )
-      } else {
-        ml_output <- list(loc_sc_coefficients = estimates_loc_sc)
-      }
+      ml_output <- list(loc_sc_params = estimates_loc_sc,
+                        loc_sc_confint = conf_ints_loc_sc,
+                        loc_sc_varcov = vcov_loc_sc, logL = ml$value,
+                        aic = -2 * (ml$value) + 2 * length(estimates_loc_sc),
+                        bic = (-2 * (ml$value) +
+                                 log(length(x)) * length(estimates_loc_sc))
+      )
     }
   }
   # Location-Scale Models:
@@ -763,18 +746,22 @@ ml_estimation <- function(x, event,
       paste(((1 + conf_level) / 2) * 100, "%"))
     rownames(conf_ints_loc_sc) <- names(estimates_loc_sc)
 
-    if (details == TRUE) {
-      ml_output <- list(loc_sc_coefficients = estimates_loc_sc,
-        loc_sc_confint = conf_ints_loc_sc,
-        loc_sc_vcov = vcov_loc_sc, logL = ml$value,
-        aic = -2 * (ml$value) + 2 * length(estimates_loc_sc),
-        bic = (-2 * (ml$value) +
-            log(length(x)) * length(estimates_loc_sc))
-      )
-    } else {
-      ml_output <- list(loc_sc_coefficients = estimates_loc_sc)
-    }
+    ml_output <- list(loc_sc_params = estimates_loc_sc,
+                      loc_sc_confint = conf_ints_loc_sc,
+                      loc_sc_varcov = vcov_loc_sc, logL = ml$value,
+                      aic = -2 * (ml$value) + 2 * length(estimates_loc_sc),
+                      bic = (-2 * (ml$value) +
+                               log(length(x)) * length(estimates_loc_sc))
+    )
   }
+
+  class(ml_output) <- c("parameter_estimation", class(ml_output))
+
+  attr(ml_output, "data") <- tibble::tibble(
+    x = x, event = event
+  )
+  attr(ml_output, "distribution") <- distribution
+
   return(ml_output)
 }
 
@@ -789,14 +776,14 @@ ml_estimation <- function(x, event,
 #' @references Meeker, William Q; Escobar, Luis A., Statistical methods for
 #'   reliability data, New York: Wiley series in probability and statistics, 1998
 #'
-#' @param x a numeric vector which consists of lifetime data. Lifetime
+#' @param x A numeric vector which consists of lifetime data. Lifetime
 #'   data could be every characteristic influencing the reliability of a product,
 #'   e.g. operating time (days/months in service), mileage (km, miles), load
 #'   cycles.
-#' @param event a vector of binary data (0 or 1) indicating whether unit \emph{i}
+#' @param event A vector of binary data (0 or 1) indicating whether unit \emph{i}
 #'   is a right censored observation (= 0) or a failure (= 1).
-#' @param thres a numeric value of the threshold parameter.
-#' @param distribution supposed distribution of the random variable. The
+#' @param thres A numeric value of the threshold parameter.
+#' @param distribution Supposed distribution of the random variable. The
 #'   value can be \code{"weibull3"}, \code{"lognormal3"} or \code{"loglogistic3"}.
 #' @return Returns the log-likelihood value for a specified threshold value.
 #' @export
@@ -824,16 +811,16 @@ ml_estimation <- function(x, event,
 #' # plot:
 #' # plot(threshold, profile_logL, type = "l")
 #' # abline(v = threshold[which.max(profile_logL)], h = max(profile_logL), col = "red")
-
-loglik_profiling <- function(x, event, thres, distribution = c("weibull3",
-                                                               "lognormal3",
-                                                               "loglogistic3")) {
+loglik_profiling <- function(
+  x,
+  event,
+  thres,
+  distribution = c(
+    "weibull3", "lognormal3", "loglogistic3"
+  )
+) {
 
   distribution <- match.arg(distribution)
-
-  if (!(distribution %in% c("weibull3", "lognormal3", "loglogistic3"))) {
-    stop("No valid distribution!")
-  }
 
   # Subtracting value of threshold, i.e. influence of threshold is eliminated:
   x_thres <- x - thres
@@ -857,20 +844,20 @@ loglik_profiling <- function(x, event, thres, distribution = c("weibull3",
 #' @references Meeker, William Q; Escobar, Luis A., Statistical methods for
 #'   reliability data, New York: Wiley series in probability and statistics, 1998
 #'
-#' @param x a numeric vector which consists of lifetime data. Lifetime
+#' @param x A numeric vector which consists of lifetime data. Lifetime
 #'   data could be every characteristic influencing the reliability of a product,
 #'   e.g. operating time (days/months in service), mileage (km, miles), load
 #'   cycles.
-#' @param event a vector of binary data (0 or 1) indicating whether unit \emph{i}
+#' @param event A vector of binary data (0 or 1) indicating whether unit \emph{i}
 #'   is a right censored observation (= 0) or a failure (= 1).
-#' @param wts optional vector of case weights. The length of \code{wts} must be the
+#' @param wts Optional vector of case weights. The length of \code{wts} must be the
 #'   same as the number of observations \code{x}. Default is that \code{wts} is a
 #'   vector with all components being 1 (same weights).
-#' @param pars a numeric vector of parameters. The first element is the location
+#' @param pars A numeric vector of parameters. The first element is the location
 #'   parameter (\eqn{\mu}), the second is the scale parameter (\eqn{\sigma}) and if
 #'   a three-parametric model is used the third element is the threshold parameter
 #'   (\eqn{\gamma}).
-#' @param distribution supposed distribution of the random variable. The
+#' @param distribution Supposed distribution of the random variable. The
 #'   value can be \code{"weibull"}, \code{"lognormal"}, \code{"loglogistic"},
 #'   \code{"normal"}, \code{"logistic"}, \code{"sev"} \emph{(smallest extreme value)},
 #'   \code{"weibull3"}, \code{"lognormal3"} or \code{"loglogistic3"}.
@@ -896,18 +883,18 @@ loglik_profiling <- function(x, event, thres, distribution = c("weibull3",
 #'                                 pars = c(4.54, 0.76, 92.99),
 #'                                 distribution = "weibull3")
 
-loglik_function <- function(x, event, wts = rep(1, length(x)), pars,
-                            distribution = c("weibull", "lognormal", "loglogistic",
-                                             "normal", "logistic", "sev", "weibull3",
-                                             "lognormal3", "loglogistic3")) {
+loglik_function <- function(
+  x,
+  event,
+  wts = rep(1, length(x)),
+  pars,
+  distribution = c(
+    "weibull", "lognormal", "loglogistic", "normal", "logistic", "sev",
+    "weibull3", "lognormal3", "loglogistic3"
+  )
+) {
 
   distribution <- match.arg(distribution)
-
-  if (!(distribution %in% c("weibull", "lognormal", "loglogistic", "normal",
-                            "logistic", "sev", "weibull3", "lognormal3",
-                            "loglogistic3"))) {
-    stop("No valid distribution!")
-  }
 
   d <- event
   mu <- pars[1]

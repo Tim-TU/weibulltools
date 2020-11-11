@@ -5,36 +5,38 @@
 \alias{plot_mod}
 \title{Adding an Estimated Population Line to a Probability Plot}
 \usage{
-plot_mod(p_obj, x, y = NULL, loc_sc_params, distribution = c("weibull",
-  "lognormal", "loglogistic", "normal", "logistic", "sev", "weibull3",
-  "lognormal3", "loglogistic3"), title_trace = "Fit")
+plot_mod(
+  p_obj,
+  x,
+  y = NULL,
+  loc_sc_params,
+  distribution = c("weibull", "lognormal", "loglogistic", "normal", "logistic", "sev",
+    "weibull3", "lognormal3", "loglogistic3"),
+  title_trace = "Fit"
+)
 }
 \arguments{
-\item{p_obj}{a plotly object provided by function \code{\link{plot_prob}}.}
+\item{p_obj}{A plotly object provided by function \code{\link{plot_prob}}.}
 
-\item{x}{a numeric vector containing the x-coordinates of the regression line.}
+\item{x}{A numeric vector containing the x-coordinates of the regression line.}
 
-\item{y}{a numeric vector containing the y-coordinates of the regression line.
+\item{y}{A numeric vector containing the y-coordinates of the regression line.
 The default value of y is \code{NULL}. If \code{y} is set \code{NULL} the
 y-coordinates with respect to \code{x} are calculated by function
 \code{predict_prob} using estimated coefficients in \code{loc_sc_params}. If
 confidence interval(s) should be added to the plot y should not be set to
 \code{NULL}. For more information see \strong{Details} in \code{\link{plot_conf}}.}
 
-\item{loc_sc_params}{a (named) numeric vector of estimated location
+\item{loc_sc_params}{A (named) numeric vector of estimated location
 and scale parameters for a specified distribution. The order of
 elements is important. First entry needs to be the location
 parameter \eqn{\mu} and the second element needs to be the scale
 parameter \eqn{\sigma}. If a three-parametric model is used the third element
 is the threshold parameter \eqn{\gamma}.}
 
-\item{distribution}{supposed distribution of the random variable. The
-value can be \code{"weibull"}, \code{"lognormal"}, \code{"loglogistic"},
-\code{"normal"}, \code{"logistic"}, \code{"sev"} \emph{(smallest extreme value)},
-\code{"weibull3"}, \code{"lognormal3"} or \code{"loglogistic3"}.
-Other distributions have not been implemented yet.}
+\item{distribution}{Supposed distribution of the random variable.}
 
-\item{title_trace}{a character string whis is assigned to the trace shown in
+\item{title_trace}{A character string whis is assigned to the trace shown in
 the legend.}
 }
 \value{

@@ -3,7 +3,6 @@
 \docType{package}
 \name{weibulltools}
 \alias{weibulltools}
-\alias{weibulltools-package}
 \title{weibulltools}
 \description{
 The weibulltools package contains methods for examining bench test or field data using the well-known weibull analysis.

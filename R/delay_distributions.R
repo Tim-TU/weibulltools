@@ -5,13 +5,13 @@
 #' and afterwards estimates the parameter(s) of a supposed distribution,
 #' using MLE.
 #'
-#' @param date_prod a vector of class \code{"character"} or \code{"Date"}, in the
+#' @param date_prod A vector of class \code{"character"} or \code{"Date"}, in the
 #'   format "yyyy-mm-dd", indicating the date of production of a unit.
 #'   If no date is available use \code{NA}.
-#' @param date_register a vector of class \code{"character"} or \code{"Date"}, in
+#' @param date_register A vector of class \code{"character"} or \code{"Date"}, in
 #'   the format "yyyy-mm-dd", indicating the date of registration of a unit.
 #'   If no date is available use \code{NA}.
-#' @param distribution supposed distribution of the random variable. The default
+#' @param distribution Supposed distribution of the random variable. The default
 #'   value is \code{"lognormal"}. So far no other distribution is implemented.
 #'
 #' @return A named vector of estimated parameters for the specified
@@ -77,25 +77,19 @@ dist_delay_register <- function(date_prod, date_register,
 #' delays. The simulation is based on the distribution of operating times that were
 #' calculated from complete data (see \code{\link{dist_delay_register}}).
 #'
-#' @param date_prod a vector of class \code{"character"} or \code{"Date"}, in the
-#'   format "yyyy-mm-dd", indicating the date of production of a unit.
-#'   If no date is available use \code{NA}.
-#' @param date_register a vector of class \code{"character"} or \code{"Date"}, in
-#'   the format "yyyy-mm-dd", indicating the date of registration of a unit.
-#'   If no date is available use \code{NA}.
-#' @param x a numeric vector of operating times.
-#' @param event a vector of binary data (0 or 1) indicating whether unit \emph{i}
+#' @inheritParams dist_delay_register
+#' @param x A numeric vector of operating times.
+#' @param event A vector of binary data (0 or 1) indicating whether unit \emph{i}
 #'   is a right censored observation (= 0) or a failure (= 1).
-#' @param distribution supposed distribution of the random variable. The default
+#' @param distribution Supposed distribution of the random variable. The default
 #'   value is \code{"lognormal"}. So far no other distribution is implemented.
-#' @param seed if \code{seed = NULL} a random seed is used. Otherwise the user
+#' @param seed If \code{seed = NULL} a random seed is used. Otherwise the user
 #'   can specify an integer for the seed.
-#' @param details a logical variable, where the default value is \code{FALSE}.
-#'   If \code{FALSE} the output consists of a vector with corrected operating
-#'   times for the censored units and the input operating times for the
-#'   failed units. If \code{TRUE} the output consists of a detailed list, i.e
-#'   the same vector as described before, simulated random numbers, estimated
-#'   distribution parameters and a seed for reproducibility.
+#' @param details A logical. If \code{FALSE} the output consists of a vector with
+#'   corrected operating times for the censored units and the input operating
+#'   times for the failed units. If \code{TRUE} the output consists of a detailed
+#'   list, i.e the same vector as described before, simulated random numbers,
+#'   estimated distribution parameters and a seed for reproducibility.
 #'
 #' @return A numeric vector of corrected operating times for the censored units
 #'   and the input operating times for the failed units if
@@ -208,8 +202,7 @@ mcs_delay_register <- function(date_prod, date_register, x, event,
 #' @param date_report a vector of class \code{"character"} or \code{"Date"}, in the
 #'   format "yyyy-mm-dd", indicating the date of report of a failed unit.
 #'   If no date is available use \code{NA}.
-#' @param distribution supposed distribution of the random variable. The default
-#'   value is \code{"lognormal"}. So far no other distribution is implemented.
+#' @inheritParams dist_delay_register
 #'
 #' @return A named vector of estimated parameters for the specified
 #'   distribution.
@@ -270,25 +263,8 @@ dist_delay_report <- function(date_repair, date_report,
 #' delays. The simulation is based on the distribution of operating times that were
 #' calculated from complete data, i.e. failed items (see \code{\link{dist_delay_report}}).
 #'
-#' @param date_repair a vector of class \code{"character"} or \code{"Date"}, in the
-#'   format "yyyy-mm-dd", indicating the date of repair of a failed unit.
-#'   If no date is available use \code{NA}.
-#' @param date_report a vector of class \code{"character"} or \code{"Date"}, in the
-#'   format "yyyy-mm-dd", indicating the date of report of a failed unit.
-#'   If no date is available use \code{NA}.
-#' @param x a numeric vector of operating times.
-#' @param event a vector of binary data (0 or 1) indicating whether unit \emph{i}
-#'   is a right censored observation (= 0) or a failure (= 1).
-#' @param distribution supposed distribution of the random variable. The default
-#'   value is \code{"lognormal"}. So far no other distribution is implemented.
-#' @param seed if \code{seed = NULL} a random seed is used. Otherwise the user
-#'   can specify an integer for the seed.
-#' @param details a logical variable, where the default value is \code{FALSE}.
-#'   If \code{FALSE} the output consists of a vector with corrected operating
-#'   times for the censored units and the input operating times for the
-#'   failed units. If \code{TRUE} the output consists of a detailed list, i.e
-#'   the same vector as described before, simulated random numbers, estimated
-#'   distribution parameters and a seed for reproducibility.
+#' @inheritParams dist_delay_report
+#' @inheritParams mcs_delay_register
 #'
 #' @return A numeric vector of corrected operating times for the censored units
 #'   and the input operating times for the failed units if
@@ -393,31 +369,8 @@ mcs_delay_report <- function(date_repair, date_report, x, event,
 #' \code{\link{mcs_delay_register}} and \code{\link{mcs_delay_report}} function
 #' for adjusting the operation times of censored units.
 #'
-#' @param date_prod a vector of class \code{"character"} or \code{"Date"}, in the
-#'   format "yyyy-mm-dd", indicating the date of production of a unit.
-#'   If no date is available use \code{NA}.
-#' @param date_register a vector of class \code{"character"} or \code{"Date"}, in the
-#'   format "yyyy-mm-dd", indicating the date of registration of a unit.
-#'   If no date is available use \code{NA}.
-#' @param date_repair a vector of class \code{"character"} or \code{"Date"}, in the
-#'   format "yyyy-mm-dd", indicating the date of repair of a failed unit.
-#'   If no date is available use \code{NA}.
-#' @param date_report a vector of class \code{"character"} or \code{"Date"}, in the
-#'   format "yyyy-mm-dd", indicating the date of report of a failed unit.
-#'   If no date is available use \code{NA}.
-#' @param x a numeric vector of operating times.
-#' @param event a vector of binary data (0 or 1) indicating whether unit \emph{i}
-#'   is a right censored observation (= 0) or a failure (= 1).
-#' @param distribution supposed distribution of the random variable. The default
-#'   value is \code{"lognormal"}. So far no other distribution is implemented.
-#' @param seed if \code{seed = NULL} a random seed is used. Otherwise the user
-#'   can specify an integer for the seed.
-#' @param details a logical variable, where the default value is \code{FALSE}.
-#'   If \code{FALSE} the output consists of a vector with corrected operating
-#'   times for the censored units and the input operating times for the
-#'   failed units. If \code{TRUE} the output consists of a detailed list, i.e
-#'   the same vector as described before, simulated random numbers, estimated
-#'   distribution parameters and a seed for reproducibility.
+#' @inheritParams mcs_delay_register
+#' @inheritParams dist_delay_report
 #'
 #' @return A numerical vector of corrected operating times for the censored units
 #'   and the input operating times for the failed units if

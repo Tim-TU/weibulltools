@@ -5,24 +5,30 @@
 \title{Estimation of Driving Distances for Censored Observations using a Monte Carlo
 Approach}
 \usage{
-mcs_mileage(x, event, mileage, distribution = "lognormal", seed = NULL,
-  details = FALSE)
+mcs_mileage(
+  x,
+  event,
+  mileage,
+  distribution = "lognormal",
+  seed = NULL,
+  details = FALSE
+)
 }
 \arguments{
-\item{x}{a numeric vector of operating times. If not available use \code{NA}.}
+\item{x}{A numeric vector of operating times. If not available use \code{NA}.}
 
-\item{event}{a vector of binary data (0 or 1) indicating whether unit \emph{i}
+\item{event}{A vector of binary data (0 or 1) indicating whether unit \emph{i}
 is a right censored observation (= 0) or a failure (= 1).}
 
-\item{mileage}{a numeric vector of driven distances. If not available use \code{NA}.}
+\item{mileage}{A numeric vector of driven distances. If not available use \code{NA}.}
 
-\item{distribution}{supposed distribution of the random variable. The default
+\item{distribution}{Supposed distribution of the random variable. The default
 value is \code{"lognormal"}. So far no other distribution is implemented.}
 
-\item{seed}{if \code{seed = NULL} a random seed is used. Otherwise the user
+\item{seed}{If \code{seed = NULL} a random seed is used. Otherwise the user
 can specify an integer for the seed.}
 
-\item{details}{a logical variable, where the default value is \code{FALSE}.
+\item{details}{A logical variable, where the default value is \code{FALSE}.
 If \code{FALSE} the output consists of a vector with simulated driving
 distances for the censored units regarding to their current operating time
 and the input driving distances for the failed units. If \code{TRUE} the

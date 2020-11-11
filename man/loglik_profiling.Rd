@@ -5,21 +5,25 @@
 \alias{loglik_profiling}
 \title{Log-Likelihood Profile Function for Log-Location-Scale Distributions with Threshold}
 \usage{
-loglik_profiling(x, event, thres, distribution = c("weibull3",
-  "lognormal3", "loglogistic3"))
+loglik_profiling(
+  x,
+  event,
+  thres,
+  distribution = c("weibull3", "lognormal3", "loglogistic3")
+)
 }
 \arguments{
-\item{x}{a numeric vector which consists of lifetime data. Lifetime
+\item{x}{A numeric vector which consists of lifetime data. Lifetime
 data could be every characteristic influencing the reliability of a product,
 e.g. operating time (days/months in service), mileage (km, miles), load
 cycles.}
 
-\item{event}{a vector of binary data (0 or 1) indicating whether unit \emph{i}
+\item{event}{A vector of binary data (0 or 1) indicating whether unit \emph{i}
 is a right censored observation (= 0) or a failure (= 1).}
 
-\item{thres}{a numeric value of the threshold parameter.}
+\item{thres}{A numeric value of the threshold parameter.}
 
-\item{distribution}{supposed distribution of the random variable. The
+\item{distribution}{Supposed distribution of the random variable. The
 value can be \code{"weibull3"}, \code{"lognormal3"} or \code{"loglogistic3"}.}
 }
 \value{

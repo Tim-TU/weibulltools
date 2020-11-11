@@ -4,11 +4,11 @@
 #' the sample that had a failure and afterwards estimates the parameter(s) of a
 #' supposed distribution, using MLE.
 #'
-#' @param x a numeric vector of operating times. If not available use \code{NA}.
-#' @param event a vector of binary data (0 or 1) indicating whether unit \emph{i}
+#' @param x A numeric vector of operating times. If not available use \code{NA}.
+#' @param event A vector of binary data (0 or 1) indicating whether unit \emph{i}
 #'   is a right censored observation (= 0) or a failure (= 1).
-#' @param mileage a numeric vector of driven distances. If not available use \code{NA}.
-#' @param distribution supposed distribution of the random variable. The default
+#' @param mileage A numeric vector of driven distances. If not available use \code{NA}.
+#' @param distribution Supposed distribution of the random variable. The default
 #'   value is \code{"lognormal"}. So far no other distribution is implemented.
 #'
 #' @return A named vector of estimated parameters for the specified mileage
@@ -71,15 +71,10 @@ dist_mileage <- function(x, event, mileage, distribution = "lognormal") {
 #' specified annual random driving distances are drawn from this distribution and
 #' afterwards adjusted to the operating times of the censored observations.
 #'
-#' @param x a numeric vector of operating times. If not available use \code{NA}.
-#' @param event a vector of binary data (0 or 1) indicating whether unit \emph{i}
-#'   is a right censored observation (= 0) or a failure (= 1).
-#' @param mileage a numeric vector of driven distances. If not available use \code{NA}.
-#' @param distribution supposed distribution of the random variable. The default
-#'   value is \code{"lognormal"}. So far no other distribution is implemented.
-#' @param seed if \code{seed = NULL} a random seed is used. Otherwise the user
+#' @inheritParams dist_mileage
+#' @param seed If \code{seed = NULL} a random seed is used. Otherwise the user
 #'   can specify an integer for the seed.
-#' @param details a logical variable, where the default value is \code{FALSE}.
+#' @param details A logical variable, where the default value is \code{FALSE}.
 #'   If \code{FALSE} the output consists of a vector with simulated driving
 #'   distances for the censored units regarding to their current operating time
 #'   and the input driving distances for the failed units. If \code{TRUE} the
@@ -182,5 +177,6 @@ mcs_mileage <- function(x, event, mileage, distribution = "lognormal",
     output <- list(mileage = mileage, mileage_sim_annual = mileage_sim,
                    coefficients = params, int_seed = int_seed)
   }
+
   return(output)
 }

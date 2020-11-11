@@ -5,29 +5,34 @@
 \alias{loglik_function}
 \title{Log-Likelihood Function for (Log-) Location-Scale Distributions (with Threshold)}
 \usage{
-loglik_function(x, event, wts = rep(1, length(x)), pars,
-  distribution = c("weibull", "lognormal", "loglogistic", "normal",
-  "logistic", "sev", "weibull3", "lognormal3", "loglogistic3"))
+loglik_function(
+  x,
+  event,
+  wts = rep(1, length(x)),
+  pars,
+  distribution = c("weibull", "lognormal", "loglogistic", "normal", "logistic", "sev",
+    "weibull3", "lognormal3", "loglogistic3")
+)
 }
 \arguments{
-\item{x}{a numeric vector which consists of lifetime data. Lifetime
+\item{x}{A numeric vector which consists of lifetime data. Lifetime
 data could be every characteristic influencing the reliability of a product,
 e.g. operating time (days/months in service), mileage (km, miles), load
 cycles.}
 
-\item{event}{a vector of binary data (0 or 1) indicating whether unit \emph{i}
+\item{event}{A vector of binary data (0 or 1) indicating whether unit \emph{i}
 is a right censored observation (= 0) or a failure (= 1).}
 
-\item{wts}{optional vector of case weights. The length of \code{wts} must be the
+\item{wts}{Optional vector of case weights. The length of \code{wts} must be the
 same as the number of observations \code{x}. Default is that \code{wts} is a
 vector with all components being 1 (same weights).}
 
-\item{pars}{a numeric vector of parameters. The first element is the location
+\item{pars}{A numeric vector of parameters. The first element is the location
 parameter (\eqn{\mu}), the second is the scale parameter (\eqn{\sigma}) and if
 a three-parametric model is used the third element is the threshold parameter
 (\eqn{\gamma}).}
 
-\item{distribution}{supposed distribution of the random variable. The
+\item{distribution}{Supposed distribution of the random variable. The
 value can be \code{"weibull"}, \code{"lognormal"}, \code{"loglogistic"},
 \code{"normal"}, \code{"logistic"}, \code{"sev"} \emph{(smallest extreme value)},
 \code{"weibull3"}, \code{"lognormal3"} or \code{"loglogistic3"}.
