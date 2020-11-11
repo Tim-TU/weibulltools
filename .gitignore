@@ -5,3 +5,4 @@ inst/doc
 docs
 src-i386
 src-x64
+.RData

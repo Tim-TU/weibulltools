@@ -3,12 +3,12 @@ title: "CRAN comments"
 output: html_document
 ---
 
-# This is a resubmission of version v1.0.0 (2019-01-28)
+# This is a resubmission of version v1.0.0 (2019-01-29)
 CRAN Package Check Results for Package weibulltools has thrown the following error:  
 em_mixture.cpp:1:10: fatal error: 'ext/algorithm' file not found 
 #include <ext/algorithm> ^~~~~~~~~~~~~~~ 1 error generated.
 
-* I've fixed this error by removing lines 'ext/algorithm' and '#include <ext/algorithm>'
+* Fixed this error by removing lines 'ext/algorithm' and '#include <ext/algorithm>'
 
 ## Package Size 
 * Provided vignettes, where package _plotly_ was used to create interactive visualizsations 
@@ -19,6 +19,11 @@ em_mixture.cpp:1:10: fatal error: 'ext/algorithm' file not found
 * local windows install, 
     R version 3.5.2, 
     Platform: x86_64-w64-mingw32/x64 (64-bit)
+
+* local OS X install, 
+    R version 3.3.0, 
+    Platform: x86_64-apple-darwin13.4.0 (64-bit)
+    Running under: OS X 10.9.5 (Mavericks)
     
 * win-builder, 
     using R version 3.5.2 (2018-12-20) 
@@ -43,13 +48,17 @@ em_mixture.cpp:1:10: fatal error: 'ext/algorithm' file not found
     R Under development (unstable) (2019-01-18 r75994), 
     Platform: x86_64-pc-linux-gnu (64-bit)
     
+* Fedora Linux, R-devel, clang, gfortran (via r-hub builder)
+    R Under development (unstable) (2019-01-26 r76018), 
+    Platform: x86_64-pc-linux-gnu (64-bit)
+    
 * Windows Server 2008 R2 SP1, R-release and R-devel, 32/64 bit (via r-hub builder)
 
 ## R CMD check results
 
 There were no ERRORs or WARNINGs for 
-local windows install, Windows Server 2008 R2 SP1, win_builder, 
-Ubuntu Linux 16.04 LTS and Debian Linux
+local windows install, local OS X install,  Windows Server 2008 R2 SP1, 
+win_builder, Ubuntu Linux 16.04 LTS and Debian Linux
 
 There was 1 NOTE:
 
@@ -67,9 +76,6 @@ There was an additional NOTE for win-builder:
 
 Maintainer: 'Hensel Tim-Gunnar <tim-gunnar.hensel@tu-berlin.de>
 
-Possibly mis-spelled words in DESCRIPTION:
-  plotly (32:37)
-  
 <br><br><br><br>  
 
 [//]: # (Everything below this comment was for submission of v0.5.4)  

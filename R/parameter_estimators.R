@@ -166,9 +166,9 @@ rank_regression.default <- function(
       )
     conf_eta <- c(
       estimates[[1]] * (2 * length(x_f) / stats::qchisq(p = (1 + conf_level) / 2,
-                                                 df = 2 * length(x_f))) ^ (1 / estimates[[2]]),
+                                                 df = 2 * length(x_f) + 2)) ^ (1 / estimates[[2]]),
       estimates[[1]] * (2 * length(x_f) / stats::qchisq(p = (1 - conf_level) / 2,
-                                                 df = 2 * length(x_f))) ^ (1 / estimates[[2]])
+                                                 df = 2 * length(x_f) + 2)) ^ (1 / estimates[[2]])
     )
 
     conf_ints <- matrix(c(conf_eta, conf_beta), byrow = TRUE, ncol = 2)

@@ -1,4 +1,4 @@
-# weibulltools 1.1.0
+# weibulltools v1.1.0
 ## Breaking Changes
 * `plot_conf`: Switched arguments distribution and direction.
 * `rank_regression`, `ml_estimation`: Removed details argument.
@@ -23,10 +23,16 @@
 * Fixed bug inside confint_betabinom(); many cases near one -> unique()
 * Fixed bug inside mr_method(): Assigning a rank for the same lifetime 
 
-# weibulltools 1.0.1
+# weibulltools v1.0.1
 * Fixed installation error when using clang compiler
 
-# weibulltools 1.0.0 
+# weibulltools v1.0.0 
+
+## Prerequisite for Package Usage:
+* Since RcppArmadillo is used, the R version should be at least 3.3.0 
+  (listed under Depends in DESCRIPTION file)
+  
+## Changes
 * Vignettes for non-parametric probability estimation, parameter estimation using 
   Median-Rank Regression and Maximum-Likelihood and mixture model estimation 
   are provided. 
