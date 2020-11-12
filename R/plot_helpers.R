@@ -259,7 +259,7 @@ plot_mod_mix_helper <- function(
       x_p <- seq(x_low, x_high, length.out = 200)
       y_p <- predict_prob(
         q = x_p,
-        loc_sc_params = mod$loc_sc_coefficients,
+        loc_sc_params = mod$loc_sc_params,
         distribution = distribution
       )
 
@@ -270,8 +270,8 @@ plot_mod_mix_helper <- function(
         label_1 <- "\u03B7:"
         label_2 <- "\u03B2:"
       } else {
-        param_1 <- round(mod$loc_sc_coefficients[[1]], digits = 2)
-        param_2 <- round(mod$loc_sc_coefficients[[2]], digits = 2)
+        param_1 <- round(mod$loc_sc_params[[1]], digits = 2)
+        param_2 <- round(mod$loc_sc_params[[2]], digits = 2)
         label_1 <- "\u03BC:"
         label_2 <- "\u03C3:"
       }
@@ -312,15 +312,15 @@ plot_mod_mix_helper <- function(
           label_1 <- "\u03B7:"
           label_2 <- "\u03B2:"
         } else {
-          param_1 <- round(mod$loc_sc_coefficients[[1]], digits = 2)
-          param_2 <- round(mod$loc_sc_coefficients[[2]], digits = 2)
+          param_1 <- round(mod$loc_sc_params[[1]], digits = 2)
+          param_2 <- round(mod$loc_sc_params[[2]], digits = 2)
           label_1 <- "\u03BC:"
           label_2 <- "\u03C3:"
         }
 
         y_p <- predict_prob(
           q = x_p,
-          loc_sc_params = mod$loc_sc_coefficients,
+          loc_sc_params = mod$loc_sc_params,
           distribution = distribution
         )
 
