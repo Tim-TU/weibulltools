@@ -8,7 +8,7 @@ mr_method(
   x,
   event = rep(1, length(x)),
   id = rep("XXXXXX", length(x)),
-  method = "benard"
+  method = c("benard", "invbeta")
 )
 }
 \arguments{
@@ -29,6 +29,8 @@ A tibble containing id, lifetime characteristic, status of the
   unit, the rank and the estimated failure probability.
 }
 \description{
+\lifecycle{soft-deprecated}
+
 This non-parametric approach (\emph{Median Ranks}) is used to estimate the
 failure probabilities in terms of complete data. Two methods are available to
 estimate the cumulative distribution function \emph{F(t)}:
@@ -50,4 +52,5 @@ tbl_mr <- mr_method(x = obs, event = state, id = uic,
 # Example 2
 tbl_mr_invbeta <- mr_method(x = obs, event = state, id = uic,
                            method = "invbeta")
+
 }

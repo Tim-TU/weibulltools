@@ -55,6 +55,9 @@ tbl <- tibble(obs = c(10000, 10000, 20000, 20000, 30000,
                  state = rep(1, 23))
 
 tbl_kap2 <- kaplan_method(x = tbl$obs, event = tbl$state)
+
+\lifecycle{soft-deprecated}
+
 }
 \references{
 \emph{NIST/SEMATECH e-Handbook of Statistical Methods},

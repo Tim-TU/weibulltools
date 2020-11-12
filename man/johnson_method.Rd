@@ -36,4 +36,7 @@ uic   <- c("3435", "1203", "958X", "XX71", "abcd", "tz46",
            "fl29", "AX23", "Uy12", "kl1a")
 
 tbl_john <- johnson_method(x = obs, event = state, id = uic)
+
+\lifecycle{soft-deprecated}
+
 }

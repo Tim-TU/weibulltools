@@ -81,57 +81,57 @@
 ---
 
     # A tibble: 23 x 6
-       id     characteristic status  rank  prob method
-       <chr>           <dbl>  <dbl> <dbl> <dbl> <chr> 
-     1 XXXXXX          10000      1    NA 0.110 kaplan
-     2 XXXXXX          10000      1    NA 0.110 kaplan
-     3 XXXXXX          20000      1    NA 0.227 kaplan
-     4 XXXXXX          20000      1    NA 0.227 kaplan
-     5 XXXXXX          30000      1    NA 0.413 kaplan
-     6 XXXXXX          30000      1    NA 0.413 kaplan
-     7 XXXXXX          30000      1    NA 0.413 kaplan
-     8 XXXXXX          30000      1    NA 0.413 kaplan
-     9 XXXXXX          40000      1    NA 0.481 kaplan
-    10 XXXXXX          50000      1    NA 0.580 kaplan
+       id    characteristic status  rank  prob method
+       <chr>          <dbl>  <dbl> <dbl> <dbl> <chr> 
+     1 X              10000      1    NA 0.110 kaplan
+     2 X              10000      1    NA 0.110 kaplan
+     3 X              20000      1    NA 0.227 kaplan
+     4 X              20000      1    NA 0.227 kaplan
+     5 X              30000      1    NA 0.413 kaplan
+     6 X              30000      1    NA 0.413 kaplan
+     7 X              30000      1    NA 0.413 kaplan
+     8 X              30000      1    NA 0.413 kaplan
+     9 X              40000      1    NA 0.481 kaplan
+    10 X              50000      1    NA 0.580 kaplan
     # ... with 13 more rows
 
 # snapshots: input with repeating characteristics
 
     # A tibble: 4 x 6
-      id     characteristic status  rank  prob method
-      <chr>           <dbl>  <dbl> <dbl> <dbl> <chr> 
-    1 XXXXXX              1      0    NA  NA   mr    
-    2 XXXXXX              1      1     1   0.5 mr    
-    3 XXXXXX              1      0    NA  NA   mr    
-    4 XXXXXX              1      1     1   0.5 mr    
+      id    characteristic status  rank  prob method
+      <chr>          <dbl>  <dbl> <dbl> <dbl> <chr> 
+    1 X                  1      0    NA  NA   mr    
+    2 X                  1      1     1   0.5 mr    
+    3 X                  1      0    NA  NA   mr    
+    4 X                  1      1     1   0.5 mr    
 
 ---
 
     # A tibble: 4 x 6
-      id     characteristic status  rank   prob method 
-      <chr>           <dbl>  <dbl> <dbl>  <dbl> <chr>  
-    1 XXXXXX              1      0    NA NA     johnson
-    2 XXXXXX              1      1     2  0.386 johnson
-    3 XXXXXX              1      0    NA NA     johnson
-    4 XXXXXX              1      1     2  0.386 johnson
+      id    characteristic status  rank   prob method 
+      <chr>          <dbl>  <dbl> <dbl>  <dbl> <chr>  
+    1 X                  1      0    NA NA     johnson
+    2 X                  1      1     2  0.386 johnson
+    3 X                  1      0    NA NA     johnson
+    4 X                  1      1     2  0.386 johnson
 
 ---
 
     # A tibble: 4 x 6
-      id     characteristic status  rank  prob method
-      <chr>           <dbl>  <dbl> <dbl> <dbl> <chr> 
-    1 XXXXXX              1      0    NA  NA   kaplan
-    2 XXXXXX              1      1    NA   0.5 kaplan
-    3 XXXXXX              1      0    NA  NA   kaplan
-    4 XXXXXX              1      1    NA   0.5 kaplan
+      id    characteristic status  rank  prob method
+      <chr>          <dbl>  <dbl> <dbl> <dbl> <chr> 
+    1 X                  1      0    NA  NA   kaplan
+    2 X                  1      1    NA   0.5 kaplan
+    3 X                  1      0    NA  NA   kaplan
+    4 X                  1      1    NA   0.5 kaplan
 
 ---
 
     # A tibble: 4 x 6
-      id     characteristic status  rank  prob method
-      <chr>           <dbl>  <dbl> <dbl> <dbl> <chr> 
-    1 XXXXXX              1      0    NA    NA nelson
-    2 XXXXXX              1      1    NA     0 nelson
-    3 XXXXXX              1      0    NA    NA nelson
-    4 XXXXXX              1      1    NA     0 nelson
+      id    characteristic status  rank  prob method
+      <chr>          <dbl>  <dbl> <dbl> <dbl> <chr> 
+    1 X                  1      0    NA    NA nelson
+    2 X                  1      1    NA     0 nelson
+    3 X                  1      0    NA    NA nelson
+    4 X                  1      1    NA     0 nelson
 

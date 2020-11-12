@@ -17,6 +17,8 @@
 #'   that is used for probability plotting.
 #' @importFrom magrittr "%>%"
 #'
+#' @export
+#'
 #' @examples
 #' # Example 1: Weibull-Grid:
 #' x_layout <- seq(1e-5, 1e+07, length.out = 10)
@@ -43,6 +45,8 @@ plot_layout <- function(
   title_y = "Unreliability",
   plot_method = c("plotly", "ggplot2")
 ) {
+
+  deprecate_soft("1.1.0", "plot_layout()")
 
   distribution <- match.arg(distribution)
   plot_method <- match.arg(plot_method)

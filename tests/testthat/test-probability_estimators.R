@@ -2,45 +2,35 @@ test_that("estimate_cdf fails for non reliability data", {
   tbl <- tibble::tibble(x = 1:10)
   expect_error(
     estimate_cdf(tbl, methods = "mr"),
-    "data must be a tibble returned from reliability_data()"
+    "data must be a tibble returned from failure_data()"
   )
 })
 
-obs <- seq(10000, 100000, 10000)
+test_that("mr_method_ warns for right-censored data", {
+  obs <- seq(10000, 100000, 10000)
 
-test_that("mr_method warns for right-censored data", {
+  tbl <- tibble(x = obs, status = 0, id = "X")
+
   expect_message(
-    mr_method(obs, rep(0, times = length(obs))),
+    mr_method_(tbl),
     "The mr method only considers.*"
   )
 })
 
 test_that("kaplan_method and nelson_method warn for uncensored data", {
+  obs <- seq(10000, 100000, 10000)
+
+  tbl <- tibble(x = obs, status = 1, id = "X")
+
   expect_warning(
-    kaplan_method(obs, rep(1, times = length(obs))),
+    kaplan_method_(tbl),
     "Use mr_method.*"
   )
 
   expect_warning(
-    nelson_method(obs, rep(1, times = length(obs))),
+    nelson_method_(tbl),
     "Use mr_method.*"
   )
-})
-
-test_that("all methods fail for vectors of different length", {
-  msg <- "x, event and id must be of same length."
-
-  expect_error(mr_method(obs, 0), msg)
-  expect_error(johnson_method(obs, 0), msg)
-  expect_error(kaplan_method(obs, 0), msg)
-  expect_error(nelson_method(obs, 0), msg)
-})
-
-test_that("all methods return cdf_estimations", {
-  expect_s3_class(mr_method(obs, rep(1, times = length(obs))), "cdf_estimation")
-  expect_s3_class(johnson_method(obs, rep(0, times = length(obs))), "cdf_estimation")
-  expect_s3_class(kaplan_method(obs, rep(0, times = length(obs))), "cdf_estimation")
-  expect_s3_class(nelson_method(obs, rep(0, times = length(obs))), "cdf_estimation")
 })
 
 test_that("snapshots: examples", {
@@ -49,26 +39,29 @@ test_that("snapshots: examples", {
   uic   <- c("3435", "1203", "958X", "XX71", "abcd", "tz46",
              "fl29", "AX23", "Uy12", "kl1a")
 
-  expect_snapshot_output(mr_method(x = obs, event = state, id = uic, method = "benard"))
-  expect_snapshot_output(mr_method(x = obs, event = state, id = uic, method = "invbeta"))
+  tbl <- tibble(x = obs, status = state, id = uic)
 
-  state <- c(0, 1, 1, 0, 0, 0, 1, 0, 1, 0)
+  expect_snapshot_output(mr_method_(tbl, method = "benard"))
+  expect_snapshot_output(mr_method_(tbl, method = "invbeta"))
 
-  expect_snapshot_output(johnson_method(x = obs, event = state, id = uic))
-  expect_snapshot_output(nelson_method(x = obs, event = state, id = uic))
-  expect_snapshot_output(kaplan_method(x = obs, event = state, id = uic))
+  tbl$status <- c(0, 1, 1, 0, 0, 0, 1, 0, 1, 0)
+
+  expect_snapshot_output(johnson_method_(tbl))
+  expect_snapshot_output(nelson_method_(tbl))
+  expect_snapshot_output(kaplan_method_(tbl))
 
   tbl <- tibble(
-    obs = c(
+    x = c(
       10000, 10000, 20000, 20000, 30000, 30000, 30000, 30000, 40000, 50000,
       50000, 60000, 70000, 70000, 70000, 70000, 80000, 80000, 80000, 80000,
       90000, 90000, 100000
     ),
-    state = rep(1, 23)
+    status = rep(1, 23),
+    id = "X"
   )
 
   expect_snapshot_output(
-    suppressWarnings(kaplan_method(x = tbl$obs, event = tbl$state))
+    suppressWarnings(kaplan_method_(tbl))
   )
 })
 
@@ -76,8 +69,10 @@ test_that("snapshots: input with repeating characteristics", {
   x <- rep(1, 4)
   event <- c(0, 1, 0, 1)
 
-  expect_snapshot_output(suppressMessages(mr_method(x, event)))
-  expect_snapshot_output(johnson_method(x, event))
-  expect_snapshot_output(kaplan_method(x, event))
-  expect_snapshot_output(nelson_method(x, event))
+  tbl <- tibble(x = x, status = event, id = "X")
+
+  expect_snapshot_output(suppressMessages(mr_method_(tbl)))
+  expect_snapshot_output(johnson_method_(tbl))
+  expect_snapshot_output(kaplan_method_(tbl))
+  expect_snapshot_output(nelson_method_(tbl))
 })
