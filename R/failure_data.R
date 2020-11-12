@@ -1,6 +1,8 @@
-#' Reliability data
+#' Failure data
 #'
-#' This function
+#' @description
+#' Create consistent failure data based on an existing data.frame/tibble
+#' (preferred) or on multiple equal length vectors.
 #'
 #' @param data Either NULL or a data frame/tibble. If data is NULL, x, status and
 #' id must be vectors containing the data. Otherwise x, status and id can be either
@@ -8,16 +10,17 @@
 #' @param x Lifetime data, that means any characteristic influencing the reliability
 #' of a product, e.g. operating time (days/months in service), mileage (km, miles),
 #' load cycles.
-#' @param status Binary data (0 or 1) indicating whether unit \emph{i} is a right
+#' @param status Binary data (0 or 1) indicating whether a unit is a right
 #' censored observation (= 0) or a failure (= 1).
 #' @param id Identification for every unit.
 #'
-#' @return A tibble with class \code{"reliability_data"} containing the following
+#' @return A tibble with class \code{"failure_data"} containing the following
 #' columns:
 #' \itemize{
-#'   \item \code{x}
-#'   \item \code{status}
-#'   \item \code{id}
+#'   \item \code{x} Lifetime characteristic.
+#'   \item \code{status} Binary data (0 or 1) indicating whether a unit is a right
+#'     censored observation (= 0) or a failure (= 1).
+#'   \item \code{id} Identification for every unit.
 #' }
 #'
 #' @examples
@@ -28,15 +31,18 @@
 #'               159, 159, 159, 152, 152, 149, 149, 144, 143, 141, 141, 140, 139,
 #'               139, 136, 135, 133, 131, 129, 123, 121, 121, 118, 117, 117, 114,
 #'               112, 108, 104, 99, 99, 96, 94)
-#' status <- c(rep(0, 5), rep(1, 67))
+#' state <- c(rep(0, 5), rep(1, 67))
 #' id <- "XXXXXX"
 #'
-#' tbl <- tibble::tibble(cycles = cycles, status = status, id = id)
+#' Example 1: Based on existing data.frame/tibble
+#' tbl <- tibble::tibble(x = cycles, status = state, id = id)
+#' failure_tbl <- failure_data(tbl, x = x, status = status, id = id)
 #'
-#' rel_tbl <- reliability_data(tbl, x = cycles, status = status, id = id)
+#' Example 2: Based on vectors
+#' failure_tbl_2 <- failure_data(x = cycles, status = state, id = id)
 #'
 #' @export
-reliability_data <- function(data = NULL, x, status, id) {
+failure_data <- function(data = NULL, x, status, id) {
   if (purrr::is_null(data)) {
     if (!is_characteristic(x)) {
       stop("x must be numeric!")
@@ -63,7 +69,7 @@ reliability_data <- function(data = NULL, x, status, id) {
     tbl <- dplyr::select(tibble::as_tibble(data), x = {{x}}, status = {{status}}, id = {{id}})
   }
 
-  class(tbl) <- c("reliability_data", class(tbl))
+  class(tbl) <- c("failure_data", class(tbl))
 
   tbl
 }
