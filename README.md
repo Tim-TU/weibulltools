@@ -5,6 +5,10 @@
 
 <!-- badges: start -->
 
+[![Lifecycle:
+maturing](https://img.shields.io/badge/lifecycle-maturing-blue.svg)](https://www.tidyverse.org/lifecycle/#maturing)
+[![CRAN
+status](https://www.r-pkg.org/badges/version/weibulltools)](https://CRAN.R-project.org/package=weibulltools)
 <!-- badges: end -->
 
 Unlike other R packages for survival analysis, the weibulltools package

@@ -11,6 +11,7 @@
 * `plot_pop()`: Added support for multiple population lines.
 * Added function `estimate_cdf`: Unite functionality of `mr_method()`, `johnson_method()`, `kaplan_method()` and `nelson_method()`. Support multiple methods.
 * `plot_prob.cdf_estimation()`: Added support for multiple methods.
+* Added lifecycle badges
 
 ## Minor Changes
 * Added trace type "scatter" and scatter mode "markers" to `plot_layout`.
