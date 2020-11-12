@@ -14,7 +14,7 @@
 #'   \item \code{"nelson"}: \code{\link{nelson_method}}.
 #' }
 #'
-#' @param data A tibble returned by \link{reliability_data}.
+#' @param reliability_tbl A tibble returned by \link{reliability_data}.
 #' @param methods Character vector of methods used for estimating the failure
 #' probabilities. See 'Details'.
 #' @param options A list of named options passed to \code{<method>_method}. For
@@ -35,10 +35,10 @@
 #'
 #' @export
 estimate_cdf <- function(
-  data, methods, options = list()
+  reliability_tbl, methods, options = list()
 ) {
 
-  if (!inherits(data, "reliability_data")) {
+  if (!inherits(reliability_tbl, "reliability_data")) {
     stop("data must be a tibble returned from reliability_data().")
   }
 
@@ -59,11 +59,11 @@ estimate_cdf <- function(
   purrr::map_dfr(methods, function(method) {
     if (method == "mr") {
       method_funs[[method]](
-        data = data,
+        reliability_tbl = reliability_tbl,
         method = if (is.null(options$method)) "benard" else options$method
       )
     } else {
-      method_funs[[method]](data = data)
+      method_funs[[method]](reliability_tbl = reliability_tbl)
     }
   })
 }
@@ -124,18 +124,18 @@ mr_method <- function(
     stop("x, event and id must be of same length.")
   }
 
-  data <- tibble::tibble(id = id, x = x, status = event)
+  reliability_tbl <- reliability_data(x = x, status = event, id = id)
 
-  mr_method_(data, method)
+  mr_method_(reliability_tbl, method)
 }
 
-mr_method_ <- function(data, method = "benard") {
+mr_method_ <- function(reliability_tbl, method = "benard") {
 
-  if (!all(data$status == 1)) {
+  if (!all(reliability_tbl$status == 1)) {
     message("The mr method only considers failed units (event == 1).")
   }
 
-  tbl_in <- data
+  tbl_in <- reliability_tbl
 
   tbl_calc <- tbl_in %>%
     dplyr::filter(status == 1) %>%
@@ -211,14 +211,14 @@ johnson_method <- function(x, event, id = rep("XXXXXX", length(x))) {
     stop("x, event and id must be of same length.")
   }
 
-  data <- tibble::tibble(id = id, x = x, status = event)
+  reliability_tbl <- reliability_data(x = x, status = event, id = id)
 
-  johnson_method_(data)
+  johnson_method_(reliability_tbl)
 }
 
-johnson_method_ <- function(data) {
+johnson_method_ <- function(reliability_tbl) {
 
-  tbl_in <- data
+  tbl_in <- reliability_tbl
 
   tbl_calc <- tbl_in %>%
     dplyr::group_by(x) %>%
@@ -323,18 +323,18 @@ kaplan_method <- function(x, event, id = rep("XXXXXX", length(x))) {
     stop("x, event and id must be of same length.")
   }
 
-  data <- tibble::tibble(id = id, x = x, status = event)
+  reliability_tbl <- reliability_data(x = x, status = event, id = id)
 
-  kaplan_method_(data)
+  kaplan_method_(reliability_tbl)
 }
 
-kaplan_method_ <- function(data) {
+kaplan_method_ <- function(reliability_tbl) {
 
-  if (all(data$status == 1)) {
+  if (all(reliability_tbl$status == 1)) {
     warning('Use methods = "mr" since there is no censored data problem!')
   }
 
-  tbl_in <- data
+  tbl_in <- reliability_tbl
 
   tbl_calc <- tbl_in %>%
     dplyr::group_by(x) %>%
@@ -351,7 +351,7 @@ kaplan_method_ <- function(data) {
       n_in = sum(n_i) - n_out
     )
 
-  if (data$status[which.max(data$x)] == 0) {
+  if (reliability_tbl$status[which.max(reliability_tbl$x)] == 0) {
     tbl_calc <- tbl_calc %>%
       dplyr::mutate(
         prob = 1 - cumprod((n_in - failure) / n_in)
@@ -422,18 +422,18 @@ nelson_method <- function(x, event, id = rep("XXXXXX", length(x))) {
     stop("x, event and id must be of same length.")
   }
 
-  data <- tibble::tibble(id = id, x = x, status = event)
+  reliability_tbl <- reliability_data(x = x, status = event, id = id)
 
-  nelson_method_(data)
+  nelson_method_(reliability_tbl)
 }
 
-nelson_method_ <- function(data) {
+nelson_method_ <- function(reliability_tbl) {
 
-  if (all(data$status == 1)) {
+  if (all(reliability_tbl$status == 1)) {
     warning('Use methods = "mr" since there is no censored data problem!')
   }
 
-  tbl_in <- data
+  tbl_in <- reliability_tbl
 
   tbl_calc <- tbl_in %>%
     dplyr::group_by(x) %>%

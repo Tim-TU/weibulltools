@@ -141,8 +141,35 @@ r_squared_profiling <- function(x, y, thres, distribution = c("weibull3", "logno
 #'
 #' mle_weib3 <- ml_estimation(x = cycles, event = state,
 #'                            distribution = "weibull3", conf_level = 0.95)
+ml_estimation <- function(x, ...) {
+  UseMethod("ml_estimation")
+}
+
+#' @export
 #'
-ml_estimation <- function(
+#' @describeIn ml_estimation Provide reliability_tbl (preferred)
+ml_estimation.reliability_data <- function(
+  reliability_tbl,
+  distribution = c(
+    "weibull", "lognormal", "loglogistic", "normal", "logistic", "sev",
+    "weibull3", "lognormal3", "loglogistic3"),
+  wts = rep(1, length(x)),
+  conf_level = .95
+) {
+  distribution <- match.arg(distribution)
+
+  ml_estimation_(
+    reliability_tbl,
+    distribution = distribution,
+    wts = wts,
+    conf_level = conf_level
+  )
+}
+
+#' @export
+#'
+#' @describeIn ml_estimation Provide x and event manually (deprecated)
+ml_estimation.default <- function(
   x, event,
   distribution = c(
     "weibull", "lognormal", "loglogistic", "normal", "logistic", "sev",
@@ -151,12 +178,29 @@ ml_estimation <- function(
   conf_level = .95
 ) {
 
+  deprecate_soft(
+    "1.1.0",
+    "ml_estimation.default(x, event)",
+    "ml_estimation(reliability_data())",
+    "ml_estimation.default() will be removed in 1.3.0. Then ml_estimation.reliability_data
+    will be transfered to ml_estimation."
+  )
+
   distribution <- match.arg(distribution)
+
+  reliability_tbl <- reliability_data(x = x, status = event, id = "")
+
+  ml_estimation_(reliability_tbl, distribution, wts, conf_level)
+}
+
+ml_estimation_ <- function(reliability_tbl, distribution, wts, conf_level) {
+  x <- reliability_tbl$x
+  status <- reliability_tbl$status
 
   # Log-Location-Scale Models:
   if (distribution == "weibull" | distribution == "lognormal" | distribution == "loglogistic") {
     # ML - Estimation: Location-Scale Parameters
-    ml <- SPREDA::Lifedata.MLE(survival::Surv(x, event) ~ 1, dist = distribution,
+    ml <- SPREDA::Lifedata.MLE(survival::Surv(x, status) ~ 1, dist = distribution,
                                weights = wts)
     estimates_loc_sc <- c(SPREDA::coef.Lifedata.MLE(ml)[[1]],
                           SPREDA::coef.Lifedata.MLE(ml)[[2]])
@@ -228,7 +272,7 @@ ml_estimation <- function(
     ## Optimization of profile log-likelihood function:
     optim_gamma <- stats::optim(par = 0, fn = loglik_profiling, method = "L-BFGS-B",
                                 upper = (1 - (1 / 1e+5)) * min(x), lower = 0, control = list(fnscale = -1),
-                                x = x, event = event, distribution = distribution)
+                                x = x, status = status, distribution = distribution)
 
     ## Estimate of Threshold:
     estimate_gamma <- optim_gamma$par
@@ -239,7 +283,7 @@ ml_estimation <- function(
     ## Defining subset for unusual case of x_gamma being smaller or equal to 0:
     subs <- x_gamma > 0
 
-    ml_init <- SPREDA::Lifedata.MLE(survival::Surv(x_gamma[subs], event[subs]) ~ 1,
+    ml_init <- SPREDA::Lifedata.MLE(survival::Surv(x_gamma[subs], status[subs]) ~ 1,
                                     dist = substr(distribution, start = 1, stop = nchar(distribution) - 1),
                                     weights = wts)
 
@@ -250,8 +294,8 @@ ml_estimation <- function(
     ## Optimization of log-likelihood function with threshold:
     ml <- stats::optim(par = c(estimates_init[[1]], estimates_init[[2]],
                                estimates_init[[3]]), fn = loglik_function, method = "L-BFGS-B",
-                       lower = c(0, 0, 0), upper = c(Inf, Inf, (1 - (1 / 1e+5)) * min(x[event == 1])),
-                       control = list(fnscale = -1), x = x, event = event, wts = wts,
+                       lower = c(0, 0, 0), upper = c(Inf, Inf, (1 - (1 / 1e+5)) * min(x[status == 1])),
+                       control = list(fnscale = -1), x = x, status = status, wts = wts,
                        distribution = distribution, hessian = TRUE)
 
     ## Estimated parameters:
@@ -334,7 +378,7 @@ ml_estimation <- function(
       distr = distribution
     }
     ## Initial estimation step:
-    ml_init <- survival::survreg(survival::Surv(x, event) ~ 1, dist = distr,
+    ml_init <- survival::survreg(survival::Surv(x, status) ~ 1, dist = distr,
                                  weights = wts)
 
     ## Initial parameters:
@@ -343,7 +387,7 @@ ml_estimation <- function(
     ## Optimization of log-likelihood function:
     ml <- stats::optim(par = c(estimates_init[[1]], estimates_init[[2]]),
                        fn = loglik_function, method = "BFGS",
-                       control = list(fnscale = -1), x = x, event = event, wts = wts,
+                       control = list(fnscale = -1), x = x, status = status, wts = wts,
                        distribution = distribution, hessian = TRUE)
 
     ## Estimated parameters:
@@ -384,7 +428,7 @@ ml_estimation <- function(
   class(ml_output) <- c("parameter_estimation", class(ml_output))
 
   attr(ml_output, "data") <- tibble::tibble(
-    x = x, event = event
+    x = x, status = status
   )
   attr(ml_output, "distribution") <- distribution
 
