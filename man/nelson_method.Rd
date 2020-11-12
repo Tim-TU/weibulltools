@@ -4,7 +4,18 @@
 \alias{nelson_method}
 \title{Estimation of Failure Probabilities using the Nelson-Aalen Estimator}
 \usage{
-nelson_method(data)
+nelson_method(x, event, id = rep("XXXXXX", length(x)))
+}
+\arguments{
+\item{x}{A numeric vector which consists of lifetime data. Lifetime
+data could be every characteristic influencing the reliability of a product,
+e.g. operating time (days/months in service), mileage (km, miles), load
+cycles.}
+
+\item{event}{A vector of binary data (0 or 1) indicating whether unit \emph{i}
+is a right censored observation (= 0) or a failure (= 1).}
+
+\item{id}{A character vector for the identification of every unit.}
 }
 \value{
 A tibble containing id, lifetime characteristic, status of the
@@ -12,6 +23,10 @@ A tibble containing id, lifetime characteristic, status of the
   the cells of probability column are filled with NA.
 }
 \description{
+\lifecycle{soft-deprecated}
+
+The functionality of this function is incorporated into \code{\link{estimate_cdf}}.
+
 This non-parametric approach estimates the cumulative hazard rate in
 terms of (multiple) right censored data. By equating the definition of the
 hazard rate with the hazard rate according to Nelson-Aalen one can calculate
@@ -27,7 +42,5 @@ uic   <- c("3435", "1203", "958X", "XX71", "abcd", "tz46",
            "fl29", "AX23","Uy12", "kl1a")
 
 tbl_nel <- nelson_method(x = obs, event = state, id = uic)
-
-\lifecycle{soft-deprecated}
 
 }

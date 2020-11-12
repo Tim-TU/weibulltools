@@ -24,6 +24,10 @@ A tibble containing id, lifetime characteristic, status of the
   filled with NA values.
 }
 \description{
+\lifecycle{soft-deprecated}
+
+The functionality of this function is incorporated into \code{\link{estimate_cdf}}.
+
 This non-parametric approach is used to estimate the failure probabilities in
 terms of uncensored or (multiple) right censored data. Compared to complete data the
 correction is done by calculating adjusted ranks which takes non-defective
@@ -36,7 +40,5 @@ uic   <- c("3435", "1203", "958X", "XX71", "abcd", "tz46",
            "fl29", "AX23", "Uy12", "kl1a")
 
 tbl_john <- johnson_method(x = obs, event = state, id = uic)
-
-\lifecycle{soft-deprecated}
 
 }

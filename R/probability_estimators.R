@@ -73,6 +73,8 @@ estimate_cdf <- function(
 #' @description
 #' \lifecycle{soft-deprecated}
 #'
+#' The functionality of this function is incorporated into \code{\link{estimate_cdf}}.
+#'
 #' This non-parametric approach (\emph{Median Ranks}) is used to estimate the
 #' failure probabilities in terms of complete data. Two methods are available to
 #' estimate the cumulative distribution function \emph{F(t)}:
@@ -80,8 +82,6 @@ estimate_cdf <- function(
 #'   \item "benard"; Benard's approximation for Median Ranks
 #'   \item "invbeta"; Exact Median Ranks using the inverse beta distribution
 #' }
-#'
-#' The functionality of this function is incorporated into \code{\link{estimate_cdf}}.
 #'
 #' @param x A numeric vector which consists of lifetime data. Lifetime
 #'   data could be every characteristic influencing the reliability of a product,

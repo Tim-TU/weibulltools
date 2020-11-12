@@ -7,7 +7,7 @@
 estimate_cdf(data, methods, options = list())
 }
 \arguments{
-\item{data}{A tibble returned by \link{reliability_data}.}
+\item{data}{A tibble returned by \link{failure_data}.}
 
 \item{methods}{Character vector of methods used for estimating the failure
 probabilities. See 'Details'.}

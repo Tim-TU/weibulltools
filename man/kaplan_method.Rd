@@ -23,6 +23,10 @@ A tibble containing id, lifetime characteristic, status of the
   the cells of probability column are filled with NA.
 }
 \description{
+\lifecycle{soft-deprecated}
+
+The functionality of this function is incorporated into \code{\link{estimate_cdf}}.
+
 Whereas the non-parametric Kaplan-Meier estimator is used to estimate the
 survival function \emph{S(t)} in terms of (multiple) right censored data, the
 complement is an estimate of the cumulative distribution function \emph{F(t)}.
@@ -55,8 +59,6 @@ tbl <- tibble(obs = c(10000, 10000, 20000, 20000, 30000,
                  state = rep(1, 23))
 
 tbl_kap2 <- kaplan_method(x = tbl$obs, event = tbl$state)
-
-\lifecycle{soft-deprecated}
 
 }
 \references{
