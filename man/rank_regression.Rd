@@ -12,7 +12,7 @@ rank_regression(x, ...)
 \method{rank_regression}{cdf_estimation}(
   cdf_estimation,
   distribution = c("weibull", "lognormal", "loglogistic", "normal", "logistic", "sev",
-    "weibull3", "lognormal3"),
+    "weibull3", "lognormal3", "loglogistic3"),
   conf_level = 0.95
 )
 

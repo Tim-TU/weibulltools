@@ -122,19 +122,23 @@ data(shock)
 # generate random ids for units: 
 shock$id <- sample(c(letters, LETTERS), size = nrow(shock), replace = FALSE)
 
+shock_failure_tbl <- failure_data(shock, x = Distance, status = Censor, id = id)
+
 # Rank Regression: 
 # for rank_regression(), estimated failure probabilities are required: 
-df_shock <- johnson_method(id = shock$id, x = shock$Distance, event = shock$Censor)
+shock_cdf <- estimate_cdf(shock_failure_tbl, methods = "johnson")
 
 # Using all models which are provided in rank_regression: 
-dists <- c("weibull", "lognormal", "loglogistic", "normal", "logistic", "sev", 
+distributions <- c("weibull", "lognormal", "loglogistic", "normal", "logistic", "sev", 
            "weibull3", "lognormal3", "loglogistic3")
 
-mrr_list <- lapply(dists, rank_regression, x = df_shock$characteristic, 
-                   y = df_shock$prob, event = df_shock$status)
+library(purrr)
+mrr_list <- map(distributions, function(distribution) {
+  rank_regression(shock_cdf, distribution = distribution)
+})
 
 r_sq_vec <- sapply(mrr_list, "[[", "r_squared")
-names(r_sq_vec) <- dists
+names(r_sq_vec) <- distributions
 r_sq_vec
 ```
 <br> 
@@ -145,23 +149,22 @@ We will construct a probability plot for the Weibull distribution and add the es
 
 ```{r MRR weibull, fig.cap = "Figure 1: Median Rank Regression using two-parameter Weibull.", message = FALSE}
 # Again estimating weibull: 
-mrr_weibull <- rank_regression(x = df_shock$characteristic, y = df_shock$prob,
-                               event = df_shock$status, distribution = "weibull")
+mrr_weibull <- rank_regression(shock_cdf, distribution = "weibull")
 mrr_weibull 
 
 # Probability plot: 
-weibull_grid <- plot_prob(x = df_shock$characteristic, y = df_shock$prob, 
-                          event = df_shock$status, id = df_shock$id, 
-                          distribution = "weibull", 
-                          title_main = "Weibull Probability Plot", 
-                          title_x = "Mileage in km", 
-                          title_y = "Probability of Failure in %",
-                          title_trace = "Defect Shock Absorbers")
+weibull_grid <- plot_prob(
+  shock_cdf,
+  distribution = "weibull", 
+  title_main = "Weibull Probability Plot", 
+  title_x = "Mileage in km", 
+  title_y = "Probability of Failure in %",
+  title_trace = "Defect Shock Absorbers"
+)
 
-library(plotly) # pipe operator
 # Add regression line: 
 weibull_plot <- weibull_grid %>% 
-  plot_mod(x = df_shock$characteristic, loc_sc_params = mrr_weibull$loc_sc_params,
+  plot_mod(x = shock_cdf$characteristic, loc_sc_params = mrr_weibull$loc_sc_params,
                              distribution = "weibull",
                              title_trace = "Median Rank Regression")
 weibull_plot
@@ -171,11 +174,12 @@ weibull_plot
 
 ```{r ML all distributions, message = FALSE}
 # Using all models which are provided in ml_estimation: 
-ml_list <- lapply(dists, ml_estimation, x = df_shock$characteristic, 
-                  event = df_shock$status)
+ml_list <- map(distributions, function(distribution) {
+  ml_estimation(x = shock$Distance, event = shock$Censor, distribution = distribution)
+})
 
 loglik_vec <- sapply(ml_list, "[[", "logL")
-names(loglik_vec) <- dists
+names(loglik_vec) <- distributions
 loglik_vec
 ```
 
@@ -187,8 +191,12 @@ For comparison _Figure 1_ will be extended by a straight line estimated with ML.
 
 ```{r ML weibull, fig.cap = "Figure 2: Comparison of Median Rank Regression and Maximum Likelihood.", message = FALSE}
 # Again estimating weibull: 
-ml_weibull <- ml_estimation(x = df_shock$characteristic, event = df_shock$status, 
-                            distribution = "weibull")
+ml_weibull <- ml_estimation(
+  x = shock$Distance, 
+  event = shock$Censor, 
+  distribution = "weibull"
+)
+
 ml_weibull 
 
 # Add ML estimation to weibull_plot: 
@@ -198,7 +206,7 @@ ml_prob <- predict_prob(q = seq(6200, 30600, length.out = 100),
                         distribution = "weibull")
 
 weibull_both <- weibull_plot %>% 
-  add_lines(x = seq(6200, 30600, length.out = 100), y = SPREDA::qsev(ml_prob), 
+  plotly::add_lines(x = seq(6200, 30600, length.out = 100), y = SPREDA::qsev(ml_prob), 
             name = "Maximum Likelihood", color = I("#006400"), hoverinfo = "text", 
             text = ~paste(paste("\u03B7<sub>ML</sub>", ":", 
                                 round(ml_weibull$coefficients[[1]], digits = 2)), 
@@ -229,13 +237,21 @@ state <- c(rep(0, 5), rep(1, 67))
 id <- 1:length(cycles)
 
 # Two-parameter Log-normal:  
-ml_lognormal <- ml_estimation(x = cycles, event = state, 
-                            distribution = "lognormal")
+ml_lognormal <- ml_estimation(
+  x = cycles, 
+  event = state, 
+  distribution = "lognormal"
+)
+
 ml_lognormal
 
 # Three-parameter Log-normal:  
-ml_lognormal3 <- ml_estimation(x = cycles, event = state, 
-                            distribution = "lognormal3")
+ml_lognormal3 <- ml_estimation(
+  x = cycles, 
+  event = state, 
+  distribution = "lognormal3"
+)
+
 ml_lognormal3
 
 ```
@@ -272,7 +288,7 @@ ml_prob_lognormal <- predict_prob(q = seq(85, 325, length.out = 100),
                         distribution = "lognormal")
 
 lognormal_both <- lognormal_plot %>%
-  add_lines(x = seq(85, 325, length.out = 100), y = qnorm(ml_prob_lognormal),
+  plotly::add_lines(x = seq(85, 325, length.out = 100), y = qnorm(ml_prob_lognormal),
             name = "Two-parametric Log-normal", color = I("#006400"), hoverinfo = "text",
             text = ~paste(paste("\u03BC<sub>ML</sub>", ":",
                                 round(ml_lognormal$loc_sc_params[[1]], digits = 2)),

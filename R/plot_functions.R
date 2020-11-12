@@ -148,8 +148,9 @@ plot_prob <- function(
   UseMethod("plot_prob")
 }
 
-#' @export
 #' @describeIn plot_prob Provide x, y, event and id manually
+#'
+#' @export
 plot_prob.default <- function(
   x, y, event,
   id = rep("XXXXXX", length(x)),
@@ -165,13 +166,13 @@ plot_prob.default <- function(
   distribution <- match.arg(distribution)
   plot_method <- match.arg(plot_method)
 
-  tbl <- tibble::tibble(
+  cdf_estimation <- tibble::tibble(
     characteristic = x, prob = y, status = event, id = id,
     method = title_trace
   )
 
   plot_prob_(
-    tbl = tbl,
+    cdf_estimation = cdf_estimation,
     distribution = distribution,
     title_main = title_main,
     title_x = title_x,
@@ -199,7 +200,7 @@ plot_prob.cdf_estimation <- function(
   plot_method <- match.arg(plot_method)
 
   plot_prob_(
-    tbl = cdf_estimation,
+    cdf_estimation = cdf_estimation,
     distribution = distribution,
     title_main = title_main,
     title_x = title_x,
@@ -210,11 +211,11 @@ plot_prob.cdf_estimation <- function(
 }
 
 plot_prob_ <- function(
-  tbl, distribution, title_main, title_x, title_y, title_trace, plot_method
+  cdf_estimation, distribution, title_main, title_x, title_y, title_trace, plot_method
 ) {
 
   prob_tbl <- plot_prob_helper(
-    tbl, distribution
+    cdf_estimation, distribution
   )
 
   p_obj <- plot_layout(
