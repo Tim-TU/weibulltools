@@ -3,10 +3,10 @@ Type: Package
 Title: Statistical Methods for Life Data Analysis 
 Version: 1.0.1.9000
 Authors@R:
-    c(person("Hensel", "Tim-Gunnar", 
+    c(person("Tim-Gunnar", "Hensel", 
       email = "tim-gunnar.hensel@tu-berlin.de", 
       role = c("aut", "cre")),
-      person("Barkemeyer", "David",
+      person("David", "Barkemeyer",
       email = "david.barkemeyer@campus.tu-berlin.de",
       role = "aut")
     )
