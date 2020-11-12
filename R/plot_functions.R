@@ -15,7 +15,6 @@
 #'
 #' @return Returns a plotly object which contains the layout
 #'   that is used for probability plotting.
-#' @export
 #' @importFrom magrittr "%>%"
 #'
 #' @examples
@@ -91,9 +90,16 @@ plot_layout <- function(
 #'   is a right censored observation (= 0) or a failure (= 1).
 #' @param id A character vector for the identification of every unit.
 #' @param cdf_estimation CDF estimation returned by \code{\link{estimate_cdf}}.
-#' @inheritParams plot_layout
+#' @param distribution Supposed distribution of the random variable.
+#' @param title_main A character string which is assigned to the main title
+#'   of the plot.
+#' @param title_x A character string which is assigned to the title of the
+#'   x axis.
+#' @param title_y A character string which is assigned to the title of the
+#'   y axis.
 #' @param title_trace A character string whis is assigned to the trace shown in
 #'   the legend.
+#' @param plot_method Package, which is used for generating the plot output.
 #'
 #' @return Returns a plotly object containing the layout of the probability plot
 #'   provided by \code{\link{plot_layout}} and the plotting positions.
