@@ -331,7 +331,7 @@ kaplan_method <- function(x, event, id = rep("XXXXXX", length(x))) {
 kaplan_method_ <- function(data) {
 
   if (all(data$status == 1)) {
-    warning("Use mr_method since there is no censored data problem!")
+    warning('Use methods = "mr" since there is no censored data problem!')
   }
 
   tbl_in <- data
@@ -430,7 +430,7 @@ nelson_method <- function(x, event, id = rep("XXXXXX", length(x))) {
 nelson_method_ <- function(data) {
 
   if (all(data$status == 1)) {
-    warning("Use mr_method since there is no censored data problem!")
+    warning('Use methods = "mr" since there is no censored data problem!')
   }
 
   tbl_in <- data
