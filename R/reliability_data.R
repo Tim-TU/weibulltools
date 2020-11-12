@@ -34,12 +34,12 @@
 #' state <- c(rep(0, 5), rep(1, 67))
 #' id <- "XXXXXX"
 #'
-#' Example 1: Based on existing data.frame/tibble
+#' # Example 1: Based on existing data.frame/tibble
 #' tbl <- tibble::tibble(x = cycles, status = state, id = id)
-#' failure_tbl <- reliability_data(tbl, x = x, status = status, id = id)
+#' reliability_tbl <- reliability_data(tbl, x = x, status = status, id = id)
 #'
-#' Example 2: Based on vectors
-#' failure_tbl_2 <- reliability_data(x = cycles, status = state, id = id)
+#' # Example 2: Based on vectors
+#' reliability_tbl_2 <- reliability_data(x = cycles, status = state, id = id)
 #'
 #' @export
 reliability_data <- function(data = NULL, x, status, id) {

@@ -3,9 +3,21 @@
 \encoding{UTF-8}
 \name{ml_estimation}
 \alias{ml_estimation}
+\alias{ml_estimation.reliability_data}
+\alias{ml_estimation.default}
 \title{ML Estimation for Parametric Lifetime Distributions}
 \usage{
-ml_estimation(
+ml_estimation(x, ...)
+
+\method{ml_estimation}{reliability_data}(
+  reliability_tbl,
+  distribution = c("weibull", "lognormal", "loglogistic", "normal", "logistic", "sev",
+    "weibull3", "lognormal3", "loglogistic3"),
+  wts = rep(1, length(x)),
+  conf_level = 0.95
+)
+
+\method{ml_estimation}{default}(
   x,
   event,
   distribution = c("weibull", "lognormal", "loglogistic", "normal", "logistic", "sev",
@@ -20,9 +32,6 @@ data could be every characteristic influencing the reliability of a product,
 e.g. operating time (days/months in service), mileage (km, miles), load
 cycles.}
 
-\item{event}{A vector of binary data (0 or 1) indicating whether unit \emph{i}
-is a right censored observation (= 0) or a failure (= 1).}
-
 \item{distribution}{Supposed distribution of the random variable. The
 value can be \code{"weibull"}, \code{"lognormal"}, \code{"loglogistic"},
 \code{"normal"}, \code{"logistic"}, \code{"sev"} \emph{(smallest extreme value)},
@@ -35,6 +44,9 @@ vector with all components being 1 (same weights).}
 
 \item{conf_level}{Confidence level of the interval. The default value is
 \code{conf_level = 0.95}.}
+
+\item{event}{A vector of binary data (0 or 1) indicating whether unit \emph{i}
+is a right censored observation (= 0) or a failure (= 1).}
 }
 \value{
 Returns a list with the following components:
@@ -62,6 +74,13 @@ the parameterization provided by the \emph{stats} package like
 \code{\link{pweibull}}. The method is applicable for complete and (multiple)
 right censored data.
 }
+\section{Methods (by class)}{
+\itemize{
+\item \code{reliability_data}: Provide reliability_tbl (preferred)
+
+\item \code{default}: Provide x and event manually (deprecated)
+}}
+
 \examples{
 # Example 1: Fitting a two-parameter Weibull:
 obs   <- seq(10000, 100000, 10000)
@@ -82,7 +101,6 @@ state <- c(rep(0, 5), rep(1, 67))
 
 mle_weib3 <- ml_estimation(x = cycles, event = state,
                            distribution = "weibull3", conf_level = 0.95)
-
 }
 \references{
 Meeker, William Q; Escobar, Luis A., Statistical methods for

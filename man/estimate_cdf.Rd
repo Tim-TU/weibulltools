@@ -4,10 +4,10 @@
 \alias{estimate_cdf}
 \title{Estimation of Failure Probabilities}
 \usage{
-estimate_cdf(data, methods, options = list())
+estimate_cdf(reliability_tbl, methods, options = list())
 }
 \arguments{
-\item{data}{A tibble returned by \link{reliability_data}.}
+\item{reliability_tbl}{A tibble returned by \link{reliability_data}.}
 
 \item{methods}{Character vector of methods used for estimating the failure
 probabilities. See 'Details'.}

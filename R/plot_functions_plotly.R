@@ -154,7 +154,7 @@ plot_prob_plotly <- function(
       mode = "markers",
       hoverinfo = "text",
       color = ~method,
-      name = ~method,
+      name = paste0(title_trace, ": ", prob_tbl$method),
       text = paste(
         "ID:", prob_tbl$id,
         paste("<br>", paste0(mark_x, ":")), prob_tbl$characteristic,
