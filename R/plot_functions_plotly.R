@@ -142,8 +142,6 @@ plot_prob_plotly <- function(
   mark_x <- unlist(strsplit(title_x, " "))[1]
   mark_y <- unlist(strsplit(title_y, " "))[1]
 
-  #color <- I("#3C8DBC")
-
   # Construct probability plot:
   p_prob <- p_obj %>%
     plotly::add_trace(
@@ -153,7 +151,6 @@ plot_prob_plotly <- function(
       type = "scatter",
       mode = "markers",
       hoverinfo = "text",
-      color = ~method,
       name = paste0(title_trace, ": ", prob_tbl$method),
       text = paste(
         "ID:", prob_tbl$id,
@@ -184,8 +181,8 @@ plot_prob_mix_plotly <- function(
   mark_y <- unlist(strsplit(title_y, " "))[1]
 
   # Defining colors (max 5 subgroups):
-  cols <- c(I("#3C8DBC"), I("#FF0000"), I("#008000"), I("#ffa500"), I("#000000"))
-  cols <- cols[seq_along(unique(tbl_group$groups))]
+  colors <- c(I("#3C8DBC"), I("#FF0000"), I("#008000"), I("#ffa500"), I("#000000"))
+  colors <- colors[seq_along(unique(tbl_group$groups))]
 
   # Construct probability plot:
   plot <- p_obj %>%
@@ -197,7 +194,7 @@ plot_prob_mix_plotly <- function(
       mode = "markers",
       hoverinfo = "text",
       color = ~groups,
-      colors = cols,
+      colors = colors,
       text = ~paste(
         "ID:", id_s,
         paste("<br>", paste0(mark_x, ":")),
