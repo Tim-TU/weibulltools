@@ -3,24 +3,31 @@
 * `plot_conf()`: Switched arguments distribution and direction.
 * `rank_regression()`, `ml_estimation()`: Removed details argument.
 * `rank_regression()`, `ml_estimation()`: Renamed output: `loc_sc_coefficients` -> `loc_sc_params`, `loc_sc_vcov` -> `loc_sc_varcov`
-* `plot_pop()`: Added argument `tol` to restrict the range of failure probabilities. Removed argument `color`. Renamed argument `params` to `param_tbl`.
+* `plot_pop()`: Added argument `tol` to restrict the range of failure probabilities. Removed argument `color`. Renamed argument `params` to `param_tbl`. Changed behaviour of `param_tbl`: A tibble is now recommended instead of a vector.
 
-## Major Changes
-* Added support for ggplot2 in all plot_xxx functions.
-* Added function `reliability_data()`: Combine x, y, event and id in a tibble.
+## New Features
+* Added support for ggplot2 in all plot functions. Plot method can be selected in `plot_prob()` via argument `plot_method`.
+* Added function `reliability_data()`: Create consistent failure data.
 * `plot_pop()`: Added support for multiple population lines.
 * Added function `estimate_cdf`: Unite functionality of `mr_method()`, `johnson_method()`, `kaplan_method()` and `nelson_method()`. Support multiple methods.
-* `plot_prob.cdf_estimation()`: Added support for multiple methods.
+* `rank_regression()` is now an S3 generic. `rank_regression` becomes `rank_regression.default`. Added `rank_regression.cdf_estimation()`.
+* `plot_prob()` is now an S3 generic. `plot_prob()` becomes `plot_prob.default()`. Added `plot_prob.cdf_estimation()`.
+* Added lifecycle badges
 
-## Minor Changes
-* Added trace type "scatter" and scatter mode "markers" to `plot_layout`.
-* Added `rank_regression.cdf_estimation`. `rank_regression` -> `rank_regression.default`
+## Documentation
 * Capitalized parameter documentation.
 
-## Bugfixes
+## Lifecycle changes
+
+### Deprecated
+* `plot_layout()`
+* `mr_method()`, `johnson_method()`, `kaplan_method()` and `nelson_method()`: Use `estimate_cdf()` instead.
+
+## Minor improvements and bug fixes
 * Fixed bug inside `plot_mod_mix()` for the case of no mixture distribution
 * Fixed bug inside `confint_betabinom()`; many cases near one -> unique()
 * Fixed bug inside `mr_method()`: Assigning a rank for the same lifetime 
+* Added trace type "scatter" and scatter mode "markers" to `plot_layout`.
 
 # weibulltools v1.0.1
 * Fixed installation error when using clang compiler

@@ -23,6 +23,10 @@ A tibble containing id, lifetime characteristic, status of the
   the cells of probability column are filled with NA.
 }
 \description{
+\lifecycle{soft-deprecated}
+
+The functionality of this function is incorporated into \code{\link{estimate_cdf}}.
+
 This non-parametric approach estimates the cumulative hazard rate in
 terms of (multiple) right censored data. By equating the definition of the
 hazard rate with the hazard rate according to Nelson-Aalen one can calculate

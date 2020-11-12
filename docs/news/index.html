@@ -71,7 +71,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">weibulltools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.1.9000</span>
       </span>
     </div>
 
@@ -127,55 +127,75 @@
       
     </div>
 
-    <div id="weibulltools-110" class="section level1">
+    <div id="weibulltools-v110" class="section level1">
 <h1 class="page-header" data-toc-text="1.1.0">
-<a href="#weibulltools-110" class="anchor"></a>weibulltools 1.1.0<small> Unreleased </small>
+<a href="#weibulltools-v110" class="anchor"></a>weibulltools v1.1.0<small> Unreleased </small>
 </h1>
 <div id="breaking-changes" class="section level2">
 <h2 class="hasAnchor">
 <a href="#breaking-changes" class="anchor"></a>Breaking Changes</h2>
 <ul>
 <li>
-<code>plot_conf</code>: Switched arguments distribution and direction.</li>
+<code><a href="../reference/plot_conf.html">plot_conf()</a></code>: Switched arguments distribution and direction.</li>
 <li>
-<code>rank_regression</code>, <code>ml_estimation</code>: Removed details argument.</li>
+<code><a href="../reference/rank_regression.html">rank_regression()</a></code>, <code><a href="../reference/ml_estimation.html">ml_estimation()</a></code>: Removed details argument.</li>
 <li>
-<code>rank_regression</code>, <code>ml_estimation</code>: Renamed output: <code>loc_sc_coefficients</code> -&gt; <code>loc_sc_params</code>, <code>loc_sc_vcov</code> -&gt; <code>loc_sc_varcov</code>
+<code><a href="../reference/rank_regression.html">rank_regression()</a></code>, <code><a href="../reference/ml_estimation.html">ml_estimation()</a></code>: Renamed output: <code>loc_sc_coefficients</code> -&gt; <code>loc_sc_params</code>, <code>loc_sc_vcov</code> -&gt; <code>loc_sc_varcov</code>
 </li>
+<li>
+<code><a href="../reference/plot_pop.html">plot_pop()</a></code>: Added argument <code>tol</code> to restrict the range of failure probabilities. Removed argument <code>color</code>. Renamed argument <code>params</code> to <code>param_tbl</code>. Changed behaviour of <code>param_tbl</code>: A tibble is now recommended instead of a vector.</li>
 </ul>
 </div>
-<div id="major-changes" class="section level2">
+<div id="new-features" class="section level2">
 <h2 class="hasAnchor">
-<a href="#major-changes" class="anchor"></a>Major Changes</h2>
+<a href="#new-features" class="anchor"></a>New Features</h2>
 <ul>
-<li>Added support for ggplot2 in all plot_xxx functions.</li>
-<li>Added S3 interface to cdf estimation, parameter estimation and plotting (See Minor Changes for details).</li>
+<li>Added support for ggplot2 in all plot functions. Plot method can be selected in <code><a href="../reference/plot_prob.html">plot_prob()</a></code> via argument <code>plot_method</code>.</li>
+<li>Added function <code><a href="../reference/reliability_data.html">reliability_data()</a></code>: Create consistent failure data.</li>
+<li>
+<code><a href="../reference/plot_pop.html">plot_pop()</a></code>: Added support for multiple population lines.</li>
+<li>Added function <code>estimate_cdf</code>: Unite functionality of <code><a href="../reference/mr_method.html">mr_method()</a></code>, <code><a href="../reference/johnson_method.html">johnson_method()</a></code>, <code><a href="../reference/kaplan_method.html">kaplan_method()</a></code> and <code><a href="../reference/nelson_method.html">nelson_method()</a></code>. Support multiple methods.</li>
+<li>
+<code><a href="../reference/rank_regression.html">rank_regression()</a></code> is now an S3 generic. <code>rank_regression</code> becomes <code>rank_regression.default</code>. Added <code><a href="../reference/rank_regression.html">rank_regression.cdf_estimation()</a></code>.</li>
+<li>
+<code><a href="../reference/plot_prob.html">plot_prob()</a></code> is now an S3 generic. <code><a href="../reference/plot_prob.html">plot_prob()</a></code> becomes <code><a href="../reference/plot_prob.html">plot_prob.default()</a></code>. Added <code><a href="../reference/plot_prob.html">plot_prob.cdf_estimation()</a></code>.</li>
+<li>Added lifecycle badges</li>
 </ul>
 </div>
-<div id="minor-changes" class="section level2">
+<div id="documentation" class="section level2">
 <h2 class="hasAnchor">
-<a href="#minor-changes" class="anchor"></a>Minor Changes</h2>
+<a href="#documentation" class="anchor"></a>Documentation</h2>
 <ul>
+<li>Capitalized parameter documentation.</li>
+</ul>
+</div>
+<div id="lifecycle-changes" class="section level2">
+<h2 class="hasAnchor">
+<a href="#lifecycle-changes" class="anchor"></a>Lifecycle changes</h2>
+<div id="deprecated" class="section level3">
+<h3 class="hasAnchor">
+<a href="#deprecated" class="anchor"></a>Deprecated</h3>
+<ul>
+<li><code><a href="../reference/plot_layout.html">plot_layout()</a></code></li>
+<li>
+<code><a href="../reference/mr_method.html">mr_method()</a></code>, <code><a href="../reference/johnson_method.html">johnson_method()</a></code>, <code><a href="../reference/kaplan_method.html">kaplan_method()</a></code> and <code><a href="../reference/nelson_method.html">nelson_method()</a></code>: Use <code><a href="../reference/estimate_cdf.html">estimate_cdf()</a></code> instead.</li>
+</ul>
+</div>
+</div>
+<div id="minor-improvements-and-bug-fixes" class="section level2">
+<h2 class="hasAnchor">
+<a href="#minor-improvements-and-bug-fixes" class="anchor"></a>Minor improvements and bug fixes</h2>
+<ul>
+<li>Fixed bug inside <code><a href="../reference/plot_mod_mix.html">plot_mod_mix()</a></code> for the case of no mixture distribution</li>
+<li>Fixed bug inside <code><a href="../reference/confint_betabinom.html">confint_betabinom()</a></code>; many cases near one -&gt; unique()</li>
+<li>Fixed bug inside <code><a href="../reference/mr_method.html">mr_method()</a></code>: Assigning a rank for the same lifetime</li>
 <li>Added trace type “scatter” and scatter mode “markers” to <code>plot_layout</code>.</li>
-<li>Added function <code>reliability_data</code>: Combine x, y, event and id in a data.frame.</li>
-<li>Added function <code>estimate_cdf</code>: Unite functionality of <code>mr_method</code>, <code>johnson_method</code>, <code>kaplan_method</code> and <code>nelson_method</code>.</li>
-<li>Added <code>rank_regression.cdf_estimation</code>. <code>rank_regression</code> -&gt; <code>rank_regression.default</code>
-</li>
-</ul>
-</div>
-<div id="bugfixes" class="section level2">
-<h2 class="hasAnchor">
-<a href="#bugfixes" class="anchor"></a>Bugfixes</h2>
-<ul>
-<li>Fixed bug inside plot_mod_mix() for the case of no mixture distribution</li>
-<li>Fixed bug inside confint_betabinom(); many cases near one -&gt; unique()</li>
-<li>Fixed bug inside mr_method(): Assigning a rank for the same lifetime</li>
 </ul>
 </div>
 </div>
-    <div id="weibulltools-101" class="section level1">
+    <div id="weibulltools-v101" class="section level1">
 <h1 class="page-header" data-toc-text="1.0.1">
-<a href="#weibulltools-101" class="anchor"></a>weibulltools 1.0.1<small> 2019-01-29 </small>
+<a href="#weibulltools-v101" class="anchor"></a>weibulltools v1.0.1<small> 2019-01-29 </small>
 </h1>
 <ul>
 <li>Fixed installation error when using clang compiler</li>
@@ -185,21 +205,32 @@
 <h1 class="page-header" data-toc-text="1.0.0">
 <a href="#weibulltools-100" class="anchor"></a>weibulltools 1.0.0<small> 2019-01-26 </small>
 </h1>
+<div id="prerequisite-for-package-usage" class="section level2">
+<h2 class="hasAnchor">
+<a href="#prerequisite-for-package-usage" class="anchor"></a>Prerequisite for Package Usage:</h2>
+<ul>
+<li>Since RcppArmadillo is used, the R version should be at least 3.3.0 (listed under Depends in DESCRIPTION file)</li>
+</ul>
+</div>
+<div id="changes" class="section level2">
+<h2 class="hasAnchor">
+<a href="#changes" class="anchor"></a>Changes</h2>
 <ul>
 <li>Vignettes for non-parametric probability estimation, parameter estimation using Median-Rank Regression and Maximum-Likelihood and mixture model estimation are provided.</li>
-<li>Argument <em>y</em> in functions plot_prob_mix() and plot_mod_mix() is deprecated and not used anymore.</li>
-<li>Argument <em>reg_output</em> in functions plot_prob_mix() and plot_mod_mix() is deprecated; use <em>mix_output</em> instead.</li>
-<li>Function plot_mod_mix() was revised and updated in the way that the obtained results of the function mixmod_em() can be visualized.</li>
-<li>Function plot_prob_mix() was revised and updated in the way that the obtained results of the function mixmod_em() can be visualized.</li>
-<li>Implementation of EM-Algorithm using Newton-Raphson. The algorithm is written in c++ (mixture_em_cpp()) and is called in mixmod_em().</li>
-<li>New method for the computation of Fisher’s Confidence Bounds regarding probabilities is used. These method is called “z-Procedure” and is more appropriate to manage the bend-back behaviour. Therefore an adjustment of functions delta_method() and confint_fisher() was made.</li>
+<li>Argument <em>y</em> in functions <code><a href="../reference/plot_prob_mix.html">plot_prob_mix()</a></code> and <code><a href="../reference/plot_mod_mix.html">plot_mod_mix()</a></code> is deprecated and not used anymore.</li>
+<li>Argument <em>reg_output</em> in functions <code><a href="../reference/plot_prob_mix.html">plot_prob_mix()</a></code> and <code><a href="../reference/plot_mod_mix.html">plot_mod_mix()</a></code> is deprecated; use <em>mix_output</em> instead.</li>
+<li>Function <code><a href="../reference/plot_mod_mix.html">plot_mod_mix()</a></code> was revised and updated in the way that the obtained results of the function <code><a href="../reference/mixmod_em.html">mixmod_em()</a></code> can be visualized.</li>
+<li>Function <code><a href="../reference/plot_prob_mix.html">plot_prob_mix()</a></code> was revised and updated in the way that the obtained results of the function <code><a href="../reference/mixmod_em.html">mixmod_em()</a></code> can be visualized.</li>
+<li>Implementation of EM-Algorithm using Newton-Raphson. The algorithm is written in c++ (<code><a href="../reference/mixture_em_cpp.html">mixture_em_cpp()</a></code>) and is called in <code><a href="../reference/mixmod_em.html">mixmod_em()</a></code>.</li>
+<li>New method for the computation of Fisher’s Confidence Bounds regarding probabilities is used. These method is called “z-Procedure” and is more appropriate to manage the bend-back behaviour. Therefore an adjustment of functions <code><a href="../reference/delta_method.html">delta_method()</a></code> and <code><a href="../reference/confint_fisher.html">confint_fisher()</a></code> was made.</li>
 <li>Implementation of log-location-scale models with threshold parameter like three-parametric weibull (“weibull3”), three-parametric lognormal (“lognormal3”) and three-parametric loglogistic (“loglogistic3”).</li>
 <li>Implementation of location-scale models like smallest extreme value (“sev”), normal (“normal”) and logistic (“logistic”).</li>
-<li>Implementation of <em>Log-Likelihood Profiling</em> for three-parametric models in function loglik_profiling(). In general this function is used inside ml_estimation() for the purpose of estimating threshold parameter of three-parametric models.</li>
-<li>Implementation of <em>R-Squared Profiling</em> for three-parametric models in function r_squared_profiling(). In general this function is used inside rank_regression() for the purpose of estimating threshold parameter of three-parametric models.</li>
-<li>Implementation of <em>Log-Likelihood Function</em> for all implemented models in function loglik_function(). In general this function is used inside ml_estimation() for the purpose of estimating the variance-covariance matrix of location-scale models “sev”, “normal” and “logistic”. The function is also used to estimate the variance-covariance matrix of log-location-scale models with a threshold parameter, i.e. “weibull3”, “lognormal3” and “loglogistic3”.</li>
-<li>new argument in function ml_estimation(): <em>wts</em> for case weights.</li>
+<li>Implementation of <em>Log-Likelihood Profiling</em> for three-parametric models in function <code><a href="../reference/loglik_profiling.html">loglik_profiling()</a></code>. In general this function is used inside <code><a href="../reference/ml_estimation.html">ml_estimation()</a></code> for the purpose of estimating threshold parameter of three-parametric models.</li>
+<li>Implementation of <em>R-Squared Profiling</em> for three-parametric models in function <code><a href="../reference/r_squared_profiling.html">r_squared_profiling()</a></code>. In general this function is used inside <code><a href="../reference/rank_regression.html">rank_regression()</a></code> for the purpose of estimating threshold parameter of three-parametric models.</li>
+<li>Implementation of <em>Log-Likelihood Function</em> for all implemented models in function <code><a href="../reference/loglik_function.html">loglik_function()</a></code>. In general this function is used inside <code><a href="../reference/ml_estimation.html">ml_estimation()</a></code> for the purpose of estimating the variance-covariance matrix of location-scale models “sev”, “normal” and “logistic”. The function is also used to estimate the variance-covariance matrix of log-location-scale models with a threshold parameter, i.e. “weibull3”, “lognormal3” and “loglogistic3”.</li>
+<li>new argument in function <code><a href="../reference/ml_estimation.html">ml_estimation()</a></code>: <em>wts</em> for case weights.</li>
 </ul>
+</div>
 </div>
   </div>
 
@@ -214,7 +245,7 @@
 
       <footer>
       <div class="copyright">
-  <p>Developed by Hensel Tim-Gunnar.</p>
+  <p>Developed by Hensel Tim-Gunnar, Barkemeyer David.</p>
 </div>
 
 <div class="pkgdown">

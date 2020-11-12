@@ -40,7 +40,9 @@
 
 
 <meta property="og:title" content="Estimation of Failure Probabilities using Kaplan-Meier — kaplan_method" />
-<meta property="og:description" content="Whereas the non-parametric Kaplan-Meier estimator is used to estimate the
+<meta property="og:description" content="
+The functionality of this function is incorporated into estimate_cdf.
+Whereas the non-parametric Kaplan-Meier estimator is used to estimate the
 survival function S(t) in terms of (multiple) right censored data, the
 complement is an estimate of the cumulative distribution function F(t).
 One modification is made in contrast to the orginial Kaplan-Meier estimator
@@ -142,7 +144,9 @@ calculated on the basis of Kaplan-Meier failure probabilities." />
     </div>
 
     <div class="ref-description">
-    <p>Whereas the non-parametric Kaplan-Meier estimator is used to estimate the
+    <p><img src='figures/lifecycle-soft-deprecated.svg' alt='Soft-deprecated lifecycle' /></p>
+<p>The functionality of this function is incorporated into <code><a href='estimate_cdf.html'>estimate_cdf</a></code>.</p>
+<p>Whereas the non-parametric Kaplan-Meier estimator is used to estimate the
 survival function <em>S(t)</em> in terms of (multiple) right censored data, the
 complement is an estimate of the cumulative distribution function <em>F(t)</em>.
 One modification is made in contrast to the orginial Kaplan-Meier estimator
@@ -199,7 +203,9 @@ https://www.itl.nist.gov/div898/handbook/apr/section2/apr215.htm, 30/04/2018</p>
            <span class='st'>"fl29"</span>, <span class='st'>"AX23"</span>,<span class='st'>"Uy12"</span>, <span class='st'>"kl1a"</span><span class='op'>)</span>
 
 <span class='va'>tbl_kap</span> <span class='op'>&lt;-</span> <span class='fu'>kaplan_method</span><span class='op'>(</span>x <span class='op'>=</span> <span class='va'>obs</span>, event <span class='op'>=</span> <span class='va'>state</span>, id <span class='op'>=</span> <span class='va'>uic</span><span class='op'>)</span>
-
+</div><div class='output co'>#&gt; <span class='warning'>Warning: `kaplan_method()` is deprecated as of lifecycle 1.1.0.</span>
+#&gt; <span class='warning'><span style='color: #555555;'>This warning is displayed once every 8 hours.</span><span></span>
+#&gt; <span class='warning'></span><span style='color: #555555;'>Call `lifecycle::last_warnings()` to see where this warning was generated.</span><span></span></div><div class='input'>
 <span class='co'># Example 2</span>
 <span class='va'>tbl</span> <span class='op'>&lt;-</span> <span class='fu'>tibble</span><span class='op'>(</span>obs <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>10000</span>, <span class='fl'>10000</span>, <span class='fl'>20000</span>, <span class='fl'>20000</span>, <span class='fl'>30000</span>,
                          <span class='fl'>30000</span>, <span class='fl'>30000</span>, <span class='fl'>30000</span>, <span class='fl'>40000</span>, <span class='fl'>50000</span>,
@@ -209,7 +215,8 @@ https://www.itl.nist.gov/div898/handbook/apr/section2/apr215.htm, 30/04/2018</p>
                  state <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/rep.html'>rep</a></span><span class='op'>(</span><span class='fl'>1</span>, <span class='fl'>23</span><span class='op'>)</span><span class='op'>)</span>
 </div><div class='output co'>#&gt; <span class='error'>Error in tibble(obs = c(10000, 10000, 20000, 20000, 30000, 30000, 30000,     30000, 40000, 50000, 50000, 60000, 70000, 70000, 70000, 70000,     80000, 80000, 80000, 80000, 90000, 90000, 1e+05), state = rep(1,     23)): konnte Funktion "tibble" nicht finden</span></div><div class='input'>
 <span class='va'>tbl_kap2</span> <span class='op'>&lt;-</span> <span class='fu'>kaplan_method</span><span class='op'>(</span>x <span class='op'>=</span> <span class='va'>tbl</span><span class='op'>$</span><span class='va'>obs</span>, event <span class='op'>=</span> <span class='va'>tbl</span><span class='op'>$</span><span class='va'>state</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='error'>Error in kaplan_method(x = tbl$obs, event = tbl$state): Objekt 'tbl' nicht gefunden</span></div></pre>
+</div><div class='output co'>#&gt; <span class='error'>Error in kaplan_method(x = tbl$obs, event = tbl$state): Objekt 'tbl' nicht gefunden</span></div><div class='input'>
+</div></span></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

@@ -40,7 +40,9 @@
 
 
 <meta property="og:title" content="Estimation of Failure Probabilities using the Nelson-Aalen Estimator — nelson_method" />
-<meta property="og:description" content="This non-parametric approach estimates the cumulative hazard rate in
+<meta property="og:description" content="
+The functionality of this function is incorporated into estimate_cdf.
+This non-parametric approach estimates the cumulative hazard rate in
 terms of (multiple) right censored data. By equating the definition of the
 hazard rate with the hazard rate according to Nelson-Aalen one can calculate
 the failure probabilities.
@@ -136,7 +138,9 @@ on the basis of Nelson-Aalen failure probabilities." />
     </div>
 
     <div class="ref-description">
-    <p>This non-parametric approach estimates the cumulative hazard rate in
+    <p><img src='figures/lifecycle-soft-deprecated.svg' alt='Soft-deprecated lifecycle' /></p>
+<p>The functionality of this function is incorporated into <code><a href='estimate_cdf.html'>estimate_cdf</a></code>.</p>
+<p>This non-parametric approach estimates the cumulative hazard rate in
 terms of (multiple) right censored data. By equating the definition of the
 hazard rate with the hazard rate according to Nelson-Aalen one can calculate
 the failure probabilities.
@@ -181,8 +185,10 @@ is a right censored observation (= 0) or a failure (= 1).</p></td>
            <span class='st'>"fl29"</span>, <span class='st'>"AX23"</span>,<span class='st'>"Uy12"</span>, <span class='st'>"kl1a"</span><span class='op'>)</span>
 
 <span class='va'>tbl_nel</span> <span class='op'>&lt;-</span> <span class='fu'>nelson_method</span><span class='op'>(</span>x <span class='op'>=</span> <span class='va'>obs</span>, event <span class='op'>=</span> <span class='va'>state</span>, id <span class='op'>=</span> <span class='va'>uic</span><span class='op'>)</span>
-
-</div></pre>
+</div><div class='output co'>#&gt; <span class='warning'>Warning: `nelson_method()` is deprecated as of lifecycle 1.1.0.</span>
+#&gt; <span class='warning'><span style='color: #555555;'>This warning is displayed once every 8 hours.</span><span></span>
+#&gt; <span class='warning'></span><span style='color: #555555;'>Call `lifecycle::last_warnings()` to see where this warning was generated.</span><span></span></div><div class='input'>
+</div></span></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

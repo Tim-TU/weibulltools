@@ -7,9 +7,18 @@
 plot_pop(
   p_obj,
   x,
-  params,
+  param_tbl,
   distribution = c("weibull", "lognormal", "loglogistic"),
-  color = I("#FF0000"),
+  tol = 1e-06,
+  title_trace = "Population"
+)
+
+plot_pop(
+  p_obj,
+  x,
+  param_tbl,
+  distribution = c("weibull", "lognormal", "loglogistic"),
+  tol = 1e-06,
   title_trace = "Population"
 )
 }
@@ -19,6 +28,17 @@ by \code{\link{plot_layout}}.}
 
 \item{x}{A numeric vector containing the x-coordinates of the population line.}
 
+\item{param_tbl}{A tibble. See 'Details'.}
+
+\item{distribution}{Supposed distribution of the random variable.}
+
+\item{tol}{The failure probability is restricted to the interval
+\eqn{[tol, 1 - tol]}. The default value is in accordance with the decimal
+places shown in the hover for \code{plot_method = "plotly"}.}
+
+\item{title_trace}{A character string whis is assigned to the trace shown in
+the legend.}
+
 \item{params}{A (named) numeric vector, where the first entry is the location
 parameter \eqn{\mu} and the second entry is the scale parameter \eqn{\sigma}
 of a lognormal or loglogistic distribution. If the distribution value is
@@ -26,14 +46,9 @@ of a lognormal or loglogistic distribution. If the distribution value is
 the second entry must be the shape parameter \eqn{\beta}. Parametrization
 is the same used in \code{\link{rweibull}}.}
 
-\item{distribution}{Supposed distribution of the random variable.}
-
 \item{color}{The color of the population line should be added as follows:
 For hexadecimal codes: \code{color = I("#3C8DBC")} and for a color specified
 with a string: \code{color = I("blue")}.}
-
-\item{title_trace}{A character string whis is assigned to the trace shown in
-the legend.}
 }
 \value{
 A plotly object which contains the supposed linearized population
@@ -41,6 +56,17 @@ A plotly object which contains the supposed linearized population
 }
 \description{
 This function adds a linearized CDF to an existing plotly grid.
+
+This function adds one or multiple linearized CDF to an existing plotly grid.
+}
+\details{
+\code{param_tbl} must be a tibble with the following columns:
+\itemize{
+  \item \code{param_1}: Location parameter \eqn{\mu} for \code{lognormal} and
+    \code{loglogistic}. Scale parameter \eqn{\eta} for \code{weibull}.
+  \item \code{param_2}: Scale parameter \eqn{\sigma} for \code{lognormal} and
+    \code{loglogistic}. Shape parameter \eqn{\beta} for \code{weibull}.
+}
 }
 \examples{
 x <- rweibull(n = 100, shape = 1, scale = 20000)
@@ -50,7 +76,7 @@ grid_weibull <- plot_layout(x = x,
                             title_x = "Time to Failure",
                             title_y = "Failure Probability")
 pop_weibull <- plot_pop(p_obj = grid_weibull,
-                        x = x, params = c(20000, 1),
+                        x = x, param_tbl = c(20000, 1),
                         distribution = "weibull", color = I("green"),
                         title_trace = "Population")
 

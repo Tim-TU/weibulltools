@@ -3,10 +3,10 @@ Type: Package
 Title: Statistical Methods for Life Data Analysis 
 Version: 1.0.1.9000
 Authors@R:
-    c(person("Hensel", "Tim-Gunnar", 
+    c(person("Tim-Gunnar", "Hensel", 
       email = "tim-gunnar.hensel@tu-berlin.de", 
       role = c("aut", "cre")),
-      person("Barkemeyer", "David",
+      person("David", "Barkemeyer",
       email = "david.barkemeyer@campus.tu-berlin.de",
       role = "aut")
     )
@@ -41,19 +41,20 @@ Description: Contains methods for examining bench test or field data using the
              to existing plots. 
 License: GPL-2
 Imports:
-    dplyr, 
+    dplyr,
     ggplot2,
     LearnBayes,
-    magrittr, 
-    plotly, 
+    magrittr,
+    plotly,
     purrr,
     Rcpp,
     sandwich,
-    segmented, 
-    SPREDA, 
+    segmented,
+    SPREDA,
     survival,
     tibble,
-    tidyr
+    tidyr,
+    lifecycle
 LinkingTo: Rcpp (>= 0.12.18), RcppArmadillo
 Depends: R (>= 3.3.0)
 Encoding: UTF-8
@@ -65,3 +66,4 @@ Suggests:
     testthat
 VignetteBuilder: knitr
 Config/testthat/edition: 3
+RdMacros: lifecycle

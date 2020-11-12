@@ -40,7 +40,9 @@
 
 
 <meta property="og:title" content="Estimation of Failure Probabilities using Johnson's Method — johnson_method" />
-<meta property="og:description" content="This non-parametric approach is used to estimate the failure probabilities in
+<meta property="og:description" content="
+The functionality of this function is incorporated into estimate_cdf.
+This non-parametric approach is used to estimate the failure probabilities in
 terms of uncensored or (multiple) right censored data. Compared to complete data the
 correction is done by calculating adjusted ranks which takes non-defective
 units into account." />
@@ -133,7 +135,9 @@ units into account." />
     </div>
 
     <div class="ref-description">
-    <p>This non-parametric approach is used to estimate the failure probabilities in
+    <p><img src='figures/lifecycle-soft-deprecated.svg' alt='Soft-deprecated lifecycle' /></p>
+<p>The functionality of this function is incorporated into <code><a href='estimate_cdf.html'>estimate_cdf</a></code>.</p>
+<p>This non-parametric approach is used to estimate the failure probabilities in
 terms of uncensored or (multiple) right censored data. Compared to complete data the
 correction is done by calculating adjusted ranks which takes non-defective
 units into account.</p>
@@ -176,6 +180,7 @@ is a right censored observation (= 0) or a failure (= 1).</p></td>
            <span class='st'>"fl29"</span>, <span class='st'>"AX23"</span>, <span class='st'>"Uy12"</span>, <span class='st'>"kl1a"</span><span class='op'>)</span>
 
 <span class='va'>tbl_john</span> <span class='op'>&lt;-</span> <span class='fu'>johnson_method</span><span class='op'>(</span>x <span class='op'>=</span> <span class='va'>obs</span>, event <span class='op'>=</span> <span class='va'>state</span>, id <span class='op'>=</span> <span class='va'>uic</span><span class='op'>)</span>
+
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

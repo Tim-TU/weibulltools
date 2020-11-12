@@ -1,8 +1,10 @@
 #' Estimation of Failure Probabilities
 #'
+#' @description
 #' Estimate failure probabilities for uncensored or (multiple) right-censored
 #' data.
 #'
+#' @details
 #' Depending on the \code{methods} argument one or more of the following functions
 #' are called:
 #' \itemize{
@@ -48,31 +50,30 @@ estimate_cdf <- function(
   }
 
   method_funs <- list(
-    mr = mr_method,
-    johnson = johnson_method,
-    kaplan = kaplan_method,
-    nelson = nelson_method
+    mr = mr_method_,
+    johnson = johnson_method_,
+    kaplan = kaplan_method_,
+    nelson = nelson_method_
   )
 
   purrr::map_dfr(methods, function(method) {
     if (method == "mr") {
       method_funs[[method]](
-        x = data$x,
-        event = data$status,
-        id = data$id,
+        data = data,
         method = if (is.null(options$method)) "benard" else options$method
       )
     } else {
-      method_funs[[method]](
-        x = data$x,
-        event = data$status,
-        id = data$id
-      )
+      method_funs[[method]](data = data)
     }
   })
 }
 
 #' Estimation of Failure Probabilities using Median Ranks
+#'
+#' @description
+#' \lifecycle{soft-deprecated}
+#'
+#' The functionality of this function is incorporated into \code{\link{estimate_cdf}}.
 #'
 #' This non-parametric approach (\emph{Median Ranks}) is used to estimate the
 #' failure probabilities in terms of complete data. Two methods are available to
@@ -94,7 +95,6 @@ estimate_cdf <- function(
 #' @return A tibble containing id, lifetime characteristic, status of the
 #'   unit, the rank and the estimated failure probability.
 #'
-#' @export
 #' @examples
 #' # Example 1
 #' obs   <- seq(10000, 100000, 10000)
@@ -108,19 +108,34 @@ estimate_cdf <- function(
 #' # Example 2
 #' tbl_mr_invbeta <- mr_method(x = obs, event = state, id = uic,
 #'                            method = "invbeta")
+#'
+#' @export
+mr_method <- function(
+  x,
+  event = rep(1, length(x)),
+  id = rep("XXXXXX", length(x)),
+  method = c("benard", "invbeta")
+) {
+  deprecate_soft("1.1.0", "mr_method()")
 
-mr_method <- function(x, event = rep(1, length(x)),
-                      id = rep("XXXXXX", length(x)), method = "benard") {
+  method <- match.arg(method)
 
   if (!((length(x) == length(event)) && (length(x) == length(id)))) {
     stop("x, event and id must be of same length.")
   }
 
-  if (!all(event == 1)) {
+  data <- tibble::tibble(id = id, x = x, status = event)
+
+  mr_method_(data, method)
+}
+
+mr_method_ <- function(data, method = "benard") {
+
+  if (!all(data$status == 1)) {
     message("The mr method only considers failed units (event == 1).")
   }
 
-  tbl_in <- tibble::tibble(id = id, x = x, status = event)
+  tbl_in <- data
 
   tbl_calc <- tbl_in %>%
     dplyr::filter(status == 1) %>%
@@ -149,7 +164,8 @@ mr_method <- function(x, event = rep(1, length(x)),
       )
     ) %>%
     dplyr::rename(characteristic = x) %>%
-    dplyr::mutate(method = "mr")
+    dplyr::mutate(method = "mr") %>%
+    dplyr::select(id, characteristic, status, rank, prob, method)
 
   class(tbl_out) <- c("cdf_estimation", class(tbl_out))
 
@@ -158,6 +174,11 @@ mr_method <- function(x, event = rep(1, length(x)),
 
 
 #' Estimation of Failure Probabilities using Johnson's Method
+#'
+#' @description
+#' \lifecycle{soft-deprecated}
+#'
+#' The functionality of this function is incorporated into \code{\link{estimate_cdf}}.
 #'
 #' This non-parametric approach is used to estimate the failure probabilities in
 #' terms of uncensored or (multiple) right censored data. Compared to complete data the
@@ -173,7 +194,6 @@ mr_method <- function(x, event = rep(1, length(x)),
 #'   censored observations the cells of the rank and probabilty columns are
 #'   filled with NA values.
 #'
-#' @export
 #' @examples
 #' obs   <- seq(10000, 100000, 10000)
 #' state <- c(0, 1, 1, 0, 0, 0, 1, 0, 1, 0)
@@ -181,14 +201,24 @@ mr_method <- function(x, event = rep(1, length(x)),
 #'            "fl29", "AX23", "Uy12", "kl1a")
 #'
 #' tbl_john <- johnson_method(x = obs, event = state, id = uic)
-
+#'
+#' @export
 johnson_method <- function(x, event, id = rep("XXXXXX", length(x))) {
+
+  deprecate_soft("1.1.0", "johnson_method()")
 
   if (!((length(x) == length(event)) && (length(x) == length(id)))) {
     stop("x, event and id must be of same length.")
   }
 
-  tbl_in <- tibble::tibble(id = id, x = x, status = event)
+  data <- tibble::tibble(id = id, x = x, status = event)
+
+  johnson_method_(data)
+}
+
+johnson_method_ <- function(data) {
+
+  tbl_in <- data
 
   tbl_calc <- tbl_in %>%
     dplyr::group_by(x) %>%
@@ -225,7 +255,8 @@ johnson_method <- function(x, event, id = rep("XXXXXX", length(x))) {
       )
     ) %>%
     dplyr::rename(characteristic = x) %>%
-    dplyr::mutate(method = "johnson")
+    dplyr::mutate(method = "johnson") %>%
+    dplyr::select(id, characteristic, status, rank, prob, method)
 
   class(tbl_out) <- c("cdf_estimation", class(tbl_out))
 
@@ -234,6 +265,11 @@ johnson_method <- function(x, event, id = rep("XXXXXX", length(x))) {
 
 
 #' Estimation of Failure Probabilities using Kaplan-Meier
+#'
+#' @description
+#' \lifecycle{soft-deprecated}
+#'
+#' The functionality of this function is incorporated into \code{\link{estimate_cdf}}.
 #'
 #' Whereas the non-parametric Kaplan-Meier estimator is used to estimate the
 #' survival function \emph{S(t)} in terms of (multiple) right censored data, the
@@ -259,7 +295,6 @@ johnson_method <- function(x, event, id = rep("XXXXXX", length(x))) {
 #' \emph{8.2.1.5. Empirical model fitting - distribution free (Kaplan-Meier) approach},
 #' https://www.itl.nist.gov/div898/handbook/apr/section2/apr215.htm, 30/04/2018
 #'
-#' @export
 #' @examples
 #' # Example 1
 #' obs   <- seq(10000, 100000, 10000)
@@ -278,18 +313,28 @@ johnson_method <- function(x, event, id = rep("XXXXXX", length(x))) {
 #'                  state = rep(1, 23))
 #'
 #' tbl_kap2 <- kaplan_method(x = tbl$obs, event = tbl$state)
-
+#'
+#' @export
 kaplan_method <- function(x, event, id = rep("XXXXXX", length(x))) {
+
+  deprecate_soft("1.1.0", "kaplan_method()")
 
   if (!((length(x) == length(event)) && (length(x) == length(id)))) {
     stop("x, event and id must be of same length.")
   }
 
-  if (all(event == 1)) {
-    warning("Use mr_method since there is no censored data problem!")
+  data <- tibble::tibble(id = id, x = x, status = event)
+
+  kaplan_method_(data)
+}
+
+kaplan_method_ <- function(data) {
+
+  if (all(data$status == 1)) {
+    warning('Use methods = "mr" since there is no censored data problem!')
   }
 
-  tbl_in <- tibble::tibble(id = id, x = x, status = event)
+  tbl_in <- data
 
   tbl_calc <- tbl_in %>%
     dplyr::group_by(x) %>%
@@ -306,7 +351,7 @@ kaplan_method <- function(x, event, id = rep("XXXXXX", length(x))) {
       n_in = sum(n_i) - n_out
     )
 
-  if (event[which.max(x)] == 0) {
+  if (data$status[which.max(data$x)] == 0) {
     tbl_calc <- tbl_calc %>%
       dplyr::mutate(
         prob = 1 - cumprod((n_in - failure) / n_in)
@@ -330,7 +375,8 @@ kaplan_method <- function(x, event, id = rep("XXXXXX", length(x))) {
       ),
       method = "kaplan"
     ) %>%
-    dplyr::rename(characteristic = x)
+    dplyr::rename(characteristic = x) %>%
+    dplyr::select(id, characteristic, status, rank, prob, method)
 
   class(tbl_out) <- c("cdf_estimation", class(tbl_out))
 
@@ -339,6 +385,11 @@ kaplan_method <- function(x, event, id = rep("XXXXXX", length(x))) {
 
 
 #' Estimation of Failure Probabilities using the Nelson-Aalen Estimator
+#'
+#' @description
+#' \lifecycle{soft-deprecated}
+#'
+#' The functionality of this function is incorporated into \code{\link{estimate_cdf}}.
 #'
 #' This non-parametric approach estimates the cumulative hazard rate in
 #' terms of (multiple) right censored data. By equating the definition of the
@@ -353,7 +404,6 @@ kaplan_method <- function(x, event, id = rep("XXXXXX", length(x))) {
 #' @return A tibble containing id, lifetime characteristic, status of the
 #'   unit and the estimated failure probabilty. For right censored observations
 #'   the cells of probability column are filled with NA.
-#' @export
 #'
 #' @examples
 #' obs   <- seq(10000, 100000, 10000)
@@ -363,17 +413,27 @@ kaplan_method <- function(x, event, id = rep("XXXXXX", length(x))) {
 #'
 #' tbl_nel <- nelson_method(x = obs, event = state, id = uic)
 #'
+#' @export
 nelson_method <- function(x, event, id = rep("XXXXXX", length(x))) {
+
+  deprecate_soft("1.1.0", "nelson_method()")
 
   if (!((length(x) == length(event)) && (length(x) == length(id)))) {
     stop("x, event and id must be of same length.")
   }
 
-  if (all(event == 1)) {
-    warning("Use mr_method since there is no censored data problem!")
+  data <- tibble::tibble(id = id, x = x, status = event)
+
+  nelson_method_(data)
+}
+
+nelson_method_ <- function(data) {
+
+  if (all(data$status == 1)) {
+    warning('Use methods = "mr" since there is no censored data problem!')
   }
 
-  tbl_in <- tibble::tibble(id = id, x = x, status = event)
+  tbl_in <- data
 
   tbl_calc <- tbl_in %>%
     dplyr::group_by(x) %>%
@@ -403,7 +463,8 @@ nelson_method <- function(x, event, id = rep("XXXXXX", length(x))) {
       ),
       method = "nelson"
     ) %>%
-    dplyr::rename(characteristic = x)
+    dplyr::rename(characteristic = x) %>%
+    dplyr::select(id, characteristic, status, rank, prob, method)
 
   class(tbl_out) <- c("cdf_estimation", class(tbl_out))
 

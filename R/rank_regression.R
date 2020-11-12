@@ -100,15 +100,16 @@ rank_regression <- function(x, ...) {
   UseMethod("rank_regression", x)
 }
 
-#' @export
 #' @describeIn rank_regression Perform the rank regression as part of the
 #' reliability pipeline. \code{\link{estimate_cdf}} returns a data frame of class
 #' \code{"cdf_estimation"}, which contains all information regarding x, y and
 #' event.
+#'
+#' @export
 rank_regression.cdf_estimation <- function(
   cdf_estimation,
   distribution = c("weibull", "lognormal", "loglogistic", "normal", "logistic",
-                   "sev", "weibull3", "lognormal3"),
+                   "sev", "weibull3", "lognormal3", "loglogistic3"),
   conf_level = 0.95
 ) {
   rank_regression.default(

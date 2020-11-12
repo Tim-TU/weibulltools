@@ -15,8 +15,9 @@
 #'
 #' @return Returns a plotly object which contains the layout
 #'   that is used for probability plotting.
-#' @export
 #' @importFrom magrittr "%>%"
+#'
+#' @export
 #'
 #' @examples
 #' # Example 1: Weibull-Grid:
@@ -34,7 +35,6 @@
 #'                             title_main = "Normal Grid",
 #'                             title_x = "Time to Event",
 #'                             title_y = "Failure Probability in %")
-
 plot_layout <- function(
   x,
   distribution = c(
@@ -45,6 +45,8 @@ plot_layout <- function(
   title_y = "Unreliability",
   plot_method = c("plotly", "ggplot2")
 ) {
+
+  deprecate_soft("1.1.0", "plot_layout()")
 
   distribution <- match.arg(distribution)
   plot_method <- match.arg(plot_method)
@@ -92,9 +94,16 @@ plot_layout <- function(
 #'   is a right censored observation (= 0) or a failure (= 1).
 #' @param id A character vector for the identification of every unit.
 #' @param cdf_estimation CDF estimation returned by \code{\link{estimate_cdf}}.
-#' @inheritParams plot_layout
+#' @param distribution Supposed distribution of the random variable.
+#' @param title_main A character string which is assigned to the main title
+#'   of the plot.
+#' @param title_x A character string which is assigned to the title of the
+#'   x axis.
+#' @param title_y A character string which is assigned to the title of the
+#'   y axis.
 #' @param title_trace A character string whis is assigned to the trace shown in
 #'   the legend.
+#' @param plot_method Package, which is used for generating the plot output.
 #'
 #' @return Returns a plotly object containing the layout of the probability plot
 #'   provided by \code{\link{plot_layout}} and the plotting positions.
@@ -139,8 +148,9 @@ plot_prob <- function(
   UseMethod("plot_prob")
 }
 
-#' @export
 #' @describeIn plot_prob Provide x, y, event and id manually
+#'
+#' @export
 plot_prob.default <- function(
   x, y, event,
   id = rep("XXXXXX", length(x)),
@@ -156,13 +166,13 @@ plot_prob.default <- function(
   distribution <- match.arg(distribution)
   plot_method <- match.arg(plot_method)
 
-  tbl <- tibble::tibble(
+  cdf_estimation <- tibble::tibble(
     characteristic = x, prob = y, status = event, id = id,
     method = title_trace
   )
 
   plot_prob_(
-    tbl = tbl,
+    cdf_estimation = cdf_estimation,
     distribution = distribution,
     title_main = title_main,
     title_x = title_x,
@@ -190,7 +200,7 @@ plot_prob.cdf_estimation <- function(
   plot_method <- match.arg(plot_method)
 
   plot_prob_(
-    tbl = cdf_estimation,
+    cdf_estimation = cdf_estimation,
     distribution = distribution,
     title_main = title_main,
     title_x = title_x,
@@ -201,11 +211,11 @@ plot_prob.cdf_estimation <- function(
 }
 
 plot_prob_ <- function(
-  tbl, distribution, title_main, title_x, title_y, title_trace, plot_method
+  cdf_estimation, distribution, title_main, title_x, title_y, title_trace, plot_method
 ) {
 
   prob_tbl <- plot_prob_helper(
-    tbl, distribution
+    cdf_estimation, distribution
   )
 
   p_obj <- plot_layout(

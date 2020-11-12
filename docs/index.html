@@ -111,8 +111,29 @@
 <div id="weibulltools" class="section level1">
 <div class="page-header"><h1 class="hasAnchor">
 <a href="#weibulltools" class="anchor"></a>weibulltools</h1></div>
+<!-- badges: start -->
+
 <p>Unlike other R packages for survival analysis, the weibulltools package focuses on reliability methods and has the advantage of being open source and easily accessible contrary to other reliability analysis software. In addition to that the package can be integrated into (partly) automated data analysis processes and even can be connected to big data systems.</p>
 <p>The weibulltools package contains methods for examining bench test or field data using the well-known weibull analysis. It includes Monte Carlo simulation for estimating the life span of products that have not failed yet, taking account of registering and reporting delays. On this basis, if the products looked upon are vehicles, the covered mileage can be estimated as well. The weibulltools package also provides methods for probability estimation within samples that contain failures as well as censored data. Methods for estimating the parameters of lifetime distributions as well as the confidence intervals of quantiles and probabilities are also included. If desired, the data can automatically be divided into subgroups using segmented regression. And if the number of subgroups in a Weibull Mixture Model is known, data can be analyzed using the EM-Algorithm. Besides the calculation methods, methods for interactive visualization of the edited data using <em>Plotly</em> are provided as well.</p>
+<div id="installation" class="section level2">
+<h2 class="hasAnchor">
+<a href="#installation" class="anchor"></a>Installation</h2>
+<p>You can install the released version of weibulltools from <a href="https://CRAN.R-project.org">CRAN</a> with:</p>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span><span class="op">(</span><span class="st">"weibulltools"</span><span class="op">)</span></code></pre></div>
+<p>And the development version from <a href="https://github.com/">GitHub</a> with:</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co"># install.packages("devtools")</span>
+<span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://devtools.r-lib.org//reference/remote-reexports.html">install_github</a></span><span class="op">(</span><span class="st">"Tim-TU/weibulltools"</span><span class="op">)</span></code></pre></div>
+</div>
+<div id="example" class="section level2">
+<h2 class="hasAnchor">
+<a href="#example" class="anchor"></a>Example</h2>
+<p>This is a basic example which shows you how to solve a common problem:</p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">weibulltools</span><span class="op">)</span>
+<span class="co">## basic example code</span></code></pre></div>
+</div>
 </div>
   </div>
 
@@ -138,7 +159,14 @@
 </ul>
 </div>
 
-  </div>
+  <div class="dev-status">
+<h2>Dev status</h2>
+<ul class="list-unstyled">
+<li><a href="https://www.tidyverse.org/lifecycle/#maturing"><img src="https://img.shields.io/badge/lifecycle-maturing-blue.svg" alt="Lifecycle: maturing"></a></li>
+<li><a href="https://CRAN.R-project.org/package=weibulltools"><img src="https://www.r-pkg.org/badges/version/weibulltools" alt="CRAN status"></a></li>
+</ul>
+</div>
+</div>
 </div>
 
 

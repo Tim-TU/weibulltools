@@ -2,7 +2,7 @@
 % Please edit documentation in R/reliability_data.R
 \name{reliability_data}
 \alias{reliability_data}
-\title{Reliability data}
+\title{Failure data}
 \usage{
 reliability_data(data = NULL, x, status, id)
 }
@@ -15,7 +15,7 @@ column names or column positions.}
 of a product, e.g. operating time (days/months in service), mileage (km, miles),
 load cycles.}
 
-\item{status}{Binary data (0 or 1) indicating whether unit \emph{i} is a right
+\item{status}{Binary data (0 or 1) indicating whether a unit is a right
 censored observation (= 0) or a failure (= 1).}
 
 \item{id}{Identification for every unit.}
@@ -24,13 +24,15 @@ censored observation (= 0) or a failure (= 1).}
 A tibble with class \code{"reliability_data"} containing the following
 columns:
 \itemize{
-  \item \code{x}
-  \item \code{status}
-  \item \code{id}
+  \item \code{x} Lifetime characteristic.
+  \item \code{status} Binary data (0 or 1) indicating whether a unit is a right
+    censored observation (= 0) or a failure (= 1).
+  \item \code{id} Identification for every unit.
 }
 }
 \description{
-This function
+Create consistent failure data based on an existing data.frame/tibble
+(preferred) or on multiple equal length vectors.
 }
 \examples{
 # Alloy T7987 dataset taken from Meeker and Escobar (1998, p. 131)
@@ -40,11 +42,14 @@ cycles   <- c(300, 300, 300, 300, 300, 291, 274, 271, 269, 257, 256, 227, 226,
               159, 159, 159, 152, 152, 149, 149, 144, 143, 141, 141, 140, 139,
               139, 136, 135, 133, 131, 129, 123, 121, 121, 118, 117, 117, 114,
               112, 108, 104, 99, 99, 96, 94)
-status <- c(rep(0, 5), rep(1, 67))
+state <- c(rep(0, 5), rep(1, 67))
 id <- "XXXXXX"
 
-tbl <- tibble::tibble(cycles = cycles, status = status, id = id)
+Example 1: Based on existing data.frame/tibble
+tbl <- tibble::tibble(x = cycles, status = state, id = id)
+failure_tbl <- reliability_data(tbl, x = x, status = status, id = id)
 
-rel_tbl <- reliability_data(tbl, x = cycles, status = status, id = id)
+Example 2: Based on vectors
+failure_tbl_2 <- reliability_data(x = cycles, status = state, id = id)
 
 }
