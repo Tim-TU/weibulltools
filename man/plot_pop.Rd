@@ -5,26 +5,28 @@
 \title{Add Population Line to an Existing Grid}
 \usage{
 plot_pop(
-  p_obj,
+  p_obj = NULL,
   x,
   param_tbl,
   distribution = c("weibull", "lognormal", "loglogistic"),
   tol = 1e-06,
-  title_trace = "Population"
+  title_trace = "Population",
+  plot_method = c("plotly", "ggplot2")
 )
 
 plot_pop(
-  p_obj,
+  p_obj = NULL,
   x,
   param_tbl,
   distribution = c("weibull", "lognormal", "loglogistic"),
   tol = 1e-06,
-  title_trace = "Population"
+  title_trace = "Population",
+  plot_method = c("plotly", "ggplot2")
 )
 }
 \arguments{
 \item{p_obj}{A plotly object, which at least includes the layout provided
-by \code{\link{plot_layout}}.}
+by \code{\link{plot_layout}}. If \code{NULL}}
 
 \item{x}{A numeric vector containing the x-coordinates of the population line.}
 
@@ -38,6 +40,10 @@ places shown in the hover for \code{plot_method = "plotly"}.}
 
 \item{title_trace}{A character string whis is assigned to the trace shown in
 the legend.}
+
+\item{plot_method}{Package, which is used for generating the plot output. Only
+used with \code{p_obj = NULL}, otherwise \code{p_obj} is used to determine
+the plot method.}
 
 \item{params}{A (named) numeric vector, where the first entry is the location
 parameter \eqn{\mu} and the second entry is the scale parameter \eqn{\sigma}

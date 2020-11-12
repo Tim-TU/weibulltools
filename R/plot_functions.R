@@ -922,12 +922,15 @@ plot_pop <- function(
 #' }
 #'
 #' @param p_obj A plotly object, which at least includes the layout provided
-#'   by \code{\link{plot_layout}}.
+#'   by \code{\link{plot_layout}}. If \code{NULL}
 #' @param x A numeric vector containing the x-coordinates of the population line.
 #' @param param_tbl A tibble. See 'Details'.
 #' @param tol The failure probability is restricted to the interval
 #'   \eqn{[tol, 1 - tol]}. The default value is in accordance with the decimal
 #'   places shown in the hover for \code{plot_method = "plotly"}.
+#' @param plot_method Package, which is used for generating the plot output. Only
+#'   used with \code{p_obj = NULL}, otherwise \code{p_obj} is used to determine
+#'   the plot method.
 #' @inheritParams plot_prob
 #'
 #' @return A plotly object which contains the supposed linearized population
@@ -948,24 +951,35 @@ plot_pop <- function(
 #'
 #' @export
 plot_pop <- function(
-  p_obj, x, param_tbl,
+  p_obj = NULL, x, param_tbl,
   distribution = c("weibull", "lognormal", "loglogistic"),
   tol = 1e-6,
-  title_trace = "Population"
+  title_trace = "Population",
+  plot_method = c("plotly", "ggplot2")
 ) {
 
   distribution <- match.arg(distribution)
 
-  # Plot method is determined by p_obj
-  plot_method <- if ("gg" %in% class(p_obj)) {
-    "ggplot2"
-  } else if ("plotly" %in% class(p_obj)) {
-    "plotly"
-  }  else {
-    stop(
-      "p_obj is not a valid plot object. Provide either a ggplot2 or a plotly
-      plot object."
+  if (purrr::is_null(p_obj)) {
+    plot_method <- match.arg(plot_method)
+
+    p_obj <- plot_layout(
+      x = x,
+      distribution = distribution,
+      plot_method = plot_method
     )
+  } else {
+    # Plot method is determined by p_obj
+    plot_method <- if ("gg" %in% class(p_obj)) {
+      "ggplot2"
+    } else if ("plotly" %in% class(p_obj)) {
+      "plotly"
+    }  else {
+      stop(
+        "p_obj is not a valid plot object. Provide either a ggplot2 or a plotly
+      plot object."
+      )
+    }
   }
 
   # Support vector instead of tibble for ease of use in param_tbl
