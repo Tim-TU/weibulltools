@@ -9,28 +9,28 @@ id_2 <- LETTERS[1:10]
 tbl <- tibble::tibble(a = x, b = stat_2, c = id_2)
 
 # General tests ----
-test_that("failure_data fails if x, status or id are not provided", {
-  expect_error(failure_data())
-  expect_error(failure_data(x = 1))
-  expect_error(failure_data(x = 1, status = 1))
+test_that("reliability_data fails if x, status or id are not provided", {
+  expect_error(reliability_data())
+  expect_error(reliability_data(x = 1))
+  expect_error(reliability_data(x = 1, status = 1))
 })
 
 # Data-based approach ----
 test_that("data-based approach works with and without NSE", {
-  expect_equal(failure_data(tbl, a, b, c), failure_data(tbl, "a", "b", "c"))
+  expect_equal(reliability_data(tbl, a, b, c), reliability_data(tbl, "a", "b", "c"))
 })
 
 test_that("data-based approach fails for meaningless input", {
-  expect_error(failure_data(tbl, c("a", "b"), b, c))
+  expect_error(reliability_data(tbl, c("a", "b"), b, c))
 })
 
 
 # Vector-based approach ----
 test_that("vector-based approach recycles status and id", {
-  expect_true(all(failure_data(x = x, status = stat_0, id = id_1)$status == 0))
-  expect_true(all(failure_data(x = x, status = stat_2, id = id_1)$id == "XXXXXX"))
+  expect_true(all(reliability_data(x = x, status = stat_0, id = id_1)$status == 0))
+  expect_true(all(reliability_data(x = x, status = stat_2, id = id_1)$id == "XXXXXX"))
 })
 
 test_that("vector-based approach fails if x is shorter than status or id", {
-  expect_error(failure_data(x = 1, status = stat_2, id = id_2), "length of x.*")
+  expect_error(reliability_data(x = 1, status = stat_2, id = id_2), "length of x.*")
 })

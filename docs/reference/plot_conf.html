@@ -247,7 +247,10 @@ output of <code><a href='confint_fisher.html'>confint_fisher</a></code> or <code
                                   bounds <span class='op'>=</span> <span class='st'>"two_sided"</span>,
                                   conf_level <span class='op'>=</span> <span class='fl'>0.95</span>,
                                   direction <span class='op'>=</span> <span class='st'>"y"</span><span class='op'>)</span>
-
+</div><div class='output co'>#&gt; <span class='error'>Error: Tibble columns must have compatible sizes.</span>
+#&gt; <span class='error'>* Size 0: Columns `rank`, `prob`, `lower_bound`, and `upper_bound`.</span>
+#&gt; <span class='error'>* Size 100: Column `characteristic`.</span>
+#&gt; <span class='error'><span style='color: #0000BB;'>i</span><span> Only values of size one are recycled.</span></div><div class='input'>
 <span class='va'>plot_weibull</span> <span class='op'>&lt;-</span> <span class='fu'><a href='plot_prob.html'>plot_prob</a></span><span class='op'>(</span>x <span class='op'>=</span> <span class='va'>df_john</span><span class='op'>$</span><span class='va'>characteristic</span>,
                           y <span class='op'>=</span> <span class='va'>df_john</span><span class='op'>$</span><span class='va'>prob</span>,
                           event <span class='op'>=</span> <span class='va'>df_john</span><span class='op'>$</span><span class='va'>status</span>,
@@ -264,7 +267,7 @@ output of <code><a href='confint_fisher.html'>confint_fisher</a></code> or <code
                              loc_sc_params <span class='op'>=</span> <span class='va'>mrr</span><span class='op'>$</span><span class='va'>loc_sc_coefficients</span>,
                              distribution <span class='op'>=</span> <span class='st'>"weibull3"</span>,
                              title_trace <span class='op'>=</span> <span class='st'>"Estimated Weibull CDF"</span><span class='op'>)</span>
-
+</div><div class='output co'>#&gt; <span class='error'>Error in plot_mod_helper(x, y, loc_sc_params, distribution): Objekt 'conf_betabin' nicht gefunden</span></div><div class='input'>
 <span class='va'>plot_conf_beta</span> <span class='op'>&lt;-</span> <span class='fu'>plot_conf</span><span class='op'>(</span>p_obj <span class='op'>=</span> <span class='va'>plot_reg_weibull</span>,
                             x <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='va'>conf_betabin</span><span class='op'>$</span><span class='va'>characteristic</span><span class='op'>)</span>,
                             y <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='va'>conf_betabin</span><span class='op'>$</span><span class='va'>lower_bound</span>,
@@ -272,7 +275,7 @@ output of <code><a href='confint_fisher.html'>confint_fisher</a></code> or <code
                             direction <span class='op'>=</span> <span class='st'>"y"</span>,
                             distribution <span class='op'>=</span> <span class='st'>"weibull3"</span>,
                             title_trace <span class='op'>=</span> <span class='st'>"Confidence Region"</span><span class='op'>)</span>
-
+</div><div class='output co'>#&gt; <span class='error'>Error in plot_conf(p_obj = plot_reg_weibull, x = list(conf_betabin$characteristic),     y = list(conf_betabin$lower_bound, conf_betabin$upper_bound),     direction = "y", distribution = "weibull3", title_trace = "Confidence Region"): Objekt 'conf_betabin' nicht gefunden</span></div><div class='input'>
 <span class='co'># Example 2: Probability Plot, Regression Line and Confidence Bounds for Three-Parameter-Lognormal:</span>
 <span class='va'>mrr_ln</span> <span class='op'>&lt;-</span> <span class='fu'><a href='rank_regression.html'>rank_regression</a></span><span class='op'>(</span>x <span class='op'>=</span> <span class='va'>df_john</span><span class='op'>$</span><span class='va'>characteristic</span>,
                        y <span class='op'>=</span> <span class='va'>df_john</span><span class='op'>$</span><span class='va'>prob</span>,
@@ -287,7 +290,10 @@ output of <code><a href='confint_fisher.html'>confint_fisher</a></code> or <code
                                   bounds <span class='op'>=</span> <span class='st'>"two_sided"</span>,
                                   conf_level <span class='op'>=</span> <span class='fl'>0.95</span>,
                                   direction <span class='op'>=</span> <span class='st'>"y"</span><span class='op'>)</span>
-
+</div><div class='output co'>#&gt; <span class='error'>Error: Tibble columns must have compatible sizes.</span>
+#&gt; <span class='error'>* Size 0: Columns `rank`, `prob`, `lower_bound`, and `upper_bound`.</span>
+#&gt; <span class='error'>* Size 100: Column `characteristic`.</span>
+#&gt; <span class='error'></span><span style='color: #0000BB;'>i</span><span> Only values of size one are recycled.</span></div><div class='input'>
 <span class='va'>plot_lognormal</span> <span class='op'>&lt;-</span> <span class='fu'><a href='plot_prob.html'>plot_prob</a></span><span class='op'>(</span>x <span class='op'>=</span> <span class='va'>df_john</span><span class='op'>$</span><span class='va'>characteristic</span>,
                           y <span class='op'>=</span> <span class='va'>df_john</span><span class='op'>$</span><span class='va'>prob</span>,
                           event <span class='op'>=</span> <span class='va'>df_john</span><span class='op'>$</span><span class='va'>status</span>,
@@ -304,7 +310,7 @@ output of <code><a href='confint_fisher.html'>confint_fisher</a></code> or <code
                              loc_sc_params <span class='op'>=</span> <span class='va'>mrr_ln</span><span class='op'>$</span><span class='va'>loc_sc_coefficients</span>,
                              distribution <span class='op'>=</span> <span class='st'>"lognormal3"</span>,
                              title_trace <span class='op'>=</span> <span class='st'>"Estimated Lognormal CDF"</span><span class='op'>)</span>
-
+</div><div class='output co'>#&gt; <span class='error'>Error in plot_mod_helper(x, y, loc_sc_params, distribution): Objekt 'conf_betabin_ln' nicht gefunden</span></div><div class='input'>
 <span class='va'>plot_conf_beta_ln</span> <span class='op'>&lt;-</span> <span class='fu'>plot_conf</span><span class='op'>(</span>p_obj <span class='op'>=</span> <span class='va'>plot_reg_lognormal</span>,
                             x <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='va'>conf_betabin_ln</span><span class='op'>$</span><span class='va'>characteristic</span><span class='op'>)</span>,
                             y <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='va'>conf_betabin_ln</span><span class='op'>$</span><span class='va'>lower_bound</span>,
@@ -312,7 +318,7 @@ output of <code><a href='confint_fisher.html'>confint_fisher</a></code> or <code
                             direction <span class='op'>=</span> <span class='st'>"y"</span>,
                             distribution <span class='op'>=</span> <span class='st'>"lognormal3"</span>,
                             title_trace <span class='op'>=</span> <span class='st'>"Confidence Region"</span><span class='op'>)</span>
-</div></pre>
+</div><div class='output co'>#&gt; <span class='error'>Error in plot_conf(p_obj = plot_reg_lognormal, x = list(conf_betabin_ln$characteristic),     y = list(conf_betabin_ln$lower_bound, conf_betabin_ln$upper_bound),     direction = "y", distribution = "lognormal3", title_trace = "Confidence Region"): Objekt 'conf_betabin_ln' nicht gefunden</span></div></span></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

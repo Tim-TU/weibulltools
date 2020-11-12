@@ -14,7 +14,7 @@
 #'   \item \code{"nelson"}: \code{\link{nelson_method}}.
 #' }
 #'
-#' @param data A tibble returned by \link{failure_data}.
+#' @param data A tibble returned by \link{reliability_data}.
 #' @param methods Character vector of methods used for estimating the failure
 #' probabilities. See 'Details'.
 #' @param options A list of named options passed to \code{<method>_method}. For
@@ -38,8 +38,8 @@ estimate_cdf <- function(
   data, methods, options = list()
 ) {
 
-  if (!inherits(data, "failure_data")) {
-    stop("data must be a tibble returned from failure_data().")
+  if (!inherits(data, "reliability_data")) {
+    stop("data must be a tibble returned from reliability_data().")
   }
 
   # Remove duplicates

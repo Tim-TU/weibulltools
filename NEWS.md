@@ -7,7 +7,7 @@
 
 ## New Features
 * Added support for ggplot2 in all plot functions. Plot method can be selected in `plot_prob()` via argument `plot_method`.
-* Added function `failure_data()`: Create consistent failure data.
+* Added function `reliability_data()`: Create consistent failure data.
 * `plot_pop()`: Added support for multiple population lines.
 * Added function `estimate_cdf`: Unite functionality of `mr_method()`, `johnson_method()`, `kaplan_method()` and `nelson_method()`. Support multiple methods.
 * `rank_regression()` is now an S3 generic. `rank_regression` becomes `rank_regression.default`. Added `rank_regression.cdf_estimation()`.

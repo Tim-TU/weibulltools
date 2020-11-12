@@ -40,7 +40,8 @@
 
 
 <meta property="og:title" content="Add Population Line to an Existing Grid — plot_pop" />
-<meta property="og:description" content="This function adds a linearized CDF to an existing plotly grid." />
+<meta property="og:description" content="This function adds a linearized CDF to an existing plotly grid.
+This function adds one or multiple linearized CDF to an existing plotly grid." />
 
 
 
@@ -131,14 +132,24 @@
 
     <div class="ref-description">
     <p>This function adds a linearized CDF to an existing plotly grid.</p>
+<p>This function adds one or multiple linearized CDF to an existing plotly grid.</p>
     </div>
 
     <pre class="usage"><span class='fu'>plot_pop</span><span class='op'>(</span>
   <span class='va'>p_obj</span>,
   <span class='va'>x</span>,
-  <span class='va'>params</span>,
+  <span class='va'>param_tbl</span>,
   distribution <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"weibull"</span>, <span class='st'>"lognormal"</span>, <span class='st'>"loglogistic"</span><span class='op'>)</span>,
-  color <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/AsIs.html'>I</a></span><span class='op'>(</span><span class='st'>"#FF0000"</span><span class='op'>)</span>,
+  tol <span class='op'>=</span> <span class='fl'>1e-06</span>,
+  title_trace <span class='op'>=</span> <span class='st'>"Population"</span>
+<span class='op'>)</span>
+
+<span class='fu'>plot_pop</span><span class='op'>(</span>
+  <span class='va'>p_obj</span>,
+  <span class='va'>x</span>,
+  <span class='va'>param_tbl</span>,
+  distribution <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"weibull"</span>, <span class='st'>"lognormal"</span>, <span class='st'>"loglogistic"</span><span class='op'>)</span>,
+  tol <span class='op'>=</span> <span class='fl'>1e-06</span>,
   title_trace <span class='op'>=</span> <span class='st'>"Population"</span>
 <span class='op'>)</span></pre>
 
@@ -155,6 +166,25 @@ by <code><a href='plot_layout.html'>plot_layout</a></code>.</p></td>
       <td><p>A numeric vector containing the x-coordinates of the population line.</p></td>
     </tr>
     <tr>
+      <th>param_tbl</th>
+      <td><p>A tibble. See 'Details'.</p></td>
+    </tr>
+    <tr>
+      <th>distribution</th>
+      <td><p>Supposed distribution of the random variable.</p></td>
+    </tr>
+    <tr>
+      <th>tol</th>
+      <td><p>The failure probability is restricted to the interval
+\([tol, 1 - tol]\). The default value is in accordance with the decimal
+places shown in the hover for <code>plot_method = "plotly"</code>.</p></td>
+    </tr>
+    <tr>
+      <th>title_trace</th>
+      <td><p>A character string whis is assigned to the trace shown in
+the legend.</p></td>
+    </tr>
+    <tr>
       <th>params</th>
       <td><p>A (named) numeric vector, where the first entry is the location
 parameter \(\mu\) and the second entry is the scale parameter \(\sigma\)
@@ -164,19 +194,10 @@ the second entry must be the shape parameter \(\beta\). Parametrization
 is the same used in <code><a href='https://rdrr.io/r/stats/Weibull.html'>rweibull</a></code>.</p></td>
     </tr>
     <tr>
-      <th>distribution</th>
-      <td><p>Supposed distribution of the random variable.</p></td>
-    </tr>
-    <tr>
       <th>color</th>
       <td><p>The color of the population line should be added as follows:
 For hexadecimal codes: <code>color = I("#3C8DBC")</code> and for a color specified
 with a string: <code>color = I("blue")</code>.</p></td>
-    </tr>
-    <tr>
-      <th>title_trace</th>
-      <td><p>A character string whis is assigned to the trace shown in
-the legend.</p></td>
     </tr>
     </table>
 
@@ -184,6 +205,15 @@ the legend.</p></td>
 
     <p>A plotly object which contains the supposed linearized population
   CDF. Failure probabilities must be strictly below 1 and for this very reason</p>
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+
+    <p><code>param_tbl</code> must be a tibble with the following columns:</p><ul>
+<li><p><code>param_1</code>: Location parameter \(\mu\) for <code>lognormal</code> and
+    <code>loglogistic</code>. Scale parameter \(\eta\) for <code>weibull</code>.</p></li>
+<li><p><code>param_2</code>: Scale parameter \(\sigma\) for <code>lognormal</code> and
+    <code>loglogistic</code>. Shape parameter \(\beta\) for <code>weibull</code>.</p></li>
+</ul>
+
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='va'>x</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/Weibull.html'>rweibull</a></span><span class='op'>(</span>n <span class='op'>=</span> <span class='fl'>100</span>, shape <span class='op'>=</span> <span class='fl'>1</span>, scale <span class='op'>=</span> <span class='fl'>20000</span><span class='op'>)</span>
@@ -193,10 +223,10 @@ the legend.</p></td>
                             title_x <span class='op'>=</span> <span class='st'>"Time to Failure"</span>,
                             title_y <span class='op'>=</span> <span class='st'>"Failure Probability"</span><span class='op'>)</span>
 <span class='va'>pop_weibull</span> <span class='op'>&lt;-</span> <span class='fu'>plot_pop</span><span class='op'>(</span>p_obj <span class='op'>=</span> <span class='va'>grid_weibull</span>,
-                        x <span class='op'>=</span> <span class='va'>x</span>, params <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>20000</span>, <span class='fl'>1</span><span class='op'>)</span>,
+                        x <span class='op'>=</span> <span class='va'>x</span>, param_tbl <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>20000</span>, <span class='fl'>1</span><span class='op'>)</span>,
                         distribution <span class='op'>=</span> <span class='st'>"weibull"</span>, color <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/AsIs.html'>I</a></span><span class='op'>(</span><span class='st'>"green"</span><span class='op'>)</span>,
                         title_trace <span class='op'>=</span> <span class='st'>"Population"</span><span class='op'>)</span>
-
+</div><div class='output co'>#&gt; <span class='error'>Error in plot_pop(p_obj = grid_weibull, x = x, param_tbl = c(20000, 1),     distribution = "weibull", color = I("green"), title_trace = "Population"): unbenutztes Argument (color = I("green"))</span></div><div class='input'>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

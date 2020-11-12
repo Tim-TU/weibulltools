@@ -2,7 +2,7 @@ test_that("estimate_cdf fails for non reliability data", {
   tbl <- tibble::tibble(x = 1:10)
   expect_error(
     estimate_cdf(tbl, methods = "mr"),
-    "data must be a tibble returned from failure_data()"
+    "data must be a tibble returned from reliability_data()"
   )
 })
 

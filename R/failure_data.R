@@ -14,7 +14,7 @@
 #' censored observation (= 0) or a failure (= 1).
 #' @param id Identification for every unit.
 #'
-#' @return A tibble with class \code{"failure_data"} containing the following
+#' @return A tibble with class \code{"reliability_data"} containing the following
 #' columns:
 #' \itemize{
 #'   \item \code{x} Lifetime characteristic.
@@ -36,13 +36,13 @@
 #'
 #' Example 1: Based on existing data.frame/tibble
 #' tbl <- tibble::tibble(x = cycles, status = state, id = id)
-#' failure_tbl <- failure_data(tbl, x = x, status = status, id = id)
+#' failure_tbl <- reliability_data(tbl, x = x, status = status, id = id)
 #'
 #' Example 2: Based on vectors
-#' failure_tbl_2 <- failure_data(x = cycles, status = state, id = id)
+#' failure_tbl_2 <- reliability_data(x = cycles, status = state, id = id)
 #'
 #' @export
-failure_data <- function(data = NULL, x, status, id) {
+reliability_data <- function(data = NULL, x, status, id) {
   if (purrr::is_null(data)) {
     if (!is_characteristic(x)) {
       stop("x must be numeric!")
@@ -69,7 +69,7 @@ failure_data <- function(data = NULL, x, status, id) {
     tbl <- dplyr::select(tibble::as_tibble(data), x = {{x}}, status = {{status}}, id = {{id}})
   }
 
-  class(tbl) <- c("failure_data", class(tbl))
+  class(tbl) <- c("reliability_data", class(tbl))
 
   tbl
 }

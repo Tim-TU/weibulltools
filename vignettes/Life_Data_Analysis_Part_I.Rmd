@@ -155,11 +155,11 @@ ggplot(data = shock, aes(x = Mode, y = Distance)) +
 For reasons of simplicity we will ignore the differences between the failure modes _Mode1_ and _Mode2_ which are shown in _Figure 2_. Thus, we will act as there is only one mechanism of damage.  
 
 First, we are interested in how censored observations influence the estimation of failure probabilities in comparison to the case where only failed units are considered. 
-In the latter case we will use the function `estimate_cdf()` with `methods = "mr"`. To deal with survived and failed units we will use `estimate_cdf()` with `methods = "johnson"`. In order to use `estimate_cdf` we must convert the `shock` dataset to an appropriate format using the function `failure_data()`.  
+In the latter case we will use the function `estimate_cdf()` with `methods = "mr"`. To deal with survived and failed units we will use `estimate_cdf()` with `methods = "johnson"`. In order to use `estimate_cdf` we must convert the `shock` dataset to an appropriate format using the function `reliability_data()`.  
 
 ```{r failure probabilities, results = 'asis'}
 # Extract failure data from shock
-failure_tbl <- failure_data(shock, x = Distance, status = Censor, id = id)
+failure_tbl <- reliability_data(shock, x = Distance, status = Censor, id = id)
 failure_tbl
 
 # Estimate CDF

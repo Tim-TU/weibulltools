@@ -122,7 +122,7 @@ data(shock)
 # generate random ids for units: 
 shock$id <- sample(c(letters, LETTERS), size = nrow(shock), replace = FALSE)
 
-shock_failure_tbl <- failure_data(shock, x = Distance, status = Censor, id = id)
+shock_failure_tbl <- reliability_data(shock, x = Distance, status = Censor, id = id)
 
 # Rank Regression: 
 # for rank_regression(), estimated failure probabilities are required: 
