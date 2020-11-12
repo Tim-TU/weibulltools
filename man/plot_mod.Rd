@@ -3,9 +3,15 @@
 \encoding{UTF-8}
 \name{plot_mod}
 \alias{plot_mod}
+\alias{plot_mod.rank_regression}
+\alias{plot_mod.default}
 \title{Adding an Estimated Population Line to a Probability Plot}
 \usage{
-plot_mod(
+plot_mod(p_obj, x, ...)
+
+\method{plot_mod}{rank_regression}(p_obj, mrr_output, title_trace = "Fit")
+
+\method{plot_mod}{default}(
   p_obj,
   x,
   y = NULL,
@@ -19,6 +25,9 @@ plot_mod(
 \item{p_obj}{A plotly object provided by function \code{\link{plot_prob}}.}
 
 \item{x}{A numeric vector containing the x-coordinates of the regression line.}
+
+\item{title_trace}{A character string whis is assigned to the trace shown in
+the legend.}
 
 \item{y}{A numeric vector containing the y-coordinates of the regression line.
 The default value of y is \code{NULL}. If \code{y} is set \code{NULL} the
@@ -35,9 +44,6 @@ parameter \eqn{\sigma}. If a three-parametric model is used the third element
 is the threshold parameter \eqn{\gamma}.}
 
 \item{distribution}{Supposed distribution of the random variable.}
-
-\item{title_trace}{A character string whis is assigned to the trace shown in
-the legend.}
 }
 \value{
 Returns a plotly object containing the probability plot with
@@ -47,6 +53,13 @@ Returns a plotly object containing the probability plot with
 This function adds a regression line to an existing probability plot using a
 model estimated by \code{\link{rank_regression}} or \code{\link{ml_estimation}}.
 }
+\section{Methods (by class)}{
+\itemize{
+\item \code{rank_regression}: Providing \code{\link{rank_regression}} output (preferred)
+
+\item \code{default}: Providing x, y, loc_sc_params and distribution manually.
+}}
+
 \examples{
 # Alloy T7987 dataset taken from Meeker and Escobar(1998, p. 131)
 cycles   <- c(300, 300, 300, 300, 300, 291, 274, 271, 269, 257, 256, 227, 226,

@@ -301,10 +301,12 @@ rank_regression.default <- function(
 
       r_sq <- summary(mrr)$r.squared
 
-      mrr_output <- list(loc_sc_params = estimates_loc_sc,
-                         loc_sc_confint = conf_ints_loc_sc,
-                         loc_sc_varcov = vcov_loc_sc,
-                         r_squared = r_sq)
+      mrr_output <- list(
+        loc_sc_params = estimates_loc_sc,
+        loc_sc_confint = conf_ints_loc_sc,
+        loc_sc_varcov = vcov_loc_sc,
+        r_squared = r_sq
+      )
     }
   }
 
@@ -357,18 +359,19 @@ rank_regression.default <- function(
 
     r_sq <- summary(mrr)$r.squared
 
-    mrr_output <- list(loc_sc_params = estimates_loc_sc,
-                       loc_sc_confint = conf_ints_loc_sc,
-                       loc_sc_varcov = vcov_loc_sc,
-                       r_squared = r_sq)
+    mrr_output <- list(
+      loc_sc_params = estimates_loc_sc,
+      loc_sc_confint = conf_ints_loc_sc,
+      loc_sc_varcov = vcov_loc_sc,
+      r_squared = r_sq
+    )
   }
 
-  class(mrr_output) <- c("parameter_estimation", class(mrr_output))
+  mrr_output$cdf_estimation <- tibble::tibble(characteristic = x, status = event, prob = y)
 
-  attr(mrr_output, "data") <- tibble::tibble(
-    x = x, event = event
-  )
-  attr(mrr_output, "distribution") <- distribution
+  mrr_output$distribution <- distribution
+
+  class(mrr_output) <- c("rank_regression", "parameter_estimation", class(mrr_output))
 
   return(mrr_output)
 }

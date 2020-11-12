@@ -476,8 +476,33 @@ plot_prob_mix <- function(
 #'                              loc_sc_params = mrr_ln$loc_sc_coefficients,
 #'                              distribution = "lognormal3",
 #'                              title_trace = "Estimated Lognormal CDF")
-
 plot_mod <- function(
+  p_obj, x, ...
+) {
+  UseMethod("plot_mod", x)
+}
+
+#' @export
+#'
+#' @describeIn plot_mod Providing \code{\link{rank_regression}} output (preferred)
+plot_mod.rank_regression <- function(
+  p_obj, mrr_output, title_trace = "Fit"
+) {
+
+  plot_mod.default(
+    p_obj = p_obj,
+    x = mrr_output$cdf_estimation$characteristic,
+    y = NULL,
+    loc_sc_params = mrr_output$loc_sc_params,
+    distribution = mrr_output$distribution,
+    title_trace = title_trace
+  )
+}
+
+#' @export
+#'
+#' @describeIn plot_mod Providing x, y, loc_sc_params and distribution manually.
+plot_mod.default <- function(
   p_obj, x,
   y = NULL, loc_sc_params,
   distribution = c(
