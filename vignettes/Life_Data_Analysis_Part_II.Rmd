@@ -133,12 +133,12 @@ distributions <- c("weibull", "lognormal", "loglogistic", "normal", "logistic", 
            "weibull3", "lognormal3", "loglogistic3")
 
 library(purrr)
-mrr_list <- map(distributions, function(distribution) {
-  rank_regression(shock_cdf, distribution = distribution)
+r_sq_vec <- map_dbl(distributions, function(distribution) {
+  rank_regression(shock_cdf, distribution = distribution)$r_squared
 })
 
-r_sq_vec <- sapply(mrr_list, "[[", "r_squared")
 names(r_sq_vec) <- distributions
+
 r_sq_vec
 ```
 <br> 
@@ -164,9 +164,11 @@ weibull_grid <- plot_prob(
 
 # Add regression line: 
 weibull_plot <- weibull_grid %>% 
-  plot_mod(x = shock_cdf$characteristic, loc_sc_params = mrr_weibull$loc_sc_params,
-                             distribution = "weibull",
-                             title_trace = "Median Rank Regression")
+  plot_mod(
+    mrr_weibull,
+    title_trace = "Median Rank Regression"
+  )
+
 weibull_plot
 ```
 
@@ -175,7 +177,7 @@ weibull_plot
 ```{r ML all distributions, message = FALSE}
 # Using all models which are provided in ml_estimation: 
 ml_list <- map(distributions, function(distribution) {
-  ml_estimation(x = shock$Distance, event = shock$Censor, distribution = distribution)
+  ml_estimation(x = shock$Distance, status = shock$Censor, distribution = distribution)
 })
 
 loglik_vec <- sapply(ml_list, "[[", "logL")
@@ -193,7 +195,7 @@ For comparison _Figure 1_ will be extended by a straight line estimated with ML.
 # Again estimating weibull: 
 ml_weibull <- ml_estimation(
   x = shock$Distance, 
-  event = shock$Censor, 
+  status = shock$Censor, 
   distribution = "weibull"
 )
 
@@ -239,7 +241,7 @@ id <- 1:length(cycles)
 # Two-parameter Log-normal:  
 ml_lognormal <- ml_estimation(
   x = cycles, 
-  event = state, 
+  status = state, 
   distribution = "lognormal"
 )
 
@@ -248,7 +250,7 @@ ml_lognormal
 # Three-parameter Log-normal:  
 ml_lognormal3 <- ml_estimation(
   x = cycles, 
-  event = state, 
+  status = state, 
   distribution = "lognormal3"
 )
 
@@ -264,19 +266,26 @@ that this model is preferable.
 ```{r ML visualization I, fig.cap = "Figure 3: Three-parametric Log-normal distribution.", message = FALSE}
 # Constructing probability plot: 
 df_alloy <- johnson_method(x = cycles, event = state, id = id)
-lognormal_grid <- plot_prob(x = df_alloy$characteristic, y = df_alloy$prob, 
-                            event = df_alloy$status, id = df_alloy$id, 
-                            distribution = "lognormal", 
-                            title_main = "Log-normal Probability Plot", 
-                            title_x = "Cycles", 
-                            title_y = "Probability of Failure in %",
-                            title_trace = "Failed Units")
+lognormal_grid <- plot_prob(
+  x = df_alloy$characteristic, y = df_alloy$prob, 
+  event = df_alloy$status, id = df_alloy$id, 
+  distribution = "lognormal", 
+  title_main = "Log-normal Probability Plot", 
+  title_x = "Cycles", 
+  title_y = "Probability of Failure in %",
+  title_trace = "Failed Units",
+  plot_method = "ggplot2"
+)
 
 # Add three-parametric model to grid: 
 lognormal_plot <- lognormal_grid %>% 
-  plot_mod(x = df_alloy$characteristic, loc_sc_params = ml_lognormal3$loc_sc_params,
-                             distribution = "lognormal3",
-                             title_trace = "Three-parametric Log-normal")
+  plot_mod(
+    x = df_alloy$characteristic, 
+    loc_sc_params = ml_lognormal3$loc_sc_params,
+    distribution = "lognormal3",
+    title_trace = "Three-parametric Log-normal"
+  )
+
 lognormal_plot
 ```
 

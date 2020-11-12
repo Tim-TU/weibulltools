@@ -19,7 +19,7 @@ ml_estimation(x, ...)
 
 \method{ml_estimation}{default}(
   x,
-  event,
+  status,
   distribution = c("weibull", "lognormal", "loglogistic", "normal", "logistic", "sev",
     "weibull3", "lognormal3", "loglogistic3"),
   wts = rep(1, length(x)),
@@ -45,7 +45,7 @@ vector with all components being 1 (same weights).}
 \item{conf_level}{Confidence level of the interval. The default value is
 \code{conf_level = 0.95}.}
 
-\item{event}{A vector of binary data (0 or 1) indicating whether unit \emph{i}
+\item{status}{A vector of binary data (0 or 1) indicating whether unit \emph{i}
 is a right censored observation (= 0) or a failure (= 1).}
 }
 \value{
@@ -78,7 +78,7 @@ right censored data.
 \itemize{
 \item \code{reliability_data}: Provide reliability_tbl (preferred)
 
-\item \code{default}: Provide x and event manually (deprecated)
+\item \code{default}: Provide x and status manually (deprecated)
 }}
 
 \examples{
@@ -86,7 +86,7 @@ right censored data.
 obs   <- seq(10000, 100000, 10000)
 state <- c(0, 1, 1, 0, 0, 0, 1, 0, 1, 0)
 
-mle <- ml_estimation(x = obs, event = state,
+mle <- ml_estimation(x = obs, status = state,
                      distribution = "weibull", conf_level = 0.90)
 
 # Example 2: Fitting a three-parameter Weibull:
@@ -99,7 +99,7 @@ cycles   <- c(300, 300, 300, 300, 300, 291, 274, 271, 269, 257, 256, 227, 226,
               112, 108, 104, 99, 99, 96, 94)
 state <- c(rep(0, 5), rep(1, 67))
 
-mle_weib3 <- ml_estimation(x = cycles, event = state,
+mle_weib3 <- ml_estimation(x = cycles, status = state,
                            distribution = "weibull3", conf_level = 0.95)
 }
 \references{

@@ -45,7 +45,7 @@ cycles   <- c(300, 300, 300, 300, 300, 291, 274, 271, 269, 257, 256, 227, 226,
               112, 108, 104, 99, 99, 96, 94)
 state <- c(rep(0, 5), rep(1, 67))
 
-df_john <- johnson_method(x = cycles, event = state)
+df_john <- johnson_method(x = cycles, status = state)
 
 # Determining threshold parameter for which the coefficient of determination is
 # maximized subject to the condition that the threshold parameter must be smaller

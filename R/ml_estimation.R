@@ -31,7 +31,7 @@
 #'               112, 108, 104, 99, 99, 96, 94)
 #' state <- c(rep(0, 5), rep(1, 67))
 #'
-#' df_john <- johnson_method(x = cycles, event = state)
+#' df_john <- johnson_method(x = cycles, status = state)
 #'
 #' # Determining threshold parameter for which the coefficient of determination is
 #' # maximized subject to the condition that the threshold parameter must be smaller
@@ -92,7 +92,7 @@ r_squared_profiling <- function(x, y, thres, distribution = c("weibull3", "logno
 #'   data could be every characteristic influencing the reliability of a product,
 #'   e.g. operating time (days/months in service), mileage (km, miles), load
 #'   cycles.
-#' @param event A vector of binary data (0 or 1) indicating whether unit \emph{i}
+#' @param status A vector of binary data (0 or 1) indicating whether unit \emph{i}
 #'   is a right censored observation (= 0) or a failure (= 1).
 #' @param distribution Supposed distribution of the random variable. The
 #'   value can be \code{"weibull"}, \code{"lognormal"}, \code{"loglogistic"},
@@ -126,7 +126,7 @@ r_squared_profiling <- function(x, y, thres, distribution = c("weibull3", "logno
 #' obs   <- seq(10000, 100000, 10000)
 #' state <- c(0, 1, 1, 0, 0, 0, 1, 0, 1, 0)
 #'
-#' mle <- ml_estimation(x = obs, event = state,
+#' mle <- ml_estimation(x = obs, status = state,
 #'                      distribution = "weibull", conf_level = 0.90)
 #'
 #' # Example 2: Fitting a three-parameter Weibull:
@@ -139,7 +139,7 @@ r_squared_profiling <- function(x, y, thres, distribution = c("weibull3", "logno
 #'               112, 108, 104, 99, 99, 96, 94)
 #' state <- c(rep(0, 5), rep(1, 67))
 #'
-#' mle_weib3 <- ml_estimation(x = cycles, event = state,
+#' mle_weib3 <- ml_estimation(x = cycles, status = state,
 #'                            distribution = "weibull3", conf_level = 0.95)
 ml_estimation <- function(x, ...) {
   UseMethod("ml_estimation")
@@ -168,9 +168,9 @@ ml_estimation.reliability_data <- function(
 
 #' @export
 #'
-#' @describeIn ml_estimation Provide x and event manually (deprecated)
+#' @describeIn ml_estimation Provide x and status manually (deprecated)
 ml_estimation.default <- function(
-  x, event,
+  x, status,
   distribution = c(
     "weibull", "lognormal", "loglogistic", "normal", "logistic", "sev",
     "weibull3", "lognormal3", "loglogistic3"),
@@ -180,15 +180,15 @@ ml_estimation.default <- function(
 
   deprecate_soft(
     "1.1.0",
-    "ml_estimation.default(x, event)",
-    "ml_estimation(reliability_data())",
+    "ml_estimation.default()",
+    "ml_estimation.reliability_data()",
     "ml_estimation.default() will be removed in 1.3.0. Then ml_estimation.reliability_data
     will be transfered to ml_estimation."
   )
 
   distribution <- match.arg(distribution)
 
-  reliability_tbl <- reliability_data(x = x, status = event, id = "")
+  reliability_tbl <- reliability_data(x = x, status = status, id = "")
 
   ml_estimation_(reliability_tbl, distribution, wts, conf_level)
 }
@@ -450,7 +450,7 @@ ml_estimation_ <- function(reliability_tbl, distribution, wts, conf_level) {
 #'   data could be every characteristic influencing the reliability of a product,
 #'   e.g. operating time (days/months in service), mileage (km, miles), load
 #'   cycles.
-#' @param event A vector of binary data (0 or 1) indicating whether unit \emph{i}
+#' @param status A vector of binary data (0 or 1) indicating whether unit \emph{i}
 #'   is a right censored observation (= 0) or a failure (= 1).
 #' @param thres A numeric value of the threshold parameter.
 #' @param distribution Supposed distribution of the random variable. The
@@ -474,7 +474,7 @@ ml_estimation_ <- function(reliability_tbl, distribution, wts, conf_level) {
 #' threshold <- seq(0, min(cycles[state == 1]) - 0.1, length.out = 100)
 #' profile_logL <- sapply(threshold, loglik_profiling,
 #'                      x = cycles,
-#'                      event = state,
+#'                      status = state,
 #'                      distribution = "weibull3")
 #' threshold[which.max(profile_logL)]
 #'
@@ -483,7 +483,7 @@ ml_estimation_ <- function(reliability_tbl, distribution, wts, conf_level) {
 #' # abline(v = threshold[which.max(profile_logL)], h = max(profile_logL), col = "red")
 loglik_profiling <- function(
   x,
-  event,
+  status,
   thres,
   distribution = c(
     "weibull3", "lognormal3", "loglogistic3"
@@ -496,7 +496,7 @@ loglik_profiling <- function(
   x_thres <- x - thres
 
   # Log-Likelihood profiling:
-  ml_thres <- SPREDA::Lifedata.MLE(survival::Surv(x_thres, event) ~ 1,
+  ml_thres <- SPREDA::Lifedata.MLE(survival::Surv(x_thres, status) ~ 1,
                                    dist = substr(distribution, start = 1, stop = nchar(distribution) - 1))
   -ml_thres$min
 }
@@ -518,7 +518,7 @@ loglik_profiling <- function(
 #'   data could be every characteristic influencing the reliability of a product,
 #'   e.g. operating time (days/months in service), mileage (km, miles), load
 #'   cycles.
-#' @param event A vector of binary data (0 or 1) indicating whether unit \emph{i}
+#' @param status A vector of binary data (0 or 1) indicating whether unit \emph{i}
 #'   is a right censored observation (= 0) or a failure (= 1).
 #' @param wts Optional vector of case weights. The length of \code{wts} must be the
 #'   same as the number of observations \code{x}. Default is that \code{wts} is a
@@ -545,17 +545,17 @@ loglik_profiling <- function(
 #' state <- c(rep(0, 5), rep(1, 67))
 #'
 #' # Example 1: Evaluating Log-Likelihood function of two-parametric weibull:
-#' loglik_weib <- loglik_function(x = cycles, event = state, pars = c(5.29, 0.33),
+#' loglik_weib <- loglik_function(x = cycles, status = state, pars = c(5.29, 0.33),
 #'                                distribution = "weibull")
 #'
 #' # Example 2: Evaluating Log-Likelihood function of three-parametric weibull:
-#' loglik_weib3 <- loglik_function(x = cycles, event = state,
+#' loglik_weib3 <- loglik_function(x = cycles, status = state,
 #'                                 pars = c(4.54, 0.76, 92.99),
 #'                                 distribution = "weibull3")
 
 loglik_function <- function(
   x,
-  event,
+  status,
   wts = rep(1, length(x)),
   pars,
   distribution = c(
@@ -566,7 +566,7 @@ loglik_function <- function(
 
   distribution <- match.arg(distribution)
 
-  d <- event
+  d <- status
   mu <- pars[1]
   sig <- pars[2]
   thres <- pars[3]
