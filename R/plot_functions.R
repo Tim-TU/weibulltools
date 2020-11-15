@@ -449,7 +449,7 @@ plot_prob_mix <- function(
 #'                        conf_level = .90)
 #'
 #' plot_reg_weibull <- plot_mod(p_obj = plot_weibull, x = cycles,
-#'                              loc_sc_params = mrr$loc_sc_coefficients,
+#'                              loc_sc_params = mrr$loc_sc_params,
 #'                              distribution = "weibull3",
 #'                              title_trace = "Estimated Weibull CDF")
 #'
@@ -473,7 +473,7 @@ plot_prob_mix <- function(
 #'                        conf_level = .90)
 #'
 #' plot_reg_lognormal <- plot_mod(p_obj = plot_lognormal, x = cycles,
-#'                              loc_sc_params = mrr_ln$loc_sc_coefficients,
+#'                              loc_sc_params = mrr_ln$loc_sc_params,
 #'                              distribution = "lognormal3",
 #'                              title_trace = "Estimated Lognormal CDF")
 plot_mod <- function(
@@ -724,7 +724,7 @@ plot_mod_mix <- function(p_obj, x, event, mix_output,
 #'
 #' conf_betabin <- confint_betabinom(x = df_john$characteristic,
 #'                                   event = df_john$status,
-#'                                   loc_sc_params = mrr$loc_sc_coefficients,
+#'                                   loc_sc_params = mrr$loc_sc_params,
 #'                                   distribution = "weibull3",
 #'                                   bounds = "two_sided",
 #'                                   conf_level = 0.95,
@@ -743,7 +743,7 @@ plot_mod_mix <- function(p_obj, x, event, mix_output,
 #' plot_reg_weibull <- plot_mod(p_obj = plot_weibull,
 #'                              x = conf_betabin$characteristic,
 #'                              y = conf_betabin$prob,
-#'                              loc_sc_params = mrr$loc_sc_coefficients,
+#'                              loc_sc_params = mrr$loc_sc_params,
 #'                              distribution = "weibull3",
 #'                              title_trace = "Estimated Weibull CDF")
 #'
@@ -764,7 +764,7 @@ plot_mod_mix <- function(p_obj, x, event, mix_output,
 #'
 #' conf_betabin_ln <- confint_betabinom(x = df_john$characteristic,
 #'                                   event = df_john$status,
-#'                                   loc_sc_params = mrr_ln$loc_sc_coefficients,
+#'                                   loc_sc_params = mrr_ln$loc_sc_params,
 #'                                   distribution = "lognormal3",
 #'                                   bounds = "two_sided",
 #'                                   conf_level = 0.95,
@@ -783,7 +783,7 @@ plot_mod_mix <- function(p_obj, x, event, mix_output,
 #' plot_reg_lognormal <- plot_mod(p_obj = plot_lognormal,
 #'                              x = conf_betabin_ln$characteristic,
 #'                              y = conf_betabin_ln$prob,
-#'                              loc_sc_params = mrr_ln$loc_sc_coefficients,
+#'                              loc_sc_params = mrr_ln$loc_sc_params,
 #'                              distribution = "lognormal3",
 #'                              title_trace = "Estimated Lognormal CDF")
 #'

@@ -202,7 +202,7 @@ predict_prob <- function(q, loc_sc_params,
 #'
 #' conf_betabin <- confint_betabinom(x = df_john$characteristic,
 #'                                   event = df_john$status,
-#'                                   loc_sc_params = mrr$loc_sc_coefficients,
+#'                                   loc_sc_params = mrr$loc_sc_params,
 #'                                   distribution = "weibull",
 #'                                   bounds = "two_sided",
 #'                                   conf_level = 0.95,
@@ -227,7 +227,7 @@ predict_prob <- function(q, loc_sc_params,
 #'
 #' conf_betabin_weib3 <- confint_betabinom(x = df_john2$characteristic,
 #'                                   event = df_john2$status,
-#'                                   loc_sc_params = mrr_weib3$loc_sc_coefficients,
+#'                                   loc_sc_params = mrr_weib3$loc_sc_params,
 #'                                   distribution = "weibull3",
 #'                                   bounds = "two_sided",
 #'                                   conf_level = 0.95,
@@ -245,13 +245,13 @@ confint_betabinom.parameter_estimation <- function(
   conf_level = 0.95,
   direction = c("y", "x")
 ) {
-  rel_df <- attr(parameter_estimation, "data")
-  distribution <- attr(parameter_estimation, "distribution")
+  rel_df <- parameter_estimation$data
+  distribution <- parameter_estimation$distribution
 
   confint_betabinom.default(
     x = rel_df$x,
     event = rel_df$event,
-    loc_sc_params = parameter_estimation$loc_sc_coefficients,
+    loc_sc_params = parameter_estimation$loc_sc_params,
     distribution = distribution,
     bounds = bounds,
     conf_level = conf_level,
@@ -400,7 +400,7 @@ confint_betabinom.default <- function(x, event, loc_sc_params,
 #' mle <- ml_estimation(x = obs, event = state,
 #'                      distribution = "weibull", conf_level = 0.95)
 #' delta_prob <- sapply(obs, delta_method,
-#'                           loc_sc_params = mle$loc_sc_coefficients,
+#'                           loc_sc_params = mle$loc_sc_params,
 #'                           loc_sc_varcov = mle$loc_sc_vcov,
 #'                           distribution = "weibull",
 #'                           direction = "y")
@@ -524,7 +524,7 @@ delta_method <- function(p, loc_sc_params, loc_sc_varcov,
 #'                      distribution = "weibull", conf_level = 0.95)
 #' conf_fish <- confint_fisher(x = df_john$characteristic,
 #'                             event = df_john$status,
-#'                             loc_sc_params = mle$loc_sc_coefficients,
+#'                             loc_sc_params = mle$loc_sc_params,
 #'                             loc_sc_varcov = mle$loc_sc_vcov,
 #'                             distribution = "weibull",
 #'                             bounds = "two_sided",
@@ -543,8 +543,8 @@ confint_fisher.parameter_estimation <- function(
   conf_level = 0.95,
   direction = c("y", "x")
 ) {
-  rel_df <- attr(parameter_estimation, "data")
-  distribution <- attr(parameter_estimation, "distribution")
+  rel_df <- parameter_estimation$data
+  distribution <- parameter_estimation$distribution
 
   confint_fisher.default(
     x = rel_df$x,
