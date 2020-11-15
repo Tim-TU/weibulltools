@@ -367,11 +367,11 @@ rank_regression.default <- function(
     )
   }
 
-  mrr_output$cdf_estimation <- tibble::tibble(characteristic = x, status = event, prob = y)
+  mrr_output$data <- tibble::tibble(characteristic = x, status = event)
 
   mrr_output$distribution <- distribution
 
-  class(mrr_output) <- c("rank_regression", "parameter_estimation", class(mrr_output))
+  class(mrr_output) <- c("parameter_estimation", class(mrr_output))
 
   return(mrr_output)
 }

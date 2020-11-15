@@ -310,7 +310,7 @@ mixmod_em <- function(x, event, post = NULL, distribution = "weibull",
 
   ############## New Approach ##############
   # Try to apply ml_estimation where observations are weighted with a-posterioris:
-  ml <- try(apply(mix_est$posteriori, MARGIN = 2, FUN = ml_estimation, x = x, event = event,
+  ml <- try(apply(mix_est$posteriori, MARGIN = 2, FUN = ml_estimation, x = x, status = event,
     distribution = distribution, conf_level = conf_level), silent = TRUE)
   if (class(ml) == "try-error") {
         stop(paste(ml[1], sprintf("\n For k = %s subcomponents the above problem occured!", k),

@@ -3,13 +3,13 @@
 \encoding{UTF-8}
 \name{plot_mod}
 \alias{plot_mod}
-\alias{plot_mod.rank_regression}
+\alias{plot_mod.parameter_estimation}
 \alias{plot_mod.default}
 \title{Adding an Estimated Population Line to a Probability Plot}
 \usage{
 plot_mod(p_obj, x, ...)
 
-\method{plot_mod}{rank_regression}(p_obj, mrr_output, title_trace = "Fit")
+\method{plot_mod}{parameter_estimation}(p_obj, parameter_estimation, title_trace = "Fit")
 
 \method{plot_mod}{default}(
   p_obj,
@@ -55,7 +55,8 @@ model estimated by \code{\link{rank_regression}} or \code{\link{ml_estimation}}.
 }
 \section{Methods (by class)}{
 \itemize{
-\item \code{rank_regression}: Providing \code{\link{rank_regression}} output (preferred)
+\item \code{parameter_estimation}: Providing \code{\link{parameter_estimation}} as output from
+\code{\link{ml_estimation}} or \code{\link{rank_regression}}.
 
 \item \code{default}: Providing x, y, loc_sc_params and distribution manually.
 }}

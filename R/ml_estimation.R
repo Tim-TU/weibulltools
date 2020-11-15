@@ -153,7 +153,7 @@ ml_estimation.reliability_data <- function(
   distribution = c(
     "weibull", "lognormal", "loglogistic", "normal", "logistic", "sev",
     "weibull3", "lognormal3", "loglogistic3"),
-  wts = rep(1, length(x)),
+  wts = rep(1, nrow(reliability_tbl)),
   conf_level = .95
 ) {
   distribution <- match.arg(distribution)
@@ -182,8 +182,8 @@ ml_estimation.default <- function(
     "1.1.0",
     "ml_estimation.default()",
     "ml_estimation.reliability_data()",
-    "ml_estimation.default() will be removed in 1.3.0. Then ml_estimation.reliability_data
-    will be transfered to ml_estimation."
+    "ml_estimation.default() will be removed in 1.3.0.
+    By then ml_estimation.reliability_data() will be transfered to ml_estimation."
   )
 
   distribution <- match.arg(distribution)
@@ -427,10 +427,11 @@ ml_estimation_ <- function(reliability_tbl, distribution, wts, conf_level) {
 
   class(ml_output) <- c("parameter_estimation", class(ml_output))
 
-  attr(ml_output, "data") <- tibble::tibble(
-    x = x, status = status
+  ml_output$data <- tibble::tibble(
+    characteristic = x, status = status
   )
-  attr(ml_output, "distribution") <- distribution
+
+  ml_output$distribution <- distribution
 
   return(ml_output)
 }

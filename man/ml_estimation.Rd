@@ -13,7 +13,7 @@ ml_estimation(x, ...)
   reliability_tbl,
   distribution = c("weibull", "lognormal", "loglogistic", "normal", "logistic", "sev",
     "weibull3", "lognormal3", "loglogistic3"),
-  wts = rep(1, length(x)),
+  wts = rep(1, nrow(reliability_tbl)),
   conf_level = 0.95
 )
 

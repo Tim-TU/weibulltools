@@ -484,17 +484,18 @@ plot_mod <- function(
 
 #' @export
 #'
-#' @describeIn plot_mod Providing \code{\link{rank_regression}} output (preferred)
-plot_mod.rank_regression <- function(
-  p_obj, mrr_output, title_trace = "Fit"
+#' @describeIn plot_mod Providing \code{\link{parameter_estimation}} as output from
+#' \code{\link{ml_estimation}} or \code{\link{rank_regression}}.
+plot_mod.parameter_estimation <- function(
+  p_obj, parameter_estimation, title_trace = "Fit"
 ) {
 
   plot_mod.default(
     p_obj = p_obj,
-    x = mrr_output$cdf_estimation$characteristic,
+    x = parameter_estimation$data$characteristic,
     y = NULL,
-    loc_sc_params = mrr_output$loc_sc_params,
-    distribution = mrr_output$distribution,
+    loc_sc_params = parameter_estimation$loc_sc_params,
+    distribution = parameter_estimation$distribution,
     title_trace = title_trace
   )
 }
