@@ -38,10 +38,16 @@ location-scale (and threshold) parameters and specified failure probabilities.
 }
 \examples{
 # Example 1: Predicted quantiles for two-parameter Weibull:
-quants <- predict_quantile(p = c(0.01, 0.1, 0.5), loc_sc_params = c(5, 0.5),
-                           distribution = "weibull")
+quants <- predict_quantile(
+  p = c(0.01, 0.1, 0.5),
+  loc_sc_params = c(5, 0.5),
+  distribution = "weibull"
+)
 
 # Example 2: Predicted quantiles for three-parameter Weibull:
-quants_weib3 <- predict_quantile(p = c(0.01, 0.1, 0.5), loc_sc_params = c(5, 0.5, 10),
-                           distribution = "weibull3")
+quants_weib3 <- predict_quantile(
+  p = c(0.01, 0.1, 0.5),
+  loc_sc_params = c(5, 0.5, 10),
+  distribution = "weibull3"
+)
 }

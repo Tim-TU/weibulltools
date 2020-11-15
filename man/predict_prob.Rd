@@ -37,10 +37,16 @@ location-scale (and threshold) parameters and specified quantiles.
 }
 \examples{
 # Example 1: Predicted probabilities for two-parameter Weibull:
-probs <- predict_prob(q = c(15, 48, 124), loc_sc_params = c(5, 0.5),
-                           distribution = "weibull")
+probs <- predict_prob(
+  q = c(15, 48, 124),
+  loc_sc_params = c(5, 0.5),
+  distribution = "weibull"
+)
 
 # Example 2: Predicted probabilities for three-parameter Weibull:
-probs_weib3 <- predict_prob(q = c(25, 58, 134), loc_sc_params = c(5, 0.5, 10),
-                           distribution = "weibull3")
+probs_weib3 <- predict_prob(
+  q = c(25, 58, 134),
+  loc_sc_params = c(5, 0.5, 10),
+  distribution = "weibull3"
+)
 }

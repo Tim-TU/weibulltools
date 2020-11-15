@@ -82,19 +82,23 @@ state <- c(0, 1, 1, 0, 0, 0, 1, 0, 1, 0)
 
 df_john <- johnson_method(x = obs, event = state)
 
-mrr <- rank_regression(x = df_john$characteristic,
-                       y = df_john$prob,
-                       event = df_john$status,
-                       distribution = "weibull",
-                       conf_level = .95)
+mrr <- rank_regression(
+  x = df_john$characteristic,
+  y = df_john$prob,
+  event = df_john$status,
+  distribution = "weibull",
+  conf_level = .95
+)
 
-conf_betabin <- confint_betabinom(x = df_john$characteristic,
-                                  event = df_john$status,
-                                  loc_sc_params = mrr$loc_sc_coefficients,
-                                  distribution = "weibull",
-                                  bounds = "two_sided",
-                                  conf_level = 0.95,
-                                  direction = "y")
+conf_betabin <- confint_betabinom(
+  x = df_john$characteristic,
+  event = df_john$status,
+  loc_sc_params = mrr$loc_sc_params,
+  distribution = "weibull",
+  bounds = "two_sided",
+  conf_level = 0.95,
+  direction = "y"
+)
 
 # Example 2: Beta-Binomial Confidence Bounds for three-parameter Weibull:
 # Alloy T7987 dataset taken from Meeker and Escobar(1998, p. 131)
@@ -107,19 +111,24 @@ cycles   <- c(300, 300, 300, 300, 300, 291, 274, 271, 269, 257, 256, 227, 226,
 state <- c(rep(0, 5), rep(1, 67))
 
 df_john2 <- johnson_method(x = cycles, event = state)
-mrr_weib3 <- rank_regression(x = df_john2$characteristic,
-                       y = df_john2$prob,
-                       event = df_john2$status,
-                       distribution = "weibull3",
-                       conf_level = .95)
 
-conf_betabin_weib3 <- confint_betabinom(x = df_john2$characteristic,
-                                  event = df_john2$status,
-                                  loc_sc_params = mrr_weib3$loc_sc_coefficients,
-                                  distribution = "weibull3",
-                                  bounds = "two_sided",
-                                  conf_level = 0.95,
-                                  direction = "y")
+mrr_weib3 <- rank_regression(
+  x = df_john2$characteristic,
+  y = df_john2$prob,
+  event = df_john2$status,
+  distribution = "weibull3",
+  conf_level = .95
+)
+
+conf_betabin_weib3 <- confint_betabinom(
+  x = df_john2$characteristic,
+  event = df_john2$status,
+  loc_sc_params = mrr_weib3$loc_sc_params,
+  distribution = "weibull3",
+  bounds = "two_sided",
+  conf_level = 0.95,
+  direction = "y"
+)
 }
 \references{
 Meeker, William Q; Escobar, Luis A., Statistical methods for

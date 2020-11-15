@@ -92,7 +92,7 @@ mrr <- rank_regression(x = df_john$characteristic,
                        conf_level = .90)
 
 plot_reg_weibull <- plot_mod(p_obj = plot_weibull, x = cycles,
-                             loc_sc_params = mrr$loc_sc_coefficients,
+                             loc_sc_params = mrr$loc_sc_params,
                              distribution = "weibull3",
                              title_trace = "Estimated Weibull CDF")
 
@@ -116,7 +116,7 @@ mrr_ln <- rank_regression(x = df_john$characteristic,
                        conf_level = .90)
 
 plot_reg_lognormal <- plot_mod(p_obj = plot_lognormal, x = cycles,
-                             loc_sc_params = mrr_ln$loc_sc_coefficients,
+                             loc_sc_params = mrr_ln$loc_sc_params,
                              distribution = "lognormal3",
                              title_trace = "Estimated Lognormal CDF")
 }

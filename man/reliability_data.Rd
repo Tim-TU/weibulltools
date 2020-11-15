@@ -4,7 +4,7 @@
 \alias{reliability_data}
 \title{Failure data}
 \usage{
-reliability_data(data = NULL, x, status, id)
+reliability_data(data = NULL, x, status, id = NULL)
 }
 \arguments{
 \item{data}{Either NULL or a data frame/tibble. If data is NULL, x, status and
