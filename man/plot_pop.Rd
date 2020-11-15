@@ -2,18 +2,8 @@
 % Please edit documentation in R/plot_functions.R
 \name{plot_pop}
 \alias{plot_pop}
-\title{Add Population Line to an Existing Grid}
+\title{Add Population Lines to an Existing Grid}
 \usage{
-plot_pop(
-  p_obj = NULL,
-  x,
-  param_tbl,
-  distribution = c("weibull", "lognormal", "loglogistic"),
-  tol = 1e-06,
-  title_trace = "Population",
-  plot_method = c("plotly", "ggplot2")
-)
-
 plot_pop(
   p_obj = NULL,
   x,
@@ -28,7 +18,11 @@ plot_pop(
 \item{p_obj}{A plotly object, which at least includes the layout provided
 by \code{\link{plot_layout}}. If \code{NULL}}
 
-\item{x}{A numeric vector containing the x-coordinates of the population line.}
+\item{x}{A numeric vector of length two or greater used for the x coordinates
+of the population line. If \code{length(x) == 2} a sequence of length 200
+between \code{x[1]} and \code{x[2]} is created. This sequence is equidistant
+with respect to the scale of the x axis. If \code{length(x) > 2} the elements
+of \code{x} are the x coordinates of the population line.}
 
 \item{param_tbl}{A tibble. See 'Details'.}
 
@@ -44,25 +38,12 @@ the legend.}
 \item{plot_method}{Package, which is used for generating the plot output. Only
 used with \code{p_obj = NULL}, otherwise \code{p_obj} is used to determine
 the plot method.}
-
-\item{params}{A (named) numeric vector, where the first entry is the location
-parameter \eqn{\mu} and the second entry is the scale parameter \eqn{\sigma}
-of a lognormal or loglogistic distribution. If the distribution value is
-\code{"weibull"} the first entry must be the scale parameter \eqn{\eta} and
-the second entry must be the shape parameter \eqn{\beta}. Parametrization
-is the same used in \code{\link{rweibull}}.}
-
-\item{color}{The color of the population line should be added as follows:
-For hexadecimal codes: \code{color = I("#3C8DBC")} and for a color specified
-with a string: \code{color = I("blue")}.}
 }
 \value{
 A plotly object which contains the supposed linearized population
   CDF. Failure probabilities must be strictly below 1 and for this very reason
 }
 \description{
-This function adds a linearized CDF to an existing plotly grid.
-
 This function adds one or multiple linearized CDF to an existing plotly grid.
 }
 \details{
@@ -76,14 +57,21 @@ This function adds one or multiple linearized CDF to an existing plotly grid.
 }
 \examples{
 x <- rweibull(n = 100, shape = 1, scale = 20000)
-grid_weibull <- plot_layout(x = x,
-                            distribution = "weibull",
-                            title_main = "Weibull Analysis",
-                            title_x = "Time to Failure",
-                            title_y = "Failure Probability")
-pop_weibull <- plot_pop(p_obj = grid_weibull,
-                        x = x, param_tbl = c(20000, 1),
-                        distribution = "weibull", color = I("green"),
-                        title_trace = "Population")
+
+grid_weibull <- plot_layout(
+  x = x,
+  distribution = "weibull",
+  title_main = "Weibull Analysis",
+  title_x = "Time to Failure",
+  title_y = "Failure Probability"
+)
+
+pop_weibull <- plot_pop(
+  p_obj = grid_weibull,
+  x = range(x),
+  param_tbl = c(20000, 1),
+  distribution = "weibull",
+  title_trace = "Population"
+)
 
 }

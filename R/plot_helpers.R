@@ -413,10 +413,11 @@ plot_conf_helper <- function(tbl_mod, x, y, direction, distribution) {
 }
 
 plot_pop_helper <- function(x, param_tbl, distribution, tol = 1e-6) {
-  x_min <- min(x, na.rm = TRUE)
-  x_max <- max(x, na.rm = TRUE)
-
-  x_s <- seq(x_min, x_max, length.out = 200)
+  x_s <- if (length(x) == 2) {
+    10 ^ seq(log10(x[1]), log10(x[2]), length.out = 200)
+  } else {
+    x
+  }
 
   if (distribution == "weibull") {
     param_tbl <- param_tbl %>%
