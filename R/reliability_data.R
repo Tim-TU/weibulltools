@@ -1,7 +1,7 @@
-#' Failure data
+#' Reliability data
 #'
 #' @description
-#' Create consistent failure data based on an existing data.frame/tibble
+#' Create consistent reliability data based on an existing data.frame/tibble
 #' (preferred) or on multiple equal length vectors.
 #'
 #' @param data Either NULL or a data frame/tibble. If data is NULL, x, status and
