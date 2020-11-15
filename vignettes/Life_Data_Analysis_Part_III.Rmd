@@ -56,17 +56,21 @@ state <- c(1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1,
 
 id <- 1:length(hours)
 
+reliability_tbl <- reliability_data(x = hours, status = state, id = id)
+
 # Estimating failure probabilities: 
-df_john <- johnson_method(id = id, x = hours, event = state)
+cdf_john_tbl <- estimate_cdf(reliability_tbl, "johnson")
 
 # Probability plot: 
-weibull_plot <- plot_prob(x = df_john$characteristic, y = df_john$prob, 
-                          event = df_john$status, id = df_john$id, 
-                          distribution = "weibull", 
-                          title_main = "Weibull Probability Plot", 
-                          title_x = "Time in Hours", 
-                          title_y = "Probability of Failure in %",
-                          title_trace = "Defect Items")
+weibull_plot <- plot_prob(
+  cdf_john_tbl,
+  distribution = "weibull", 
+  title_main = "Weibull Probability Plot", 
+  title_x = "Time in Hours", 
+  title_y = "Probability of Failure in %",
+  title_trace = "Defect Items"
+)
+
 weibull_plot
 ```
 
@@ -79,14 +83,17 @@ In package `weibulltools` the method of segmented regression is implemented in f
 
 ```{r segmented weibull I, fig.cap = "Figure 2: Subgroup-specific plotting positions.", message = FALSE}
 # Applying mixmod_regression(): 
-mixreg_weib <- mixmod_regression(x = df_john$characteristic, y = df_john$prob, 
-  event = df_john$status, distribution = "weibull")
+mixreg_weib <- mixmod_regression(x = cdf_john_tbl$characteristic, y = cdf_john_tbl$prob, 
+  event = cdf_john_tbl$status, distribution = "weibull")
 
 # Using plot_prob_mix(). 
 mix_reg_plot <- plot_prob_mix(x = hours, event = state, id = id, 
   distribution = "weibull", mix_output = mixreg_weib, 
   title_main = "Weibull Mixture Regression", title_x = "Time in Hours", 
-  title_y = "Probability of Failure", title_trace = "Subgroup")
+  title_y = "Probability of Failure", title_trace = "Subgroup",
+  plot_method = "ggplot2"
+)
+
 mix_reg_plot
 ```
 
@@ -114,7 +121,10 @@ mixem_weib <- mixmod_em(x = hours, event = state, distribution = "weibull",
 mix_em_plot <- plot_prob_mix(x = hours, event = state, id = id, 
   distribution = "weibull", mix_output = mixem_weib, 
   title_main = "Weibull Mixture EM", title_x = "Time in Hours", 
-  title_y = "Probability of Failure", title_trace = "Subgroup")
+  title_y = "Probability of Failure", title_trace = "Subgroup",
+  plot_method = "ggplot2"
+)
+
 mix_em_plot
 ```
 
