@@ -9,10 +9,9 @@ id_2 <- LETTERS[1:10]
 tbl <- tibble::tibble(a = x, b = stat_2, c = id_2)
 
 # General tests ----
-test_that("reliability_data fails if x, status or id are not provided", {
+test_that("reliability_data fails if x or status are not provided", {
   expect_error(reliability_data())
   expect_error(reliability_data(x = 1))
-  expect_error(reliability_data(x = 1, status = 1))
 })
 
 # Data-based approach ----
@@ -33,4 +32,11 @@ test_that("vector-based approach recycles status and id", {
 
 test_that("vector-based approach fails if x is shorter than status or id", {
   expect_error(reliability_data(x = 1, status = stat_2, id = id_2), "length of x.*")
+})
+
+# ID handling ----
+test_that("ID is sequentiated regardless of approach", {
+  expected <- paste0("ID", seq_along(x))
+  expect_equal(reliability_data(x = x, status = 0)$id, expected)
+  expect_equal(reliability_data(tbl, a, b)$id, expected)
 })
