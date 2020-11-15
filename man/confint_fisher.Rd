@@ -62,11 +62,7 @@ variance of the scale parameter Var(\eqn{\sigma}). If a three-parametric model
 is used the third element of the diagonal needs to be the variance of the
 threshold parameter Var(\eqn{\gamma}).}
 
-\item{distribution}{Supposed distribution of the random variable. The
-value can be \code{"weibull"}, \code{"lognormal"}, \code{"loglogistic"},
-\code{"normal"}, \code{"logistic"}, \code{"sev"} \emph{(smallest extreme value)},
-\code{"weibull3"}, \code{"lognormal3"} or \code{"loglogistic3"}.
-Other distributions have not been implemented yet.}
+\item{distribution}{Supposed distribution of the random variable.}
 }
 \value{
 A data frame containing the lifetime characteristic, the
@@ -89,16 +85,25 @@ of these need to be estimated by Maximum Likelihood.
 
 \examples{
 obs   <- seq(10000, 100000, 10000)
-state <- c(0, 1, 1, 0, 0, 0, 1, 0, 1, 0)
-df_john <- johnson_method(x = obs, event = state)
-mle <- ml_estimation(x = obs, status = state,
-                     distribution = "weibull", conf_level = 0.95)
-conf_fish <- confint_fisher(x = df_john$characteristic,
-                            event = df_john$status,
-                            loc_sc_params = mle$loc_sc_params,
-                            loc_sc_varcov = mle$loc_sc_varcov,
-                            distribution = "weibull",
-                            bounds = "two_sided",
-                            conf_level = 0.95,
-                            direction = "y")
+status <- c(0, 1, 1, 0, 0, 0, 1, 0, 1, 0)
+reliability_tbl <- reliability_data(x = obs, status = status)
+
+tbl_john <- estimate_cdf(reliability_tbl, "johnson")
+
+mle <- ml_estimation(
+  reliability_tbl,
+  distribution = "weibull",
+  conf_level = 0.95
+)
+
+conf_fish <- confint_fisher(
+  x = df_john$characteristic,
+  event = df_john$status,
+  loc_sc_params = mle$loc_sc_params,
+  loc_sc_varcov = mle$loc_sc_varcov,
+  distribution = "weibull",
+  bounds = "two_sided",
+  conf_level = 0.95,
+  direction = "y"
+)
 }

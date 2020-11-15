@@ -106,14 +106,16 @@ event.
 \examples{
 # Example 1: Fitting a two-parameter Weibull:
 obs   <- seq(10000, 100000, 10000)
-state <- c(0, 1, 1, 0, 0, 0, 1, 0, 1, 0)
+status <- c(0, 1, 1, 0, 0, 0, 1, 0, 1, 0)
+reliability_tbl <- reliability_data(x = obs, status = status)
 
-df_john <- johnson_method(x = obs, event = state)
-mrr <- rank_regression(x = df_john$characteristic,
-                       y = df_john$prob,
-                       event = df_john$status,
-                       distribution = "weibull",
-                       conf_level = .90)
+tbl_john <- estimate_cdf(reliability_tbl, "johnson")
+
+mrr <- rank_regression(
+  tbl_john,
+  distribution = "weibull",
+  conf_level = .90
+)
 
 # Example 2: Fitting a three-parameter Weibull:
 # Alloy T7987 dataset taken from Meeker and Escobar(1998, p. 131)
@@ -123,14 +125,17 @@ cycles   <- c(300, 300, 300, 300, 300, 291, 274, 271, 269, 257, 256, 227, 226,
               159, 159, 159, 152, 152, 149, 149, 144, 143, 141, 141, 140, 139,
               139, 136, 135, 133, 131, 129, 123, 121, 121, 118, 117, 117, 114,
               112, 108, 104, 99, 99, 96, 94)
-state <- c(rep(0, 5), rep(1, 67))
+status <- c(rep(0, 5), rep(1, 67))
 
-df_john <- johnson_method(x = cycles, event = state)
-mrr <- rank_regression(x = df_john$characteristic,
-                       y = df_john$prob,
-                       event = df_john$status,
-                       distribution = "weibull3",
-                       conf_level = .90)
+reliability_tbl <- reliability_data(x = cycles, status = status)
+
+tbl_john <- estimate_cdf(reliability_tbl, "johnson")
+mrr <- rank_regression(
+  tbl_john,
+  distribution = "weibull3",
+  conf_level = .90
+)
+
 }
 \references{
 \itemize{

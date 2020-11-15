@@ -22,11 +22,7 @@ parameter \eqn{\mu} and the second element needs to be the scale
 parameter \eqn{\sigma}. If a three-parametric model is used the third element
 is the threshold parameter \eqn{\gamma}.}
 
-\item{distribution}{Supposed distribution of the random variable. The
-value can be \code{"weibull"}, \code{"lognormal"}, \code{"loglogistic"},
-\code{"normal"}, \code{"logistic"}, \code{"sev"} \emph{(smallest extreme value)},
-\code{"weibull3"}, \code{"lognormal3"} or \code{"loglogistic3"}.
-Other distributions have not been implemented yet.}
+\item{distribution}{Supposed distribution of the random variable.}
 }
 \value{
 A vector containing the estimated quantiles for a given set of
