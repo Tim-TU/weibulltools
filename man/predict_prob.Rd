@@ -2,7 +2,7 @@
 % Please edit documentation in R/confidence_intervals.R
 \name{predict_prob}
 \alias{predict_prob}
-\title{Estimation of Failure Probabilities for Parametric Lifetime Distributions}
+\title{Prediction of Failure Probabilities for Parametric Lifetime Distributions}
 \usage{
 predict_prob(
   q,
@@ -32,7 +32,7 @@ A vector containing the estimated failure probabilities for a given
   set of quantiles and estimated parameters.
 }
 \description{
-This function estimates the failure probabilities for a given set of estimated
+This function predicts the failure probabilities for a given set of estimated
 location-scale (and threshold) parameters and specified quantiles.
 }
 \examples{
