@@ -142,6 +142,12 @@ plot_prob_plotly <- function(
   mark_x <- unlist(strsplit(title_x, " "))[1]
   mark_y <- unlist(strsplit(title_y, " "))[1]
 
+  name <- if (length(unique(prob_tbl$method)) == 1) {
+    title_trace
+  } else {
+    paste0(title_trace, ": ", prob_tbl$method)
+  }
+
   # Construct probability plot:
   p_prob <- p_obj %>%
     plotly::add_trace(
@@ -151,7 +157,7 @@ plot_prob_plotly <- function(
       type = "scatter",
       mode = "markers",
       hoverinfo = "text",
-      name = paste0(title_trace, ": ", prob_tbl$method),
+      name = name,
       text = paste(
         "ID:", prob_tbl$id,
         paste("<br>", paste0(mark_x, ":")), prob_tbl$characteristic,
