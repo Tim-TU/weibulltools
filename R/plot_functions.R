@@ -325,20 +325,25 @@ plot_prob_ <- function(
 #'
 #' # Example 3 - Using result of mixmod_regression in mix_output:
 #' john <- johnson_method(x = hours, event = state)
-#' mix_mod_reg <- mixmod_regression(x = john$characteristic,
-#'                                  y = john$prob,
-#'                                  event = john$status,
-#'                                  distribution = "weibull")
+#' mix_mod_reg <- mixmod_regression(
+#'   x = john$characteristic,
+#'   y = john$prob,
+#'   event = john$status,
+#'   distribution = "weibull"
+#' )
 #'
-#' plot_weibull_reg <- plot_prob_mix(x = hours,
-#'                                   event = state,
-#'                                   id = id,
-#'                                   distribution = "weibull",
-#'                                   mix_output = mix_mod_reg,
-#'                                   title_main = "Weibull Mixture Regression",
-#'                                   title_x = "Time in Hours",
-#'                                   title_y = "Probability of Failure",
-#'                                   title_trace = "Subgroup")
+#' plot_weibull_reg <- plot_prob_mix(
+#'   x = hours,
+#'   event = state,
+#'   id = id,
+#'   distribution = "weibull",
+#'   mix_output = mix_mod_reg,
+#'   title_main = "Weibull Mixture Regression",
+#'   title_x = "Time in Hours",
+#'   title_y = "Probability of Failure",
+#'   title_trace = "Subgroup"
+#' )
+#'
 plot_prob_mix <- function(
   x,
   event,

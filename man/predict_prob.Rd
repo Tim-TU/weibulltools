@@ -2,7 +2,7 @@
 % Please edit documentation in R/predict.R
 \name{predict_prob}
 \alias{predict_prob}
-\title{Estimation of Failure Probabilities for Parametric Lifetime Distributions}
+\title{Prediction of Failure Probabilities for Parametric Lifetime Distributions}
 \usage{
 predict_prob(
   q,
@@ -24,11 +24,11 @@ is the threshold parameter \eqn{\gamma}.}
 \item{distribution}{Supposed distribution of the random variable.}
 }
 \value{
-A vector containing the estimated failure probabilities for a given
+A vector containing the predicted failure probabilities for a given
   set of quantiles and estimated parameters.
 }
 \description{
-This function estimates the failure probabilities for a given set of estimated
+This function predicts the failure probabilities for a given set of estimated
 location-scale (and threshold) parameters and specified quantiles.
 }
 \examples{
