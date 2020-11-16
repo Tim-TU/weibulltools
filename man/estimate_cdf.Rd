@@ -37,10 +37,12 @@ data.
 One or multiple of the following methods can be used as the \code{methods}
 argument:
 \itemize{
-  \item \code{"mr"}: This non-parametric approach (_Median Ranks_) is
+  \item \code{"mr"}: This non-parametric approach (\emph{Median Ranks}) is
     used to estimate the failure probabilities in terms of complete data.
+    Tied observations can be handled in three ways, "max", "min" and "average"
+    (usage is listed in 'Options')).
     Two methods are available to estimate the cumulative distribution
-    function _F(t)_ (See 'Options'):
+    function \emph{F(t)} (See 'Options'):
     \itemize{
       \item "benard"; Benard's approximation for Median Ranks.
       \item "invbeta"; Exact Median Ranks using the inverse beta distribution.
@@ -77,6 +79,7 @@ argument:
 
 \itemize{
   \item \code{mr_method}: \code{"benard"} (default) or \code{"invbeta"}.
+  \item \code{mr_ties.method}: \code{c("max", "min", "average")}, default is "max".
 }
 }
 
