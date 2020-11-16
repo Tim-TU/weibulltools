@@ -3,9 +3,15 @@
 \encoding{UTF-8}
 \name{plot_mod}
 \alias{plot_mod}
+\alias{plot_mod.parameter_estimation}
+\alias{plot_mod.default}
 \title{Adding an Estimated Population Line to a Probability Plot}
 \usage{
-plot_mod(
+plot_mod(p_obj, x, ...)
+
+\method{plot_mod}{parameter_estimation}(p_obj, parameter_estimation, title_trace = "Fit")
+
+\method{plot_mod}{default}(
   p_obj,
   x,
   y = NULL,
@@ -19,6 +25,9 @@ plot_mod(
 \item{p_obj}{A plotly object provided by function \code{\link{plot_prob}}.}
 
 \item{x}{A numeric vector containing the x-coordinates of the regression line.}
+
+\item{title_trace}{A character string whis is assigned to the trace shown in
+the legend.}
 
 \item{y}{A numeric vector containing the y-coordinates of the regression line.
 The default value of y is \code{NULL}. If \code{y} is set \code{NULL} the
@@ -35,9 +44,6 @@ parameter \eqn{\sigma}. If a three-parametric model is used the third element
 is the threshold parameter \eqn{\gamma}.}
 
 \item{distribution}{Supposed distribution of the random variable.}
-
-\item{title_trace}{A character string whis is assigned to the trace shown in
-the legend.}
 }
 \value{
 Returns a plotly object containing the probability plot with
@@ -47,6 +53,14 @@ Returns a plotly object containing the probability plot with
 This function adds a regression line to an existing probability plot using a
 model estimated by \code{\link{rank_regression}} or \code{\link{ml_estimation}}.
 }
+\section{Methods (by class)}{
+\itemize{
+\item \code{parameter_estimation}: Providing \code{\link{parameter_estimation}} as output from
+\code{\link{ml_estimation}} or \code{\link{rank_regression}}.
+
+\item \code{default}: Providing x, y, loc_sc_params and distribution manually.
+}}
+
 \examples{
 # Alloy T7987 dataset taken from Meeker and Escobar(1998, p. 131)
 cycles   <- c(300, 300, 300, 300, 300, 291, 274, 271, 269, 257, 256, 227, 226,
@@ -78,7 +92,7 @@ mrr <- rank_regression(x = df_john$characteristic,
                        conf_level = .90)
 
 plot_reg_weibull <- plot_mod(p_obj = plot_weibull, x = cycles,
-                             loc_sc_params = mrr$loc_sc_coefficients,
+                             loc_sc_params = mrr$loc_sc_params,
                              distribution = "weibull3",
                              title_trace = "Estimated Weibull CDF")
 
@@ -102,7 +116,7 @@ mrr_ln <- rank_regression(x = df_john$characteristic,
                        conf_level = .90)
 
 plot_reg_lognormal <- plot_mod(p_obj = plot_lognormal, x = cycles,
-                             loc_sc_params = mrr_ln$loc_sc_coefficients,
+                             loc_sc_params = mrr_ln$loc_sc_params,
                              distribution = "lognormal3",
                              title_trace = "Estimated Lognormal CDF")
 }

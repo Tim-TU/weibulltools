@@ -34,15 +34,15 @@
 #' state <- c(rep(0, 5), rep(1, 67))
 #' id <- "XXXXXX"
 #'
-#' Example 1: Based on existing data.frame/tibble
+#' # Example 1: Based on existing data.frame/tibble
 #' tbl <- tibble::tibble(x = cycles, status = state, id = id)
-#' failure_tbl <- reliability_data(tbl, x = x, status = status, id = id)
+#' data <- reliability_data(tbl, x = x, status = status, id = id)
 #'
-#' Example 2: Based on vectors
-#' failure_tbl_2 <- reliability_data(x = cycles, status = state, id = id)
+#' # Example 2: Based on vectors
+#' data_2 <- reliability_data(x = cycles, status = state, id = id)
 #'
 #' @export
-reliability_data <- function(data = NULL, x, status, id) {
+reliability_data <- function(data = NULL, x, status, id = NULL) {
   if (purrr::is_null(data)) {
     if (!is_characteristic(x)) {
       stop("x must be numeric!")
@@ -56,6 +56,10 @@ reliability_data <- function(data = NULL, x, status, id) {
       stop("length of x must be equal or greater than length of status and id!")
     }
 
+    if (purrr::is_null(id)) {
+      id <- paste0("ID", seq_along(x))
+    }
+
     tbl <- tibble::tibble(x = x, status = status, id = id)
   } else {
     if (!is_characteristic(data[[substitute(x)]])) {
@@ -66,7 +70,16 @@ reliability_data <- function(data = NULL, x, status, id) {
       stop("status must be numeric! all elements must be either 0 or 1!")
     }
 
-    tbl <- dplyr::select(tibble::as_tibble(data), x = {{x}}, status = {{status}}, id = {{id}})
+    data <- tibble::as_tibble(data)
+
+    if (purrr::is_null(id)) {
+      id <- paste0("ID", seq_len(nrow(data)))
+      tbl <- dplyr::select(data, x = {{x}}, status = {{status}})
+      tbl$id <- id
+    } else {
+      tbl <- dplyr::select(data, x = {{x}}, status = {{status}})
+      tbl$id <- data[[substitute(id)]]
+    }
   }
 
   class(tbl) <- c("reliability_data", class(tbl))

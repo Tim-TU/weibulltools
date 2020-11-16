@@ -4,7 +4,7 @@
 \alias{reliability_data}
 \title{Reliability data}
 \usage{
-reliability_data(data = NULL, x, status, id)
+reliability_data(data = NULL, x, status, id = NULL)
 }
 \arguments{
 \item{data}{Either NULL or a data frame/tibble. If data is NULL, x, status and
@@ -45,11 +45,11 @@ cycles   <- c(300, 300, 300, 300, 300, 291, 274, 271, 269, 257, 256, 227, 226,
 state <- c(rep(0, 5), rep(1, 67))
 id <- "XXXXXX"
 
-Example 1: Based on existing data.frame/tibble
+# Example 1: Based on existing data.frame/tibble
 tbl <- tibble::tibble(x = cycles, status = state, id = id)
-failure_tbl <- reliability_data(tbl, x = x, status = status, id = id)
+data <- reliability_data(tbl, x = x, status = status, id = id)
 
-Example 2: Based on vectors
-failure_tbl_2 <- reliability_data(x = cycles, status = state, id = id)
+# Example 2: Based on vectors
+data_2 <- reliability_data(x = cycles, status = state, id = id)
 
 }

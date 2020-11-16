@@ -7,7 +7,7 @@
 \usage{
 loglik_function(
   x,
-  event,
+  status,
   wts = rep(1, length(x)),
   pars,
   distribution = c("weibull", "lognormal", "loglogistic", "normal", "logistic", "sev",
@@ -20,7 +20,7 @@ data could be every characteristic influencing the reliability of a product,
 e.g. operating time (days/months in service), mileage (km, miles), load
 cycles.}
 
-\item{event}{A vector of binary data (0 or 1) indicating whether unit \emph{i}
+\item{status}{A vector of binary data (0 or 1) indicating whether unit \emph{i}
 is a right censored observation (= 0) or a failure (= 1).}
 
 \item{wts}{Optional vector of case weights. The length of \code{wts} must be the
@@ -57,11 +57,11 @@ cycles   <- c(300, 300, 300, 300, 300, 291, 274, 271, 269, 257, 256, 227, 226,
 state <- c(rep(0, 5), rep(1, 67))
 
 # Example 1: Evaluating Log-Likelihood function of two-parametric weibull:
-loglik_weib <- loglik_function(x = cycles, event = state, pars = c(5.29, 0.33),
+loglik_weib <- loglik_function(x = cycles, status = state, pars = c(5.29, 0.33),
                                distribution = "weibull")
 
 # Example 2: Evaluating Log-Likelihood function of three-parametric weibull:
-loglik_weib3 <- loglik_function(x = cycles, event = state,
+loglik_weib3 <- loglik_function(x = cycles, status = state,
                                 pars = c(4.54, 0.76, 92.99),
                                 distribution = "weibull3")
 }

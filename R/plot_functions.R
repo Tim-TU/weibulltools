@@ -449,7 +449,7 @@ plot_prob_mix <- function(
 #'                        conf_level = .90)
 #'
 #' plot_reg_weibull <- plot_mod(p_obj = plot_weibull, x = cycles,
-#'                              loc_sc_params = mrr$loc_sc_coefficients,
+#'                              loc_sc_params = mrr$loc_sc_params,
 #'                              distribution = "weibull3",
 #'                              title_trace = "Estimated Weibull CDF")
 #'
@@ -473,11 +473,37 @@ plot_prob_mix <- function(
 #'                        conf_level = .90)
 #'
 #' plot_reg_lognormal <- plot_mod(p_obj = plot_lognormal, x = cycles,
-#'                              loc_sc_params = mrr_ln$loc_sc_coefficients,
+#'                              loc_sc_params = mrr_ln$loc_sc_params,
 #'                              distribution = "lognormal3",
 #'                              title_trace = "Estimated Lognormal CDF")
-
 plot_mod <- function(
+  p_obj, x, ...
+) {
+  UseMethod("plot_mod", x)
+}
+
+#' @export
+#'
+#' @describeIn plot_mod Providing \code{\link{parameter_estimation}} as output from
+#' \code{\link{ml_estimation}} or \code{\link{rank_regression}}.
+plot_mod.parameter_estimation <- function(
+  p_obj, parameter_estimation, title_trace = "Fit"
+) {
+
+  plot_mod.default(
+    p_obj = p_obj,
+    x = parameter_estimation$data$characteristic,
+    y = NULL,
+    loc_sc_params = parameter_estimation$loc_sc_params,
+    distribution = parameter_estimation$distribution,
+    title_trace = title_trace
+  )
+}
+
+#' @export
+#'
+#' @describeIn plot_mod Providing x, y, loc_sc_params and distribution manually.
+plot_mod.default <- function(
   p_obj, x,
   y = NULL, loc_sc_params,
   distribution = c(
@@ -698,7 +724,7 @@ plot_mod_mix <- function(p_obj, x, event, mix_output,
 #'
 #' conf_betabin <- confint_betabinom(x = df_john$characteristic,
 #'                                   event = df_john$status,
-#'                                   loc_sc_params = mrr$loc_sc_coefficients,
+#'                                   loc_sc_params = mrr$loc_sc_params,
 #'                                   distribution = "weibull3",
 #'                                   bounds = "two_sided",
 #'                                   conf_level = 0.95,
@@ -717,7 +743,7 @@ plot_mod_mix <- function(p_obj, x, event, mix_output,
 #' plot_reg_weibull <- plot_mod(p_obj = plot_weibull,
 #'                              x = conf_betabin$characteristic,
 #'                              y = conf_betabin$prob,
-#'                              loc_sc_params = mrr$loc_sc_coefficients,
+#'                              loc_sc_params = mrr$loc_sc_params,
 #'                              distribution = "weibull3",
 #'                              title_trace = "Estimated Weibull CDF")
 #'
@@ -738,7 +764,7 @@ plot_mod_mix <- function(p_obj, x, event, mix_output,
 #'
 #' conf_betabin_ln <- confint_betabinom(x = df_john$characteristic,
 #'                                   event = df_john$status,
-#'                                   loc_sc_params = mrr_ln$loc_sc_coefficients,
+#'                                   loc_sc_params = mrr_ln$loc_sc_params,
 #'                                   distribution = "lognormal3",
 #'                                   bounds = "two_sided",
 #'                                   conf_level = 0.95,
@@ -757,7 +783,7 @@ plot_mod_mix <- function(p_obj, x, event, mix_output,
 #' plot_reg_lognormal <- plot_mod(p_obj = plot_lognormal,
 #'                              x = conf_betabin_ln$characteristic,
 #'                              y = conf_betabin_ln$prob,
-#'                              loc_sc_params = mrr_ln$loc_sc_coefficients,
+#'                              loc_sc_params = mrr_ln$loc_sc_params,
 #'                              distribution = "lognormal3",
 #'                              title_trace = "Estimated Lognormal CDF")
 #'
@@ -853,66 +879,12 @@ plot_conf.confint <- function(p_obj, confint, title_trace) {
   )
 }
 
-
-#' Add Population Line to an Existing Grid
-#'
-#' This function adds a linearized CDF to an existing plotly grid.
-#'
-#' @param p_obj A plotly object, which at least includes the layout provided
-#'   by \code{\link{plot_layout}}.
-#' @param x A numeric vector containing the x-coordinates of the population line.
-#' @param params A (named) numeric vector, where the first entry is the location
-#'   parameter \eqn{\mu} and the second entry is the scale parameter \eqn{\sigma}
-#'   of a lognormal or loglogistic distribution. If the distribution value is
-#'   \code{"weibull"} the first entry must be the scale parameter \eqn{\eta} and
-#'   the second entry must be the shape parameter \eqn{\beta}. Parametrization
-#'   is the same used in \code{\link{rweibull}}.
-#' @param tol The failure probability is restricted to the interval
-#'   \eqn{[tol, 1 - tol]}. The default value is in accordance with the decimal
-#'   places shown in the hover for \code{plot_method = "plotly"}.
-#' @param color The color of the population line should be added as follows:
-#'   For hexadecimal codes: \code{color = I("#3C8DBC")} and for a color specified
-#'   with a string: \code{color = I("blue")}.
-#' @inheritParams plot_prob
-#'
-plot_pop <- function(
-  p_obj, x, params,
-  distribution = c("weibull", "lognormal", "loglogistic"),
-  tol = 1e-6,
-  color = I("#FF0000"),
-  title_trace = "Population"
-) {
-
-  distribution <- match.arg(distribution)
-
-  # Plot method is determined by p_obj
-  plot_method <- if ("gg" %in% class(p_obj)) {
-    "ggplot2"
-  } else if ("plotly" %in% class(p_obj)) {
-    "plotly"
-  }  else {
-    stop(
-      "p_obj is not a valid plot object. Provide either a ggplot2 or a plotly
-      plot object."
-    )
-  }
-
-  param_tbl <- tibble::tibble(param_1 = params[1], param_2 = params[2])
-
-  tbl_pop <- plot_pop_helper(x, param_tbl, distribution, tol)
-
-  plot_pop_fun <- if (plot_method == "plotly") plot_pop_plotly else
-    plot_pop_ggplot2
-
-  plot_pop_fun(
-    p_obj, tbl_pop, color, title_trace
-  )
-}
-
 #' Add Population Lines to an Existing Grid
 #'
+#' @description
 #' This function adds one or multiple linearized CDF to an existing plotly grid.
 #'
+#' @details
 #' \code{param_tbl} must be a tibble with the following columns:
 #' \itemize{
 #'   \item \code{param_1}: Location parameter \eqn{\mu} for \code{lognormal} and
@@ -921,13 +893,20 @@ plot_pop <- function(
 #'     \code{loglogistic}. Shape parameter \eqn{\beta} for \code{weibull}.
 #' }
 #'
-#' @param p_obj A plotly object, which at least includes the layout provided
-#'   by \code{\link{plot_layout}}.
-#' @param x A numeric vector containing the x-coordinates of the population line.
+#' @param p_obj A plotly object to which the population lines are added or
+#'   \code{NULL}. If \code{NULL} the population lines are added to an empty grid.
+#' @param x A numeric vector of length two or greater used for the x coordinates
+#'   of the population line. If \code{length(x) == 2} a sequence of length 200
+#'   between \code{x[1]} and \code{x[2]} is created. This sequence is equidistant
+#'   with respect to the scale of the x axis. If \code{length(x) > 2} the elements
+#'   of \code{x} are the x coordinates of the population line.
 #' @param param_tbl A tibble. See 'Details'.
 #' @param tol The failure probability is restricted to the interval
 #'   \eqn{[tol, 1 - tol]}. The default value is in accordance with the decimal
 #'   places shown in the hover for \code{plot_method = "plotly"}.
+#' @param plot_method Package, which is used for generating the plot output. Only
+#'   used with \code{p_obj = NULL}, otherwise \code{p_obj} is used to determine
+#'   the plot method.
 #' @inheritParams plot_prob
 #'
 #' @return A plotly object which contains the supposed linearized population
@@ -936,36 +915,54 @@ plot_pop <- function(
 #'
 #' @examples
 #' x <- rweibull(n = 100, shape = 1, scale = 20000)
-#' grid_weibull <- plot_layout(x = x,
-#'                             distribution = "weibull",
-#'                             title_main = "Weibull Analysis",
-#'                             title_x = "Time to Failure",
-#'                             title_y = "Failure Probability")
-#' pop_weibull <- plot_pop(p_obj = grid_weibull,
-#'                         x = x, param_tbl = c(20000, 1),
-#'                         distribution = "weibull", color = I("green"),
-#'                         title_trace = "Population")
+#'
+#' grid_weibull <- plot_layout(
+#'   x = x,
+#'   distribution = "weibull",
+#'   title_main = "Weibull Analysis",
+#'   title_x = "Time to Failure",
+#'   title_y = "Failure Probability"
+#' )
+#'
+#' pop_weibull <- plot_pop(
+#'   p_obj = grid_weibull,
+#'   x = range(x),
+#'   param_tbl = c(20000, 1),
+#'   distribution = "weibull",
+#'   title_trace = "Population"
+#' )
 #'
 #' @export
 plot_pop <- function(
-  p_obj, x, param_tbl,
+  p_obj = NULL, x, param_tbl,
   distribution = c("weibull", "lognormal", "loglogistic"),
   tol = 1e-6,
-  title_trace = "Population"
+  title_trace = "Population",
+  plot_method = c("plotly", "ggplot2")
 ) {
 
   distribution <- match.arg(distribution)
 
-  # Plot method is determined by p_obj
-  plot_method <- if ("gg" %in% class(p_obj)) {
-    "ggplot2"
-  } else if ("plotly" %in% class(p_obj)) {
-    "plotly"
-  }  else {
-    stop(
-      "p_obj is not a valid plot object. Provide either a ggplot2 or a plotly
-      plot object."
+  if (purrr::is_null(p_obj)) {
+    plot_method <- match.arg(plot_method)
+
+    p_obj <- plot_layout(
+      x = x,
+      distribution = distribution,
+      plot_method = plot_method
     )
+  } else {
+    # Plot method is determined by p_obj
+    plot_method <- if ("gg" %in% class(p_obj)) {
+      "ggplot2"
+    } else if ("plotly" %in% class(p_obj)) {
+      "plotly"
+    }  else {
+      stop(
+        "p_obj is not a valid plot object. Provide either a ggplot2 or a plotly
+      plot object."
+      )
+    }
   }
 
   # Support vector instead of tibble for ease of use in param_tbl

@@ -3,11 +3,23 @@
 \encoding{UTF-8}
 \name{ml_estimation}
 \alias{ml_estimation}
+\alias{ml_estimation.reliability_data}
+\alias{ml_estimation.default}
 \title{ML Estimation for Parametric Lifetime Distributions}
 \usage{
-ml_estimation(
+ml_estimation(x, ...)
+
+\method{ml_estimation}{reliability_data}(
+  data,
+  distribution = c("weibull", "lognormal", "loglogistic", "normal", "logistic", "sev",
+    "weibull3", "lognormal3", "loglogistic3"),
+  wts = rep(1, nrow(data)),
+  conf_level = 0.95
+)
+
+\method{ml_estimation}{default}(
   x,
-  event,
+  status,
   distribution = c("weibull", "lognormal", "loglogistic", "normal", "logistic", "sev",
     "weibull3", "lognormal3", "loglogistic3"),
   wts = rep(1, length(x)),
@@ -19,9 +31,6 @@ ml_estimation(
 data could be every characteristic influencing the reliability of a product,
 e.g. operating time (days/months in service), mileage (km, miles), load
 cycles.}
-
-\item{event}{A vector of binary data (0 or 1) indicating whether unit \emph{i}
-is a right censored observation (= 0) or a failure (= 1).}
 
 \item{distribution}{Supposed distribution of the random variable. The
 value can be \code{"weibull"}, \code{"lognormal"}, \code{"loglogistic"},
@@ -35,6 +44,9 @@ vector with all components being 1 (same weights).}
 
 \item{conf_level}{Confidence level of the interval. The default value is
 \code{conf_level = 0.95}.}
+
+\item{status}{A vector of binary data (0 or 1) indicating whether unit \emph{i}
+is a right censored observation (= 0) or a failure (= 1).}
 }
 \value{
 Returns a list with the following components:
@@ -62,13 +74,24 @@ the parameterization provided by the \emph{stats} package like
 \code{\link{pweibull}}. The method is applicable for complete and (multiple)
 right censored data.
 }
+\section{Methods (by class)}{
+\itemize{
+\item \code{reliability_data}: Provide data (preferred)
+
+\item \code{default}: Provide x and status manually (deprecated)
+}}
+
 \examples{
 # Example 1: Fitting a two-parameter Weibull:
 obs   <- seq(10000, 100000, 10000)
-state <- c(0, 1, 1, 0, 0, 0, 1, 0, 1, 0)
+status <- c(0, 1, 1, 0, 0, 0, 1, 0, 1, 0)
+data <- reliability_data(x = obs, status = status)
 
-mle <- ml_estimation(x = obs, event = state,
-                     distribution = "weibull", conf_level = 0.90)
+mle <- ml_estimation(
+  data,
+  distribution = "weibull",
+  conf_level = 0.90
+)
 
 # Example 2: Fitting a three-parameter Weibull:
 # Alloy T7987 dataset taken from Meeker and Escobar(1998, p. 131)
@@ -78,10 +101,14 @@ cycles   <- c(300, 300, 300, 300, 300, 291, 274, 271, 269, 257, 256, 227, 226,
               159, 159, 159, 152, 152, 149, 149, 144, 143, 141, 141, 140, 139,
               139, 136, 135, 133, 131, 129, 123, 121, 121, 118, 117, 117, 114,
               112, 108, 104, 99, 99, 96, 94)
-state <- c(rep(0, 5), rep(1, 67))
+status <- c(rep(0, 5), rep(1, 67))
+data_2 <- reliability_data(x = cycles, status = status)
 
-mle_weib3 <- ml_estimation(x = cycles, event = state,
-                           distribution = "weibull3", conf_level = 0.95)
+mle_weib3 <- ml_estimation(
+  data,
+  distribution = "weibull3",
+  conf_level = 0.95
+)
 
 }
 \references{

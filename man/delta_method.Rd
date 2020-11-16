@@ -36,11 +36,7 @@ variance of the scale parameter Var(\eqn{\sigma}). If a three-parametric model
 is used the third element of the diagonal needs to be the variance of the
 threshold parameter Var(\eqn{\gamma}).}
 
-\item{distribution}{Supposed distribution of the random variable. The
-value can be \code{"weibull"}, \code{"lognormal"}, \code{"loglogistic"},
-\code{"normal"}, \code{"logistic"}, \code{"sev"} \emph{(smallest extreme value)},
-\code{"weibull3"}, \code{"lognormal3"} or \code{"loglogistic3"}.
-Other distributions have not been implemented yet.}
+\item{distribution}{Supposed distribution of the random variable.}
 
 \item{direction}{a character string specifying the direction of the computed
 standard errors. Must be either "y" (used for confidence intervals of failure
@@ -63,15 +59,21 @@ of these need to be estimated by Maximum Likelihood.
 }
 \examples{
 obs   <- seq(10000, 100000, 10000)
-state <- c(0, 1, 1, 0, 0, 0, 1, 0, 1, 0)
+status <- c(0, 1, 1, 0, 0, 0, 1, 0, 1, 0)
+data <- reliability_data(x = obs, status = status)
 
-mle <- ml_estimation(x = obs, event = state,
-                     distribution = "weibull", conf_level = 0.95)
+mle <- ml_estimation(
+  data,
+  distribution = "weibull",
+  conf_level = 0.95
+)
+
 delta_prob <- sapply(obs, delta_method,
-                          loc_sc_params = mle$loc_sc_coefficients,
-                          loc_sc_varcov = mle$loc_sc_vcov,
-                          distribution = "weibull",
-                          direction = "y")
+  loc_sc_params = mle$loc_sc_params,
+  loc_sc_varcov = mle$loc_sc_varcov,
+  distribution = "weibull",
+  direction = "y"
+)
 }
 \references{
 Meeker, William Q; Escobar, Luis A., Statistical methods for

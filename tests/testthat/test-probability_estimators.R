@@ -24,12 +24,12 @@ test_that("kaplan_method and nelson_method warn for uncensored data", {
 
   expect_warning(
     kaplan_method_(tbl),
-    "Use mr_method.*"
+    'Use methods = "mr".*'
   )
 
   expect_warning(
     nelson_method_(tbl),
-    "Use mr_method.*"
+    'Use methods = "mr".*'
   )
 })
 

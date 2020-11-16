@@ -122,23 +122,23 @@ data(shock)
 # generate random ids for units: 
 shock$id <- sample(c(letters, LETTERS), size = nrow(shock), replace = FALSE)
 
-shock_failure_tbl <- reliability_data(shock, x = Distance, status = Censor, id = id)
+shock_data <- reliability_data(shock, x = Distance, status = Censor, id = id)
 
 # Rank Regression: 
 # for rank_regression(), estimated failure probabilities are required: 
-shock_cdf <- estimate_cdf(shock_failure_tbl, methods = "johnson")
+shock_cdf <- estimate_cdf(shock_data, methods = "johnson")
 
 # Using all models which are provided in rank_regression: 
 distributions <- c("weibull", "lognormal", "loglogistic", "normal", "logistic", "sev", 
            "weibull3", "lognormal3", "loglogistic3")
 
 library(purrr)
-mrr_list <- map(distributions, function(distribution) {
-  rank_regression(shock_cdf, distribution = distribution)
+r_sq_vec <- map_dbl(distributions, function(distribution) {
+  rank_regression(shock_cdf, distribution = distribution)$r_squared
 })
 
-r_sq_vec <- sapply(mrr_list, "[[", "r_squared")
 names(r_sq_vec) <- distributions
+
 r_sq_vec
 ```
 <br> 
@@ -159,14 +159,17 @@ weibull_grid <- plot_prob(
   title_main = "Weibull Probability Plot", 
   title_x = "Mileage in km", 
   title_y = "Probability of Failure in %",
-  title_trace = "Defect Shock Absorbers"
+  title_trace = "Defect Shock Absorbers",
+  plot_method = "ggplot2"
 )
 
 # Add regression line: 
 weibull_plot <- weibull_grid %>% 
-  plot_mod(x = shock_cdf$characteristic, loc_sc_params = mrr_weibull$loc_sc_params,
-                             distribution = "weibull",
-                             title_trace = "Median Rank Regression")
+  plot_mod(
+    mrr_weibull,
+    title_trace = "Median Rank Regression"
+  )
+
 weibull_plot
 ```
 
@@ -175,11 +178,12 @@ weibull_plot
 ```{r ML all distributions, message = FALSE}
 # Using all models which are provided in ml_estimation: 
 ml_list <- map(distributions, function(distribution) {
-  ml_estimation(x = shock$Distance, event = shock$Censor, distribution = distribution)
+  ml_estimation(shock_data, distribution = distribution)
 })
 
-loglik_vec <- sapply(ml_list, "[[", "logL")
+loglik_vec <- map_dbl(ml_list, function(el) el$logL)
 names(loglik_vec) <- distributions
+
 loglik_vec
 ```
 
@@ -192,26 +196,16 @@ For comparison _Figure 1_ will be extended by a straight line estimated with ML.
 ```{r ML weibull, fig.cap = "Figure 2: Comparison of Median Rank Regression and Maximum Likelihood.", message = FALSE}
 # Again estimating weibull: 
 ml_weibull <- ml_estimation(
-  x = shock$Distance, 
-  event = shock$Censor, 
+  shock_data, 
   distribution = "weibull"
 )
 
 ml_weibull 
 
 # Add ML estimation to weibull_plot: 
-## predict_prob to calculate CDF with ML-parameters:  
-ml_prob <- predict_prob(q = seq(6200, 30600, length.out = 100), 
-                        loc_sc_params = ml_weibull$loc_sc_params, 
-                        distribution = "weibull")
+weibull_both <- weibull_plot %>%
+  plot_mod(ml_weibull, title_trace = "Maximum Likelihood")
 
-weibull_both <- weibull_plot %>% 
-  plotly::add_lines(x = seq(6200, 30600, length.out = 100), y = SPREDA::qsev(ml_prob), 
-            name = "Maximum Likelihood", color = I("#006400"), hoverinfo = "text", 
-            text = ~paste(paste("\u03B7<sub>ML</sub>", ":", 
-                                round(ml_weibull$coefficients[[1]], digits = 2)), 
-                          "<br>", paste("\u03B2<sub>ML</sub>", ":", 
-                                        round(ml_weibull$coefficients[[2]], digits = 2))))
 weibull_both
 ```
 
@@ -236,10 +230,11 @@ cycles <- c(300, 300, 300, 300, 300, 291, 274, 271, 269, 257, 256, 227, 226,
 state <- c(rep(0, 5), rep(1, 67))
 id <- 1:length(cycles)
 
+cycles_data <- reliability_data(x = cycles, status = state, id = id)
+
 # Two-parameter Log-normal:  
 ml_lognormal <- ml_estimation(
-  x = cycles, 
-  event = state, 
+  cycles_data,
   distribution = "lognormal"
 )
 
@@ -247,8 +242,7 @@ ml_lognormal
 
 # Three-parameter Log-normal:  
 ml_lognormal3 <- ml_estimation(
-  x = cycles, 
-  event = state, 
+  cycles_data,
   distribution = "lognormal3"
 )
 
@@ -263,37 +257,33 @@ that this model is preferable.
 
 ```{r ML visualization I, fig.cap = "Figure 3: Three-parametric Log-normal distribution.", message = FALSE}
 # Constructing probability plot: 
-df_alloy <- johnson_method(x = cycles, event = state, id = id)
-lognormal_grid <- plot_prob(x = df_alloy$characteristic, y = df_alloy$prob, 
-                            event = df_alloy$status, id = df_alloy$id, 
-                            distribution = "lognormal", 
-                            title_main = "Log-normal Probability Plot", 
-                            title_x = "Cycles", 
-                            title_y = "Probability of Failure in %",
-                            title_trace = "Failed Units")
+johnson_cdf_tbl <- estimate_cdf(cycles_data, "johnson")
+
+lognormal_grid <- plot_prob(
+  johnson_cdf_tbl,
+  distribution = "lognormal", 
+  title_main = "Log-normal Probability Plot", 
+  title_x = "Cycles", 
+  title_y = "Probability of Failure in %",
+  title_trace = "Failed Units",
+  plot_method = "ggplot2"
+)
 
 # Add three-parametric model to grid: 
 lognormal_plot <- lognormal_grid %>% 
-  plot_mod(x = df_alloy$characteristic, loc_sc_params = ml_lognormal3$loc_sc_params,
-                             distribution = "lognormal3",
-                             title_trace = "Three-parametric Log-normal")
+  plot_mod(
+    ml_lognormal3,
+    title_trace = "Three-parametric Log-normal"
+  )
+
 lognormal_plot
 ```
 
 ```{r ML visualization II, fig.cap = "Figure 4: Comparison of two- and three-parametric Log-normal distribution.", message = FALSE}
 # Add two-parametric model to lognormal_plot: 
-## predict_prob to calculate CDF with ML-parameters:  
-ml_prob_lognormal <- predict_prob(q = seq(85, 325, length.out = 100),
-                        loc_sc_params = ml_lognormal$loc_sc_params,
-                        distribution = "lognormal")
-
 lognormal_both <- lognormal_plot %>%
-  plotly::add_lines(x = seq(85, 325, length.out = 100), y = qnorm(ml_prob_lognormal),
-            name = "Two-parametric Log-normal", color = I("#006400"), hoverinfo = "text",
-            text = ~paste(paste("\u03BC<sub>ML</sub>", ":",
-                                round(ml_lognormal$loc_sc_params[[1]], digits = 2)),
-                          "<br>", paste("\u03C3<sub>ML</sub>", ":",
-                                        round(ml_lognormal$loc_sc_params[[2]], digits = 2))))
+  plot_mod(ml_lognormal, title_trace = "Two-parametric Log-normal")
+
 lognormal_both
 ```
 

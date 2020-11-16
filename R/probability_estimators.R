@@ -5,32 +5,68 @@
 #' data.
 #'
 #' @details
-#' Depending on the \code{methods} argument one or more of the following functions
-#' are called:
+#'
+#' One or multiple of the following methods can be used as the \code{methods}
+#' argument:
 #' \itemize{
-#'   \item \code{"mr"}: \code{\link{mr_method}}. Works only for uncensored data.
-#'   \item \code{"johnson"}: \code{\link{johnson_method}}.
-#'   \item \code{"kaplan"}: \code{\link{kaplan_method}}.
-#'   \item \code{"nelson"}: \code{\link{nelson_method}}.
+#'   \item \code{"mr"}: This non-parametric approach (_Median Ranks_) is
+#'     used to estimate the failure probabilities in terms of complete data.
+#'     Two methods are available to estimate the cumulative distribution
+#'     function _F(t)_ (See 'Options'):
+#'     \itemize{
+#'       \item "benard"; Benard's approximation for Median Ranks.
+#'       \item "invbeta"; Exact Median Ranks using the inverse beta distribution.
+#'     }
+#'   \item \code{"johnson"}: This non-parametric approach is used to estimate
+#'     the failure probabilities in terms of uncensored or (multiple) right
+#'     censored data. Compared to complete data the correction is done by
+#'     calculating adjusted ranks which takes non-defective units into account.
+#'   \item \code{"kaplan"}: Whereas the non-parametric Kaplan-Meier estimator is
+#'     used to estimate the survival function _S(t)_ in terms of (multiple)
+#'     right censored data, the complement is an estimate of the cumulative
+#'     distribution function _F(t)_. One modification is made in contrast
+#'     to the orginial Kaplan-Meier estimator (based on
+#'     _NIST/SEMATECH e-Handbook of Statistical Methods_, 8.2.1.5.): If the
+#'     last unit (unit with highest observed lifetime) is a defective unit, the
+#'     estimator is adjusted in such a way that the survival estimate for this
+#'     unit is not _zero_ and therefore the estimate for the failure
+#'     probability is not equal to _one_. Otherwise the estimate in this
+#'     context would be too pessimisitc.
+#'     Since the failure probability estimation in this function is not based on
+#'     _Median Ranks_, the Betabinomial confidence intervals _cannot_ be
+#'     calculated on the basis of Kaplan-Meier failure probabilities.
+#'   \item \code{"nelson"}: This non-parametric approach estimates the cumulative
+#'     hazard rate in terms of (multiple) right censored data. By equating the
+#'     definition of the hazard rate with the hazard rate according to
+#'     Nelson-Aalen one can calculate the failure probabilities.
+#'     Since the failure probability estimation in this function is not based on
+#'     _Median Ranks_, the Betabinomial confidence intervals cannot be calculated
+#'     on the basis of Nelson-Aalen failure probabilities.
+#' }
+#'
+#' @section Options:
+#'
+#' \itemize{
+#'   \item \code{mr_method}: \code{"benard"} (default) or \code{"invbeta"}.
 #' }
 #'
 #' @param data A tibble returned by \link{reliability_data}.
-#' @param methods Character vector of methods used for estimating the failure
-#' probabilities. See 'Details'.
-#' @param options A list of named options passed to \code{<method>_method}. For
-#' now there is just the option "method" with \code{method = "mr"}. See
-#' \code{\link{mr_method}}.
+#' @param methods One or multiple methods of \code{"mr"}, \code{"johnson"},
+#'   \code{"kaplan"} or \code{"nelson"} used for estimating the failure
+#'   probabilities. See 'Details'.
+#' @param options A list of named options. See 'Options'.
 #'
 #' @return A tibble containing the following columns:
 #' \itemize{
 #'   \item \code{id}: Identification.
 #'   \item \code{characteristic}: Lifetime characteristic.
 #'   \item \code{status}: Binary data (0 or 1) indicating whether a unit is a
-#'   right censored observation (=0) or a failure (=1).
+#'     right censored observation (=0) or a failure (=1).
 #'   \item \code{rank}: Adjusted rank. Applicable for method \code{"mr"}
-#'   and \code{"johnson"}, otherwise \code{NA}.
+#'     and \code{"johnson"}, otherwise \code{NA}.
 #'   \item \code{prob}: Estimated failure probability.
-#'   \item \code{method}: Method for estimating the failure probability.
+#'   \item \code{method}: Method, which was used for estimating the failure
+#'     probability.
 #' }
 #'
 #' @export
@@ -124,7 +160,7 @@ mr_method <- function(
     stop("x, event and id must be of same length.")
   }
 
-  data <- tibble::tibble(id = id, x = x, status = event)
+  data <- reliability_data(x = x, status = event, id = id)
 
   mr_method_(data, method)
 }
@@ -211,7 +247,7 @@ johnson_method <- function(x, event, id = rep("XXXXXX", length(x))) {
     stop("x, event and id must be of same length.")
   }
 
-  data <- tibble::tibble(id = id, x = x, status = event)
+  data <- reliability_data(x = x, status = event, id = id)
 
   johnson_method_(data)
 }
@@ -228,8 +264,7 @@ johnson_method_ <- function(data) {
     dplyr::ungroup() %>%
     dplyr::mutate(
       n_i = failure + survivor,
-      n_out = dplyr::lag(cumsum(n_i), n = 1L, default = 0),
-      rank = failure
+      n_out = dplyr::lag(cumsum(n_i), n = 1L, default = 0)
     ) %>%
     dplyr::mutate(
       rank = calculate_ranks(
@@ -323,7 +358,7 @@ kaplan_method <- function(x, event, id = rep("XXXXXX", length(x))) {
     stop("x, event and id must be of same length.")
   }
 
-  data <- tibble::tibble(id = id, x = x, status = event)
+  data <- reliability_data(x = x, status = event, id = id)
 
   kaplan_method_(data)
 }
@@ -422,7 +457,7 @@ nelson_method <- function(x, event, id = rep("XXXXXX", length(x))) {
     stop("x, event and id must be of same length.")
   }
 
-  data <- tibble::tibble(id = id, x = x, status = event)
+  data <- reliability_data(x = x, status = event, id = id)
 
   nelson_method_(data)
 }

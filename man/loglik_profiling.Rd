@@ -7,7 +7,7 @@
 \usage{
 loglik_profiling(
   x,
-  event,
+  status,
   thres,
   distribution = c("weibull3", "lognormal3", "loglogistic3")
 )
@@ -18,7 +18,7 @@ data could be every characteristic influencing the reliability of a product,
 e.g. operating time (days/months in service), mileage (km, miles), load
 cycles.}
 
-\item{event}{A vector of binary data (0 or 1) indicating whether unit \emph{i}
+\item{status}{A vector of binary data (0 or 1) indicating whether unit \emph{i}
 is a right censored observation (= 0) or a failure (= 1).}
 
 \item{thres}{A numeric value of the threshold parameter.}
@@ -51,7 +51,7 @@ state <- c(rep(0, 5), rep(1, 67))
 threshold <- seq(0, min(cycles[state == 1]) - 0.1, length.out = 100)
 profile_logL <- sapply(threshold, loglik_profiling,
                      x = cycles,
-                     event = state,
+                     status = state,
                      distribution = "weibull3")
 threshold[which.max(profile_logL)]
 

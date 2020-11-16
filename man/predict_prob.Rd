@@ -21,11 +21,7 @@ parameter \eqn{\mu} and the second element needs to be the scale
 parameter \eqn{\sigma}. If a three-parametric model is used the third element
 is the threshold parameter \eqn{\gamma}.}
 
-\item{distribution}{Supposed distribution of the random variable. The
-value can be \code{"weibull"}, \code{"lognormal"}, \code{"loglogistic"},
-\code{"normal"}, \code{"logistic"}, \code{"sev"} \emph{(smallest extreme value)},
-\code{"weibull3"}, \code{"lognormal3"} or \code{"loglogistic3"}.
-Other distributions have not been implemented yet.}
+\item{distribution}{Supposed distribution of the random variable.}
 }
 \value{
 A vector containing the estimated failure probabilities for a given
@@ -37,10 +33,16 @@ location-scale (and threshold) parameters and specified quantiles.
 }
 \examples{
 # Example 1: Predicted probabilities for two-parameter Weibull:
-probs <- predict_prob(q = c(15, 48, 124), loc_sc_params = c(5, 0.5),
-                           distribution = "weibull")
+probs <- predict_prob(
+  q = c(15, 48, 124),
+  loc_sc_params = c(5, 0.5),
+  distribution = "weibull"
+)
 
 # Example 2: Predicted probabilities for three-parameter Weibull:
-probs_weib3 <- predict_prob(q = c(25, 58, 134), loc_sc_params = c(5, 0.5, 10),
-                           distribution = "weibull3")
+probs_weib3 <- predict_prob(
+  q = c(25, 58, 134),
+  loc_sc_params = c(5, 0.5, 10),
+  distribution = "weibull3"
+)
 }

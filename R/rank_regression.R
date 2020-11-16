@@ -70,14 +70,16 @@
 #' @examples
 #' # Example 1: Fitting a two-parameter Weibull:
 #' obs   <- seq(10000, 100000, 10000)
-#' state <- c(0, 1, 1, 0, 0, 0, 1, 0, 1, 0)
+#' status <- c(0, 1, 1, 0, 0, 0, 1, 0, 1, 0)
+#' data <- reliability_data(x = obs, status = status)
 #'
-#' df_john <- johnson_method(x = obs, event = state)
-#' mrr <- rank_regression(x = df_john$characteristic,
-#'                        y = df_john$prob,
-#'                        event = df_john$status,
-#'                        distribution = "weibull",
-#'                        conf_level = .90)
+#' tbl_john <- estimate_cdf(data, "johnson")
+#'
+#' mrr <- rank_regression(
+#'   tbl_john,
+#'   distribution = "weibull",
+#'   conf_level = .90
+#' )
 #'
 #' # Example 2: Fitting a three-parameter Weibull:
 #' # Alloy T7987 dataset taken from Meeker and Escobar(1998, p. 131)
@@ -87,14 +89,17 @@
 #'               159, 159, 159, 152, 152, 149, 149, 144, 143, 141, 141, 140, 139,
 #'               139, 136, 135, 133, 131, 129, 123, 121, 121, 118, 117, 117, 114,
 #'               112, 108, 104, 99, 99, 96, 94)
-#' state <- c(rep(0, 5), rep(1, 67))
+#' status <- c(rep(0, 5), rep(1, 67))
 #'
-#' df_john <- johnson_method(x = cycles, event = state)
-#' mrr <- rank_regression(x = df_john$characteristic,
-#'                        y = df_john$prob,
-#'                        event = df_john$status,
-#'                        distribution = "weibull3",
-#'                        conf_level = .90)
+#' data <- reliability_data(x = cycles, status = status)
+#'
+#' tbl_john <- estimate_cdf(data, "johnson")
+#' mrr <- rank_regression(
+#'   tbl_john,
+#'   distribution = "weibull3",
+#'   conf_level = .90
+#' )
+#'
 #' @export
 rank_regression <- function(x, ...) {
   UseMethod("rank_regression", x)
@@ -301,10 +306,12 @@ rank_regression.default <- function(
 
       r_sq <- summary(mrr)$r.squared
 
-      mrr_output <- list(loc_sc_params = estimates_loc_sc,
-                         loc_sc_confint = conf_ints_loc_sc,
-                         loc_sc_varcov = vcov_loc_sc,
-                         r_squared = r_sq)
+      mrr_output <- list(
+        loc_sc_params = estimates_loc_sc,
+        loc_sc_confint = conf_ints_loc_sc,
+        loc_sc_varcov = vcov_loc_sc,
+        r_squared = r_sq
+      )
     }
   }
 
@@ -357,18 +364,96 @@ rank_regression.default <- function(
 
     r_sq <- summary(mrr)$r.squared
 
-    mrr_output <- list(loc_sc_params = estimates_loc_sc,
-                       loc_sc_confint = conf_ints_loc_sc,
-                       loc_sc_varcov = vcov_loc_sc,
-                       r_squared = r_sq)
+    mrr_output <- list(
+      loc_sc_params = estimates_loc_sc,
+      loc_sc_confint = conf_ints_loc_sc,
+      loc_sc_varcov = vcov_loc_sc,
+      r_squared = r_sq
+    )
   }
+
+  mrr_output$data <- tibble::tibble(characteristic = x, status = event)
+
+  mrr_output$distribution <- distribution
 
   class(mrr_output) <- c("parameter_estimation", class(mrr_output))
 
-  attr(mrr_output, "data") <- tibble::tibble(
-    x = x, event = event
-  )
-  attr(mrr_output, "distribution") <- distribution
-
   return(mrr_output)
+}
+
+#' \eqn{R²}-Profile Function for Log-Location-Scale Distributions with Threshold
+#'
+#' This function evaluates the coefficient of determination with respect to a
+#' given threshold parameter of a three-parametric lifetime distribution.
+#' In terms of \emph{Median Rank Regression} this function can be optimized
+#' (\code{\link{optim}}) to estimate the threshold parameter.
+#'
+#' @encoding UTF-8
+#' @references Meeker, William Q; Escobar, Luis A., Statistical methods for
+#'   reliability data, New York: Wiley series in probability and statistics, 1998
+#'
+#' @param x A numeric vector which consists of lifetime data. Lifetime
+#'   data could be every characteristic influencing the reliability of a product,
+#'   e.g. operating time (days/months in service), mileage (km, miles), load
+#'   cycles.
+#' @param y A numeric vector which consists of estimated failure probabilities
+#'   regarding the lifetime data in \code{x}.
+#' @param thres A numeric value of the threshold parameter.
+#' @param distribution Supposed distribution of the random variable. The
+#'   value can be \code{"weibull3"}, \code{"lognormal3"} or \code{"loglogistic3"}.
+#' @return Returns the coefficient of determination for a specified threshold value.
+#' @export
+#'
+#' @examples
+#' # Alloy T7987 dataset taken from Meeker and Escobar(1998, p. 131)
+#' cycles   <- c(300, 300, 300, 300, 300, 291, 274, 271, 269, 257, 256, 227, 226,
+#'               224, 213, 211, 205, 203, 197, 196, 190, 189, 188, 187, 184, 180,
+#'               180, 177, 176, 173, 172, 171, 170, 170, 169, 168, 168, 162, 159,
+#'               159, 159, 159, 152, 152, 149, 149, 144, 143, 141, 141, 140, 139,
+#'               139, 136, 135, 133, 131, 129, 123, 121, 121, 118, 117, 117, 114,
+#'               112, 108, 104, 99, 99, 96, 94)
+#' status <- c(rep(0, 5), rep(1, 67))
+#' data <- reliability_data(x = cycles, status = status)
+#'
+#' tbl_john <- estimate_cdf(data, "johnson")
+#'
+#' # Determining threshold parameter for which the coefficient of determination is
+#' # maximized subject to the condition that the threshold parameter must be smaller
+#' # as the first failure cycle, i.e 94:
+#' threshold <- seq(0, min(cycles[status == 1]) - 0.1, length.out = 100)
+#'
+#' profile_r2 <- sapply(
+#'   threshold, r_squared_profiling,
+#'   x = tbl_john$characteristic[tbl_john$status == 1],
+#'   y = tbl_john$prob[tbl_john$status == 1],
+#'   distribution = "weibull3"
+#' )
+#'
+#' threshold[which.max(profile_r2)]
+#'
+#' # plot:
+#' plot(threshold, profile_r2, type = "l")
+#' abline(v = threshold[which.max(profile_r2)], h = max(profile_r2), col = "red")
+
+r_squared_profiling <- function(
+  x, y, thres, distribution = c("weibull3", "lognormal3", "loglogistic3")
+) {
+
+  distribution <- match.arg(distribution)
+
+  # Subtracting value of threshold, i.e. influence of threshold is eliminated:
+  x_thres <- x - thres
+
+  # Rank Regression adjusted x on y:
+  if (distribution == "weibull3") {
+    mrr_thres <- stats::lm(log(x_thres) ~ SPREDA::qsev(y))
+  }
+  if (distribution == "lognormal3") {
+    mrr_thres <- stats::lm(log(x_thres) ~ stats::qnorm(y))
+  }
+  if (distribution == "loglogistic3") {
+    mrr_thres <- stats::lm(log(x_thres) ~ stats::qlogis(y))
+  }
+
+  summary(mrr_thres)$r.squared
 }
