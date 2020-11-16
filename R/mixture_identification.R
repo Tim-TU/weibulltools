@@ -40,26 +40,50 @@
 #'           320, 350, 412, 8, 52, 78, 157, 211, 261, 298, 327, 360, 446,
 #'           13, 53, 104, 160, 221, 264, 303, 328, 369, 21, 64, 113, 168,
 #'           226, 278, 314, 328, 377)
-#' state <- c(1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1,
+#'
+#' status <- c(1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1,
 #'           1, 0, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 0, 0,
 #'           1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1,
 #'           0, 1, 1, 1, 1, 1, 1)
-#' john <- johnson_method(x = hours, event = state)
 #'
-#' mix_mod <- mixmod_regression(x = john$characteristic,
-#'                              y = john$prob,
-#'                              event = john$status,
-#'                              distribution = "weibull")
+#' data <- reliability_data(x = hours, status = status)
 #'
-mixmod_regression <- function(x, y, event,
-                              distribution = c("weibull", "lognormal", "loglogistic"),
-                              conf_level = .95) {
+#' tbl_john <- estimate_cdf(data, methods = "johnson")
+#'
+#' mix_mod <- mixmod_regression(tbl_john, distribution = "weibull")
+#'
+mixmod_regression <- function(x, ...) {
+  UseMethod("mixmod_regression")
+}
+
+#' @describeIn mixmod_regression Provide cdf_estimation.
+#'
+#' @export
+mixmod_regression.cdf_estimation <- function(
+  x, distribution = c("weibull", "lognormal", "loglogistic"), conf_level = .95
+) {
 
   distribution <- match.arg(distribution)
 
-  if (!(distribution %in% c("weibull", "lognormal", "loglogistic"))) {
-    stop("No valid distribution!")
-  }
+  mixmod_regression.default(
+    x = x$characteristic,
+    y = x$prob,
+    event = x$status,
+    distribution = distribution,
+    conf_level = conf_level
+  )
+}
+
+#' @describeIn mixmod_regression Provide x, y and event manually.
+#'
+#' @export
+mixmod_regression.default <- function(
+  x, y, event,
+  distribution = c("weibull", "lognormal", "loglogistic"),
+  conf_level = .95
+) {
+
+  distribution <- match.arg(distribution)
 
   # Preparing for segmented regression
   x_f <- x[event == 1]
@@ -79,9 +103,14 @@ mixmod_regression <- function(x, y, event,
   seg_mrr <- try(segmented::segmented.lm(mrr,
                    control = segmented::seg.control(it.max = 20, n.boot = 20)),
                    silent = TRUE)
-  mrr_0 <- rank_regression(x = x, y = y, event = event,
-                           distribution = distribution,
-                           conf_level = conf_level)
+  mrr_0 <- rank_regression(
+    x = x,
+    y = y,
+    event = event,
+    distribution = distribution,
+    conf_level = conf_level
+  )
+
   r_sq0 <- mrr_0$r_squared
   mrr_0$x_range <- range(x)
 
@@ -109,10 +138,13 @@ mixmod_regression <- function(x, y, event,
     x_rest <- x_f[groups != 0]
     y_rest <- y_f[groups != 0]
 
-    mrr_23 <- rank_regression(x = x_rest, y = y_rest,
-                              event = rep(1, length(x_rest)),
-                              distribution = distribution,
-                              conf_level = conf_level)
+    mrr_23 <- rank_regression(
+      x = x_rest,
+      y = y_rest,
+      event = rep(1, length(x_rest)),
+      distribution = distribution,
+      conf_level = conf_level
+    )
 
     r_sq23 <- mrr_23$r_squared
     mrr_23$x_range <- range(x_rest)
@@ -149,23 +181,38 @@ mixmod_regression <- function(x, y, event,
         x_2 <- x_rest[groups2 == 0]
         y_2 <- y_rest[groups2 == 0]
 
-        mrr_2 <- rank_regression(x = x_2, y = y_2, event = rep(1, length(x_2)),
-                                 distribution = distribution,
-                                 conf_level = conf_level)
+        mrr_2 <- rank_regression(
+          x = x_2,
+          y = y_2,
+          event = rep(1, length(x_2)),
+          distribution = distribution,
+          conf_level = conf_level
+        )
+
         r_sq2 <- mrr_2$r_squared
         mrr_2$x_range <- range(x_2)
 
-        mrr_12 <- rank_regression(x = c(x_1, x_2), y = c(y_1, y_2), event = rep(1, length(c(x_1, x_2))),
-                                 distribution = distribution,
-                                 conf_level = conf_level)
+        mrr_12 <- rank_regression(
+          x = c(x_1, x_2),
+          y = c(y_1, y_2),
+          event = rep(1, length(c(x_1, x_2))),
+          distribution = distribution,
+          conf_level = conf_level
+        )
+
         r_sq12 <- mrr_12$r_squared
         mrr_12$x_range <- range(c(x_1, x_2))
         x_3 <- x_rest[groups2 == 1]
         y_3 <- y_rest[groups2 == 1]
 
-        mrr_3 <- rank_regression(x = x_3, y = y_3, event = rep(1, length(x_3)),
-                                 distribution = distribution,
-                                 conf_level = conf_level)
+        mrr_3 <- rank_regression(
+          x = x_3,
+          y = y_3,
+          event = rep(1, length(x_3)),
+          distribution = distribution,
+          conf_level = conf_level
+        )
+
         r_sq3 <- mrr_3$r_squared
         mrr_3$x_range <- range(x_3)
 
