@@ -7,7 +7,7 @@ test_that("plot_layout_helper remains stable", {
     plot_method = "plotly"
   )
 
-  eexpect_snapshot_output(helper)
+  expect_snapshot_output(helper)
 
   x_layout <- seq(1, 10, length.out = 10)
   helper_2 <- plot_layout_helper(

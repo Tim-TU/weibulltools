@@ -258,8 +258,32 @@ confint_betabinom.default <- function(x, event, loc_sc_params,
 #'   distribution = "weibull",
 #'   direction = "y"
 #' )
+delta_method <- function(
+  p,
+  loc_sc_params,
+  loc_sc_varcov,
+  distribution = c(
+    "weibull", "lognormal", "loglogistic", "normal", "logistic", "sev",
+    "weibull3", "lognormal3", "loglogistic3"
+  ),
+  direction = c("x", "y")
+) {
 
-delta_method <- function(p, loc_sc_params, loc_sc_varcov,
+  distribution <- match.arg(distribution)
+  direction <- match.arg(direction)
+
+  dm_vectorized <- Vectorize(delta_method_, "p")
+
+  dm_vectorized(
+    p = p,
+    loc_sc_params = loc_sc_params,
+    loc_sc_varcov = loc_sc_varcov,
+    distribution = distribution,
+    direction = direction
+  )
+}
+
+delta_method_ <- function(p, loc_sc_params, loc_sc_varcov,
                          distribution = c("weibull", "lognormal", "loglogistic",
                                           "normal", "logistic", "sev", "weibull3",
                                           "lognormal3", "loglogistic3"),

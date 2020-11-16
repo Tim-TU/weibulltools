@@ -11,7 +11,7 @@ delta_method(
   loc_sc_varcov,
   distribution = c("weibull", "lognormal", "loglogistic", "normal", "logistic", "sev",
     "weibull3", "lognormal3", "loglogistic3"),
-  direction = c("y", "x")
+  direction = c("x", "y")
 )
 }
 \arguments{
