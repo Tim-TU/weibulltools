@@ -2,7 +2,7 @@
 % Please edit documentation in R/confidence_intervals.R
 \name{predict_quantile}
 \alias{predict_quantile}
-\title{Estimation of Quantiles for Parametric Lifetime Distributions}
+\title{Prediction of Quantiles for Parametric Lifetime Distributions}
 \usage{
 predict_quantile(
   p,
@@ -29,7 +29,7 @@ A vector containing the estimated quantiles for a given set of
   failure probabilities and estimated parameters.
 }
 \description{
-This function estimates the quantiles for a given set of estimated
+This function predicts the quantiles for a given set of estimated
 location-scale (and threshold) parameters and specified failure probabilities.
 }
 \examples{

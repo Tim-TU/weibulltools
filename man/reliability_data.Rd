@@ -2,7 +2,7 @@
 % Please edit documentation in R/reliability_data.R
 \name{reliability_data}
 \alias{reliability_data}
-\title{Failure data}
+\title{Reliability data}
 \usage{
 reliability_data(data = NULL, x, status, id = NULL)
 }
@@ -31,7 +31,7 @@ columns:
 }
 }
 \description{
-Create consistent failure data based on an existing data.frame/tibble
+Create consistent reliability data based on an existing data.frame/tibble
 (preferred) or on multiple equal length vectors.
 }
 \examples{

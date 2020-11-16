@@ -1,6 +1,6 @@
-#' Estimation of Quantiles for Parametric Lifetime Distributions
+#' Prediction of Quantiles for Parametric Lifetime Distributions
 #'
-#' This function estimates the quantiles for a given set of estimated
+#' This function predicts the quantiles for a given set of estimated
 #' location-scale (and threshold) parameters and specified failure probabilities.
 #'
 #' @param p A numeric vector which consists of failure probabilities
@@ -79,9 +79,9 @@ predict_quantile <- function(p, loc_sc_params,
 }
 
 
-#' Estimation of Failure Probabilities for Parametric Lifetime Distributions
+#' Prediction of Failure Probabilities for Parametric Lifetime Distributions
 #'
-#' This function estimates the failure probabilities for a given set of estimated
+#' This function predicts the failure probabilities for a given set of estimated
 #' location-scale (and threshold) parameters and specified quantiles.
 #'
 #' @param q A numeric vector which consists of lifetime data.
