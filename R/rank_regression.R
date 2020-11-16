@@ -434,10 +434,30 @@ rank_regression.default <- function(
 #' # plot:
 #' plot(threshold, profile_r2, type = "l")
 #' abline(v = threshold[which.max(profile_r2)], h = max(profile_r2), col = "red")
+r_squared_profiling <- function(x, ...) {
+  UseMethod("r_squared_profiling")
+}
 
-r_squared_profiling <- function(
+r_squared_profiling.cdf_estimation <- function(
+  cdf_estimation, thres, distribution = c("weibull3", "lognormal3", "loglogistic3")
+) {
+  distribution <- match.arg(distribution)
+
+  r_squared_profiling.default(
+    x = cdf_estimation$characteristic,
+    y = cdf_estimation$prob,
+    thres = thres,
+    distribution = distribution
+  )
+}
+
+r_squared_profiling.default <- function(
   x, y, thres, distribution = c("weibull3", "lognormal3", "loglogistic3")
 ) {
+
+  if (any(is.na(y))) {
+    stop("Estimated failure probabilities (y) must not contain NA.")
+  }
 
   distribution <- match.arg(distribution)
 
