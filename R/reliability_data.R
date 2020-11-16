@@ -72,13 +72,11 @@ reliability_data <- function(data = NULL, x, status, id = NULL) {
 
     data <- tibble::as_tibble(data)
 
-    if (purrr::is_null(id)) {
-      id <- paste0("ID", seq_len(nrow(data)))
-      tbl <- dplyr::select(data, x = {{x}}, status = {{status}})
-      tbl$id <- id
-    } else {
-      tbl <- dplyr::select(data, x = {{x}}, status = {{status}})
-      tbl$id <- data[[substitute(id)]]
+    tbl <- dplyr::select(data, x = {{x}}, status = {{status}}, id = {{id}})
+
+    # Check if id is null without breaking if id is just a promise
+    if (!"id" %in% names(tbl)) {
+      tbl$id <- paste0("ID", seq_len(nrow(data)))
     }
   }
 
