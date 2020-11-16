@@ -481,7 +481,7 @@ nelson_method_ <- function(data) {
   dplyr::ungroup(x) %>%
   dplyr::mutate(
     n_out = failure + survivor,
-    n_in = length(x) - dplyr::lag(cumsum(n_out), n = 1L, default = 0),
+    n_in = nrow(data) - dplyr::lag(cumsum(n_out), n = 1L, default = 0),
     lam_nel = ifelse(status == 1, failure / n_in, 0),
     H_nel = cumsum(lam_nel),
     prob = 1 - exp(-H_nel)
