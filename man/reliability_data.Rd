@@ -47,9 +47,9 @@ id <- "XXXXXX"
 
 # Example 1: Based on existing data.frame/tibble
 tbl <- tibble::tibble(x = cycles, status = state, id = id)
-reliability_tbl <- reliability_data(tbl, x = x, status = status, id = id)
+data <- reliability_data(tbl, x = x, status = status, id = id)
 
 # Example 2: Based on vectors
-reliability_tbl_2 <- reliability_data(x = cycles, status = state, id = id)
+data_2 <- reliability_data(x = cycles, status = state, id = id)
 
 }

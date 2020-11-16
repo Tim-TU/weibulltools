@@ -893,8 +893,8 @@ plot_conf.confint <- function(p_obj, confint, title_trace) {
 #'     \code{loglogistic}. Shape parameter \eqn{\beta} for \code{weibull}.
 #' }
 #'
-#' @param p_obj A plotly object, which at least includes the layout provided
-#'   by \code{\link{plot_layout}}. If \code{NULL}
+#' @param p_obj A plotly object to which the population lines are added or
+#'   \code{NULL}. If \code{NULL} the population lines are added to an empty grid.
 #' @param x A numeric vector of length two or greater used for the x coordinates
 #'   of the population line. If \code{length(x) == 2} a sequence of length 200
 #'   between \code{x[1]} and \code{x[2]} is created. This sequence is equidistant

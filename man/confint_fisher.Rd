@@ -86,12 +86,12 @@ of these need to be estimated by Maximum Likelihood.
 \examples{
 obs   <- seq(10000, 100000, 10000)
 status <- c(0, 1, 1, 0, 0, 0, 1, 0, 1, 0)
-reliability_tbl <- reliability_data(x = obs, status = status)
+data <- reliability_data(x = obs, status = status)
 
-tbl_john <- estimate_cdf(reliability_tbl, "johnson")
+tbl_john <- estimate_cdf(data, "johnson")
 
 mle <- ml_estimation(
-  reliability_tbl,
+  data,
   distribution = "weibull",
   conf_level = 0.95
 )

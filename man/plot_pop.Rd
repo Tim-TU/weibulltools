@@ -15,8 +15,8 @@ plot_pop(
 )
 }
 \arguments{
-\item{p_obj}{A plotly object, which at least includes the layout provided
-by \code{\link{plot_layout}}. If \code{NULL}}
+\item{p_obj}{A plotly object to which the population lines are added or
+\code{NULL}. If \code{NULL} the population lines are added to an empty grid.}
 
 \item{x}{A numeric vector of length two or greater used for the x coordinates
 of the population line. If \code{length(x) == 2} a sequence of length 200

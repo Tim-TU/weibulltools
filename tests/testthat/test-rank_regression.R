@@ -6,9 +6,9 @@ test_that("r_squared_profiling remains stable", {
                 139, 136, 135, 133, 131, 129, 123, 121, 121, 118, 117, 117, 114,
                 112, 108, 104, 99, 99, 96, 94)
   status <- c(rep(0, 5), rep(1, 67))
-  reliability_tbl <- reliability_data(x = cycles, status = status)
+  data <- reliability_data(x = cycles, status = status)
 
-  tbl_john <- estimate_cdf(reliability_tbl, "johnson")
+  tbl_john <- estimate_cdf(data, "johnson")
 
   threshold <- seq(0, min(cycles[status == 1]) - 0.1, length.out = 100)
 
@@ -25,9 +25,9 @@ test_that("r_squared_profiling remains stable", {
 test_that("rank_regression remains stable", {
   obs   <- seq(10000, 100000, 10000)
   status <- c(0, 1, 1, 0, 0, 0, 1, 0, 1, 0)
-  reliability_tbl <- reliability_data(x = obs, status = status)
+  data <- reliability_data(x = obs, status = status)
 
-  tbl_john <- estimate_cdf(reliability_tbl, "johnson")
+  tbl_john <- estimate_cdf(data, "johnson")
 
   mrr <- rank_regression(
     tbl_john,
@@ -46,9 +46,9 @@ test_that("rank_regression remains stable", {
                 112, 108, 104, 99, 99, 96, 94)
   status <- c(rep(0, 5), rep(1, 67))
 
-  reliability_tbl <- reliability_data(x = cycles, status = status)
+  data <- reliability_data(x = cycles, status = status)
 
-  tbl_john <- estimate_cdf(reliability_tbl, "johnson")
+  tbl_john <- estimate_cdf(data, "johnson")
   mrr <- rank_regression(
     tbl_john,
     distribution = "weibull3",

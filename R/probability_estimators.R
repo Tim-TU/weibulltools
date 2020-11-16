@@ -50,7 +50,7 @@
 #'   \item \code{mr_method}: \code{"benard"} (default) or \code{"invbeta"}.
 #' }
 #'
-#' @param reliability_tbl A tibble returned by \link{reliability_data}.
+#' @param data A tibble returned by \link{reliability_data}.
 #' @param methods One or multiple methods of \code{"mr"}, \code{"johnson"},
 #'   \code{"kaplan"} or \code{"nelson"} used for estimating the failure
 #'   probabilities. See 'Details'.
@@ -71,10 +71,10 @@
 #'
 #' @export
 estimate_cdf <- function(
-  reliability_tbl, methods, options = list()
+  data, methods, options = list()
 ) {
 
-  if (!inherits(reliability_tbl, "reliability_data")) {
+  if (!inherits(data, "reliability_data")) {
     stop("data must be a tibble returned from reliability_data().")
   }
 
@@ -95,11 +95,11 @@ estimate_cdf <- function(
   purrr::map_dfr(methods, function(method) {
     if (method == "mr") {
       method_funs[[method]](
-        reliability_tbl = reliability_tbl,
+        data = data,
         method = if (is.null(options$method)) "benard" else options$method
       )
     } else {
-      method_funs[[method]](reliability_tbl = reliability_tbl)
+      method_funs[[method]](data = data)
     }
   })
 }
@@ -160,18 +160,18 @@ mr_method <- function(
     stop("x, event and id must be of same length.")
   }
 
-  reliability_tbl <- reliability_data(x = x, status = event, id = id)
+  data <- reliability_data(x = x, status = event, id = id)
 
-  mr_method_(reliability_tbl, method)
+  mr_method_(data, method)
 }
 
-mr_method_ <- function(reliability_tbl, method = "benard") {
+mr_method_ <- function(data, method = "benard") {
 
-  if (!all(reliability_tbl$status == 1)) {
+  if (!all(data$status == 1)) {
     message("The mr method only considers failed units (event == 1).")
   }
 
-  tbl_in <- reliability_tbl
+  tbl_in <- data
 
   tbl_calc <- tbl_in %>%
     dplyr::filter(status == 1) %>%
@@ -247,14 +247,14 @@ johnson_method <- function(x, event, id = rep("XXXXXX", length(x))) {
     stop("x, event and id must be of same length.")
   }
 
-  reliability_tbl <- reliability_data(x = x, status = event, id = id)
+  data <- reliability_data(x = x, status = event, id = id)
 
-  johnson_method_(reliability_tbl)
+  johnson_method_(data)
 }
 
-johnson_method_ <- function(reliability_tbl) {
+johnson_method_ <- function(data) {
 
-  tbl_in <- reliability_tbl
+  tbl_in <- data
 
   tbl_calc <- tbl_in %>%
     dplyr::group_by(x) %>%
@@ -358,18 +358,18 @@ kaplan_method <- function(x, event, id = rep("XXXXXX", length(x))) {
     stop("x, event and id must be of same length.")
   }
 
-  reliability_tbl <- reliability_data(x = x, status = event, id = id)
+  data <- reliability_data(x = x, status = event, id = id)
 
-  kaplan_method_(reliability_tbl)
+  kaplan_method_(data)
 }
 
-kaplan_method_ <- function(reliability_tbl) {
+kaplan_method_ <- function(data) {
 
-  if (all(reliability_tbl$status == 1)) {
+  if (all(data$status == 1)) {
     warning('Use methods = "mr" since there is no censored data problem!')
   }
 
-  tbl_in <- reliability_tbl
+  tbl_in <- data
 
   tbl_calc <- tbl_in %>%
     dplyr::group_by(x) %>%
@@ -386,7 +386,7 @@ kaplan_method_ <- function(reliability_tbl) {
       n_in = sum(n_i) - n_out
     )
 
-  if (reliability_tbl$status[which.max(reliability_tbl$x)] == 0) {
+  if (data$status[which.max(data$x)] == 0) {
     tbl_calc <- tbl_calc %>%
       dplyr::mutate(
         prob = 1 - cumprod((n_in - failure) / n_in)
@@ -457,18 +457,18 @@ nelson_method <- function(x, event, id = rep("XXXXXX", length(x))) {
     stop("x, event and id must be of same length.")
   }
 
-  reliability_tbl <- reliability_data(x = x, status = event, id = id)
+  data <- reliability_data(x = x, status = event, id = id)
 
-  nelson_method_(reliability_tbl)
+  nelson_method_(data)
 }
 
-nelson_method_ <- function(reliability_tbl) {
+nelson_method_ <- function(data) {
 
-  if (all(reliability_tbl$status == 1)) {
+  if (all(data$status == 1)) {
     warning('Use methods = "mr" since there is no censored data problem!')
   }
 
-  tbl_in <- reliability_tbl
+  tbl_in <- data
 
   tbl_calc <- tbl_in %>%
     dplyr::group_by(x) %>%

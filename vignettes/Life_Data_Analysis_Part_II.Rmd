@@ -122,11 +122,11 @@ data(shock)
 # generate random ids for units: 
 shock$id <- sample(c(letters, LETTERS), size = nrow(shock), replace = FALSE)
 
-shock_reliability_tbl <- reliability_data(shock, x = Distance, status = Censor, id = id)
+shock_data <- reliability_data(shock, x = Distance, status = Censor, id = id)
 
 # Rank Regression: 
 # for rank_regression(), estimated failure probabilities are required: 
-shock_cdf <- estimate_cdf(shock_reliability_tbl, methods = "johnson")
+shock_cdf <- estimate_cdf(shock_data, methods = "johnson")
 
 # Using all models which are provided in rank_regression: 
 distributions <- c("weibull", "lognormal", "loglogistic", "normal", "logistic", "sev", 
@@ -178,7 +178,7 @@ weibull_plot
 ```{r ML all distributions, message = FALSE}
 # Using all models which are provided in ml_estimation: 
 ml_list <- map(distributions, function(distribution) {
-  ml_estimation(shock_reliability_tbl, distribution = distribution)
+  ml_estimation(shock_data, distribution = distribution)
 })
 
 loglik_vec <- map_dbl(ml_list, function(el) el$logL)
@@ -196,7 +196,7 @@ For comparison _Figure 1_ will be extended by a straight line estimated with ML.
 ```{r ML weibull, fig.cap = "Figure 2: Comparison of Median Rank Regression and Maximum Likelihood.", message = FALSE}
 # Again estimating weibull: 
 ml_weibull <- ml_estimation(
-  shock_reliability_tbl, 
+  shock_data, 
   distribution = "weibull"
 )
 
@@ -230,11 +230,11 @@ cycles <- c(300, 300, 300, 300, 300, 291, 274, 271, 269, 257, 256, 227, 226,
 state <- c(rep(0, 5), rep(1, 67))
 id <- 1:length(cycles)
 
-cycles_reliability_tbl <- reliability_data(x = cycles, status = state, id = id)
+cycles_data <- reliability_data(x = cycles, status = state, id = id)
 
 # Two-parameter Log-normal:  
 ml_lognormal <- ml_estimation(
-  cycles_reliability_tbl,
+  cycles_data,
   distribution = "lognormal"
 )
 
@@ -242,7 +242,7 @@ ml_lognormal
 
 # Three-parameter Log-normal:  
 ml_lognormal3 <- ml_estimation(
-  cycles_reliability_tbl,
+  cycles_data,
   distribution = "lognormal3"
 )
 
@@ -257,7 +257,7 @@ that this model is preferable.
 
 ```{r ML visualization I, fig.cap = "Figure 3: Three-parametric Log-normal distribution.", message = FALSE}
 # Constructing probability plot: 
-johnson_cdf_tbl <- estimate_cdf(cycles_reliability_tbl, "johnson")
+johnson_cdf_tbl <- estimate_cdf(cycles_data, "johnson")
 
 lognormal_grid <- plot_prob(
   johnson_cdf_tbl,

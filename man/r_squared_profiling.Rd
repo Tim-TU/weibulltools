@@ -44,9 +44,9 @@ cycles   <- c(300, 300, 300, 300, 300, 291, 274, 271, 269, 257, 256, 227, 226,
               139, 136, 135, 133, 131, 129, 123, 121, 121, 118, 117, 117, 114,
               112, 108, 104, 99, 99, 96, 94)
 status <- c(rep(0, 5), rep(1, 67))
-reliability_tbl <- reliability_data(x = cycles, status = status)
+data <- reliability_data(x = cycles, status = status)
 
-tbl_john <- estimate_cdf(reliability_tbl, "johnson")
+tbl_john <- estimate_cdf(data, "johnson")
 
 # Determining threshold parameter for which the coefficient of determination is
 # maximized subject to the condition that the threshold parameter must be smaller

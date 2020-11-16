@@ -4,10 +4,10 @@
 \alias{estimate_cdf}
 \title{Estimation of Failure Probabilities}
 \usage{
-estimate_cdf(reliability_tbl, methods, options = list())
+estimate_cdf(data, methods, options = list())
 }
 \arguments{
-\item{reliability_tbl}{A tibble returned by \link{reliability_data}.}
+\item{data}{A tibble returned by \link{reliability_data}.}
 
 \item{methods}{One or multiple methods of \code{"mr"}, \code{"johnson"},
 \code{"kaplan"} or \code{"nelson"} used for estimating the failure

@@ -51,10 +51,10 @@
 #' # Example 1: Fitting a two-parameter Weibull:
 #' obs   <- seq(10000, 100000, 10000)
 #' status <- c(0, 1, 1, 0, 0, 0, 1, 0, 1, 0)
-#' reliability_tbl <- reliability_data(x = obs, status = status)
+#' data <- reliability_data(x = obs, status = status)
 #'
 #' mle <- ml_estimation(
-#'   reliability_tbl,
+#'   data,
 #'   distribution = "weibull",
 #'   conf_level = 0.90
 #' )
@@ -68,10 +68,10 @@
 #'               139, 136, 135, 133, 131, 129, 123, 121, 121, 118, 117, 117, 114,
 #'               112, 108, 104, 99, 99, 96, 94)
 #' status <- c(rep(0, 5), rep(1, 67))
-#' reliability_tbl_2 <- reliability_data(x = cycles, status = status)
+#' data_2 <- reliability_data(x = cycles, status = status)
 #'
 #' mle_weib3 <- ml_estimation(
-#'   reliability_tbl,
+#'   data,
 #'   distribution = "weibull3",
 #'   conf_level = 0.95
 #' )
@@ -82,19 +82,19 @@ ml_estimation <- function(x, ...) {
 
 #' @export
 #'
-#' @describeIn ml_estimation Provide reliability_tbl (preferred)
+#' @describeIn ml_estimation Provide data (preferred)
 ml_estimation.reliability_data <- function(
-  reliability_tbl,
+  data,
   distribution = c(
     "weibull", "lognormal", "loglogistic", "normal", "logistic", "sev",
     "weibull3", "lognormal3", "loglogistic3"),
-  wts = rep(1, nrow(reliability_tbl)),
+  wts = rep(1, nrow(data)),
   conf_level = .95
 ) {
   distribution <- match.arg(distribution)
 
   ml_estimation_(
-    reliability_tbl,
+    data,
     distribution = distribution,
     wts = wts,
     conf_level = conf_level
@@ -113,24 +113,16 @@ ml_estimation.default <- function(
   conf_level = .95
 ) {
 
-  deprecate_soft(
-    "1.1.0",
-    "ml_estimation.default()",
-    "ml_estimation.reliability_data()",
-    "ml_estimation.default() will be removed in 1.3.0.
-    By then ml_estimation.reliability_data() will be transfered to ml_estimation."
-  )
-
   distribution <- match.arg(distribution)
 
-  reliability_tbl <- reliability_data(x = x, status = status, id = "")
+  data <- reliability_data(x = x, status = status, id = "")
 
-  ml_estimation_(reliability_tbl, distribution, wts, conf_level)
+  ml_estimation_(data, distribution, wts, conf_level)
 }
 
-ml_estimation_ <- function(reliability_tbl, distribution, wts, conf_level) {
-  x <- reliability_tbl$x
-  status <- reliability_tbl$status
+ml_estimation_ <- function(data, distribution, wts, conf_level) {
+  x <- data$x
+  status <- data$status
 
   # Log-Location-Scale Models:
   if (distribution == "weibull" | distribution == "lognormal" | distribution == "loglogistic") {
