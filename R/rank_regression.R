@@ -438,6 +438,9 @@ r_squared_profiling <- function(x, ...) {
   UseMethod("r_squared_profiling")
 }
 
+#' @describeIn r_squared_profiling Provide a cdf estimation
+#'
+#' @export
 r_squared_profiling.cdf_estimation <- function(
   cdf_estimation, thres, distribution = c("weibull3", "lognormal3", "loglogistic3")
 ) {
@@ -451,6 +454,9 @@ r_squared_profiling.cdf_estimation <- function(
   )
 }
 
+#' @describeIn r_squared_profiling Provide x and y manually
+#'
+#' @export
 r_squared_profiling.default <- function(
   x, y, thres, distribution = c("weibull3", "lognormal3", "loglogistic3")
 ) {

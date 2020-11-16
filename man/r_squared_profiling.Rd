@@ -3,9 +3,24 @@
 \encoding{UTF-8}
 \name{r_squared_profiling}
 \alias{r_squared_profiling}
+\alias{r_squared_profiling.cdf_estimation}
+\alias{r_squared_profiling.default}
 \title{\eqn{R²}-Profile Function for Log-Location-Scale Distributions with Threshold}
 \usage{
 r_squared_profiling(x, ...)
+
+\method{r_squared_profiling}{cdf_estimation}(
+  cdf_estimation,
+  thres,
+  distribution = c("weibull3", "lognormal3", "loglogistic3")
+)
+
+\method{r_squared_profiling}{default}(
+  x,
+  y,
+  thres,
+  distribution = c("weibull3", "lognormal3", "loglogistic3")
+)
 }
 \arguments{
 \item{x}{A numeric vector which consists of lifetime data. Lifetime
@@ -13,13 +28,13 @@ data could be every characteristic influencing the reliability of a product,
 e.g. operating time (days/months in service), mileage (km, miles), load
 cycles.}
 
-\item{y}{A numeric vector which consists of estimated failure probabilities
-regarding the lifetime data in \code{x}.}
-
 \item{thres}{A numeric value of the threshold parameter.}
 
 \item{distribution}{Supposed distribution of the random variable. The
 value can be \code{"weibull3"}, \code{"lognormal3"} or \code{"loglogistic3"}.}
+
+\item{y}{A numeric vector which consists of estimated failure probabilities
+regarding the lifetime data in \code{x}.}
 }
 \value{
 Returns the coefficient of determination for a specified threshold value.
@@ -30,6 +45,13 @@ given threshold parameter of a three-parametric lifetime distribution.
 In terms of \emph{Median Rank Regression} this function can be optimized
 (\code{\link{optim}}) to estimate the threshold parameter.
 }
+\section{Methods (by class)}{
+\itemize{
+\item \code{cdf_estimation}: Provide a cdf estimation
+
+\item \code{default}: Provide x and y manually
+}}
+
 \examples{
 # Alloy T7987 dataset taken from Meeker and Escobar(1998, p. 131)
 cycles   <- c(300, 300, 300, 300, 300, 291, 274, 271, 269, 257, 256, 227, 226,
