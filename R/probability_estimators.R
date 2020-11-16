@@ -9,10 +9,12 @@
 #' One or multiple of the following methods can be used as the \code{methods}
 #' argument:
 #' \itemize{
-#'   \item \code{"mr"}: This non-parametric approach (_Median Ranks_) is
+#'   \item \code{"mr"}: This non-parametric approach (\emph{Median Ranks}) is
 #'     used to estimate the failure probabilities in terms of complete data.
+#'     Tied observations can be handled in three ways, "max", "min" and "average"
+#'     (usage is listed in 'Options')).
 #'     Two methods are available to estimate the cumulative distribution
-#'     function _F(t)_ (See 'Options'):
+#'     function \emph{F(t)} (See 'Options'):
 #'     \itemize{
 #'       \item "benard"; Benard's approximation for Median Ranks.
 #'       \item "invbeta"; Exact Median Ranks using the inverse beta distribution.
@@ -48,6 +50,7 @@
 #'
 #' \itemize{
 #'   \item \code{mr_method}: \code{"benard"} (default) or \code{"invbeta"}.
+#'   \item \code{mr_ties.method}: \code{c("max", "min", "average")}, default is "max".
 #' }
 #'
 #' @param data A tibble returned by \link{reliability_data}.
@@ -96,7 +99,8 @@ estimate_cdf <- function(
     if (method == "mr") {
       method_funs[[method]](
         data = data,
-        method = if (is.null(options$method)) "benard" else options$method
+        method = if (is.null(options$mr_method)) "benard" else options$mr_method,
+        ties.method = if (is.null(options$mr_ties.method)) "max" else options$mr_ties.method
       )
     } else {
       method_funs[[method]](data = data)
@@ -127,6 +131,7 @@ estimate_cdf <- function(
 #' @param id A character vector for the identification of every unit.
 #' @param method Method for the estimation of the cdf. Can be "benard" (default)
 #' or "invbeta".
+#' @param ties.method A character string specifying how ties are treated, default is "max".
 #'
 #' @return A tibble containing id, lifetime characteristic, status of the
 #'   unit, the rank and the estimated failure probability.
@@ -150,11 +155,13 @@ mr_method <- function(
   x,
   event = rep(1, length(x)),
   id = rep("XXXXXX", length(x)),
-  method = c("benard", "invbeta")
+  method = c("benard", "invbeta"),
+  ties.method = c("max", "min", "average")
 ) {
   deprecate_soft("1.1.0", "mr_method()")
 
   method <- match.arg(method)
+  ties.method <- match.arg(ties.method)
 
   if (!((length(x) == length(event)) && (length(x) == length(id)))) {
     stop("x, event and id must be of same length.")
@@ -162,10 +169,10 @@ mr_method <- function(
 
   data <- reliability_data(x = x, status = event, id = id)
 
-  mr_method_(data, method)
+  mr_method_(data, method, ties.method)
 }
 
-mr_method_ <- function(data, method = "benard") {
+mr_method_ <- function(data, method = "benard", ties.method = "max") {
 
   if (!all(data$status == 1)) {
     message("The mr method only considers failed units (event == 1).")
@@ -175,9 +182,8 @@ mr_method_ <- function(data, method = "benard") {
 
   tbl_calc <- tbl_in %>%
     dplyr::filter(status == 1) %>%
-    dplyr::distinct(x, .keep_all = TRUE) %>%
     dplyr::arrange(x) %>%
-    dplyr::mutate(rank = rank(x, ties.method = "first"))
+    dplyr::mutate(rank = rank(x, ties.method = ties.method))
 
   if (method == "benard") {
     tbl_calc <- dplyr::mutate(tbl_calc, prob = (rank - .3) / (length(x) + .4))
@@ -185,20 +191,7 @@ mr_method_ <- function(data, method = "benard") {
     tbl_calc <- dplyr::mutate(tbl_calc, prob = stats::qbeta(.5, rank, length(x) - rank + 1))
   }
 
-  tbl_out <- tbl_in %>%
-    dplyr::arrange(x) %>%
-    dplyr::mutate(
-      rank = ifelse(
-        status == 1,
-        tbl_calc$rank[match(x[order(x)], tbl_calc$x)],
-        NA_real_
-      ),
-      prob = ifelse(
-        status == 1,
-        tbl_calc$prob[match(x[order(x)], tbl_calc$x)],
-        NA_real_
-      )
-    ) %>%
+  tbl_out <- tbl_calc %>%
     dplyr::rename(characteristic = x) %>%
     dplyr::mutate(method = "mr") %>%
     dplyr::select(id, characteristic, status, rank, prob, method)

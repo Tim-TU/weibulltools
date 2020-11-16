@@ -8,7 +8,8 @@ mr_method(
   x,
   event = rep(1, length(x)),
   id = rep("XXXXXX", length(x)),
-  method = c("benard", "invbeta")
+  method = c("benard", "invbeta"),
+  ties.method = c("max", "min", "average")
 )
 }
 \arguments{
@@ -23,6 +24,8 @@ cycles.}
 
 \item{method}{Method for the estimation of the cdf. Can be "benard" (default)
 or "invbeta".}
+
+\item{ties.method}{A character string specifying how ties are treated, default is "max".}
 }
 \value{
 A tibble containing id, lifetime characteristic, status of the
