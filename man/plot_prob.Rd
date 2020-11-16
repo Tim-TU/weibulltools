@@ -73,13 +73,9 @@ This function is used to apply the graphical technique of probability
 plotting.
 }
 \details{
-The marker label for x is determined by the first word provided in the
-argument \code{title_x}, i.e. if \code{title_x = "Mileage in km"} the x label
-of the marker is "Mileage".
-
-The marker label for y is determined by the string provided in the
-argument \code{title_y}, i.e. if \code{title_y = "Probability in percent"} the y
-label of the marker is "Probability".
+The marker label for x and y are determined by the first word provided in the
+argument \code{title_x} respective \code{title_y}, i.e. if
+\code{title_x = "Mileage in km"} the x label of the marker is "Mileage".
 }
 \section{Methods (by class)}{
 \itemize{
@@ -97,31 +93,31 @@ cycles   <- c(300, 300, 300, 300, 300, 291, 274, 271, 269, 257, 256, 227, 226,
               159, 159, 159, 152, 152, 149, 149, 144, 143, 141, 141, 140, 139,
               139, 136, 135, 133, 131, 129, 123, 121, 121, 118, 117, 117, 114,
               112, 108, 104, 99, 99, 96, 94)
-state <- c(rep(0, 5), rep(1, 67))
+status <- c(rep(0, 5), rep(1, 67))
+data <- reliability_data(x = cycles, status = status)
 
-df_john <- johnson_method(x = cycles, event = state)
+tbl_john <- estimate_cdf(data, methods = c("johnson", "kaplan"))
 
 # Example 1: Probability Plot Weibull:
-plot_weibull <- plot_prob(x = df_john$characteristic,
-                          y = df_john$prob,
-                          event = df_john$status,
-                          id = df_john$id,
-                          distribution = "weibull",
-                          title_main = "Weibull Analysis",
-                          title_x = "Cycles",
-                          title_y = "Probability of Failure in \%",
-                          title_trace = "Failed Items")
+plot_weibull <- plot_prob(
+  tbl_john,
+  distribution = "weibull",
+  title_main = "Weibull Analysis",
+  title_x = "Cycles",
+  title_y = "Probability of Failure in \%",
+  title_trace = "Failed Items"
+)
 
 # Example 2: Probability Plot Lognormal:
-plot_lognormal <- plot_prob(x = df_john$characteristic,
-                          y = df_john$prob,
-                          event = df_john$status,
-                          id = df_john$id,
-                          distribution = "lognormal",
-                          title_main = "Lognormal Analysis",
-                          title_x = "Cycles",
-                          title_y = "Probability of Failure in \%",
-                          title_trace = "Failed Items")
+plot_lognormal <- plot_prob(
+  tbl_john,
+  distribution = "lognormal",
+  title_main = "Lognormal Analysis",
+  title_x = "Cycles",
+  title_y = "Probability of Failure in \%",
+  title_trace = "Failed Items"
+)
+
 }
 \references{
 Meeker, William Q; Escobar, Luis A., Statistical methods for

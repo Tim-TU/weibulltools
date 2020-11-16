@@ -5,12 +5,7 @@
 \alias{r_squared_profiling}
 \title{\eqn{R²}-Profile Function for Log-Location-Scale Distributions with Threshold}
 \usage{
-r_squared_profiling(
-  x,
-  y,
-  thres,
-  distribution = c("weibull3", "lognormal3", "loglogistic3")
-)
+r_squared_profiling(x, ...)
 }
 \arguments{
 \item{x}{A numeric vector which consists of lifetime data. Lifetime

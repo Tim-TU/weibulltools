@@ -69,56 +69,58 @@ cycles   <- c(300, 300, 300, 300, 300, 291, 274, 271, 269, 257, 256, 227, 226,
               159, 159, 159, 152, 152, 149, 149, 144, 143, 141, 141, 140, 139,
               139, 136, 135, 133, 131, 129, 123, 121, 121, 118, 117, 117, 114,
               112, 108, 104, 99, 99, 96, 94)
-state <- c(rep(0, 5), rep(1, 67))
-id <- 1:length(cycles)
+status <- c(rep(0, 5), rep(1, 67))
 
-df_john <- johnson_method(x = cycles, event = state, id = id)
+data <- reliability_data(x = cycles, status = status)
+
+tbl_john <- estimate_cdf(data, methods = c("johnson", "nelson"))
 
 # Example 1: Probability Plot and Regression Line Three-Parameter-Weibull:
-plot_weibull <- plot_prob(x = df_john$characteristic,
-                          y = df_john$prob,
-                          event = df_john$status,
-                          id = df_john$id,
-                          distribution = "weibull",
-                          title_main = "Three-Parametric Weibull",
-                          title_x = "Cycles",
-                          title_y = "Probability of Failure in \%",
-                          title_trace = "Failed Items")
+plot_weibull <- plot_prob(
+  tbl_john,
+  distribution = "weibull",
+  title_main = "Three-Parametric Weibull",
+  title_x = "Cycles",
+  title_y = "Probability of Failure in \%",
+  title_trace = "Failed Items"
+)
 
-mrr <- rank_regression(x = df_john$characteristic,
-                       y = df_john$prob,
-                       event = df_john$status,
-                       distribution = "weibull3",
-                       conf_level = .90)
+mrr <- rank_regression(
+  tbl_john,
+  distribution = "weibull3",
+  conf_level = .90
+)
 
-plot_reg_weibull <- plot_mod(p_obj = plot_weibull, x = cycles,
-                             loc_sc_params = mrr$loc_sc_params,
-                             distribution = "weibull3",
-                             title_trace = "Estimated Weibull CDF")
+plot_reg_weibull <- plot_mod(
+  p_obj = plot_weibull,
+  parameter_estimation = mrr,
+  title_trace = "Estimated Weibull CDF"
+)
 
 
 
 # Example 2: Probability Plot and Regression Line Three-Parameter-Lognormal:
-plot_lognormal <- plot_prob(x = df_john$characteristic,
-                          y = df_john$prob,
-                          event = df_john$status,
-                          id = df_john$id,
-                          distribution = "lognormal",
-                          title_main = "Three-Parametric Lognormal",
-                          title_x = "Cycles",
-                          title_y = "Probability of Failure in \%",
-                          title_trace = "Failed Items")
+plot_lognormal <- plot_prob(
+  tbl_john,
+  distribution = "lognormal",
+  title_main = "Three-Parametric Lognormal",
+  title_x = "Cycles",
+  title_y = "Probability of Failure in \%",
+  title_trace = "Failed Items"
+)
 
-mrr_ln <- rank_regression(x = df_john$characteristic,
-                       y = df_john$prob,
-                       event = df_john$status,
-                       distribution = "lognormal3",
-                       conf_level = .90)
+mrr_ln <- rank_regression(
+  tbl_john,
+  distribution = "lognormal3",
+  conf_level = .90
+)
 
-plot_reg_lognormal <- plot_mod(p_obj = plot_lognormal, x = cycles,
-                             loc_sc_params = mrr_ln$loc_sc_params,
-                             distribution = "lognormal3",
-                             title_trace = "Estimated Lognormal CDF")
+plot_reg_lognormal <- plot_mod(
+  p_obj = plot_lognormal,
+  parameter_estimation = mrr_ln,
+  title_trace = "Estimated Lognormal CDF"
+)
+
 }
 \references{
 Meeker, William Q; Escobar, Luis A., Statistical methods for
