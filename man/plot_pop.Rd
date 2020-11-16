@@ -49,10 +49,8 @@ This function adds one or multiple linearized CDF to an existing plotly grid.
 \details{
 \code{param_tbl} must be a tibble with the following columns:
 \itemize{
-  \item \code{param_1}: Location parameter \eqn{\mu} for \code{lognormal} and
-    \code{loglogistic}. Scale parameter \eqn{\eta} for \code{weibull}.
-  \item \code{param_2}: Scale parameter \eqn{\sigma} for \code{lognormal} and
-    \code{loglogistic}. Shape parameter \eqn{\beta} for \code{weibull}.
+  \item \code{loc}: Location parameter \eqn{\mu}.
+  \item \code{sc}: Scale parameter \eqn{\sigma}.
 }
 }
 \examples{
@@ -69,7 +67,7 @@ grid_weibull <- plot_layout(
 pop_weibull <- plot_pop(
   p_obj = grid_weibull,
   x = range(x),
-  param_tbl = c(20000, 1),
+  param_tbl = c(log(20000), 1),
   distribution = "weibull",
   title_trace = "Population"
 )

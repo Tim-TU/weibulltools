@@ -52,25 +52,25 @@ argument:
     censored data. Compared to complete data the correction is done by
     calculating adjusted ranks which takes non-defective units into account.
   \item \code{"kaplan"}: Whereas the non-parametric Kaplan-Meier estimator is
-    used to estimate the survival function _S(t)_ in terms of (multiple)
+    used to estimate the survival function \emph{S(t)} in terms of (multiple)
     right censored data, the complement is an estimate of the cumulative
-    distribution function _F(t)_. One modification is made in contrast
+    distribution function \emph{F(t)}. One modification is made in contrast
     to the orginial Kaplan-Meier estimator (based on
-    _NIST/SEMATECH e-Handbook of Statistical Methods_, 8.2.1.5.): If the
+    \emph{NIST/SEMATECH e-Handbook of Statistical Methods}, 8.2.1.5.): If the
     last unit (unit with highest observed lifetime) is a defective unit, the
     estimator is adjusted in such a way that the survival estimate for this
-    unit is not _zero_ and therefore the estimate for the failure
-    probability is not equal to _one_. Otherwise the estimate in this
+    unit is not \emph{zero} and therefore the estimate for the failure
+    probability is not equal to \emph{one}. Otherwise the estimate in this
     context would be too pessimisitc.
     Since the failure probability estimation in this function is not based on
-    _Median Ranks_, the Betabinomial confidence intervals _cannot_ be
+    \emph{Median Ranks}, the Betabinomial confidence intervals \emph{cannot} be
     calculated on the basis of Kaplan-Meier failure probabilities.
   \item \code{"nelson"}: This non-parametric approach estimates the cumulative
     hazard rate in terms of (multiple) right censored data. By equating the
     definition of the hazard rate with the hazard rate according to
     Nelson-Aalen one can calculate the failure probabilities.
     Since the failure probability estimation in this function is not based on
-    _Median Ranks_, the Betabinomial confidence intervals cannot be calculated
+    \emph{Median Ranks}, the Betabinomial confidence intervals cannot be calculated
     on the basis of Nelson-Aalen failure probabilities.
 }
 }

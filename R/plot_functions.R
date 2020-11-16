@@ -892,10 +892,8 @@ plot_conf.confint <- function(p_obj, confint, title_trace) {
 #' @details
 #' \code{param_tbl} must be a tibble with the following columns:
 #' \itemize{
-#'   \item \code{param_1}: Location parameter \eqn{\mu} for \code{lognormal} and
-#'     \code{loglogistic}. Scale parameter \eqn{\eta} for \code{weibull}.
-#'   \item \code{param_2}: Scale parameter \eqn{\sigma} for \code{lognormal} and
-#'     \code{loglogistic}. Shape parameter \eqn{\beta} for \code{weibull}.
+#'   \item \code{loc}: Location parameter \eqn{\mu}.
+#'   \item \code{sc}: Scale parameter \eqn{\sigma}.
 #' }
 #'
 #' @param p_obj A plotly object to which the population lines are added or
@@ -932,7 +930,7 @@ plot_conf.confint <- function(p_obj, confint, title_trace) {
 #' pop_weibull <- plot_pop(
 #'   p_obj = grid_weibull,
 #'   x = range(x),
-#'   param_tbl = c(20000, 1),
+#'   param_tbl = c(log(20000), 1),
 #'   distribution = "weibull",
 #'   title_trace = "Population"
 #' )
@@ -972,7 +970,7 @@ plot_pop <- function(
 
   # Support vector instead of tibble for ease of use in param_tbl
   if (!inherits(param_tbl, "data.frame")) {
-    param_tbl <- tibble::tibble(param_1 = param_tbl[1], param_2 = param_tbl[2])
+    param_tbl <- tibble::tibble(loc = param_tbl[1], sc = param_tbl[2])
   }
 
   tbl_pop <- plot_pop_helper(x, param_tbl, distribution, tol)

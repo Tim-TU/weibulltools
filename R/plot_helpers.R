@@ -419,15 +419,6 @@ plot_pop_helper <- function(x, param_tbl, distribution, tol = 1e-6) {
     x
   }
 
-  if (distribution == "weibull") {
-    param_tbl <- param_tbl %>%
-      dplyr::transmute(loc = log(param_1), sc = 1 / param_2)
-  }
-  if (distribution %in% c("lognormal", "loglogistic")) {
-    param_tbl <- param_tbl %>%
-      dplyr::transmute(loc = param_1, sc = param_2)
-  }
-
   tbl_pop <- param_tbl
   # column x_y is list column that contains a tibble each
   tbl_pop$x_y <- purrr::pmap(param_tbl, function(loc, sc, x_s, distribution) {
@@ -454,21 +445,12 @@ plot_pop_helper <- function(x, param_tbl, distribution, tol = 1e-6) {
       dplyr::mutate(q = stats::qlogis(y_s))
   }
 
-  if (distribution == "weibull") {
-    param_val_1 <- round(exp(tbl_pop$loc), digits = 2)
-    param_val_2 <- round(1 / tbl_pop$sc, digits = 2)
+  # set values and labels for plotlys hoverinfo:
+  param_val_1 <- round(tbl_pop$loc, digits = 2)
+  param_val_2 <- round(tbl_pop$sc, digits = 2)
 
-    param_label_1 <- "\u03B7:"
-    param_label_2 <- "\u03B2:"
-
-  }
-  if (distribution %in% c("lognormal", "loglogistic")) {
-    param_val_1 <- round(tbl_pop$loc, digits = 2)
-    param_val_2 <- round(tbl_pop$sc, digits = 2)
-
-    param_label_1 <- "\u03BC:"
-    param_label_2 <- "\u03C3:"
-  }
+  param_label_1 <- "\u03BC:"
+  param_label_2 <- "\u03C3:"
 
   tbl_pop <- tbl_pop %>%
     dplyr::mutate(

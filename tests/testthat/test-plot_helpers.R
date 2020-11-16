@@ -7,7 +7,7 @@ test_that("plot_layout_helper remains stable", {
     plot_method = "plotly"
   )
 
-  eexpect_snapshot_output(helper)
+  expect_snapshot_output(helper)
 
   x_layout <- seq(1, 10, length.out = 10)
   helper_2 <- plot_layout_helper(
@@ -66,7 +66,7 @@ test_that("plot_pop_helper remains stable", {
   suppressWarnings(library(tibble))
   set.seed(1)
   x <- rweibull(n = 100, shape = 1, scale = 20000)
-  param_tbl <- tibble(param_1 = 20000, param_2 = 1)
+  param_tbl <- tibble(loc = log(20000), sc = 1)
   expect_snapshot_output(
     plot_pop_helper(x, param_tbl, "weibull")
   )

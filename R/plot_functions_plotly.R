@@ -332,7 +332,8 @@ plot_pop_plotly <- function(
     type = "scatter",
     mode = "lines",
     hoverinfo = "text",
-    color = ~group,
+    # color = ~group,
+    name = ~group,
     line = list(width = 1),
     text = paste(
       paste0(x_mark, ":"),
