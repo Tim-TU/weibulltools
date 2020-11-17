@@ -51,9 +51,6 @@ plot_layout <- function(
   distribution <- match.arg(distribution)
   plot_method <- match.arg(plot_method)
 
-  # Here it makes sense to call the helper method in the plot_format methods
-  ###
-
   plot_layout_fun <- if (plot_method == "plotly") plot_layout_plotly else
     plot_layout_ggplot2
 

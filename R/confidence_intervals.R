@@ -109,23 +109,22 @@ confint_betabinom.parameter_estimation <- function(
 
 #' @export
 #' @describeIn confint_betabinom Provide all arguments manually.
-confint_betabinom.default <- function(x, event, loc_sc_params,
-                              distribution = c("weibull", "lognormal", "loglogistic",
-                                               "normal", "logistic", "sev", "weibull3",
-                                               "lognormal3", "loglogistic3"),
-                              bounds = c("two_sided", "lower", "upper"),
-                              conf_level = .95, direction = c("y", "x")) {
+confint_betabinom.default <- function(x,
+                                      event,
+                                      loc_sc_params,
+                                      distribution = c(
+                                        "weibull", "lognormal", "loglogistic",
+                                        "normal", "logistic", "sev", "weibull3",
+                                        "lognormal3", "loglogistic3"
+                                      ),
+                                      bounds = c("two_sided", "lower", "upper"),
+                                      conf_level = .95,
+                                      direction = c("y", "x")
+) {
 
   bounds <- match.arg(bounds)
   direction <- match.arg(direction)
   distribution <- match.arg(distribution)
-
-  if (!(distribution %in% c("weibull", "lognormal", "loglogistic", "normal",
-                            "logistic", "sev", "weibull3", "lognormal3",
-                            "loglogistic3"))) {
-    stop("No valid distribution!")
-  }
-
 
   n <- length(x)
   x_ob <- x[event == 1]
