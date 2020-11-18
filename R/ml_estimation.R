@@ -91,17 +91,17 @@ ml_estimation <- function(x, ...) {
 #' @export
 #'
 ml_estimation.reliability_data <- function(
-  data,
+  x,
   distribution = c(
     "weibull", "lognormal", "loglogistic", "normal", "logistic", "sev",
     "weibull3", "lognormal3", "loglogistic3"),
-  wts = rep(1, nrow(data)),
+  wts = rep(1, nrow(x)),
   conf_level = .95
 ) {
   distribution <- match.arg(distribution)
 
   ml_estimation_(
-    data,
+    x,
     distribution = distribution,
     wts = wts,
     conf_level = conf_level

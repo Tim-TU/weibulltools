@@ -5,14 +5,17 @@
 \title{ML Estimation for Parametric Lifetime Distributions}
 \usage{
 \method{ml_estimation}{reliability_data}(
-  data,
+  x,
   distribution = c("weibull", "lognormal", "loglogistic", "normal", "logistic", "sev",
     "weibull3", "lognormal3", "loglogistic3"),
-  wts = rep(1, nrow(data)),
+  wts = rep(1, nrow(x)),
   conf_level = 0.95
 )
 }
 \arguments{
+\item{x}{An object of class \code{reliability_data} returned by
+\code{\link{reliability_data}}.}
+
 \item{distribution}{Supposed distribution of the random variable.}
 
 \item{wts}{Optional vector of case weights. The length of \code{wts} must be the
@@ -21,9 +24,6 @@ vector with all components being 1 (same weights).}
 
 \item{conf_level}{Confidence level of the interval. The default value is
 \code{conf_level = 0.95}.}
-
-\item{x}{An object of class \code{reliability_data} returned by
-\code{\link{reliability_data}}.}
 }
 \value{
 Returns a list with the following components:
