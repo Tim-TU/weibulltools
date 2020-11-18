@@ -183,49 +183,26 @@ plot_mod_helper <- function(
 
   tbl_pred <- tibble::tibble(x_p = x_p, y_p = y_p)
 
+  # Smallest Extreme Value Distribution:
   if (distribution %in% c("weibull", "weibull3", "sev")) {
     q <- SPREDA::qsev(y_p)
-
-    param_val <- c(round(loc_sc_params[[1]], digits = 2),
-                   round(loc_sc_params[[2]], digits = 2))
-    param_label <- c("\u03BC:", "\u03C3:")
-
-    if (distribution == "weibull") {
-      param_val <- c(round(exp(loc_sc_params[[1]]), digits = 2),
-                     round(1 / loc_sc_params[[2]], digits = 2))
-      param_label <- c("\u03B7:", "\u03B2:")
-    }
-    if (distribution == "weibull3") {
-      param_val <- c(round(exp(loc_sc_params[[1]]), digits = 2),
-                     round(1 / loc_sc_params[[2]], digits = 2), round(loc_sc_params[[3]], digits = 2))
-      param_label <- c("\u03B7:", "\u03B2:", "\u03B3:")
-    }
-
   }
 
+  # Standard Normal Distribution:
   if (distribution %in% c("lognormal", "lognormal3", "normal")) {
     q <- stats::qnorm(y_p)
-    param_val <- c(round(loc_sc_params[[1]], digits = 2),
-                   round(loc_sc_params[[2]], digits = 2))
-    param_label <- c("\u03BC:", "\u03C3:")
-
-    if (distribution == "lognormal3") {
-      param_val <- c(param_val, round(loc_sc_params[[3]], digits = 2))
-      param_label <- c(param_label, "\u03B3:")
-    }
   }
 
+  # Standard Logistic Distribution:
   if (distribution %in% c("loglogistic", "loglogistic3", "logistic")) {
     q <- stats::qlogis(y_p)
-    param_val <- c(round(loc_sc_params[[1]], digits = 2),
-                   round(loc_sc_params[[2]], digits = 2))
-    param_label <- c("\u03BC:", "\u03C3:")
-
-    if (distribution == "loglogistic3") {
-      param_val <- c(param_val, round(loc_sc_params[[3]], digits = 2))
-      param_label <- c(param_label, "\u03B3:")
-    }
   }
+
+  # preparation of plotly hovers:
+  ## raises problems if one-parameter distributions like exponential will be implemented!
+  param_val <- round(loc_sc_params, digits = 2)
+  param_label <- if (length(param_val) == 2) c("\u03BC:", "\u03C3:") else
+    c("\u03BC:", "\u03C3:", "\u03B3:")
 
   tbl_pred$q <- q
 
