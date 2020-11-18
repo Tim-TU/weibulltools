@@ -246,7 +246,7 @@ rank_regression.default <- function(
                        loc_sc_confint = conf_ints_loc_sc,
                        r_squared = r_sq)
   }
-  if (distribution == "weibull3" | distribution == "lognormal3" | distribution == "loglogistic3") {
+  if (distribution %in% c("weibull3", "lognormal3", "loglogistic3")) {
     # Log-Location-Scale with threshold:
     ## Optimization of profile function:
     optim_gamma <- stats::optim(par = 0, fn = r_squared_profiling, method = "L-BFGS-B",
@@ -317,7 +317,7 @@ rank_regression.default <- function(
                          loc_sc_confint = conf_ints_loc_sc,
                          r_squared = r_sq)
 
-    } else if (distribution == "lognormal3" | distribution == "loglogistic3") {
+    } else if (distribution %in% c("lognormal3", "loglogistic3")) {
 
       if (distribution == "lognormal3") {
         mrr <- stats::lm(log(x_gamma[subs]) ~ stats::qnorm(y_f[subs]))
@@ -367,8 +367,7 @@ rank_regression.default <- function(
     }
   }
 
-  if (distribution == "lognormal" | distribution == "loglogistic" |
-      distribution == "normal" | distribution == "logistic" | distribution == "sev") {
+  if (distribution %in% c("lognormal", "loglogistic", "normal", "logistic", "sev")) {
 
     if (distribution == "lognormal") {
       mrr <- stats::lm(log(x_f) ~ stats::qnorm(y_f))
@@ -428,7 +427,7 @@ rank_regression.default <- function(
 
   mrr_output$distribution <- distribution
 
-  class(mrr_output) <- c("model_estimation", class(mrr_output))
+  class(mrr_output) <- c("rank_regression", "model_estimation", class(mrr_output))
 
   return(mrr_output)
 }

@@ -179,7 +179,7 @@ ml_estimation_ <- function(data, distribution, wts, conf_level) {
   status <- data$status
 
   # Log-Location-Scale Models:
-  if (distribution == "weibull" | distribution == "lognormal" | distribution == "loglogistic") {
+  if (distribution %in% c("weibull", "lognormal", "loglogistic")) {
     # ML - Estimation: Location-Scale Parameters
     ml <- SPREDA::Lifedata.MLE(survival::Surv(x, status) ~ 1, dist = distribution,
                                weights = wts)
@@ -239,7 +239,7 @@ ml_estimation_ <- function(data, distribution, wts, conf_level) {
   }
 
   # Log-Location-Scale Models with threshold parameter:
-  if (distribution == "weibull3" | distribution == "lognormal3" | distribution == "loglogistic3") {
+  if (distribution %in% c("weibull3", "lognormal3", "loglogistic3")) {
 
     # Log-Location-Scale with threshold:
     ## Problem:  With functions SPREDA::Lifedata.MLE and survival::survreg it is
@@ -340,7 +340,7 @@ ml_estimation_ <- function(data, distribution, wts, conf_level) {
     }
   }
   # Location-Scale Models:
-  if (distribution == "sev" | distribution == "normal" | distribution == "logistic") {
+  if (distribution %in% c("sev", "normal", "logistic")) {
     # Location-Scale:
     ## Problem:  With functions SPREDA::Lifedata.MLE it is not possible to estimate
     ##           the parameters of a location-scale distribution and with survival::survreg it is
@@ -406,7 +406,7 @@ ml_estimation_ <- function(data, distribution, wts, conf_level) {
     )
   }
 
-  class(ml_output) <- c("model_estimation", class(ml_output))
+  class(ml_output) <- c("ml_estimation", "model_estimation", class(ml_output))
 
   ml_output$data <- tibble::tibble(
     characteristic = x, status = status
