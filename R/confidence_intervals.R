@@ -7,7 +7,7 @@
 #'
 #' @section Methods (by class):
 #' \describe{
-#'   \item{\code{\link[=confint_betabinom.parameter_estimation]{parameter_estimation}}}{
+#'   \item{\code{\link[=confint_betabinom.model_estimation]{model_estimation}}}{
 #'     Preferred. Provide the output of \code{\link{rank_regression}}.
 #'    }
 #'   \item{\code{\link[=confint_betabinom.default]{default}}}{
@@ -33,7 +33,7 @@ confint_betabinom <- function(x, ...) {
 #' @references Meeker, William Q; Escobar, Luis A., Statistical methods for
 #'   reliability data, New York: Wiley series in probability and statistics, 1998
 #'
-#' @param x Object of class \code{parameter_estimation} returned from
+#' @param x Object of class \code{model_estimation} returned from
 #'   \code{\link{rank_regression}}.
 #' @param bounds A character string specifying the interval(s) which has/have to
 #'   be computed. Must be one of "two_sided" (default), "lower" or "upper".
@@ -94,7 +94,7 @@ confint_betabinom <- function(x, ...) {
 #' )
 #'
 #' @export
-confint_betabinom.parameter_estimation <- function(
+confint_betabinom.model_estimation <- function(
                                       x,
                                       b_lives = c(0.01, 0.1, 0.50),
                                       bounds = c("two_sided", "lower", "upper"),
@@ -129,7 +129,7 @@ confint_betabinom.parameter_estimation <- function(
 #' @param event A vector of binary data (0 or 1) indicating whether unit \emph{i}
 #'   is a right censored observation (= 0) or a failure (= 1).
 #' @inheritParams predict_quantile
-#' @inheritParams confint_betabinom.parameter_estimation
+#' @inheritParams confint_betabinom.model_estimation
 #'
 #' @examples
 #' # Example 1: Beta-Binomial Confidence Bounds for two-parameter Weibull:
@@ -448,7 +448,7 @@ delta_method_ <- function(p, loc_sc_params, loc_sc_varcov,
 #'
 #' @section Methods (by class):
 #' \describe{
-#'   \item{\code{\link[=confint_fisher.parameter_estimation]{parameter_estimation}}}{
+#'   \item{\code{\link[=confint_fisher.model_estimation]{model_estimation}}}{
 #'     Preferred. Provide the output of \code{\link{ml_estimation}}.
 #'   }
 #'   \item{\code{\link[=confint_fisher.default]{default}}}{
@@ -470,9 +470,9 @@ confint_fisher <- function(x, ...) {
 #'
 #' @inherit confint_fisher description return
 #'
-#' @param x Object of class \code{parameter_estimation} returned from
+#' @param x Object of class \code{model_estimation} returned from
 #'   \code{\link{ml_estimation}}.
-#' @inheritParams confint_betabinom.parameter_estimation
+#' @inheritParams confint_betabinom.model_estimation
 #'
 #' @examples
 #' obs   <- seq(10000, 100000, 10000)
@@ -495,7 +495,7 @@ confint_fisher <- function(x, ...) {
 #'   direction = "y"
 #' )
 #' @export
-confint_fisher.parameter_estimation <- function(
+confint_fisher.model_estimation <- function(
                                       x,
                                       b_lives = c(0.01, 0.1, 0.50),
                                       bounds = c("two_sided", "lower", "upper"),

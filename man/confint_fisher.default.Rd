@@ -11,6 +11,7 @@
   loc_sc_varcov,
   distribution = c("weibull", "lognormal", "loglogistic", "normal", "logistic", "sev",
     "weibull3", "lognormal3", "loglogistic3"),
+  b_lives = c(0.01, 0.1, 0.5),
   bounds = c("two_sided", "lower", "upper"),
   conf_level = 0.95,
   direction = c("y", "x")
@@ -54,7 +55,7 @@ intervals of quantiles in \code{\link{confint_fisher}}). If \code{p} is a
 quantile then \emph{direction} needs to be "y" and vice versa.}
 }
 \value{
-A data frame containing the lifetime characteristic, the
+A tibble containing the lifetime characteristic, the
   probabilities, estimated standard errors by the delta method and computed
   values for the specified confidence bound(s).
 }
