@@ -121,7 +121,7 @@ rank_regression.cdf_estimation <- function(
 
 #' Rank Regression for Parametric Lifetime Distributions
 #'
-#' @inheritParams
+#' @inherit rank_regression description details return references
 #'
 #' @param x A numeric vector which consists of lifetime data. Lifetime data
 #'   could be every characteristic influencing the reliability of a product,
