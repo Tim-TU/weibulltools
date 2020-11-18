@@ -52,6 +52,18 @@ standard errors for the parameters using \emph{Least Squares} in context of
 \emph{Median Rank Regression}. For an accepted statistical method use MLE
 (\code{\link{ml_estimation}}).
 }
+\section{Methods (by class)}{
+
+\describe{
+  \item{\code{\link[=rank_regression.cdf_estimation]{cdf_estimation}}}{
+    Preferred. Provide the output of \code{\link{estimate_cdf}} directly.
+  }
+  \item{\code{\link[=rank_regression.default]{default}}}{
+    Provide \code{x}, \code{y} and \code{event} manually.
+  }
+}
+}
+
 \references{
 \itemize{
     \item Mock, R., Methoden zur Datenhandhabung in

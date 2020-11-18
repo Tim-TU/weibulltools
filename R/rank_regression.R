@@ -22,6 +22,16 @@
 #' \emph{Median Rank Regression}. For an accepted statistical method use MLE
 #' (\code{\link{ml_estimation}}).
 #'
+#' @section Methods (by class):
+#' \describe{
+#'   \item{\code{\link[=rank_regression.cdf_estimation]{cdf_estimation}}}{
+#'     Preferred. Provide the output of \code{\link{estimate_cdf}} directly.
+#'   }
+#'   \item{\code{\link[=rank_regression.default]{default}}}{
+#'     Provide \code{x}, \code{y} and \code{event} manually.
+#'   }
+#' }
+#'
 #' @encoding UTF-8
 #' @references
 #'   \itemize{
