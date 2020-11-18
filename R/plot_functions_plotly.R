@@ -318,7 +318,7 @@ plot_conf_plotly <- function(p_obj, tbl_p, title_trace) {
 }
 
 plot_pop_plotly <- function(
-  p_obj, tbl_pop, color, title_trace
+  p_obj, tbl_pop, title_trace
 ) {
   # Get axis labels in hover:
   x_mark <- unlist(strsplit(p_obj$x$layoutAttrs[[2]]$xaxis$title$text,  " "))[1]

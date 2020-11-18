@@ -412,19 +412,21 @@ plot_conf_helper <- function(tbl_mod, x, y, direction, distribution) {
   return(tbl_p)
 }
 
-plot_pop_helper <- function(x, param_tbl, distribution, tol = 1e-6) {
+plot_pop_helper <- function(x, loc_sc_params_tbl, distribution, tol = 1e-6) {
   x_s <- if (length(x) == 2) {
     10 ^ seq(log10(x[1]), log10(x[2]), length.out = 200)
   } else {
     x
   }
 
-  tbl_pop <- param_tbl
+  tbl_pop <- loc_sc_params_tbl
   # column x_y is list column that contains a tibble each
-  tbl_pop$x_y <- purrr::pmap(param_tbl, function(loc, sc, x_s, distribution) {
+  tbl_pop$x_y <- purrr::pmap(loc_sc_params_tbl,
+                             function(loc, sc, x_s, distribution) {
     tibble::tibble(
       x_s = x_s,
-      y_s = predict_prob(q = x_s, loc_sc_params = c(loc, sc), distribution = distribution)
+      y_s = predict_prob(q = x_s, loc_sc_params = c(loc, sc),
+                         distribution = distribution)
     )
   }, x_s, distribution)
 

@@ -884,37 +884,37 @@ plot_conf.confint <- function(p_obj, confint, title_trace) {
   )
 }
 
-#' Add Population Lines to an Existing Grid
+#' Add Population Line(s) to an Existing Grid
 #'
 #' @description
-#' This function adds one or multiple linearized CDF to an existing plotly grid.
+#' This function adds one or multiple linearized CDFs to an existing plot grid.
 #'
 #' @details
-#' \code{param_tbl} must be a tibble with the following columns:
-#' \itemize{
-#'   \item \code{loc}: Location parameter \eqn{\mu}.
-#'   \item \code{sc}: Scale parameter \eqn{\sigma}.
-#' }
+#' \code{loc_sc_params_tbl} is a tibble with the following columns:
+#'   \itemize{
+#'     \item \code{loc}: Location parameter \eqn{\mu}.
+#'     \item \code{sc}: Scale parameter \eqn{\sigma}.
+#'   }
+#'   If only one line should be displayed, a numeric vector of length two is
+#'   also supported \code{c(loc, sc)}.
 #'
-#' @param p_obj A plotly object to which the population lines are added or
+#' @param p_obj A plot object to which the population lines are added or
 #'   \code{NULL}. If \code{NULL} the population lines are added to an empty grid.
 #' @param x A numeric vector of length two or greater used for the x coordinates
 #'   of the population line. If \code{length(x) == 2} a sequence of length 200
 #'   between \code{x[1]} and \code{x[2]} is created. This sequence is equidistant
 #'   with respect to the scale of the x axis. If \code{length(x) > 2} the elements
 #'   of \code{x} are the x coordinates of the population line.
-#' @param param_tbl A tibble. See 'Details'.
+#' @param loc_sc_params_tbl A tibble. See 'Details'.
 #' @param tol The failure probability is restricted to the interval
 #'   \eqn{[tol, 1 - tol]}. The default value is in accordance with the decimal
 #'   places shown in the hover for \code{plot_method = "plotly"}.
-#' @param plot_method Package, which is used for generating the plot output. Only
+#' @param plot_method Plot package, which produces the visual output. Only
 #'   used with \code{p_obj = NULL}, otherwise \code{p_obj} is used to determine
 #'   the plot method.
 #' @inheritParams plot_prob
 #'
-#' @return A plotly object which contains the supposed linearized population
-#'   CDF. Failure probabilities must be strictly below 1 and for this very reason
-#'
+#' @return A plot object which contains the linearized CDF(s).
 #'
 #' @examples
 #' x <- rweibull(n = 100, shape = 1, scale = 20000)
@@ -926,18 +926,31 @@ plot_conf.confint <- function(p_obj, confint, title_trace) {
 #'   title_x = "Time to Failure",
 #'   title_y = "Failure Probability"
 #' )
-#'
+#' # Example 1: One line
 #' pop_weibull <- plot_pop(
 #'   p_obj = grid_weibull,
 #'   x = range(x),
-#'   param_tbl = c(log(20000), 1),
+#'   loc_sc_params_tbl = c(log(20000), 1),
 #'   distribution = "weibull",
 #'   title_trace = "Population"
 #' )
 #'
+#' # Example 2: Multiple lines
+#' pop_weibull2 <- plot_pop(
+#'   p_obj = NULL,
+#'   x = x,
+#'   loc_sc_params_tbl = tibble(
+#'     loc = c(log(20000), log(20000), log(20000)),
+#'     sc = c(1, 1.5, 2)
+#'     ),
+#'   distribution = "weibull",
+#'   title_trace = "Population",
+#'   plot_method = "ggplot2"
+#' )
+#'
 #' @export
 plot_pop <- function(
-  p_obj = NULL, x, param_tbl,
+  p_obj = NULL, x, loc_sc_params_tbl,
   distribution = c("weibull", "lognormal", "loglogistic"),
   tol = 1e-6,
   title_trace = "Population",
@@ -968,12 +981,15 @@ plot_pop <- function(
     }
   }
 
-  # Support vector instead of tibble for ease of use in param_tbl
-  if (!inherits(param_tbl, "data.frame")) {
-    param_tbl <- tibble::tibble(loc = param_tbl[1], sc = param_tbl[2])
+  # Support vector instead of tibble for ease of use in loc_sc_params_tbl
+  if (!inherits(loc_sc_params_tbl, "data.frame")) {
+    loc_sc_params_tbl <- tibble::tibble(
+      loc = loc_sc_params_tbl[1],
+      sc = loc_sc_params_tbl[2]
+      )
   }
 
-  tbl_pop <- plot_pop_helper(x, param_tbl, distribution, tol)
+  tbl_pop <- plot_pop_helper(x, loc_sc_params_tbl, distribution, tol)
 
   plot_pop_fun <- if (plot_method == "plotly") plot_pop_plotly else
     plot_pop_ggplot2
