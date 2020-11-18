@@ -75,66 +75,22 @@ plot_layout <- function(
 #' argument \code{title_x} respective \code{title_y}, i.e. if
 #' \code{title_x = "Mileage in km"} the x label of the marker is "Mileage".
 #'
+#' @section Methods (by class):
+#' \describe{
+#'   \item{\code{\link[=plot_prob.cdf_estimation]{cdf_estimation}}}{
+#'     Preferred. Provide the output of \code{\link{estimate_cdf}} directly.
+#'   }
+#'   \item{\code{\link[=plot_prob.default]{default}}}{
+#'     Provide \code{x}, \code{y}, \code{event} and \code{id} manually.
+#'   }
+#' }
+#'
 #' @encoding UTF-8
 #' @references Meeker, William Q; Escobar, Luis A., Statistical methods for
 #'   reliability data, New York: Wiley series in probability and statistics, 1998
 #'
-#' @param x A numeric vector which consists of lifetime data. Lifetime
-#'   data could be every characteristic influencing the reliability of a product,
-#'   e.g. operating time (days/months in service), mileage (km, miles), load
-#'   cycles.
-#' @param y A numeric vector which consists of estimated failure probabilities
-#'   regarding the lifetime data in \code{x}.
-#' @param event A vector of binary data (0 or 1) indicating whether unit \emph{i}
-#'   is a right censored observation (= 0) or a failure (= 1).
-#' @param id A character vector for the identification of every unit.
-#' @param cdf_estimation CDF estimation returned by \code{\link{estimate_cdf}}.
-#' @param distribution Supposed distribution of the random variable.
-#' @param title_main A character string which is assigned to the main title
-#'   of the plot.
-#' @param title_x A character string which is assigned to the title of the
-#'   x axis.
-#' @param title_y A character string which is assigned to the title of the
-#'   y axis.
-#' @param title_trace A character string whis is assigned to the trace shown in
-#'   the legend.
-#' @param plot_method Package, which is used for generating the plot output.
-#'
 #' @return Returns a plotly object containing the layout of the probability plot
 #'   provided by \code{\link{plot_layout}} and the plotting positions.
-#'
-#' @examples
-#' # Alloy T7987 dataset taken from Meeker and Escobar(1998, p. 131)
-#' cycles   <- c(300, 300, 300, 300, 300, 291, 274, 271, 269, 257, 256, 227, 226,
-#'               224, 213, 211, 205, 203, 197, 196, 190, 189, 188, 187, 184, 180,
-#'               180, 177, 176, 173, 172, 171, 170, 170, 169, 168, 168, 162, 159,
-#'               159, 159, 159, 152, 152, 149, 149, 144, 143, 141, 141, 140, 139,
-#'               139, 136, 135, 133, 131, 129, 123, 121, 121, 118, 117, 117, 114,
-#'               112, 108, 104, 99, 99, 96, 94)
-#' status <- c(rep(0, 5), rep(1, 67))
-#' data <- reliability_data(x = cycles, status = status)
-#'
-#' tbl_john <- estimate_cdf(data, methods = c("johnson", "kaplan"))
-#'
-#' # Example 1: Probability Plot Weibull:
-#' plot_weibull <- plot_prob(
-#'   tbl_john,
-#'   distribution = "weibull",
-#'   title_main = "Weibull Analysis",
-#'   title_x = "Cycles",
-#'   title_y = "Probability of Failure in %",
-#'   title_trace = "Failed Items"
-#' )
-#'
-#' # Example 2: Probability Plot Lognormal:
-#' plot_lognormal <- plot_prob(
-#'   tbl_john,
-#'   distribution = "lognormal",
-#'   title_main = "Lognormal Analysis",
-#'   title_x = "Cycles",
-#'   title_y = "Probability of Failure in %",
-#'   title_trace = "Failed Items"
-#' )
 #'
 #' @export
 #'
@@ -146,11 +102,7 @@ plot_prob <- function(
 
 #' Probability Plotting Method for Univariate Lifetime Distributions
 #'
-#' @inherit plot_prob description details return
-#'
-#' @encoding UTF-8
-#' @references Meeker, William Q; Escobar, Luis A., Statistical methods for
-#'   reliability data, New York: Wiley series in probability and statistics, 1998
+#' @inherit plot_prob description details return references
 #'
 #' @param x A numeric vector which consists of lifetime data. Lifetime
 #'   data could be every characteristic influencing the reliability of a product,
@@ -161,7 +113,6 @@ plot_prob <- function(
 #' @param event A vector of binary data (0 or 1) indicating whether unit \emph{i}
 #'   is a right censored observation (= 0) or a failure (= 1).
 #' @param id A character vector for the identification of every unit.
-#' @param cdf_estimation CDF estimation returned by \code{\link{estimate_cdf}}.
 #' @param distribution Supposed distribution of the random variable.
 #' @param title_main A character string which is assigned to the main title
 #'   of the plot.
@@ -172,9 +123,6 @@ plot_prob <- function(
 #' @param title_trace A character string whis is assigned to the trace shown in
 #'   the legend.
 #' @param plot_method Package, which is used for generating the plot output.
-#'
-#' @return Returns a plotly object containing the layout of the probability plot
-#'   provided by \code{\link{plot_layout}} and the plotting positions.
 #'
 #' @examples
 #' # Alloy T7987 dataset taken from Meeker and Escobar(1998, p. 131)
@@ -244,29 +192,9 @@ plot_prob.default <- function(
 
 #' Probability Plotting Method for Univariate Lifetime Distributions
 #'
-#' @description
-#' This function is used to apply the graphical technique of probability
-#' plotting.
+#' @inherit plot_prob description details return references
 #'
-#' @details
-#' The marker label for x and y are determined by the first word provided in the
-#' argument \code{title_x} respective \code{title_y}, i.e. if
-#' \code{title_x = "Mileage in km"} the x label of the marker is "Mileage".
-#'
-#' @encoding UTF-8
-#' @references Meeker, William Q; Escobar, Luis A., Statistical methods for
-#'   reliability data, New York: Wiley series in probability and statistics, 1998
-#'
-#' @param x A numeric vector which consists of lifetime data. Lifetime
-#'   data could be every characteristic influencing the reliability of a product,
-#'   e.g. operating time (days/months in service), mileage (km, miles), load
-#'   cycles.
-#' @param y A numeric vector which consists of estimated failure probabilities
-#'   regarding the lifetime data in \code{x}.
-#' @param event A vector of binary data (0 or 1) indicating whether unit \emph{i}
-#'   is a right censored observation (= 0) or a failure (= 1).
-#' @param id A character vector for the identification of every unit.
-#' @param cdf_estimation CDF estimation returned by \code{\link{estimate_cdf}}.
+#' @param x CDF estimation returned from \code{\link{estimate_cdf}}.
 #' @param distribution Supposed distribution of the random variable.
 #' @param title_main A character string which is assigned to the main title
 #'   of the plot.
@@ -277,9 +205,6 @@ plot_prob.default <- function(
 #' @param title_trace A character string whis is assigned to the trace shown in
 #'   the legend.
 #' @param plot_method Package, which is used for generating the plot output.
-#'
-#' @return Returns a plotly object containing the layout of the probability plot
-#'   provided by \code{\link{plot_layout}} and the plotting positions.
 #'
 #' @examples
 #' # Alloy T7987 dataset taken from Meeker and Escobar(1998, p. 131)
@@ -317,7 +242,7 @@ plot_prob.default <- function(
 #' @export
 #'
 plot_prob.cdf_estimation <- function(
-  cdf_estimation,
+  x,
   distribution = c(
     "weibull", "lognormal", "loglogistic", "normal", "logistic", "sev"
   ),
@@ -331,7 +256,7 @@ plot_prob.cdf_estimation <- function(
   plot_method <- match.arg(plot_method)
 
   plot_prob_(
-    cdf_estimation = cdf_estimation,
+    cdf_estimation = x,
     distribution = distribution,
     title_main = title_main,
     title_x = title_x,
@@ -534,7 +459,7 @@ plot_prob_mix <- function(
 #' \describe{
 #'   \item{\code{\link[=plot_mod.model_estimation]{model_estimation}}}{
 #'     Preferred. Provide the output of either \code{\link{ml_estimation}} or
-#'     \code{\link{rank_regression}}.
+#'     \code{\link{rank_regression}} directly.
 #'   }
 #'   \item{\code{\link[=plot_mod.default]{default}}}{
 #'     Provide \code{x}, \code{loc_sc_params} and \code{distribution} manually.

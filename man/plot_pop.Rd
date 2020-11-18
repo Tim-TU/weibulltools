@@ -26,14 +26,9 @@ of \code{x} are the x coordinates of the population line.}
 
 \item{loc_sc_params_tbl}{A tibble. See 'Details'.}
 
-\item{distribution}{Supposed distribution of the random variable.}
-
 \item{tol}{The failure probability is restricted to the interval
 \eqn{[tol, 1 - tol]}. The default value is in accordance with the decimal
 places shown in the hover for \code{plot_method = "plotly"}.}
-
-\item{title_trace}{A character string whis is assigned to the trace shown in
-the legend.}
 
 \item{plot_method}{Plot package, which produces the visual output. Only
 used with \code{p_obj = NULL}, otherwise \code{p_obj} is used to determine

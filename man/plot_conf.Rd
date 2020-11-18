@@ -30,13 +30,8 @@ The list can be of length 1 or 2. For more information see \strong{Details}.}
 \item{y}{A list containing the y-coordinates of the Confidence Region(s).
 The list can be of length 1 or 2. For more information see \strong{Details}.}
 
-\item{distribution}{Supposed distribution of the random variable.}
-
 \item{direction}{A character string specifying the direction of the plotted
 interval(s). Must be either "y" (failure probabilities) or "x" (quantiles).}
-
-\item{title_trace}{A character string whis is assigned to the trace shown in
-the legend.}
 
 \item{confint}{Confindence interval as returned by \code{\link{confint_betabinom}}
 or \code{\link{confint_fisher}}.}

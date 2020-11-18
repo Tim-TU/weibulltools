@@ -20,7 +20,7 @@ model estimated by \code{\link{rank_regression}} or \code{\link{ml_estimation}}.
 \describe{
   \item{\code{\link[=plot_mod.model_estimation]{model_estimation}}}{
     Preferred. Provide the output of either \code{\link{ml_estimation}} or
-    \code{\link{rank_regression}}.
+    \code{\link{rank_regression}} directly.
   }
   \item{\code{\link[=plot_mod.default]{default}}}{
     Provide \code{x}, \code{loc_sc_params} and \code{distribution} manually.
