@@ -328,7 +328,7 @@ delta_method <- function(
     "weibull", "lognormal", "loglogistic", "normal", "logistic", "sev",
     "weibull3", "lognormal3", "loglogistic3"
   ),
-  direction = c("x", "y")
+  direction = c("y", "x")
 ) {
 
   distribution <- match.arg(distribution)

@@ -13,7 +13,7 @@
 * `rank_regression()` is now an S3 generic. `rank_regression` becomes `rank_regression.default`. Added `rank_regression.cdf_estimation()`.
 * `plot_prob()` is now an S3 generic. `plot_prob()` becomes `plot_prob.default()`. Added `plot_prob.cdf_estimation()`.
 * Added lifecycle badges
-* `plot_conf()`: Added argument `b_lives` which allows the user to specify probabilities of interest.
+* `confint_betabinom()`, `confint_fisher()`: Added argument `b_lives` which allows the user to specify probabilities of interest.
 
 ## Documentation
 * Capitalized parameter documentation.
