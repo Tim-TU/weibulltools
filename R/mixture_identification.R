@@ -308,6 +308,16 @@ mixmod_regression.default <- function(
 #' Thus, a check of the absolute differences in the log-likelihood values is made
 #' and the critical difference has to be specified in argument \code{diff_loglik}.
 #'
+#' @section Methods (by class):
+#' \describe{
+#'   \item{\code{\link[=mixmod_em.reliability_data]{reliability_data}}}{
+#'     Preferred. Provide the output of \code{\link{reliability_data}} directly.
+#'   }
+#'   \item{\code{\link[=mixmod_em.default]{default}}}{
+#'     Provide \code{x} and \code{event} manually.
+#'   }
+#' }
+#'
 #' @encoding UTF-8
 #' @references
 #'   \itemize{
@@ -315,6 +325,110 @@ mixmod_regression.default <- function(
 #'       Failure Mode, Quality Progress, 35(6), 47-52, 2002
 #'     \item Blog posts by Stefan Gelissen: \url{http://blogs2.datall-analyse.nl/2016/02/18/rcode_mixture_distribution_censored};
 #'       last access on 19th January 2019}
+#'
+#' @return Returns a list where the length of the list depends on the number of
+#'    k subgroups. The first \code{k} lists have the same information as provided by
+#'    \link{ml_estimation}, but the values \code{logL}, \code{aic} and \code{bic} are
+#'    the results of a log-likelihood function, which is weighted by a-posteriori
+#'    probabilities. The last list summarizes further results of the EM-Algorithm and
+#'    is therefore called \code{em_results}. It contains the following elements:
+#'   \itemize{
+#'   \item \code{a_priori} : A vector with estimated a-priori probabilities.
+#'   \item \code{a_posteriori} : A matrix with estimated a-posteriori probabilities.
+#'   \item \code{groups} : Numeric vector specifying the group membership of every
+#'     observation.
+#'   \item \code{logL} : The value of the complete log-likelihood.
+#'   \item \code{aic} : Akaike Information Criterion.
+#'   \item \code{bic} : Bayesian Information Criterion.}
+#'
+#' @export
+#'
+mixmod_em <- function(x, ...) {
+  UseMethod("mixmod_em")
+}
+
+
+
+#' Mixture Model Estimation using EM-Algorithm
+#'
+#' @inherit mixmod_em description details return references
+#'
+#' @param x An object of class \code{reliability_data} returned from
+#'   \code{\link{reliability_data}}.
+#' @param post A numeric matrix specifiying initial a-posteriori probabilities.
+#'   If post is \code{NULL} (default) a-posteriori probabilities are assigned
+#'   randomly using the Dirichlet distribution (\code{\link{rdirichlet}} from
+#'   \emph{LearnBayes} Package), which is the conjugate prior of a Multinomial
+#'   distribution. This idea was taken from the blog post of Mr. Gelissen
+#'   (linked under \emph{references}).
+#' @param distribution Supposed mixture model. Only \code{"weibull"} can be used.
+#'   Other distributions have not been implemented yet.
+#' @param conf_level Confidence level for the confidence intervals of the parameters
+#'   of every component \code{k}. The default value is \code{conf_level = 0.95}.
+#' @param k Integer of mixture components, default is 2.
+#' @param method Default method is \code{"EM"}. Other methods have not been implemented
+#'   yet.
+#' @param n_iter Integer defining the maximum number of iterations.
+#' @param conv_limit Numeric value defining the convergence limit.
+#' @param diff_loglik Numeric value defining the maximum difference between
+#'   log-likelihood values, which seems permissible. The default value is \code{0.5}.
+#'   See \strong{Details} for the usage of this argument.
+#'
+#' @examples
+#' # Data is taken from given reference of Doganaksoy, Hahn and Meeker:
+#' hours <- c(2, 28, 67, 119, 179, 236, 282, 317, 348, 387, 3, 31, 69, 135,
+#'           191, 241, 284, 318, 348, 392, 5, 31, 76, 144, 203, 257, 286,
+#'           320, 350, 412, 8, 52, 78, 157, 211, 261, 298, 327, 360, 446,
+#'           13, 53, 104, 160, 221, 264, 303, 328, 369, 21, 64, 113, 168,
+#'           226, 278, 314, 328, 377)
+#' state <- c(1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1,
+#'          1, 0, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 0, 0,
+#'          1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+#'          0, 1, 1, 1, 1, 1, 1)
+#'
+#' mix_mod_em <- mixmod_em(x = hours,
+#'                         event = state,
+#'                         distribution = "weibull",
+#'                         conf_level = 0.95,
+#'                         k = 2,
+#'                         method = "EM",
+#'                         n_iter = 150)
+#'
+#' @export
+#'
+mixmod_em.reliability_data <- function(x,
+                                       post = NULL,
+                                       distribution = "weibull",
+                                       conf_level = .95,
+                                       k = 2,
+                                       method = "EM",
+                                       n_iter = 100L,
+                                       conv_limit = 1e-6,
+                                       diff_loglik = 0.5
+) {
+
+  distribution <- match.arg(distribution)
+  method <- match.arg(method)
+
+  mixmod_em.default(
+    x = x$x,
+    event = x$status,
+    post = post,
+    distribution = distribution,
+    conf_level = conf_level,
+    k = k,
+    method = method,
+    n_iter = n_iter,
+    conv_limit = conv_limit,
+    diff_loglik = diff_loglik
+  )
+}
+
+
+
+#' Mixture Model Estimation using EM-Algorithm
+#'
+#' @inherit mixmod_em description details return references
 #'
 #' @param x A numeric vector which consists of lifetime data. Lifetime
 #'  data could be every characteristic influencing the reliability of a product,
@@ -341,21 +455,6 @@ mixmod_regression.default <- function(
 #'   log-likelihood values, which seems permissible. The default value is \code{0.5}.
 #'   See \strong{Details} for the usage of this argument.
 #'
-#' @return Returns a list where the length of the list depends on the number of
-#'    k subgroups. The first \code{k} lists have the same information as provided by
-#'    \link{ml_estimation}, but the values \code{logL}, \code{aic} and \code{bic} are
-#'    the results of a log-likelihood function, which is weighted by a-posteriori
-#'    probabilities. The last list summarizes further results of the EM-Algorithm and
-#'    is therefore called \code{em_results}. It contains the following elements:
-#'   \itemize{
-#'   \item \code{a_priori} : A vector with estimated a-priori probabilities.
-#'   \item \code{a_posteriori} : A matrix with estimated a-posteriori probabilities.
-#'   \item \code{groups} : Numeric vector specifying the group membership of every
-#'     observation.
-#'   \item \code{logL} : The value of the complete log-likelihood.
-#'   \item \code{aic} : Akaike Information Criterion.
-#'   \item \code{bic} : Bayesian Information Criterion.}
-#' @export
 #' @examples
 #' # Data is taken from given reference of Doganaksoy, Hahn and Meeker:
 #' hours <- c(2, 28, 67, 119, 179, 236, 282, 317, 348, 387, 3, 31, 69, 135,
@@ -376,17 +475,22 @@ mixmod_regression.default <- function(
 #'                         method = "EM",
 #'                         n_iter = 150)
 #'
+#' @export
 #'
-mixmod_em <- function(x, event, post = NULL, distribution = "weibull",
-                      conf_level = .95, k = 2, method = "EM", n_iter = 100L,
-                      conv_limit = 1e-6, diff_loglik = 0.5) {
+mixmod_em.default <- function(x,
+                              event,
+                              post = NULL,
+                              distribution = "weibull",
+                              conf_level = .95,
+                              k = 2,
+                              method = "EM",
+                              n_iter = 100L,
+                              conv_limit = 1e-6,
+                              diff_loglik = 0.5
+) {
 
   distribution <- match.arg(distribution)
   method <- match.arg(method)
-
-  if (!(distribution %in% "weibull")) {
-    stop("No valid distribution!")
-  }
 
   # Providing initial random a-posteriors (see references, blog post Mr. Gelissen):
   if (is.null(post)) {
