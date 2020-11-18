@@ -18,7 +18,10 @@ plot_mod_mix(
 \arguments{
 \item{p_obj}{A plotly object provided by function \code{\link{plot_prob_mix}}.}
 
-\item{x}{A numeric vector containing the x-coordinates of the regression line.}
+\item{x}{A numeric vector which consists of lifetime data. Lifetime
+data could be every characteristic influencing the reliability of a product,
+e.g. operating time (days/months in service), mileage (km, miles), load
+cycles.}
 
 \item{event}{A vector of binary data (0 or 1) indicating whether unit \emph{i}
 is a right censored observation (= 0) or a failure (= 1).}

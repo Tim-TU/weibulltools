@@ -530,29 +530,40 @@ plot_prob_mix <- function(
 #' This function adds a regression line to an existing probability plot using a
 #' model estimated by \code{\link{rank_regression}} or \code{\link{ml_estimation}}.
 #'
+#' @section Methods (by class):
+#' \describe{
+#'   \item{\code{\link[=plot_mod.model_estimation]{model_estimation}}}{
+#'     Preferred. Provide the output of either \code{\link{ml_estimation}} or
+#'     \code{\link{rank_regression}}.
+#'   }
+#'   \item{\code{\link[=plot_mod.default]{default}}}{
+#'     Provide \code{x}, \code{loc_sc_params} and \code{distribution} manually.
+#'   }
+#' }
+#'
 #' @encoding UTF-8
 #' @references Meeker, William Q; Escobar, Luis A., Statistical methods for
 #'   reliability data, New York: Wiley series in probability and statistics, 1998
 #'
-#' @param p_obj A plotly object provided by function \code{\link{plot_prob}}.
-#' @param x A numeric vector containing the x-coordinates of the regression line.
-#' @param y A numeric vector containing the y-coordinates of the regression line.
-#'   The default value of y is \code{NULL}. If \code{y} is set \code{NULL} the
-#'   y-coordinates with respect to \code{x} are calculated by function
-#'   \code{predict_prob} using estimated coefficients in \code{loc_sc_params}. If
-#'   confidence interval(s) should be added to the plot y should not be set to
-#'   \code{NULL}. For more information see \strong{Details} in \code{\link{plot_conf}}.
-#' @param loc_sc_params A (named) numeric vector of estimated location
-#'   and scale parameters for a specified distribution. The order of
-#'   elements is important. First entry needs to be the location
-#'   parameter \eqn{\mu} and the second element needs to be the scale
-#'   parameter \eqn{\sigma}. If a three-parametric model is used the third element
-#'   is the threshold parameter \eqn{\gamma}.
-#' @inheritParams plot_prob
-#'
 #' @return Returns a plotly object containing the probability plot with
 #'   plotting positions and the estimated regression line.
+#'
 #' @export
+#'
+plot_mod <- function(
+  p_obj, x, ...
+) {
+  UseMethod("plot_mod", x)
+}
+
+#' Adding an Estimated Population Line to a Probability Plot
+#'
+#' @inherit plot_mod description return references
+#'
+#' @param p_obj A plot object returned from \code{\link{plot_prob}}.
+#' @param x An object of class \code{model_estimation} returned by either
+#'   \code{\link{ml_estimation}} or \code{\link{rank_regression}}.
+#' @inheritParams plot_prob
 #'
 #' @examples
 #' # Alloy T7987 dataset taken from Meeker and Escobar(1998, p. 131)
@@ -614,41 +625,106 @@ plot_prob_mix <- function(
 #'   title_trace = "Estimated Lognormal CDF"
 #' )
 #'
-plot_mod <- function(
-  p_obj, x, ...
-) {
-  UseMethod("plot_mod", x)
-}
-
 #' @export
 #'
-#' @describeIn plot_mod Providing \code{\link{model_estimation}} as output from
-#' \code{\link{ml_estimation}} or \code{\link{rank_regression}}.
 plot_mod.model_estimation <- function(
   p_obj, model_estimation, title_trace = "Fit"
 ) {
 
   plot_mod.default(
     p_obj = p_obj,
-    x = model_estimation$data$characteristic,
-    y = NULL,
+    x = range(model_estimation$data$characteristic),
     loc_sc_params = model_estimation$loc_sc_params,
     distribution = model_estimation$distribution,
     title_trace = title_trace
   )
 }
 
+#' Adding an Estimated Population Line to a Probability Plot
+#'
+#' @inherit plot_mod description return references
+#'
+#' @param x A numeric vector containing the x-coordinates of the regression line.
+#' @param loc_sc_params A (named) numeric vector of estimated location
+#'   and scale parameters for a specified distribution. The order of
+#'   elements is important. First entry needs to be the location
+#'   parameter \eqn{\mu} and the second element needs to be the scale
+#'   parameter \eqn{\sigma}. If a three-parametric model is used the third element
+#'   is the threshold parameter \eqn{\gamma}.
+#' @inheritParams plot_mod.model_estimation
+#' @inheritParams plot_prob
+#'
+#' @examples
+#' # Alloy T7987 dataset taken from Meeker and Escobar(1998, p. 131)
+#' cycles   <- c(300, 300, 300, 300, 300, 291, 274, 271, 269, 257, 256, 227, 226,
+#'               224, 213, 211, 205, 203, 197, 196, 190, 189, 188, 187, 184, 180,
+#'               180, 177, 176, 173, 172, 171, 170, 170, 169, 168, 168, 162, 159,
+#'               159, 159, 159, 152, 152, 149, 149, 144, 143, 141, 141, 140, 139,
+#'               139, 136, 135, 133, 131, 129, 123, 121, 121, 118, 117, 117, 114,
+#'               112, 108, 104, 99, 99, 96, 94)
+#' status <- c(rep(0, 5), rep(1, 67))
+#'
+#' data <- reliability_data(x = cycles, status = status)
+#'
+#' tbl_john <- estimate_cdf(data, methods = c("johnson", "nelson"))
+#'
+#' # Example 1: Probability Plot and Regression Line Three-Parameter-Weibull:
+#' plot_weibull <- plot_prob(
+#'   tbl_john,
+#'   distribution = "weibull",
+#'   title_main = "Three-Parametric Weibull",
+#'   title_x = "Cycles",
+#'   title_y = "Probability of Failure in %",
+#'   title_trace = "Failed Items"
+#' )
+#'
+#' mrr <- rank_regression(
+#'   tbl_john,
+#'   distribution = "weibull3",
+#'   conf_level = .90
+#' )
+#'
+#' plot_reg_weibull <- plot_mod(
+#'   p_obj = plot_weibull,
+#'   model_estimation = mrr,
+#'   title_trace = "Estimated Weibull CDF"
+#' )
+#'
+#'
+#'
+#' # Example 2: Probability Plot and Regression Line Three-Parameter-Lognormal:
+#' plot_lognormal <- plot_prob(
+#'   tbl_john,
+#'   distribution = "lognormal",
+#'   title_main = "Three-Parametric Lognormal",
+#'   title_x = "Cycles",
+#'   title_y = "Probability of Failure in %",
+#'   title_trace = "Failed Items"
+#' )
+#'
+#' mrr_ln <- rank_regression(
+#'   tbl_john,
+#'   distribution = "lognormal3",
+#'   conf_level = .90
+#' )
+#'
+#' plot_reg_lognormal <- plot_mod(
+#'   p_obj = plot_lognormal,
+#'   model_estimation = mrr_ln,
+#'   title_trace = "Estimated Lognormal CDF"
+#' )
+#'
 #' @export
 #'
-#' @describeIn plot_mod Providing x, y, loc_sc_params and distribution manually.
-plot_mod.default <- function(
-  p_obj, x,
-  y = NULL, loc_sc_params,
-  distribution = c(
-    "weibull", "lognormal", "loglogistic", "normal", "logistic", "sev", "weibull3",
-    "lognormal3", "loglogistic3"
-  ),
-  title_trace = "Fit"
+plot_mod.default <- function(p_obj,
+                             x,
+                             loc_sc_params,
+                             distribution = c(
+                              "weibull", "lognormal", "loglogistic", "normal",
+                              "logistic", "sev", "weibull3", "lognormal3",
+                              "loglogistic3"
+                             ),
+                             title_trace = "Fit"
 ) {
 
   distribution <- match.arg(distribution)
@@ -666,7 +742,7 @@ plot_mod.default <- function(
   }
 
   mod_helper <- plot_mod_helper(
-    x, y, loc_sc_params, distribution
+    x, loc_sc_params, distribution
   )
 
   plot_mod_fun <- if (plot_method == "plotly") plot_mod_plotly else

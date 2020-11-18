@@ -162,24 +162,25 @@ plot_prob_mix_helper <- function(
 }
 
 plot_mod_helper <- function(
-  x, y, loc_sc_params, distribution
+  x, loc_sc_params, distribution
 ) {
-  if (is.null(y)) {
-    x_min <- min(x, na.rm = TRUE)
-    x_max <- max(x, na.rm = TRUE)
-    x_low <- x_min - 10 ^ floor(log10(x_min)) * .25
-    x_high <- x_max + 10 ^ floor(log10(x_max)) * .25
-
-    x_p <- seq(x_low, x_high, length.out = 200)
-    y_p <- predict_prob(
-      q = x_p,
-      loc_sc_params = loc_sc_params,
-      distribution = distribution
-    )
-  } else {
-    x_p <- x
-    y_p <- y
+  if (length(x) == 2) {
+    if (distribution %in% c("weibull", "lognormal", "loglogistic")) {
+      x_p <- 10 ^ seq(log10(x[1]), log10(x[2]), length.out = 10)
+    } else {
+      x_p <- seq(x[1], x[2], length.out = 10)
+    }
   }
+
+  if (length(x) > 2) {
+    x_p <- x
+  }
+
+  y_p <- predict_prob(
+    q = x_p,
+    loc_sc_params = loc_sc_params,
+    distribution = distribution
+  )
 
   tbl_pred <- tibble::tibble(x_p = x_p, y_p = y_p)
 
@@ -384,8 +385,9 @@ plot_pop_helper <- function(x, loc_sc_params_tbl, distribution, tol = 1e-6) {
 
   tbl_pop <- loc_sc_params_tbl
   # column x_y is list column that contains a tibble each
-  tbl_pop$x_y <- purrr::pmap(loc_sc_params_tbl,
-                             function(loc, sc, x_s, distribution) {
+  tbl_pop$x_y <- purrr::pmap(loc_sc_params_tbl, function(
+    loc, sc, x_s, distribution
+  ) {
     tibble::tibble(
       x_s = x_s,
       y_s = predict_prob(q = x_s, loc_sc_params = c(loc, sc),
