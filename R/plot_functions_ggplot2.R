@@ -134,7 +134,7 @@ plot_conf_ggplot2 <- function(p_obj, tbl_p, title_trace) {
 }
 
 plot_pop_ggplot2 <- function(
-  p_obj, tbl_pop, color, title_trace
+  p_obj, tbl_pop, title_trace
 ) {
   p_pop <- p_obj +
     ggplot2::geom_line(

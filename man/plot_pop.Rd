@@ -2,12 +2,12 @@
 % Please edit documentation in R/plot_functions.R
 \name{plot_pop}
 \alias{plot_pop}
-\title{Add Population Lines to an Existing Grid}
+\title{Add Population Line(s) to an Existing Grid}
 \usage{
 plot_pop(
   p_obj = NULL,
   x,
-  param_tbl,
+  loc_sc_params_tbl,
   distribution = c("weibull", "lognormal", "loglogistic"),
   tol = 1e-06,
   title_trace = "Population",
@@ -15,7 +15,7 @@ plot_pop(
 )
 }
 \arguments{
-\item{p_obj}{A plotly object to which the population lines are added or
+\item{p_obj}{A plot object to which the population lines are added or
 \code{NULL}. If \code{NULL} the population lines are added to an empty grid.}
 
 \item{x}{A numeric vector of length two or greater used for the x coordinates
@@ -24,7 +24,7 @@ between \code{x[1]} and \code{x[2]} is created. This sequence is equidistant
 with respect to the scale of the x axis. If \code{length(x) > 2} the elements
 of \code{x} are the x coordinates of the population line.}
 
-\item{param_tbl}{A tibble. See 'Details'.}
+\item{loc_sc_params_tbl}{A tibble. See 'Details'.}
 
 \item{distribution}{Supposed distribution of the random variable.}
 
@@ -35,25 +35,24 @@ places shown in the hover for \code{plot_method = "plotly"}.}
 \item{title_trace}{A character string whis is assigned to the trace shown in
 the legend.}
 
-\item{plot_method}{Package, which is used for generating the plot output. Only
+\item{plot_method}{Plot package, which produces the visual output. Only
 used with \code{p_obj = NULL}, otherwise \code{p_obj} is used to determine
 the plot method.}
 }
 \value{
-A plotly object which contains the supposed linearized population
-  CDF. Failure probabilities must be strictly below 1 and for this very reason
+A plot object which contains the linearized CDF(s).
 }
 \description{
-This function adds one or multiple linearized CDF to an existing plotly grid.
+This function adds one or multiple linearized CDFs to an existing plot grid.
 }
 \details{
-\code{param_tbl} must be a tibble with the following columns:
-\itemize{
-  \item \code{param_1}: Location parameter \eqn{\mu} for \code{lognormal} and
-    \code{loglogistic}. Scale parameter \eqn{\eta} for \code{weibull}.
-  \item \code{param_2}: Scale parameter \eqn{\sigma} for \code{lognormal} and
-    \code{loglogistic}. Shape parameter \eqn{\beta} for \code{weibull}.
-}
+\code{loc_sc_params_tbl} is a tibble with the following columns:
+  \itemize{
+    \item \code{loc}: Location parameter \eqn{\mu}.
+    \item \code{sc}: Scale parameter \eqn{\sigma}.
+  }
+  If only one line should be displayed, a numeric vector of length two is
+  also supported \code{c(loc, sc)}.
 }
 \examples{
 x <- rweibull(n = 100, shape = 1, scale = 20000)
@@ -65,13 +64,26 @@ grid_weibull <- plot_layout(
   title_x = "Time to Failure",
   title_y = "Failure Probability"
 )
-
+# Example 1: One line
 pop_weibull <- plot_pop(
   p_obj = grid_weibull,
   x = range(x),
-  param_tbl = c(20000, 1),
+  loc_sc_params_tbl = c(log(20000), 1),
   distribution = "weibull",
   title_trace = "Population"
+)
+
+# Example 2: Multiple lines
+pop_weibull2 <- plot_pop(
+  p_obj = NULL,
+  x = x,
+  loc_sc_params_tbl = tibble(
+    loc = c(log(20000), log(20000), log(20000)),
+    sc = c(1, 1.5, 2)
+    ),
+  distribution = "weibull",
+  title_trace = "Population",
+  plot_method = "ggplot2"
 )
 
 }

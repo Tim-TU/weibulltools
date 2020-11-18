@@ -183,49 +183,26 @@ plot_mod_helper <- function(
 
   tbl_pred <- tibble::tibble(x_p = x_p, y_p = y_p)
 
+  # Smallest Extreme Value Distribution:
   if (distribution %in% c("weibull", "weibull3", "sev")) {
     q <- SPREDA::qsev(y_p)
-
-    param_val <- c(round(loc_sc_params[[1]], digits = 2),
-                   round(loc_sc_params[[2]], digits = 2))
-    param_label <- c("\u03BC:", "\u03C3:")
-
-    if (distribution == "weibull") {
-      param_val <- c(round(exp(loc_sc_params[[1]]), digits = 2),
-                     round(1 / loc_sc_params[[2]], digits = 2))
-      param_label <- c("\u03B7:", "\u03B2:")
-    }
-    if (distribution == "weibull3") {
-      param_val <- c(round(exp(loc_sc_params[[1]]), digits = 2),
-                     round(1 / loc_sc_params[[2]], digits = 2), round(loc_sc_params[[3]], digits = 2))
-      param_label <- c("\u03B7:", "\u03B2:", "\u03B3:")
-    }
-
   }
 
+  # Standard Normal Distribution:
   if (distribution %in% c("lognormal", "lognormal3", "normal")) {
     q <- stats::qnorm(y_p)
-    param_val <- c(round(loc_sc_params[[1]], digits = 2),
-                   round(loc_sc_params[[2]], digits = 2))
-    param_label <- c("\u03BC:", "\u03C3:")
-
-    if (distribution == "lognormal3") {
-      param_val <- c(param_val, round(loc_sc_params[[3]], digits = 2))
-      param_label <- c(param_label, "\u03B3:")
-    }
   }
 
+  # Standard Logistic Distribution:
   if (distribution %in% c("loglogistic", "loglogistic3", "logistic")) {
     q <- stats::qlogis(y_p)
-    param_val <- c(round(loc_sc_params[[1]], digits = 2),
-                   round(loc_sc_params[[2]], digits = 2))
-    param_label <- c("\u03BC:", "\u03C3:")
-
-    if (distribution == "loglogistic3") {
-      param_val <- c(param_val, round(loc_sc_params[[3]], digits = 2))
-      param_label <- c(param_label, "\u03B3:")
-    }
   }
+
+  # preparation of plotly hovers:
+  ## raises problems if one-parameter distributions like exponential will be implemented!
+  param_val <- round(loc_sc_params, digits = 2)
+  param_label <- if (length(param_val) == 2) c("\u03BC:", "\u03C3:") else
+    c("\u03BC:", "\u03C3:", "\u03B3:")
 
   tbl_pred$q <- q
 
@@ -264,17 +241,10 @@ plot_mod_mix_helper <- function(
       )
 
       # Prepare hovertexts for regression lines:
-      if (distribution == "weibull") {
-        param_1 <- round(mod$coefficients[[1]], digits = 2)
-        param_2 <- round(mod$coefficients[[2]], digits = 2)
-        label_1 <- "\u03B7:"
-        label_2 <- "\u03B2:"
-      } else {
-        param_1 <- round(mod$loc_sc_params[[1]], digits = 2)
-        param_2 <- round(mod$loc_sc_params[[2]], digits = 2)
-        label_1 <- "\u03BC:"
-        label_2 <- "\u03C3:"
-      }
+      param_1 <- round(mod$loc_sc_params[[1]], digits = 2)
+      param_2 <- round(mod$loc_sc_params[[2]], digits = 2)
+      label_1 <- "\u03BC:"
+      label_2 <- "\u03C3:"
 
       tbl_p <- tibble::tibble(
         x_p = x_p, y_p = y_p, par_1 = param_1, par_2 = param_2, lab_1 = label_1,
@@ -306,17 +276,10 @@ plot_mod_mix_helper <- function(
         x_p <- seq(x_low, x_high, length.out = 200)
 
         # Prepare hovertexts for regression lines:
-        if (distribution == "weibull") {
-          param_1 <- round(mod$coefficients[[1]], digits = 2)
-          param_2 <- round(mod$coefficients[[2]], digits = 2)
-          label_1 <- "\u03B7:"
-          label_2 <- "\u03B2:"
-        } else {
-          param_1 <- round(mod$loc_sc_params[[1]], digits = 2)
-          param_2 <- round(mod$loc_sc_params[[2]], digits = 2)
-          label_1 <- "\u03BC:"
-          label_2 <- "\u03C3:"
-        }
+        param_1 <- round(mod$loc_sc_params[[1]], digits = 2)
+        param_2 <- round(mod$loc_sc_params[[2]], digits = 2)
+        label_1 <- "\u03BC:"
+        label_2 <- "\u03C3:"
 
         y_p <- predict_prob(
           q = x_p,
@@ -412,28 +375,21 @@ plot_conf_helper <- function(tbl_mod, x, y, direction, distribution) {
   return(tbl_p)
 }
 
-plot_pop_helper <- function(x, param_tbl, distribution, tol = 1e-6) {
+plot_pop_helper <- function(x, loc_sc_params_tbl, distribution, tol = 1e-6) {
   x_s <- if (length(x) == 2) {
     10 ^ seq(log10(x[1]), log10(x[2]), length.out = 200)
   } else {
     x
   }
 
-  if (distribution == "weibull") {
-    param_tbl <- param_tbl %>%
-      dplyr::transmute(loc = log(param_1), sc = 1 / param_2)
-  }
-  if (distribution %in% c("lognormal", "loglogistic")) {
-    param_tbl <- param_tbl %>%
-      dplyr::transmute(loc = param_1, sc = param_2)
-  }
-
-  tbl_pop <- param_tbl
+  tbl_pop <- loc_sc_params_tbl
   # column x_y is list column that contains a tibble each
-  tbl_pop$x_y <- purrr::pmap(param_tbl, function(loc, sc, x_s, distribution) {
+  tbl_pop$x_y <- purrr::pmap(loc_sc_params_tbl,
+                             function(loc, sc, x_s, distribution) {
     tibble::tibble(
       x_s = x_s,
-      y_s = predict_prob(q = x_s, loc_sc_params = c(loc, sc), distribution = distribution)
+      y_s = predict_prob(q = x_s, loc_sc_params = c(loc, sc),
+                         distribution = distribution)
     )
   }, x_s, distribution)
 
@@ -454,21 +410,12 @@ plot_pop_helper <- function(x, param_tbl, distribution, tol = 1e-6) {
       dplyr::mutate(q = stats::qlogis(y_s))
   }
 
-  if (distribution == "weibull") {
-    param_val_1 <- round(exp(tbl_pop$loc), digits = 2)
-    param_val_2 <- round(1 / tbl_pop$sc, digits = 2)
+  # set values and labels for plotlys hoverinfo:
+  param_val_1 <- round(tbl_pop$loc, digits = 2)
+  param_val_2 <- round(tbl_pop$sc, digits = 2)
 
-    param_label_1 <- "\u03B7:"
-    param_label_2 <- "\u03B2:"
-
-  }
-  if (distribution %in% c("lognormal", "loglogistic")) {
-    param_val_1 <- round(tbl_pop$loc, digits = 2)
-    param_val_2 <- round(tbl_pop$sc, digits = 2)
-
-    param_label_1 <- "\u03BC:"
-    param_label_2 <- "\u03C3:"
-  }
+  param_label_1 <- "\u03BC:"
+  param_label_2 <- "\u03C3:"
 
   tbl_pop <- tbl_pop %>%
     dplyr::mutate(

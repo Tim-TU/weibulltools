@@ -3,12 +3,13 @@
 * `plot_conf()`: Switched arguments distribution and direction.
 * `rank_regression()`, `ml_estimation()`: Removed details argument.
 * `rank_regression()`, `ml_estimation()`: Renamed output: `loc_sc_coefficients` -> `loc_sc_params`, `loc_sc_vcov` -> `loc_sc_varcov`
-* `plot_pop()`: Added argument `tol` to restrict the range of failure probabilities. Removed argument `color`. Renamed argument `params` to `param_tbl`. Changed behaviour of `param_tbl`: A tibble is now recommended instead of a vector.
+* `plot_pop()`: Added argument `tol` to restrict the range of failure probabilities. Removed argument `color`. Renamed argument `params` to `loc_sc_params_tbl`, which only supports location and scale parameters (also for `distribution = "weibull"`). Changed behaviour of `loc_sc_params_tbl`: A tibble is now recommended instead of a vector.
 
 ## New Features
 * Added support for ggplot2 in all plot functions. Plot method can be selected in `plot_prob()` via argument `plot_method`.
-* Added function `reliability_data()`: Create consistent failure data.
+* Added function `reliability_data()`: Create consistent reliability data.
 * `plot_pop()`: Added support for multiple population lines.
+* New argument in `mr_method()`: With `ties.method` it can be specified how ties should be treated. 
 * Added function `estimate_cdf`: Unite functionality of `mr_method()`, `johnson_method()`, `kaplan_method()` and `nelson_method()`. Support multiple methods.
 * `rank_regression()` is now an S3 generic. `rank_regression` becomes `rank_regression.default`. Added `rank_regression.cdf_estimation()`.
 * `plot_prob()` is now an S3 generic. `plot_prob()` becomes `plot_prob.default()`. Added `plot_prob.cdf_estimation()`.

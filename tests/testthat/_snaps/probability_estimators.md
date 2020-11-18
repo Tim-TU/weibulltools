@@ -97,13 +97,11 @@
 
 # snapshots: input with repeating characteristics
 
-    # A tibble: 4 x 6
+    # A tibble: 2 x 6
       id    characteristic status  rank  prob method
-      <chr>          <dbl>  <dbl> <dbl> <dbl> <chr> 
-    1 X                  1      0    NA  NA   mr    
-    2 X                  1      1     1   0.5 mr    
-    3 X                  1      0    NA  NA   mr    
-    4 X                  1      1     1   0.5 mr    
+      <chr>          <dbl>  <dbl> <int> <dbl> <chr> 
+    1 X                  1      1     2 0.708 mr    
+    2 X                  1      1     2 0.708 mr    
 
 ---
 
