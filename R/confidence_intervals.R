@@ -5,47 +5,62 @@
 #' calculating median ranks. The location-scale (and threshold) parameters estimated
 #' by rank regression are needed.
 #'
+#' @section Methods (by class):
+#' \describe{
+#'   \item{\code{\link[=confint_betabinom.parameter_estimation]{parameter_estimation}}}{
+#'     Preferred. Provide the output of \code{\link{rank_regression}}.
+#'    }
+#'   \item{\code{\link[=confint_betabinom.default]{default}}}{
+#'     Provide \code{x}, \code{event}, \code{loc_sc_params} and \code{distribution}
+#'     manually.
+#'   }
+#' }
+#'
+#' @return A tibble containing the lifetime characteristic, interpolated
+#' ranks as a function of probabilities, the probabilities which are used to
+#' compute the ranks and computed values for the specified confidence bound(s).
+#'
+#'
+confint_betabinom <- function(x, ...) {
+  UseMethod("confint_betabinom")
+}
+
+#' Beta Binomial Confidence Bounds for Quantiles and/or Probabilities
+#'
+#' @inherit confint_betabinom description return
+#'
 #' @encoding UTF-8
 #' @references Meeker, William Q; Escobar, Luis A., Statistical methods for
 #'   reliability data, New York: Wiley series in probability and statistics, 1998
 #'
-#' @param x A numeric vector which consists of lifetime data. \code{x} is used to
-#'   specify the range of confidence region(s).
-#' @param event A vector of binary data (0 or 1) indicating whether unit \emph{i}
-#'   is a right censored observation (= 0) or a failure (= 1).
-#' @inheritParams predict_quantile
-#' @param bounds a character string specifying the interval(s) which has/have to
+#' @param x Object of class \code{parameter_estimation} returned from
+#'   \code{\link{rank_regression}}.
+#' @param bounds A character string specifying the interval(s) which has/have to
 #'   be computed. Must be one of "two_sided" (default), "lower" or "upper".
-#' @param conf_level confidence level of the interval. The default value is
+#' @param conf_level Confidence level of the interval. The default value is
 #'   \code{conf_level = 0.95}.
-#' @param direction a character string specifying the direction of the computed
+#' @param direction A character string specifying the direction of the computed
 #'   interval(s). Must be either "y" (failure probabilities) or "x" (quantiles).
 #'
-#' @return A data frame containing the lifetime characteristic, interpolated
-#'   ranks as a function of probabilities, the probabilities which are used to
-#'   compute the ranks and computed values for the specified confidence bound(s).
 #' @export
 #'
 #' @examples
 #' # Example 1: Beta-Binomial Confidence Bounds for two-parameter Weibull:
 #' obs   <- seq(10000, 100000, 10000)
-#' state <- c(0, 1, 1, 0, 0, 0, 1, 0, 1, 0)
+#' status <- c(0, 1, 1, 0, 0, 0, 1, 0, 1, 0)
 #'
-#' df_john <- johnson_method(x = obs, event = state)
+#' tbl <- reliability_data(x = obs, status = status)
+#'
+#' tbl_john <- estimate_cdf(tbl, methods = "johnson")
 #'
 #' mrr <- rank_regression(
-#'   x = df_john$characteristic,
-#'   y = df_john$prob,
-#'   event = df_john$status,
+#'   tbl_john,
 #'   distribution = "weibull",
 #'   conf_level = .95
 #' )
 #'
 #' conf_betabin <- confint_betabinom(
-#'   x = df_john$characteristic,
-#'   event = df_john$status,
-#'   loc_sc_params = mrr$loc_sc_params,
-#'   distribution = "weibull",
+#'   mrr,
 #'   bounds = "two_sided",
 #'   conf_level = 0.95,
 #'   direction = "y"
@@ -61,45 +76,37 @@
 #'               112, 108, 104, 99, 99, 96, 94)
 #' state <- c(rep(0, 5), rep(1, 67))
 #'
-#' df_john2 <- johnson_method(x = cycles, event = state)
+#' tbl_2 <- reliability_data(x = cycles, status = status)
+#'
+#' tbl_john_2 <- estimate_cdf(tbl_2, methods = "johnson")
 #'
 #' mrr_weib3 <- rank_regression(
-#'   x = df_john2$characteristic,
-#'   y = df_john2$prob,
-#'   event = df_john2$status,
+#'   tbl_john_2,
 #'   distribution = "weibull3",
 #'   conf_level = .95
 #' )
 #'
 #' conf_betabin_weib3 <- confint_betabinom(
-#'   x = df_john2$characteristic,
-#'   event = df_john2$status,
-#'   loc_sc_params = mrr_weib3$loc_sc_params,
-#'   distribution = "weibull3",
+#'   mrr_weib3,
 #'   bounds = "two_sided",
 #'   conf_level = 0.95,
 #'   direction = "y"
 #' )
-confint_betabinom <- function(x, ...) {
-  UseMethod("confint_betabinom")
-}
-
+#'
 #' @export
-#' @describeIn confint_betabinom Based on parameter_estimation returned by
-#' \code{\link{rank_regression}}.
 confint_betabinom.parameter_estimation <- function(
-  parameter_estimation,
-  bounds = c("two_sided", "lower", "upper"),
-  conf_level = 0.95,
-  direction = c("y", "x")
+                                      x,
+                                      bounds = c("two_sided", "lower", "upper"),
+                                      conf_level = 0.95,
+                                      direction = c("y", "x")
 ) {
-  rel_df <- parameter_estimation$data
-  distribution <- parameter_estimation$distribution
+  data <- x$data
+  distribution <- x$distribution
 
   confint_betabinom.default(
-    x = rel_df$x,
-    event = rel_df$event,
-    loc_sc_params = parameter_estimation$loc_sc_params,
+    x = data$x,
+    event = data$event,
+    loc_sc_params = x$loc_sc_params,
     distribution = distribution,
     bounds = bounds,
     conf_level = conf_level,
@@ -107,8 +114,73 @@ confint_betabinom.parameter_estimation <- function(
   )
 }
 
+#' Beta Binomial Confidence Bounds for Quantiles and/or Probabilities
+#'
+#' @inherit confint_betabinom description return
+#'
+#' @encoding UTF-8
+#' @references Meeker, William Q; Escobar, Luis A., Statistical methods for
+#'   reliability data, New York: Wiley series in probability and statistics, 1998
+#'
+#' @param x A numeric vector which consists of lifetime data. \code{x} is used to
+#'   specify the range of confidence region(s).
+#' @param event A vector of binary data (0 or 1) indicating whether unit \emph{i}
+#'   is a right censored observation (= 0) or a failure (= 1).
+#' @inheritParams predict_quantile
+#' @inheritParams confint_betabinom.parameter_estimation
+#'
+#' @examples
+#' # Example 1: Beta-Binomial Confidence Bounds for two-parameter Weibull:
+#' obs   <- seq(10000, 100000, 10000)
+#' status <- c(0, 1, 1, 0, 0, 0, 1, 0, 1, 0)
+#'
+#' tbl <- reliability_data(x = obs, status = status)
+#'
+#' tbl_john <- estimate_cdf(tbl, methods = "johnson")
+#'
+#' mrr <- rank_regression(
+#'   x = tbl_john$characteristic,
+#'   y = tbl_john$prob,
+#'   event = tbl_john$status,
+#'   distribution = "weibull",
+#'   conf_level = .95
+#' )
+#'
+#' conf_betabin <- confint_betabinom(
+#'   x = tbl_john$characteristic,
+#'   event = tbl_john$status,
+#'   loc_sc_params = mrr$loc_sc_params,
+#'   distribution = "weibull"
+#'   bounds = "two_sided",
+#'   conf_level = 0.95,
+#'   direction = "y"
+#' )
+#'
+#' # Example 2: Beta-Binomial Confidence Bounds for three-parameter Weibull:
+#' # Alloy T7987 dataset taken from Meeker and Escobar(1998, p. 131)
+#' tbl_2 <- reliability_data(shock, x = cycles, status = status)
+#'
+#' tbl_john_2 <- estimate_cdf(tbl_2, methods = "johnson")
+#'
+#' mrr_weib3 <- rank_regression(
+#'   x = tbl_john_2$characteristic,
+#'   y = tbl_john_2$prob,
+#'   event = tbl_john_2$status,
+#'   distribution = "weibull3",
+#'   conf_level = .95
+#' )
+#'
+#' conf_betabin_weib3 <- confint_betabinom(
+#'   x = tbl_john_2$characteristic,
+#'   event = tbl_john_2$status,
+#'   loc_sc_params = mrr_weib3$loc_sc_params,
+#'   distribution = "weibull3",
+#'   bounds = "two_sided",
+#'   conf_level = 0.95,
+#'   direction = "y"
+#' )
+#'
 #' @export
-#' @describeIn confint_betabinom Provide all arguments manually.
 confint_betabinom.default <- function(x,
                                       event,
                                       loc_sc_params,
@@ -175,15 +247,24 @@ confint_betabinom.default <- function(x,
 
   # Bounds for probability (y) or quantiles (x):
   if (direction == "y") {
-    list_output <- c(list(characteristic = x_seq, rank = virt_rank, prob = y_seq),
-                     list_confint)
+    list_output <- c(
+      list(characteristic = x_seq, rank = virt_rank, prob = y_seq),
+      list_confint
+    )
+
     tbl_out <- tibble::as_tibble(list_output)
   } else {
-    x_confint <- lapply(list_confint, predict_quantile,
-                        loc_sc_params = loc_sc_params,
-                        distribution = distribution)
-    list_output <- c(list(characteristic = x_seq, rank = virt_rank, prob = y_seq),
-                     x_confint)
+    x_confint <- purrr::map(
+      list_confint,
+      predict_quantile,
+      loc_sc_params = loc_sc_params,
+      distribution = distribution
+    )
+
+    list_output <- c(
+      list(characteristic = x_seq, rank = virt_rank, prob = y_seq),
+      x_confint
+    )
 
     tbl_out <- tibble::as_tibble(list_output)
   }
@@ -383,16 +464,33 @@ delta_method_ <- function(p, loc_sc_params, loc_sc_varcov,
 #' required (log-)location-scale (and threshold) parameters and variance-covariance matrix
 #' of these need to be estimated by Maximum Likelihood.
 #'
-#' @param x a numeric vector which consists of lifetime data. \code{x} is used to
-#'   specify the range of confidence region(s).
-#' @inheritParams delta_method
-#' @inheritParams plot_prob
-#' @inheritParams confint_betabinom
+#' @section Methods (by class):
+#' \describe{
+#'   \item{\code{\link[=confint_fisher.parameter_estimation]{parameter_estimation}}}{
+#'     Preferred. Provide the output of \code{\link{ml_estimation}}.
+#'   }
+#'   \item{\code{\link[=confint_fisher.default]{default}}}{
+#'     Provide \code{x}, \code{event}, \code{loc_sc_params}, \code{loc_sc_varcov}
+#'     and \code{distribution} manually.
+#'   }
+#' }
 #'
-#' @return A data frame containing the lifetime characteristic, the
+#' @return A tibble containing the lifetime characteristic, the
 #'   probabilities, estimated standard errors by the delta method and computed
 #'   values for the specified confidence bound(s).
+#'
 #' @export
+confint_fisher <- function(x, ...) {
+  UseMethod("confint_fisher")
+}
+
+#' Fisher Confidence Bounds for Quantiles and/or Probabilities
+#'
+#' @inherit confint_fisher description return
+#'
+#' @param x Object of class \code{parameter_estimation} returned from
+#'   \code{\link{ml_estimation}}.
+#' @inheritParams confint_betabinom.parameter_estimation
 #'
 #' @examples
 #' obs   <- seq(10000, 100000, 10000)
@@ -408,36 +506,27 @@ delta_method_ <- function(p, loc_sc_params, loc_sc_varcov,
 #' )
 #'
 #' conf_fish <- confint_fisher(
-#'   x = df_john$characteristic,
-#'   event = df_john$status,
-#'   loc_sc_params = mle$loc_sc_params,
-#'   loc_sc_varcov = mle$loc_sc_varcov,
+#'   mle,
 #'   distribution = "weibull",
 #'   bounds = "two_sided",
 #'   conf_level = 0.95,
 #'   direction = "y"
 #' )
-confint_fisher <- function(x, ...) {
-  UseMethod("confint_fisher")
-}
-
 #' @export
-#' @describeIn confint_fisher Based on parameter estimation returned by
-#' \code{\link{ml_estimation}}.
 confint_fisher.parameter_estimation <- function(
-  parameter_estimation,
+  x,
   bounds = c("two_sided", "lower", "upper"),
   conf_level = 0.95,
   direction = c("y", "x")
 ) {
-  rel_df <- parameter_estimation$data
-  distribution <- parameter_estimation$distribution
+  data <- x$data
+  distribution <- x$distribution
 
   confint_fisher.default(
-    x = rel_df$x,
-    event = rel_df$event,
-    loc_sc_params = parameter_estimation$loc_sc_params,
-    loc_sc_varcov = parameter_estimation$loc_sc_varcov,
+    x = data$x,
+    event = data$status,
+    loc_sc_params = data$loc_sc_params,
+    loc_sc_varcov = data$loc_sc_varcov,
     distribution = distribution,
     bounds = bounds,
     conf_level = conf_level,
@@ -445,8 +534,39 @@ confint_fisher.parameter_estimation <- function(
   )
 }
 
+#' Fisher Confidence Bounds for Quantiles and/or Probabilities
+#'
+#' @inherit confint_fisher description return
+#'
+#' @param x a numeric vector which consists of lifetime data. \code{x} is used to
+#'   specify the range of confidence region(s).
+#' @inheritParams delta_method
+#' @inheritParams confint_betabinom.default
+#'
+#' @examples
+#' obs   <- seq(10000, 100000, 10000)
+#' status <- c(0, 1, 1, 0, 0, 0, 1, 0, 1, 0)
+#' data <- reliability_data(x = obs, status = status)
+#'
+#' tbl_john <- estimate_cdf(data, "johnson")
+#'
+#' mle <- ml_estimation(
+#'   data,
+#'   distribution = "weibull",
+#'   conf_level = 0.95
+#' )
+#'
+#' conf_fish <- confint_fisher(
+#'   x = tbl_john$characteristic,
+#'   event = tbl_john$status,
+#'   loc_sc_params = mle$loc_sc_params,
+#'   loc_sc_varcov = mle$loc_sc_varcov,
+#'   distribution = "weibull",
+#'   bounds = "two_sided",
+#'   conf_level = 0.95,
+#'   direction = "y"
+#' )
 #' @export
-#' @describeIn confint_fisher Provide all arguments manually.
 confint_fisher.default <- function(
   x,
   event,

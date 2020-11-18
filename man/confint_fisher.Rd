@@ -2,67 +2,9 @@
 % Please edit documentation in R/confidence_intervals.R
 \name{confint_fisher}
 \alias{confint_fisher}
-\alias{confint_fisher.parameter_estimation}
-\alias{confint_fisher.default}
 \title{Fisher Confidence Bounds for Quantiles and/or Probabilities}
 \usage{
 confint_fisher(x, ...)
-
-\method{confint_fisher}{parameter_estimation}(
-  parameter_estimation,
-  bounds = c("two_sided", "lower", "upper"),
-  conf_level = 0.95,
-  direction = c("y", "x")
-)
-
-\method{confint_fisher}{default}(
-  x,
-  event,
-  loc_sc_params,
-  loc_sc_varcov,
-  distribution = c("weibull", "lognormal", "loglogistic", "normal", "logistic", "sev",
-    "weibull3", "lognormal3", "loglogistic3"),
-  bounds = c("two_sided", "lower", "upper"),
-  conf_level = 0.95,
-  direction = c("y", "x")
-)
-}
-\arguments{
-\item{x}{a numeric vector which consists of lifetime data. \code{x} is used to
-specify the range of confidence region(s).}
-
-\item{bounds}{a character string specifying the interval(s) which has/have to
-be computed. Must be one of "two_sided" (default), "lower" or "upper".}
-
-\item{conf_level}{confidence level of the interval. The default value is
-\code{conf_level = 0.95}.}
-
-\item{direction}{a character string specifying the direction of the computed
-standard errors. Must be either "y" (used for confidence intervals of failure
-probabilities in \code{\link{confint_fisher}}) or "x" (used for confidence
-intervals of quantiles in \code{\link{confint_fisher}}). If \code{p} is a
-quantile then \emph{direction} needs to be "y" and vice versa.}
-
-\item{event}{A vector of binary data (0 or 1) indicating whether unit \emph{i}
-is a right censored observation (= 0) or a failure (= 1).}
-
-\item{loc_sc_params}{a (named) numeric vector of estimated
-(by Maximum Likelihood) location and scale parameters for a specified
-distribution. The order of elements is important. First entry needs to be
-the location parameter \eqn{\mu} and the second element needs to be the
-scale parameter \eqn{\sigma}. If a three-parametric model is used the third element
-is the threshold parameter \eqn{\gamma}.}
-
-\item{loc_sc_varcov}{a (named) numeric matrix of estimated
-(by Maximum Likelihood) location and scale variances and covariances for a
-specified distribution. The order of elements is important. First entry
-of the diagonal needs to be the variance of the location parameter
-Var(\eqn{\mu}) and the second element of the diagonal needs to be the
-variance of the scale parameter Var(\eqn{\sigma}). If a three-parametric model
-is used the third element of the diagonal needs to be the variance of the
-threshold parameter Var(\eqn{\gamma}).}
-
-\item{distribution}{Supposed distribution of the random variable.}
 }
 \value{
 A data frame containing the lifetime characteristic, the
@@ -76,34 +18,15 @@ required (log-)location-scale (and threshold) parameters and variance-covariance
 of these need to be estimated by Maximum Likelihood.
 }
 \section{Methods (by class)}{
-\itemize{
-\item \code{parameter_estimation}: Based on parameter estimation returned by
-\code{\link{ml_estimation}}.
 
-\item \code{default}: Provide all arguments manually.
-}}
-
-\examples{
-obs   <- seq(10000, 100000, 10000)
-status <- c(0, 1, 1, 0, 0, 0, 1, 0, 1, 0)
-data <- reliability_data(x = obs, status = status)
-
-tbl_john <- estimate_cdf(data, "johnson")
-
-mle <- ml_estimation(
-  data,
-  distribution = "weibull",
-  conf_level = 0.95
-)
-
-conf_fish <- confint_fisher(
-  x = df_john$characteristic,
-  event = df_john$status,
-  loc_sc_params = mle$loc_sc_params,
-  loc_sc_varcov = mle$loc_sc_varcov,
-  distribution = "weibull",
-  bounds = "two_sided",
-  conf_level = 0.95,
-  direction = "y"
-)
+\describe{
+  \item{\code{\link[=confint_fisher.parameter_estimation]{parameter_estimation}}}{
+    Preferred. Provide the output of \code{\link{ml_estimation}}.
+  }
+  \item{\code{\link[=confint_fisher.default]{default}}}{
+    Provide \code{x}, \code{event}, \code{loc_sc_params}, \code{loc_sc_varcov}
+    and \code{distribution} manually.
+  }
 }
+}
+

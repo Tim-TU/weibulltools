@@ -7,11 +7,15 @@
 \format{
 A tibble with 38 rows and 3 variables:
 \describe{
-  \item{distance} Observed distance.
-  \item{failure_mode} One of two failure modes (\code{mode_1} and \code{mode_2})
+  \item{distance}{Observed distance.}
+  \item{failure_mode}{
+    One of two failure modes (\code{mode_1} and \code{mode_2})
     or \code{censored} if no failure occured yet.
-  \item{status} If \code{failure_mode} is either \code{mode_1} or \code{mode_2}
-  this is {1} else {0}.
+  }
+  \item{status}{
+    If \code{failure_mode} is either \code{mode_1} or \code{mode_2}
+    this is {1} else {0}.
+  }
 }
 }
 \source{

@@ -54,6 +54,18 @@ test_that("confint_betabinom remains stable", {
   )
 
   expect_snapshot_output(conf_betabin_weib3)
+
+  conf_betabin_x <- confint_betabinom(
+    x = tbl_john$characteristic,
+    event = tbl_john$status,
+    loc_sc_params = mrr$loc_sc_params,
+    distribution = "weibull",
+    bounds = "two_sided",
+    conf_level = 0.95,
+    direction = "x"
+  )
+
+  expect_snapshot_output(conf_betabin_x)
 })
 
 test_that("confint_fisher remains stable", {
@@ -77,6 +89,19 @@ test_that("confint_fisher remains stable", {
   )
 
   expect_snapshot_output(conf_fish)
+
+  conf_fish_x <- confint_fisher(
+    x = tbl_john$characteristic,
+    event = tbl_john$status,
+    loc_sc_params = mle$loc_sc_params,
+    loc_sc_varcov = mle$loc_sc_varcov,
+    distribution = "weibull",
+    bounds = "two_sided",
+    conf_level = 0.95,
+    direction = "x"
+  )
+
+  expect_snapshot_output(conf_fish_x)
 })
 
 test_that("delta_method remains stable", {
