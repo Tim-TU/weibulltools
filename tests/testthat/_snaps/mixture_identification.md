@@ -45,7 +45,7 @@
     [1]   2 286
     
     attr(,"class")
-    [1] "parameter_estimation" "list"                
+    [1] "model_estimation" "list"                
     
     $mod_2
     $coefficients
@@ -99,6 +99,6 @@
     [1] 298 446
     
     attr(,"class")
-    [1] "parameter_estimation" "list"                
+    [1] "model_estimation" "list"                
     
 

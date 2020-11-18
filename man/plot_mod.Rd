@@ -3,13 +3,13 @@
 \encoding{UTF-8}
 \name{plot_mod}
 \alias{plot_mod}
-\alias{plot_mod.parameter_estimation}
+\alias{plot_mod.model_estimation}
 \alias{plot_mod.default}
 \title{Adding an Estimated Population Line to a Probability Plot}
 \usage{
 plot_mod(p_obj, x, ...)
 
-\method{plot_mod}{parameter_estimation}(p_obj, parameter_estimation, title_trace = "Fit")
+\method{plot_mod}{model_estimation}(p_obj, model_estimation, title_trace = "Fit")
 
 \method{plot_mod}{default}(
   p_obj,
@@ -55,7 +55,7 @@ model estimated by \code{\link{rank_regression}} or \code{\link{ml_estimation}}.
 }
 \section{Methods (by class)}{
 \itemize{
-\item \code{parameter_estimation}: Providing \code{\link{parameter_estimation}} as output from
+\item \code{model_estimation}: Providing \code{\link{model_estimation}} as output from
 \code{\link{ml_estimation}} or \code{\link{rank_regression}}.
 
 \item \code{default}: Providing x, y, loc_sc_params and distribution manually.
@@ -93,7 +93,7 @@ mrr <- rank_regression(
 
 plot_reg_weibull <- plot_mod(
   p_obj = plot_weibull,
-  parameter_estimation = mrr,
+  model_estimation = mrr,
   title_trace = "Estimated Weibull CDF"
 )
 
@@ -117,7 +117,7 @@ mrr_ln <- rank_regression(
 
 plot_reg_lognormal <- plot_mod(
   p_obj = plot_lognormal,
-  parameter_estimation = mrr_ln,
+  model_estimation = mrr_ln,
   title_trace = "Estimated Lognormal CDF"
 )
 

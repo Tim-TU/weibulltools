@@ -586,7 +586,7 @@ plot_prob_mix <- function(
 #'
 #' plot_reg_weibull <- plot_mod(
 #'   p_obj = plot_weibull,
-#'   parameter_estimation = mrr,
+#'   model_estimation = mrr,
 #'   title_trace = "Estimated Weibull CDF"
 #' )
 #'
@@ -610,7 +610,7 @@ plot_prob_mix <- function(
 #'
 #' plot_reg_lognormal <- plot_mod(
 #'   p_obj = plot_lognormal,
-#'   parameter_estimation = mrr_ln,
+#'   model_estimation = mrr_ln,
 #'   title_trace = "Estimated Lognormal CDF"
 #' )
 #'
@@ -622,18 +622,18 @@ plot_mod <- function(
 
 #' @export
 #'
-#' @describeIn plot_mod Providing \code{\link{parameter_estimation}} as output from
+#' @describeIn plot_mod Providing \code{\link{model_estimation}} as output from
 #' \code{\link{ml_estimation}} or \code{\link{rank_regression}}.
-plot_mod.parameter_estimation <- function(
-  p_obj, parameter_estimation, title_trace = "Fit"
+plot_mod.model_estimation <- function(
+  p_obj, model_estimation, title_trace = "Fit"
 ) {
 
   plot_mod.default(
     p_obj = p_obj,
-    x = parameter_estimation$data$characteristic,
+    x = model_estimation$data$characteristic,
     y = NULL,
-    loc_sc_params = parameter_estimation$loc_sc_params,
-    distribution = parameter_estimation$distribution,
+    loc_sc_params = model_estimation$loc_sc_params,
+    distribution = model_estimation$distribution,
     title_trace = title_trace
   )
 }

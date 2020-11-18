@@ -376,7 +376,7 @@ rank_regression.default <- function(
 
   mrr_output$distribution <- distribution
 
-  class(mrr_output) <- c("parameter_estimation", class(mrr_output))
+  class(mrr_output) <- c("model_estimation", class(mrr_output))
 
   return(mrr_output)
 }

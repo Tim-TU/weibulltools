@@ -352,7 +352,7 @@ ml_estimation_ <- function(data, distribution, wts, conf_level) {
     )
   }
 
-  class(ml_output) <- c("parameter_estimation", class(ml_output))
+  class(ml_output) <- c("model_estimation", class(ml_output))
 
   ml_output$data <- tibble::tibble(
     characteristic = x, status = status
