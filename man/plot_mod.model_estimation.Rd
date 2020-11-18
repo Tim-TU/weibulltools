@@ -9,6 +9,9 @@
 \arguments{
 \item{p_obj}{A plot object returned from \code{\link{plot_prob}}.}
 
+\item{title_trace}{A character string whis is assigned to the trace shown in
+the legend.}
+
 \item{x}{An object of class \code{model_estimation} returned by either
 \code{\link{ml_estimation}} or \code{\link{rank_regression}}.}
 }
