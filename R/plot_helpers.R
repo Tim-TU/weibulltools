@@ -241,17 +241,10 @@ plot_mod_mix_helper <- function(
       )
 
       # Prepare hovertexts for regression lines:
-      if (distribution == "weibull") {
-        param_1 <- round(mod$coefficients[[1]], digits = 2)
-        param_2 <- round(mod$coefficients[[2]], digits = 2)
-        label_1 <- "\u03B7:"
-        label_2 <- "\u03B2:"
-      } else {
-        param_1 <- round(mod$loc_sc_params[[1]], digits = 2)
-        param_2 <- round(mod$loc_sc_params[[2]], digits = 2)
-        label_1 <- "\u03BC:"
-        label_2 <- "\u03C3:"
-      }
+      param_1 <- round(mod$loc_sc_params[[1]], digits = 2)
+      param_2 <- round(mod$loc_sc_params[[2]], digits = 2)
+      label_1 <- "\u03BC:"
+      label_2 <- "\u03C3:"
 
       tbl_p <- tibble::tibble(
         x_p = x_p, y_p = y_p, par_1 = param_1, par_2 = param_2, lab_1 = label_1,
@@ -283,17 +276,10 @@ plot_mod_mix_helper <- function(
         x_p <- seq(x_low, x_high, length.out = 200)
 
         # Prepare hovertexts for regression lines:
-        if (distribution == "weibull") {
-          param_1 <- round(mod$coefficients[[1]], digits = 2)
-          param_2 <- round(mod$coefficients[[2]], digits = 2)
-          label_1 <- "\u03B7:"
-          label_2 <- "\u03B2:"
-        } else {
-          param_1 <- round(mod$loc_sc_params[[1]], digits = 2)
-          param_2 <- round(mod$loc_sc_params[[2]], digits = 2)
-          label_1 <- "\u03BC:"
-          label_2 <- "\u03C3:"
-        }
+        param_1 <- round(mod$loc_sc_params[[1]], digits = 2)
+        param_2 <- round(mod$loc_sc_params[[2]], digits = 2)
+        label_1 <- "\u03BC:"
+        label_2 <- "\u03C3:"
 
         y_p <- predict_prob(
           q = x_p,
