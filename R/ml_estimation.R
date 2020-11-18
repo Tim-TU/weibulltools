@@ -10,27 +10,19 @@
 #' \code{\link{pweibull}}. The method is applicable for complete and (multiple)
 #' right censored data.
 #'
+#' @section Methods (by class):
+#' \describe{
+#'   \item{\code{\link[=ml_estimation.reliability_data]{reliability_data}}}{
+#'     Preferred. Provide the output of \code{\link{reliability_data}} directly.
+#'   }
+#'   \item{\code{\link[=ml_estimation.default]{default}}}{
+#'     Provide \code{x} and \code{status} manually.
+#'   }
+#' }
+#'
 #' @encoding UTF-8
 #' @references Meeker, William Q; Escobar, Luis A., Statistical methods for
 #'   reliability data, New York: Wiley series in probability and statistics, 1998
-#'
-#' @param x A numeric vector which consists of lifetime data. Lifetime
-#'   data could be every characteristic influencing the reliability of a product,
-#'   e.g. operating time (days/months in service), mileage (km, miles), load
-#'   cycles.
-#' @param status A vector of binary data (0 or 1) indicating whether unit \emph{i}
-#'   is a right censored observation (= 0) or a failure (= 1).
-#' @param distribution Supposed distribution of the random variable. The
-#'   value can be \code{"weibull"}, \code{"lognormal"}, \code{"loglogistic"},
-#'   \code{"normal"}, \code{"logistic"}, \code{"sev"} \emph{(smallest extreme value)},
-#'   \code{"weibull3"}, \code{"lognormal3"} or \code{"loglogistic3"}.
-#'   Other distributions have not been implemented yet.
-#' @param wts Optional vector of case weights. The length of \code{wts} must be the
-#'   same as the number of observations \code{x}. Default is that \code{wts} is a
-#'   vector with all components being 1 (same weights).
-#' @param conf_level Confidence level of the interval. The default value is
-#'   \code{conf_level = 0.95}.
-#'
 #'
 #' @return Returns a list with the following components:
 #'   \itemize{
@@ -45,7 +37,27 @@
 #'   \item \code{logL} : The log-likelihood value.
 #'   \item \code{aic} : Akaike Information Criterion.
 #'   \item \code{bic} : Bayesian Information Criterion.}
+#'
 #' @export
+#'
+ml_estimation <- function(x, ...) {
+  UseMethod("ml_estimation")
+}
+
+
+
+#' ML Estimation for Parametric Lifetime Distributions
+#'
+#' @inherit ml_estimation description details return references
+#'
+#' @param x An object of class \code{reliability_data} returned by
+#'   \code{\link{reliability_data}}.
+#' @param distribution Supposed distribution of the random variable.
+#' @param wts Optional vector of case weights. The length of \code{wts} must be the
+#'   same as the number of observations \code{x}. Default is that \code{wts} is a
+#'   vector with all components being 1 (same weights).
+#' @param conf_level Confidence level of the interval. The default value is
+#'   \code{conf_level = 0.95}.
 #'
 #' @examples
 #' # Example 1: Fitting a two-parameter Weibull:
@@ -76,13 +88,8 @@
 #'   conf_level = 0.95
 #' )
 #'
-ml_estimation <- function(x, ...) {
-  UseMethod("ml_estimation")
-}
-
 #' @export
 #'
-#' @describeIn ml_estimation Provide data (preferred)
 ml_estimation.reliability_data <- function(
   data,
   distribution = c(
@@ -101,9 +108,56 @@ ml_estimation.reliability_data <- function(
   )
 }
 
+
+
+#' ML Estimation for Parametric Lifetime Distributions
+#'
+#' @inherit ml_estimation description details return references
+#'
+#' @param x A numeric vector which consists of lifetime data. Lifetime
+#'   data could be every characteristic influencing the reliability of a product,
+#'   e.g. operating time (days/months in service), mileage (km, miles), load
+#'   cycles.
+#' @param status A vector of binary data (0 or 1) indicating whether unit \emph{i}
+#'   is a right censored observation (= 0) or a failure (= 1).
+#' @param distribution Supposed distribution of the random variable.
+#' @param wts Optional vector of case weights. The length of \code{wts} must be the
+#'   same as the number of observations \code{x}. Default is that \code{wts} is a
+#'   vector with all components being 1 (same weights).
+#' @param conf_level Confidence level of the interval. The default value is
+#'   \code{conf_level = 0.95}.
+#'
+#' @examples
+#' # Example 1: Fitting a two-parameter Weibull:
+#' obs   <- seq(10000, 100000, 10000)
+#' status <- c(0, 1, 1, 0, 0, 0, 1, 0, 1, 0)
+#' data <- reliability_data(x = obs, status = status)
+#'
+#' mle <- ml_estimation(
+#'   data,
+#'   distribution = "weibull",
+#'   conf_level = 0.90
+#' )
+#'
+#' # Example 2: Fitting a three-parameter Weibull:
+#' # Alloy T7987 dataset taken from Meeker and Escobar(1998, p. 131)
+#' cycles   <- c(300, 300, 300, 300, 300, 291, 274, 271, 269, 257, 256, 227, 226,
+#'               224, 213, 211, 205, 203, 197, 196, 190, 189, 188, 187, 184, 180,
+#'               180, 177, 176, 173, 172, 171, 170, 170, 169, 168, 168, 162, 159,
+#'               159, 159, 159, 152, 152, 149, 149, 144, 143, 141, 141, 140, 139,
+#'               139, 136, 135, 133, 131, 129, 123, 121, 121, 118, 117, 117, 114,
+#'               112, 108, 104, 99, 99, 96, 94)
+#' status <- c(rep(0, 5), rep(1, 67))
+#' data_2 <- reliability_data(x = cycles, status = status)
+#'
+#' mle_weib3 <- ml_estimation(
+#'   data,
+#'   distribution = "weibull3",
+#'   conf_level = 0.95
+#' )
+#'
 #' @export
 #'
-#' @describeIn ml_estimation Provide x and status manually (deprecated)
 ml_estimation.default <- function(
   x, status,
   distribution = c(
