@@ -105,10 +105,10 @@ confint_betabinom.model_estimation <- function(
   distribution <- x$distribution
 
   confint_betabinom.default(
-    x = data$x,
-    event = data$event,
+    x = data$characteristic,
+    event = data$status,
     loc_sc_params = x$loc_sc_params,
-    distribution = distribution,
+    distribution = x$distribution,
     b_lives = b_lives,
     bounds = bounds,
     conf_level = conf_level,
@@ -489,7 +489,6 @@ confint_fisher <- function(x, ...) {
 #'
 #' conf_fish <- confint_fisher(
 #'   mle,
-#'   distribution = "weibull",
 #'   bounds = "two_sided",
 #'   conf_level = 0.95,
 #'   direction = "y"
@@ -506,10 +505,10 @@ confint_fisher.model_estimation <- function(
   distribution <- x$distribution
 
   confint_fisher.default(
-    x = data$x,
+    x = data$characteristic,
     event = data$status,
-    loc_sc_params = data$loc_sc_params,
-    loc_sc_varcov = data$loc_sc_varcov,
+    loc_sc_params = x$loc_sc_params,
+    loc_sc_varcov = x$loc_sc_varcov,
     distribution = distribution,
     b_lives = b_lives,
     bounds = bounds,

@@ -51,7 +51,6 @@ mle <- ml_estimation(
 
 conf_fish <- confint_fisher(
   mle,
-  distribution = "weibull",
   bounds = "two_sided",
   conf_level = 0.95,
   direction = "y"

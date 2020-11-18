@@ -62,7 +62,7 @@
     [1] "weibull"
     
     attr(,"class")
-    [1] "model_estimation" "list"                
+    [1] "model_estimation" "list"            
 
 ---
 
@@ -132,5 +132,5 @@
     [1] "weibull3"
     
     attr(,"class")
-    [1] "model_estimation" "list"                
+    [1] "model_estimation" "list"            
 
