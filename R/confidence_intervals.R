@@ -96,6 +96,7 @@ confint_betabinom <- function(x, ...) {
 #' @export
 confint_betabinom.parameter_estimation <- function(
                                       x,
+                                      b_lives = c(0.01, 0.1, 0.50),
                                       bounds = c("two_sided", "lower", "upper"),
                                       conf_level = 0.95,
                                       direction = c("y", "x")
@@ -108,6 +109,7 @@ confint_betabinom.parameter_estimation <- function(
     event = data$event,
     loc_sc_params = x$loc_sc_params,
     distribution = distribution,
+    b_lives = b_lives,
     bounds = bounds,
     conf_level = conf_level,
     direction = direction
@@ -189,6 +191,7 @@ confint_betabinom.default <- function(x,
                                         "normal", "logistic", "sev", "weibull3",
                                         "lognormal3", "loglogistic3"
                                       ),
+                                      b_lives = c(0.01, 0.1, 0.50),
                                       bounds = c("two_sided", "lower", "upper"),
                                       conf_level = .95,
                                       direction = c("y", "x")
@@ -201,31 +204,10 @@ confint_betabinom.default <- function(x,
   n <- length(x)
   x_ob <- x[event == 1]
 
-  # Range of failed items:
-  x_min <- min(x_ob, na.rm = TRUE)
-  x_max <- max(x_ob, na.rm = TRUE)
-  x_seq <- seq(x_min, x_max, length.out = 100)
+  x_y_b_lives <- add_b_lives(x_ob, loc_sc_params, distribution, b_lives)
 
-  # Range of probabilities calculated with estimated regression line:
-  y_seq <- predict_prob(q = x_seq, loc_sc_params = loc_sc_params,
-                        distribution = distribution)
-
-  # Probabilities of special interest (B-Lives):
-  b_perc <- c(0.01, 0.1, 0.50)
-  # Looking for these probabilities in range of estimated ones:
-  int_ind <- findInterval(x = b_perc, vec = c(y_seq[1], y_seq[length(y_seq)]),
-                          rightmost.closed = TRUE)
-
-  # Add them:
-  y_seq <- unique(c(y_seq, b_perc[which(int_ind == 1)]))
-  y_seq <- y_seq[order(y_seq)]
-
-  # Calculating and adding B-Lives to x-vector:
-  x_b <- predict_quantile(p = b_perc[which(int_ind == 1)],
-                          loc_sc_params = loc_sc_params,
-                          distribution = distribution)
-  x_seq <- unique(c(x_seq, x_b))
-  x_seq <- x_seq[order(x_seq)]
+  x_seq <- x_y_b_lives$x_seq
+  y_seq <- x_y_b_lives$y_seq
 
   # Caluclating virtual ranks, i.e. interpolating between realisations using
   # Benard's approximation:
@@ -514,10 +496,11 @@ confint_fisher <- function(x, ...) {
 #' )
 #' @export
 confint_fisher.parameter_estimation <- function(
-  x,
-  bounds = c("two_sided", "lower", "upper"),
-  conf_level = 0.95,
-  direction = c("y", "x")
+                                      x,
+                                      b_lives = c(0.01, 0.1, 0.50),
+                                      bounds = c("two_sided", "lower", "upper"),
+                                      conf_level = 0.95,
+                                      direction = c("y", "x")
 ) {
   data <- x$data
   distribution <- x$distribution
@@ -528,6 +511,7 @@ confint_fisher.parameter_estimation <- function(
     loc_sc_params = data$loc_sc_params,
     loc_sc_varcov = data$loc_sc_varcov,
     distribution = distribution,
+    b_lives = b_lives,
     bounds = bounds,
     conf_level = conf_level,
     direction = direction
@@ -576,6 +560,7 @@ confint_fisher.default <- function(
     "weibull", "lognormal", "loglogistic", "normal", "logistic", "sev",
     "weibull3", "lognormal3", "loglogistic3"
   ),
+  b_lives = c(0.01, 0.1, 0.50),
   bounds = c("two_sided", "lower", "upper"),
   conf_level = .95,
   direction = c("y", "x")
@@ -588,22 +573,10 @@ confint_fisher.default <- function(
   n <- length(x)
   x_ob <- x[event == 1]
 
-  x_min <- min(x_ob, na.rm = TRUE)
-  x_max <- max(x_ob, na.rm = TRUE)
-  x_seq <- seq(x_min, x_max, length.out = 100)
+  x_y_b_lives <- add_b_lives(x_ob, loc_sc_params, distribution, b_lives)
 
-  y_seq <- predict_prob(q = x_seq, loc_sc_params = loc_sc_params,
-    distribution = distribution)
-
-  b_perc <- c(0.01, 0.1, 0.50)
-  int_ind <- findInterval(x = b_perc, vec = c(y_seq[1], y_seq[length(y_seq)]),
-    rightmost.closed = TRUE)
-
-  y_seq <- unique(c(y_seq, b_perc[which(int_ind == 1)]))
-  y_seq <- y_seq[order(y_seq)]
-
-  x <- predict_quantile(p = y_seq, loc_sc_params = loc_sc_params,
-    distribution = distribution)
+  x_seq <- x_y_b_lives$x_seq
+  y_seq <- x_y_b_lives$y_seq
 
   if (direction == "x") {
     se_delta <- sapply(y_seq, delta_method, loc_sc_params = loc_sc_params,
@@ -611,39 +584,39 @@ confint_fisher.default <- function(
                        distribution = distribution, direction = direction)
 
     if (bounds == "two_sided") {
-      w <- exp((stats::qnorm((1 + conf_level) / 2) * se_delta) / x)
-      conf_up <- x * w
-      conf_low <- x / w
+      w <- exp((stats::qnorm((1 + conf_level) / 2) * se_delta) / x_seq)
+      conf_up <- x_seq * w
+      conf_low <- x_seq / w
       list_confint <- list(lower_bound = conf_low, upper_bound = conf_up)
     } else if (bounds == "lower") {
-      w <- exp((stats::qnorm(conf_level) * se_delta) / x)
-      conf_low <- x / w
+      w <- exp((stats::qnorm(conf_level) * se_delta) / x_seq)
+      conf_low <- x_seq / w
       list_confint <- list(lower_bound = conf_low)
     } else {
-      w <- exp((stats::qnorm(conf_level) * se_delta) / x)
-      conf_up <- x * w
+      w <- exp((stats::qnorm(conf_level) * se_delta) / x_seq)
+      conf_up <- x_seq * w
       list_confint <- list(upper_bound = conf_up)
     }
 
-    list_output <- c(list(characteristic = x, prob = y_seq, std_err = se_delta),
+    list_output <- c(list(characteristic = x_seq, prob = y_seq, std_err = se_delta),
                      list_confint)
 
     tbl_out <- tibble::as_tibble(list_output)
   } else {
     # Standard errors for z:
-    se_delta <- sapply(x, delta_method, loc_sc_params = loc_sc_params,
+    se_delta <- sapply(x_seq, delta_method, loc_sc_params = loc_sc_params,
       loc_sc_varcov = loc_sc_varcov,
       distribution = distribution, direction = direction)
 
     # Standardized Random Variable:
     if (distribution %in% c("weibull", "lognormal", "loglogistic")) {
-      z <- (log(x) - loc_sc_params[[1]]) / loc_sc_params[[2]]
+      z <- (log(x_seq) - loc_sc_params[[1]]) / loc_sc_params[[2]]
     }
     if (distribution %in% c("weibull3", "lognormal3", "loglogistic3")) {
-      z <- (log(x - loc_sc_params[[3]]) - loc_sc_params[[1]]) / loc_sc_params[[2]]
+      z <- (log(x_seq - loc_sc_params[[3]]) - loc_sc_params[[1]]) / loc_sc_params[[2]]
     }
     if (distribution %in% c("sev", "normal", "logistic")) {
-      z <- (x - loc_sc_params[[1]]) / loc_sc_params[[2]]
+      z <- (x_seq - loc_sc_params[[1]]) / loc_sc_params[[2]]
     }
 
     # Calculating confidence intervals:
@@ -692,7 +665,7 @@ confint_fisher.default <- function(
 
     }
 
-    list_output <- c(list(characteristic = x, prob = y_seq, std_err = se_delta),
+    list_output <- c(list(characteristic = x_seq, prob = y_seq, std_err = se_delta),
       list_confint)
 
     tbl_out <- tibble::as_tibble(list_output)
@@ -706,4 +679,33 @@ confint_fisher.default <- function(
   attr(tbl_out, "direction") <- direction
 
   return(tbl_out)
+}
+
+
+
+add_b_lives <- function(x, loc_sc_params, distribution, b_lives) {
+  # Range of failed items:
+  x_min <- min(x, na.rm = TRUE)
+  x_max <- max(x, na.rm = TRUE)
+  x_seq <- seq(x_min, x_max, length.out = 100)
+
+  # Range of probabilities calculated with estimated regression line:
+  y_seq <- predict_prob(q = x_seq, loc_sc_params = loc_sc_params,
+                        distribution = distribution)
+
+  # Looking for B lives in range of estimated ones:
+  b_lives_present <- b_lives[b_lives >= y_seq[1] & b_lives <= y_seq[length(y_seq)]]
+
+  # Add them:
+  y_seq <- sort(unique(c(y_seq, b_lives_present)))
+  x_seq <- predict_quantile(
+    p = y_seq,
+    loc_sc_params = loc_sc_params,
+    distribution = distribution
+  )
+
+  list(
+    x_seq = x_seq,
+    y_seq = y_seq
+  )
 }
