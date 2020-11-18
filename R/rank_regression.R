@@ -30,23 +30,6 @@
 #'     \item Meeker, William Q; Escobar, Luis A., Statistical methods for
 #'   reliability data, New York: Wiley series in probability and statistics, 1998}
 #'
-#' @param x A numeric vector which consists of lifetime data. Lifetime
-#'   data could be every characteristic influencing the reliability of a product,
-#'   e.g. operating time (days/months in service), mileage (km, miles), load
-#'   cycles.
-#' @param y A numeric vector which consists of estimated failure probabilities
-#'   regarding the lifetime data in \code{x}.
-#' @param event A vector of binary data (0 or 1) indicating whether unit \emph{i}
-#'   is a right censored observation (= 0) or a failure (= 1).
-#' @param distribution Supposed distribution of the random variable. The
-#'   value can be \code{"weibull"}, \code{"lognormal"}, \code{"loglogistic"},
-#'   \code{"normal"}, \code{"logistic"}, \code{"sev"} \emph{(smallest extreme value)},
-#'   \code{"weibull3"}, \code{"lognormal3"} or \code{"loglogistic3"}.
-#'   Other distributions have not been implemented yet.
-#' @param conf_level Confidence level of the interval. The default value is
-#'   \code{conf_level = 0.95}.
-#' @param data A tibble returned by \code{\link{estimate_cdf}}.
-#'
 #' @return Returns a list with the following components:
 #'   \itemize{
 #'   \item \code{coefficients} : Provided, if \code{distribution} is \code{"weibull"}
@@ -66,6 +49,23 @@
 #'     \code{"weibull"} or \code{"weibull3"}. Estimated heteroscedasticity-consistent
 #'     Variance-Covariance matrix of the used location-scale distribution.
 #'   \item \code{r_squared} : Coefficient of determination.}
+#'
+#' @export
+#'
+rank_regression <- function(x, ...) {
+  UseMethod("rank_regression", x)
+}
+
+
+
+#' Rank Regression for Parametric Lifetime Distributions
+#'
+#' @inherit rank_regression description details return references
+#'
+#' @param x A tibble returned by \code{\link{estimate_cdf}}.
+#' @param distribution Supposed distribution of the random variable.
+#' @param conf_level Confidence level of the interval. The default value is
+#'   \code{conf_level = 0.95}.
 #'
 #' @examples
 #' # Example 1: Fitting a two-parameter Weibull:
@@ -101,16 +101,7 @@
 #' )
 #'
 #' @export
-rank_regression <- function(x, ...) {
-  UseMethod("rank_regression", x)
-}
-
-#' @describeIn rank_regression Perform the rank regression as part of the
-#' reliability pipeline. \code{\link{estimate_cdf}} returns a data frame of class
-#' \code{"cdf_estimation"}, which contains all information regarding x, y and
-#' event.
 #'
-#' @export
 rank_regression.cdf_estimation <- function(
   cdf_estimation,
   distribution = c("weibull", "lognormal", "loglogistic", "normal", "logistic",
@@ -126,8 +117,59 @@ rank_regression.cdf_estimation <- function(
   )
 }
 
+
+
+#' Rank Regression for Parametric Lifetime Distributions
+#'
+#' @inheritParams
+#'
+#' @param x A numeric vector which consists of lifetime data. Lifetime data
+#'   could be every characteristic influencing the reliability of a product,
+#'   e.g. operating time (days/months in service), mileage (km, miles), load
+#'   cycles
+#' @param y A numeric vector which consists of estimated failure probabilities
+#'   regarding the lifetime data in x.
+#' @param event A vector of binary data (0 or 1) indicating whether a unit is
+#'   a right censored observation (= 0) or a failure (= 1).
+#' @param distribution Supposed distribution of the random variable.
+#' @param conf_level Confidence level of the interval. The default value is
+#'   \code{conf_level = 0.95}.
+#'
+#' @examples
+#' # Example 1: Fitting a two-parameter Weibull:
+#' obs   <- seq(10000, 100000, 10000)
+#' status <- c(0, 1, 1, 0, 0, 0, 1, 0, 1, 0)
+#' data <- reliability_data(x = obs, status = status)
+#'
+#' tbl_john <- estimate_cdf(data, "johnson")
+#'
+#' mrr <- rank_regression(
+#'   tbl_john,
+#'   distribution = "weibull",
+#'   conf_level = .90
+#' )
+#'
+#' # Example 2: Fitting a three-parameter Weibull:
+#' # Alloy T7987 dataset taken from Meeker and Escobar(1998, p. 131)
+#' cycles   <- c(300, 300, 300, 300, 300, 291, 274, 271, 269, 257, 256, 227, 226,
+#'               224, 213, 211, 205, 203, 197, 196, 190, 189, 188, 187, 184, 180,
+#'               180, 177, 176, 173, 172, 171, 170, 170, 169, 168, 168, 162, 159,
+#'               159, 159, 159, 152, 152, 149, 149, 144, 143, 141, 141, 140, 139,
+#'               139, 136, 135, 133, 131, 129, 123, 121, 121, 118, 117, 117, 114,
+#'               112, 108, 104, 99, 99, 96, 94)
+#' status <- c(rep(0, 5), rep(1, 67))
+#'
+#' data <- reliability_data(x = cycles, status = status)
+#'
+#' tbl_john <- estimate_cdf(data, "johnson")
+#' mrr <- rank_regression(
+#'   tbl_john,
+#'   distribution = "weibull3",
+#'   conf_level = .90
+#' )
+#'
 #' @export
-#' @describeIn rank_regression Provide x, y and event manually.
+#'
 rank_regression.default <- function(
   x,
   y,
