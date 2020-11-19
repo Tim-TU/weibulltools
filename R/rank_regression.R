@@ -132,7 +132,7 @@ rank_regression.cdf_estimation <- function(
     # Apply rank_regression to each method separately
     x_split <- split(x, x$method)
 
-    purrr::map(x_split, function(cdf) {
+    model_estimation_list <- purrr::map(x_split, function(cdf) {
       rank_regression.default(
         x = cdf$characteristic,
         y = cdf$prob,
@@ -141,6 +141,12 @@ rank_regression.cdf_estimation <- function(
         conf_level = conf_level
       )
     })
+
+    class(model_estimation_list) <- c(
+      "model_estimation_list", class(model_estimation_list)
+    )
+
+    model_estimation_list
   }
 }
 

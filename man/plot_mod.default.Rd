@@ -2,7 +2,7 @@
 % Please edit documentation in R/plot_functions.R
 \name{plot_mod.default}
 \alias{plot_mod.default}
-\title{Adding an Estimated Population Line to a Probability Plot}
+\title{Add Estimated Population Line to a Probability Plot}
 \usage{
 \method{plot_mod}{default}(
   p_obj,
@@ -35,8 +35,8 @@ Returns a plotly object containing the probability plot with
   plotting positions and the estimated regression line.
 }
 \description{
-This function adds a regression line to an existing probability plot using a
-model estimated by \code{\link{rank_regression}} or \code{\link{ml_estimation}}.
+This function regression lines to an existing probability plot using a model
+estimated by \code{\link{rank_regression}} or \code{\link{ml_estimation}}.
 }
 \examples{
 # Alloy T7987 dataset taken from Meeker and Escobar(1998, p. 131)

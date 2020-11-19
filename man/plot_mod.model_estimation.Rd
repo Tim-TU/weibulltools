@@ -2,26 +2,30 @@
 % Please edit documentation in R/plot_functions.R
 \name{plot_mod.model_estimation}
 \alias{plot_mod.model_estimation}
-\title{Adding an Estimated Population Line to a Probability Plot}
+\alias{plot_mod.model_estimation_list}
+\title{Add Estimated Population Line(s) to a Probability Plot}
 \usage{
-\method{plot_mod}{model_estimation}(p_obj, model_estimation, title_trace = "Fit")
+\method{plot_mod}{model_estimation}(p_obj, x, title_trace = "Fit")
+
+\method{plot_mod}{model_estimation_list}(p_obj, x, title_trace = "Fit")
 }
 \arguments{
 \item{p_obj}{A plot object returned from \code{\link{plot_prob}}.}
 
+\item{x}{An object of class \code{model_estimation} or
+\code{model_estimation_list} returned by either
+\code{\link{ml_estimation}} or \code{\link{rank_regression}}.}
+
 \item{title_trace}{A character string whis is assigned to the trace shown in
 the legend.}
-
-\item{x}{An object of class \code{model_estimation} returned by either
-\code{\link{ml_estimation}} or \code{\link{rank_regression}}.}
 }
 \value{
 Returns a plotly object containing the probability plot with
   plotting positions and the estimated regression line.
 }
 \description{
-This function adds a regression line to an existing probability plot using a
-model estimated by \code{\link{rank_regression}} or \code{\link{ml_estimation}}.
+This function regression lines to an existing probability plot using a model
+estimated by \code{\link{rank_regression}} or \code{\link{ml_estimation}}.
 }
 \examples{
 # Alloy T7987 dataset taken from Meeker and Escobar(1998, p. 131)

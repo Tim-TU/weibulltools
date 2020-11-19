@@ -5,19 +5,19 @@
 \title{Rank Regression for Parametric Lifetime Distributions}
 \usage{
 \method{rank_regression}{cdf_estimation}(
-  cdf_estimation,
+  x,
   distribution = c("weibull", "lognormal", "loglogistic", "normal", "logistic", "sev",
     "weibull3", "lognormal3", "loglogistic3"),
   conf_level = 0.95
 )
 }
 \arguments{
+\item{x}{A tibble returned by \code{\link{estimate_cdf}}.}
+
 \item{distribution}{Supposed distribution of the random variable.}
 
 \item{conf_level}{Confidence level of the interval. The default value is
 \code{conf_level = 0.95}.}
-
-\item{x}{A tibble returned by \code{\link{estimate_cdf}}.}
 }
 \value{
 Returns a list with the following components:

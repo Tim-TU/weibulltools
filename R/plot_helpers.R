@@ -166,7 +166,7 @@ plot_prob_mix_helper <- function(
 }
 
 plot_mod_helper <- function(
-  x, loc_sc_params, distribution
+  x, loc_sc_params, distribution, method = "null"
 ) {
   if (length(x) == 2) {
     if (distribution %in% c("weibull", "lognormal", "loglogistic")) {
@@ -209,13 +209,13 @@ plot_mod_helper <- function(
   param_label <- if (length(param_val) == 2) c("\u03BC:", "\u03C3:") else
     c("\u03BC:", "\u03C3:", "\u03B3:")
 
+  tbl_pred$param_val <- list(param_val)
+  tbl_pred$param_label <- list(param_label)
+  tbl_pred$method <- method
+
   tbl_pred$q <- q
 
-  list(
-    tbl_pred = tbl_pred,
-    param_val = param_val,
-    param_label = param_label
-  )
+  tbl_pred
 }
 
 plot_mod_mix_helper <- function(

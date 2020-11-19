@@ -93,12 +93,12 @@ plot_prob_mix_ggplot2 <- function(
 }
 
 plot_mod_ggplot2 <- function(
-  p_obj, tbl_pred, param_val, param_label, title_trace = "Fit"
+  p_obj, tbl_pred, title_trace = "Fit"
 ) {
   p_mod <- p_obj +
     ggnewscale::new_scale_color() +
     ggplot2::geom_line(
-      data = tbl_pred, mapping = ggplot2::aes(x = x_p, y = q, color = I("#CC2222"))
+      data = tbl_pred, mapping = ggplot2::aes(x = x_p, y = q, color = method)
     ) +
     ggplot2::labs(color = title_trace) +
     ggplot2::scale_color_identity(guide = "legend", labels = "")

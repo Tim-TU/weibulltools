@@ -3,7 +3,7 @@
 \encoding{UTF-8}
 \name{plot_mod}
 \alias{plot_mod}
-\title{Adding an Estimated Population Line to a Probability Plot}
+\title{Add an Estimated Population Line to a Probability Plot}
 \usage{
 plot_mod(p_obj, x, ...)
 }
@@ -12,13 +12,13 @@ Returns a plotly object containing the probability plot with
   plotting positions and the estimated regression line.
 }
 \description{
-This function adds a regression line to an existing probability plot using a
-model estimated by \code{\link{rank_regression}} or \code{\link{ml_estimation}}.
+This function regression lines to an existing probability plot using a model
+estimated by \code{\link{rank_regression}} or \code{\link{ml_estimation}}.
 }
 \section{Methods (by class)}{
 
 \describe{
-  \item{\code{\link[=plot_mod.model_estimation]{model_estimation}}}{
+  \item{\code{\link[=plot_mod.model_estimation]{model_estimation(_list)}}}{
     Preferred. Provide the output of either \code{\link{ml_estimation}} or
     \code{\link{rank_regression}} directly.
   }

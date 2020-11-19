@@ -158,7 +158,6 @@ plot_prob <- function(
 #' )
 #'
 #' @export
-#'
 plot_prob.default <- function(
   x, y, event,
   id = rep("XXXXXX", length(x)),
@@ -240,7 +239,6 @@ plot_prob.default <- function(
 #' )
 #'
 #' @export
-#'
 plot_prob.cdf_estimation <- function(
   x,
   distribution = c(
@@ -426,7 +424,7 @@ plot_prob_mix.default <- function(
     stop("No valid distribution! Use weibull to visualize EM results")
   }
 
-  data <- reliability_data(x = x, event = event, id = id)
+  data <- reliability_data(x = x, status = event, id = id)
   tbl_group <- plot_prob_mix_helper(
     data, distribution, mix_output, title_trace
   )
@@ -455,14 +453,14 @@ plot_prob_mix.default <- function(
   )
 }
 
-#' Adding an Estimated Population Line to a Probability Plot
+#' Add an Estimated Population Line to a Probability Plot
 #'
-#' This function adds a regression line to an existing probability plot using a
-#' model estimated by \code{\link{rank_regression}} or \code{\link{ml_estimation}}.
+#' This function regression lines to an existing probability plot using a model
+#' estimated by \code{\link{rank_regression}} or \code{\link{ml_estimation}}.
 #'
 #' @section Methods (by class):
 #' \describe{
-#'   \item{\code{\link[=plot_mod.model_estimation]{model_estimation}}}{
+#'   \item{\code{\link[=plot_mod.model_estimation]{model_estimation(_list)}}}{
 #'     Preferred. Provide the output of either \code{\link{ml_estimation}} or
 #'     \code{\link{rank_regression}} directly.
 #'   }
@@ -486,12 +484,13 @@ plot_mod <- function(
   UseMethod("plot_mod", x)
 }
 
-#' Adding an Estimated Population Line to a Probability Plot
+#' Add Estimated Population Line(s) to a Probability Plot
 #'
 #' @inherit plot_mod description return references
 #'
 #' @param p_obj A plot object returned from \code{\link{plot_prob}}.
-#' @param x An object of class \code{model_estimation} returned by either
+#' @param x An object of class \code{model_estimation} or
+#'   \code{model_estimation_list} returned by either
 #'   \code{\link{ml_estimation}} or \code{\link{rank_regression}}.
 #' @inheritParams plot_prob.cdf_estimation
 #'
@@ -558,19 +557,59 @@ plot_mod <- function(
 #' @export
 #'
 plot_mod.model_estimation <- function(
-  p_obj, model_estimation, title_trace = "Fit"
+  p_obj, x, title_trace = "Fit"
 ) {
 
   plot_mod.default(
     p_obj = p_obj,
-    x = range(model_estimation$data$characteristic),
-    loc_sc_params = model_estimation$loc_sc_params,
-    distribution = model_estimation$distribution,
+    x = range(x$data$characteristic),
+    loc_sc_params = x$loc_sc_params,
+    distribution = x$distribution,
     title_trace = title_trace
   )
 }
 
-#' Adding an Estimated Population Line to a Probability Plot
+#' @rdname plot_mod.model_estimation
+#'
+#' @export
+#'
+plot_mod.model_estimation_list <- function(
+  p_obj, x, title_trace = "Fit"
+) {
+  # Plot method is determined by p_obj
+  plot_method <- if ("gg" %in% class(p_obj)) {
+    "ggplot2"
+  } else if ("plotly" %in% class(p_obj)) {
+    "plotly"
+  }  else {
+    stop(
+      "p_obj is not a valid plot object. Provide either a ggplot2 or a plotly
+      plot object."
+    )
+  }
+
+  methods <- names(x)
+
+  tbl_pred <- purrr::map2_dfr(x, methods, function(model_estimation, method) {
+    plot_mod_helper(
+      x = model_estimation$data$characteristic,
+      loc_sc_params = model_estimation$loc_sc_params,
+      distribution = model_estimation$distribution,
+      method = method
+    )
+  })
+
+  plot_mod_fun <- if (plot_method == "plotly") plot_mod_plotly else
+    plot_mod_ggplot2
+
+  plot_mod_fun(
+    p_obj = p_obj,
+    tbl_pred = tbl_pred,
+    title_trace = title_trace
+  )
+}
+
+#' Add Estimated Population Line to a Probability Plot
 #'
 #' @inherit plot_mod description return references
 #'
@@ -671,7 +710,7 @@ plot_mod.default <- function(p_obj,
     )
   }
 
-  mod_helper <- plot_mod_helper(
+  tbl_pred <- plot_mod_helper(
     x, loc_sc_params, distribution
   )
 
@@ -680,9 +719,7 @@ plot_mod.default <- function(p_obj,
 
   plot_mod_fun(
     p_obj = p_obj,
-    tbl_pred = mod_helper$tbl_pred,
-    param_val = mod_helper$param_val,
-    param_label = mod_helper$param_label,
+    tbl_pred = tbl_pred,
     title_trace = title_trace
   )
 }
