@@ -60,3 +60,19 @@ test_that("rank_regression remains stable", {
   expect_snapshot_output(mrr$r_squared)
   expect_snapshot_output(mrr)
 })
+
+test_that("rank_regression supports multiple methods", {
+  data <- reliability_data(shock, x = "distance", status = "status")
+
+  methods <- c("johnson", "nelson", "kaplan")
+
+  cdf_tbl <- estimate_cdf(data, methods)
+
+  mrr <- rank_regression.cdf_estimation(
+    x = cdf_tbl,
+    distribution = "weibull"
+  )
+
+  expect_equal(length(mrr), 3)
+  expect_true(all(methods %in% names(mrr)))
+})

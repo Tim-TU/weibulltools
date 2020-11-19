@@ -113,18 +113,35 @@ rank_regression <- function(x, ...) {
 #' @export
 #'
 rank_regression.cdf_estimation <- function(
-  cdf_estimation,
+  x,
   distribution = c("weibull", "lognormal", "loglogistic", "normal", "logistic",
                    "sev", "weibull3", "lognormal3", "loglogistic3"),
   conf_level = 0.95
 ) {
-  rank_regression.default(
-    x = cdf_estimation$characteristic,
-    y = cdf_estimation$prob,
-    event = cdf_estimation$status,
-    distribution = match.arg(distribution),
-    conf_level = conf_level
-  )
+  distribution <- match.arg(distribution)
+
+  if (length(unique(x$method)) == 1) {
+    rank_regression.default(
+      x = x$characteristic,
+      y = x$prob,
+      event = x$status,
+      distribution = distribution,
+      conf_level = conf_level
+    )
+  } else {
+    # Apply rank_regression to each method separately
+    x_split <- split(x, x$method)
+
+    purrr::map(x_split, function(cdf) {
+      rank_regression.default(
+        x = cdf$characteristic,
+        y = cdf$prob,
+        event = cdf$status,
+        distribution = distribution,
+        conf_level = conf_level
+      )
+    })
+  }
 }
 
 
@@ -493,13 +510,13 @@ r_squared_profiling <- function(x, ...) {
 #'
 #' @export
 r_squared_profiling.cdf_estimation <- function(
-  cdf_estimation, thres, distribution = c("weibull3", "lognormal3", "loglogistic3")
+  x, thres, distribution = c("weibull3", "lognormal3", "loglogistic3")
 ) {
   distribution <- match.arg(distribution)
 
   r_squared_profiling.default(
-    x = cdf_estimation$characteristic,
-    y = cdf_estimation$prob,
+    x = x$characteristic,
+    y = x$prob,
     thres = thres,
     distribution = distribution
   )
