@@ -422,8 +422,9 @@ plot_prob_mix <- function(
     stop("No valid distribution! Use weibull to visualize EM results")
   }
 
+  data <- reliability_data(x = x, event = event, id = id)
   tbl_group <- plot_prob_mix_helper(
-    x, event, id, distribution, mix_output, title_trace
+    data, distribution, mix_output, title_trace
   )
 
   # Plot layout:

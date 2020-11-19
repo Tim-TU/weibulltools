@@ -73,19 +73,23 @@ plot_prob_helper <- function(
 }
 
 plot_prob_mix_helper <- function(
-  x, event, id, distribution, mix_output, title_trace
+  data, distribution, mix_output, title_trace
 ) {
+  x <- data$x
+  event <- data$status
+  id <- data$id
+
   # check if mix_output is NULL or "em_results" is not a name of lists in mix_output!
   if (is.null(mix_output) || !("em_results" %in%  names(mix_output))) {
 
-    # applying johnson_method() to all data! Used for printing results of
+    # applying johnson method to all data! Used for printing results of
     # mixmod_regression() and for the case is mix_output = NULL.
-    john_df <- johnson_method(x = x, event = event, id = id) %>%
+    tbl_john <- estimate_cdf(data, methods = "johnson") %>%
       dplyr::filter(status == 1)
 
-    x_s <- john_df$characteristic
-    y_s <- john_df$prob
-    id_s <- john_df$id
+    x_s <- tbl_john$characteristic
+    y_s <- tbl_john$prob
+    id_s <- tbl_john$id
     tbl_group <- tibble::tibble(x_s = x_s, y_s = y_s, id_s = id_s)
     tbl_group$groups <- as.factor(c(rep(title_trace, length(x_s))))
   }
@@ -126,7 +130,7 @@ plot_prob_mix_helper <- function(
 
     # Apply johnson_method() for splitted observations:
     john_lst <- mapply(x_split, ev_split, id_split,
-                       FUN = function(x, d, id) johnson_method(x = x, event = d, id = id),
+                       FUN = function(x, d, id) suppressWarnings(johnson_method(x = x, event = d, id = id)),
                        SIMPLIFY = FALSE)
 
     # Store dataframes in one dataframe:
