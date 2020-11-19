@@ -37,6 +37,7 @@ test_that("rank_regression remains stable", {
 
   expect_snapshot_output(mrr$loc_sc_params)
   expect_snapshot_output(mrr$r_squared)
+  expect_snapshot_output(mrr)
 
   cycles   <- c(300, 300, 300, 300, 300, 291, 274, 271, 269, 257, 256, 227, 226,
                 224, 213, 211, 205, 203, 197, 196, 190, 189, 188, 187, 184, 180,
@@ -57,4 +58,5 @@ test_that("rank_regression remains stable", {
 
   expect_snapshot_output(mrr$loc_sc_params)
   expect_snapshot_output(mrr$r_squared)
+  expect_snapshot_output(mrr)
 })
