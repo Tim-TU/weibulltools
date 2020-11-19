@@ -158,6 +158,7 @@ plot_prob_plotly <- function(
       mode = "markers",
       hoverinfo = "text",
       name = name,
+      color = ~method,
       legendgroup = ~method,
       text = paste(
         "ID:", prob_tbl$id,
@@ -253,7 +254,11 @@ plot_mod_plotly <- function(
     # Enables access of list column
     dplyr::mutate(hovertext = to_hovertext(x_p, y_p, param_val, param_label))
 
-  name <- paste0(title_trace, ": ", tbl_pred$method)
+  name <- if (length(unique(tbl_pred$method)) == 1) {
+    title_trace
+  } else {
+    paste0(title_trace, ": ", tbl_pred$method)
+  }
 
   p_mod <- plotly::add_lines(
     p = p_obj,
@@ -263,6 +268,7 @@ plot_mod_plotly <- function(
     type = "scatter",
     mode = "lines",
     hoverinfo = "text",
+    color = ~method,
     name = name,
     legendgroup = ~method,
     text = ~hovertext

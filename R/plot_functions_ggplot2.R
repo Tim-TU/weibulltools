@@ -61,6 +61,10 @@ plot_prob_ggplot2 <- function(
 
   distribution <- match.arg(distribution)
 
+  if (length(unique(prob_tbl$method)) == 1) {
+    prob_tbl$method <- ""
+  }
+
   p_prob <- p_obj +
     ggplot2::geom_point(
       data = prob_tbl, mapping = ggplot2::aes(x = characteristic, y = q, color = method)
@@ -95,24 +99,26 @@ plot_prob_mix_ggplot2 <- function(
 plot_mod_ggplot2 <- function(
   p_obj, tbl_pred, title_trace = "Fit"
 ) {
+
+  if (length(unique(tbl_pred$method)) == 1) {
+    tbl_pred$method <- ""
+  }
+
   p_mod <- p_obj +
-    ggnewscale::new_scale_color() +
     ggplot2::geom_line(
       data = tbl_pred, mapping = ggplot2::aes(x = x_p, y = q, color = method)
     ) +
-    ggplot2::labs(color = title_trace) +
-    ggplot2::scale_color_identity(guide = "legend", labels = "")
+    ggplot2::labs(color = paste(p_obj$labels$colour, "+", title_trace))
 
   return(p_mod)
 }
 
 plot_mod_mix_ggplot2 <- function(p_obj, tbl_group, title_trace) {
   p_mod <- p_obj +
-    ggnewscale::new_scale_color() +
     ggplot2::geom_line(
       data = tbl_group, mapping = ggplot2::aes(x = x_p, y = q, color = groups)
     ) +
-    ggplot2::labs(color = title_trace)
+    ggplot2::labs(color = paste(p_obj$labels$colour, "+", title_trace))
 
   return(p_mod)
 }

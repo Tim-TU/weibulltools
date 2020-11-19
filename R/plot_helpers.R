@@ -170,9 +170,9 @@ plot_mod_helper <- function(
 ) {
   if (length(x) == 2) {
     if (distribution %in% c("weibull", "lognormal", "loglogistic")) {
-      x_p <- 10 ^ seq(log10(x[1]), log10(x[2]), length.out = 10)
+      x_p <- 10 ^ seq(log10(x[1]), log10(x[2]), length.out = 100)
     } else {
-      x_p <- seq(x[1], x[2], length.out = 10)
+      x_p <- seq(x[1], x[2], length.out = 100)
     }
   }
 
