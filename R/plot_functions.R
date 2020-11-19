@@ -402,7 +402,11 @@ plot_prob_ <- function(
 #'   title_trace = "Subgroup"
 #' )
 #'
-plot_prob_mix <- function(
+plot_prob_mix <- function(x, ...) {
+  UseMethod("plot_prob_mix")
+}
+
+plot_prob_mix.default <- function(
   x,
   event,
   id = rep("XXXXXX", length(x)),
