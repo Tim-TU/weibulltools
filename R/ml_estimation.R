@@ -219,21 +219,23 @@ ml_estimation_ <- function(data, distribution, wts, conf_level) {
       colnames(conf_ints) <- colnames(conf_ints_loc_sc)
       rownames(conf_ints) <- names(estimates)
 
-      ml_output <- list(coefficients = estimates, confint = conf_ints,
-                        loc_sc_params = estimates_loc_sc,
-                        loc_sc_confint = conf_ints_loc_sc,
-                        loc_sc_varcov = vcov_loc_sc, logL = -ml$min,
-                        aic = -2 * (-ml$min) + 2 * length(estimates_loc_sc),
-                        bic = (-2 * (-ml$min) +
-                                 log(length(x)) * length(estimates_loc_sc))
+      ml_output <- list(
+        coefficients = estimates,
+        confint = conf_ints,
+        loc_sc_params = estimates_loc_sc,
+        loc_sc_confint = conf_ints_loc_sc,
+        loc_sc_varcov = vcov_loc_sc, logL = -ml$min,
+        aic = -2 * (-ml$min) + 2 * length(estimates_loc_sc),
+        bic = (-2 * (-ml$min) + log(length(x)) * length(estimates_loc_sc))
       )
     } else {
-      ml_output <- list(loc_sc_params = estimates_loc_sc,
-                        loc_sc_confint = conf_ints_loc_sc,
-                        loc_sc_varcov = vcov_loc_sc, logL = -ml$min,
-                        aic = -2 * (-ml$min) + 2 * length(estimates_loc_sc),
-                        bic = (-2 * (-ml$min) +
-                                 log(length(x)) * length(estimates_loc_sc))
+      ml_output <- list(
+        coefficients = estimates_loc_sc,
+        loc_sc_params = estimates_loc_sc,
+        loc_sc_confint = conf_ints_loc_sc,
+        loc_sc_varcov = vcov_loc_sc, logL = -ml$min,
+        aic = -2 * (-ml$min) + 2 * length(estimates_loc_sc),
+        bic = (-2 * (-ml$min) + log(length(x)) * length(estimates_loc_sc))
       )
     }
   }
@@ -320,22 +322,24 @@ ml_estimation_ <- function(data, distribution, wts, conf_level) {
       colnames(conf_ints) <- colnames(conf_ints_loc_sc)
       rownames(conf_ints) <- names(estimates)
 
-      ml_output <- list(coefficients = estimates, confint = conf_ints,
-                        loc_sc_params = estimates_loc_sc,
-                        loc_sc_confint = conf_ints_loc_sc,
-                        loc_sc_varcov = vcov_loc_sc, logL = ml$value,
-                        aic = -2 * (ml$value) + 2 * length(estimates_loc_sc),
-                        bic = (-2 * (ml$value) +
-                                 log(length(x)) * length(estimates_loc_sc))
+      ml_output <- list(
+        coefficients = estimates,
+        confint = conf_ints,
+        loc_sc_params = estimates_loc_sc,
+        loc_sc_confint = conf_ints_loc_sc,
+        loc_sc_varcov = vcov_loc_sc, logL = ml$value,
+        aic = -2 * (ml$value) + 2 * length(estimates_loc_sc),
+        bic = (-2 * (ml$value) + log(length(x)) * length(estimates_loc_sc))
       )
 
     } else {
-      ml_output <- list(loc_sc_params = estimates_loc_sc,
-                        loc_sc_confint = conf_ints_loc_sc,
-                        loc_sc_varcov = vcov_loc_sc, logL = ml$value,
-                        aic = -2 * (ml$value) + 2 * length(estimates_loc_sc),
-                        bic = (-2 * (ml$value) +
-                                 log(length(x)) * length(estimates_loc_sc))
+      ml_output <- list(
+        coefficients = estimates_loc_sc,
+        loc_sc_params = estimates_loc_sc,
+        loc_sc_confint = conf_ints_loc_sc,
+        loc_sc_varcov = vcov_loc_sc, logL = ml$value,
+        aic = -2 * (ml$value) + 2 * length(estimates_loc_sc),
+        bic = (-2 * (ml$value) + log(length(x)) * length(estimates_loc_sc))
       )
     }
   }
@@ -397,12 +401,14 @@ ml_estimation_ <- function(data, distribution, wts, conf_level) {
                                     paste(((1 + conf_level) / 2) * 100, "%"))
     rownames(conf_ints_loc_sc) <- names(estimates_loc_sc)
 
-    ml_output <- list(loc_sc_params = estimates_loc_sc,
-                      loc_sc_confint = conf_ints_loc_sc,
-                      loc_sc_varcov = vcov_loc_sc, logL = ml$value,
-                      aic = -2 * (ml$value) + 2 * length(estimates_loc_sc),
-                      bic = (-2 * (ml$value) +
-                               log(length(x)) * length(estimates_loc_sc))
+    ml_output <- list(
+      coefficients = estimates_loc_sc,
+      loc_sc_params = estimates_loc_sc,
+      loc_sc_confint = conf_ints_loc_sc,
+      loc_sc_varcov = vcov_loc_sc, logL = ml$value,
+      aic = -2 * (ml$value) + 2 * length(estimates_loc_sc),
+      bic = (-2 * (ml$value) +
+               log(length(x)) * length(estimates_loc_sc))
     )
   }
 
@@ -416,6 +422,16 @@ ml_estimation_ <- function(data, distribution, wts, conf_level) {
 
   return(ml_output)
 }
+
+
+
+#' @export
+print.ml_estimation <- function(x, digits = max(3L, getOption("digits") - 3L)) {
+  cat("Maximum Likelihood Estimation\n")
+  NextMethod("print")
+}
+
+
 
 #' Log-Likelihood Profile Function for Log-Location-Scale Distributions with Threshold
 #'

@@ -404,6 +404,7 @@ plot_prob_mix <- function(x, ...) {
   UseMethod("plot_prob_mix")
 }
 
+#' @export
 plot_prob_mix.default <- function(
   x,
   event,

@@ -11,10 +11,12 @@
 * `plot_pop()`: Added support for multiple population lines.
 * New argument in `mr_method()`: With `ties.method` it can be specified how ties should be treated. 
 * Added function `estimate_cdf`: Unite functionality of `mr_method()`, `johnson_method()`, `kaplan_method()` and `nelson_method()`. Support multiple methods.
-* `rank_regression()` is now an S3 generic. `rank_regression` becomes `rank_regression.default`. Added `rank_regression.cdf_estimation()`.
+* `rank_regression()` is now an S3 generic. `rank_regression()` becomes `rank_regression.default()`. Added `rank_regression.cdf_estimation()`.
 * `plot_prob()` is now an S3 generic. `plot_prob()` becomes `plot_prob.default()`. Added `plot_prob.cdf_estimation()`.
+* `plot_mod()` is now an S3 generic. `plot_mod()` becomes `plot_mod.default()`. Added `plot_mod.model_estimation()`.
 * Added lifecycle badges
 * `confint_betabinom()`, `confint_fisher()`: Added argument `b_lives` which allows the user to specify probabilities of interest.
+* Added `print.rank_regression()`, `print.ml_estimation`, `print.model_estimation` and `print.model_estimation_list`
 
 ## Documentation
 * Capitalized parameter documentation.

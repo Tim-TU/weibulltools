@@ -264,10 +264,13 @@ rank_regression.default <- function(
 
     r_sq <- summary(mrr)$r.squared
 
-    mrr_output <- list(coefficients = estimates, confint = conf_ints,
-                       loc_sc_params = estimates_loc_sc,
-                       loc_sc_confint = conf_ints_loc_sc,
-                       r_squared = r_sq)
+    mrr_output <- list(
+      coefficients = estimates,
+      confint = conf_ints,
+      loc_sc_params = estimates_loc_sc,
+      loc_sc_confint = conf_ints_loc_sc,
+      r_squared = r_sq
+    )
   }
   if (distribution %in% c("weibull3", "lognormal3", "loglogistic3")) {
     # Log-Location-Scale with threshold:
@@ -335,10 +338,13 @@ rank_regression.default <- function(
 
       r_sq <- summary(mrr)$r.squared
 
-      mrr_output <- list(coefficients = estimates, confint = conf_ints,
-                         loc_sc_params = estimates_loc_sc,
-                         loc_sc_confint = conf_ints_loc_sc,
-                         r_squared = r_sq)
+      mrr_output <- list(
+        coefficients = estimates,
+        confint = conf_ints,
+        loc_sc_params = estimates_loc_sc,
+        loc_sc_confint = conf_ints_loc_sc,
+        r_squared = r_sq
+      )
 
     } else if (distribution %in% c("lognormal3", "loglogistic3")) {
 
@@ -382,6 +388,7 @@ rank_regression.default <- function(
       r_sq <- summary(mrr)$r.squared
 
       mrr_output <- list(
+        coefficients = estimates_loc_sc,
         loc_sc_params = estimates_loc_sc,
         loc_sc_confint = conf_ints_loc_sc,
         loc_sc_varcov = vcov_loc_sc,
@@ -439,6 +446,7 @@ rank_regression.default <- function(
     r_sq <- summary(mrr)$r.squared
 
     mrr_output <- list(
+      coefficients = estimates_loc_sc,
       loc_sc_params = estimates_loc_sc,
       loc_sc_confint = conf_ints_loc_sc,
       loc_sc_varcov = vcov_loc_sc,
@@ -454,6 +462,16 @@ rank_regression.default <- function(
 
   return(mrr_output)
 }
+
+
+
+#' @export
+print.rank_regression <- function(x, digits = max(3L, getOption("digits") - 3L)) {
+  cat("Rank Regression\n")
+  NextMethod("print")
+}
+
+
 
 #' \eqn{R²}-Profile Function for Log-Location-Scale Distributions with Threshold
 #'
@@ -528,6 +546,8 @@ r_squared_profiling.cdf_estimation <- function(
   )
 }
 
+
+
 #' @describeIn r_squared_profiling Provide x and y manually
 #'
 #' @export
@@ -557,3 +577,5 @@ r_squared_profiling.default <- function(
 
   summary(mrr_thres)$r.squared
 }
+
+

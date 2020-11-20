@@ -17,23 +17,17 @@ plot_layout_plotly <- function(
 
   ## Configuration x axis:
   x_config <- list(
-    color = "#000000",
     title = list(
-      text = title_x,
-      font = list(
-        family = "Arial",
-        size = 12,
-        color = "#A3A3A3"
-      )
+      text = title_x
     ),
     type = x_axis_type,
     autorange = TRUE,
     rangemode = "nonnegative",
     ticks = "inside",
-    tickcolor = "#a0a0a0",
     tickwidth = 1,
-    tickfont = list(family = 'Arial', size = 10, color = "#a0a0a0"),
-    tickmode = "array",
+    tickfont = list(family = 'Arial', size = 10),
+    #tickmode = "array",
+    tickangle = 90,
     showticklabels = TRUE,
     zeroline = FALSE,
     showgrid = TRUE,
@@ -55,22 +49,15 @@ plot_layout_plotly <- function(
 
   ## Configuration y axis:
   y_config <- list(
-    color = "#000000",
     title = list(
-      text = title_y,
-      font = list(
-        family = "Arial",
-        size = 12,
-        color = "#A3A3A3"
-      )
+      text = title_y
     ),
     autorange = TRUE,
     tickvals = layout_helper$y_ticks,
     ticktext = layout_helper$y_labels,
     ticks = "inside",
-    tickcolor = "#a0a0a0",
     tickwidth = 1,
-    tickfont = list(family = 'Arial', size = 10, color = "#a0a0a0"),
+    tickfont = list(family = 'Arial', size = 10),
     showticklabels = TRUE,
     zeroline = FALSE,
     showgrid = TRUE,
