@@ -24,7 +24,7 @@ by rank regression are needed.
     Preferred. Provide the output of \code{\link{rank_regression}}.
    }
   \item{\code{\link[=confint_betabinom.default]{default}}}{
-    Provide \code{x}, \code{event}, \code{loc_sc_params} and \code{distribution}
+    Provide \code{x}, \code{status}, \code{loc_sc_params} and \code{distribution}
     manually.
   }
 }

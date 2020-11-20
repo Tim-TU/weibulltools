@@ -6,7 +6,7 @@
 \usage{
 mr_method(
   x,
-  event = rep(1, length(x)),
+  status = rep(1, length(x)),
   id = rep("XXXXXX", length(x)),
   method = c("benard", "invbeta"),
   ties.method = c("max", "min", "average")
@@ -18,7 +18,7 @@ data could be every characteristic influencing the reliability of a product,
 e.g. operating time (days/months in service), mileage (km, miles), load
 cycles.}
 
-\item{event}{A vector of ones indicating that every unit \emph{i} has failed.}
+\item{status}{A vector of ones indicating that every unit \emph{i} has failed.}
 
 \item{id}{A character vector for the identification of every unit.}
 
@@ -51,11 +51,11 @@ state <- rep(1, length(obs))
 uic   <- c("3435", "1203", "958X", "XX71", "abcd", "tz46",
            "fl29", "AX23", "Uy12", "kl1a")
 
-tbl_mr <- mr_method(x = obs, event = state, id = uic,
+tbl_mr <- mr_method(x = obs, status = state, id = uic,
                    method = "benard")
 
 # Example 2
-tbl_mr_invbeta <- mr_method(x = obs, event = state, id = uic,
+tbl_mr_invbeta <- mr_method(x = obs, status = state, id = uic,
                            method = "invbeta")
 
 }

@@ -6,7 +6,7 @@
 \usage{
 \method{mixmod_em}{default}(
   x,
-  event,
+  status,
   post = NULL,
   distribution = "weibull",
   conf_level = 0.95,
@@ -23,7 +23,7 @@ data could be every characteristic influencing the reliability of a product,
 e.g. operating time (days/months in service), mileage (km, miles), load
 cycles.}
 
-\item{event}{A vector of binary data (0 or 1) indicating whether unit \emph{i}
+\item{status}{A vector of binary data (0 or 1) indicating whether unit \emph{i}
 is a right censored observation (= 0) or a failure (= 1).}
 
 \item{post}{A numeric matrix specifiying initial a-posteriori probabilities.
@@ -105,7 +105,7 @@ state <- c(1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1,
          0, 1, 1, 1, 1, 1, 1)
 
 mix_mod_em <- mixmod_em(x = hours,
-                        event = state,
+                        status = state,
                         distribution = "weibull",
                         conf_level = 0.95,
                         k = 2,

@@ -4,12 +4,12 @@
 \alias{dist_mileage}
 \title{Parameter Estimation of the Mileage Distribution}
 \usage{
-dist_mileage(x, event, mileage, distribution = "lognormal")
+dist_mileage(x, status, mileage, distribution = "lognormal")
 }
 \arguments{
 \item{x}{A numeric vector of operating times. If not available use \code{NA}.}
 
-\item{event}{A vector of binary data (0 or 1) indicating whether unit \emph{i}
+\item{status}{A vector of binary data (0 or 1) indicating whether unit \emph{i}
 is a right censored observation (= 0) or a failure (= 1).}
 
 \item{mileage}{A numeric vector of driven distances. If not available use \code{NA}.}
@@ -45,7 +45,7 @@ mileage <- c(NA, 15655, 13629, 18292, NA, NA, 33555, NA, 21737,
              NA, 122842, 20349, NA, NA)
 state <- c(0, 1, 1, 1, 0, 0, 1, 0, 1, 1, 1, 0, 1, 0, 0, 1, 0, 1, 0, 1, 1, 0, 0)
 
-params_mileage_annual <- dist_mileage(x = op_time, event = state,
+params_mileage_annual <- dist_mileage(x = op_time, status = state,
                                       mileage = mileage,
                                       distribution = "lognormal")
 }

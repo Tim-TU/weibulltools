@@ -50,7 +50,7 @@ normalize <- function(M) {
 #'  data could be every characteristic influencing the reliability of a product,
 #'  e.g. operating time (days/months in service), mileage (km, miles), load
 #'  cycles.
-#' @param event a vector of binary data (0 or 1) indicating whether unit \emph{i}
+#' @param status a vector of binary data (0 or 1) indicating whether unit \emph{i}
 #'   is a right censored observation (= 0) or a failure (= 1).
 #' @param post a numeric matrix specifiying initial a-posteriori probabilities.
 #'   The number of rows have to be in line with observations \code{x} and the
@@ -88,15 +88,15 @@ normalize <- function(M) {
 #' post_dirichlet <- LearnBayes::rdirichlet(n = length(hours),
 #'                                          par = rep(.1, 2))
 #' mix_mod_em <- mixture_em_cpp(x = hours,
-#'                              event = state,
+#'                              status = state,
 #'                              post = post_dirichlet,
 #'                              distribution = "weibull",
 #'                              k = 2,
 #'                              method = "EM",
 #'                              n_iter = 150)
 #'
-mixture_em_cpp <- function(x, event, post, distribution = "weibull", k = 2L, method = "EM", n_iter = 100L, conv_limit = 1e-6) {
-    .Call(`_weibulltools_mixture_em_cpp`, x, event, post, distribution, k, method, n_iter, conv_limit)
+mixture_em_cpp <- function(x, status, post, distribution = "weibull", k = 2L, method = "EM", n_iter = 100L, conv_limit = 1e-6) {
+    .Call(`_weibulltools_mixture_em_cpp`, x, status, post, distribution, k, method, n_iter, conv_limit)
 }
 
 #' Computation of Johnson Ranks

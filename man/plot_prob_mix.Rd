@@ -68,7 +68,7 @@ id <- 1:length(hours)
 
 # Example 1 - mix_output = NULL:
 plot_weibull <- plot_prob_mix(x = hours,
-                              event = state,
+                              status = state,
                               id = id,
                               distribution = "weibull",
                               mix_output = NULL,
@@ -78,11 +78,11 @@ plot_weibull <- plot_prob_mix(x = hours,
                               title_trace = "Failed Items")
 
 # Example 2 - Using result of mixmod_em in mix_output:
-mix_mod_em <- mixmod_em(x = hours, event = state, distribution = "weibull",
+mix_mod_em <- mixmod_em(x = hours, status = state, distribution = "weibull",
                         conf_level = 0.95, k = 2, method = "EM", n_iter = 150)
 
 plot_weibull_em <- plot_prob_mix(x = hours,
-                                 event = state,
+                                 status = state,
                                  id = id,
                                  distribution = "weibull",
                                  mix_output = mix_mod_em,
@@ -92,17 +92,17 @@ plot_weibull_em <- plot_prob_mix(x = hours,
                                  title_trace = "Subgroup")
 
 # Example 3 - Using result of mixmod_regression in mix_output:
-john <- johnson_method(x = hours, event = state)
+john <- johnson_method(x = hours, status = state)
 mix_mod_reg <- mixmod_regression(
   x = john$characteristic,
   y = john$prob,
-  event = john$status,
+  status = john$status,
   distribution = "weibull"
 )
 
 plot_weibull_reg <- plot_prob_mix(
   x = hours,
-  event = state,
+  status = state,
   id = id,
   distribution = "weibull",
   mix_output = mix_mod_reg,

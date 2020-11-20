@@ -28,7 +28,7 @@
 #'     Preferred. Provide the output of \code{\link{estimate_cdf}} directly.
 #'   }
 #'   \item{\code{\link[=rank_regression.default]{default}}}{
-#'     Provide \code{x}, \code{y} and \code{event} manually.
+#'     Provide \code{x}, \code{y} and \code{status} manually.
 #'   }
 #' }
 #'
@@ -124,7 +124,7 @@ rank_regression.cdf_estimation <- function(
     rank_regression.default(
       x = x$characteristic,
       y = x$prob,
-      event = x$status,
+      status = x$status,
       distribution = distribution,
       conf_level = conf_level
     )
@@ -136,7 +136,7 @@ rank_regression.cdf_estimation <- function(
       rank_regression.default(
         x = cdf$characteristic,
         y = cdf$prob,
-        event = cdf$status,
+        status = cdf$status,
         distribution = distribution,
         conf_level = conf_level
       )
@@ -162,7 +162,7 @@ rank_regression.cdf_estimation <- function(
 #'   cycles
 #' @param y A numeric vector which consists of estimated failure probabilities
 #'   regarding the lifetime data in x.
-#' @param event A vector of binary data (0 or 1) indicating whether a unit is
+#' @param status A vector of binary data (0 or 1) indicating whether a unit is
 #'   a right censored observation (= 0) or a failure (= 1).
 #' @param distribution Supposed distribution of the random variable.
 #' @param conf_level Confidence level of the interval. The default value is
@@ -206,7 +206,7 @@ rank_regression.cdf_estimation <- function(
 rank_regression.default <- function(
   x,
   y,
-  event,
+  status,
   distribution = c(
     "weibull", "lognormal", "loglogistic", "normal", "logistic", "sev",
     "weibull3", "lognormal3", "loglogistic3"
@@ -217,8 +217,8 @@ rank_regression.default <- function(
   distribution <- match.arg(distribution)
 
   # In terms of MRR only failed items can be used:
-  x_f <- x[event == 1]
-  y_f <- y[event == 1]
+  x_f <- x[status == 1]
+  y_f <- y[status == 1]
 
   # Median-Rank-Regression Weibull:
   if (distribution == "weibull") {
@@ -454,7 +454,7 @@ rank_regression.default <- function(
     )
   }
 
-  mrr_output$data <- tibble::tibble(characteristic = x, status = event)
+  mrr_output$data <- tibble::tibble(characteristic = x, status = status)
 
   mrr_output$distribution <- distribution
 

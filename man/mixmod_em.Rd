@@ -54,7 +54,7 @@ and the critical difference has to be specified in argument \code{diff_loglik}.
     Preferred. Provide the output of \code{\link{reliability_data}} directly.
   }
   \item{\code{\link[=mixmod_em.default]{default}}}{
-    Provide \code{x} and \code{event} manually.
+    Provide \code{x} and \code{status} manually.
   }
 }
 }

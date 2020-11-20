@@ -7,7 +7,7 @@
 \usage{
 mixture_em_cpp(
   x,
-  event,
+  status,
   post,
   distribution = "weibull",
   k = 2L,
@@ -22,7 +22,7 @@ data could be every characteristic influencing the reliability of a product,
 e.g. operating time (days/months in service), mileage (km, miles), load
 cycles.}
 
-\item{event}{a vector of binary data (0 or 1) indicating whether unit \emph{i}
+\item{status}{a vector of binary data (0 or 1) indicating whether unit \emph{i}
 is a right censored observation (= 0) or a failure (= 1).}
 
 \item{post}{a numeric matrix specifiying initial a-posteriori probabilities.
@@ -75,7 +75,7 @@ state <- c(1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1,
 post_dirichlet <- LearnBayes::rdirichlet(n = length(hours),
                                          par = rep(.1, 2))
 mix_mod_em <- mixture_em_cpp(x = hours,
-                             event = state,
+                             status = state,
                              post = post_dirichlet,
                              distribution = "weibull",
                              k = 2,

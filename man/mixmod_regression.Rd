@@ -29,7 +29,7 @@ the \emph{segmented} package. A maximum of three subgroups can be obtained.
     Preferred. Provide the output of \code{\link{estimate_cdf}} directly.
   }
   \item{\code{\link[=mixmod_regression.default]{default}}}{
-    Provide \code{x}, \code{y} and \code{event} manually.
+    Provide \code{x}, \code{y} and \code{status} manually.
   }
 }
 }

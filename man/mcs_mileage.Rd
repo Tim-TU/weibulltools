@@ -7,7 +7,7 @@ Approach}
 \usage{
 mcs_mileage(
   x,
-  event,
+  status,
   mileage,
   distribution = "lognormal",
   seed = NULL,
@@ -17,7 +17,7 @@ mcs_mileage(
 \arguments{
 \item{x}{A numeric vector of operating times. If not available use \code{NA}.}
 
-\item{event}{A vector of binary data (0 or 1) indicating whether unit \emph{i}
+\item{status}{A vector of binary data (0 or 1) indicating whether unit \emph{i}
 is a right censored observation (= 0) or a failure (= 1).}
 
 \item{mileage}{A numeric vector of driven distances. If not available use \code{NA}.}
@@ -87,13 +87,13 @@ mileage <- c(5227, 15655, 13629, 18292, 24291, 34455, 33555, 21659, 21737,
              122437, 122842, 20349, 65656, 40777)
 state <- sample(c(0, 1), size = length(op_time), replace = TRUE)
 
-mileage_corrected <- mcs_mileage(x = op_time, event = state,
+mileage_corrected <- mcs_mileage(x = op_time, status = state,
                                  mileage = mileage,
                                  distribution = "lognormal", seed = NULL,
                                  details = FALSE)
 
 # Example 2 - Detailed list output (complete data):
-list_detail <- mcs_mileage(x = op_time, event = state, mileage = mileage,
+list_detail <- mcs_mileage(x = op_time, status = state, mileage = mileage,
                                distribution = "lognormal", seed = NULL,
                                details = TRUE)
 
@@ -106,7 +106,7 @@ mileage <- c(NA, 15655, 13629, NA, 24291, 34455, NA, 21659, 21737,
 state <- c(0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0,
            1, 1, 0, 1)
 
-list_detail <- mcs_mileage(x = op_time, event = state, mileage = mileage,
+list_detail <- mcs_mileage(x = op_time, status = state, mileage = mileage,
                                distribution = "lognormal", seed = NULL,
                                details = TRUE)
 }

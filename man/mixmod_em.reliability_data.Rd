@@ -99,7 +99,7 @@ state <- c(1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1,
          0, 1, 1, 1, 1, 1, 1)
 
 mix_mod_em <- mixmod_em(x = hours,
-                        event = state,
+                        status = state,
                         distribution = "weibull",
                         conf_level = 0.95,
                         k = 2,
