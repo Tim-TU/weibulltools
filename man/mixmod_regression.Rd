@@ -3,45 +3,9 @@
 \encoding{UTF-8}
 \name{mixmod_regression}
 \alias{mixmod_regression}
-\alias{mixmod_regression.cdf_estimation}
-\alias{mixmod_regression.default}
 \title{Mixture Model Identification using Segmented Regression}
 \usage{
 mixmod_regression(x, ...)
-
-\method{mixmod_regression}{cdf_estimation}(
-  x,
-  distribution = c("weibull", "lognormal", "loglogistic"),
-  conf_level = 0.95
-)
-
-\method{mixmod_regression}{default}(
-  x,
-  y,
-  event,
-  distribution = c("weibull", "lognormal", "loglogistic"),
-  conf_level = 0.95
-)
-}
-\arguments{
-\item{x}{A numeric vector which consists of lifetime data. Lifetime
-data could be every characteristic influencing the reliability of a
-product, e.g. operating time (days/months in service), mileage (km,
-miles), load cycles.}
-
-\item{distribution}{Supposed distribution of the random variable. The
-value can be \code{"weibull"}, \code{"lognormal"} or \code{"loglogistic"}.
-Other distributions have not been implemented yet.}
-
-\item{conf_level}{Confidence level of the interval. The default value is
-\code{conf_level = 0.95}.}
-
-\item{y}{A numeric vector which consists of estimated failure
-probabilities regarding the lifetime data in \code{x}.}
-
-\item{event}{A vector of binary data (0 or 1) indicating whether
-unit \emph{i} is a right censored observation (= 0) or a
-failure (= 1).}
 }
 \value{
 Returns a list where the length of the list depends on
@@ -59,32 +23,17 @@ the documentation of the function \link{segmented.lm}, which is part of
 the \emph{segmented} package. A maximum of three subgroups can be obtained.
 }
 \section{Methods (by class)}{
-\itemize{
-\item \code{cdf_estimation}: Provide cdf_estimation.
 
-\item \code{default}: Provide x, y and event manually.
-}}
-
-\examples{
-# Data is taken from given reference:
-hours <- c(2, 28, 67, 119, 179, 236, 282, 317, 348, 387, 3, 31, 69, 135,
-          191, 241, 284, 318, 348, 392, 5, 31, 76, 144, 203, 257, 286,
-          320, 350, 412, 8, 52, 78, 157, 211, 261, 298, 327, 360, 446,
-          13, 53, 104, 160, 221, 264, 303, 328, 369, 21, 64, 113, 168,
-          226, 278, 314, 328, 377)
-
-status <- c(1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1,
-          1, 0, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 0, 0,
-          1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-          0, 1, 1, 1, 1, 1, 1)
-
-data <- reliability_data(x = hours, status = status)
-
-tbl_john <- estimate_cdf(data, methods = "johnson")
-
-mix_mod <- mixmod_regression(tbl_john, distribution = "weibull")
-
+\describe{
+  \item{\code{\link[=mixmod_regression.cdf_estimation]{cdf_estimation}}}{
+    Preferred. Provide the output of \code{\link{estimate_cdf}} directly.
+  }
+  \item{\code{\link[=mixmod_regression.default]{default}}}{
+    Provide \code{x}, \code{y} and \code{event} manually.
+  }
 }
+}
+
 \references{
 Doganaksoy, N.; Hahn, G.; Meeker, W. Q., Reliability Analysis by
   Failure Mode, Quality Progress, 35(6), 47-52, 2002

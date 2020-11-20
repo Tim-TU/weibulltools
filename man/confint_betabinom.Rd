@@ -20,7 +20,7 @@ by rank regression are needed.
 \section{Methods (by class)}{
 
 \describe{
-  \item{\code{\link[=confint_betabinom.parameter_estimation]{parameter_estimation}}}{
+  \item{\code{\link[=confint_betabinom.model_estimation]{model_estimation}}}{
     Preferred. Provide the output of \code{\link{rank_regression}}.
    }
   \item{\code{\link[=confint_betabinom.default]{default}}}{

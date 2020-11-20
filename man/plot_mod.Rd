@@ -3,125 +3,32 @@
 \encoding{UTF-8}
 \name{plot_mod}
 \alias{plot_mod}
-\alias{plot_mod.parameter_estimation}
-\alias{plot_mod.default}
-\title{Adding an Estimated Population Line to a Probability Plot}
+\title{Add Estimated Population Line(s) to a Probability Plot}
 \usage{
 plot_mod(p_obj, x, ...)
-
-\method{plot_mod}{parameter_estimation}(p_obj, parameter_estimation, title_trace = "Fit")
-
-\method{plot_mod}{default}(
-  p_obj,
-  x,
-  y = NULL,
-  loc_sc_params,
-  distribution = c("weibull", "lognormal", "loglogistic", "normal", "logistic", "sev",
-    "weibull3", "lognormal3", "loglogistic3"),
-  title_trace = "Fit"
-)
-}
-\arguments{
-\item{p_obj}{A plotly object provided by function \code{\link{plot_prob}}.}
-
-\item{x}{A numeric vector containing the x-coordinates of the regression line.}
-
-\item{title_trace}{A character string whis is assigned to the trace shown in
-the legend.}
-
-\item{y}{A numeric vector containing the y-coordinates of the regression line.
-The default value of y is \code{NULL}. If \code{y} is set \code{NULL} the
-y-coordinates with respect to \code{x} are calculated by function
-\code{predict_prob} using estimated coefficients in \code{loc_sc_params}. If
-confidence interval(s) should be added to the plot y should not be set to
-\code{NULL}. For more information see \strong{Details} in \code{\link{plot_conf}}.}
-
-\item{loc_sc_params}{A (named) numeric vector of estimated location
-and scale parameters for a specified distribution. The order of
-elements is important. First entry needs to be the location
-parameter \eqn{\mu} and the second element needs to be the scale
-parameter \eqn{\sigma}. If a three-parametric model is used the third element
-is the threshold parameter \eqn{\gamma}.}
-
-\item{distribution}{Supposed distribution of the random variable.}
 }
 \value{
 Returns a plotly object containing the probability plot with
   plotting positions and the estimated regression line.
 }
 \description{
-This function adds a regression line to an existing probability plot using a
-model estimated by \code{\link{rank_regression}} or \code{\link{ml_estimation}}.
+This function adds regression lines to an existing probability plot using a
+model estimated by \code{\link{rank_regression}} or
+\code{\link{ml_estimation}}.
 }
 \section{Methods (by class)}{
-\itemize{
-\item \code{parameter_estimation}: Providing \code{\link{parameter_estimation}} as output from
-\code{\link{ml_estimation}} or \code{\link{rank_regression}}.
 
-\item \code{default}: Providing x, y, loc_sc_params and distribution manually.
-}}
-
-\examples{
-# Alloy T7987 dataset taken from Meeker and Escobar(1998, p. 131)
-cycles   <- c(300, 300, 300, 300, 300, 291, 274, 271, 269, 257, 256, 227, 226,
-              224, 213, 211, 205, 203, 197, 196, 190, 189, 188, 187, 184, 180,
-              180, 177, 176, 173, 172, 171, 170, 170, 169, 168, 168, 162, 159,
-              159, 159, 159, 152, 152, 149, 149, 144, 143, 141, 141, 140, 139,
-              139, 136, 135, 133, 131, 129, 123, 121, 121, 118, 117, 117, 114,
-              112, 108, 104, 99, 99, 96, 94)
-status <- c(rep(0, 5), rep(1, 67))
-
-data <- reliability_data(x = cycles, status = status)
-
-tbl_john <- estimate_cdf(data, methods = c("johnson", "nelson"))
-
-# Example 1: Probability Plot and Regression Line Three-Parameter-Weibull:
-plot_weibull <- plot_prob(
-  tbl_john,
-  distribution = "weibull",
-  title_main = "Three-Parametric Weibull",
-  title_x = "Cycles",
-  title_y = "Probability of Failure in \%",
-  title_trace = "Failed Items"
-)
-
-mrr <- rank_regression(
-  tbl_john,
-  distribution = "weibull3",
-  conf_level = .90
-)
-
-plot_reg_weibull <- plot_mod(
-  p_obj = plot_weibull,
-  parameter_estimation = mrr,
-  title_trace = "Estimated Weibull CDF"
-)
-
-
-
-# Example 2: Probability Plot and Regression Line Three-Parameter-Lognormal:
-plot_lognormal <- plot_prob(
-  tbl_john,
-  distribution = "lognormal",
-  title_main = "Three-Parametric Lognormal",
-  title_x = "Cycles",
-  title_y = "Probability of Failure in \%",
-  title_trace = "Failed Items"
-)
-
-mrr_ln <- rank_regression(
-  tbl_john,
-  distribution = "lognormal3",
-  conf_level = .90
-)
-
-plot_reg_lognormal <- plot_mod(
-  p_obj = plot_lognormal,
-  parameter_estimation = mrr_ln,
-  title_trace = "Estimated Lognormal CDF"
-)
-
+\describe{
+  \item{\code{\link[=plot_mod.model_estimation]{model_estimation(_list)}}}{
+    Preferred. Provide the output of either \code{\link{ml_estimation}} or
+    \code{\link{rank_regression}} directly.
+  }
+  \item{\code{\link[=plot_mod.default]{default}}}{
+    Provide \code{x}, \code{loc_sc_params} and \code{distribution} manually.
+  }
 }
+}
+
 \references{
 Meeker, William Q; Escobar, Luis A., Statistical methods for
   reliability data, New York: Wiley series in probability and statistics, 1998

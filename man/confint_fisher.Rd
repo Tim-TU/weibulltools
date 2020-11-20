@@ -20,7 +20,7 @@ of these need to be estimated by Maximum Likelihood.
 \section{Methods (by class)}{
 
 \describe{
-  \item{\code{\link[=confint_fisher.parameter_estimation]{parameter_estimation}}}{
+  \item{\code{\link[=confint_fisher.model_estimation]{model_estimation}}}{
     Preferred. Provide the output of \code{\link{ml_estimation}}.
   }
   \item{\code{\link[=confint_fisher.default]{default}}}{

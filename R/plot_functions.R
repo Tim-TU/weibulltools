@@ -75,66 +75,22 @@ plot_layout <- function(
 #' argument \code{title_x} respective \code{title_y}, i.e. if
 #' \code{title_x = "Mileage in km"} the x label of the marker is "Mileage".
 #'
+#' @section Methods (by class):
+#' \describe{
+#'   \item{\code{\link[=plot_prob.cdf_estimation]{cdf_estimation}}}{
+#'     Preferred. Provide the output of \code{\link{estimate_cdf}} directly.
+#'   }
+#'   \item{\code{\link[=plot_prob.default]{default}}}{
+#'     Provide \code{x}, \code{y}, \code{event} and \code{id} manually.
+#'   }
+#' }
+#'
 #' @encoding UTF-8
 #' @references Meeker, William Q; Escobar, Luis A., Statistical methods for
 #'   reliability data, New York: Wiley series in probability and statistics, 1998
 #'
-#' @param x A numeric vector which consists of lifetime data. Lifetime
-#'   data could be every characteristic influencing the reliability of a product,
-#'   e.g. operating time (days/months in service), mileage (km, miles), load
-#'   cycles.
-#' @param y A numeric vector which consists of estimated failure probabilities
-#'   regarding the lifetime data in \code{x}.
-#' @param event A vector of binary data (0 or 1) indicating whether unit \emph{i}
-#'   is a right censored observation (= 0) or a failure (= 1).
-#' @param id A character vector for the identification of every unit.
-#' @param cdf_estimation CDF estimation returned by \code{\link{estimate_cdf}}.
-#' @param distribution Supposed distribution of the random variable.
-#' @param title_main A character string which is assigned to the main title
-#'   of the plot.
-#' @param title_x A character string which is assigned to the title of the
-#'   x axis.
-#' @param title_y A character string which is assigned to the title of the
-#'   y axis.
-#' @param title_trace A character string whis is assigned to the trace shown in
-#'   the legend.
-#' @param plot_method Package, which is used for generating the plot output.
-#'
 #' @return Returns a plotly object containing the layout of the probability plot
 #'   provided by \code{\link{plot_layout}} and the plotting positions.
-#'
-#' @examples
-#' # Alloy T7987 dataset taken from Meeker and Escobar(1998, p. 131)
-#' cycles   <- c(300, 300, 300, 300, 300, 291, 274, 271, 269, 257, 256, 227, 226,
-#'               224, 213, 211, 205, 203, 197, 196, 190, 189, 188, 187, 184, 180,
-#'               180, 177, 176, 173, 172, 171, 170, 170, 169, 168, 168, 162, 159,
-#'               159, 159, 159, 152, 152, 149, 149, 144, 143, 141, 141, 140, 139,
-#'               139, 136, 135, 133, 131, 129, 123, 121, 121, 118, 117, 117, 114,
-#'               112, 108, 104, 99, 99, 96, 94)
-#' status <- c(rep(0, 5), rep(1, 67))
-#' data <- reliability_data(x = cycles, status = status)
-#'
-#' tbl_john <- estimate_cdf(data, methods = c("johnson", "kaplan"))
-#'
-#' # Example 1: Probability Plot Weibull:
-#' plot_weibull <- plot_prob(
-#'   tbl_john,
-#'   distribution = "weibull",
-#'   title_main = "Weibull Analysis",
-#'   title_x = "Cycles",
-#'   title_y = "Probability of Failure in %",
-#'   title_trace = "Failed Items"
-#' )
-#'
-#' # Example 2: Probability Plot Lognormal:
-#' plot_lognormal <- plot_prob(
-#'   tbl_john,
-#'   distribution = "lognormal",
-#'   title_main = "Lognormal Analysis",
-#'   title_x = "Cycles",
-#'   title_y = "Probability of Failure in %",
-#'   title_trace = "Failed Items"
-#' )
 #'
 #' @export
 #'
@@ -146,11 +102,7 @@ plot_prob <- function(
 
 #' Probability Plotting Method for Univariate Lifetime Distributions
 #'
-#' @inherit plot_prob description details return
-#'
-#' @encoding UTF-8
-#' @references Meeker, William Q; Escobar, Luis A., Statistical methods for
-#'   reliability data, New York: Wiley series in probability and statistics, 1998
+#' @inherit plot_prob description details return references
 #'
 #' @param x A numeric vector which consists of lifetime data. Lifetime
 #'   data could be every characteristic influencing the reliability of a product,
@@ -161,7 +113,6 @@ plot_prob <- function(
 #' @param event A vector of binary data (0 or 1) indicating whether unit \emph{i}
 #'   is a right censored observation (= 0) or a failure (= 1).
 #' @param id A character vector for the identification of every unit.
-#' @param cdf_estimation CDF estimation returned by \code{\link{estimate_cdf}}.
 #' @param distribution Supposed distribution of the random variable.
 #' @param title_main A character string which is assigned to the main title
 #'   of the plot.
@@ -172,9 +123,6 @@ plot_prob <- function(
 #' @param title_trace A character string whis is assigned to the trace shown in
 #'   the legend.
 #' @param plot_method Package, which is used for generating the plot output.
-#'
-#' @return Returns a plotly object containing the layout of the probability plot
-#'   provided by \code{\link{plot_layout}} and the plotting positions.
 #'
 #' @examples
 #' # Alloy T7987 dataset taken from Meeker and Escobar(1998, p. 131)
@@ -210,7 +158,6 @@ plot_prob <- function(
 #' )
 #'
 #' @export
-#'
 plot_prob.default <- function(
   x, y, event,
   id = rep("XXXXXX", length(x)),
@@ -244,29 +191,9 @@ plot_prob.default <- function(
 
 #' Probability Plotting Method for Univariate Lifetime Distributions
 #'
-#' @description
-#' This function is used to apply the graphical technique of probability
-#' plotting.
+#' @inherit plot_prob description details return references
 #'
-#' @details
-#' The marker label for x and y are determined by the first word provided in the
-#' argument \code{title_x} respective \code{title_y}, i.e. if
-#' \code{title_x = "Mileage in km"} the x label of the marker is "Mileage".
-#'
-#' @encoding UTF-8
-#' @references Meeker, William Q; Escobar, Luis A., Statistical methods for
-#'   reliability data, New York: Wiley series in probability and statistics, 1998
-#'
-#' @param x A numeric vector which consists of lifetime data. Lifetime
-#'   data could be every characteristic influencing the reliability of a product,
-#'   e.g. operating time (days/months in service), mileage (km, miles), load
-#'   cycles.
-#' @param y A numeric vector which consists of estimated failure probabilities
-#'   regarding the lifetime data in \code{x}.
-#' @param event A vector of binary data (0 or 1) indicating whether unit \emph{i}
-#'   is a right censored observation (= 0) or a failure (= 1).
-#' @param id A character vector for the identification of every unit.
-#' @param cdf_estimation CDF estimation returned by \code{\link{estimate_cdf}}.
+#' @param x CDF estimation returned from \code{\link{estimate_cdf}}.
 #' @param distribution Supposed distribution of the random variable.
 #' @param title_main A character string which is assigned to the main title
 #'   of the plot.
@@ -277,9 +204,6 @@ plot_prob.default <- function(
 #' @param title_trace A character string whis is assigned to the trace shown in
 #'   the legend.
 #' @param plot_method Package, which is used for generating the plot output.
-#'
-#' @return Returns a plotly object containing the layout of the probability plot
-#'   provided by \code{\link{plot_layout}} and the plotting positions.
 #'
 #' @examples
 #' # Alloy T7987 dataset taken from Meeker and Escobar(1998, p. 131)
@@ -315,9 +239,8 @@ plot_prob.default <- function(
 #' )
 #'
 #' @export
-#'
 plot_prob.cdf_estimation <- function(
-  cdf_estimation,
+  x,
   distribution = c(
     "weibull", "lognormal", "loglogistic", "normal", "logistic", "sev"
   ),
@@ -331,7 +254,7 @@ plot_prob.cdf_estimation <- function(
   plot_method <- match.arg(plot_method)
 
   plot_prob_(
-    cdf_estimation = cdf_estimation,
+    cdf_estimation = x,
     distribution = distribution,
     title_main = title_main,
     title_x = title_x,
@@ -409,7 +332,7 @@ plot_prob_ <- function(
 #' @references Doganaksoy, N.; Hahn, G.; Meeker, W. Q., Reliability Analysis by
 #'   Failure Mode, Quality Progress, 35(6), 47-52, 2002
 #'
-#' @inheritParams plot_prob
+#' @inheritParams plot_prob.default
 #' @param mix_output A list provided by \code{\link{mixmod_regression}} or
 #'   \code{\link{mixmod_em}}, which consists of values necessary to visualize the
 #'   subgroups.The default value of \code{mix_output} is \code{NULL}.
@@ -477,7 +400,11 @@ plot_prob_ <- function(
 #'   title_trace = "Subgroup"
 #' )
 #'
-plot_prob_mix <- function(
+plot_prob_mix <- function(x, ...) {
+  UseMethod("plot_prob_mix")
+}
+
+plot_prob_mix.default <- function(
   x,
   event,
   id = rep("XXXXXX", length(x)),
@@ -497,8 +424,9 @@ plot_prob_mix <- function(
     stop("No valid distribution! Use weibull to visualize EM results")
   }
 
+  data <- reliability_data(x = x, status = event, id = id)
   tbl_group <- plot_prob_mix_helper(
-    x, event, id, distribution, mix_output, title_trace
+    data, distribution, mix_output, title_trace
   )
 
   # Plot layout:
@@ -525,34 +453,47 @@ plot_prob_mix <- function(
   )
 }
 
-#' Adding an Estimated Population Line to a Probability Plot
+#' Add Estimated Population Line(s) to a Probability Plot
 #'
-#' This function adds a regression line to an existing probability plot using a
-#' model estimated by \code{\link{rank_regression}} or \code{\link{ml_estimation}}.
+#' This function adds regression lines to an existing probability plot using a
+#' model estimated by \code{\link{rank_regression}} or
+#' \code{\link{ml_estimation}}.
+#'
+#' @section Methods (by class):
+#' \describe{
+#'   \item{\code{\link[=plot_mod.model_estimation]{model_estimation(_list)}}}{
+#'     Preferred. Provide the output of either \code{\link{ml_estimation}} or
+#'     \code{\link{rank_regression}} directly.
+#'   }
+#'   \item{\code{\link[=plot_mod.default]{default}}}{
+#'     Provide \code{x}, \code{loc_sc_params} and \code{distribution} manually.
+#'   }
+#' }
 #'
 #' @encoding UTF-8
 #' @references Meeker, William Q; Escobar, Luis A., Statistical methods for
 #'   reliability data, New York: Wiley series in probability and statistics, 1998
 #'
-#' @param p_obj A plotly object provided by function \code{\link{plot_prob}}.
-#' @param x A numeric vector containing the x-coordinates of the regression line.
-#' @param y A numeric vector containing the y-coordinates of the regression line.
-#'   The default value of y is \code{NULL}. If \code{y} is set \code{NULL} the
-#'   y-coordinates with respect to \code{x} are calculated by function
-#'   \code{predict_prob} using estimated coefficients in \code{loc_sc_params}. If
-#'   confidence interval(s) should be added to the plot y should not be set to
-#'   \code{NULL}. For more information see \strong{Details} in \code{\link{plot_conf}}.
-#' @param loc_sc_params A (named) numeric vector of estimated location
-#'   and scale parameters for a specified distribution. The order of
-#'   elements is important. First entry needs to be the location
-#'   parameter \eqn{\mu} and the second element needs to be the scale
-#'   parameter \eqn{\sigma}. If a three-parametric model is used the third element
-#'   is the threshold parameter \eqn{\gamma}.
-#' @inheritParams plot_prob
-#'
 #' @return Returns a plotly object containing the probability plot with
 #'   plotting positions and the estimated regression line.
+#'
 #' @export
+#'
+plot_mod <- function(
+  p_obj, x, ...
+) {
+  UseMethod("plot_mod", x)
+}
+
+#' Add Estimated Population Line(s) to a Probability Plot
+#'
+#' @inherit plot_mod description return references
+#'
+#' @param p_obj A plot object returned from \code{\link{plot_prob}}.
+#' @param x An object of class \code{model_estimation} or
+#'   \code{model_estimation_list} returned by either
+#'   \code{\link{ml_estimation}} or \code{\link{rank_regression}}.
+#' @inheritParams plot_prob.cdf_estimation
 #'
 #' @examples
 #' # Alloy T7987 dataset taken from Meeker and Escobar(1998, p. 131)
@@ -586,7 +527,7 @@ plot_prob_mix <- function(
 #'
 #' plot_reg_weibull <- plot_mod(
 #'   p_obj = plot_weibull,
-#'   parameter_estimation = mrr,
+#'   x = mrr,
 #'   title_trace = "Estimated Weibull CDF"
 #' )
 #'
@@ -610,45 +551,150 @@ plot_prob_mix <- function(
 #'
 #' plot_reg_lognormal <- plot_mod(
 #'   p_obj = plot_lognormal,
-#'   parameter_estimation = mrr_ln,
+#'   x = mrr_ln,
 #'   title_trace = "Estimated Lognormal CDF"
 #' )
 #'
-plot_mod <- function(
-  p_obj, x, ...
-) {
-  UseMethod("plot_mod", x)
-}
-
 #' @export
 #'
-#' @describeIn plot_mod Providing \code{\link{parameter_estimation}} as output from
-#' \code{\link{ml_estimation}} or \code{\link{rank_regression}}.
-plot_mod.parameter_estimation <- function(
-  p_obj, parameter_estimation, title_trace = "Fit"
+plot_mod.model_estimation <- function(
+  p_obj, x, title_trace = "Fit"
 ) {
 
   plot_mod.default(
     p_obj = p_obj,
-    x = parameter_estimation$data$characteristic,
-    y = NULL,
-    loc_sc_params = parameter_estimation$loc_sc_params,
-    distribution = parameter_estimation$distribution,
+    x = range(x$data$characteristic),
+    loc_sc_params = x$loc_sc_params,
+    distribution = x$distribution,
     title_trace = title_trace
   )
 }
 
+#' @rdname plot_mod.model_estimation
+#'
 #' @export
 #'
-#' @describeIn plot_mod Providing x, y, loc_sc_params and distribution manually.
-plot_mod.default <- function(
-  p_obj, x,
-  y = NULL, loc_sc_params,
-  distribution = c(
-    "weibull", "lognormal", "loglogistic", "normal", "logistic", "sev", "weibull3",
-    "lognormal3", "loglogistic3"
-  ),
-  title_trace = "Fit"
+plot_mod.model_estimation_list <- function(
+  p_obj, x, title_trace = "Fit"
+) {
+  # Plot method is determined by p_obj
+  plot_method <- if ("gg" %in% class(p_obj)) {
+    "ggplot2"
+  } else if ("plotly" %in% class(p_obj)) {
+    "plotly"
+  }  else {
+    stop(
+      "p_obj is not a valid plot object. Provide either a ggplot2 or a plotly
+      plot object."
+    )
+  }
+
+  methods <- names(x)
+
+  tbl_pred <- purrr::map2_dfr(x, methods, function(model_estimation, method) {
+    plot_mod_helper(
+      x = range(model_estimation$data$characteristic),
+      loc_sc_params = model_estimation$loc_sc_params,
+      distribution = model_estimation$distribution,
+      method = method
+    )
+  })
+
+  plot_mod_fun <- if (plot_method == "plotly") plot_mod_plotly else
+    plot_mod_ggplot2
+
+  plot_mod_fun(
+    p_obj = p_obj,
+    tbl_pred = tbl_pred,
+    title_trace = title_trace
+  )
+}
+
+#' Add Estimated Population Line to a Probability Plot
+#'
+#' @inherit plot_mod description return references
+#'
+#' @param x A numeric vector containing the x-coordinates of the regression line.
+#' @param loc_sc_params A (named) numeric vector of estimated location
+#'   and scale parameters for a specified distribution. The order of
+#'   elements is important. First entry needs to be the location
+#'   parameter \eqn{\mu} and the second element needs to be the scale
+#'   parameter \eqn{\sigma}. If a three-parametric model is used the third element
+#'   is the threshold parameter \eqn{\gamma}.
+#' @inheritParams plot_mod.model_estimation
+#' @inheritParams plot_prob.default
+#'
+#' @examples
+#' # Alloy T7987 dataset taken from Meeker and Escobar(1998, p. 131)
+#' cycles   <- c(300, 300, 300, 300, 300, 291, 274, 271, 269, 257, 256, 227, 226,
+#'               224, 213, 211, 205, 203, 197, 196, 190, 189, 188, 187, 184, 180,
+#'               180, 177, 176, 173, 172, 171, 170, 170, 169, 168, 168, 162, 159,
+#'               159, 159, 159, 152, 152, 149, 149, 144, 143, 141, 141, 140, 139,
+#'               139, 136, 135, 133, 131, 129, 123, 121, 121, 118, 117, 117, 114,
+#'               112, 108, 104, 99, 99, 96, 94)
+#' status <- c(rep(0, 5), rep(1, 67))
+#'
+#' data <- reliability_data(x = cycles, status = status)
+#'
+#' tbl_john <- estimate_cdf(data, methods = c("johnson", "nelson"))
+#'
+#' # Example 1: Probability Plot and Regression Line Three-Parameter-Weibull:
+#' plot_weibull <- plot_prob(
+#'   tbl_john,
+#'   distribution = "weibull",
+#'   title_main = "Three-Parametric Weibull",
+#'   title_x = "Cycles",
+#'   title_y = "Probability of Failure in %",
+#'   title_trace = "Failed Items"
+#' )
+#'
+#' mrr <- rank_regression(
+#'   tbl_john,
+#'   distribution = "weibull3",
+#'   conf_level = .90
+#' )
+#'
+#' plot_reg_weibull <- plot_mod(
+#'   p_obj = plot_weibull,
+#'   model_estimation = mrr,
+#'   title_trace = "Estimated Weibull CDF"
+#' )
+#'
+#'
+#'
+#' # Example 2: Probability Plot and Regression Line Three-Parameter-Lognormal:
+#' plot_lognormal <- plot_prob(
+#'   tbl_john,
+#'   distribution = "lognormal",
+#'   title_main = "Three-Parametric Lognormal",
+#'   title_x = "Cycles",
+#'   title_y = "Probability of Failure in %",
+#'   title_trace = "Failed Items"
+#' )
+#'
+#' mrr_ln <- rank_regression(
+#'   tbl_john,
+#'   distribution = "lognormal3",
+#'   conf_level = .90
+#' )
+#'
+#' plot_reg_lognormal <- plot_mod(
+#'   p_obj = plot_lognormal,
+#'   model_estimation = mrr_ln,
+#'   title_trace = "Estimated Lognormal CDF"
+#' )
+#'
+#' @export
+#'
+plot_mod.default <- function(p_obj,
+                             x,
+                             loc_sc_params,
+                             distribution = c(
+                              "weibull", "lognormal", "loglogistic", "normal",
+                              "logistic", "sev", "weibull3", "lognormal3",
+                              "loglogistic3"
+                             ),
+                             title_trace = "Fit"
 ) {
 
   distribution <- match.arg(distribution)
@@ -665,8 +711,8 @@ plot_mod.default <- function(
     )
   }
 
-  mod_helper <- plot_mod_helper(
-    x, y, loc_sc_params, distribution
+  tbl_pred <- plot_mod_helper(
+    x, loc_sc_params, distribution
   )
 
   plot_mod_fun <- if (plot_method == "plotly") plot_mod_plotly else
@@ -674,9 +720,7 @@ plot_mod.default <- function(
 
   plot_mod_fun(
     p_obj = p_obj,
-    tbl_pred = mod_helper$tbl_pred,
-    param_val = mod_helper$param_val,
-    param_label = mod_helper$param_label,
+    tbl_pred = tbl_pred,
     title_trace = title_trace
   )
 }
@@ -702,8 +746,8 @@ plot_mod.default <- function(
 #' @param mix_output A list provided by \code{\link{mixmod_regression}} or
 #'   \code{\link{mixmod_em}}, which consists of elements necessary to visualize
 #'   the regression lines.
-#' @inheritParams plot_mod
-#' @inheritParams plot_prob
+#' @inheritParams plot_mod.default
+#' @inheritParams plot_prob.default
 #'
 #' @return Returns a plotly object containing the probability plot with
 #'   plotting positions and estimated regression line(s).
@@ -808,6 +852,38 @@ plot_mod_mix <- function(p_obj, x, event, mix_output,
 #' This function is used to add estimated confidence region(s) to an existing
 #' probability plot which also includes the estimated regression line.
 #'
+#' @section Methods (by class):
+#' \describe{
+#'   \item{\code{\link[=plot_conf.confint]{confint}}}{
+#'     Preferred. Provide the output of either \code{\link{confint_betabinom}}
+#'     or \code{\link{confint_fisher}} directly.
+#'   }
+#'   \item{\code{\link[=plot_conf.default]{default}}}{
+#'     Provide \code{x}, \code{y}, \code{distribution} and \code{direction}
+#'     manually.
+#'   }
+#' }
+#'
+#' @encoding UTF-8
+#' @references Meeker, William Q; Escobar, Luis A., Statistical methods for
+#'   reliability data, New York: Wiley series in probability and statistics, 1998
+#'
+#' @return Returns a plotly object containing the probability plot with
+#'   plotting positions, the estimated regression line and the estimated
+#'   confidence region(s).
+#'
+#' @export
+#'
+plot_conf <- function(p_obj, x, ...) {
+  # Dispatch on x, dispatch on p_obj is done in plot_conf.default
+  UseMethod("plot_conf", x)
+}
+
+#' Add Confidence Region(s) for Quantiles or Probabilities
+#'
+#' @inherit plot_conf description return references
+#'
+#' @details
 #' It is important that the length of the vectors provided as lists in \code{x}
 #' and \code{y} match with the length of the vectors \code{x} and \code{y} in
 #' the function \code{\link{plot_mod}}. For this reason the following procedure
@@ -820,25 +896,14 @@ plot_mod_mix <- function(p_obj, x, event, mix_output,
 #'     for \code{x} and \code{df$prob} for \code{y} of the function(s) named before.
 #'   \item In \strong{Examples} the described approach is shown with code.}
 #'
-#' @encoding UTF-8
-#' @references Meeker, William Q; Escobar, Luis A., Statistical methods for
-#'   reliability data, New York: Wiley series in probability and statistics, 1998
-#'
-#' @param p_obj A plotly object provided by \code{\link{plot_mod}}.
+#' @param p_obj A plot object returned from \code{\link{plot_mod}}.
 #' @param x A list containing the x-coordinates of the confidence region(s).
 #'   The list can be of length 1 or 2. For more information see \strong{Details}.
 #' @param y A list containing the y-coordinates of the Confidence Region(s).
 #'   The list can be of length 1 or 2. For more information see \strong{Details}.
 #' @param direction A character string specifying the direction of the plotted
 #'   interval(s). Must be either "y" (failure probabilities) or "x" (quantiles).
-#' @inheritParams plot_prob
-#' @param confint Confindence interval as returned by \code{\link{confint_betabinom}}
-#'   or \code{\link{confint_fisher}}.
-#'
-#' @return Returns a plotly object containing the probability plot with
-#'   plotting positions, the estimated regression line and the estimated
-#'   confidence region(s).
-#' @export
+#' @inheritParams plot_prob.default
 #'
 #' @examples
 #' # Alloy T7987 dataset taken from Meeker and Escobar(1998, p. 131)
@@ -932,14 +997,9 @@ plot_mod_mix <- function(p_obj, x, event, mix_output,
 #'                             direction = "y",
 #'                             distribution = "lognormal3",
 #'                             title_trace = "Confidence Region")
-
-plot_conf <- function(p_obj, x, ...) {
-  # Dispatch on x, dispatch on p_obj is done in plot_conf.default
-  UseMethod("plot_conf", x)
-}
-
+#'
 #' @export
-#' @describeIn plot_conf Provide x,y, direction and distribution manually.
+#'
 plot_conf.default <- function(
   p_obj, x, y,
   distribution = c(
@@ -984,31 +1044,132 @@ plot_conf.default <- function(
   )
 }
 
+#' Add Confidence Region(s) for Quantiles or Probabilities
+#'
+#' @inherit plot_conf description return references
+#'
+#' @inheritParams plot_conf.default
+#' @inheritParams plot_prob.cdf_estimation
+#' @param x Confindence interval as returned by \code{\link{confint_betabinom}}
+#'   or \code{\link{confint_fisher}}.
+#'
+#' @examples
+#' # Alloy T7987 dataset taken from Meeker and Escobar(1998, p. 131)
+#' cycles   <- c(300, 300, 300, 300, 300, 291, 274, 271, 269, 257, 256, 227, 226,
+#'               224, 213, 211, 205, 203, 197, 196, 190, 189, 188, 187, 184, 180,
+#'               180, 177, 176, 173, 172, 171, 170, 170, 169, 168, 168, 162, 159,
+#'               159, 159, 159, 152, 152, 149, 149, 144, 143, 141, 141, 140, 139,
+#'               139, 136, 135, 133, 131, 129, 123, 121, 121, 118, 117, 117, 114,
+#'               112, 108, 104, 99, 99, 96, 94)
+#' state <- c(rep(0, 5), rep(1, 67))
+#' id <- 1:length(cycles)
+#'
+#' df_john <- johnson_method(x = cycles, event = state, id = id)
+
+#' # Example 1: Probability Plot, Regression Line and Confidence Bounds for Three-Parameter-Weibull:
+#' mrr <- rank_regression(x = df_john$characteristic,
+#'                        y = df_john$prob,
+#'                        event = df_john$status,
+#'                        distribution = "weibull3",
+#'                        conf_level = .90)
+#'
+#' conf_betabin <- confint_betabinom(x = df_john$characteristic,
+#'                                   event = df_john$status,
+#'                                   loc_sc_params = mrr$loc_sc_params,
+#'                                   distribution = "weibull3",
+#'                                   bounds = "two_sided",
+#'                                   conf_level = 0.95,
+#'                                   direction = "y")
+#'
+#' plot_weibull <- plot_prob(x = df_john$characteristic,
+#'                           y = df_john$prob,
+#'                           event = df_john$status,
+#'                           id = df_john$id,
+#'                           distribution = "weibull",
+#'                           title_main = "Three-Parametric Weibull",
+#'                           title_x = "Cycles",
+#'                           title_y = "Probability of Failure in %",
+#'                           title_trace = "Failed Items")
+#'
+#' plot_reg_weibull <- plot_mod(p_obj = plot_weibull,
+#'                              x = conf_betabin$characteristic,
+#'                              y = conf_betabin$prob,
+#'                              loc_sc_params = mrr$loc_sc_params,
+#'                              distribution = "weibull3",
+#'                              title_trace = "Estimated Weibull CDF")
+#'
+#' plot_conf_beta <- plot_conf(p_obj = plot_reg_weibull,
+#'                             x = list(conf_betabin$characteristic),
+#'                             y = list(conf_betabin$lower_bound,
+#'                                      conf_betabin$upper_bound),
+#'                             direction = "y",
+#'                             distribution = "weibull3",
+#'                             title_trace = "Confidence Region")
+#'
+#' # Example 2: Probability Plot, Regression Line and Confidence Bounds for Three-Parameter-Lognormal:
+#' mrr_ln <- rank_regression(x = df_john$characteristic,
+#'                        y = df_john$prob,
+#'                        event = df_john$status,
+#'                        distribution = "lognormal3",
+#'                        conf_level = .90)
+#'
+#' conf_betabin_ln <- confint_betabinom(x = df_john$characteristic,
+#'                                   event = df_john$status,
+#'                                   loc_sc_params = mrr_ln$loc_sc_params,
+#'                                   distribution = "lognormal3",
+#'                                   bounds = "two_sided",
+#'                                   conf_level = 0.95,
+#'                                   direction = "y")
+#'
+#' plot_lognormal <- plot_prob(x = df_john$characteristic,
+#'                           y = df_john$prob,
+#'                           event = df_john$status,
+#'                           id = df_john$id,
+#'                           distribution = "lognormal",
+#'                           title_main = "Three-Parametric Lognormal",
+#'                           title_x = "Cycles",
+#'                           title_y = "Probability of Failure in %",
+#'                           title_trace = "Failed Items")
+#'
+#' plot_reg_lognormal <- plot_mod(p_obj = plot_lognormal,
+#'                              x = conf_betabin_ln$characteristic,
+#'                              y = conf_betabin_ln$prob,
+#'                              loc_sc_params = mrr_ln$loc_sc_params,
+#'                              distribution = "lognormal3",
+#'                              title_trace = "Estimated Lognormal CDF")
+#'
+#' plot_conf_beta_ln <- plot_conf(p_obj = plot_reg_lognormal,
+#'                             x = list(conf_betabin_ln$characteristic),
+#'                             y = list(conf_betabin_ln$lower_bound,
+#'                                      conf_betabin_ln$upper_bound),
+#'                             direction = "y",
+#'                             distribution = "lognormal3",
+#'                             title_trace = "Confidence Region")
+#'
 #' @export
-#' @describeIn plot_conf Add a confidence interval to \code{p_obj} based on the
-#' output of \code{\link{confint_fisher}} or \code{\link{confint_betabinom}}.
-plot_conf.confint <- function(p_obj, confint, title_trace) {
-  bounds <- attr(confint, "bounds")
-  direction <- attr(confint, "direction")
-  distribution <- attr(confint, "distribution")
+#'
+plot_conf.confint <- function(p_obj, x, title_trace) {
+  bounds <- attr(x, "bounds")
+  direction <- attr(x, "direction")
+  distribution <- attr(x, "distribution")
 
   if (direction == "x") {
     x <- switch(
       bounds,
-      "two_sided" = list(confint$lower_bound, confint$upper_bound),
-      "lower" = list(confint$lower_bound),
-      "upper" = list(confint$upper_bound)
+      "two_sided" = list(x$lower_bound, x$upper_bound),
+      "lower" = list(x$lower_bound),
+      "upper" = list(x$upper_bound)
     )
 
-    y <- confint$characteristic
+    y <- x$characteristic
   } else {
-    x <- confint$characteristic
+    x <- x$characteristic
 
     y <- switch(
       bounds,
-      "two_sided" = list(confint$lower_bound, confint$upper_bound),
-      "lower" = list(confint$lower_bound),
-      "upper" = list(confint$upper_bound)
+      "two_sided" = list(x$lower_bound, x$upper_bound),
+      "lower" = list(x$lower_bound),
+      "upper" = list(x$upper_bound)
     )
   }
 
@@ -1050,7 +1211,7 @@ plot_conf.confint <- function(p_obj, confint, title_trace) {
 #' @param plot_method Plot package, which produces the visual output. Only
 #'   used with \code{p_obj = NULL}, otherwise \code{p_obj} is used to determine
 #'   the plot method.
-#' @inheritParams plot_prob
+#' @inheritParams plot_prob.default
 #'
 #' @return A plot object which contains the linearized CDF(s).
 #'

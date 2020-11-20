@@ -158,6 +158,8 @@ plot_prob_plotly <- function(
       mode = "markers",
       hoverinfo = "text",
       name = name,
+      color = ~method,
+      legendgroup = ~method,
       text = paste(
         "ID:", prob_tbl$id,
         paste("<br>", paste0(mark_x, ":")), prob_tbl$characteristic,
@@ -215,30 +217,47 @@ plot_prob_mix_plotly <- function(
 }
 
 plot_mod_plotly <- function(
-  p_obj, tbl_pred, param_val, param_label, title_trace = "Fit"
+  p_obj, tbl_pred, title_trace = "Fit"
 ) {
 
   x_mark <- unlist(strsplit(p_obj$x$layoutAttrs[[2]]$xaxis$title$text, " "))[1]
   y_mark <- unlist(strsplit(p_obj$x$layoutAttrs[[2]]$yaxis$title$text, " "))[1]
 
-  # Defining hovertext regarding amount of parameters:
-  hovertext <- paste(
-    paste0(x_mark, ":"),
-    round(tbl_pred$x_p, digits = 2),
-    paste("<br>", paste0(y_mark, ":")),
-    round(tbl_pred$y_p, digits = 5),
-    "<br>",
-    paste(param_label[1], param_val[1]),
-    "<br>",
-    paste(param_label[2], param_val[2])
-  )
+  to_hovertext <- function(x_p, y_p, param_val, param_label) {
+    param_val <- unlist(param_val)
+    param_label <- unlist(param_label)
 
-  if (length(param_val) == 3) {
-    hovertext <- paste(
-      hovertext,
+    text <- paste(
+      paste0(x_mark, ":"),
+      round(x_p, digits = 2),
+      paste("<br>", paste0(y_mark, ":")),
+      round(y_p, digits = 5),
       "<br>",
-      paste(param_label[3], param_val[3])
+      paste(param_label[1], param_val[1]),
+      "<br>",
+      paste(param_label[2], param_val[2])
     )
+
+    if (length(param_val) == 3) {
+      text <- paste(
+        text,
+        "<br>",
+        paste(param_label[3], param_val[3])
+      )
+    }
+
+    text
+  }
+
+  # Defining hovertext regarding amount of parameters:
+  tbl_pred <- tbl_pred %>%
+    # Enables access of list column
+    dplyr::mutate(hovertext = to_hovertext(x_p, y_p, param_val, param_label))
+
+  name <- if (length(unique(tbl_pred$method)) == 1) {
+    title_trace
+  } else {
+    paste0(title_trace, ": ", tbl_pred$method)
   }
 
   p_mod <- plotly::add_lines(
@@ -249,9 +268,10 @@ plot_mod_plotly <- function(
     type = "scatter",
     mode = "lines",
     hoverinfo = "text",
-    color = I("#CC2222"),
-    name = title_trace,
-    text = hovertext
+    color = ~method,
+    name = name,
+    legendgroup = ~method,
+    text = ~hovertext
   )
 
   return(p_mod)
