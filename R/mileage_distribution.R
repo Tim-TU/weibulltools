@@ -5,7 +5,7 @@
 #' supposed distribution, using MLE.
 #'
 #' @param x A numeric vector of operating times. If not available use \code{NA}.
-#' @param event A vector of binary data (0 or 1) indicating whether unit \emph{i}
+#' @param status A vector of binary data (0 or 1) indicating whether unit \emph{i}
 #'   is a right censored observation (= 0) or a failure (= 1).
 #' @param mileage A numeric vector of driven distances. If not available use \code{NA}.
 #' @param distribution Supposed distribution of the random variable. The default
@@ -34,15 +34,15 @@
 #'              NA, 122842, 20349, NA, NA)
 #' state <- c(0, 1, 1, 1, 0, 0, 1, 0, 1, 1, 1, 0, 1, 0, 0, 1, 0, 1, 0, 1, 1, 0, 0)
 #'
-#' params_mileage_annual <- dist_mileage(x = op_time, event = state,
+#' params_mileage_annual <- dist_mileage(x = op_time, status = state,
 #'                                       mileage = mileage,
 #'                                       distribution = "lognormal")
 
-dist_mileage <- function(x, event, mileage, distribution = "lognormal") {
+dist_mileage <- function(x, status, mileage, distribution = "lognormal") {
 
-  x_event <- x[event == 1]
-  miles_event <- mileage[event == 1]
-  miles_annual <- (miles_event / x_event) * 365
+  x_status <- x[status == 1]
+  miles_status <- mileage[status == 1]
+  miles_annual <- (miles_status / x_status) * 365
 
   if (distribution == "lognormal") {
     logmu_mileage <- mean(log(miles_annual[miles_annual > 0]), na.rm = TRUE)
@@ -122,13 +122,13 @@ dist_mileage <- function(x, event, mileage, distribution = "lognormal") {
 #'              122437, 122842, 20349, 65656, 40777)
 #' state <- sample(c(0, 1), size = length(op_time), replace = TRUE)
 #'
-#' mileage_corrected <- mcs_mileage(x = op_time, event = state,
+#' mileage_corrected <- mcs_mileage(x = op_time, status = state,
 #'                                  mileage = mileage,
 #'                                  distribution = "lognormal", seed = NULL,
 #'                                  details = FALSE)
 #'
 #' # Example 2 - Detailed list output (complete data):
-#' list_detail <- mcs_mileage(x = op_time, event = state, mileage = mileage,
+#' list_detail <- mcs_mileage(x = op_time, status = state, mileage = mileage,
 #'                                distribution = "lognormal", seed = NULL,
 #'                                details = TRUE)
 #'
@@ -141,11 +141,11 @@ dist_mileage <- function(x, event, mileage, distribution = "lognormal") {
 #' state <- c(0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0,
 #'            1, 1, 0, 1)
 #'
-#' list_detail <- mcs_mileage(x = op_time, event = state, mileage = mileage,
+#' list_detail <- mcs_mileage(x = op_time, status = state, mileage = mileage,
 #'                                distribution = "lognormal", seed = NULL,
 #'                                details = TRUE)
 
-mcs_mileage <- function(x, event, mileage, distribution = "lognormal",
+mcs_mileage <- function(x, status, mileage, distribution = "lognormal",
                         seed = NULL, details = FALSE) {
 
   # Generate integer that sets the seed (if NULL) in set.seed() function.
@@ -157,10 +157,10 @@ mcs_mileage <- function(x, event, mileage, distribution = "lognormal",
   set.seed(int_seed)
 
   # Number of Monte Carlo simulated random numbers, i.e. number of censored data.
-  n_rand <- sum(event == 0)
+  n_rand <- sum(status == 0)
 
   if (distribution == "lognormal") {
-    params <- dist_mileage(x = x, event = event, mileage = mileage,
+    params <- dist_mileage(x = x, status = status, mileage = mileage,
                            distribution = "lognormal")
 
     mileage_sim <- stats::rlnorm(n = n_rand, meanlog = params[[1]],
@@ -169,7 +169,7 @@ mcs_mileage <- function(x, event, mileage, distribution = "lognormal",
     stop("No valid distribution!")
   }
 
-  mileage[event == 0] <- mileage_sim * (x[event == 0]) / 365
+  mileage[status == 0] <- mileage_sim * (x[status == 0]) / 365
 
   if (details == FALSE) {
     output <- mileage

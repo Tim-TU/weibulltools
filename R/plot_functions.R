@@ -33,7 +33,7 @@
 #' grid_normal <- plot_layout(x = x_layout,
 #'                             distribution = "normal",
 #'                             title_main = "Normal Grid",
-#'                             title_x = "Time to Event",
+#'                             title_x = "Time to status",
 #'                             title_y = "Failure Probability in %")
 plot_layout <- function(
   x,
@@ -81,7 +81,7 @@ plot_layout <- function(
 #'     Preferred. Provide the output of \code{\link{estimate_cdf}} directly.
 #'   }
 #'   \item{\code{\link[=plot_prob.default]{default}}}{
-#'     Provide \code{x}, \code{y}, \code{event} and \code{id} manually.
+#'     Provide \code{x}, \code{y}, \code{status} and \code{id} manually.
 #'   }
 #' }
 #'
@@ -110,7 +110,7 @@ plot_prob <- function(
 #'   cycles.
 #' @param y A numeric vector which consists of estimated failure probabilities
 #'   regarding the lifetime data in \code{x}.
-#' @param event A vector of binary data (0 or 1) indicating whether unit \emph{i}
+#' @param status A vector of binary data (0 or 1) indicating whether unit \emph{i}
 #'   is a right censored observation (= 0) or a failure (= 1).
 #' @param id A character vector for the identification of every unit.
 #' @param distribution Supposed distribution of the random variable.
@@ -159,7 +159,7 @@ plot_prob <- function(
 #'
 #' @export
 plot_prob.default <- function(
-  x, y, event,
+  x, y, status,
   id = rep("XXXXXX", length(x)),
   distribution = c(
     "weibull", "lognormal", "loglogistic", "normal", "logistic", "sev"
@@ -174,7 +174,7 @@ plot_prob.default <- function(
   plot_method <- match.arg(plot_method)
 
   cdf_estimation <- tibble::tibble(
-    characteristic = x, prob = y, status = event, id = id,
+    characteristic = x, prob = y, status = status, id = id,
     method = title_trace
   )
 
@@ -356,7 +356,7 @@ plot_prob_ <- function(
 #'
 #' # Example 1 - mix_output = NULL:
 #' plot_weibull <- plot_prob_mix(x = hours,
-#'                               event = state,
+#'                               status = state,
 #'                               id = id,
 #'                               distribution = "weibull",
 #'                               mix_output = NULL,
@@ -366,11 +366,11 @@ plot_prob_ <- function(
 #'                               title_trace = "Failed Items")
 #'
 #' # Example 2 - Using result of mixmod_em in mix_output:
-#' mix_mod_em <- mixmod_em(x = hours, event = state, distribution = "weibull",
+#' mix_mod_em <- mixmod_em(x = hours, status = state, distribution = "weibull",
 #'                         conf_level = 0.95, k = 2, method = "EM", n_iter = 150)
 #'
 #' plot_weibull_em <- plot_prob_mix(x = hours,
-#'                                  event = state,
+#'                                  status = state,
 #'                                  id = id,
 #'                                  distribution = "weibull",
 #'                                  mix_output = mix_mod_em,
@@ -380,17 +380,17 @@ plot_prob_ <- function(
 #'                                  title_trace = "Subgroup")
 #'
 #' # Example 3 - Using result of mixmod_regression in mix_output:
-#' john <- johnson_method(x = hours, event = state)
+#' john <- johnson_method(x = hours, status = state)
 #' mix_mod_reg <- mixmod_regression(
 #'   x = john$characteristic,
 #'   y = john$prob,
-#'   event = john$status,
+#'   status = john$status,
 #'   distribution = "weibull"
 #' )
 #'
 #' plot_weibull_reg <- plot_prob_mix(
 #'   x = hours,
-#'   event = state,
+#'   status = state,
 #'   id = id,
 #'   distribution = "weibull",
 #'   mix_output = mix_mod_reg,
@@ -407,7 +407,7 @@ plot_prob_mix <- function(x, ...) {
 #' @export
 plot_prob_mix.default <- function(
   x,
-  event,
+  status,
   id = rep("XXXXXX", length(x)),
   distribution = c("weibull", "lognormal", "loglogistic"),
   mix_output = NULL,
@@ -425,7 +425,7 @@ plot_prob_mix.default <- function(
     stop("No valid distribution! Use weibull to visualize EM results")
   }
 
-  data <- reliability_data(x = x, status = event, id = id)
+  data <- reliability_data(x = x, status = status, id = id)
   tbl_group <- plot_prob_mix_helper(
     data, distribution, mix_output, title_trace
   )
@@ -768,11 +768,11 @@ plot_mod.default <- function(p_obj,
 #' id <- 1:length(hours)
 #'
 #' # Example 1 - Using result of mixmod_em in mix_output:
-#' mix_mod_em <- mixmod_em(x = hours, event = state, distribution = "weibull",
+#' mix_mod_em <- mixmod_em(x = hours, status = state, distribution = "weibull",
 #'                         conf_level = 0.95, k = 2, method = "EM", n_iter = 150)
 #'
 #' plot_weibull_em <- plot_prob_mix(x = hours,
-#'                                  event = state,
+#'                                  status = state,
 #'                                  id = id,
 #'                                  distribution = "weibull",
 #'                                  mix_output = mix_mod_em,
@@ -783,20 +783,20 @@ plot_mod.default <- function(p_obj,
 #'
 #' plot_weibull_emlines <- plot_mod_mix(p_obj = plot_weibull_em,
 #'                                    x = hours,
-#'                                    event = state,
+#'                                    status = state,
 #'                                    mix_output = mix_mod_em,
 #'                                    distribution = "weibull",
 #'                                    title_trace = "Fitted Line")
 #'
 #' # Example 2 - Using result of mixmod_regression in mix_output:
-#' john <- johnson_method(x = hours, event = state)
+#' john <- johnson_method(x = hours, status = state)
 #' mix_mod_reg <- mixmod_regression(x = john$characteristic,
 #'                                  y = john$prob,
-#'                                  event = john$status,
+#'                                  status = john$status,
 #'                                  distribution = "weibull")
 #'
 #' plot_weibull_reg <- plot_prob_mix(x = hours,
-#'                                   event = state,
+#'                                   status = state,
 #'                                   id = id,
 #'                                   distribution = "weibull",
 #'                                   mix_output = mix_mod_reg,
@@ -807,13 +807,13 @@ plot_mod.default <- function(p_obj,
 #'
 #' plot_weibull_reglines <- plot_mod_mix(p_obj = plot_weibull_reg,
 #'                                    x = hours,
-#'                                    event = state,
+#'                                    status = state,
 #'                                    mix_output = mix_mod_reg,
 #'                                    distribution = "weibull",
 #'                                    title_trace = "Fitted Line")
 
 
-plot_mod_mix <- function(p_obj, x, event, mix_output,
+plot_mod_mix <- function(p_obj, x, status, mix_output,
   distribution = c("weibull", "lognormal", "loglogistic"),
   title_trace = "Fit") {
 
@@ -836,7 +836,7 @@ plot_mod_mix <- function(p_obj, x, event, mix_output,
   }
 
   tbl_group <- plot_mod_mix_helper(
-    x, event, mix_output, distribution, title_trace
+    x, status, mix_output, distribution, title_trace
   )
 
   plot_mod_mix_fun <- if (plot_method == "plotly") plot_mod_mix_plotly else
@@ -917,17 +917,17 @@ plot_conf <- function(p_obj, x, ...) {
 #' state <- c(rep(0, 5), rep(1, 67))
 #' id <- 1:length(cycles)
 #'
-#' df_john <- johnson_method(x = cycles, event = state, id = id)
+#' df_john <- johnson_method(x = cycles, status = state, id = id)
 
 #' # Example 1: Probability Plot, Regression Line and Confidence Bounds for Three-Parameter-Weibull:
 #' mrr <- rank_regression(x = df_john$characteristic,
 #'                        y = df_john$prob,
-#'                        event = df_john$status,
+#'                        status = df_john$status,
 #'                        distribution = "weibull3",
 #'                        conf_level = .90)
 #'
 #' conf_betabin <- confint_betabinom(x = df_john$characteristic,
-#'                                   event = df_john$status,
+#'                                   status = df_john$status,
 #'                                   loc_sc_params = mrr$loc_sc_params,
 #'                                   distribution = "weibull3",
 #'                                   bounds = "two_sided",
@@ -936,7 +936,7 @@ plot_conf <- function(p_obj, x, ...) {
 #'
 #' plot_weibull <- plot_prob(x = df_john$characteristic,
 #'                           y = df_john$prob,
-#'                           event = df_john$status,
+#'                           status = df_john$status,
 #'                           id = df_john$id,
 #'                           distribution = "weibull",
 #'                           title_main = "Three-Parametric Weibull",
@@ -962,12 +962,12 @@ plot_conf <- function(p_obj, x, ...) {
 #' # Example 2: Probability Plot, Regression Line and Confidence Bounds for Three-Parameter-Lognormal:
 #' mrr_ln <- rank_regression(x = df_john$characteristic,
 #'                        y = df_john$prob,
-#'                        event = df_john$status,
+#'                        status = df_john$status,
 #'                        distribution = "lognormal3",
 #'                        conf_level = .90)
 #'
 #' conf_betabin_ln <- confint_betabinom(x = df_john$characteristic,
-#'                                   event = df_john$status,
+#'                                   status = df_john$status,
 #'                                   loc_sc_params = mrr_ln$loc_sc_params,
 #'                                   distribution = "lognormal3",
 #'                                   bounds = "two_sided",
@@ -976,7 +976,7 @@ plot_conf <- function(p_obj, x, ...) {
 #'
 #' plot_lognormal <- plot_prob(x = df_john$characteristic,
 #'                           y = df_john$prob,
-#'                           event = df_john$status,
+#'                           status = df_john$status,
 #'                           id = df_john$id,
 #'                           distribution = "lognormal",
 #'                           title_main = "Three-Parametric Lognormal",
@@ -1065,17 +1065,17 @@ plot_conf.default <- function(
 #' state <- c(rep(0, 5), rep(1, 67))
 #' id <- 1:length(cycles)
 #'
-#' df_john <- johnson_method(x = cycles, event = state, id = id)
+#' df_john <- johnson_method(x = cycles, status = state, id = id)
 
 #' # Example 1: Probability Plot, Regression Line and Confidence Bounds for Three-Parameter-Weibull:
 #' mrr <- rank_regression(x = df_john$characteristic,
 #'                        y = df_john$prob,
-#'                        event = df_john$status,
+#'                        status = df_john$status,
 #'                        distribution = "weibull3",
 #'                        conf_level = .90)
 #'
 #' conf_betabin <- confint_betabinom(x = df_john$characteristic,
-#'                                   event = df_john$status,
+#'                                   status = df_john$status,
 #'                                   loc_sc_params = mrr$loc_sc_params,
 #'                                   distribution = "weibull3",
 #'                                   bounds = "two_sided",
@@ -1084,7 +1084,7 @@ plot_conf.default <- function(
 #'
 #' plot_weibull <- plot_prob(x = df_john$characteristic,
 #'                           y = df_john$prob,
-#'                           event = df_john$status,
+#'                           status = df_john$status,
 #'                           id = df_john$id,
 #'                           distribution = "weibull",
 #'                           title_main = "Three-Parametric Weibull",
@@ -1110,12 +1110,12 @@ plot_conf.default <- function(
 #' # Example 2: Probability Plot, Regression Line and Confidence Bounds for Three-Parameter-Lognormal:
 #' mrr_ln <- rank_regression(x = df_john$characteristic,
 #'                        y = df_john$prob,
-#'                        event = df_john$status,
+#'                        status = df_john$status,
 #'                        distribution = "lognormal3",
 #'                        conf_level = .90)
 #'
 #' conf_betabin_ln <- confint_betabinom(x = df_john$characteristic,
-#'                                   event = df_john$status,
+#'                                   status = df_john$status,
 #'                                   loc_sc_params = mrr_ln$loc_sc_params,
 #'                                   distribution = "lognormal3",
 #'                                   bounds = "two_sided",
@@ -1124,7 +1124,7 @@ plot_conf.default <- function(
 #'
 #' plot_lognormal <- plot_prob(x = df_john$characteristic,
 #'                           y = df_john$prob,
-#'                           event = df_john$status,
+#'                           status = df_john$status,
 #'                           id = df_john$id,
 #'                           distribution = "lognormal",
 #'                           title_main = "Three-Parametric Lognormal",

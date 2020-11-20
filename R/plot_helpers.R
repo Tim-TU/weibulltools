@@ -76,7 +76,7 @@ plot_prob_mix_helper <- function(
   data, distribution, mix_output, title_trace
 ) {
   x <- data$x
-  event <- data$status
+  status <- data$status
   id <- data$id
 
   # check if mix_output is NULL or "em_results" is not a name of lists in mix_output!
@@ -125,12 +125,12 @@ plot_prob_mix_helper <- function(
     # Split observations by maximum a-posteriori method (MAP) used in mixmod_em:
     groups <- mix_output$em_results$groups
     x_split <- split(x, groups, lex.order = T)
-    ev_split <- split(event, groups, lex.order = T)
+    ev_split <- split(status, groups, lex.order = T)
     id_split <- split(id, groups, lex.order = T)
 
     # Apply johnson_method() for splitted observations:
     john_lst <- mapply(x_split, ev_split, id_split,
-                       FUN = function(x, d, id) suppressWarnings(johnson_method(x = x, event = d, id = id)),
+                       FUN = function(x, d, id) suppressWarnings(johnson_method(x = x, status = d, id = id)),
                        SIMPLIFY = FALSE)
 
     # Store dataframes in one dataframe:
@@ -219,7 +219,7 @@ plot_mod_helper <- function(
 }
 
 plot_mod_mix_helper <- function(
-  x, event, mix_output, distribution, title_trace
+  x, status, mix_output, distribution, title_trace
 ) {
   # Case where mixmod_regression() was used in mix_output!
   if (!("em_results" %in%  names(mix_output))) {
@@ -268,7 +268,7 @@ plot_mod_mix_helper <- function(
     # Split observations by maximum a-posteriori method (MAP) used in mixmod_em:
     groups <- mix_output$em_results$groups
     x_split <- split(x, groups, lex.order = T)
-    ev_split <- split(event, groups, lex.order = T)
+    ev_split <- split(status, groups, lex.order = T)
 
     # Apply predict_prob() for splitted observations (which failed) and parameters.
     lines_split <- mapply(

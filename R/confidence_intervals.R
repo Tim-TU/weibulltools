@@ -11,7 +11,7 @@
 #'     Preferred. Provide the output of \code{\link{rank_regression}}.
 #'    }
 #'   \item{\code{\link[=confint_betabinom.default]{default}}}{
-#'     Provide \code{x}, \code{event}, \code{loc_sc_params} and \code{distribution}
+#'     Provide \code{x}, \code{status}, \code{loc_sc_params} and \code{distribution}
 #'     manually.
 #'   }
 #' }
@@ -106,7 +106,7 @@ confint_betabinom.model_estimation <- function(
 
   confint_betabinom.default(
     x = data$characteristic,
-    event = data$status,
+    status = data$status,
     loc_sc_params = x$loc_sc_params,
     distribution = x$distribution,
     b_lives = b_lives,
@@ -126,7 +126,7 @@ confint_betabinom.model_estimation <- function(
 #'
 #' @param x A numeric vector which consists of lifetime data. \code{x} is used to
 #'   specify the range of confidence region(s).
-#' @param event A vector of binary data (0 or 1) indicating whether unit \emph{i}
+#' @param status A vector of binary data (0 or 1) indicating whether unit \emph{i}
 #'   is a right censored observation (= 0) or a failure (= 1).
 #' @inheritParams predict_quantile
 #' @inheritParams confint_betabinom.model_estimation
@@ -143,14 +143,14 @@ confint_betabinom.model_estimation <- function(
 #' mrr <- rank_regression(
 #'   x = tbl_john$characteristic,
 #'   y = tbl_john$prob,
-#'   event = tbl_john$status,
+#'   status = tbl_john$status,
 #'   distribution = "weibull",
 #'   conf_level = .95
 #' )
 #'
 #' conf_betabin <- confint_betabinom(
 #'   x = tbl_john$characteristic,
-#'   event = tbl_john$status,
+#'   status = tbl_john$status,
 #'   loc_sc_params = mrr$loc_sc_params,
 #'   distribution = "weibull"
 #'   bounds = "two_sided",
@@ -167,14 +167,14 @@ confint_betabinom.model_estimation <- function(
 #' mrr_weib3 <- rank_regression(
 #'   x = tbl_john_2$characteristic,
 #'   y = tbl_john_2$prob,
-#'   event = tbl_john_2$status,
+#'   status = tbl_john_2$status,
 #'   distribution = "weibull3",
 #'   conf_level = .95
 #' )
 #'
 #' conf_betabin_weib3 <- confint_betabinom(
 #'   x = tbl_john_2$characteristic,
-#'   event = tbl_john_2$status,
+#'   status = tbl_john_2$status,
 #'   loc_sc_params = mrr_weib3$loc_sc_params,
 #'   distribution = "weibull3",
 #'   bounds = "two_sided",
@@ -184,7 +184,7 @@ confint_betabinom.model_estimation <- function(
 #'
 #' @export
 confint_betabinom.default <- function(x,
-                                      event,
+                                      status,
                                       loc_sc_params,
                                       distribution = c(
                                         "weibull", "lognormal", "loglogistic",
@@ -202,7 +202,7 @@ confint_betabinom.default <- function(x,
   distribution <- match.arg(distribution)
 
   n <- length(x)
-  x_ob <- x[event == 1]
+  x_ob <- x[status == 1]
 
   x_y_b_lives <- add_b_lives(x_ob, loc_sc_params, distribution, b_lives)
 
@@ -452,7 +452,7 @@ delta_method_ <- function(p, loc_sc_params, loc_sc_varcov,
 #'     Preferred. Provide the output of \code{\link{ml_estimation}}.
 #'   }
 #'   \item{\code{\link[=confint_fisher.default]{default}}}{
-#'     Provide \code{x}, \code{event}, \code{loc_sc_params}, \code{loc_sc_varcov}
+#'     Provide \code{x}, \code{status}, \code{loc_sc_params}, \code{loc_sc_varcov}
 #'     and \code{distribution} manually.
 #'   }
 #' }
@@ -506,7 +506,7 @@ confint_fisher.model_estimation <- function(
 
   confint_fisher.default(
     x = data$characteristic,
-    event = data$status,
+    status = data$status,
     loc_sc_params = x$loc_sc_params,
     loc_sc_varcov = x$loc_sc_varcov,
     distribution = distribution,
@@ -541,7 +541,7 @@ confint_fisher.model_estimation <- function(
 #'
 #' conf_fish <- confint_fisher(
 #'   x = tbl_john$characteristic,
-#'   event = tbl_john$status,
+#'   status = tbl_john$status,
 #'   loc_sc_params = mle$loc_sc_params,
 #'   loc_sc_varcov = mle$loc_sc_varcov,
 #'   distribution = "weibull",
@@ -552,7 +552,7 @@ confint_fisher.model_estimation <- function(
 #' @export
 confint_fisher.default <- function(
   x,
-  event,
+  status,
   loc_sc_params,
   loc_sc_varcov,
   distribution = c(
@@ -570,7 +570,7 @@ confint_fisher.default <- function(
   distribution <- match.arg(distribution)
 
   n <- length(x)
-  x_ob <- x[event == 1]
+  x_ob <- x[status == 1]
 
   x_y_b_lives <- add_b_lives(x_ob, loc_sc_params, distribution, b_lives)
 
