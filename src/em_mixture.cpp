@@ -185,11 +185,11 @@ double logLikelihood(arma::mat& posterior, arma::mat& logDensity,
 //'          1, 0, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 0, 0,
 //'          1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1,
 //'          0, 1, 1, 1, 1, 1, 1)
-//' post_dirichlet <- LearnBayes::rdirichlet(n = length(hours),
-//'                                          par = rep(.1, 2))
+//' x_vec <- runif(n = length(hours))
+//' post <- matrix(c(x_vec, 1 - x_vec), ncol = 2)
 //' mix_mod_em <- mixture_em_cpp(x = hours,
 //'                              status = state,
-//'                              post = post_dirichlet,
+//'                              post = post,
 //'                              distribution = "weibull",
 //'                              k = 2,
 //'                              method = "EM",

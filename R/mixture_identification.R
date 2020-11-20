@@ -357,9 +357,8 @@ mixmod_em <- function(x, ...) {
 #'   \code{\link{reliability_data}}.
 #' @param post A numeric matrix specifiying initial a-posteriori probabilities.
 #'   If post is \code{NULL} (default) a-posteriori probabilities are assigned
-#'   randomly using the Dirichlet distribution (\code{\link{rdirichlet}} from
-#'   \emph{LearnBayes} Package), which is the conjugate prior of a Multinomial
-#'   distribution. This idea was taken from the blog post of Mr. Gelissen
+#'   randomly using the Dirichlet distribution, which is the conjugate prior of a
+#'   multinomial distribution. This idea was taken from the blog post of Mr. Gelissen
 #'   (linked under \emph{references}).
 #' @param distribution Supposed mixture model. Only \code{"weibull"} can be used.
 #'   Other distributions have not been implemented yet.
@@ -438,9 +437,8 @@ mixmod_em.reliability_data <- function(x,
 #'   is a right censored observation (= 0) or a failure (= 1).
 #' @param post A numeric matrix specifiying initial a-posteriori probabilities.
 #'   If post is \code{NULL} (default) a-posteriori probabilities are assigned
-#'   randomly using the Dirichlet distribution (\code{\link{rdirichlet}} from
-#'   \emph{LearnBayes} Package), which is the conjugate prior of a Multinomial
-#'   distribution. This idea was taken from the blog post of Mr. Gelissen
+#'   randomly using the Dirichlet distribution, which is the conjugate prior of a
+#'   multinomial distribution. This idea was taken from the blog post of Mr. Gelissen
 #'   (linked under \emph{references}).
 #' @param distribution Supposed mixture model. Only \code{"weibull"} can be used.
 #'   Other distributions have not been implemented yet.
@@ -494,7 +492,7 @@ mixmod_em.default <- function(x,
 
   # Providing initial random a-posteriors (see references, blog post Mr. Gelissen):
   if (is.null(post)) {
-    post <- LearnBayes::rdirichlet(n = length(x), par = rep(0.1, k))
+    post <- rdirichlet(n = length(x), par = rep(0.1, k))
   }
 
   # mixture_em_cpp() for applying EM-Algorithm:
@@ -542,4 +540,19 @@ mixmod_em.default <- function(x,
     groups = split_obs, logL = logL_complete, aic = aic_complete, bic = bic_complete)
 
   ml
+}
+
+# Function that simulates a sample from a Dirichlet distribution:
+rdirichlet <- function(n, par) {
+  k <- length(par)
+  z <- matrix(0, nrow = n, ncol = k)
+  s <- matrix(0, nrow = n)
+  for (i in 1:k) {
+    z[, i] <- stats::rgamma(n, shape = par[i])
+    s <- s + z[, i]
+  }
+  for (i in 1:k) {
+    z[, i] <- z[, i]/s
+  }
+  return(z)
 }

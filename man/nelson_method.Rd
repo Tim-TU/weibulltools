@@ -4,13 +4,16 @@
 \alias{nelson_method}
 \title{Estimation of Failure Probabilities using the Nelson-Aalen Estimator}
 \usage{
-nelson_method(x, event, id = rep("XXXXXX", length(x)))
+nelson_method(x, status, id = rep("XXXXXX", length(x)))
 }
 \arguments{
 \item{x}{A numeric vector which consists of lifetime data. Lifetime
 data could be every characteristic influencing the reliability of a product,
 e.g. operating time (days/months in service), mileage (km, miles), load
 cycles.}
+
+\item{status}{A vector of binary data (0 or 1) indicating whether unit \emph{i}
+is a right censored observation (= 0) or a failure (= 1).}
 
 \item{id}{A character vector for the identification of every unit.}
 }
@@ -38,6 +41,6 @@ state <- c(0, 1, 1, 0, 0, 0, 1, 0, 1, 0)
 uic   <- c("3435", "1203", "958X", "XX71", "abcd", "tz46",
            "fl29", "AX23","Uy12", "kl1a")
 
-tbl_nel <- nelson_method(x = obs, event = state, id = uic)
+tbl_nel <- nelson_method(x = obs, status = state, id = uic)
 
 }

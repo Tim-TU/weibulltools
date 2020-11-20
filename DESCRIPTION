@@ -43,7 +43,7 @@ License: GPL-2
 Imports:
     dplyr,
     ggplot2,
-    LearnBayes,
+    lifecycle, 
     magrittr,
     plotly,
     purrr,
@@ -53,8 +53,7 @@ Imports:
     SPREDA,
     survival,
     tibble,
-    tidyr,
-    lifecycle
+    tidyr
 LinkingTo: Rcpp (>= 0.12.18), RcppArmadillo
 Depends: R (>= 3.3.0)
 Encoding: UTF-8

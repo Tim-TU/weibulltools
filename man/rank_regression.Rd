@@ -59,7 +59,7 @@ standard errors for the parameters using \emph{Least Squares} in context of
     Preferred. Provide the output of \code{\link{estimate_cdf}} directly.
   }
   \item{\code{\link[=rank_regression.default]{default}}}{
-    Provide \code{x}, \code{y} and \code{event} manually.
+    Provide \code{x}, \code{y} and \code{status} manually.
   }
 }
 }
