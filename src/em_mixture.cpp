@@ -150,7 +150,7 @@ double logLikelihood(arma::mat& posterior, arma::mat& logDensity,
 //'  data could be every characteristic influencing the reliability of a product,
 //'  e.g. operating time (days/months in service), mileage (km, miles), load
 //'  cycles.
-//' @param event a vector of binary data (0 or 1) indicating whether unit \emph{i}
+//' @param status a vector of binary data (0 or 1) indicating whether unit \emph{i}
 //'   is a right censored observation (= 0) or a failure (= 1).
 //' @param post a numeric matrix specifiying initial a-posteriori probabilities.
 //'   The number of rows have to be in line with observations \code{x} and the
@@ -188,7 +188,7 @@ double logLikelihood(arma::mat& posterior, arma::mat& logDensity,
 //' post_dirichlet <- LearnBayes::rdirichlet(n = length(hours),
 //'                                          par = rep(.1, 2))
 //' mix_mod_em <- mixture_em_cpp(x = hours,
-//'                              event = state,
+//'                              status = state,
 //'                              post = post_dirichlet,
 //'                              distribution = "weibull",
 //'                              k = 2,
@@ -196,7 +196,7 @@ double logLikelihood(arma::mat& posterior, arma::mat& logDensity,
 //'                              n_iter = 150)
 //'
 // [[Rcpp::export]]
-List mixture_em_cpp(NumericVector& x, NumericVector& event, NumericMatrix post,
+List mixture_em_cpp(NumericVector& x, NumericVector& status, NumericMatrix post,
                     String distribution = "weibull", int k = 2,
                     String method = "EM", int n_iter = 100,
                     double conv_limit = 1e-6) {
@@ -217,13 +217,13 @@ List mixture_em_cpp(NumericVector& x, NumericVector& event, NumericMatrix post,
 
     //######## M-Step ###########
     if (method == "EM") {
-      parameter = MStepWeibull(x, posterior, event);
+      parameter = MStepWeibull(x, posterior, status);
     }
 
     //######## E-Step ###########
     arma::mat posterior_old = as<arma::mat>(posterior);
 
-    LikelihoodWeibull(x, parameter, event, prior, posterior, logL);
+    LikelihoodWeibull(x, parameter, status, prior, posterior, logL);
 
     normalize(posterior);
     prior = colMeans(posterior);

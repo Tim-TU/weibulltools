@@ -35,7 +35,7 @@ test_that("mixmod_em remains stable", {
 
   mix_mod_em <- mixmod_em(
     x = hours,
-    event = state,
+    status = state,
     distribution = "weibull",
     conf_level = 0.95,
     k = 2,

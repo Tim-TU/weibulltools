@@ -13,7 +13,7 @@
 #'     Preferred. Provide the output of \code{\link{estimate_cdf}} directly.
 #'   }
 #'   \item{\code{\link[=mixmod_regression.default]{default}}}{
-#'     Provide \code{x}, \code{y} and \code{event} manually.
+#'     Provide \code{x}, \code{y} and \code{status} manually.
 #'   }
 #' }
 #'
@@ -77,7 +77,7 @@ mixmod_regression.cdf_estimation <- function(
   mixmod_regression.default(
     x = x$characteristic,
     y = x$prob,
-    event = x$status,
+    status = x$status,
     distribution = distribution,
     conf_level = conf_level
   )
@@ -95,7 +95,7 @@ mixmod_regression.cdf_estimation <- function(
 #'   miles), load cycles.
 #' @param y A numeric vector which consists of estimated failure
 #'   probabilities regarding the lifetime data in \code{x}.
-#' @param event A vector of binary data (0 or 1) indicating whether
+#' @param status A vector of binary data (0 or 1) indicating whether
 #'   unit \emph{i} is a right censored observation (= 0) or a
 #'   failure (= 1).
 #' @param distribution Supposed distribution of the random variable. The
@@ -126,7 +126,7 @@ mixmod_regression.cdf_estimation <- function(
 #' @export
 #'
 mixmod_regression.default <- function(
-  x, y, event,
+  x, y, status,
   distribution = c("weibull", "lognormal", "loglogistic"),
   conf_level = .95
 ) {
@@ -134,8 +134,8 @@ mixmod_regression.default <- function(
   distribution <- match.arg(distribution)
 
   # Preparing for segmented regression
-  x_f <- x[event == 1]
-  y_f <- y[event == 1]
+  x_f <- x[status == 1]
+  y_f <- y[status == 1]
 
   if (distribution == "weibull") {
     mrr <- stats::lm(log(x_f) ~ SPREDA::qsev(y_f))
@@ -154,7 +154,7 @@ mixmod_regression.default <- function(
   mrr_0 <- rank_regression(
     x = x,
     y = y,
-    event = event,
+    status = status,
     distribution = distribution,
     conf_level = conf_level
   )
@@ -176,7 +176,7 @@ mixmod_regression.default <- function(
     x_1 <- x_f[groups == 0]
     y_1 <- y_f[groups == 0]
     mrr_1 <- rank_regression(x = x_1, y = y_1,
-                             event = rep(1, length(x_1)),
+                             status = rep(1, length(x_1)),
                              distribution = distribution,
                              conf_level = conf_level)
 
@@ -189,7 +189,7 @@ mixmod_regression.default <- function(
     mrr_23 <- rank_regression(
       x = x_rest,
       y = y_rest,
-      event = rep(1, length(x_rest)),
+      status = rep(1, length(x_rest)),
       distribution = distribution,
       conf_level = conf_level
     )
@@ -232,7 +232,7 @@ mixmod_regression.default <- function(
         mrr_2 <- rank_regression(
           x = x_2,
           y = y_2,
-          event = rep(1, length(x_2)),
+          status = rep(1, length(x_2)),
           distribution = distribution,
           conf_level = conf_level
         )
@@ -243,7 +243,7 @@ mixmod_regression.default <- function(
         mrr_12 <- rank_regression(
           x = c(x_1, x_2),
           y = c(y_1, y_2),
-          event = rep(1, length(c(x_1, x_2))),
+          status = rep(1, length(c(x_1, x_2))),
           distribution = distribution,
           conf_level = conf_level
         )
@@ -256,7 +256,7 @@ mixmod_regression.default <- function(
         mrr_3 <- rank_regression(
           x = x_3,
           y = y_3,
-          event = rep(1, length(x_3)),
+          status = rep(1, length(x_3)),
           distribution = distribution,
           conf_level = conf_level
         )
@@ -314,7 +314,7 @@ mixmod_regression.default <- function(
 #'     Preferred. Provide the output of \code{\link{reliability_data}} directly.
 #'   }
 #'   \item{\code{\link[=mixmod_em.default]{default}}}{
-#'     Provide \code{x} and \code{event} manually.
+#'     Provide \code{x} and \code{status} manually.
 #'   }
 #' }
 #'
@@ -387,7 +387,7 @@ mixmod_em <- function(x, ...) {
 #'          0, 1, 1, 1, 1, 1, 1)
 #'
 #' mix_mod_em <- mixmod_em(x = hours,
-#'                         event = state,
+#'                         status = state,
 #'                         distribution = "weibull",
 #'                         conf_level = 0.95,
 #'                         k = 2,
@@ -412,7 +412,7 @@ mixmod_em.reliability_data <- function(x,
 
   mixmod_em.default(
     x = x$x,
-    event = x$status,
+    status = x$status,
     post = post,
     distribution = distribution,
     conf_level = conf_level,
@@ -434,7 +434,7 @@ mixmod_em.reliability_data <- function(x,
 #'  data could be every characteristic influencing the reliability of a product,
 #'  e.g. operating time (days/months in service), mileage (km, miles), load
 #'  cycles.
-#' @param event A vector of binary data (0 or 1) indicating whether unit \emph{i}
+#' @param status A vector of binary data (0 or 1) indicating whether unit \emph{i}
 #'   is a right censored observation (= 0) or a failure (= 1).
 #' @param post A numeric matrix specifiying initial a-posteriori probabilities.
 #'   If post is \code{NULL} (default) a-posteriori probabilities are assigned
@@ -468,7 +468,7 @@ mixmod_em.reliability_data <- function(x,
 #'          0, 1, 1, 1, 1, 1, 1)
 #'
 #' mix_mod_em <- mixmod_em(x = hours,
-#'                         event = state,
+#'                         status = state,
 #'                         distribution = "weibull",
 #'                         conf_level = 0.95,
 #'                         k = 2,
@@ -478,7 +478,7 @@ mixmod_em.reliability_data <- function(x,
 #' @export
 #'
 mixmod_em.default <- function(x,
-                              event,
+                              status,
                               post = NULL,
                               distribution = "weibull",
                               conf_level = .95,
@@ -499,7 +499,7 @@ mixmod_em.default <- function(x,
 
   # mixture_em_cpp() for applying EM-Algorithm:
   mix_est <- mixture_em_cpp(x = x,
-                            event = event,
+                            status = status,
                             post = post,
                             distribution = distribution,
                             k = k,
@@ -509,7 +509,7 @@ mixmod_em.default <- function(x,
 
   ############## New Approach ##############
   # Try to apply ml_estimation where observations are weighted with a-posterioris:
-  ml <- try(apply(mix_est$posteriori, MARGIN = 2, FUN = ml_estimation, x = x, status = event,
+  ml <- try(apply(mix_est$posteriori, MARGIN = 2, FUN = ml_estimation, x = x, status = status,
     distribution = distribution, conf_level = conf_level), silent = TRUE)
   if (class(ml) == "try-error") {
         stop(paste(ml[1], sprintf("\n For k = %s subcomponents the above problem occured!", k),

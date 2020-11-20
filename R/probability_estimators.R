@@ -127,7 +127,7 @@ estimate_cdf <- function(
 #'   data could be every characteristic influencing the reliability of a product,
 #'   e.g. operating time (days/months in service), mileage (km, miles), load
 #'   cycles.
-#' @param event A vector of ones indicating that every unit \emph{i} has failed.
+#' @param status A vector of ones indicating that every unit \emph{i} has failed.
 #' @param id A character vector for the identification of every unit.
 #' @param method Method for the estimation of the cdf. Can be "benard" (default)
 #' or "invbeta".
@@ -143,17 +143,17 @@ estimate_cdf <- function(
 #' uic   <- c("3435", "1203", "958X", "XX71", "abcd", "tz46",
 #'            "fl29", "AX23", "Uy12", "kl1a")
 #'
-#' tbl_mr <- mr_method(x = obs, event = state, id = uic,
+#' tbl_mr <- mr_method(x = obs, status = state, id = uic,
 #'                    method = "benard")
 #'
 #' # Example 2
-#' tbl_mr_invbeta <- mr_method(x = obs, event = state, id = uic,
+#' tbl_mr_invbeta <- mr_method(x = obs, status = state, id = uic,
 #'                            method = "invbeta")
 #'
 #' @export
 mr_method <- function(
   x,
-  event = rep(1, length(x)),
+  status = rep(1, length(x)),
   id = rep("XXXXXX", length(x)),
   method = c("benard", "invbeta"),
   ties.method = c("max", "min", "average")
@@ -163,11 +163,11 @@ mr_method <- function(
   method <- match.arg(method)
   ties.method <- match.arg(ties.method)
 
-  if (!((length(x) == length(event)) && (length(x) == length(id)))) {
-    stop("x, event and id must be of same length.")
+  if (!((length(x) == length(status)) && (length(x) == length(id)))) {
+    stop("x, status and id must be of same length.")
   }
 
-  data <- reliability_data(x = x, status = event, id = id)
+  data <- reliability_data(x = x, status = status, id = id)
 
   mr_method_(data, method, ties.method)
 }
@@ -175,8 +175,8 @@ mr_method <- function(
 mr_method_ <- function(data, method = "benard", ties.method = "max") {
 
   if (!all(data$status == 1)) {
-    message("The mr method only considers failed units (event == 1) and does
-            not retain intact units (event == 0).")
+    message("The mr method only considers failed units (status == 1) and does
+            not retain intact units (status == 0).")
   }
 
   tbl_in <- data
@@ -215,7 +215,7 @@ mr_method_ <- function(data, method = "benard", ties.method = "max") {
 #' correction is done by calculating adjusted ranks which takes non-defective
 #' units into account.
 #'
-#' @param event A vector of binary data (0 or 1) indicating whether unit \emph{i}
+#' @param status A vector of binary data (0 or 1) indicating whether unit \emph{i}
 #'   is a right censored observation (= 0) or a failure (= 1).
 #' @inheritParams mr_method
 #'
@@ -230,18 +230,18 @@ mr_method_ <- function(data, method = "benard", ties.method = "max") {
 #' uic   <- c("3435", "1203", "958X", "XX71", "abcd", "tz46",
 #'            "fl29", "AX23", "Uy12", "kl1a")
 #'
-#' tbl_john <- johnson_method(x = obs, event = state, id = uic)
+#' tbl_john <- johnson_method(x = obs, status = state, id = uic)
 #'
 #' @export
-johnson_method <- function(x, event, id = rep("XXXXXX", length(x))) {
+johnson_method <- function(x, status, id = rep("XXXXXX", length(x))) {
 
   deprecate_soft("1.1.0", "johnson_method()")
 
-  if (!((length(x) == length(event)) && (length(x) == length(id)))) {
-    stop("x, event and id must be of same length.")
+  if (!((length(x) == length(status)) && (length(x) == length(id)))) {
+    stop("x, status and id must be of same length.")
   }
 
-  data <- reliability_data(x = x, status = event, id = id)
+  data <- reliability_data(x = x, status = status, id = id)
 
   johnson_method_(data)
 }
@@ -331,7 +331,7 @@ johnson_method_ <- function(data) {
 #' uic   <- c("3435", "1203", "958X", "XX71", "abcd", "tz46",
 #'            "fl29", "AX23","Uy12", "kl1a")
 #'
-#' tbl_kap <- kaplan_method(x = obs, event = state, id = uic)
+#' tbl_kap <- kaplan_method(x = obs, status = state, id = uic)
 #'
 #'# Example 2
 #' tbl <- tibble(obs = c(10000, 10000, 20000, 20000, 30000,
@@ -341,15 +341,15 @@ johnson_method_ <- function(data) {
 #'                          90000, 90000, 100000),
 #'                  state = rep(1, 23))
 #'
-#' tbl_kap2 <- kaplan_method(x = tbl$obs, event = tbl$state)
+#' tbl_kap2 <- kaplan_method(x = tbl$obs, status = tbl$state)
 #'
 #' @export
-kaplan_method <- function(x, event, id = rep("XXXXXX", length(x))) {
+kaplan_method <- function(x, status, id = rep("XXXXXX", length(x))) {
 
   deprecate_soft("1.1.0", "kaplan_method()")
 
-  if (!((length(x) == length(event)) && (length(x) == length(id)))) {
-    stop("x, event and id must be of same length.")
+  if (!((length(x) == length(status)) && (length(x) == length(id)))) {
+    stop("x, status and id must be of same length.")
   }
 
   data <- reliability_data(x = x, status = event, id = id)

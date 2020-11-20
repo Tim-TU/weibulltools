@@ -79,7 +79,7 @@ dist_delay_register <- function(date_prod, date_register,
 #'
 #' @inheritParams dist_delay_register
 #' @param x A numeric vector of operating times.
-#' @param event A vector of binary data (0 or 1) indicating whether unit \emph{i}
+#' @param status A vector of binary data (0 or 1) indicating whether unit \emph{i}
 #'   is a right censored observation (= 0) or a failure (= 1).
 #' @param distribution Supposed distribution of the random variable. The default
 #'   value is \code{"lognormal"}. So far no other distribution is implemented.
@@ -129,7 +129,7 @@ dist_delay_register <- function(date_prod, date_register,
 #' x_corrected <- mcs_delay_register(date_prod = date_of_production,
 #'                                   date_register = date_of_registration,
 #'                                   x = op_time,
-#'                                   event = state,
+#'                                   status = state,
 #'                                   distribution = "lognormal",
 #'                                   seed = NULL,
 #'                                   details = FALSE)
@@ -138,12 +138,12 @@ dist_delay_register <- function(date_prod, date_register,
 #' list_detail <- mcs_delay_register(date_prod = date_of_production,
 #'                                   date_register = date_of_registration,
 #'                                   x = op_time,
-#'                                   event = state,
+#'                                   status = state,
 #'                                   distribution = "lognormal",
 #'                                   seed = NULL,
 #'                                   details = TRUE)
 
-mcs_delay_register <- function(date_prod, date_register, x, event,
+mcs_delay_register <- function(date_prod, date_register, x, status,
                                distribution = "lognormal", seed = NULL,
                                details = FALSE) {
 
@@ -302,7 +302,7 @@ dist_delay_report <- function(date_repair, date_report,
 #' x_corrected <- mcs_delay_report(date_repair = date_of_repair,
 #'                                 date_report = date_of_report,
 #'                                 x = op_time,
-#'                                 event = state,
+#'                                 status = state,
 #'                                 distribution = "lognormal",
 #'                                 seed = NULL,
 #'                                 details = FALSE)
@@ -311,12 +311,12 @@ dist_delay_report <- function(date_repair, date_report,
 #' list_detail <- mcs_delay_report(date_repair = date_of_repair,
 #'                                 date_report = date_of_report,
 #'                                 x = op_time,
-#'                                 event = state,
+#'                                 status = state,
 #'                                 distribution = "lognormal",
 #'                                 seed = NULL,
 #'                                 details = TRUE)
 
-mcs_delay_report <- function(date_repair, date_report, x, event,
+mcs_delay_report <- function(date_repair, date_report, x, status,
                              distribution = "lognormal", details = FALSE,
                              seed = NULL) {
 
@@ -329,7 +329,7 @@ mcs_delay_report <- function(date_repair, date_report, x, event,
   set.seed(int_seed)
 
   # Number of Monte Carlo simulated random numbers, i.e. number of censored data.
-  n_rand <- sum(event == 0)
+  n_rand <- sum(status == 0)
 
   if (any(!stats::complete.cases(date_repair) | !stats::complete.cases(date_report))) {
     repair_date <- date_repair[(stats::complete.cases(date_repair) &
@@ -351,7 +351,7 @@ mcs_delay_report <- function(date_repair, date_report, x, event,
     stop("No valid distribution!")
   }
 
-  x[event == 0] <- x[event == 0] - x_sim
+  x[status == 0] <- x[status == 0] - x_sim
 
   if (details == FALSE) {
     output <- x
@@ -433,7 +433,7 @@ mcs_delay_report <- function(date_repair, date_report, x, event,
 #'                           date_repair = date_of_repair,
 #'                           date_report = date_of_report,
 #'                           x = op_time,
-#'                           event = state,
+#'                           status = state,
 #'                           distribution = "lognormal",
 #'                           seed = NULL,
 #'                           details = FALSE)
@@ -444,13 +444,13 @@ mcs_delay_report <- function(date_repair, date_report, x, event,
 #'                                 date_repair = date_of_repair,
 #'                                 date_report = date_of_report,
 #'                                 x = op_time,
-#'                                 event = state,
+#'                                 status = state,
 #'                                 distribution = "lognormal",
 #'                                 seed = NULL,
 #'                                 details = TRUE)
 
 mcs_delays <- function(date_prod, date_register, date_repair, date_report, x,
-                       event, distribution = "lognormal", details = FALSE,
+                       status, distribution = "lognormal", details = FALSE,
                        seed = NULL) {
 
   # Generate integer that sets the seed (if NULL) in set.seed() function.
@@ -465,7 +465,7 @@ mcs_delays <- function(date_prod, date_register, date_repair, date_report, x,
   # data.
 
   n_rand_regist <- sum(is.na(date_register))
-  n_rand_report <- sum(event == 0)
+  n_rand_report <- sum(status == 0)
 
   if (any(!stats::complete.cases(date_prod) | !stats::complete.cases(date_register))) {
     prod_date <- date_prod[(stats::complete.cases(date_prod) &
@@ -504,7 +504,7 @@ mcs_delays <- function(date_prod, date_register, date_repair, date_report, x,
   }
 
   x[is.na(date_register)] <- x[is.na(date_register)] - x_sim_regist
-  x[event == 0] <- x[event == 0] - x_sim_report
+  x[status == 0] <- x[status == 0] - x_sim_report
 
   if (details == FALSE) {
     output <- x
