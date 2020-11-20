@@ -27,7 +27,7 @@ argument \code{title_x} respective \code{title_y}, i.e. if
     Preferred. Provide the output of \code{\link{estimate_cdf}} directly.
   }
   \item{\code{\link[=plot_prob.default]{default}}}{
-    Provide \code{x}, \code{y}, \code{event} and \code{id} manually.
+    Provide \code{x}, \code{y}, \code{status} and \code{id} manually.
   }
 }
 }

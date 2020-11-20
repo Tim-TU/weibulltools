@@ -1,13 +1,13 @@
 # mixmod_regression remains stable
 
     $mod_1
-    Median Rank Regression
+    Rank Regression
     Coefficients:
        eta    beta  
     639.47    0.72  
     
     $mod_2
-    Median Rank Regression
+    Rank Regression
     Coefficients:
         eta     beta  
     311.704    3.976  

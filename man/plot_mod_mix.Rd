@@ -9,7 +9,7 @@ Probability Plot}
 plot_mod_mix(
   p_obj,
   x,
-  event,
+  status,
   mix_output,
   distribution = c("weibull", "lognormal", "loglogistic"),
   title_trace = "Fit"
@@ -20,7 +20,7 @@ plot_mod_mix(
 
 \item{x}{A numeric vector containing the x-coordinates of the regression line.}
 
-\item{event}{A vector of binary data (0 or 1) indicating whether unit \emph{i}
+\item{status}{A vector of binary data (0 or 1) indicating whether unit \emph{i}
 is a right censored observation (= 0) or a failure (= 1).}
 
 \item{mix_output}{A list provided by \code{\link{mixmod_regression}} or
@@ -61,11 +61,11 @@ state <- c(1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1,
 id <- 1:length(hours)
 
 # Example 1 - Using result of mixmod_em in mix_output:
-mix_mod_em <- mixmod_em(x = hours, event = state, distribution = "weibull",
+mix_mod_em <- mixmod_em(x = hours, status = state, distribution = "weibull",
                         conf_level = 0.95, k = 2, method = "EM", n_iter = 150)
 
 plot_weibull_em <- plot_prob_mix(x = hours,
-                                 event = state,
+                                 status = state,
                                  id = id,
                                  distribution = "weibull",
                                  mix_output = mix_mod_em,
@@ -76,20 +76,20 @@ plot_weibull_em <- plot_prob_mix(x = hours,
 
 plot_weibull_emlines <- plot_mod_mix(p_obj = plot_weibull_em,
                                    x = hours,
-                                   event = state,
+                                   status = state,
                                    mix_output = mix_mod_em,
                                    distribution = "weibull",
                                    title_trace = "Fitted Line")
 
 # Example 2 - Using result of mixmod_regression in mix_output:
-john <- johnson_method(x = hours, event = state)
+john <- johnson_method(x = hours, status = state)
 mix_mod_reg <- mixmod_regression(x = john$characteristic,
                                  y = john$prob,
-                                 event = john$status,
+                                 status = john$status,
                                  distribution = "weibull")
 
 plot_weibull_reg <- plot_prob_mix(x = hours,
-                                  event = state,
+                                  status = state,
                                   id = id,
                                   distribution = "weibull",
                                   mix_output = mix_mod_reg,
@@ -100,7 +100,7 @@ plot_weibull_reg <- plot_prob_mix(x = hours,
 
 plot_weibull_reglines <- plot_mod_mix(p_obj = plot_weibull_reg,
                                    x = hours,
-                                   event = state,
+                                   status = state,
                                    mix_output = mix_mod_reg,
                                    distribution = "weibull",
                                    title_trace = "Fitted Line")

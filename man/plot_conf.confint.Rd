@@ -35,16 +35,16 @@ cycles   <- c(300, 300, 300, 300, 300, 291, 274, 271, 269, 257, 256, 227, 226,
 state <- c(rep(0, 5), rep(1, 67))
 id <- 1:length(cycles)
 
-df_john <- johnson_method(x = cycles, event = state, id = id)
+df_john <- johnson_method(x = cycles, status = state, id = id)
 # Example 1: Probability Plot, Regression Line and Confidence Bounds for Three-Parameter-Weibull:
 mrr <- rank_regression(x = df_john$characteristic,
                        y = df_john$prob,
-                       event = df_john$status,
+                       status = df_john$status,
                        distribution = "weibull3",
                        conf_level = .90)
 
 conf_betabin <- confint_betabinom(x = df_john$characteristic,
-                                  event = df_john$status,
+                                  status = df_john$status,
                                   loc_sc_params = mrr$loc_sc_params,
                                   distribution = "weibull3",
                                   bounds = "two_sided",
@@ -53,7 +53,7 @@ conf_betabin <- confint_betabinom(x = df_john$characteristic,
 
 plot_weibull <- plot_prob(x = df_john$characteristic,
                           y = df_john$prob,
-                          event = df_john$status,
+                          status = df_john$status,
                           id = df_john$id,
                           distribution = "weibull",
                           title_main = "Three-Parametric Weibull",
@@ -79,12 +79,12 @@ plot_conf_beta <- plot_conf(p_obj = plot_reg_weibull,
 # Example 2: Probability Plot, Regression Line and Confidence Bounds for Three-Parameter-Lognormal:
 mrr_ln <- rank_regression(x = df_john$characteristic,
                        y = df_john$prob,
-                       event = df_john$status,
+                       status = df_john$status,
                        distribution = "lognormal3",
                        conf_level = .90)
 
 conf_betabin_ln <- confint_betabinom(x = df_john$characteristic,
-                                  event = df_john$status,
+                                  status = df_john$status,
                                   loc_sc_params = mrr_ln$loc_sc_params,
                                   distribution = "lognormal3",
                                   bounds = "two_sided",
@@ -93,7 +93,7 @@ conf_betabin_ln <- confint_betabinom(x = df_john$characteristic,
 
 plot_lognormal <- plot_prob(x = df_john$characteristic,
                           y = df_john$prob,
-                          event = df_john$status,
+                          status = df_john$status,
                           id = df_john$id,
                           distribution = "lognormal",
                           title_main = "Three-Parametric Lognormal",

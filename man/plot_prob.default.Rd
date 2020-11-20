@@ -7,7 +7,7 @@
 \method{plot_prob}{default}(
   x,
   y,
-  event,
+  status,
   id = rep("XXXXXX", length(x)),
   distribution = c("weibull", "lognormal", "loglogistic", "normal", "logistic", "sev"),
   title_main = "Probability Plot",
@@ -26,7 +26,7 @@ cycles.}
 \item{y}{A numeric vector which consists of estimated failure probabilities
 regarding the lifetime data in \code{x}.}
 
-\item{event}{A vector of binary data (0 or 1) indicating whether unit \emph{i}
+\item{status}{A vector of binary data (0 or 1) indicating whether unit \emph{i}
 is a right censored observation (= 0) or a failure (= 1).}
 
 \item{id}{A character vector for the identification of every unit.}

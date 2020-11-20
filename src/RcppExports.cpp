@@ -113,20 +113,20 @@ BEGIN_RCPP
 END_RCPP
 }
 // mixture_em_cpp
-List mixture_em_cpp(NumericVector& x, NumericVector& event, NumericMatrix post, String distribution, int k, String method, int n_iter, double conv_limit);
-RcppExport SEXP _weibulltools_mixture_em_cpp(SEXP xSEXP, SEXP eventSEXP, SEXP postSEXP, SEXP distributionSEXP, SEXP kSEXP, SEXP methodSEXP, SEXP n_iterSEXP, SEXP conv_limitSEXP) {
+List mixture_em_cpp(NumericVector& x, NumericVector& status, NumericMatrix post, String distribution, int k, String method, int n_iter, double conv_limit);
+RcppExport SEXP _weibulltools_mixture_em_cpp(SEXP xSEXP, SEXP statusSEXP, SEXP postSEXP, SEXP distributionSEXP, SEXP kSEXP, SEXP methodSEXP, SEXP n_iterSEXP, SEXP conv_limitSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< NumericVector& >::type x(xSEXP);
-    Rcpp::traits::input_parameter< NumericVector& >::type event(eventSEXP);
+    Rcpp::traits::input_parameter< NumericVector& >::type status(statusSEXP);
     Rcpp::traits::input_parameter< NumericMatrix >::type post(postSEXP);
     Rcpp::traits::input_parameter< String >::type distribution(distributionSEXP);
     Rcpp::traits::input_parameter< int >::type k(kSEXP);
     Rcpp::traits::input_parameter< String >::type method(methodSEXP);
     Rcpp::traits::input_parameter< int >::type n_iter(n_iterSEXP);
     Rcpp::traits::input_parameter< double >::type conv_limit(conv_limitSEXP);
-    rcpp_result_gen = Rcpp::wrap(mixture_em_cpp(x, event, post, distribution, k, method, n_iter, conv_limit));
+    rcpp_result_gen = Rcpp::wrap(mixture_em_cpp(x, status, post, distribution, k, method, n_iter, conv_limit));
     return rcpp_result_gen;
 END_RCPP
 }

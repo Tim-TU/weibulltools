@@ -24,7 +24,7 @@ of these need to be estimated by Maximum Likelihood.
     Preferred. Provide the output of \code{\link{ml_estimation}}.
   }
   \item{\code{\link[=confint_fisher.default]{default}}}{
-    Provide \code{x}, \code{event}, \code{loc_sc_params}, \code{loc_sc_varcov}
+    Provide \code{x}, \code{status}, \code{loc_sc_params}, \code{loc_sc_varcov}
     and \code{distribution} manually.
   }
 }

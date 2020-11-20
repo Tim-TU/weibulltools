@@ -6,7 +6,7 @@
 \usage{
 \method{confint_fisher}{default}(
   x,
-  event,
+  status,
   loc_sc_params,
   loc_sc_varcov,
   distribution = c("weibull", "lognormal", "loglogistic", "normal", "logistic", "sev",
@@ -21,7 +21,7 @@
 \item{x}{a numeric vector which consists of lifetime data. \code{x} is used to
 specify the range of confidence region(s).}
 
-\item{event}{A vector of binary data (0 or 1) indicating whether unit \emph{i}
+\item{status}{A vector of binary data (0 or 1) indicating whether unit \emph{i}
 is a right censored observation (= 0) or a failure (= 1).}
 
 \item{loc_sc_params}{a (named) numeric vector of estimated
@@ -80,7 +80,7 @@ mle <- ml_estimation(
 
 conf_fish <- confint_fisher(
   x = tbl_john$characteristic,
-  event = tbl_john$status,
+  status = tbl_john$status,
   loc_sc_params = mle$loc_sc_params,
   loc_sc_varcov = mle$loc_sc_varcov,
   distribution = "weibull",

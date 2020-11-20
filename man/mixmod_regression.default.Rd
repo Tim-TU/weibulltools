@@ -7,7 +7,7 @@
 \method{mixmod_regression}{default}(
   x,
   y,
-  event,
+  status,
   distribution = c("weibull", "lognormal", "loglogistic"),
   conf_level = 0.95
 )
@@ -21,7 +21,7 @@ miles), load cycles.}
 \item{y}{A numeric vector which consists of estimated failure
 probabilities regarding the lifetime data in \code{x}.}
 
-\item{event}{A vector of binary data (0 or 1) indicating whether
+\item{status}{A vector of binary data (0 or 1) indicating whether
 unit \emph{i} is a right censored observation (= 0) or a
 failure (= 1).}
 

@@ -352,7 +352,7 @@ kaplan_method <- function(x, status, id = rep("XXXXXX", length(x))) {
     stop("x, status and id must be of same length.")
   }
 
-  data <- reliability_data(x = x, status = event, id = id)
+  data <- reliability_data(x = x, status = status, id = id)
 
   kaplan_method_(data)
 }
@@ -440,18 +440,18 @@ kaplan_method_ <- function(data) {
 #' uic   <- c("3435", "1203", "958X", "XX71", "abcd", "tz46",
 #'            "fl29", "AX23","Uy12", "kl1a")
 #'
-#' tbl_nel <- nelson_method(x = obs, event = state, id = uic)
+#' tbl_nel <- nelson_method(x = obs, status = state, id = uic)
 #'
 #' @export
-nelson_method <- function(x, event, id = rep("XXXXXX", length(x))) {
+nelson_method <- function(x, status, id = rep("XXXXXX", length(x))) {
 
   deprecate_soft("1.1.0", "nelson_method()")
 
-  if (!((length(x) == length(event)) && (length(x) == length(id)))) {
-    stop("x, event and id must be of same length.")
+  if (!((length(x) == length(status)) && (length(x) == length(id)))) {
+    stop("x, status and id must be of same length.")
   }
 
-  data <- reliability_data(x = x, status = event, id = id)
+  data <- reliability_data(x = x, status = status, id = id)
 
   nelson_method_(data)
 }

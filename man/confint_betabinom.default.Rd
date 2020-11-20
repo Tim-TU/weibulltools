@@ -7,7 +7,7 @@
 \usage{
 \method{confint_betabinom}{default}(
   x,
-  event,
+  status,
   loc_sc_params,
   distribution = c("weibull", "lognormal", "loglogistic", "normal", "logistic", "sev",
     "weibull3", "lognormal3", "loglogistic3"),
@@ -21,7 +21,7 @@
 \item{x}{A numeric vector which consists of lifetime data. \code{x} is used to
 specify the range of confidence region(s).}
 
-\item{event}{A vector of binary data (0 or 1) indicating whether unit \emph{i}
+\item{status}{A vector of binary data (0 or 1) indicating whether unit \emph{i}
 is a right censored observation (= 0) or a failure (= 1).}
 
 \item{loc_sc_params}{A (named) numeric vector of estimated location
@@ -65,14 +65,14 @@ tbl_john <- estimate_cdf(tbl, methods = "johnson")
 mrr <- rank_regression(
   x = tbl_john$characteristic,
   y = tbl_john$prob,
-  event = tbl_john$status,
+  status = tbl_john$status,
   distribution = "weibull",
   conf_level = .95
 )
 
 conf_betabin <- confint_betabinom(
   x = tbl_john$characteristic,
-  event = tbl_john$status,
+  status = tbl_john$status,
   loc_sc_params = mrr$loc_sc_params,
   distribution = "weibull"
   bounds = "two_sided",
@@ -89,14 +89,14 @@ tbl_john_2 <- estimate_cdf(tbl_2, methods = "johnson")
 mrr_weib3 <- rank_regression(
   x = tbl_john_2$characteristic,
   y = tbl_john_2$prob,
-  event = tbl_john_2$status,
+  status = tbl_john_2$status,
   distribution = "weibull3",
   conf_level = .95
 )
 
 conf_betabin_weib3 <- confint_betabinom(
   x = tbl_john_2$characteristic,
-  event = tbl_john_2$status,
+  status = tbl_john_2$status,
   loc_sc_params = mrr_weib3$loc_sc_params,
   distribution = "weibull3",
   bounds = "two_sided",

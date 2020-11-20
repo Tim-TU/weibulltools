@@ -10,7 +10,7 @@ mcs_delays(
   date_repair,
   date_report,
   x,
-  event,
+  status,
   distribution = "lognormal",
   details = FALSE,
   seed = NULL
@@ -35,7 +35,7 @@ If no date is available use \code{NA}.}
 
 \item{x}{A numeric vector of operating times.}
 
-\item{event}{A vector of binary data (0 or 1) indicating whether unit \emph{i}
+\item{status}{A vector of binary data (0 or 1) indicating whether unit \emph{i}
 is a right censored observation (= 0) or a failure (= 1).}
 
 \item{distribution}{Supposed distribution of the random variable. The default
@@ -115,7 +115,7 @@ x_corrected <- mcs_delays(date_prod = date_of_production,
                           date_repair = date_of_repair,
                           date_report = date_of_report,
                           x = op_time,
-                          event = state,
+                          status = state,
                           distribution = "lognormal",
                           seed = NULL,
                           details = FALSE)
@@ -126,7 +126,7 @@ list_detail <- mcs_delays(date_prod = date_of_production,
                                 date_repair = date_of_repair,
                                 date_report = date_of_report,
                                 x = op_time,
-                                event = state,
+                                status = state,
                                 distribution = "lognormal",
                                 seed = NULL,
                                 details = TRUE)

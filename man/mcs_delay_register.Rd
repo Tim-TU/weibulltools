@@ -9,7 +9,7 @@ mcs_delay_register(
   date_prod,
   date_register,
   x,
-  event,
+  status,
   distribution = "lognormal",
   seed = NULL,
   details = FALSE
@@ -26,7 +26,7 @@ If no date is available use \code{NA}.}
 
 \item{x}{A numeric vector of operating times.}
 
-\item{event}{A vector of binary data (0 or 1) indicating whether unit \emph{i}
+\item{status}{A vector of binary data (0 or 1) indicating whether unit \emph{i}
 is a right censored observation (= 0) or a failure (= 1).}
 
 \item{distribution}{Supposed distribution of the random variable. The default
@@ -88,7 +88,7 @@ state <- c(0, 1, 1, 1, 0, 0, 1, 0, 1, 1, 1, 0, 1, 0, 0, 1, 0, 1, 0, 1, 1, 0, 0)
 x_corrected <- mcs_delay_register(date_prod = date_of_production,
                                   date_register = date_of_registration,
                                   x = op_time,
-                                  event = state,
+                                  status = state,
                                   distribution = "lognormal",
                                   seed = NULL,
                                   details = FALSE)
@@ -97,7 +97,7 @@ x_corrected <- mcs_delay_register(date_prod = date_of_production,
 list_detail <- mcs_delay_register(date_prod = date_of_production,
                                   date_register = date_of_registration,
                                   x = op_time,
-                                  event = state,
+                                  status = state,
                                   distribution = "lognormal",
                                   seed = NULL,
                                   details = TRUE)
