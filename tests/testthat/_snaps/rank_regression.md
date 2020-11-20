@@ -27,7 +27,7 @@
 
 ---
 
-    Median Rank Regression
+    Rank Regression
     Coefficients:
           eta       beta  
     1.048e+05  1.476e+00  
@@ -43,7 +43,7 @@
 
 ---
 
-    Median Rank Regression
+    Rank Regression
     Coefficients:
        eta    beta   gamma  
     96.749   1.525  88.428  
