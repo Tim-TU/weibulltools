@@ -453,10 +453,11 @@ plot_prob_mix.default <- function(
   )
 }
 
-#' Add an Estimated Population Line to a Probability Plot
+#' Add Estimated Population Line(s) to a Probability Plot
 #'
-#' This function regression lines to an existing probability plot using a model
-#' estimated by \code{\link{rank_regression}} or \code{\link{ml_estimation}}.
+#' This function adds regression lines to an existing probability plot using a
+#' model estimated by \code{\link{rank_regression}} or
+#' \code{\link{ml_estimation}}.
 #'
 #' @section Methods (by class):
 #' \describe{
