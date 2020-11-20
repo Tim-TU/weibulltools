@@ -70,7 +70,7 @@ grid_weibull <- plot_layout(
   title_x = "Time to Failure",
   title_y = "Failure Probability"
 )
-# Example 1: One line
+# Example 1: Two-parametric straight line
 pop_weibull <- plot_pop(
   p_obj = grid_weibull,
   x = range(x),
@@ -79,8 +79,19 @@ pop_weibull <- plot_pop(
   title_trace = "Population"
 )
 
-# Example 2: Multiple lines
+# Example 2: Three-parametric curved line
+x2 <- rweibull(n = 100, shape = 1, scale = 20000) + 5000
+
 pop_weibull2 <- plot_pop(
+  p_obj = NULL,
+  x = x2,
+  loc_sc_params_tbl = c(log(20000 - 5000), 1, 5000),
+  distribution = "weibull3",
+  title_trace = "Population"
+)
+
+# Example 3: Multiple lines
+pop_weibull3 <- plot_pop(
   p_obj = NULL,
   x = x,
   loc_sc_params_tbl = tibble(

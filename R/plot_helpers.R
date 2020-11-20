@@ -443,9 +443,13 @@ plot_pop_helper <- function(x, loc_sc_params_tbl, distribution, tol = 1e-6) {
 
   tbl_pop <- tbl_pop %>%
     dplyr::mutate(group = paste0(param_label_1, " ", param_val_1, ", ",
-                                 param_label_2, " ", param_val_2, ", ",
-                                 param_label_3, " ", param_val_3)) %>%
+                                 param_label_2, " ", param_val_2)) %>%
     dplyr::filter(y_s <= 1 - tol, y_s >= tol)
+
+    if (length(loc_sc_params_tbl) == 3) {
+      tbl_pop <- tbl_pop %>%
+        dplyr::mutate(group = paste0(group, ", ", param_label_3, " ", param_val_3))
+    }
 
   return(tbl_pop)
 }
