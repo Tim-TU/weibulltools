@@ -417,6 +417,16 @@ ml_estimation_ <- function(data, distribution, wts, conf_level) {
   return(ml_output)
 }
 
+
+
+#' @export
+print.ml_estimation <- function(x, digits = max(3L, getOption("digits") - 3L)) {
+  cat("Maximum Likelihood Estimation\n")
+  NextMethod("print")
+}
+
+
+
 #' Log-Likelihood Profile Function for Log-Location-Scale Distributions with Threshold
 #'
 #' This function evaluates the log-likelihood with respect to a given threshold

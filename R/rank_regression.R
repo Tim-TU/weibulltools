@@ -455,6 +455,16 @@ rank_regression.default <- function(
   return(mrr_output)
 }
 
+
+
+#' @export
+print.rank_regression <- function(x, digits = max(3L, getOption("digits") - 3L)) {
+  cat("Median Rank Regression\n")
+  NextMethod("print")
+}
+
+
+
 #' \eqn{R²}-Profile Function for Log-Location-Scale Distributions with Threshold
 #'
 #' This function evaluates the coefficient of determination with respect to a
@@ -528,6 +538,8 @@ r_squared_profiling.cdf_estimation <- function(
   )
 }
 
+
+
 #' @describeIn r_squared_profiling Provide x and y manually
 #'
 #' @export
@@ -557,3 +569,5 @@ r_squared_profiling.default <- function(
 
   summary(mrr_thres)$r.squared
 }
+
+

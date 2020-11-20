@@ -27,47 +27,10 @@
 
 ---
 
-    $coefficients
-             eta         beta 
-    1.047570e+05 1.476336e+00 
-    
-    $confint
-                  5 %         95 %
-    eta  59793.719459 1.692427e+05
-    beta     0.927575 2.349748e+00
-    
-    $loc_sc_params
-            mu      sigma 
-    11.5593983  0.6773527 
-    
-    $loc_sc_confint
-                 5 %     95 %
-    mu    10.9986559 12.03909
-    sigma  0.4255776  1.07808
-    
-    $r_squared
-    [1] 0.9601358
-    
-    $data
-    # A tibble: 10 x 2
-       characteristic status
-                <dbl>  <dbl>
-     1          10000      0
-     2          20000      1
-     3          30000      1
-     4          40000      0
-     5          50000      0
-     6          60000      0
-     7          70000      1
-     8          80000      0
-     9          90000      1
-    10         100000      0
-    
-    $distribution
-    [1] "weibull"
-    
-    attr(,"class")
-    [1] "rank_regression"  "model_estimation" "list"            
+    Median Rank Regression
+    Coefficients:
+          eta       beta  
+    1.048e+05  1.476e+00  
 
 ---
 
@@ -80,48 +43,8 @@
 
 ---
 
-    $coefficients
-          eta      beta     gamma 
-    96.749258  1.525252 88.427513 
-    
-    $confint
-                5 %       95 %
-    eta   85.425909 111.273571
-    beta   1.332618   1.745731
-    gamma 78.078126 101.702539
-    
-    $loc_sc_params
-            mu      sigma      gamma 
-     4.5721227  0.6556295 88.4275132 
-    
-    $loc_sc_confint
-                 5 %        95 %
-    mu     4.4476494   4.7119918
-    sigma  0.5728259   0.7504026
-    gamma 78.0781257 101.7025394
-    
-    $r_squared
-    [1] 0.9882616
-    
-    $data
-    # A tibble: 72 x 2
-       characteristic status
-                <dbl>  <dbl>
-     1             94      1
-     2             96      1
-     3             99      1
-     4             99      1
-     5            104      1
-     6            108      1
-     7            112      1
-     8            114      1
-     9            117      1
-    10            117      1
-    # ... with 62 more rows
-    
-    $distribution
-    [1] "weibull3"
-    
-    attr(,"class")
-    [1] "rank_regression"  "model_estimation" "list"            
+    Median Rank Regression
+    Coefficients:
+       eta    beta   gamma  
+    96.749   1.525  88.428  
 
