@@ -73,19 +73,23 @@ plot_prob_helper <- function(
 }
 
 plot_prob_mix_helper <- function(
-  x, event, id, distribution, mix_output, title_trace
+  data, distribution, mix_output, title_trace
 ) {
+  x <- data$x
+  event <- data$status
+  id <- data$id
+
   # check if mix_output is NULL or "em_results" is not a name of lists in mix_output!
   if (is.null(mix_output) || !("em_results" %in%  names(mix_output))) {
 
-    # applying johnson_method() to all data! Used for printing results of
+    # applying johnson method to all data! Used for printing results of
     # mixmod_regression() and for the case is mix_output = NULL.
-    john_df <- johnson_method(x = x, event = event, id = id) %>%
+    tbl_john <- estimate_cdf(data, methods = "johnson") %>%
       dplyr::filter(status == 1)
 
-    x_s <- john_df$characteristic
-    y_s <- john_df$prob
-    id_s <- john_df$id
+    x_s <- tbl_john$characteristic
+    y_s <- tbl_john$prob
+    id_s <- tbl_john$id
     tbl_group <- tibble::tibble(x_s = x_s, y_s = y_s, id_s = id_s)
     tbl_group$groups <- as.factor(c(rep(title_trace, length(x_s))))
   }
@@ -126,7 +130,7 @@ plot_prob_mix_helper <- function(
 
     # Apply johnson_method() for splitted observations:
     john_lst <- mapply(x_split, ev_split, id_split,
-                       FUN = function(x, d, id) johnson_method(x = x, event = d, id = id),
+                       FUN = function(x, d, id) suppressWarnings(johnson_method(x = x, event = d, id = id)),
                        SIMPLIFY = FALSE)
 
     # Store dataframes in one dataframe:
@@ -162,24 +166,25 @@ plot_prob_mix_helper <- function(
 }
 
 plot_mod_helper <- function(
-  x, y, loc_sc_params, distribution
+  x, loc_sc_params, distribution, method = "null"
 ) {
-  if (is.null(y)) {
-    x_min <- min(x, na.rm = TRUE)
-    x_max <- max(x, na.rm = TRUE)
-    x_low <- x_min - 10 ^ floor(log10(x_min)) * .25
-    x_high <- x_max + 10 ^ floor(log10(x_max)) * .25
-
-    x_p <- seq(x_low, x_high, length.out = 200)
-    y_p <- predict_prob(
-      q = x_p,
-      loc_sc_params = loc_sc_params,
-      distribution = distribution
-    )
-  } else {
-    x_p <- x
-    y_p <- y
+  if (length(x) == 2) {
+    if (distribution %in% c("weibull", "lognormal", "loglogistic")) {
+      x_p <- 10 ^ seq(log10(x[1]), log10(x[2]), length.out = 100)
+    } else {
+      x_p <- seq(x[1], x[2], length.out = 100)
+    }
   }
+
+  if (length(x) > 2) {
+    x_p <- x
+  }
+
+  y_p <- predict_prob(
+    q = x_p,
+    loc_sc_params = loc_sc_params,
+    distribution = distribution
+  )
 
   tbl_pred <- tibble::tibble(x_p = x_p, y_p = y_p)
 
@@ -204,13 +209,13 @@ plot_mod_helper <- function(
   param_label <- if (length(param_val) == 2) c("\u03BC:", "\u03C3:") else
     c("\u03BC:", "\u03C3:", "\u03B3:")
 
+  tbl_pred$param_val <- list(param_val)
+  tbl_pred$param_label <- list(param_label)
+  tbl_pred$method <- method
+
   tbl_pred$q <- q
 
-  list(
-    tbl_pred = tbl_pred,
-    param_val = param_val,
-    param_label = param_label
-  )
+  tbl_pred
 }
 
 plot_mod_mix_helper <- function(
@@ -384,8 +389,9 @@ plot_pop_helper <- function(x, loc_sc_params_tbl, distribution, tol = 1e-6) {
 
   tbl_pop <- loc_sc_params_tbl
   # column x_y is list column that contains a tibble each
-  tbl_pop$x_y <- purrr::pmap(loc_sc_params_tbl,
-                             function(loc, sc, x_s, distribution) {
+  tbl_pop$x_y <- purrr::pmap(loc_sc_params_tbl, function(
+    loc, sc, x_s, distribution
+  ) {
     tibble::tibble(
       x_s = x_s,
       y_s = predict_prob(q = x_s, loc_sc_params = c(loc, sc),

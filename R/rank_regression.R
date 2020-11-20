@@ -22,6 +22,16 @@
 #' \emph{Median Rank Regression}. For an accepted statistical method use MLE
 #' (\code{\link{ml_estimation}}).
 #'
+#' @section Methods (by class):
+#' \describe{
+#'   \item{\code{\link[=rank_regression.cdf_estimation]{cdf_estimation}}}{
+#'     Preferred. Provide the output of \code{\link{estimate_cdf}} directly.
+#'   }
+#'   \item{\code{\link[=rank_regression.default]{default}}}{
+#'     Provide \code{x}, \code{y} and \code{event} manually.
+#'   }
+#' }
+#'
 #' @encoding UTF-8
 #' @references
 #'   \itemize{
@@ -29,23 +39,6 @@
 #'   Zuverlässigkeitsanalysen, vdf Hochschulverlag AG an der ETH Zürich, 1995
 #'     \item Meeker, William Q; Escobar, Luis A., Statistical methods for
 #'   reliability data, New York: Wiley series in probability and statistics, 1998}
-#'
-#' @param x A numeric vector which consists of lifetime data. Lifetime
-#'   data could be every characteristic influencing the reliability of a product,
-#'   e.g. operating time (days/months in service), mileage (km, miles), load
-#'   cycles.
-#' @param y A numeric vector which consists of estimated failure probabilities
-#'   regarding the lifetime data in \code{x}.
-#' @param event A vector of binary data (0 or 1) indicating whether unit \emph{i}
-#'   is a right censored observation (= 0) or a failure (= 1).
-#' @param distribution Supposed distribution of the random variable. The
-#'   value can be \code{"weibull"}, \code{"lognormal"}, \code{"loglogistic"},
-#'   \code{"normal"}, \code{"logistic"}, \code{"sev"} \emph{(smallest extreme value)},
-#'   \code{"weibull3"}, \code{"lognormal3"} or \code{"loglogistic3"}.
-#'   Other distributions have not been implemented yet.
-#' @param conf_level Confidence level of the interval. The default value is
-#'   \code{conf_level = 0.95}.
-#' @param data A tibble returned by \code{\link{estimate_cdf}}.
 #'
 #' @return Returns a list with the following components:
 #'   \itemize{
@@ -66,6 +59,23 @@
 #'     \code{"weibull"} or \code{"weibull3"}. Estimated heteroscedasticity-consistent
 #'     Variance-Covariance matrix of the used location-scale distribution.
 #'   \item \code{r_squared} : Coefficient of determination.}
+#'
+#' @export
+#'
+rank_regression <- function(x, ...) {
+  UseMethod("rank_regression", x)
+}
+
+
+
+#' Rank Regression for Parametric Lifetime Distributions
+#'
+#' @inherit rank_regression description details return references
+#'
+#' @param x A tibble returned by \code{\link{estimate_cdf}}.
+#' @param distribution Supposed distribution of the random variable.
+#' @param conf_level Confidence level of the interval. The default value is
+#'   \code{conf_level = 0.95}.
 #'
 #' @examples
 #' # Example 1: Fitting a two-parameter Weibull:
@@ -101,33 +111,98 @@
 #' )
 #'
 #' @export
-rank_regression <- function(x, ...) {
-  UseMethod("rank_regression", x)
-}
-
-#' @describeIn rank_regression Perform the rank regression as part of the
-#' reliability pipeline. \code{\link{estimate_cdf}} returns a data frame of class
-#' \code{"cdf_estimation"}, which contains all information regarding x, y and
-#' event.
 #'
-#' @export
 rank_regression.cdf_estimation <- function(
-  cdf_estimation,
+  x,
   distribution = c("weibull", "lognormal", "loglogistic", "normal", "logistic",
                    "sev", "weibull3", "lognormal3", "loglogistic3"),
   conf_level = 0.95
 ) {
-  rank_regression.default(
-    x = cdf_estimation$characteristic,
-    y = cdf_estimation$prob,
-    event = cdf_estimation$status,
-    distribution = match.arg(distribution),
-    conf_level = conf_level
-  )
+  distribution <- match.arg(distribution)
+
+  if (length(unique(x$method)) == 1) {
+    rank_regression.default(
+      x = x$characteristic,
+      y = x$prob,
+      event = x$status,
+      distribution = distribution,
+      conf_level = conf_level
+    )
+  } else {
+    # Apply rank_regression to each method separately
+    x_split <- split(x, x$method)
+
+    model_estimation_list <- purrr::map(x_split, function(cdf) {
+      rank_regression.default(
+        x = cdf$characteristic,
+        y = cdf$prob,
+        event = cdf$status,
+        distribution = distribution,
+        conf_level = conf_level
+      )
+    })
+
+    class(model_estimation_list) <- c(
+      "model_estimation_list", class(model_estimation_list)
+    )
+
+    model_estimation_list
+  }
 }
 
+
+
+#' Rank Regression for Parametric Lifetime Distributions
+#'
+#' @inherit rank_regression description details return references
+#'
+#' @param x A numeric vector which consists of lifetime data. Lifetime data
+#'   could be every characteristic influencing the reliability of a product,
+#'   e.g. operating time (days/months in service), mileage (km, miles), load
+#'   cycles
+#' @param y A numeric vector which consists of estimated failure probabilities
+#'   regarding the lifetime data in x.
+#' @param event A vector of binary data (0 or 1) indicating whether a unit is
+#'   a right censored observation (= 0) or a failure (= 1).
+#' @param distribution Supposed distribution of the random variable.
+#' @param conf_level Confidence level of the interval. The default value is
+#'   \code{conf_level = 0.95}.
+#'
+#' @examples
+#' # Example 1: Fitting a two-parameter Weibull:
+#' obs   <- seq(10000, 100000, 10000)
+#' status <- c(0, 1, 1, 0, 0, 0, 1, 0, 1, 0)
+#' data <- reliability_data(x = obs, status = status)
+#'
+#' tbl_john <- estimate_cdf(data, "johnson")
+#'
+#' mrr <- rank_regression(
+#'   tbl_john,
+#'   distribution = "weibull",
+#'   conf_level = .90
+#' )
+#'
+#' # Example 2: Fitting a three-parameter Weibull:
+#' # Alloy T7987 dataset taken from Meeker and Escobar(1998, p. 131)
+#' cycles   <- c(300, 300, 300, 300, 300, 291, 274, 271, 269, 257, 256, 227, 226,
+#'               224, 213, 211, 205, 203, 197, 196, 190, 189, 188, 187, 184, 180,
+#'               180, 177, 176, 173, 172, 171, 170, 170, 169, 168, 168, 162, 159,
+#'               159, 159, 159, 152, 152, 149, 149, 144, 143, 141, 141, 140, 139,
+#'               139, 136, 135, 133, 131, 129, 123, 121, 121, 118, 117, 117, 114,
+#'               112, 108, 104, 99, 99, 96, 94)
+#' status <- c(rep(0, 5), rep(1, 67))
+#'
+#' data <- reliability_data(x = cycles, status = status)
+#'
+#' tbl_john <- estimate_cdf(data, "johnson")
+#' mrr <- rank_regression(
+#'   tbl_john,
+#'   distribution = "weibull3",
+#'   conf_level = .90
+#' )
+#'
 #' @export
-#' @describeIn rank_regression Provide x, y and event manually.
+#'
 rank_regression.default <- function(
   x,
   y,
@@ -194,7 +269,7 @@ rank_regression.default <- function(
                        loc_sc_confint = conf_ints_loc_sc,
                        r_squared = r_sq)
   }
-  if (distribution == "weibull3" | distribution == "lognormal3" | distribution == "loglogistic3") {
+  if (distribution %in% c("weibull3", "lognormal3", "loglogistic3")) {
     # Log-Location-Scale with threshold:
     ## Optimization of profile function:
     optim_gamma <- stats::optim(par = 0, fn = r_squared_profiling, method = "L-BFGS-B",
@@ -265,7 +340,7 @@ rank_regression.default <- function(
                          loc_sc_confint = conf_ints_loc_sc,
                          r_squared = r_sq)
 
-    } else if (distribution == "lognormal3" | distribution == "loglogistic3") {
+    } else if (distribution %in% c("lognormal3", "loglogistic3")) {
 
       if (distribution == "lognormal3") {
         mrr <- stats::lm(log(x_gamma[subs]) ~ stats::qnorm(y_f[subs]))
@@ -315,8 +390,7 @@ rank_regression.default <- function(
     }
   }
 
-  if (distribution == "lognormal" | distribution == "loglogistic" |
-      distribution == "normal" | distribution == "logistic" | distribution == "sev") {
+  if (distribution %in% c("lognormal", "loglogistic", "normal", "logistic", "sev")) {
 
     if (distribution == "lognormal") {
       mrr <- stats::lm(log(x_f) ~ stats::qnorm(y_f))
@@ -376,7 +450,7 @@ rank_regression.default <- function(
 
   mrr_output$distribution <- distribution
 
-  class(mrr_output) <- c("parameter_estimation", class(mrr_output))
+  class(mrr_output) <- c("rank_regression", "model_estimation", class(mrr_output))
 
   return(mrr_output)
 }
@@ -442,13 +516,13 @@ r_squared_profiling <- function(x, ...) {
 #'
 #' @export
 r_squared_profiling.cdf_estimation <- function(
-  cdf_estimation, thres, distribution = c("weibull3", "lognormal3", "loglogistic3")
+  x, thres, distribution = c("weibull3", "lognormal3", "loglogistic3")
 ) {
   distribution <- match.arg(distribution)
 
   r_squared_profiling.default(
-    x = cdf_estimation$characteristic,
-    y = cdf_estimation$prob,
+    x = x$characteristic,
+    y = x$prob,
     thres = thres,
     distribution = distribution
   )

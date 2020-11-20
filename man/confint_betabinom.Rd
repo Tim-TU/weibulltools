@@ -7,7 +7,7 @@
 confint_betabinom(x, ...)
 }
 \value{
-A data frame containing the lifetime characteristic, interpolated
+A tibble containing the lifetime characteristic, interpolated
 ranks as a function of probabilities, the probabilities which are used to
 compute the ranks and computed values for the specified confidence bound(s).
 }
@@ -20,7 +20,7 @@ by rank regression are needed.
 \section{Methods (by class)}{
 
 \describe{
-  \item{\code{\link[=confint_betabinom.parameter_estimation]{parameter_estimation}}}{
+  \item{\code{\link[=confint_betabinom.model_estimation]{model_estimation}}}{
     Preferred. Provide the output of \code{\link{rank_regression}}.
    }
   \item{\code{\link[=confint_betabinom.default]{default}}}{
