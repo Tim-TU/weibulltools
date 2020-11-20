@@ -7,7 +7,7 @@
 confint_betabinom(x, ...)
 }
 \value{
-A data frame containing the lifetime characteristic, interpolated
+A tibble containing the lifetime characteristic, interpolated
 ranks as a function of probabilities, the probabilities which are used to
 compute the ranks and computed values for the specified confidence bound(s).
 }

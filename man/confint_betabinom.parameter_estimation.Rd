@@ -7,6 +7,7 @@
 \usage{
 \method{confint_betabinom}{parameter_estimation}(
   x,
+  b_lives = c(0.01, 0.1, 0.5),
   bounds = c("two_sided", "lower", "upper"),
   conf_level = 0.95,
   direction = c("y", "x")
@@ -26,7 +27,7 @@ be computed. Must be one of "two_sided" (default), "lower" or "upper".}
 interval(s). Must be either "y" (failure probabilities) or "x" (quantiles).}
 }
 \value{
-A data frame containing the lifetime characteristic, interpolated
+A tibble containing the lifetime characteristic, interpolated
 ranks as a function of probabilities, the probabilities which are used to
 compute the ranks and computed values for the specified confidence bound(s).
 }

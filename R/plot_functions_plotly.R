@@ -343,7 +343,9 @@ plot_pop_plotly <- function(
       "<br>",
       paste(tbl_pop$param_label_1, tbl_pop$param_val_1),
       "<br>",
-      paste(tbl_pop$param_label_2, tbl_pop$param_val_2)
+      paste(tbl_pop$param_label_2, tbl_pop$param_val_2),
+      "<br>",
+      paste(tbl_pop$param_label_3, tbl_pop$param_val_3)
     )
   ) %>%
     plotly::layout(showlegend = TRUE)

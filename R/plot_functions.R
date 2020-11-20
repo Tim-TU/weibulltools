@@ -1028,8 +1028,13 @@ plot_conf.confint <- function(p_obj, confint, title_trace) {
 #'     \item \code{loc}: Location parameter \eqn{\mu}.
 #'     \item \code{sc}: Scale parameter \eqn{\sigma}.
 #'   }
-#'   If only one line should be displayed, a numeric vector of length two is
-#'   also supported \code{c(loc, sc)}.
+#'   And for a three-parametric distribution the following column must be added:
+#'   \itemize{
+#'   \item \code{thres}: Threshold parameter \eqn{\gamma}.
+#'   }
+#'
+#'   If only one population line should be displayed, a numeric vector of length two or three
+#'   is also supported \code{c(loc, sc)} or \code{c(loc, sc, thres)}.
 #'
 #' @param p_obj A plot object to which the population lines are added or
 #'   \code{NULL}. If \code{NULL} the population lines are added to an empty grid.
@@ -1084,7 +1089,10 @@ plot_conf.confint <- function(p_obj, confint, title_trace) {
 #' @export
 plot_pop <- function(
   p_obj = NULL, x, loc_sc_params_tbl,
-  distribution = c("weibull", "lognormal", "loglogistic"),
+  distribution = c(
+    "weibull", "lognormal", "loglogistic", "normal", "logistic", "sev", "weibull3",
+    "lognormal3", "loglogistic3"
+  ),
   tol = 1e-6,
   title_trace = "Population",
   plot_method = c("plotly", "ggplot2")
@@ -1097,7 +1105,7 @@ plot_pop <- function(
 
     p_obj <- plot_layout(
       x = x,
-      distribution = distribution,
+      distribution = sub("\\d+", "", distribution), # replacement of first match per entry.
       plot_method = plot_method
     )
   } else {
@@ -1116,10 +1124,18 @@ plot_pop <- function(
 
   # Support vector instead of tibble for ease of use in loc_sc_params_tbl
   if (!inherits(loc_sc_params_tbl, "data.frame")) {
-    loc_sc_params_tbl <- tibble::tibble(
-      loc = loc_sc_params_tbl[1],
-      sc = loc_sc_params_tbl[2]
+    loc_sc_params_tbl <- if (length(loc_sc_params_tbl) == 2) {
+      tibble::tibble(
+        loc = loc_sc_params_tbl[1],
+        sc = loc_sc_params_tbl[2]
       )
+    } else { # only works for two and three-parametric distributions
+      tibble::tibble(
+        loc = loc_sc_params_tbl[1],
+        sc = loc_sc_params_tbl[2],
+        thres = loc_sc_params_tbl[3]
+      )
+    }
   }
 
   tbl_pop <- plot_pop_helper(x, loc_sc_params_tbl, distribution, tol)

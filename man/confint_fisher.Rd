@@ -7,7 +7,7 @@
 confint_fisher(x, ...)
 }
 \value{
-A data frame containing the lifetime characteristic, the
+A tibble containing the lifetime characteristic, the
   probabilities, estimated standard errors by the delta method and computed
   values for the specified confidence bound(s).
 }

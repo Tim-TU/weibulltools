@@ -8,7 +8,8 @@ plot_pop(
   p_obj = NULL,
   x,
   loc_sc_params_tbl,
-  distribution = c("weibull", "lognormal", "loglogistic"),
+  distribution = c("weibull", "lognormal", "loglogistic", "normal", "logistic", "sev",
+    "weibull3", "lognormal3", "loglogistic3"),
   tol = 1e-06,
   title_trace = "Population",
   plot_method = c("plotly", "ggplot2")
@@ -51,8 +52,13 @@ This function adds one or multiple linearized CDFs to an existing plot grid.
     \item \code{loc}: Location parameter \eqn{\mu}.
     \item \code{sc}: Scale parameter \eqn{\sigma}.
   }
-  If only one line should be displayed, a numeric vector of length two is
-  also supported \code{c(loc, sc)}.
+  And for a three-parametric distribution the following column must be added:
+  \itemize{
+  \item \code{thres}: Threshold parameter \eqn{\gamma}.
+  }
+
+  If only one population line should be displayed, a numeric vector of length two or three
+  is also supported \code{c(loc, sc)} or \code{c(loc, sc, thres)}.
 }
 \examples{
 x <- rweibull(n = 100, shape = 1, scale = 20000)
