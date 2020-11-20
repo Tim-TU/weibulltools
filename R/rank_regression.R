@@ -467,7 +467,7 @@ rank_regression.default <- function(
 
 #' @export
 print.rank_regression <- function(x, digits = max(3L, getOption("digits") - 3L)) {
-  cat("Median Rank Regression\n")
+  cat("Rank Regression\n")
   NextMethod("print")
 }
 

@@ -26,7 +26,7 @@ plot_layout_plotly <- function(
     ticks = "inside",
     tickwidth = 1,
     tickfont = list(family = 'Arial', size = 10),
-    tickmode = "array",
+    #tickmode = "array",
     tickangle = 90,
     showticklabels = TRUE,
     zeroline = FALSE,
