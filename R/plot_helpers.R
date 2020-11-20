@@ -389,29 +389,35 @@ plot_pop_helper <- function(x, loc_sc_params_tbl, distribution, tol = 1e-6) {
 
   tbl_pop <- loc_sc_params_tbl
   # column x_y is list column that contains a tibble each
-  tbl_pop$x_y <- purrr::pmap(loc_sc_params_tbl, function(
-    loc, sc, x_s, distribution
-  ) {
-    tibble::tibble(
-      x_s = x_s,
-      y_s = predict_prob(q = x_s, loc_sc_params = c(loc, sc),
-                         distribution = distribution)
-    )
-  }, x_s, distribution)
+  tbl_pop$x_y <- purrr::pmap(
+    loc_sc_params_tbl,
+    x_s = x_s,
+    distribution = distribution,
+    function(loc, sc, thres = NULL, x_s, distribution) {
+      tibble::tibble(
+        x_s = x_s,
+        y_s = predict_prob(
+          q = x_s,
+          loc_sc_params = c(loc, sc, thres),
+          distribution = distribution
+        )
+      )
+    }
+  )
 
   tbl_pop <- tbl_pop %>%
     tidyr::unnest(cols = x_y) %>%
     dplyr::filter(y_s < 1)
 
-  if (distribution == "weibull") {
+  if (distribution %in% c("weibull", "weibull3", "sev")) {
     tbl_pop <- tbl_pop %>%
       dplyr::mutate(q = SPREDA::qsev(y_s))
   }
-  if (distribution == "lognormal") {
+  if (distribution %in% c("lognormal", "lognormal3", "normal")) {
     tbl_pop <- tbl_pop %>%
       dplyr::mutate(q = stats::qnorm(y_s))
   }
-  if (distribution == "loglogistic") {
+  if (distribution %in% c("loglogistic", "loglogistic3", "logistic")) {
     tbl_pop <- tbl_pop %>%
       dplyr::mutate(q = stats::qlogis(y_s))
   }
@@ -419,21 +425,31 @@ plot_pop_helper <- function(x, loc_sc_params_tbl, distribution, tol = 1e-6) {
   # set values and labels for plotlys hoverinfo:
   param_val_1 <- round(tbl_pop$loc, digits = 2)
   param_val_2 <- round(tbl_pop$sc, digits = 2)
+  param_val_3 <- if (length(loc_sc_params_tbl) == 3) round(tbl_pop$thres, digits = 2)
 
   param_label_1 <- "\u03BC:"
   param_label_2 <- "\u03C3:"
+  param_label_3 <- if (length(loc_sc_params_tbl) == 3) "\u03B3:"
 
   tbl_pop <- tbl_pop %>%
     dplyr::mutate(
       param_val_1 = param_val_1,
       param_val_2 = param_val_2,
+      param_val_3 = {{param_val_3}}, # handle potential NULL value with {{}}
       param_label_1 = param_label_1,
-      param_label_2 = param_label_2
+      param_label_2 = param_label_2,
+      param_label_3 = {{param_label_3}}
     )
 
   tbl_pop <- tbl_pop %>%
-    dplyr::mutate(group = paste0(param_label_1, " ", param_val_1, ", ", param_label_2, " ", param_val_2)) %>%
+    dplyr::mutate(group = paste0(param_label_1, " ", param_val_1, ", ",
+                                 param_label_2, " ", param_val_2)) %>%
     dplyr::filter(y_s <= 1 - tol, y_s >= tol)
+
+    if (length(loc_sc_params_tbl) == 3) {
+      tbl_pop <- tbl_pop %>%
+        dplyr::mutate(group = paste0(group, ", ", param_label_3, " ", param_val_3))
+    }
 
   return(tbl_pop)
 }

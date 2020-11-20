@@ -8,7 +8,8 @@ plot_pop(
   p_obj = NULL,
   x,
   loc_sc_params_tbl,
-  distribution = c("weibull", "lognormal", "loglogistic"),
+  distribution = c("weibull", "lognormal", "loglogistic", "normal", "logistic", "sev",
+    "weibull3", "lognormal3", "loglogistic3"),
   tol = 1e-06,
   title_trace = "Population",
   plot_method = c("plotly", "ggplot2")
@@ -51,8 +52,13 @@ This function adds one or multiple linearized CDFs to an existing plot grid.
     \item \code{loc}: Location parameter \eqn{\mu}.
     \item \code{sc}: Scale parameter \eqn{\sigma}.
   }
-  If only one line should be displayed, a numeric vector of length two is
-  also supported \code{c(loc, sc)}.
+  And for a three-parametric distribution the following column must be added:
+  \itemize{
+  \item \code{thres}: Threshold parameter \eqn{\gamma}.
+  }
+
+  If only one population line should be displayed, a numeric vector of length two or three
+  is also supported \code{c(loc, sc)} or \code{c(loc, sc, thres)}.
 }
 \examples{
 x <- rweibull(n = 100, shape = 1, scale = 20000)
@@ -64,7 +70,7 @@ grid_weibull <- plot_layout(
   title_x = "Time to Failure",
   title_y = "Failure Probability"
 )
-# Example 1: One line
+# Example 1: Two-parametric straight line
 pop_weibull <- plot_pop(
   p_obj = grid_weibull,
   x = range(x),
@@ -73,8 +79,19 @@ pop_weibull <- plot_pop(
   title_trace = "Population"
 )
 
-# Example 2: Multiple lines
+# Example 2: Three-parametric curved line
+x2 <- rweibull(n = 100, shape = 1, scale = 20000) + 5000
+
 pop_weibull2 <- plot_pop(
+  p_obj = NULL,
+  x = x2,
+  loc_sc_params_tbl = c(log(20000 - 5000), 1, 5000),
+  distribution = "weibull3",
+  title_trace = "Population"
+)
+
+# Example 3: Multiple lines
+pop_weibull3 <- plot_pop(
   p_obj = NULL,
   x = x,
   loc_sc_params_tbl = tibble(

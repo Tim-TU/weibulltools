@@ -245,7 +245,6 @@ plot_mod_plotly <- function(
         paste(param_label[3], param_val[3])
       )
     }
-
     text
   }
 
@@ -346,6 +345,26 @@ plot_pop_plotly <- function(
 
   tbl_pop <- dplyr::group_by(tbl_pop, group)
 
+  # preparation of hovertexts:
+  text <- paste(
+    paste0(x_mark, ":"),
+    round(tbl_pop$x_s, digits = 2),
+    paste("<br>", paste0(y_mark, ":")),
+    round(tbl_pop$y_s, digits = 5),
+    "<br>",
+    paste(tbl_pop$param_label_1, tbl_pop$param_val_1),
+    "<br>",
+    paste(tbl_pop$param_label_2, tbl_pop$param_val_2)
+  )
+
+  if ("param_label_3" %in% names(tbl_pop)) {
+    text <- paste(
+      text,
+      "<br>",
+      paste(tbl_pop$param_label_3, tbl_pop$param_val_3)
+    )
+  }
+
   p_pop <- plotly::add_lines(
     p = p_obj, data = tbl_pop,
     x = ~x_s, y = ~q,
@@ -355,16 +374,7 @@ plot_pop_plotly <- function(
     # color = ~group,
     name = ~group,
     line = list(width = 1),
-    text = paste(
-      paste0(x_mark, ":"),
-      round(tbl_pop$x_s, digits = 2),
-      paste("<br>", paste0(y_mark, ":")),
-      round(tbl_pop$y_s, digits = 5),
-      "<br>",
-      paste(tbl_pop$param_label_1, tbl_pop$param_val_1),
-      "<br>",
-      paste(tbl_pop$param_label_2, tbl_pop$param_val_2)
-    )
+    text = text
   ) %>%
     plotly::layout(showlegend = TRUE)
 

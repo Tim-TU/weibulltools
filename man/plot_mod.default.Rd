@@ -35,8 +35,9 @@ Returns a plotly object containing the probability plot with
   plotting positions and the estimated regression line.
 }
 \description{
-This function regression lines to an existing probability plot using a model
-estimated by \code{\link{rank_regression}} or \code{\link{ml_estimation}}.
+This function adds regression lines to an existing probability plot using a
+model estimated by \code{\link{rank_regression}} or
+\code{\link{ml_estimation}}.
 }
 \examples{
 # Alloy T7987 dataset taken from Meeker and Escobar(1998, p. 131)
