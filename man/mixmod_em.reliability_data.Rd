@@ -22,9 +22,8 @@
 
 \item{post}{A numeric matrix specifiying initial a-posteriori probabilities.
 If post is \code{NULL} (default) a-posteriori probabilities are assigned
-randomly using the Dirichlet distribution (\code{\link{rdirichlet}} from
-\emph{LearnBayes} Package), which is the conjugate prior of a Multinomial
-distribution. This idea was taken from the blog post of Mr. Gelissen
+randomly using the Dirichlet distribution, which is the conjugate prior of a
+multinomial distribution. This idea was taken from the blog post of Mr. Gelissen
 (linked under \emph{references}).}
 
 \item{distribution}{Supposed mixture model. Only \code{"weibull"} can be used.

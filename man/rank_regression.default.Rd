@@ -7,7 +7,7 @@
 \method{rank_regression}{default}(
   x,
   y,
-  event,
+  status,
   distribution = c("weibull", "lognormal", "loglogistic", "normal", "logistic", "sev",
     "weibull3", "lognormal3", "loglogistic3"),
   conf_level = 0.95
@@ -22,7 +22,7 @@ cycles}
 \item{y}{A numeric vector which consists of estimated failure probabilities
 regarding the lifetime data in x.}
 
-\item{event}{A vector of binary data (0 or 1) indicating whether a unit is
+\item{status}{A vector of binary data (0 or 1) indicating whether a unit is
 a right censored observation (= 0) or a failure (= 1).}
 
 \item{distribution}{Supposed distribution of the random variable.}
