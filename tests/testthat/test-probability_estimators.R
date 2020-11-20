@@ -67,9 +67,9 @@ test_that("snapshots: examples", {
 
 test_that("snapshots: input with repeating characteristics", {
   x <- rep(1, 4)
-  event <- c(0, 1, 0, 1)
+  status <- c(0, 1, 0, 1)
 
-  tbl <- tibble(x = x, status = event, id = "X")
+  tbl <- tibble(x = x, status = status, id = "X")
 
   expect_snapshot_output(suppressMessages(mr_method_(tbl)))
   expect_snapshot_output(johnson_method_(tbl))
