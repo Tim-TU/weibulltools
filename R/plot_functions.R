@@ -33,7 +33,7 @@
 #' grid_normal <- plot_layout(x = x_layout,
 #'                             distribution = "normal",
 #'                             title_main = "Normal Grid",
-#'                             title_x = "Time to status",
+#'                             title_x = "Time to Event",
 #'                             title_y = "Failure Probability in %")
 plot_layout <- function(
   x,
