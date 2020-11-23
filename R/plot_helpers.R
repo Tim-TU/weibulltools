@@ -270,7 +270,9 @@ plot_mod_mix_helper <- function(
 
     # Defining subset function for x_ranges provided by mixmod_regression():
     subset_x <- function(x, mod) {
-      subset(x, x >= mod$x_range[[1]] & x <= mod$x_range[[2]])
+      failed_data <- mod$data %>% dplyr::filter(status == 1)
+
+      subset(x, x >= min(failed_data$x) & x <= max(failed_data$x))
     }
 
     # Defining function that calculates probabilities and store results in df.

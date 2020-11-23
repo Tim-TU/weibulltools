@@ -742,9 +742,11 @@ plot_mod.model_estimation <- function(
   p_obj, x, title_trace = "Fit"
 ) {
 
+  failed_data <- dplyr::filter(x$data, status == 1)
+
   plot_mod.default(
     p_obj = p_obj,
-    x = range(x$data$characteristic),
+    x = range(failed_data$characteristic),
     loc_sc_params = x$loc_sc_params,
     distribution = x$distribution,
     title_trace = title_trace
@@ -773,8 +775,10 @@ plot_mod.model_estimation_list <- function(
   methods <- names(x)
 
   tbl_pred <- purrr::map2_dfr(x, methods, function(model_estimation, method) {
+    failed_data <- dplyr::filter(model_estimation$data, status == 1)
+
     plot_mod_helper(
-      x = range(model_estimation$data$characteristic),
+      x = range(failed_data$characteristic),
       loc_sc_params = model_estimation$loc_sc_params,
       distribution = model_estimation$distribution,
       method = method
