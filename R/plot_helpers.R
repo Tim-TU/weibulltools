@@ -257,6 +257,10 @@ plot_mod_mix_helper <- function(
       )
     }
 
+    if (inherits(mix_output, "rank_regression")) {
+      mix_output <- list(mix_output)
+    }
+
     lines_split <- lapply(
       mix_output, compute_line, x = x, distribution = distribution
     )
