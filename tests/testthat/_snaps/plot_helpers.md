@@ -65,55 +65,38 @@
 # plot_prob_helper remains stable
 
     # A tibble: 134 x 7
-       id    characteristic status  rank    prob method      q
-       <chr>          <dbl>  <dbl> <dbl>   <dbl> <chr>   <dbl>
-     1 ID72              94      1     1 0.00967 johnson -4.63
-     2 ID72              94      1    NA 0.0139  kaplan  -4.27
-     3 ID71              96      1     2 0.0235  johnson -3.74
-     4 ID71              96      1    NA 0.0278  kaplan  -3.57
-     5 ID69              99      1     4 0.0511  johnson -2.95
-     6 ID70              99      1     4 0.0511  johnson -2.95
-     7 ID69              99      1    NA 0.0556  kaplan  -2.86
-     8 ID70              99      1    NA 0.0556  kaplan  -2.86
-     9 ID68             104      1     5 0.0649  johnson -2.70
-    10 ID68             104      1    NA 0.0694  kaplan  -2.63
+       id        x status  rank    prob method      q
+       <chr> <dbl>  <dbl> <dbl>   <dbl> <chr>   <dbl>
+     1 ID72     94      1     1 0.00967 johnson -4.63
+     2 ID72     94      1    NA 0.0139  kaplan  -4.27
+     3 ID71     96      1     2 0.0235  johnson -3.74
+     4 ID71     96      1    NA 0.0278  kaplan  -3.57
+     5 ID69     99      1     4 0.0511  johnson -2.95
+     6 ID70     99      1     4 0.0511  johnson -2.95
+     7 ID69     99      1    NA 0.0556  kaplan  -2.86
+     8 ID70     99      1    NA 0.0556  kaplan  -2.86
+     9 ID68    104      1     5 0.0649  johnson -2.70
+    10 ID68    104      1    NA 0.0694  kaplan  -2.63
     # ... with 124 more rows
 
 ---
 
     # A tibble: 134 x 7
-       id    characteristic status  rank    prob method      q
-       <chr>          <dbl>  <dbl> <dbl>   <dbl> <chr>   <dbl>
-     1 ID72              94      1     1 0.00967 johnson -2.34
-     2 ID72              94      1    NA 0.0139  kaplan  -2.20
-     3 ID71              96      1     2 0.0235  johnson -1.99
-     4 ID71              96      1    NA 0.0278  kaplan  -1.91
-     5 ID69              99      1     4 0.0511  johnson -1.63
-     6 ID70              99      1     4 0.0511  johnson -1.63
-     7 ID69              99      1    NA 0.0556  kaplan  -1.59
-     8 ID70              99      1    NA 0.0556  kaplan  -1.59
-     9 ID68             104      1     5 0.0649  johnson -1.51
-    10 ID68             104      1    NA 0.0694  kaplan  -1.48
+       id        x status  rank    prob method      q
+       <chr> <dbl>  <dbl> <dbl>   <dbl> <chr>   <dbl>
+     1 ID72     94      1     1 0.00967 johnson -2.34
+     2 ID72     94      1    NA 0.0139  kaplan  -2.20
+     3 ID71     96      1     2 0.0235  johnson -1.99
+     4 ID71     96      1    NA 0.0278  kaplan  -1.91
+     5 ID69     99      1     4 0.0511  johnson -1.63
+     6 ID70     99      1     4 0.0511  johnson -1.63
+     7 ID69     99      1    NA 0.0556  kaplan  -1.59
+     8 ID70     99      1    NA 0.0556  kaplan  -1.59
+     9 ID68    104      1     5 0.0649  johnson -1.51
+    10 ID68    104      1    NA 0.0694  kaplan  -1.48
     # ... with 124 more rows
 
 # plot_prob_mix_helper remains stable
-
-    # A tibble: 45 x 5
-         x_s    y_s  id_s groups           q
-       <dbl>  <dbl> <int> <fct>        <dbl>
-     1     2 0.0120     1 Failed Items -4.42
-     2     3 0.0291    11 Failed Items -3.52
-     3     5 0.0462    21 Failed Items -3.05
-     4     8 0.0634    31 Failed Items -2.73
-     5    21 0.0808    50 Failed Items -2.47
-     6    28 0.0982     2 Failed Items -2.27
-     7    31 0.116     12 Failed Items -2.10
-     8    64 0.134     51 Failed Items -1.94
-     9    69 0.153     13 Failed Items -1.79
-    10    76 0.172     23 Failed Items -1.67
-    # ... with 35 more rows
-
----
 
     # A tibble: 45 x 8
         id_s   x_s status  rank    y_s method  groups         q
