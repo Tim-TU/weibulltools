@@ -83,7 +83,7 @@ ml_estimation <- function(x, ...) {
 #' data_2 <- reliability_data(x = cycles, status = status)
 #'
 #' mle_weib3 <- ml_estimation(
-#'   data,
+#'   data_2,
 #'   distribution = "weibull3",
 #'   conf_level = 0.95
 #' )
