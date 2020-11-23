@@ -332,14 +332,18 @@ plot_prob_ <- function(
 #' @references Doganaksoy, N.; Hahn, G.; Meeker, W. Q., Reliability Analysis by
 #'   Failure Mode, Quality Progress, 35(6), 47-52, 2002
 #'
-#' @inheritParams plot_prob.default
-#' @param mix_output A list provided by \code{\link{mixmod_regression}} or
-#'   \code{\link{mixmod_em}}, which consists of values necessary to visualize the
-#'   subgroups.The default value of \code{mix_output} is \code{NULL}.
-#'
-#' @return Returns a plotly object containing the layout of the probability plot
-#'   provided by \code{\link{plot_layout}} and the plotting positions.
 #' @export
+plot_prob_mix <- function(x, ...) {
+  UseMethod("plot_prob_mix")
+}
+
+
+
+#' Probability Plot for Separated Mixture Models
+#'
+#' @inherit plot_prob_mix description details return references
+#'
+#' @inheritParams plot_prob.default
 #'
 #' @examples
 #' # Data is taken from given reference:
@@ -400,22 +404,190 @@ plot_prob_ <- function(
 #'   title_trace = "Subgroup"
 #' )
 #'
-plot_prob_mix <- function(x, ...) {
-  UseMethod("plot_prob_mix")
+#' @export
+plot_prob_mix.model_estimation <- function(x,
+                                           title_main = "Probability Plot",
+                                           title_x = "Characteristic",
+                                           title_y = "Unreliability",
+                                           title_trace = "Sample",
+                                           plot_method = c("plotly", "ggplot2")
+) {
+  plot_method <- match.arg(plot_method)
+
+  data <- reliability_data(x$data, x = characteristic, status = status)
+
+  cdf_estimation <- estimate_cdf(data, "johnson") %>%
+    dplyr::filter(status == 1)
+
+  plot_prob.cdf_estimation(
+    x = cdf_estimation,
+    distribution = x$distribution,
+    title_main = title_main,
+    title_x = title_x,
+    title_y = title_y,
+    title_trace = title_trace,
+    plot_method = plot_method
+  )
 }
 
+
+
+#' @describeIn plot_prob_mix.model_estimation
+#'
 #' @export
+plot_prob_mix.model_estimation_list <- function(x,
+                                           title_main = "Probability Plot",
+                                           title_x = "Characteristic",
+                                           title_y = "Unreliability",
+                                           title_trace = "Sample",
+                                           plot_method = c("plotly", "ggplot2")
+) {
+
+  plot_method <- match.arg(plot_method)
+
+
+  # Take all data
+  data <- purrr::map2_dfr(x, seq_along(x), function(model_estimation, i) {
+    model_estimation$data %>%
+      # Mark group
+      dplyr::mutate(group = paste(title_trace, i))
+  })
+
+  rel_data <- reliability_data(data, x = characteristic, status = status) %>%
+    dplyr::mutate(group = data$group)
+
+  # Apply johnson method to all data
+  john <- estimate_cdf(rel_data, "johnson") %>%
+    dplyr::filter(status == 1)
+
+  data <- rel_data %>% dplyr::filter(status == 1)
+
+  # Set group as method
+  john$method <- data$group
+
+  plot_prob.cdf_estimation(
+    x = john,
+    title_main = title_main,
+    title_x = title_x,
+    title_y = title_y,
+    title_trace = title_trace,
+    plot_method = plot_method
+  )
+}
+
+
+
+#' @describeIn plot_prob_mix.model_estimation
+#'
+#' @export
+plot_prob_mix.mixmod_em_output <- function(x,
+                                           title_main = "Probability Plot",
+                                           title_x = "Characteristic",
+                                           title_y = "Unreliability",
+                                           title_trace = "Sample",
+                                           plot_method = c("plotly", "ggplot2")
+) {
+
+  plot_method <- match.arg(plot_method)
+
+  model_estimation_list <- x[-length(x)]
+  class(model_estimation_list) <- c("model_estimation_list", class(model_estimation_list))
+
+  plot_prob_mix.model_estimation_list(
+    x = model_estimation_list,
+    title_main = title_main,
+    title_x = title_x,
+    title_y = title_y,
+    title_trace = title_trace,
+    plot_method = plot_method
+  )
+}
+
+#' Probability Plot for Separated Mixture Models
+#'
+#' @inherit plot_prob_mix description details return references
+#'
+#' @encoding UTF-8
+#' @references Doganaksoy, N.; Hahn, G.; Meeker, W. Q., Reliability Analysis by
+#'   Failure Mode, Quality Progress, 35(6), 47-52, 2002
+#'
+#' @inheritParams plot_prob.default
+#' @param mix_output A list provided by \code{\link{mixmod_regression}} or
+#'   \code{\link{mixmod_em}}, which consists of values necessary to visualize the
+#'   subgroups.The default value of \code{mix_output} is \code{NULL}.
+#'
+#'
+#' @examples
+#' # Data is taken from given reference:
+#' hours <- c(2, 28, 67, 119, 179, 236, 282, 317, 348, 387, 3, 31, 69, 135,
+#'           191, 241, 284, 318, 348, 392, 5, 31, 76, 144, 203, 257, 286,
+#'           320, 350, 412, 8, 52, 78, 157, 211, 261, 298, 327, 360, 446,
+#'           13, 53, 104, 160, 221, 264, 303, 328, 369, 21, 64, 113, 168,
+#'           226, 278, 314, 328, 377)
+#' state <- c(1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1,
+#'           1, 0, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 0, 0,
+#'           1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+#'           0, 1, 1, 1, 1, 1, 1)
+#' id <- 1:length(hours)
+#'
+#' # Example 1 - mix_output = NULL:
+#' plot_weibull <- plot_prob_mix(x = hours,
+#'                               status = state,
+#'                               id = id,
+#'                               distribution = "weibull",
+#'                               mix_output = NULL,
+#'                               title_main = "Weibull Probability Plot",
+#'                               title_x = "Time in Hours",
+#'                               title_y = "Probability of Failure",
+#'                               title_trace = "Failed Items")
+#'
+#' # Example 2 - Using result of mixmod_em in mix_output:
+#' mix_mod_em <- mixmod_em(x = hours, status = state, distribution = "weibull",
+#'                         conf_level = 0.95, k = 2, method = "EM", n_iter = 150)
+#'
+#' plot_weibull_em <- plot_prob_mix(x = hours,
+#'                                  status = state,
+#'                                  id = id,
+#'                                  distribution = "weibull",
+#'                                  mix_output = mix_mod_em,
+#'                                  title_main = "Weibull Mixture EM",
+#'                                  title_x = "Time in Hours",
+#'                                  title_y = "Probability of Failure",
+#'                                  title_trace = "Subgroup")
+#'
+#' # Example 3 - Using result of mixmod_regression in mix_output:
+#' john <- johnson_method(x = hours, status = state)
+#' mix_mod_reg <- mixmod_regression(
+#'   x = john$characteristic,
+#'   y = john$prob,
+#'   status = john$status,
+#'   distribution = "weibull"
+#' )
+#'
+#' plot_weibull_reg <- plot_prob_mix(
+#'   x = hours,
+#'   status = state,
+#'   id = id,
+#'   distribution = "weibull",
+#'   mix_output = mix_mod_reg,
+#'   title_main = "Weibull Mixture Regression",
+#'   title_x = "Time in Hours",
+#'   title_y = "Probability of Failure",
+#'   title_trace = "Subgroup"
+#' )
+#'
+#'  @export
 plot_prob_mix.default <- function(
-  x,
-  status,
-  id = rep("XXXXXX", length(x)),
-  distribution = c("weibull", "lognormal", "loglogistic"),
-  mix_output = NULL,
-  title_main = "Probability Plot",
-  title_x = "Characteristic",
-  title_y = "Unreliability",
-  title_trace = "Sample",
-  plot_method = c("plotly", "ggplot2")
+                        x,
+                        status,
+                        id = rep("XXXXXX", length(x)),
+                        distribution = c("weibull", "lognormal", "loglogistic"),
+                        mix_output = NULL,
+                        title_main = "Probability Plot",
+                        title_x = "Characteristic",
+                        title_y = "Unreliability",
+                        title_trace = "Sample",
+                        plot_method = c("plotly", "ggplot2")
 ) {
 
   distribution <- match.arg(distribution)

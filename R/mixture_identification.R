@@ -151,6 +151,7 @@ mixmod_regression.default <- function(
   seg_mrr <- try(segmented::segmented.lm(mrr,
                    control = segmented::seg.control(it.max = 20, n.boot = 20)),
                    silent = TRUE)
+
   mrr_0 <- rank_regression(
     x = x,
     y = y,
@@ -280,7 +281,12 @@ mixmod_regression.default <- function(
                    Further investigations are recommended!")
         }
       }
-    }
+  }
+
+  if (!inherits(mrr_output, "rank_regression")) {
+    class(mrr_output) <- c("model_estimation_list", class(mrr_output))
+  }
+
   return(mrr_output)
 }
 
@@ -534,10 +540,17 @@ mixmod_em.default <- function(x,
   # separate observations using maximum a-posteriori method (MAP):
   split_obs <- apply(mix_est$posteriori, 1, which.max)
 
+  # modify data of each model estimation accordingly
+  for (i in seq_len(k)) {
+    ml[[i]]$data <- ml[[i]]$data[i == split_obs,]
+  }
+
   names(ml) <- sprintf("mod_%i", 1:k)
 
   ml$em_results <- list(a_priori = mix_est$priori, a_posteriori = mix_est$posteriori,
     groups = split_obs, logL = logL_complete, aic = aic_complete, bic = bic_complete)
+
+  class(ml) <- c("mixmod_em_output", class(ml))
 
   ml
 }
