@@ -1512,8 +1512,7 @@ plot_conf.confint <- function(p_obj, x, title_trace, ...) {
 plot_pop <- function(
   p_obj = NULL, x, loc_sc_params_tbl,
   distribution = c(
-    "weibull", "lognormal", "loglogistic", "normal", "logistic", "sev", "weibull3",
-    "lognormal3", "loglogistic3"
+    "weibull", "lognormal", "loglogistic", "normal", "logistic", "sev"
   ),
   tol = 1e-6,
   title_trace = "Population",
@@ -1527,7 +1526,7 @@ plot_pop <- function(
 
     p_obj <- plot_layout(
       x = x,
-      distribution = sub("\\d+", "", distribution), # replacement of first match per entry.
+      distribution = distribution,
       plot_method = plot_method
     )
   } else {
@@ -1546,18 +1545,17 @@ plot_pop <- function(
 
   # Support vector instead of tibble for ease of use in loc_sc_params_tbl
   if (!inherits(loc_sc_params_tbl, "data.frame")) {
-    loc_sc_params_tbl <- if (length(loc_sc_params_tbl) == 2) {
-      tibble::tibble(
-        loc = loc_sc_params_tbl[1],
-        sc = loc_sc_params_tbl[2]
-      )
-    } else { # only works for two and three-parametric distributions
-      tibble::tibble(
-        loc = loc_sc_params_tbl[1],
-        sc = loc_sc_params_tbl[2],
-        thres = loc_sc_params_tbl[3]
-      )
-    }
+    loc_sc_params_tbl <- tibble::tibble(
+      loc = loc_sc_params_tbl[1],
+      sc = loc_sc_params_tbl[2],
+      # NA if length 2
+      thres = loc_sc_params_tbl[3]
+    )
+  }
+
+  # Add thres column if not present
+  if (ncol(loc_sc_params_tbl) == 2) {
+    loc_sc_params_tbl$thres <- NA_real_
   }
 
   tbl_pop <- plot_pop_helper(x, loc_sc_params_tbl, distribution, tol)

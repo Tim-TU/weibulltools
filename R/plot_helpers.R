@@ -432,7 +432,9 @@ plot_pop_helper <- function(x, loc_sc_params_tbl, distribution, tol = 1e-6) {
     loc_sc_params_tbl,
     x_s = x_s,
     distribution = distribution,
-    function(loc, sc, thres = NULL, x_s, distribution) {
+    function(loc, sc, thres = NA, x_s, distribution) {
+      if (is.na(thres)) thres <- NULL
+
       tibble::tibble(
         x_s = x_s,
         y_s = predict_prob(
@@ -446,7 +448,7 @@ plot_pop_helper <- function(x, loc_sc_params_tbl, distribution, tol = 1e-6) {
 
   tbl_pop <- tbl_pop %>%
     tidyr::unnest(cols = x_y) %>%
-    dplyr::filter(y_s < 1)
+    dplyr::filter(y_s < 1, y_s > 0)
 
   if (distribution %in% c("weibull", "weibull3", "sev")) {
     tbl_pop <- tbl_pop %>%
@@ -462,22 +464,19 @@ plot_pop_helper <- function(x, loc_sc_params_tbl, distribution, tol = 1e-6) {
   }
 
   # set values and labels for plotlys hoverinfo:
-  param_val_1 <- round(tbl_pop$loc, digits = 2)
-  param_val_2 <- round(tbl_pop$sc, digits = 2)
-  param_val_3 <- if (length(loc_sc_params_tbl) == 3) round(tbl_pop$thres, digits = 2)
-
-  param_label_1 <- "\u03BC:"
-  param_label_2 <- "\u03C3:"
-  param_label_3 <- if (length(loc_sc_params_tbl) == 3) "\u03B3:"
-
   tbl_pop <- tbl_pop %>%
     dplyr::mutate(
-      param_val_1 = param_val_1,
-      param_val_2 = param_val_2,
-      param_val_3 = {{param_val_3}}, # handle potential NULL value with {{}}
-      param_label_1 = param_label_1,
-      param_label_2 = param_label_2,
-      param_label_3 = {{param_label_3}}
+      param_val_1 = format(tbl_pop$loc, digits = 2),
+      param_val_2 = format(tbl_pop$sc, digits = 2),
+      param_val_3 = ifelse(is.na(tbl_pop$thres), NA, format(tbl_pop$thres, digits = 2)),
+      param_label_1 = "\u03BC:",
+      param_label_2 = "\u03C3:",
+      param_label_3 = ifelse(is.na(tbl_pop$thres), NA, "\u03B3:")
+    ) %>%
+    dplyr::rowwise() %>%
+    dplyr::mutate(
+      param_val = list(c(param_val_1, param_val_2, param_val_3)),
+      param_label = list(c(param_label_1, param_label_2, param_label_3))
     )
 
   tbl_pop <- tbl_pop %>%
