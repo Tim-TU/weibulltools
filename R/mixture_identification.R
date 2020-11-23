@@ -78,7 +78,7 @@ mixmod_regression.cdf_estimation <- function(
   distribution <- match.arg(distribution)
 
   mixmod_regression.default(
-    x = x$characteristic,
+    x = x$x,
     y = x$prob,
     status = x$status,
     distribution = distribution,

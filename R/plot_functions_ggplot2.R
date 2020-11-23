@@ -67,7 +67,7 @@ plot_prob_ggplot2 <- function(
 
   p_prob <- p_obj +
     ggplot2::geom_point(
-      data = prob_tbl, mapping = ggplot2::aes(x = characteristic, y = q, color = method)
+      data = prob_tbl, mapping = ggplot2::aes(x = x, y = q, color = method)
     ) +
     ggplot2::labs(color = title_trace)
 

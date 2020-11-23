@@ -139,7 +139,7 @@ plot_prob_plotly <- function(
   p_prob <- p_obj %>%
     plotly::add_trace(
       data = prob_tbl,
-      x = ~characteristic,
+      x = ~x,
       y = ~q,
       type = "scatter",
       mode = "markers",
@@ -149,7 +149,7 @@ plot_prob_plotly <- function(
       legendgroup = ~method,
       text = paste(
         "ID:", prob_tbl$id,
-        paste("<br>", paste0(mark_x, ":")), prob_tbl$characteristic,
+        paste("<br>", paste0(mark_x, ":")), prob_tbl$x,
         paste("<br>", paste0(mark_y, ":")), round(prob_tbl$prob, digits = 5)
       )
     ) %>%

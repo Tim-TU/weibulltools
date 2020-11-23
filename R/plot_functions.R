@@ -175,7 +175,7 @@ plot_prob.default <- function(
   plot_method <- match.arg(plot_method)
 
   cdf_estimation <- tibble::tibble(
-    characteristic = x, prob = y, status = status, id = id,
+    x = x, prob = y, status = status, id = id,
     method = title_trace
   )
 
@@ -276,7 +276,7 @@ plot_prob_ <- function(
   )
 
   p_obj <- plot_layout(
-    x = prob_tbl$characteristic,
+    x = prob_tbl$x,
     distribution = distribution,
     title_main = title_main,
     title_x = title_x,
@@ -386,7 +386,7 @@ plot_prob_mix <- function(x, ...) {
 #' # Example 3 - Using result of mixmod_regression in mix_output:
 #' john <- johnson_method(x = hours, status = state)
 #' mix_mod_reg <- mixmod_regression(
-#'   x = john$characteristic,
+#'   x = john$x,
 #'   y = john$prob,
 #'   status = john$status,
 #'   distribution = "weibull"
@@ -415,7 +415,7 @@ plot_prob_mix.model_estimation <- function(x,
 ) {
   plot_method <- match.arg(plot_method)
 
-  data <- reliability_data(x$data, x = characteristic, status = status)
+  data <- reliability_data(x$data, x = x, status = status)
 
   cdf_estimation <- estimate_cdf(data, "johnson") %>%
     dplyr::filter(status == 1)
@@ -455,7 +455,7 @@ plot_prob_mix.mixmod_regression <- function(x,
       dplyr::mutate(group = i)
   })
 
-  rel_data <- reliability_data(data, x = characteristic, status = status) %>%
+  rel_data <- reliability_data(data, x = x, status = status) %>%
     dplyr::mutate(group = data$group)
 
   # Apply johnson method to all data
@@ -496,7 +496,7 @@ plot_prob_mix.mixmod_em <- function(x,
     model_estimation_list, seq_along(model_estimation_list),
     function(model_estimation, index) {
       data <- reliability_data(
-        model_estimation$data, x = characteristic, status = status
+        model_estimation$data, x = x, status = status
       )
 
       john <- estimate_cdf(data, "johnson")
@@ -557,7 +557,7 @@ plot_prob_mix.mixmod_em <- function(x,
 #' # Example 2 - Using result of mixmod_regression in mix_output:
 #' john <- johnson_method(x = hours, status = state)
 #' mix_mod_reg <- mixmod_regression(
-#'   x = john$characteristic,
+#'   x = john$x,
 #'   y = john$prob,
 #'   status = john$status,
 #'   distribution = "weibull"
@@ -738,7 +738,7 @@ plot_mod.model_estimation <- function(
 
   plot_mod.default(
     p_obj = p_obj,
-    x = range(failed_data$characteristic),
+    x = range(failed_data$x),
     loc_sc_params = x$loc_sc_params,
     distribution = x$distribution,
     title_trace = title_trace
@@ -770,7 +770,7 @@ plot_mod.model_estimation_list <- function(
     failed_data <- dplyr::filter(model_estimation$data, status == 1)
 
     plot_mod_helper(
-      x = range(failed_data$characteristic),
+      x = range(failed_data$x),
       loc_sc_params = model_estimation$loc_sc_params,
       distribution = model_estimation$distribution,
       method = method
@@ -967,7 +967,7 @@ plot_mod.default <- function(p_obj,
 #'
 #' # Example 2 - Using result of mixmod_regression in mix_output:
 #' john <- johnson_method(x = hours, status = state)
-#' mix_mod_reg <- mixmod_regression(x = john$characteristic,
+#' mix_mod_reg <- mixmod_regression(x = john$x,
 #'                                  y = john$prob,
 #'                                  status = john$status,
 #'                                  distribution = "weibull")
@@ -1141,7 +1141,7 @@ plot_conf <- function(p_obj, x, ...) {
 #'   \item Calculate confidence intervals with the function
 #'     \code{\link{confint_betabinom}} or \code{\link{confint_fisher}} and store
 #'     it in a \code{data.frame}. For instance call it df.
-#'   \item Inside \code{\link{plot_mod}} use the output \code{df$characteristic}
+#'   \item Inside \code{\link{plot_mod}} use the output \code{df$x}
 #'     for \code{x} and \code{df$prob} for \code{y} of the function(s) named before.
 #'   \item In \strong{Examples} the described approach is shown with code.}
 #'
@@ -1168,13 +1168,13 @@ plot_conf <- function(p_obj, x, ...) {
 #' df_john <- johnson_method(x = cycles, status = state, id = id)
 
 #' # Example 1: Probability Plot, Regression Line and Confidence Bounds for Three-Parameter-Weibull:
-#' mrr <- rank_regression(x = df_john$characteristic,
+#' mrr <- rank_regression(x = df_john$x,
 #'                        y = df_john$prob,
 #'                        status = df_john$status,
 #'                        distribution = "weibull3",
 #'                        conf_level = .90)
 #'
-#' conf_betabin <- confint_betabinom(x = df_john$characteristic,
+#' conf_betabin <- confint_betabinom(x = df_john$x,
 #'                                   status = df_john$status,
 #'                                   loc_sc_params = mrr$loc_sc_params,
 #'                                   distribution = "weibull3",
@@ -1182,7 +1182,7 @@ plot_conf <- function(p_obj, x, ...) {
 #'                                   conf_level = 0.95,
 #'                                   direction = "y")
 #'
-#' plot_weibull <- plot_prob(x = df_john$characteristic,
+#' plot_weibull <- plot_prob(x = df_john$x,
 #'                           y = df_john$prob,
 #'                           status = df_john$status,
 #'                           id = df_john$id,
@@ -1193,14 +1193,14 @@ plot_conf <- function(p_obj, x, ...) {
 #'                           title_trace = "Failed Items")
 #'
 #' plot_reg_weibull <- plot_mod(p_obj = plot_weibull,
-#'                              x = conf_betabin$characteristic,
+#'                              x = conf_betabin$x,
 #'                              y = conf_betabin$prob,
 #'                              loc_sc_params = mrr$loc_sc_params,
 #'                              distribution = "weibull3",
 #'                              title_trace = "Estimated Weibull CDF")
 #'
 #' plot_conf_beta <- plot_conf(p_obj = plot_reg_weibull,
-#'                             x = list(conf_betabin$characteristic),
+#'                             x = list(conf_betabin$x),
 #'                             y = list(conf_betabin$lower_bound,
 #'                                      conf_betabin$upper_bound),
 #'                             direction = "y",
@@ -1208,13 +1208,13 @@ plot_conf <- function(p_obj, x, ...) {
 #'                             title_trace = "Confidence Region")
 #'
 #' # Example 2: Probability Plot, Regression Line and Confidence Bounds for Three-Parameter-Lognormal:
-#' mrr_ln <- rank_regression(x = df_john$characteristic,
+#' mrr_ln <- rank_regression(x = df_john$x,
 #'                        y = df_john$prob,
 #'                        status = df_john$status,
 #'                        distribution = "lognormal3",
 #'                        conf_level = .90)
 #'
-#' conf_betabin_ln <- confint_betabinom(x = df_john$characteristic,
+#' conf_betabin_ln <- confint_betabinom(x = df_john$x,
 #'                                   status = df_john$status,
 #'                                   loc_sc_params = mrr_ln$loc_sc_params,
 #'                                   distribution = "lognormal3",
@@ -1222,7 +1222,7 @@ plot_conf <- function(p_obj, x, ...) {
 #'                                   conf_level = 0.95,
 #'                                   direction = "y")
 #'
-#' plot_lognormal <- plot_prob(x = df_john$characteristic,
+#' plot_lognormal <- plot_prob(x = df_john$x,
 #'                           y = df_john$prob,
 #'                           status = df_john$status,
 #'                           id = df_john$id,
@@ -1233,14 +1233,14 @@ plot_conf <- function(p_obj, x, ...) {
 #'                           title_trace = "Failed Items")
 #'
 #' plot_reg_lognormal <- plot_mod(p_obj = plot_lognormal,
-#'                              x = conf_betabin_ln$characteristic,
+#'                              x = conf_betabin_ln$x,
 #'                              y = conf_betabin_ln$prob,
 #'                              loc_sc_params = mrr_ln$loc_sc_params,
 #'                              distribution = "lognormal3",
 #'                              title_trace = "Estimated Lognormal CDF")
 #'
 #' plot_conf_beta_ln <- plot_conf(p_obj = plot_reg_lognormal,
-#'                             x = list(conf_betabin_ln$characteristic),
+#'                             x = list(conf_betabin_ln$x),
 #'                             y = list(conf_betabin_ln$lower_bound,
 #'                                      conf_betabin_ln$upper_bound),
 #'                             direction = "y",
@@ -1317,13 +1317,13 @@ plot_conf.default <- function(
 #' df_john <- johnson_method(x = cycles, status = state, id = id)
 
 #' # Example 1: Probability Plot, Regression Line and Confidence Bounds for Three-Parameter-Weibull:
-#' mrr <- rank_regression(x = df_john$characteristic,
+#' mrr <- rank_regression(x = df_john$x,
 #'                        y = df_john$prob,
 #'                        status = df_john$status,
 #'                        distribution = "weibull3",
 #'                        conf_level = .90)
 #'
-#' conf_betabin <- confint_betabinom(x = df_john$characteristic,
+#' conf_betabin <- confint_betabinom(x = df_john$x,
 #'                                   status = df_john$status,
 #'                                   loc_sc_params = mrr$loc_sc_params,
 #'                                   distribution = "weibull3",
@@ -1331,7 +1331,7 @@ plot_conf.default <- function(
 #'                                   conf_level = 0.95,
 #'                                   direction = "y")
 #'
-#' plot_weibull <- plot_prob(x = df_john$characteristic,
+#' plot_weibull <- plot_prob(x = df_john$x,
 #'                           y = df_john$prob,
 #'                           status = df_john$status,
 #'                           id = df_john$id,
@@ -1342,14 +1342,14 @@ plot_conf.default <- function(
 #'                           title_trace = "Failed Items")
 #'
 #' plot_reg_weibull <- plot_mod(p_obj = plot_weibull,
-#'                              x = conf_betabin$characteristic,
+#'                              x = conf_betabin$x,
 #'                              y = conf_betabin$prob,
 #'                              loc_sc_params = mrr$loc_sc_params,
 #'                              distribution = "weibull3",
 #'                              title_trace = "Estimated Weibull CDF")
 #'
 #' plot_conf_beta <- plot_conf(p_obj = plot_reg_weibull,
-#'                             x = list(conf_betabin$characteristic),
+#'                             x = list(conf_betabin$x),
 #'                             y = list(conf_betabin$lower_bound,
 #'                                      conf_betabin$upper_bound),
 #'                             direction = "y",
@@ -1357,13 +1357,13 @@ plot_conf.default <- function(
 #'                             title_trace = "Confidence Region")
 #'
 #' # Example 2: Probability Plot, Regression Line and Confidence Bounds for Three-Parameter-Lognormal:
-#' mrr_ln <- rank_regression(x = df_john$characteristic,
+#' mrr_ln <- rank_regression(x = df_john$x,
 #'                        y = df_john$prob,
 #'                        status = df_john$status,
 #'                        distribution = "lognormal3",
 #'                        conf_level = .90)
 #'
-#' conf_betabin_ln <- confint_betabinom(x = df_john$characteristic,
+#' conf_betabin_ln <- confint_betabinom(x = df_john$x,
 #'                                   status = df_john$status,
 #'                                   loc_sc_params = mrr_ln$loc_sc_params,
 #'                                   distribution = "lognormal3",
@@ -1371,7 +1371,7 @@ plot_conf.default <- function(
 #'                                   conf_level = 0.95,
 #'                                   direction = "y")
 #'
-#' plot_lognormal <- plot_prob(x = df_john$characteristic,
+#' plot_lognormal <- plot_prob(x = df_john$x,
 #'                           y = df_john$prob,
 #'                           status = df_john$status,
 #'                           id = df_john$id,
@@ -1382,14 +1382,14 @@ plot_conf.default <- function(
 #'                           title_trace = "Failed Items")
 #'
 #' plot_reg_lognormal <- plot_mod(p_obj = plot_lognormal,
-#'                              x = conf_betabin_ln$characteristic,
+#'                              x = conf_betabin_ln$x,
 #'                              y = conf_betabin_ln$prob,
 #'                              loc_sc_params = mrr_ln$loc_sc_params,
 #'                              distribution = "lognormal3",
 #'                              title_trace = "Estimated Lognormal CDF")
 #'
 #' plot_conf_beta_ln <- plot_conf(p_obj = plot_reg_lognormal,
-#'                             x = list(conf_betabin_ln$characteristic),
+#'                             x = list(conf_betabin_ln$x),
 #'                             y = list(conf_betabin_ln$lower_bound,
 #'                                      conf_betabin_ln$upper_bound),
 #'                             direction = "y",
@@ -1411,9 +1411,9 @@ plot_conf.confint <- function(p_obj, x, title_trace, ...) {
       "upper" = list(x$upper_bound)
     )
 
-    y <- x$characteristic
+    y <- x$x
   } else {
-    x <- x$characteristic
+    x <- x$x
 
     y <- switch(
       bounds,

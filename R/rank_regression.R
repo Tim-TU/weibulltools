@@ -123,7 +123,7 @@ rank_regression.cdf_estimation <- function(
 
   if (length(unique(x$method)) == 1) {
     rank_regression.default(
-      x = x$characteristic,
+      x = x$x,
       y = x$prob,
       status = x$status,
       distribution = distribution,
@@ -135,7 +135,7 @@ rank_regression.cdf_estimation <- function(
 
     model_estimation_list <- purrr::map(x_split, function(cdf) {
       rank_regression.default(
-        x = cdf$characteristic,
+        x = cdf$x,
         y = cdf$prob,
         status = cdf$status,
         distribution = distribution,
@@ -456,7 +456,7 @@ rank_regression.default <- function(
     )
   }
 
-  mrr_output$data <- tibble::tibble(characteristic = x, status = status)
+  mrr_output$data <- tibble::tibble(x = x, status = status)
 
   mrr_output$distribution <- distribution
 
@@ -546,7 +546,7 @@ r_squared_profiling.cdf_estimation <- function(
   distribution <- match.arg(distribution)
 
   r_squared_profiling.default(
-    x = x$characteristic,
+    x = x$x,
     y = x$prob,
     thres = thres,
     distribution = distribution
@@ -589,7 +589,7 @@ r_squared_profiling.cdf_estimation <- function(
 #'
 #' profile_r2 <- sapply(
 #'   threshold, r_squared_profiling,
-#'   x = tbl_john$characteristic[tbl_john$status == 1],
+#'   x = tbl_john$x[tbl_john$status == 1],
 #'   y = tbl_john$prob[tbl_john$status == 1],
 #'   distribution = "weibull3"
 #' )

@@ -55,7 +55,7 @@ plot_prob_helper <- function(
 ) {
   tbl <- tbl %>%
     dplyr::filter(status == 1) %>%
-    dplyr::arrange(characteristic)
+    dplyr::arrange(x)
 
   # Choice of distribution:
   if (distribution %in% c("weibull", "sev")) {
@@ -88,7 +88,7 @@ plot_prob_mix_helper <- function(
     tbl_john <- estimate_cdf(data, methods = "johnson") %>%
       dplyr::filter(status == 1)
 
-    x_s <- tbl_john$characteristic
+    x_s <- tbl_john$x
     y_s <- tbl_john$prob
     id_s <- tbl_john$id
     tbl_group <- tibble::tibble(x_s = x_s, y_s = y_s, id_s = id_s)
@@ -146,7 +146,7 @@ plot_prob_mix_helper <- function(
     # Preparation for plot:
     tbl_group <- tbl_group %>%
       dplyr::filter(status == 1) %>%
-      dplyr::rename(id_s = id, x_s = characteristic, y_s = prob)
+      dplyr::rename(id_s = id, x_s = x, y_s = prob)
   }
 
   # Choice of distribution:
@@ -221,8 +221,8 @@ plot_mod_mix_helper_2 <- function(model_estimation, index) {
   data <- model_estimation$data %>%
     dplyr::filter(status == 1)
 
-  x_min <- min(data$characteristic, na.rm = TRUE)
-  x_max <- max(data$characteristic, na.rm = TRUE)
+  x_min <- min(data$x, na.rm = TRUE)
+  x_max <- max(data$x, na.rm = TRUE)
 
   x_p <- seq(x_min, x_max, length.out = 200)
   y_p <- predict_prob(
@@ -268,7 +268,7 @@ plot_mod_mix_helper <- function(
     subset_x <- function(x, mod) {
       failed_data <- mod$data %>% dplyr::filter(status == 1)
 
-      subset(x, x >= min(failed_data$characteristic) & x <= max(failed_data$characteristic))
+      subset(x, x >= min(failed_data$x) & x <= max(failed_data$x))
     }
 
     # Defining function that calculates probabilities and store results in df.
