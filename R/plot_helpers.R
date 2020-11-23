@@ -80,8 +80,8 @@ plot_prob_mix_helper <- function(
   status <- data$status
   id <- data$id
 
-  # check if mix_output is NULL or "em_results" is not a name of lists in mix_output!
-  if (is.null(mix_output) || !("em_results" %in%  names(mix_output))) {
+  # case mixmod_regression
+  if (!("em_results" %in%  names(mix_output))) {
 
     # applying johnson method to all data! Used for printing results of
     # mixmod_regression() and for the case is mix_output = NULL.
@@ -93,11 +93,6 @@ plot_prob_mix_helper <- function(
     id_s <- tbl_john$id
     tbl_group <- tibble::tibble(x_s = x_s, y_s = y_s, id_s = id_s)
     tbl_group$groups <- as.factor(c(rep(title_trace, length(x_s))))
-  }
-
-  # Check for mixtures and separate data regarding results from segmented
-  # regression:
-  if (!is.null(mix_output) && !("em_results" %in%  names(mix_output))) {
 
     # Defining subset function for x_ranges provided by mixmod_regression():
     subset_x <- function(x, mrr_model) {
@@ -122,6 +117,7 @@ plot_prob_mix_helper <- function(
     }
   }
 
+  # case mixmod_em
   if (("em_results" %in%  names(mix_output))) {
     # Split observations by maximum a-posteriori method (MAP) used in mixmod_em:
     groups <- mix_output$em_results$groups

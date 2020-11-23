@@ -306,13 +306,10 @@ plot_prob_ <- function(
 #' \code{\link{mixmod_regression}} or \code{\link{mixmod_em}}.
 #'
 #' Depending on the separation method the function \code{\link{johnson_method}}
-#' is called in various ways. If \code{mixmod_regression} is used, \code{johnson_method}
+#' is called in two ways. If \code{mixmod_regression} is used, \code{johnson_method}
 #' is applied to all data. If data was splitted by \code{mixmod_em} the function
 #' \code{johnson_method} is applied to subgroup-specific data. The calculated plotting
 #' positions are colored regarding the obtained split of the used splitting function.
-#' If \code{mix_output = NULL} \code{johnson_method} is applied to all data, too.
-#' The obtained plot is then equal to \code{\link{plot_prob}}. See \strong{Examples}
-#' for all three cases.
 #'
 #' In \code{\link{mixmod_regression}} a maximum of three subgroups can be determined
 #' and thus being plotted. The intention of this function is to give the
@@ -543,18 +540,7 @@ plot_prob_mix.mixmod_em <- function(x,
 #'           0, 1, 1, 1, 1, 1, 1)
 #' id <- 1:length(hours)
 #'
-#' # Example 1 - mix_output = NULL:
-#' plot_weibull <- plot_prob_mix(x = hours,
-#'                               status = state,
-#'                               id = id,
-#'                               distribution = "weibull",
-#'                               mix_output = NULL,
-#'                               title_main = "Weibull Probability Plot",
-#'                               title_x = "Time in Hours",
-#'                               title_y = "Probability of Failure",
-#'                               title_trace = "Failed Items")
-#'
-#' # Example 2 - Using result of mixmod_em in mix_output:
+#' # Example 1 - Using result of mixmod_em in mix_output:
 #' mix_mod_em <- mixmod_em(x = hours, status = state, distribution = "weibull",
 #'                         conf_level = 0.95, k = 2, method = "EM", n_iter = 150)
 #'
@@ -568,7 +554,7 @@ plot_prob_mix.mixmod_em <- function(x,
 #'                                  title_y = "Probability of Failure",
 #'                                  title_trace = "Subgroup")
 #'
-#' # Example 3 - Using result of mixmod_regression in mix_output:
+#' # Example 2 - Using result of mixmod_regression in mix_output:
 #' john <- johnson_method(x = hours, status = state)
 #' mix_mod_reg <- mixmod_regression(
 #'   x = john$characteristic,
@@ -595,7 +581,7 @@ plot_prob_mix.default <- function(
                         status,
                         id = rep("XXXXXX", length(x)),
                         distribution = c("weibull", "lognormal", "loglogistic"),
-                        mix_output = NULL,
+                        mix_output,
                         title_main = "Probability Plot",
                         title_x = "Characteristic",
                         title_y = "Unreliability",
