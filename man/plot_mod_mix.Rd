@@ -6,31 +6,16 @@
 \title{Adding Estimated Population Lines of a Separated Mixture Model to a
 Probability Plot}
 \usage{
-plot_mod_mix(
-  p_obj,
-  x,
-  status,
-  mix_output,
-  distribution = c("weibull", "lognormal", "loglogistic"),
-  title_trace = "Fit"
-)
+plot_mod_mix(p_obj, x, ...)
 }
 \arguments{
 \item{p_obj}{A plotly object provided by function \code{\link{plot_prob_mix}}.}
 
 \item{x}{A numeric vector containing the x-coordinates of the regression line.}
 
-\item{status}{A vector of binary data (0 or 1) indicating whether unit \emph{i}
-is a right censored observation (= 0) or a failure (= 1).}
-
 \item{mix_output}{A list provided by \code{\link{mixmod_regression}} or
 \code{\link{mixmod_em}}, which consists of elements necessary to visualize
 the regression lines.}
-
-\item{distribution}{Supposed distribution of the random variable.}
-
-\item{title_trace}{A character string whis is assigned to the trace shown in
-the legend.}
 }
 \value{
 Returns a plotly object containing the probability plot with
@@ -104,6 +89,7 @@ plot_weibull_reglines <- plot_mod_mix(p_obj = plot_weibull_reg,
                                    mix_output = mix_mod_reg,
                                    distribution = "weibull",
                                    title_trace = "Fitted Line")
+
 }
 \references{
 Doganaksoy, N.; Hahn, G.; Meeker, W. Q., Reliability Analysis by

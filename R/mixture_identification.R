@@ -284,7 +284,7 @@ mixmod_regression.default <- function(
   }
 
   if (!inherits(mrr_output, "rank_regression")) {
-    class(mrr_output) <- c("model_estimation_list", class(mrr_output))
+    class(mrr_output) <- c("mixmod_regression", class(mrr_output))
   }
 
   return(mrr_output)
@@ -550,7 +550,7 @@ mixmod_em.default <- function(x,
   ml$em_results <- list(a_priori = mix_est$priori, a_posteriori = mix_est$posteriori,
     groups = split_obs, logL = logL_complete, aic = aic_complete, bic = bic_complete)
 
-  class(ml) <- c("mixmod_em_output", class(ml))
+  class(ml) <- c("mixmod_em", class(ml))
 
   ml
 }

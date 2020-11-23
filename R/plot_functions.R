@@ -265,7 +265,8 @@ plot_prob.cdf_estimation <- function(
 }
 
 plot_prob_ <- function(
-  cdf_estimation, distribution, title_main, title_x, title_y, title_trace, plot_method
+  cdf_estimation, distribution, title_main, title_x, title_y, title_trace,
+  plot_method
 ) {
 
   prob_tbl <- plot_prob_helper(
@@ -432,10 +433,10 @@ plot_prob_mix.model_estimation <- function(x,
 
 
 
-#' @describeIn plot_prob_mix.model_estimation
+#' @rdname plot_prob_mix.model_estimation
 #'
 #' @export
-plot_prob_mix.model_estimation_list <- function(x,
+plot_prob_mix.mixmod_regression <- function(x,
                                            title_main = "Probability Plot",
                                            title_x = "Characteristic",
                                            title_y = "Unreliability",
@@ -450,20 +451,17 @@ plot_prob_mix.model_estimation_list <- function(x,
   data <- purrr::map2_dfr(x, seq_along(x), function(model_estimation, i) {
     model_estimation$data %>%
       # Mark group
-      dplyr::mutate(group = paste(title_trace, i))
+      dplyr::mutate(group = i)
   })
 
   rel_data <- reliability_data(data, x = characteristic, status = status) %>%
     dplyr::mutate(group = data$group)
 
   # Apply johnson method to all data
-  john <- estimate_cdf(rel_data, "johnson") %>%
-    dplyr::filter(status == 1)
-
-  data <- rel_data %>% dplyr::filter(status == 1)
+  john <- estimate_cdf(rel_data, "johnson")
 
   # Set group as method
-  john$method <- data$group
+  john$method <- as.character(data$group)
 
   plot_prob.cdf_estimation(
     x = john,
@@ -477,10 +475,10 @@ plot_prob_mix.model_estimation_list <- function(x,
 
 
 
-#' @describeIn plot_prob_mix.model_estimation
+#' @rdname plot_prob_mix.model_estimation
 #'
 #' @export
-plot_prob_mix.mixmod_em_output <- function(x,
+plot_prob_mix.mixmod_em <- function(x,
                                            title_main = "Probability Plot",
                                            title_x = "Characteristic",
                                            title_y = "Unreliability",
@@ -491,10 +489,24 @@ plot_prob_mix.mixmod_em_output <- function(x,
   plot_method <- match.arg(plot_method)
 
   model_estimation_list <- x[-length(x)]
-  class(model_estimation_list) <- c("model_estimation_list", class(model_estimation_list))
 
-  plot_prob_mix.model_estimation_list(
-    x = model_estimation_list,
+  john <- purrr::map2_dfr(
+    model_estimation_list, seq_along(model_estimation_list),
+    function(model_estimation, index) {
+      data <- reliability_data(
+        model_estimation$data, x = characteristic, status = status
+      )
+
+      john <- estimate_cdf(data, "johnson")
+
+      john$method <- as.character(index)
+
+      john
+    }
+  )
+
+  plot_prob.cdf_estimation(
+    x = john,
     title_main = title_main,
     title_x = title_x,
     title_y = title_y,
@@ -506,10 +518,6 @@ plot_prob_mix.mixmod_em_output <- function(x,
 #' Probability Plot for Separated Mixture Models
 #'
 #' @inherit plot_prob_mix description details return references
-#'
-#' @encoding UTF-8
-#' @references Doganaksoy, N.; Hahn, G.; Meeker, W. Q., Reliability Analysis by
-#'   Failure Mode, Quality Progress, 35(6), 47-52, 2002
 #'
 #' @inheritParams plot_prob.default
 #' @param mix_output A list provided by \code{\link{mixmod_regression}} or
@@ -576,7 +584,7 @@ plot_prob_mix.mixmod_em_output <- function(x,
 #'   title_trace = "Subgroup"
 #' )
 #'
-#'  @export
+#' @export
 plot_prob_mix.default <- function(
                         x,
                         status,
@@ -783,6 +791,7 @@ plot_mod.model_estimation_list <- function(
   )
 }
 
+
 #' Add Estimated Population Line to a Probability Plot
 #'
 #' @inherit plot_mod description return references
@@ -924,7 +933,6 @@ plot_mod.default <- function(p_obj,
 #'
 #' @return Returns a plotly object containing the probability plot with
 #'   plotting positions and estimated regression line(s).
-#' @export
 #'
 #' @examples
 #' # Data is taken from given reference:
@@ -983,9 +991,73 @@ plot_mod.default <- function(p_obj,
 #'                                    mix_output = mix_mod_reg,
 #'                                    distribution = "weibull",
 #'                                    title_trace = "Fitted Line")
+#'
+#' @export
+plot_mod_mix <- function(p_obj, x, ...) {
+  UseMethod("plot_mod_mix", x)
+}
 
 
-plot_mod_mix <- function(p_obj, x, status, mix_output,
+
+#' @export
+plot_mod_mix.model_estimation <- function(p_obj, x, title_trace = "Fit") {
+  plot_mod_mix.model_estimation_list(p_obj, list(x), title_trace = title_trace)
+}
+
+
+
+#' @export
+plot_mod_mix.mixmod_regression <- function(p_obj, x, title_trace = "Fit") {
+  # Plot method is determined by p_obj
+  plot_method <- if ("gg" %in% class(p_obj)) {
+    "ggplot2"
+  } else if ("plotly" %in% class(p_obj)) {
+    "plotly"
+  }  else {
+    stop(
+      "p_obj is not a valid plot object. Provide either a ggplot2 or a plotly
+      plot object."
+    )
+  }
+
+  tbl_pred <- purrr::map2_dfr(x, seq_along(x), function(model_estimation, index) {
+    plot_mod_mix_helper_2(
+      model_estimation = model_estimation,
+      index = index
+    )
+  })
+
+  plot_mod_fun <- if (plot_method == "plotly") plot_mod_plotly else
+    plot_mod_ggplot2
+
+  plot_mod_fun(
+    p_obj = p_obj,
+    tbl_pred = tbl_pred,
+    title_trace = title_trace
+  )
+}
+
+
+
+#' @export
+plot_mod_mix.mixmod_em <- function(p_obj, x, title_trace = "Fit") {
+
+  model_estimation_list <- x[-length(x)]
+  class(model_estimation_list) <- c(
+    "model_estimation_list", class(model_estimation_list)
+  )
+
+  plot_mod_mix.mixmod_regression(
+    p_obj = p_obj,
+    x = model_estimation_list,
+    title_trace = title_trace
+  )
+}
+
+
+
+#' @export
+plot_mod_mix.default <- function(p_obj, x, status, mix_output,
   distribution = c("weibull", "lognormal", "loglogistic"),
   title_trace = "Fit") {
 

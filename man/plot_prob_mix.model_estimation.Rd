@@ -2,8 +2,8 @@
 % Please edit documentation in R/plot_functions.R
 \name{plot_prob_mix.model_estimation}
 \alias{plot_prob_mix.model_estimation}
-\alias{plot_prob_mix.model_estimation_list}
-\alias{plot_prob_mix.mixmod_em_output}
+\alias{plot_prob_mix.mixmod_regression}
+\alias{plot_prob_mix.mixmod_em}
 \title{Probability Plot for Separated Mixture Models}
 \usage{
 \method{plot_prob_mix}{model_estimation}(
@@ -15,7 +15,7 @@
   plot_method = c("plotly", "ggplot2")
 )
 
-\method{plot_prob_mix}{model_estimation_list}(
+\method{plot_prob_mix}{mixmod_regression}(
   x,
   title_main = "Probability Plot",
   title_x = "Characteristic",
@@ -24,7 +24,7 @@
   plot_method = c("plotly", "ggplot2")
 )
 
-\method{plot_prob_mix}{mixmod_em_output}(
+\method{plot_prob_mix}{mixmod_em}(
   x,
   title_main = "Probability Plot",
   title_x = "Characteristic",
@@ -85,13 +85,6 @@ The name of the legend entry is a combination of the \code{title_trace} and the
 number of determined subgroups. If \code{title_trace = "Group"} and the data
 could be splitted in two groups, the legend entries would be "Group 1" and "Group 2".
 }
-\section{Functions}{
-\itemize{
-\item \code{plot_prob_mix.model_estimation_list}: 
-
-\item \code{plot_prob_mix.mixmod_em_output}: 
-}}
-
 \examples{
 # Data is taken from given reference:
 hours <- c(2, 28, 67, 119, 179, 236, 282, 317, 348, 387, 3, 31, 69, 135,
