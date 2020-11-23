@@ -759,9 +759,9 @@ plot_mod.model_estimation_list <- function(
   p_obj, x, title_trace = "Fit"
 ) {
   # Plot method is determined by p_obj
-  plot_method <- if ("gg" %in% class(p_obj)) {
+  plot_method <- if (inherits(p_obj, "gg")) {
     "ggplot2"
-  } else if ("plotly" %in% class(p_obj)) {
+  } else if (inherits(p_obj, "plotly")) {
     "plotly"
   }  else {
     stop(
@@ -882,9 +882,9 @@ plot_mod.default <- function(p_obj,
   distribution <- match.arg(distribution)
 
   # Plot method is determined by p_obj
-  plot_method <- if ("gg" %in% class(p_obj)) {
+  plot_method <- if (inherits(p_obj, "gg")) {
     "ggplot2"
-  } else if ("plotly" %in% class(p_obj)) {
+  } else if (inherits(p_obj, "plotly")) {
     "plotly"
   }  else {
     stop(
@@ -1009,9 +1009,9 @@ plot_mod_mix.model_estimation <- function(p_obj, x, title_trace = "Fit") {
 #' @export
 plot_mod_mix.mixmod_regression <- function(p_obj, x, title_trace = "Fit") {
   # Plot method is determined by p_obj
-  plot_method <- if ("gg" %in% class(p_obj)) {
+  plot_method <- if (inherits(p_obj, "gg")) {
     "ggplot2"
-  } else if ("plotly" %in% class(p_obj)) {
+  } else if (inherits(p_obj, "plotly")) {
     "plotly"
   }  else {
     stop(
@@ -1068,9 +1068,9 @@ plot_mod_mix.default <- function(p_obj, x, status, mix_output,
   }
 
   # Plot method is determined by p_obj
-  plot_method <- if ("gg" %in% class(p_obj)) {
+  plot_method <- if (inherits(p_obj, "gg")) {
     "ggplot2"
-  } else if ("plotly" %in% class(p_obj)) {
+  } else if (inherits(p_obj, "plotly")) {
     "plotly"
   }  else {
     stop(
@@ -1259,9 +1259,9 @@ plot_conf.default <- function(
   distribution <- match.arg(distribution)
 
   # Plot method is determined by p_obj
-  plot_method <- if ("gg" %in% class(p_obj)) {
+  plot_method <- if (inherits(p_obj, "gg")) {
     "ggplot2"
-  } else if ("plotly" %in% class(p_obj)) {
+  } else if (inherits(p_obj, "plotly")) {
     "plotly"
   }  else {
     stop(
@@ -1527,9 +1527,9 @@ plot_pop <- function(
     )
   } else {
     # Plot method is determined by p_obj
-    plot_method <- if ("gg" %in% class(p_obj)) {
+    plot_method <- if (inherits(p_obj, "gg")) {
       "ggplot2"
-    } else if ("plotly" %in% class(p_obj)) {
+    } else if (inherits(p_obj, "plotly")) {
       "plotly"
     }  else {
       stop(
