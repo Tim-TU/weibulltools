@@ -23,3 +23,10 @@ print.model_estimation_list <- function(x,
   })
   invisible(x)
 }
+
+#' @export
+vcov.model_estimation <- function(x) {
+  if (hasName(x, "loc_sc_varcov")) {
+    x$loc_sc_varcov
+  }
+}

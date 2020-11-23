@@ -473,7 +473,7 @@ print.rank_regression <- function(x, digits = max(3L, getOption("digits") - 3L))
 
 
 
-#' \eqn{R²}-Profile Function for Log-Location-Scale Distributions with Threshold
+#' R-Squared-Profile Function for Log-Location-Scale Distributions with Threshold
 #'
 #' This function evaluates the coefficient of determination with respect to a
 #' given threshold parameter of a three-parametric lifetime distribution.
@@ -484,6 +484,76 @@ print.rank_regression <- function(x, digits = max(3L, getOption("digits") - 3L))
 #' @references Meeker, William Q; Escobar, Luis A., Statistical methods for
 #'   reliability data, New York: Wiley series in probability and statistics, 1998
 #'
+#' @export
+#'
+r_squared_profiling <- function(x, ...) {
+  UseMethod("r_squared_profiling")
+}
+
+
+
+#' R-Squared-Profile Function for Log-Location-Scale Distributions with Threshold
+#'
+#' @inherit r_squared_profiling description details return references
+#'
+#' @param x An object of class \code{cdf_estimation} returned from
+#'   \code{\link{estimate_cdf}}.
+#' @param y A numeric vector which consists of estimated failure probabilities
+#'   regarding the lifetime data in \code{x}.
+#' @param thres A numeric value of the threshold parameter.
+#' @param distribution Supposed distribution of the random variable. The
+#'   value can be \code{"weibull3"}, \code{"lognormal3"} or \code{"loglogistic3"}.
+#'
+#' @examples
+#' # Alloy T7987 dataset taken from Meeker and Escobar(1998, p. 131)
+#' cycles   <- c(300, 300, 300, 300, 300, 291, 274, 271, 269, 257, 256, 227, 226,
+#'               224, 213, 211, 205, 203, 197, 196, 190, 189, 188, 187, 184, 180,
+#'               180, 177, 176, 173, 172, 171, 170, 170, 169, 168, 168, 162, 159,
+#'               159, 159, 159, 152, 152, 149, 149, 144, 143, 141, 141, 140, 139,
+#'               139, 136, 135, 133, 131, 129, 123, 121, 121, 118, 117, 117, 114,
+#'               112, 108, 104, 99, 99, 96, 94)
+#' status <- c(rep(0, 5), rep(1, 67))
+#' data <- reliability_data(x = cycles, status = status)
+#'
+#' tbl_john <- estimate_cdf(data, "johnson")
+#'
+#' # Determining threshold parameter for which the coefficient of determination is
+#' # maximized subject to the condition that the threshold parameter must be smaller
+#' # as the first failure cycle, i.e 94:
+#' threshold <- seq(0, min(cycles[status == 1]) - 0.1, length.out = 100)
+#'
+#' profile_r2 <- sapply(
+#'   threshold, r_squared_profiling,
+#'   x = tbl_john[tbl_john$status == 1,],
+#'   distribution = "weibull3"
+#' )
+#'
+#' threshold[which.max(profile_r2)]
+#'
+#' # plot:
+#' plot(threshold, profile_r2, type = "l")
+#' abline(v = threshold[which.max(profile_r2)], h = max(profile_r2), col = "red")
+#'
+#' @export
+r_squared_profiling.cdf_estimation <- function(
+  x, thres, distribution = c("weibull3", "lognormal3", "loglogistic3")
+) {
+  distribution <- match.arg(distribution)
+
+  r_squared_profiling.default(
+    x = x$characteristic,
+    y = x$prob,
+    thres = thres,
+    distribution = distribution
+  )
+}
+
+
+
+#' R-Squared-Profile Function for Log-Location-Scale Distributions with Threshold
+#'
+#' @inherit r_squared_profiling description details return references
+#'
 #' @param x A numeric vector which consists of lifetime data. Lifetime
 #'   data could be every characteristic influencing the reliability of a product,
 #'   e.g. operating time (days/months in service), mileage (km, miles), load
@@ -493,8 +563,6 @@ print.rank_regression <- function(x, digits = max(3L, getOption("digits") - 3L))
 #' @param thres A numeric value of the threshold parameter.
 #' @param distribution Supposed distribution of the random variable. The
 #'   value can be \code{"weibull3"}, \code{"lognormal3"} or \code{"loglogistic3"}.
-#' @return Returns the coefficient of determination for a specified threshold value.
-#' @export
 #'
 #' @examples
 #' # Alloy T7987 dataset taken from Meeker and Escobar(1998, p. 131)
@@ -526,29 +594,6 @@ print.rank_regression <- function(x, digits = max(3L, getOption("digits") - 3L))
 #' # plot:
 #' plot(threshold, profile_r2, type = "l")
 #' abline(v = threshold[which.max(profile_r2)], h = max(profile_r2), col = "red")
-r_squared_profiling <- function(x, ...) {
-  UseMethod("r_squared_profiling")
-}
-
-#' @describeIn r_squared_profiling Provide a cdf estimation
-#'
-#' @export
-r_squared_profiling.cdf_estimation <- function(
-  x, thres, distribution = c("weibull3", "lognormal3", "loglogistic3")
-) {
-  distribution <- match.arg(distribution)
-
-  r_squared_profiling.default(
-    x = x$characteristic,
-    y = x$prob,
-    thres = thres,
-    distribution = distribution
-  )
-}
-
-
-
-#' @describeIn r_squared_profiling Provide x and y manually
 #'
 #' @export
 r_squared_profiling.default <- function(

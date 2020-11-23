@@ -72,6 +72,7 @@ plot_prob_helper <- function(
   tbl
 }
 
+# only used in plot_prob_mix.default
 plot_prob_mix_helper <- function(
   data, distribution, mix_output, title_trace
 ) {
@@ -218,6 +219,49 @@ plot_mod_helper <- function(
   tbl_pred
 }
 
+# for plot_mod_mix.model_estimation(_list)
+plot_mod_mix_helper_2 <- function(model_estimation, index) {
+  distribution <- model_estimation$distribution
+  data <- model_estimation$data %>%
+    dplyr::filter(status == 1)
+
+  x_min <- min(data$characteristic, na.rm = TRUE)
+  x_max <- max(data$characteristic, na.rm = TRUE)
+
+  x_p <- seq(x_min, x_max, length.out = 200)
+  y_p <- predict_prob(
+    q = x_p,
+    loc_sc_params = model_estimation$loc_sc_params,
+    distribution = distribution
+  )
+
+  param_1 <- round(model_estimation$loc_sc_params[[1]], digits = 2)
+  param_2 <- round(model_estimation$loc_sc_params[[2]], digits = 2)
+  label_1 <- "\u03BC:"
+  label_2 <- "\u03C3:"
+
+  tbl_p <- tibble::tibble(
+    x_p = x_p,
+    y_p = y_p,
+    param_val = list(c(param_1, param_2)),
+    param_label = list(c(label_1, label_2)),
+    method = as.character(index)
+  )
+
+  # Choice of distribution:
+  if (distribution == "weibull") {
+    q <- SPREDA::qsev(tbl_p$y_p)
+  } else if (distribution == "lognormal") {
+    q <- stats::qnorm(tbl_p$y_p)
+  } else if (distribution == "loglogistic") {
+    q <- stats::qlogis(tbl_p$y_p)
+  }
+  tbl_p$q <- q
+
+  tbl_p
+}
+
+# for plot_mod_mix.default
 plot_mod_mix_helper <- function(
   x, status, mix_output, distribution, title_trace
 ) {
@@ -235,10 +279,8 @@ plot_mod_mix_helper <- function(
 
       x_min <- min(x_split, na.rm = TRUE)
       x_max <- max(x_split, na.rm = TRUE)
-      x_low <- x_min - 10 ^ floor(log10(x_min)) * .25
-      x_high <- x_max + 10 ^ floor(log10(x_max)) * .25
 
-      x_p <- seq(x_low, x_high, length.out = 200)
+      x_p <- seq(x_min, x_max, length.out = 200)
       y_p <- predict_prob(
         q = x_p,
         loc_sc_params = mod$loc_sc_params,
@@ -276,9 +318,8 @@ plot_mod_mix_helper <- function(
       FUN = function(x, d, mod) {
         x_min <- min(x[d == 1], na.rm = TRUE)
         x_max <- max(x[d == 1], na.rm = TRUE)
-        x_low <- x_min - 10 ^ floor(log10(x_min)) * .25
-        x_high <- x_max + 10 ^ floor(log10(x_max)) * .25
-        x_p <- seq(x_low, x_high, length.out = 200)
+
+        x_p <- seq(x_min, x_max, length.out = 200)
 
         # Prepare hovertexts for regression lines:
         param_1 <- round(mod$loc_sc_params[[1]], digits = 2)

@@ -84,10 +84,10 @@ In package `weibulltools` the method of segmented regression is implemented in f
 ```{r segmented weibull I, fig.cap = "Figure 2: Subgroup-specific plotting positions.", message = FALSE}
 # Applying mixmod_regression(): 
 mixreg_weib <- mixmod_regression(x = cdf_john_tbl$characteristic, y = cdf_john_tbl$prob, 
-  event = cdf_john_tbl$status, distribution = "weibull")
+  status = cdf_john_tbl$status, distribution = "weibull")
 
 # Using plot_prob_mix(). 
-mix_reg_plot <- plot_prob_mix(x = hours, event = state, id = id, 
+mix_reg_plot <- plot_prob_mix(x = hours, status = state, id = id, 
   distribution = "weibull", mix_output = mixreg_weib, 
   title_main = "Weibull Mixture Regression", title_x = "Time in Hours", 
   title_y = "Probability of Failure", title_trace = "Subgroup",
@@ -99,7 +99,7 @@ mix_reg_plot
 
 ```{r segmented weibull II, fig.cap = "Figure 3: Subgroup-specific regression lines.", message = FALSE}
 # Using plot_mod_mix() to visualize regression lines of subgroups: 
-mix_reg_lines <- plot_mod_mix(mix_reg_plot, x = hours, event = state, 
+mix_reg_lines <- plot_mod_mix(mix_reg_plot, x = hours, status = state, 
   mix_output = mixreg_weib, distribution = "weibull", title_trace = "Fitted Line")
 mix_reg_lines
 ```
@@ -114,11 +114,11 @@ The EM-Algorithm can be applied through the usage of the function `mixmod_em()`.
 
 ```{r em weibull I, fig.cap = "Figure 4: Subgroup-specific plotting positions.", message = FALSE}
 # Applying mixmod_regression(): 
-mixem_weib <- mixmod_em(x = hours, event = state, distribution = "weibull",
+mixem_weib <- mixmod_em(x = hours, status = state, distribution = "weibull",
                         conf_level = 0.95, k = 2, method = "EM", n_iter = 150)
 
 # Using plot_prob_mix(): 
-mix_em_plot <- plot_prob_mix(x = hours, event = state, id = id, 
+mix_em_plot <- plot_prob_mix(x = hours, status = state, id = id, 
   distribution = "weibull", mix_output = mixem_weib, 
   title_main = "Weibull Mixture EM", title_x = "Time in Hours", 
   title_y = "Probability of Failure", title_trace = "Subgroup",
@@ -131,7 +131,7 @@ mix_em_plot
 ```{r em weibull II, fig.cap = "Figure 5: Subgroup-specific regression lines.", message = FALSE}
 
 # Using plot_mod_mix() to visualize regression lines of subgroups: 
-mix_em_lines <- plot_mod_mix(mix_em_plot, x = hours, event = state, 
+mix_em_lines <- plot_mod_mix(mix_em_plot, x = hours, status = state, 
   mix_output = mixem_weib, distribution = "weibull", title_trace = "Fitted Line")
 mix_em_lines
 ```

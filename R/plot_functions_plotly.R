@@ -158,6 +158,7 @@ plot_prob_plotly <- function(
   return(p_prob)
 }
 
+# only used in plot_prob_mix.default
 plot_prob_mix_plotly <- function(
   p_obj,
   tbl_group,
@@ -254,7 +255,7 @@ plot_mod_plotly <- function(
     type = "scatter",
     mode = "lines",
     hoverinfo = "text",
-    color = ~method,
+    color = ~as.factor(method),
     name = name,
     legendgroup = ~method,
     text = ~hovertext
@@ -263,6 +264,7 @@ plot_mod_plotly <- function(
   return(p_mod)
 }
 
+# only used in plot_mod_mix.default
 plot_mod_mix_plotly <- function(p_obj, tbl_group, title_trace) {
 
   # Get axis labels in hover:
