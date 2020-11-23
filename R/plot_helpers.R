@@ -272,7 +272,7 @@ plot_mod_mix_helper <- function(
     subset_x <- function(x, mod) {
       failed_data <- mod$data %>% dplyr::filter(status == 1)
 
-      subset(x, x >= min(failed_data$x) & x <= max(failed_data$x))
+      subset(x, x >= min(failed_data$characteristic) & x <= max(failed_data$characteristic))
     }
 
     # Defining function that calculates probabilities and store results in df.

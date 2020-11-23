@@ -96,7 +96,8 @@ ml_estimation.reliability_data <- function(
     "weibull", "lognormal", "loglogistic", "normal", "logistic", "sev",
     "weibull3", "lognormal3", "loglogistic3"),
   wts = rep(1, nrow(x)),
-  conf_level = .95
+  conf_level = .95,
+  ...
 ) {
   distribution <- match.arg(distribution)
 
@@ -164,7 +165,8 @@ ml_estimation.default <- function(
     "weibull", "lognormal", "loglogistic", "normal", "logistic", "sev",
     "weibull3", "lognormal3", "loglogistic3"),
   wts = rep(1, length(x)),
-  conf_level = .95
+  conf_level = .95,
+  ...
 ) {
 
   distribution <- match.arg(distribution)
@@ -426,7 +428,10 @@ ml_estimation_ <- function(data, distribution, wts, conf_level) {
 
 
 #' @export
-print.ml_estimation <- function(x, digits = max(3L, getOption("digits") - 3L)) {
+print.ml_estimation <- function(x,
+                                digits = max(3L, getOption("digits") - 3L),
+                                ...
+) {
   cat("Maximum Likelihood Estimation\n")
   NextMethod("print")
 }

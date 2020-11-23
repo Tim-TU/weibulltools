@@ -69,7 +69,10 @@ mixmod_regression <- function(x, ...) {
 #' @export
 #'
 mixmod_regression.cdf_estimation <- function(
-  x, distribution = c("weibull", "lognormal", "loglogistic"), conf_level = .95
+                        x,
+                        distribution = c("weibull", "lognormal", "loglogistic"),
+                        conf_level = .95,
+                        ...
 ) {
 
   distribution <- match.arg(distribution)
@@ -126,9 +129,12 @@ mixmod_regression.cdf_estimation <- function(
 #' @export
 #'
 mixmod_regression.default <- function(
-  x, y, status,
-  distribution = c("weibull", "lognormal", "loglogistic"),
-  conf_level = .95
+                        x,
+                        y,
+                        status,
+                        distribution = c("weibull", "lognormal", "loglogistic"),
+                        conf_level = .95,
+                        ...
 ) {
 
   distribution <- match.arg(distribution)
@@ -409,7 +415,8 @@ mixmod_em.reliability_data <- function(x,
                                        method = "EM",
                                        n_iter = 100L,
                                        conv_limit = 1e-6,
-                                       diff_loglik = 0.5
+                                       diff_loglik = 0.5,
+                                       ...
 ) {
 
   distribution <- match.arg(distribution)
@@ -490,7 +497,8 @@ mixmod_em.default <- function(x,
                               method = "EM",
                               n_iter = 100L,
                               conv_limit = 1e-6,
-                              diff_loglik = 0.5
+                              diff_loglik = 0.5,
+                              ...
 ) {
 
   distribution <- match.arg(distribution)

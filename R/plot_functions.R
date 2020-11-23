@@ -167,7 +167,8 @@ plot_prob.default <- function(
   title_main = "Probability Plot",
   title_x = "Characteristic", title_y = "Unreliability",
   title_trace = "Sample",
-  plot_method = c("plotly", "ggplot2")
+  plot_method = c("plotly", "ggplot2"),
+  ...
 ) {
 
   distribution <- match.arg(distribution)
@@ -248,7 +249,8 @@ plot_prob.cdf_estimation <- function(
   title_x = "Characteristic",
   title_y = "Unreliability",
   title_trace = "Sample",
-  plot_method = c("plotly", "ggplot2")
+  plot_method = c("plotly", "ggplot2"),
+  ...
 ) {
   distribution <- match.arg(distribution)
   plot_method <- match.arg(plot_method)
@@ -411,7 +413,8 @@ plot_prob_mix.model_estimation <- function(x,
                                            title_x = "Characteristic",
                                            title_y = "Unreliability",
                                            title_trace = "Sample",
-                                           plot_method = c("plotly", "ggplot2")
+                                           plot_method = c("plotly", "ggplot2"),
+                                           ...
 ) {
   plot_method <- match.arg(plot_method)
 
@@ -441,7 +444,8 @@ plot_prob_mix.mixmod_regression <- function(x,
                                            title_x = "Characteristic",
                                            title_y = "Unreliability",
                                            title_trace = "Sample",
-                                           plot_method = c("plotly", "ggplot2")
+                                           plot_method = c("plotly", "ggplot2"),
+                                           ...
 ) {
 
   plot_method <- match.arg(plot_method)
@@ -479,11 +483,12 @@ plot_prob_mix.mixmod_regression <- function(x,
 #'
 #' @export
 plot_prob_mix.mixmod_em <- function(x,
-                                           title_main = "Probability Plot",
-                                           title_x = "Characteristic",
-                                           title_y = "Unreliability",
-                                           title_trace = "Sample",
-                                           plot_method = c("plotly", "ggplot2")
+                                    title_main = "Probability Plot",
+                                    title_x = "Characteristic",
+                                    title_y = "Unreliability",
+                                    title_trace = "Sample",
+                                    plot_method = c("plotly", "ggplot2"),
+                                    ...
 ) {
 
   plot_method <- match.arg(plot_method)
@@ -595,7 +600,8 @@ plot_prob_mix.default <- function(
                         title_x = "Characteristic",
                         title_y = "Unreliability",
                         title_trace = "Sample",
-                        plot_method = c("plotly", "ggplot2")
+                        plot_method = c("plotly", "ggplot2"),
+                        ...
 ) {
 
   distribution <- match.arg(distribution)
@@ -739,7 +745,7 @@ plot_mod <- function(
 #' @export
 #'
 plot_mod.model_estimation <- function(
-  p_obj, x, title_trace = "Fit"
+  p_obj, x, title_trace = "Fit", ...
 ) {
 
   failed_data <- dplyr::filter(x$data, status == 1)
@@ -758,7 +764,7 @@ plot_mod.model_estimation <- function(
 #' @export
 #'
 plot_mod.model_estimation_list <- function(
-  p_obj, x, title_trace = "Fit"
+  p_obj, x, title_trace = "Fit", ...
 ) {
   # Plot method is determined by p_obj
   plot_method <- if (inherits(p_obj, "gg")) {
@@ -880,7 +886,8 @@ plot_mod.default <- function(p_obj,
                               "logistic", "sev", "weibull3", "lognormal3",
                               "loglogistic3"
                              ),
-                             title_trace = "Fit"
+                             title_trace = "Fit",
+                             ...
 ) {
 
   distribution <- match.arg(distribution)
@@ -1004,14 +1011,14 @@ plot_mod_mix <- function(p_obj, x, ...) {
 
 
 #' @export
-plot_mod_mix.model_estimation <- function(p_obj, x, title_trace = "Fit") {
+plot_mod_mix.model_estimation <- function(p_obj, x, title_trace = "Fit", ...) {
   plot_mod_mix.model_estimation_list(p_obj, list(x), title_trace = title_trace)
 }
 
 
 
 #' @export
-plot_mod_mix.mixmod_regression <- function(p_obj, x, title_trace = "Fit") {
+plot_mod_mix.mixmod_regression <- function(p_obj, x, title_trace = "Fit", ...) {
   # Plot method is determined by p_obj
   plot_method <- if (inherits(p_obj, "gg")) {
     "ggplot2"
@@ -1044,7 +1051,7 @@ plot_mod_mix.mixmod_regression <- function(p_obj, x, title_trace = "Fit") {
 
 
 #' @export
-plot_mod_mix.mixmod_em <- function(p_obj, x, title_trace = "Fit") {
+plot_mod_mix.mixmod_em <- function(p_obj, x, title_trace = "Fit", ...) {
 
   model_estimation_list <- x[-length(x)]
   class(model_estimation_list) <- c(
@@ -1061,9 +1068,16 @@ plot_mod_mix.mixmod_em <- function(p_obj, x, title_trace = "Fit") {
 
 
 #' @export
-plot_mod_mix.default <- function(p_obj, x, status, mix_output,
-  distribution = c("weibull", "lognormal", "loglogistic"),
-  title_trace = "Fit") {
+plot_mod_mix.default <- function(p_obj,
+                                 x,
+                                 status,
+                                 mix_output,
+                                 distribution = c(
+                                   "weibull", "lognormal", "loglogistic"
+                                 ),
+                                 title_trace = "Fit",
+                                 ...
+) {
 
   distribution <- match.arg(distribution)
 
@@ -1256,7 +1270,8 @@ plot_conf.default <- function(
     "weibull3", "lognormal3", "loglogistic3"
   ),
   direction = c("y", "x"),
-  title_trace = "Confidence Limit"
+  title_trace = "Confidence Limit",
+  ...
 ) {
 
   direction <- match.arg(direction)
@@ -1397,7 +1412,7 @@ plot_conf.default <- function(
 #'
 #' @export
 #'
-plot_conf.confint <- function(p_obj, x, title_trace) {
+plot_conf.confint <- function(p_obj, x, title_trace, ...) {
   bounds <- attr(x, "bounds")
   direction <- attr(x, "direction")
   distribution <- attr(x, "distribution")

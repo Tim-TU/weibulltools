@@ -499,7 +499,8 @@ confint_fisher.model_estimation <- function(
                                       b_lives = c(0.01, 0.1, 0.50),
                                       bounds = c("two_sided", "lower", "upper"),
                                       conf_level = 0.95,
-                                      direction = c("y", "x")
+                                      direction = c("y", "x"),
+                                      ...
 ) {
   data <- x$data
   distribution <- x$distribution
@@ -562,7 +563,8 @@ confint_fisher.default <- function(
   b_lives = c(0.01, 0.1, 0.50),
   bounds = c("two_sided", "lower", "upper"),
   conf_level = .95,
-  direction = c("y", "x")
+  direction = c("y", "x"),
+  ...
 ) {
 
   bounds <- match.arg(bounds)
