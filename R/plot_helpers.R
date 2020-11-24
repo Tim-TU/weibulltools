@@ -55,7 +55,7 @@ plot_prob_helper <- function(
 ) {
   tbl <- tbl %>%
     dplyr::filter(status == 1) %>%
-    dplyr::arrange(characteristic)
+    dplyr::arrange(x)
 
   # Choice of distribution:
   if (distribution %in% c("weibull", "sev")) {
@@ -80,24 +80,19 @@ plot_prob_mix_helper <- function(
   status <- data$status
   id <- data$id
 
-  # check if mix_output is NULL or "em_results" is not a name of lists in mix_output!
-  if (is.null(mix_output) || !("em_results" %in%  names(mix_output))) {
+  # case mixmod_regression
+  if (!("em_results" %in%  names(mix_output))) {
 
     # applying johnson method to all data! Used for printing results of
     # mixmod_regression() and for the case is mix_output = NULL.
     tbl_john <- estimate_cdf(data, methods = "johnson") %>%
       dplyr::filter(status == 1)
 
-    x_s <- tbl_john$characteristic
+    x_s <- tbl_john$x
     y_s <- tbl_john$prob
     id_s <- tbl_john$id
     tbl_group <- tibble::tibble(x_s = x_s, y_s = y_s, id_s = id_s)
     tbl_group$groups <- as.factor(c(rep(title_trace, length(x_s))))
-  }
-
-  # Check for mixtures and separate data regarding results from segmented
-  # regression:
-  if (!is.null(mix_output) && !("em_results" %in%  names(mix_output))) {
 
     # Defining subset function for x_ranges provided by mixmod_regression():
     subset_x <- function(x, mrr_model) {
@@ -122,6 +117,7 @@ plot_prob_mix_helper <- function(
     }
   }
 
+  # case mixmod_em
   if (("em_results" %in%  names(mix_output))) {
     # Split observations by maximum a-posteriori method (MAP) used in mixmod_em:
     groups <- mix_output$em_results$groups
@@ -150,7 +146,7 @@ plot_prob_mix_helper <- function(
     # Preparation for plot:
     tbl_group <- tbl_group %>%
       dplyr::filter(status == 1) %>%
-      dplyr::rename(id_s = id, x_s = characteristic, y_s = prob)
+      dplyr::rename(id_s = id, x_s = x, y_s = prob)
   }
 
   # Choice of distribution:
@@ -206,9 +202,14 @@ plot_mod_helper <- function(
 
   # preparation of plotly hovers:
   ## raises problems if one-parameter distributions like exponential will be implemented!
-  param_val <- round(loc_sc_params, digits = 2)
-  param_label <- if (length(param_val) == 2) c("\u03BC:", "\u03C3:") else
+  param_val <- format(loc_sc_params, digits = 3)
+  # Enforce length 3
+  if (length(loc_sc_params) == 2) param_val <- c(param_val, NA)
+  param_label <- if (length(loc_sc_params) == 2) {
+    c("\u03BC:", "\u03C3:", NA)
+  } else {
     c("\u03BC:", "\u03C3:", "\u03B3:")
+  }
 
   tbl_pred$param_val <- list(param_val)
   tbl_pred$param_label <- list(param_label)
@@ -225,8 +226,8 @@ plot_mod_mix_helper_2 <- function(model_estimation, index) {
   data <- model_estimation$data %>%
     dplyr::filter(status == 1)
 
-  x_min <- min(data$characteristic, na.rm = TRUE)
-  x_max <- max(data$characteristic, na.rm = TRUE)
+  x_min <- min(data$x, na.rm = TRUE)
+  x_max <- max(data$x, na.rm = TRUE)
 
   x_p <- seq(x_min, x_max, length.out = 200)
   y_p <- predict_prob(
@@ -235,8 +236,8 @@ plot_mod_mix_helper_2 <- function(model_estimation, index) {
     distribution = distribution
   )
 
-  param_1 <- round(model_estimation$loc_sc_params[[1]], digits = 2)
-  param_2 <- round(model_estimation$loc_sc_params[[2]], digits = 2)
+  param_1 <- format(model_estimation$loc_sc_params[[1]], digits = 3)
+  param_2 <- format(model_estimation$loc_sc_params[[2]], digits = 3)
   label_1 <- "\u03BC:"
   label_2 <- "\u03C3:"
 
@@ -270,7 +271,9 @@ plot_mod_mix_helper <- function(
 
     # Defining subset function for x_ranges provided by mixmod_regression():
     subset_x <- function(x, mod) {
-      subset(x, x >= mod$x_range[[1]] & x <= mod$x_range[[2]])
+      failed_data <- mod$data %>% dplyr::filter(status == 1)
+
+      subset(x, x >= min(failed_data$x) & x <= max(failed_data$x))
     }
 
     # Defining function that calculates probabilities and store results in df.
@@ -288,8 +291,8 @@ plot_mod_mix_helper <- function(
       )
 
       # Prepare hovertexts for regression lines:
-      param_1 <- round(mod$loc_sc_params[[1]], digits = 2)
-      param_2 <- round(mod$loc_sc_params[[2]], digits = 2)
+      param_1 <- format(mod$loc_sc_params[[1]], digits = 3)
+      param_2 <- format(mod$loc_sc_params[[2]], digits = 3)
       label_1 <- "\u03BC:"
       label_2 <- "\u03C3:"
 
@@ -326,8 +329,8 @@ plot_mod_mix_helper <- function(
         x_p <- seq(x_min, x_max, length.out = 200)
 
         # Prepare hovertexts for regression lines:
-        param_1 <- round(mod$loc_sc_params[[1]], digits = 2)
-        param_2 <- round(mod$loc_sc_params[[2]], digits = 2)
+        param_1 <- format(mod$loc_sc_params[[1]], digits = 3)
+        param_2 <- format(mod$loc_sc_params[[2]], digits = 3)
         label_1 <- "\u03BC:"
         label_2 <- "\u03C3:"
 
@@ -432,18 +435,29 @@ plot_pop_helper <- function(x, loc_sc_params_tbl, distribution, tol = 1e-6) {
     x
   }
 
-  tbl_pop <- loc_sc_params_tbl
+  tbl_pop <- loc_sc_params_tbl %>%
+    dplyr::mutate(group = as.character(dplyr::row_number()))
   # column x_y is list column that contains a tibble each
   tbl_pop$x_y <- purrr::pmap(
     loc_sc_params_tbl,
     x_s = x_s,
     distribution = distribution,
-    function(loc, sc, thres = NULL, x_s, distribution) {
+    function(loc, sc, thres = NA, x_s, distribution) {
+      # Replace NA with NULL, so that thres is ignored in c()
+      if (is.na(thres)) thres <- NULL
+
+      loc_sc_params <- c(loc, sc, thres)
+
+      if (length(loc_sc_params) == 3) {
+        # Case three-parametric distribution
+        distribution <- paste0(distribution, "3")
+      }
+
       tibble::tibble(
         x_s = x_s,
         y_s = predict_prob(
           q = x_s,
-          loc_sc_params = c(loc, sc, thres),
+          loc_sc_params = loc_sc_params,
           distribution = distribution
         )
       )
@@ -452,7 +466,7 @@ plot_pop_helper <- function(x, loc_sc_params_tbl, distribution, tol = 1e-6) {
 
   tbl_pop <- tbl_pop %>%
     tidyr::unnest(cols = x_y) %>%
-    dplyr::filter(y_s < 1)
+    dplyr::filter(y_s < 1, y_s > 0)
 
   if (distribution %in% c("weibull", "weibull3", "sev")) {
     tbl_pop <- tbl_pop %>%
@@ -468,33 +482,23 @@ plot_pop_helper <- function(x, loc_sc_params_tbl, distribution, tol = 1e-6) {
   }
 
   # set values and labels for plotlys hoverinfo:
-  param_val_1 <- round(tbl_pop$loc, digits = 2)
-  param_val_2 <- round(tbl_pop$sc, digits = 2)
-  param_val_3 <- if (length(loc_sc_params_tbl) == 3) round(tbl_pop$thres, digits = 2)
-
-  param_label_1 <- "\u03BC:"
-  param_label_2 <- "\u03C3:"
-  param_label_3 <- if (length(loc_sc_params_tbl) == 3) "\u03B3:"
-
   tbl_pop <- tbl_pop %>%
     dplyr::mutate(
-      param_val_1 = param_val_1,
-      param_val_2 = param_val_2,
-      param_val_3 = {{param_val_3}}, # handle potential NULL value with {{}}
-      param_label_1 = param_label_1,
-      param_label_2 = param_label_2,
-      param_label_3 = {{param_label_3}}
-    )
-
-  tbl_pop <- tbl_pop %>%
-    dplyr::mutate(group = paste0(param_label_1, " ", param_val_1, ", ",
-                                 param_label_2, " ", param_val_2)) %>%
+      param_val_1 = format(tbl_pop$loc, digits = 3),
+      param_val_2 = format(tbl_pop$sc, digits = 3),
+      param_val_3 = ifelse(is.na(tbl_pop$thres), NA, format(tbl_pop$thres, digits = 3)),
+      param_label_1 = "\u03BC:",
+      param_label_2 = "\u03C3:",
+      param_label_3 = ifelse(is.na(tbl_pop$thres), NA, "\u03B3:")
+    ) %>%
+    dplyr::rowwise() %>%
+    dplyr::mutate(
+      param_val = list(c(param_val_1, param_val_2, param_val_3)),
+      param_label = list(c(param_label_1, param_label_2, param_label_3))
+    ) %>%
+    dplyr::ungroup() %>%
+    dplyr::select(x_s, y_s, q, param_val, param_label, group) %>%
     dplyr::filter(y_s <= 1 - tol, y_s >= tol)
-
-    if (length(loc_sc_params_tbl) == 3) {
-      tbl_pop <- tbl_pop %>%
-        dplyr::mutate(group = paste0(group, ", ", param_label_3, " ", param_val_3))
-    }
 
   return(tbl_pop)
 }

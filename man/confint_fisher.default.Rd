@@ -14,7 +14,8 @@
   b_lives = c(0.01, 0.1, 0.5),
   bounds = c("two_sided", "lower", "upper"),
   conf_level = 0.95,
-  direction = c("y", "x")
+  direction = c("y", "x"),
+  ...
 )
 }
 \arguments{
@@ -79,7 +80,7 @@ mle <- ml_estimation(
 )
 
 conf_fish <- confint_fisher(
-  x = tbl_john$characteristic,
+  x = tbl_john$x,
   status = tbl_john$status,
   loc_sc_params = mle$loc_sc_params,
   loc_sc_varcov = mle$loc_sc_varcov,

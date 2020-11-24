@@ -62,7 +62,7 @@
 #' @return A tibble containing the following columns:
 #' \itemize{
 #'   \item \code{id}: Identification.
-#'   \item \code{characteristic}: Lifetime characteristic.
+#'   \item \code{x}: Lifetime characteristic.
 #'   \item \code{status}: Binary data (0 or 1) indicating whether a unit is a
 #'     right censored observation (=0) or a failure (=1).
 #'   \item \code{rank}: Adjusted rank. Applicable for method \code{"mr"}
@@ -193,9 +193,8 @@ mr_method_ <- function(data, method = "benard", ties.method = "max") {
   }
 
   tbl_out <- tbl_calc %>%
-    dplyr::rename(characteristic = x) %>%
     dplyr::mutate(method = "mr") %>%
-    dplyr::select(id, characteristic, status, rank, prob, method)
+    dplyr::select(id, x, status, rank, prob, method)
 
   class(tbl_out) <- c("cdf_estimation", class(tbl_out))
 
@@ -283,9 +282,8 @@ johnson_method_ <- function(data) {
         NA_real_
       )
     ) %>%
-    dplyr::rename(characteristic = x) %>%
     dplyr::mutate(method = "johnson") %>%
-    dplyr::select(id, characteristic, status, rank, prob, method)
+    dplyr::select(id, x, status, rank, prob, method)
 
   class(tbl_out) <- c("cdf_estimation", class(tbl_out))
 
@@ -404,8 +402,7 @@ kaplan_method_ <- function(data) {
       ),
       method = "kaplan"
     ) %>%
-    dplyr::rename(characteristic = x) %>%
-    dplyr::select(id, characteristic, status, rank, prob, method)
+    dplyr::select(id, x, status, rank, prob, method)
 
   class(tbl_out) <- c("cdf_estimation", class(tbl_out))
 
@@ -492,8 +489,7 @@ nelson_method_ <- function(data) {
       ),
       method = "nelson"
     ) %>%
-    dplyr::rename(characteristic = x) %>%
-    dplyr::select(id, characteristic, status, rank, prob, method)
+    dplyr::select(id, x, status, rank, prob, method)
 
   class(tbl_out) <- c("cdf_estimation", class(tbl_out))
 

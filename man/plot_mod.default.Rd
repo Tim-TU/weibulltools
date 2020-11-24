@@ -10,7 +10,8 @@
   loc_sc_params,
   distribution = c("weibull", "lognormal", "loglogistic", "normal", "logistic", "sev",
     "weibull3", "lognormal3", "loglogistic3"),
-  title_trace = "Fit"
+  title_trace = "Fit",
+  ...
 )
 }
 \arguments{

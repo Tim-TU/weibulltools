@@ -19,7 +19,7 @@ probabilities. See 'Details'.}
 A tibble containing the following columns:
 \itemize{
   \item \code{id}: Identification.
-  \item \code{characteristic}: Lifetime characteristic.
+  \item \code{x}: Lifetime characteristic.
   \item \code{status}: Binary data (0 or 1) indicating whether a unit is a
     right censored observation (=0) or a failure (=1).
   \item \code{rank}: Adjusted rank. Applicable for method \code{"mr"}

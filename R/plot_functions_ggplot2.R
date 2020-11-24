@@ -67,7 +67,7 @@ plot_prob_ggplot2 <- function(
 
   p_prob <- p_obj +
     ggplot2::geom_point(
-      data = prob_tbl, mapping = ggplot2::aes(x = characteristic, y = q, color = method)
+      data = prob_tbl, mapping = ggplot2::aes(x = x, y = q, color = method)
     ) +
     ggplot2::labs(color = title_trace)
 
@@ -125,16 +125,13 @@ plot_mod_mix_ggplot2 <- function(p_obj, tbl_group, title_trace) {
 
 plot_conf_ggplot2 <- function(p_obj, tbl_p, title_trace) {
   p_conf <- p_obj +
-    ggnewscale::new_scale_color() +
     ggplot2::geom_line(
       data = tbl_p,
       mapping = ggplot2::aes(
         x = x, y = q, group = bound, color = I("#CC2222")
       ),
       linetype = "CC"
-    ) +
-    ggplot2::labs(color = title_trace) +
-    ggplot2::scale_color_identity(guide = "legend", labels = "")
+    )
 
   return(p_conf)
 }

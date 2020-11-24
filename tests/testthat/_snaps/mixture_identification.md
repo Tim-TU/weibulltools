@@ -12,6 +12,8 @@
         eta     beta  
     311.704    3.976  
     
+    attr(,"class")
+    [1] "mixmod_regression" "list"             
 
 # mixmod_em remains stable
 

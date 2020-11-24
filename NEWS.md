@@ -1,24 +1,26 @@
 # weibulltools v1.1.0
 ## Breaking Changes
 * Renamed argument `event` with `status`.
+* Output of probability estimators: Renamed column `characteristic` with `x`.
 * `plot_conf()`: Switched arguments distribution and direction.
 * `rank_regression()`, `ml_estimation()`: Removed details argument.
 * `rank_regression()`, `ml_estimation()`: Renamed output: `loc_sc_coefficients` -> `loc_sc_params`, `loc_sc_vcov` -> `loc_sc_varcov`
 * `plot_pop()`: Added argument `tol` to restrict the range of failure probabilities. Removed argument `color`. Renamed argument `params` to `loc_sc_params_tbl`, which only supports location and scale parameters (also for `distribution = "weibull"`). Changed behaviour of `loc_sc_params_tbl`: A tibble is now recommended instead of a vector.
+* `plot_prob_mix`: Removed default value `NULL` for argument `mix_output`.
 
 ## New Features
 * Added support for ggplot2 in all plot functions. Plot method can be selected in `plot_prob()` via argument `plot_method`.
 * Added function `reliability_data()`: Create consistent reliability data.
 * New argument in `mr_method()`: With `ties.method` it can be specified how ties should be treated.
-* Added function `estimate_cdf`: Unite functionality of `mr_method()`, `johnson_method()`, `kaplan_method()` and `nelson_method()`. Support multiple methods.
+* Added `estimate_cdf()`: Unite functionality of `mr_method()`, `johnson_method()`, `kaplan_method()` and `nelson_method()`. Support multiple methods.
 * `rank_regression()` is now an S3 generic. `rank_regression()` becomes `rank_regression.default()`. Added `rank_regression.cdf_estimation()`.
 * `plot_prob()` is now an S3 generic. `plot_prob()` becomes `plot_prob.default()`. Added `plot_prob.cdf_estimation()`.
 * `plot_prob_mix()` is now an S3 generic. `plot_prob_mix()` becomes `plot_prob.default()`. Added `plot_prob_mix.model_estimation()`, `plot_prob_mix.mixmod_regression()` and `plot_prob_mix.mixmod_em()`.
 * `plot_mod()` is now an S3 generic. `plot_mod()` becomes `plot_mod.default()`. Added `plot_mod.model_estimation()`.
 * `plot_conf()` is now an S3 generic. `plot_conf()` becomes `plot_conf.default()`. Added `plot_conf.confint()`.
-* `plot_pop()`: Added support for multiple population lines.
+* `plot_pop()`: Added support for multiple population lines and comparison of two- and three-parametric distributions.
 * `confint_betabinom()`, `confint_fisher()`: Added argument `b_lives` which allows the user to specify probabilities of interest.
-* Added `print.rank_regression()`, `print.ml_estimation`, `print.model_estimation` and `print.model_estimation_list`.
+* Added `print.rank_regression()`, `print.ml_estimation()`, `print.model_estimation()` and `print.model_estimation_list()`.
 * Added `vcov.model_estimation()`.
 * Added function `dist_delay()`: Generalizes the handling of delays. 
 * Added lifecycle badges

@@ -83,7 +83,7 @@ In package `weibulltools` the method of segmented regression is implemented in f
 
 ```{r segmented weibull I, fig.cap = "Figure 2: Subgroup-specific plotting positions.", message = FALSE}
 # Applying mixmod_regression(): 
-mixreg_weib <- mixmod_regression(x = cdf_john_tbl$characteristic, y = cdf_john_tbl$prob, 
+mixreg_weib <- mixmod_regression(x = cdf_john_tbl$x, y = cdf_john_tbl$prob, 
   status = cdf_john_tbl$status, distribution = "weibull")
 
 # Using plot_prob_mix(). 

@@ -7,7 +7,8 @@
 \method{r_squared_profiling}{cdf_estimation}(
   x,
   thres,
-  distribution = c("weibull3", "lognormal3", "loglogistic3")
+  distribution = c("weibull3", "lognormal3", "loglogistic3"),
+  ...
 )
 }
 \arguments{

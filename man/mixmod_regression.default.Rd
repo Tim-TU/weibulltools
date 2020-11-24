@@ -9,7 +9,8 @@
   y,
   status,
   distribution = c("weibull", "lognormal", "loglogistic"),
-  conf_level = 0.95
+  conf_level = 0.95,
+  ...
 )
 }
 \arguments{
