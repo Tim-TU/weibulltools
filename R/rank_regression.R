@@ -116,13 +116,14 @@ rank_regression.cdf_estimation <- function(
   x,
   distribution = c("weibull", "lognormal", "loglogistic", "normal", "logistic",
                    "sev", "weibull3", "lognormal3", "loglogistic3"),
-  conf_level = 0.95
+  conf_level = 0.95,
+  ...
 ) {
   distribution <- match.arg(distribution)
 
   if (length(unique(x$method)) == 1) {
     rank_regression.default(
-      x = x$characteristic,
+      x = x$x,
       y = x$prob,
       status = x$status,
       distribution = distribution,
@@ -134,7 +135,7 @@ rank_regression.cdf_estimation <- function(
 
     model_estimation_list <- purrr::map(x_split, function(cdf) {
       rank_regression.default(
-        x = cdf$characteristic,
+        x = cdf$x,
         y = cdf$prob,
         status = cdf$status,
         distribution = distribution,
@@ -211,7 +212,8 @@ rank_regression.default <- function(
     "weibull", "lognormal", "loglogistic", "normal", "logistic", "sev",
     "weibull3", "lognormal3", "loglogistic3"
   ),
-  conf_level = .95
+  conf_level = .95,
+  ...
 ) {
 
   distribution <- match.arg(distribution)
@@ -454,7 +456,7 @@ rank_regression.default <- function(
     )
   }
 
-  mrr_output$data <- tibble::tibble(characteristic = x, status = status)
+  mrr_output$data <- tibble::tibble(x = x, status = status)
 
   mrr_output$distribution <- distribution
 
@@ -466,7 +468,10 @@ rank_regression.default <- function(
 
 
 #' @export
-print.rank_regression <- function(x, digits = max(3L, getOption("digits") - 3L)) {
+print.rank_regression <- function(x,
+                                  digits = max(3L, getOption("digits") - 3L),
+                                  ...
+) {
   cat("Rank Regression\n")
   NextMethod("print")
 }
@@ -536,12 +541,12 @@ r_squared_profiling <- function(x, ...) {
 #'
 #' @export
 r_squared_profiling.cdf_estimation <- function(
-  x, thres, distribution = c("weibull3", "lognormal3", "loglogistic3")
+  x, thres, distribution = c("weibull3", "lognormal3", "loglogistic3"), ...
 ) {
   distribution <- match.arg(distribution)
 
   r_squared_profiling.default(
-    x = x$characteristic,
+    x = x$x,
     y = x$prob,
     thres = thres,
     distribution = distribution
@@ -584,7 +589,7 @@ r_squared_profiling.cdf_estimation <- function(
 #'
 #' profile_r2 <- sapply(
 #'   threshold, r_squared_profiling,
-#'   x = tbl_john$characteristic[tbl_john$status == 1],
+#'   x = tbl_john$x[tbl_john$status == 1],
 #'   y = tbl_john$prob[tbl_john$status == 1],
 #'   distribution = "weibull3"
 #' )
@@ -597,7 +602,7 @@ r_squared_profiling.cdf_estimation <- function(
 #'
 #' @export
 r_squared_profiling.default <- function(
-  x, y, thres, distribution = c("weibull3", "lognormal3", "loglogistic3")
+  x, y, thres, distribution = c("weibull3", "lognormal3", "loglogistic3"), ...
 ) {
 
   if (any(is.na(y))) {

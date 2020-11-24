@@ -65,55 +65,38 @@
 # plot_prob_helper remains stable
 
     # A tibble: 134 x 7
-       id    characteristic status  rank    prob method      q
-       <chr>          <dbl>  <dbl> <dbl>   <dbl> <chr>   <dbl>
-     1 ID72              94      1     1 0.00967 johnson -4.63
-     2 ID72              94      1    NA 0.0139  kaplan  -4.27
-     3 ID71              96      1     2 0.0235  johnson -3.74
-     4 ID71              96      1    NA 0.0278  kaplan  -3.57
-     5 ID69              99      1     4 0.0511  johnson -2.95
-     6 ID70              99      1     4 0.0511  johnson -2.95
-     7 ID69              99      1    NA 0.0556  kaplan  -2.86
-     8 ID70              99      1    NA 0.0556  kaplan  -2.86
-     9 ID68             104      1     5 0.0649  johnson -2.70
-    10 ID68             104      1    NA 0.0694  kaplan  -2.63
+       id        x status  rank    prob method      q
+       <chr> <dbl>  <dbl> <dbl>   <dbl> <chr>   <dbl>
+     1 ID72     94      1     1 0.00967 johnson -4.63
+     2 ID72     94      1    NA 0.0139  kaplan  -4.27
+     3 ID71     96      1     2 0.0235  johnson -3.74
+     4 ID71     96      1    NA 0.0278  kaplan  -3.57
+     5 ID69     99      1     4 0.0511  johnson -2.95
+     6 ID70     99      1     4 0.0511  johnson -2.95
+     7 ID69     99      1    NA 0.0556  kaplan  -2.86
+     8 ID70     99      1    NA 0.0556  kaplan  -2.86
+     9 ID68    104      1     5 0.0649  johnson -2.70
+    10 ID68    104      1    NA 0.0694  kaplan  -2.63
     # ... with 124 more rows
 
 ---
 
     # A tibble: 134 x 7
-       id    characteristic status  rank    prob method      q
-       <chr>          <dbl>  <dbl> <dbl>   <dbl> <chr>   <dbl>
-     1 ID72              94      1     1 0.00967 johnson -2.34
-     2 ID72              94      1    NA 0.0139  kaplan  -2.20
-     3 ID71              96      1     2 0.0235  johnson -1.99
-     4 ID71              96      1    NA 0.0278  kaplan  -1.91
-     5 ID69              99      1     4 0.0511  johnson -1.63
-     6 ID70              99      1     4 0.0511  johnson -1.63
-     7 ID69              99      1    NA 0.0556  kaplan  -1.59
-     8 ID70              99      1    NA 0.0556  kaplan  -1.59
-     9 ID68             104      1     5 0.0649  johnson -1.51
-    10 ID68             104      1    NA 0.0694  kaplan  -1.48
+       id        x status  rank    prob method      q
+       <chr> <dbl>  <dbl> <dbl>   <dbl> <chr>   <dbl>
+     1 ID72     94      1     1 0.00967 johnson -2.34
+     2 ID72     94      1    NA 0.0139  kaplan  -2.20
+     3 ID71     96      1     2 0.0235  johnson -1.99
+     4 ID71     96      1    NA 0.0278  kaplan  -1.91
+     5 ID69     99      1     4 0.0511  johnson -1.63
+     6 ID70     99      1     4 0.0511  johnson -1.63
+     7 ID69     99      1    NA 0.0556  kaplan  -1.59
+     8 ID70     99      1    NA 0.0556  kaplan  -1.59
+     9 ID68    104      1     5 0.0649  johnson -1.51
+    10 ID68    104      1    NA 0.0694  kaplan  -1.48
     # ... with 124 more rows
 
 # plot_prob_mix_helper remains stable
-
-    # A tibble: 45 x 5
-         x_s    y_s  id_s groups           q
-       <dbl>  <dbl> <int> <fct>        <dbl>
-     1     2 0.0120     1 Failed Items -4.42
-     2     3 0.0291    11 Failed Items -3.52
-     3     5 0.0462    21 Failed Items -3.05
-     4     8 0.0634    31 Failed Items -2.73
-     5    21 0.0808    50 Failed Items -2.47
-     6    28 0.0982     2 Failed Items -2.27
-     7    31 0.116     12 Failed Items -2.10
-     8    64 0.134     51 Failed Items -1.94
-     9    69 0.153     13 Failed Items -1.79
-    10    76 0.172     23 Failed Items -1.67
-    # ... with 35 more rows
-
----
 
     # A tibble: 45 x 8
         id_s   x_s status  rank    y_s method  groups         q
@@ -149,18 +132,18 @@
 
 # plot_pop_helper remains stable
 
-    # A tibble: 100 x 10
-         loc    sc    x_s    y_s       q param_val_1 param_val_2 param_label_1
-       <dbl> <dbl>  <dbl>  <dbl>   <dbl>       <dbl>       <dbl> <chr>        
-     1  9.90     1 26522. 0.734   0.282          9.9           1 µ:           
-     2  9.90     1 19771. 0.628  -0.0115         9.9           1 µ:           
-     3  9.90     1 11143. 0.427  -0.585          9.9           1 µ:           
-     4  9.90     1  1926. 0.0918 -2.34           9.9           1 µ:           
-     5  9.90     1 32021. 0.798   0.471          9.9           1 µ:           
-     6  9.90     1  2143. 0.102  -2.23           9.9           1 µ:           
-     7  9.90     1  1138. 0.0553 -2.87           9.9           1 µ:           
-     8  9.90     1  8286. 0.339  -0.881          9.9           1 µ:           
-     9  9.90     1  9269. 0.371  -0.769          9.9           1 µ:           
-    10  9.90     1 55681. 0.938   1.02           9.9           1 µ:           
-    # ... with 90 more rows, and 2 more variables: param_label_2 <chr>, group <chr>
+    # A tibble: 100 x 6
+          x_s    y_s       q param_val param_label group
+        <dbl>  <dbl>   <dbl> <list>    <list>      <chr>
+     1 26522. 0.734   0.282  <chr [3]> <chr [3]>   1    
+     2 19771. 0.628  -0.0115 <chr [3]> <chr [3]>   1    
+     3 11143. 0.427  -0.585  <chr [3]> <chr [3]>   1    
+     4  1926. 0.0918 -2.34   <chr [3]> <chr [3]>   1    
+     5 32021. 0.798   0.471  <chr [3]> <chr [3]>   1    
+     6  2143. 0.102  -2.23   <chr [3]> <chr [3]>   1    
+     7  1138. 0.0553 -2.87   <chr [3]> <chr [3]>   1    
+     8  8286. 0.339  -0.881  <chr [3]> <chr [3]>   1    
+     9  9269. 0.371  -0.769  <chr [3]> <chr [3]>   1    
+    10 55681. 0.938   1.02   <chr [3]> <chr [3]>   1    
+    # ... with 90 more rows
 

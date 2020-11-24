@@ -105,7 +105,7 @@ confint_betabinom.model_estimation <- function(
   distribution <- x$distribution
 
   confint_betabinom.default(
-    x = data$characteristic,
+    x = data$x,
     status = data$status,
     loc_sc_params = x$loc_sc_params,
     distribution = x$distribution,
@@ -141,7 +141,7 @@ confint_betabinom.model_estimation <- function(
 #' tbl_john <- estimate_cdf(tbl, methods = "johnson")
 #'
 #' mrr <- rank_regression(
-#'   x = tbl_john$characteristic,
+#'   x = tbl_john$x,
 #'   y = tbl_john$prob,
 #'   status = tbl_john$status,
 #'   distribution = "weibull",
@@ -149,7 +149,7 @@ confint_betabinom.model_estimation <- function(
 #' )
 #'
 #' conf_betabin <- confint_betabinom(
-#'   x = tbl_john$characteristic,
+#'   x = tbl_john$x,
 #'   status = tbl_john$status,
 #'   loc_sc_params = mrr$loc_sc_params,
 #'   distribution = "weibull"
@@ -165,7 +165,7 @@ confint_betabinom.model_estimation <- function(
 #' tbl_john_2 <- estimate_cdf(tbl_2, methods = "johnson")
 #'
 #' mrr_weib3 <- rank_regression(
-#'   x = tbl_john_2$characteristic,
+#'   x = tbl_john_2$x,
 #'   y = tbl_john_2$prob,
 #'   status = tbl_john_2$status,
 #'   distribution = "weibull3",
@@ -173,7 +173,7 @@ confint_betabinom.model_estimation <- function(
 #' )
 #'
 #' conf_betabin_weib3 <- confint_betabinom(
-#'   x = tbl_john_2$characteristic,
+#'   x = tbl_john_2$x,
 #'   status = tbl_john_2$status,
 #'   loc_sc_params = mrr_weib3$loc_sc_params,
 #'   distribution = "weibull3",
@@ -230,7 +230,7 @@ confint_betabinom.default <- function(x,
   # Bounds for probability (y) or quantiles (x):
   if (direction == "y") {
     list_output <- c(
-      list(characteristic = x_seq, rank = virt_rank, prob = y_seq),
+      list(x = x_seq, rank = virt_rank, prob = y_seq),
       list_confint
     )
 
@@ -244,7 +244,7 @@ confint_betabinom.default <- function(x,
     )
 
     list_output <- c(
-      list(characteristic = x_seq, rank = virt_rank, prob = y_seq),
+      list(x = x_seq, rank = virt_rank, prob = y_seq),
       x_confint
     )
 
@@ -499,13 +499,14 @@ confint_fisher.model_estimation <- function(
                                       b_lives = c(0.01, 0.1, 0.50),
                                       bounds = c("two_sided", "lower", "upper"),
                                       conf_level = 0.95,
-                                      direction = c("y", "x")
+                                      direction = c("y", "x"),
+                                      ...
 ) {
   data <- x$data
   distribution <- x$distribution
 
   confint_fisher.default(
-    x = data$characteristic,
+    x = data$x,
     status = data$status,
     loc_sc_params = x$loc_sc_params,
     loc_sc_varcov = x$loc_sc_varcov,
@@ -540,7 +541,7 @@ confint_fisher.model_estimation <- function(
 #' )
 #'
 #' conf_fish <- confint_fisher(
-#'   x = tbl_john$characteristic,
+#'   x = tbl_john$x,
 #'   status = tbl_john$status,
 #'   loc_sc_params = mle$loc_sc_params,
 #'   loc_sc_varcov = mle$loc_sc_varcov,
@@ -562,7 +563,8 @@ confint_fisher.default <- function(
   b_lives = c(0.01, 0.1, 0.50),
   bounds = c("two_sided", "lower", "upper"),
   conf_level = .95,
-  direction = c("y", "x")
+  direction = c("y", "x"),
+  ...
 ) {
 
   bounds <- match.arg(bounds)
@@ -597,7 +599,7 @@ confint_fisher.default <- function(
       list_confint <- list(upper_bound = conf_up)
     }
 
-    list_output <- c(list(characteristic = x_seq, prob = y_seq, std_err = se_delta),
+    list_output <- c(list(x = x_seq, prob = y_seq, std_err = se_delta),
                      list_confint)
 
     tbl_out <- tibble::as_tibble(list_output)
@@ -664,7 +666,7 @@ confint_fisher.default <- function(
 
     }
 
-    list_output <- c(list(characteristic = x_seq, prob = y_seq, std_err = se_delta),
+    list_output <- c(list(x = x_seq, prob = y_seq, std_err = se_delta),
       list_confint)
 
     tbl_out <- tibble::as_tibble(list_output)

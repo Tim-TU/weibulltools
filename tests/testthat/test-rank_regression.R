@@ -14,7 +14,7 @@ test_that("r_squared_profiling remains stable", {
 
   profile_r2 <- sapply(
     threshold, r_squared_profiling.default,
-    x = tbl_john$characteristic[tbl_john$status == 1],
+    x = tbl_john$x[tbl_john$status == 1],
     y = tbl_john$prob[tbl_john$status == 1],
     distribution = "weibull3"
   )

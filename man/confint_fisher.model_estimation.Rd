@@ -9,7 +9,8 @@
   b_lives = c(0.01, 0.1, 0.5),
   bounds = c("two_sided", "lower", "upper"),
   conf_level = 0.95,
-  direction = c("y", "x")
+  direction = c("y", "x"),
+  ...
 )
 }
 \arguments{

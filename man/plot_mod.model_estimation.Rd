@@ -5,9 +5,9 @@
 \alias{plot_mod.model_estimation_list}
 \title{Add Estimated Population Line(s) to a Probability Plot}
 \usage{
-\method{plot_mod}{model_estimation}(p_obj, x, title_trace = "Fit")
+\method{plot_mod}{model_estimation}(p_obj, x, title_trace = "Fit", ...)
 
-\method{plot_mod}{model_estimation_list}(p_obj, x, title_trace = "Fit")
+\method{plot_mod}{model_estimation_list}(p_obj, x, title_trace = "Fit", ...)
 }
 \arguments{
 \item{p_obj}{A plot object returned from \code{\link{plot_prob}}.}

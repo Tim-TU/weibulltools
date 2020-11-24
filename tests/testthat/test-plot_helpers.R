@@ -64,16 +64,6 @@ test_that("plot_prob_mix_helper remains stable", {
 
   data <- reliability_data(x = hours, status = state, id = id)
 
-  # Example 1 - mix_output = NULL:
-  helper <- plot_prob_mix_helper(
-    data,
-    distribution = "weibull",
-    mix_output = NULL,
-    title_trace = "Failed Items"
-  )
-
-  expect_snapshot_output(helper)
-
   # Example 2 - Using result of mixmod_em in mix_output:
   mix_mod_em <- mixmod_em(
     data,
@@ -126,7 +116,7 @@ test_that("plot_pop_helper remains stable", {
   suppressWarnings(library(tibble))
   set.seed(1)
   x <- rweibull(n = 100, shape = 1, scale = 20000)
-  loc_sc_params_tbl <- tibble(loc = log(20000), sc = 1)
+  loc_sc_params_tbl <- tibble(loc = log(20000), sc = 1, thres = NA)
   expect_snapshot_output(
     plot_pop_helper(x, loc_sc_params_tbl, "weibull")
   )

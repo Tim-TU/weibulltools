@@ -12,7 +12,7 @@ test_that("confint_betabinom remains stable", {
   )
 
   conf_betabin <- confint_betabinom(
-    x = tbl_john$characteristic,
+    x = tbl_john$x,
     status = tbl_john$status,
     loc_sc_params = mrr$loc_sc_params,
     distribution = "weibull",
@@ -36,7 +36,7 @@ test_that("confint_betabinom remains stable", {
   tbl_john_2 <- estimate_cdf(tbl_2, "johnson")
 
   mrr_weib3 <- rank_regression(
-    x = tbl_john_2$characteristic,
+    x = tbl_john_2$x,
     y = tbl_john_2$prob,
     status = tbl_john_2$status,
     distribution = "weibull3",
@@ -44,7 +44,7 @@ test_that("confint_betabinom remains stable", {
   )
 
   conf_betabin_weib3 <- confint_betabinom(
-    x = tbl_john_2$characteristic,
+    x = tbl_john_2$x,
     status = tbl_john_2$status,
     loc_sc_params = mrr_weib3$loc_sc_params,
     distribution = "weibull3",
@@ -56,7 +56,7 @@ test_that("confint_betabinom remains stable", {
   expect_snapshot_output(conf_betabin_weib3)
 
   conf_betabin_x <- confint_betabinom(
-    x = tbl_john$characteristic,
+    x = tbl_john$x,
     status = tbl_john$status,
     loc_sc_params = mrr$loc_sc_params,
     distribution = "weibull",
@@ -78,7 +78,7 @@ test_that("confint_fisher remains stable", {
   mle <- ml_estimation(tbl, distribution = "weibull", conf_level = 0.95)
 
   conf_fish <- confint_fisher(
-    x = tbl_john$characteristic,
+    x = tbl_john$x,
     status = tbl_john$status,
     loc_sc_params = mle$loc_sc_params,
     loc_sc_varcov = mle$loc_sc_varcov,
@@ -91,7 +91,7 @@ test_that("confint_fisher remains stable", {
   expect_snapshot_output(conf_fish)
 
   conf_fish_x <- confint_fisher(
-    x = tbl_john$characteristic,
+    x = tbl_john$x,
     status = tbl_john$status,
     loc_sc_params = mle$loc_sc_params,
     loc_sc_varcov = mle$loc_sc_varcov,

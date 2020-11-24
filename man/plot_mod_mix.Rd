@@ -68,7 +68,7 @@ plot_weibull_emlines <- plot_mod_mix(p_obj = plot_weibull_em,
 
 # Example 2 - Using result of mixmod_regression in mix_output:
 john <- johnson_method(x = hours, status = state)
-mix_mod_reg <- mixmod_regression(x = john$characteristic,
+mix_mod_reg <- mixmod_regression(x = john$x,
                                  y = john$prob,
                                  status = john$status,
                                  distribution = "weibull")
