@@ -20,6 +20,7 @@
 * `confint_betabinom()`, `confint_fisher()`: Added argument `b_lives` which allows the user to specify probabilities of interest.
 * Added `print.rank_regression()`, `print.ml_estimation`, `print.model_estimation` and `print.model_estimation_list`.
 * Added `vcov.model_estimation()`.
+* Added function `dist_delay()`: Generalizes the handling of delays. 
 * Added lifecycle badges
 
 ## Documentation
@@ -30,7 +31,7 @@
 ### Deprecated
 * `plot_layout()`
 * `mr_method()`, `johnson_method()`, `kaplan_method()` and `nelson_method()`: Use `estimate_cdf()` instead.
-
+* `dist_delay_register()` and `dist_delay_report()` are deprecated. Use `dist_delay()` instead. 
 ## Minor improvements and bug fixes
 * Fixed bug inside `plot_mod_mix()` for the case of no mixture distribution
 * Fixed bug inside `confint_betabinom()`; many cases near one -> unique()

@@ -1,4 +1,125 @@
+#' Parameter Estimation of a Supposed Statistical Delay Distribution
+#'
+#' This function models a delay random variable (e.g. in logistic, registration, report)
+#' using a supposed continuous distribution. First, the element-wise differences
+#' in days of both vectors \code{date_1} and \code{date_2} are calculated and then
+#' the parameter(s) of the assumed distribution are estimated using MLE.
+#'
+#' @param date_1 A vector of class \code{"character"} or \code{"Date"}, in the
+#'   format "yyyy-mm-dd", indicating the earlier of the two dates. If no date is
+#'   available use \code{NA}.
+#' @param date_2 A vector of class \code{"character"} or \code{"Date"}, in the
+#'   format "yyyy-mm-dd", indicating the later of the two dates. If no date is
+#'   available use \code{NA}.
+#' @param distribution Supposed distribution of the random variable. The default
+#'   value is \code{"lognormal"}.
+#'
+#' @return A named vector of estimated parameter(s) for the specified
+#'   distribution.
+#' @export
+#'
+#' @examples
+#' # Example 1: Delay in registration:
+#' date_of_production   <- c("2014-07-28", "2014-02-17", "2014-07-14",
+#'                           "2014-06-26", "2014-03-10", "2014-05-14",
+#'                           "2014-05-06", "2014-03-07", "2014-03-09",
+#'                           "2014-04-13", "2014-05-20", "2014-07-07",
+#'                           "2014-01-27", "2014-01-30", "2014-03-17",
+#'                           "2014-02-09", "2014-04-14", "2014-04-20",
+#'                           "2014-03-13", "2014-02-23", "2014-04-03",
+#'                           "2014-01-08", "2014-01-08")
+#' date_of_registration <- c(NA, "2014-03-29", "2014-12-06", "2014-09-09",
+#'                           NA, NA, "2014-06-16", NA, "2014-05-23",
+#'                           "2014-05-09", "2014-05-31", NA, "2014-04-13",
+#'                           NA, NA, "2014-03-12", NA, "2014-06-02",
+#'                           NA, "2014-03-21", "2014-06-19", NA, NA)
+#'
+#' params_delay_regist  <- dist_delay(
+#'   date_1 = date_of_production,
+#'   date_2 = date_of_registration,
+#'   distribution = "lognormal"
+#' )
+#'
+#' # Example 2: Delay in report:
+#' date_of_repair <- c(NA, "2014-09-15", "2015-07-04", "2015-04-10", NA,
+#'                     NA, "2015-04-24", NA, "2015-04-25", "2015-04-24",
+#'                     "2015-06-12", NA, "2015-05-04", NA, NA,
+#'                     "2015-05-22", NA, "2015-09-17", NA, "2015-08-15",
+#'                     "2015-11-26", NA, NA)
+#'
+#' date_of_report <- c(NA, "2014-10-09", "2015-08-28", "2015-04-15", NA,
+#'                     NA, "2015-05-16", NA, "2015-05-28", "2015-05-15",
+#'                     "2015-07-11", NA, "2015-08-14", NA, NA,
+#'                     "2015-06-05", NA, "2015-10-17", NA, "2015-08-21",
+#'                     "2015-12-02", NA, NA)
+#'
+#' params_delay_report  <- dist_delay(
+#'   date_1 = date_of_repair,
+#'   date_2 = date_of_report,
+#'   distribution = "exponential"
+#' )
+
+dist_delay <- function(
+  date_1,
+  date_2,
+  distribution = c("lognormal", "exponential")
+) {
+
+  distribution <- match.arg(distribution)
+
+  # delay variable:
+  t_delay <- as.numeric(
+    difftime(
+      time1 = as.Date(date_2, format = "%Y-%m-%d"),
+      time2 = as.Date(date_1, format = "%Y-%m-%d"),
+      units = "days"
+    )
+  )
+
+  # test for delays: all NA and smaller or equal to 0.
+  # all NA:
+  if (all(is.na(t_delay))) {
+    stop("All differences are NA; No parameters can be estimated!")
+  }
+  # all smaller or equal to zero:
+  if (all(t_delay <= 0, na.rm = TRUE)) {
+    stop("All differences are smaller or equal to 0; No parameters can be
+    estimated!")
+  }
+  # any smaller or equal to zero:
+  if (any(t_delay <= 0, na.rm = TRUE)) {
+    warning("At least one of the time differences is smaller or equal to 0 and is
+    ignored in the estimation step!")
+
+    t_delay <- t_delay[t_delay > 0]
+  }
+
+  if (distribution == "lognormal") {
+    # sample size used for the computation of the population standard deviation.
+    n <- length(!is.na(t_delay))
+    ml_loc <- mean(log(t_delay), na.rm = TRUE)
+    ml_sc <- stats::sd(log(t_delay), na.rm = TRUE) * (n - 1) / n
+
+    estimates <- c(loc = ml_loc, sc = ml_sc)
+  }
+
+  if (distribution == "exponential") {
+    ml_sc <- mean(t_delay, na.rm = TRUE)
+
+    estimates <- c(sc = ml_sc)
+  }
+
+  return(estimates)
+}
+
+
 #' Parameter Estimation of the Delay in Registration Distribution
+#'
+#' @description
+#' \lifecycle{soft-deprecated}
+#'
+#' \code{dist_delay_register()} is no longer under active development, switching
+#' to \code{dist_delay()} is recommended.
 #'
 #' This function introduces a delay random variable by calculating the time
 #' difference between the registration and production date for the sample units
@@ -34,32 +155,53 @@
 #'                           NA, "2014-03-21", "2014-06-19", NA, NA)
 #'
 #' params_delay_regist  <- dist_delay_register(
-#'                                     date_prod = date_of_production,
-#'                                     date_register = date_of_registration,
-#'                                     distribution = "lognormal")
+#'   date_prod = date_of_production,
+#'   date_register = date_of_registration,
+#'   distribution = "lognormal"
+#' )
 
-dist_delay_register <- function(date_prod, date_register,
-                                distribution = "lognormal") {
+dist_delay_register <- function(
+  date_prod,
+  date_register,
+  distribution = "lognormal"
+) {
+  deprecate_soft("2.0.0", "dist_delay_register()")
 
-  if (class(date_prod) != "Date" || class(date_register) != "Date") {
-    prod_date <- as.Date(date_prod, format = "%Y-%m-%d")
-    register_date <- as.Date(date_register, format = "%Y-%m-%d")
-    t_regist <- as.numeric(difftime(register_date, prod_date,
-                                    units = "days"))
-  } else {
-    t_regist <- as.numeric(difftime(date_register, date_prod,
-                                    units = "days"))
+  distribution <- match.arg(distribution)
+
+  # delay variable:
+  t_regist <- as.numeric(
+    difftime(
+      time1 = as.Date(date_register, format = "%Y-%m-%d"),
+      time2 = as.Date(date_prod, format = "%Y-%m-%d"),
+      units = "days"
+    )
+  )
+
+  # test for delays: all NA and smaller or equal to 0.
+  # all NA:
+  if (all(is.na(t_regist))) {
+    stop("All differences are NA; No parameters can be estimated!")
+  }
+  # all smaller or equal to zero:
+  if (all(t_regist <= 0, na.rm = TRUE)) {
+    stop("All differences are smaller or equal to 0; No parameters can be
+    estimated!")
+  }
+  # any smaller or equal to zero:
+  if (any(t_regist <= 0, na.rm = TRUE)) {
+    warning("At least one of the time differences is smaller or equal to 0 and is
+    ignored in the estimation step.")
+
+    t_regist <- t_regist[t_regist > 0]
   }
 
-  if (distribution == "lognormal") {
-    logmu_regist <- mean(log(t_regist[t_regist > 0]), na.rm = TRUE)
-    logsd_regist <- stats::sd(log(t_regist[t_regist > 0]), na.rm = TRUE)
+  # sample size used for the computation of the population standard deviation.
+  n <- length(!is.na(t_regist))
+  ml_loc <- mean(log(t_regist), na.rm = TRUE)
+  ml_sc <- stats::sd(log(t_regist), na.rm = TRUE) * (n - 1) / n
 
-    estimates <- c(logmu_regist, logsd_regist)
-    names(estimates) <- c("meanlog_register", "sdlog_register")
-  } else {
-    stop("No valid distribution!")
-  }
+  estimates <- c(loc = ml_loc, sc = ml_sc)
 
   return(estimates)
 }
@@ -191,6 +333,12 @@ mcs_delay_register <- function(date_prod, date_register, x, status,
 
 #' Parameter Estimation of the Delay in Report Distribution
 #'
+#' @description
+#' \lifecycle{soft-deprecated}
+#'
+#' \code{dist_delay_report()} is no longer under active development, switching
+#' to \code{dist_delay()} is recommended.
+#'
 #' This function introduces a delay random variable by calculating the time
 #' difference between the report and repair date for the sample units
 #' and afterwards estimates the parameter(s) of a supposed distribution,
@@ -210,7 +358,7 @@ mcs_delay_register <- function(date_prod, date_register, x, status,
 #'
 #' @examples
 #' date_of_repair <- c(NA, "2014-09-15", "2015-07-04", "2015-04-10", NA,
-#'                    NA, "2015-04-24", NA, "2015-04-25", "2015-04-24",
+#'                     NA, "2015-04-24", NA, "2015-04-25", "2015-04-24",
 #'                     "2015-06-12", NA, "2015-05-04", NA, NA,
 #'                     "2015-05-22", NA, "2015-09-17", NA, "2015-08-15",
 #'                     "2015-11-26", NA, NA)
@@ -221,36 +369,57 @@ mcs_delay_register <- function(date_prod, date_register, x, status,
 #'                     "2015-06-05", NA, "2015-10-17", NA, "2015-08-21",
 #'                     "2015-12-02", NA, NA)
 #'
-#' params_delay_report  <- dist_delay_report(date_repair = date_of_repair,
-#'                                             date_report = date_of_report,
-#'                                             distribution = "lognormal")
+#' params_delay_report  <- dist_delay_report(
+#'   date_repair = date_of_repair,
+#'   date_report = date_of_report,
+#'   distribution = "lognormal"
+#' )
 
-dist_delay_report <- function(date_repair, date_report,
-                              distribution = "lognormal") {
+dist_delay_report <- function(
+  date_repair,
+  date_report,
+  distribution = "lognormal"
+) {
+  deprecate_soft("2.0.0", "dist_delay_report()")
 
-  if (class(date_repair) != "Date" || class(date_report) != "Date") {
-    repair_date <- as.Date(date_repair, format = "%Y-%m-%d")
-    report_date <- as.Date(date_report, format = "%Y-%m-%d")
-    t_report <- as.numeric(difftime(report_date, repair_date,
-                                    units = "days"))
-  } else {
-    t_report <- as.numeric(difftime(date_report, date_repair,
-                                    units = "days"))
+  distribution <- match.arg(distribution)
+
+  # delay variable:
+  t_report <- as.numeric(
+    difftime(
+      time1 = as.Date(date_report, format = "%Y-%m-%d"),
+      time2 = as.Date(date_repair, format = "%Y-%m-%d"),
+      units = "days"
+    )
+  )
+
+  # test for delays: all NA and smaller or equal to 0.
+  # all NA:
+  if (all(is.na(t_report))) {
+    stop("All differences are NA; No parameters can be estimated!")
+  }
+  # all smaller or equal to zero:
+  if (all(t_report <= 0, na.rm = TRUE)) {
+    stop("All differences are smaller or equal to 0; No parameters can be
+    estimated!")
+  }
+  # any smaller or equal to zero:
+  if (any(t_report <= 0, na.rm = TRUE)) {
+    warning("At least one of the time differences is smaller or equal to 0 and is
+    ignored in the estimation step!")
+
+    t_report <- t_report[t_report > 0]
   }
 
-  if (distribution == "lognormal") {
-    logmu_report <- mean(log(t_report[t_report > 0]), na.rm = TRUE)
-    logsd_report <- stats::sd(log(t_report[t_report > 0]), na.rm = TRUE)
+  # sample size used for the computation of the population standard deviation.
+  n <- length(!is.na(t_report))
+  ml_loc <- mean(log(t_report), na.rm = TRUE)
+  ml_sc <- stats::sd(log(t_report), na.rm = TRUE) * (n - 1) / n
 
-    estimates <- c(logmu_report, logsd_report)
-    names(estimates) <- c("meanlog_report", "sdlog_report")
-  } else {
-    stop("No valid distribution!")
-  }
+  estimates <- c(loc = ml_loc, sc = ml_sc)
 
   return(estimates)
 }
-
 
 #' Adjustment of Operating Times by Delays in Report using a Monte Carlo Approach
 #'
