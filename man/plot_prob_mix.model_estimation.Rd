@@ -12,7 +12,8 @@
   title_x = "Characteristic",
   title_y = "Unreliability",
   title_trace = "Sample",
-  plot_method = c("plotly", "ggplot2")
+  plot_method = c("plotly", "ggplot2"),
+  ...
 )
 
 \method{plot_prob_mix}{mixmod_regression}(
@@ -21,7 +22,8 @@
   title_x = "Characteristic",
   title_y = "Unreliability",
   title_trace = "Sample",
-  plot_method = c("plotly", "ggplot2")
+  plot_method = c("plotly", "ggplot2"),
+  ...
 )
 
 \method{plot_prob_mix}{mixmod_em}(
@@ -30,7 +32,8 @@
   title_x = "Characteristic",
   title_y = "Unreliability",
   title_trace = "Sample",
-  plot_method = c("plotly", "ggplot2")
+  plot_method = c("plotly", "ggplot2"),
+  ...
 )
 }
 \arguments{
@@ -60,13 +63,10 @@ plotting to univariate mixture models that were separated with functions
 }
 \details{
 Depending on the separation method the function \code{\link{johnson_method}}
-is called in various ways. If \code{mixmod_regression} is used, \code{johnson_method}
+is called in two ways. If \code{mixmod_regression} is used, \code{johnson_method}
 is applied to all data. If data was splitted by \code{mixmod_em} the function
 \code{johnson_method} is applied to subgroup-specific data. The calculated plotting
 positions are colored regarding the obtained split of the used splitting function.
-If \code{mix_output = NULL} \code{johnson_method} is applied to all data, too.
-The obtained plot is then equal to \code{\link{plot_prob}}. See \strong{Examples}
-for all three cases.
 
 In \code{\link{mixmod_regression}} a maximum of three subgroups can be determined
 and thus being plotted. The intention of this function is to give the
@@ -126,7 +126,7 @@ plot_weibull_em <- plot_prob_mix(x = hours,
 # Example 3 - Using result of mixmod_regression in mix_output:
 john <- johnson_method(x = hours, status = state)
 mix_mod_reg <- mixmod_regression(
-  x = john$characteristic,
+  x = john$x,
   y = john$prob,
   status = john$status,
   distribution = "weibull"

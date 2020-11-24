@@ -8,7 +8,8 @@
   x,
   distribution = c("weibull", "lognormal", "loglogistic", "normal", "logistic", "sev",
     "weibull3", "lognormal3", "loglogistic3"),
-  conf_level = 0.95
+  conf_level = 0.95,
+  ...
 )
 }
 \arguments{

@@ -203,8 +203,13 @@ plot_mod_helper <- function(
   # preparation of plotly hovers:
   ## raises problems if one-parameter distributions like exponential will be implemented!
   param_val <- round(loc_sc_params, digits = 2)
-  param_label <- if (length(param_val) == 2) c("\u03BC:", "\u03C3:") else
+  # Enforce length 3
+  if (length(loc_sc_params) == 2) param_val <- c(param_val, NA)
+  param_label <- if (length(loc_sc_params) == 2) {
+    c("\u03BC:", "\u03C3:", NA)
+  } else {
     c("\u03BC:", "\u03C3:", "\u03B3:")
+  }
 
   tbl_pred$param_val <- list(param_val)
   tbl_pred$param_label <- list(param_label)
@@ -426,20 +431,29 @@ plot_pop_helper <- function(x, loc_sc_params_tbl, distribution, tol = 1e-6) {
     x
   }
 
-  tbl_pop <- loc_sc_params_tbl
+  tbl_pop <- loc_sc_params_tbl %>%
+    dplyr::mutate(group = as.character(dplyr::row_number()))
   # column x_y is list column that contains a tibble each
   tbl_pop$x_y <- purrr::pmap(
     loc_sc_params_tbl,
     x_s = x_s,
     distribution = distribution,
     function(loc, sc, thres = NA, x_s, distribution) {
+      # Replace NA with NULL, so that thres is ignored in c()
       if (is.na(thres)) thres <- NULL
+
+      loc_sc_params <- c(loc, sc, thres)
+
+      if (length(loc_sc_params) == 3) {
+        # Case three-parametric distribution
+        distribution <- paste0(distribution, "3")
+      }
 
       tibble::tibble(
         x_s = x_s,
         y_s = predict_prob(
           q = x_s,
-          loc_sc_params = c(loc, sc, thres),
+          loc_sc_params = loc_sc_params,
           distribution = distribution
         )
       )
@@ -477,17 +491,10 @@ plot_pop_helper <- function(x, loc_sc_params_tbl, distribution, tol = 1e-6) {
     dplyr::mutate(
       param_val = list(c(param_val_1, param_val_2, param_val_3)),
       param_label = list(c(param_label_1, param_label_2, param_label_3))
-    )
-
-  tbl_pop <- tbl_pop %>%
-    dplyr::mutate(group = paste0(param_label_1, " ", param_val_1, ", ",
-                                 param_label_2, " ", param_val_2)) %>%
+    ) %>%
+    dplyr::ungroup() %>%
+    dplyr::select(x_s, y_s, q, param_val, param_label, group) %>%
     dplyr::filter(y_s <= 1 - tol, y_s >= tol)
-
-    if (length(loc_sc_params_tbl) == 3) {
-      tbl_pop <- tbl_pop %>%
-        dplyr::mutate(group = paste0(group, ", ", param_label_3, " ", param_val_3))
-    }
 
   return(tbl_pop)
 }

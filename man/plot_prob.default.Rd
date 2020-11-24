@@ -14,7 +14,8 @@
   title_x = "Characteristic",
   title_y = "Unreliability",
   title_trace = "Sample",
-  plot_method = c("plotly", "ggplot2")
+  plot_method = c("plotly", "ggplot2"),
+  ...
 )
 }
 \arguments{

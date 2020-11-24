@@ -63,7 +63,7 @@ tbl <- reliability_data(x = obs, status = status)
 tbl_john <- estimate_cdf(tbl, methods = "johnson")
 
 mrr <- rank_regression(
-  x = tbl_john$characteristic,
+  x = tbl_john$x,
   y = tbl_john$prob,
   status = tbl_john$status,
   distribution = "weibull",
@@ -71,7 +71,7 @@ mrr <- rank_regression(
 )
 
 conf_betabin <- confint_betabinom(
-  x = tbl_john$characteristic,
+  x = tbl_john$x,
   status = tbl_john$status,
   loc_sc_params = mrr$loc_sc_params,
   distribution = "weibull"
@@ -87,7 +87,7 @@ tbl_2 <- reliability_data(shock, x = cycles, status = status)
 tbl_john_2 <- estimate_cdf(tbl_2, methods = "johnson")
 
 mrr_weib3 <- rank_regression(
-  x = tbl_john_2$characteristic,
+  x = tbl_john_2$x,
   y = tbl_john_2$prob,
   status = tbl_john_2$status,
   distribution = "weibull3",
@@ -95,7 +95,7 @@ mrr_weib3 <- rank_regression(
 )
 
 conf_betabin_weib3 <- confint_betabinom(
-  x = tbl_john_2$characteristic,
+  x = tbl_john_2$x,
   status = tbl_john_2$status,
   loc_sc_params = mrr_weib3$loc_sc_params,
   distribution = "weibull3",

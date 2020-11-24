@@ -211,35 +211,13 @@ plot_mod_plotly <- function(
   x_mark <- unlist(strsplit(p_obj$x$layoutAttrs[[2]]$xaxis$title$text, " "))[1]
   y_mark <- unlist(strsplit(p_obj$x$layoutAttrs[[2]]$yaxis$title$text, " "))[1]
 
-  to_hovertext <- function(x_p, y_p, param_val, param_label) {
-    param_val <- unlist(param_val)
-    param_label <- unlist(param_label)
-
-    text <- paste(
-      paste0(x_mark, ":"),
-      round(x_p, digits = 2),
-      paste("<br>", paste0(y_mark, ":")),
-      round(y_p, digits = 5),
-      "<br>",
-      paste(param_label[1], param_val[1]),
-      "<br>",
-      paste(param_label[2], param_val[2])
-    )
-
-    if (length(param_val) == 3) {
-      text <- paste(
-        text,
-        "<br>",
-        paste(param_label[3], param_val[3])
-      )
-    }
-    text
-  }
-
   # Defining hovertext regarding amount of parameters:
   tbl_pred <- tbl_pred %>%
-    # Enables access of list column
-    dplyr::mutate(hovertext = to_hovertext(x_p, y_p, param_val, param_label))
+    dplyr::rowwise() %>%
+    dplyr::mutate(hovertext = to_hovertext(
+      x_p, y_p, param_val, param_label, x_mark, y_mark
+    )) %>%
+    dplyr::ungroup()
 
   name <- if (length(unique(tbl_pred$method)) == 1) {
     title_trace
@@ -328,31 +306,22 @@ plot_conf_plotly <- function(p_obj, tbl_p, title_trace) {
 plot_pop_plotly <- function(
   p_obj, tbl_pop, title_trace
 ) {
-  # Get axis labels in hover:
+  # Get axis labels in hover
   x_mark <- unlist(strsplit(p_obj$x$layoutAttrs[[2]]$xaxis$title$text,  " "))[1]
   y_mark <- unlist(strsplit(p_obj$x$layoutAttrs[[2]]$yaxis$title$text,  " "))[1]
 
-  tbl_pop <- dplyr::group_by(tbl_pop, group)
-
-  # preparation of hovertexts:
-  text <- paste(
-    paste0(x_mark, ":"),
-    round(tbl_pop$x_s, digits = 2),
-    paste("<br>", paste0(y_mark, ":")),
-    round(tbl_pop$y_s, digits = 5),
-    "<br>",
-    paste(tbl_pop$param_label_1, tbl_pop$param_val_1),
-    "<br>",
-    paste(tbl_pop$param_label_2, tbl_pop$param_val_2)
-  )
-
-  if ("param_label_3" %in% names(tbl_pop)) {
-    text <- paste(
-      text,
-      "<br>",
-      paste(tbl_pop$param_label_3, tbl_pop$param_val_3)
-    )
-  }
+  # Hovertext and name
+  tbl_pop <- tbl_pop %>%
+    dplyr::rowwise() %>%
+    dplyr::mutate(
+      hovertext = to_hovertext(
+        x_s, y_s, param_val, param_label, x_mark, y_mark
+      ),
+      name = to_name(
+        param_val, param_label
+      )
+    ) %>%
+    dplyr::ungroup()
 
   p_pop <- plotly::add_lines(
     p = p_obj, data = tbl_pop,
@@ -361,11 +330,60 @@ plot_pop_plotly <- function(
     mode = "lines",
     hoverinfo = "text",
     # color = ~group,
-    name = ~group,
+    name = ~name,
     line = list(width = 1),
-    text = text
+    text = ~hovertext
   ) %>%
     plotly::layout(showlegend = TRUE)
 
   return(p_pop)
+}
+
+
+
+to_hovertext <- function(x, y, param_val, param_label, x_mark, y_mark) {
+  param_val <- unlist(param_val)
+  param_label <- unlist(param_label)
+
+  text <- paste(
+    paste0(x_mark, ":"),
+    round(x, digits = 2),
+    paste("<br>", paste0(y_mark, ":")),
+    round(y, digits = 5),
+    "<br>",
+    paste(param_label[1], param_val[1]),
+    "<br>",
+    paste(param_label[2], param_val[2])
+  )
+
+  if (!is.na(param_val[3])) {
+    text <- paste(
+      text,
+      "<br>",
+      paste(param_label[3], param_val[3])
+    )
+  }
+  text
+}
+
+to_name <- function(param_val, param_label) {
+  param_val <- unlist(param_val)
+  param_label <- unlist(param_label)
+
+  text <- paste0(
+    param_label[1], " ",
+    param_val[1], ", ",
+    param_label[2], " ",
+    param_val[2]
+  )
+
+  if (!is.na(param_val[3])) {
+    text <- paste0(
+      text, ", ",
+      param_label[3], " ",
+      param_val[3]
+    )
+  }
+
+  text
 }

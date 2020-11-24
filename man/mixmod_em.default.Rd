@@ -14,7 +14,8 @@
   method = "EM",
   n_iter = 100L,
   conv_limit = 1e-06,
-  diff_loglik = 0.5
+  diff_loglik = 0.5,
+  ...
 )
 }
 \arguments{

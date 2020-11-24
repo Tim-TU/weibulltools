@@ -8,7 +8,8 @@
   x,
   y,
   thres,
-  distribution = c("weibull3", "lognormal3", "loglogistic3")
+  distribution = c("weibull3", "lognormal3", "loglogistic3"),
+  ...
 )
 }
 \arguments{
@@ -51,7 +52,7 @@ threshold <- seq(0, min(cycles[status == 1]) - 0.1, length.out = 100)
 
 profile_r2 <- sapply(
   threshold, r_squared_profiling,
-  x = tbl_john$characteristic[tbl_john$status == 1],
+  x = tbl_john$x[tbl_john$status == 1],
   y = tbl_john$prob[tbl_john$status == 1],
   distribution = "weibull3"
 )

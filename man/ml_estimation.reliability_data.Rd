@@ -9,7 +9,8 @@
   distribution = c("weibull", "lognormal", "loglogistic", "normal", "logistic", "sev",
     "weibull3", "lognormal3", "loglogistic3"),
   wts = rep(1, nrow(x)),
-  conf_level = 0.95
+  conf_level = 0.95,
+  ...
 )
 }
 \arguments{

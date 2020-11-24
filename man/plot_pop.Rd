@@ -8,8 +8,7 @@ plot_pop(
   p_obj = NULL,
   x,
   loc_sc_params_tbl,
-  distribution = c("weibull", "lognormal", "loglogistic", "normal", "logistic", "sev",
-    "weibull3", "lognormal3", "loglogistic3"),
+  distribution = c("weibull", "lognormal", "loglogistic", "normal", "logistic", "sev"),
   tol = 1e-06,
   title_trace = "Population",
   plot_method = c("plotly", "ggplot2")
@@ -17,7 +16,7 @@ plot_pop(
 }
 \arguments{
 \item{p_obj}{A plot object to which the population lines are added or
-\code{NULL}. If \code{NULL} the population lines are added to an empty grid.}
+\code{NULL}. If \code{NULL} the population lines are drawn in an empty grid.}
 
 \item{x}{A numeric vector of length two or greater used for the x coordinates
 of the population line. If \code{length(x) == 2} a sequence of length 200
@@ -47,18 +46,13 @@ A plot object which contains the linearized CDF(s).
 This function adds one or multiple linearized CDFs to an existing plot grid.
 }
 \details{
-\code{loc_sc_params_tbl} is a tibble with the following columns:
-  \itemize{
-    \item \code{loc}: Location parameter \eqn{\mu}.
-    \item \code{sc}: Scale parameter \eqn{\sigma}.
-  }
-  And for a three-parametric distribution the following column must be added:
-  \itemize{
-  \item \code{thres}: Threshold parameter \eqn{\gamma}.
-  }
+\code{loc_sc_params_tbl} is a data.frame with two or three columns. For
+location-scale distributions the first column contains the location parameter
+and the second column contains the scale parameter. For three-parametric
+distributions the third column contains the threshold parameter.
 
-  If only one population line should be displayed, a numeric vector of length two or three
-  is also supported \code{c(loc, sc)} or \code{c(loc, sc, thres)}.
+If only one population line should be displayed, a numeric vector of length
+two or three is also supported (\code{c(loc, sc)} or \code{c(loc, sc, thres)}).
 }
 \examples{
 x <- rweibull(n = 100, shape = 1, scale = 20000)
@@ -82,25 +76,36 @@ pop_weibull <- plot_pop(
 # Example 2: Three-parametric curved line
 x2 <- rweibull(n = 100, shape = 1, scale = 20000) + 5000
 
-pop_weibull2 <- plot_pop(
+pop_weibull_2 <- plot_pop(
   p_obj = NULL,
   x = x2,
   loc_sc_params_tbl = c(log(20000 - 5000), 1, 5000),
-  distribution = "weibull3",
+  distribution = "weibull",
   title_trace = "Population"
 )
 
 # Example 3: Multiple lines
-pop_weibull3 <- plot_pop(
+pop_weibull_3 <- plot_pop(
   p_obj = NULL,
   x = x,
   loc_sc_params_tbl = tibble(
-    loc = c(log(20000), log(20000), log(20000)),
-    sc = c(1, 1.5, 2)
+    p_1 = c(log(20000), log(20000), log(20000)),
+    p_2 = c(1, 1.5, 2)
     ),
   distribution = "weibull",
   title_trace = "Population",
   plot_method = "ggplot2"
+)
+
+# Example 4: Compare two- and three-parametric distributions
+pop_weibull_4 <- plot_pop(
+  p_obj = NULL,
+  x = x,
+  loc_sc_params_tbl = tibble(
+    param_1 = c(log(20000), log(20000)),
+    param_2 = c(1, 1),
+    param_3 = c(NA, 1)
+  )
 )
 
 }
