@@ -149,8 +149,8 @@ plot_prob_plotly <- function(
       legendgroup = ~method,
       text = paste(
         "ID:", prob_tbl$id,
-        paste("<br>", paste0(mark_x, ":")), prob_tbl$x,
-        paste("<br>", paste0(mark_y, ":")), round(prob_tbl$prob, digits = 5)
+        paste("<br>", paste0(mark_x, ":")), format(prob_tbl$x, digits = 3),
+        paste("<br>", paste0(mark_y, ":")), format(prob_tbl$prob, digits = 6)
       )
     ) %>%
     plotly::layout(showlegend = TRUE)
@@ -194,9 +194,9 @@ plot_prob_mix_plotly <- function(
       text = ~paste(
         "ID:", id_s,
         paste("<br>", paste0(mark_x, ":")),
-        x_s,
+        format(x_s, digits = 3),
         paste("<br>", paste0(mark_y, ":")),
-        round(y_s, digits = 5)
+        format(y_s, digits = 6)
       )
     ) %>%
     plotly::layout(showlegend = TRUE)
@@ -260,12 +260,12 @@ plot_mod_mix_plotly <- function(p_obj, tbl_group, title_trace) {
     hoverinfo = "text",
     text = paste(
       paste0(x_mark, ":"),
-      round(tbl_group$x_p, digits = 2),
+      format(tbl_group$x_p, digits = 3),
       paste(
         "<br>",
         paste0(y_mark, ":")
       ),
-      round(tbl_group$y_p, digits = 5),
+      format(tbl_group$y_p, digits = 6),
       "<br>",
       paste(tbl_group$lab_1, tbl_group$par_1),
       "<br>",
@@ -294,9 +294,9 @@ plot_conf_plotly <- function(p_obj, tbl_p, title_trace) {
     legendgroup = "Interval",
     text = paste(
       paste0(x_mark, ":"),
-      round(tbl_p$x, digits = 2),
+      format(tbl_p$x, digits = 3),
       paste("<br>", paste0(y_mark, ":")),
-      round(tbl_p$y, digits = 5)
+      format(tbl_p$y, digits = 6)
     )
   )
 
@@ -347,9 +347,9 @@ to_hovertext <- function(x, y, param_val, param_label, x_mark, y_mark) {
 
   text <- paste(
     paste0(x_mark, ":"),
-    round(x, digits = 2),
+    format(x, digits = 3),
     paste("<br>", paste0(y_mark, ":")),
-    round(y, digits = 5),
+    format(y, digits = 6),
     "<br>",
     paste(param_label[1], param_val[1]),
     "<br>",

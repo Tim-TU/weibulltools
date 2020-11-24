@@ -202,7 +202,7 @@ plot_mod_helper <- function(
 
   # preparation of plotly hovers:
   ## raises problems if one-parameter distributions like exponential will be implemented!
-  param_val <- round(loc_sc_params, digits = 2)
+  param_val <- format(loc_sc_params, digits = 3)
   # Enforce length 3
   if (length(loc_sc_params) == 2) param_val <- c(param_val, NA)
   param_label <- if (length(loc_sc_params) == 2) {
@@ -236,8 +236,8 @@ plot_mod_mix_helper_2 <- function(model_estimation, index) {
     distribution = distribution
   )
 
-  param_1 <- round(model_estimation$loc_sc_params[[1]], digits = 2)
-  param_2 <- round(model_estimation$loc_sc_params[[2]], digits = 2)
+  param_1 <- format(model_estimation$loc_sc_params[[1]], digits = 3)
+  param_2 <- format(model_estimation$loc_sc_params[[2]], digits = 3)
   label_1 <- "\u03BC:"
   label_2 <- "\u03C3:"
 
@@ -291,8 +291,8 @@ plot_mod_mix_helper <- function(
       )
 
       # Prepare hovertexts for regression lines:
-      param_1 <- round(mod$loc_sc_params[[1]], digits = 2)
-      param_2 <- round(mod$loc_sc_params[[2]], digits = 2)
+      param_1 <- format(mod$loc_sc_params[[1]], digits = 3)
+      param_2 <- format(mod$loc_sc_params[[2]], digits = 3)
       label_1 <- "\u03BC:"
       label_2 <- "\u03C3:"
 
@@ -325,8 +325,8 @@ plot_mod_mix_helper <- function(
         x_p <- seq(x_min, x_max, length.out = 200)
 
         # Prepare hovertexts for regression lines:
-        param_1 <- round(mod$loc_sc_params[[1]], digits = 2)
-        param_2 <- round(mod$loc_sc_params[[2]], digits = 2)
+        param_1 <- format(mod$loc_sc_params[[1]], digits = 3)
+        param_2 <- format(mod$loc_sc_params[[2]], digits = 3)
         label_1 <- "\u03BC:"
         label_2 <- "\u03C3:"
 
@@ -480,9 +480,9 @@ plot_pop_helper <- function(x, loc_sc_params_tbl, distribution, tol = 1e-6) {
   # set values and labels for plotlys hoverinfo:
   tbl_pop <- tbl_pop %>%
     dplyr::mutate(
-      param_val_1 = format(tbl_pop$loc, digits = 2),
-      param_val_2 = format(tbl_pop$sc, digits = 2),
-      param_val_3 = ifelse(is.na(tbl_pop$thres), NA, format(tbl_pop$thres, digits = 2)),
+      param_val_1 = format(tbl_pop$loc, digits = 3),
+      param_val_2 = format(tbl_pop$sc, digits = 3),
+      param_val_3 = ifelse(is.na(tbl_pop$thres), NA, format(tbl_pop$thres, digits = 3)),
       param_label_1 = "\u03BC:",
       param_label_2 = "\u03C3:",
       param_label_3 = ifelse(is.na(tbl_pop$thres), NA, "\u03B3:")
