@@ -1,9 +1,16 @@
 #' Parameter Estimation of a Supposed Statistical Delay Distribution
 #'
+#' @description
 #' This function models a delay random variable (e.g. in logistic, registration, report)
 #' using a supposed continuous distribution. First, the element-wise differences
 #' in days of both vectors \code{date_1} and \code{date_2} are calculated and then
 #' the parameter(s) of the assumed distribution are estimated using MLE.
+#'
+#' @details
+#' The distribution parameter(s) are determined on the basis of complete cases,
+#' i.e. there is no \code{NA} in one of the related vector elements
+#' \code{c(date_1[i], date_2[i])}. Time differences less than or equal to 0 are
+#' not considered as well.
 #'
 #' @param date_1 A vector of class \code{"character"} or \code{"Date"}, in the
 #'   format "yyyy-mm-dd", indicating the earlier of the two dates. If no date is
@@ -19,7 +26,7 @@
 #' @export
 #'
 #' @examples
-#' # Example 1: Delay in registration:
+#' # Example 1 - Delay in registration:
 #' date_of_production   <- c("2014-07-28", "2014-02-17", "2014-07-14",
 #'                           "2014-06-26", "2014-03-10", "2014-05-14",
 #'                           "2014-05-06", "2014-03-07", "2014-03-09",
@@ -40,7 +47,7 @@
 #'   distribution = "lognormal"
 #' )
 #'
-#' # Example 2: Delay in report:
+#' # Example 2 - Delay in report:
 #' date_of_repair <- c(NA, "2014-09-15", "2015-07-04", "2015-04-10", NA,
 #'                     NA, "2015-04-24", NA, "2015-04-25", "2015-04-24",
 #'                     "2015-06-12", NA, "2015-05-04", NA, NA,
@@ -110,6 +117,136 @@ dist_delay <- function(
   }
 
   return(estimates)
+}
+
+
+#' Correction of Operating Times by Delays using a Monte Carlo Approach
+#'
+#' @description
+#' In general, the amount of available information about units in the field is
+#' pretty different. While there are many data on failures during the warranty period,
+#' little is known about the units without a failure (\emph{censored data}).
+#' As a result, the operating time of these units are often inaccurate and must
+#' be adjusted by delays. But usually delays are only known for defective units.
+#' See 'Details' for more information.
+#'
+#' This function reduces the operating times of (multiple) right censored observations
+#' by simulated delays. The simulation is based on the supposed delay distribution
+#' (see \code{\link{dist_delay}}).
+#'
+#' @details
+#' \itemize{
+#'   \item \emph{Delay in registration}: It is common that a supplier, who provides
+#'     parts to the manufacturing industry does not know when the unit in which
+#'     its parts are installed were put in service (due to unknown registration
+#'     or sales date). Without taking the described delay into account, the time
+#'     in service of operating units would be the difference between the present
+#'     date and the production date. But the actual operating time is (much) shorter,
+#'     since the stress on the component will not start until the complete system
+#'     is put in service. Therefore the intact units must be reduced by delays.
+#'   \item: \emph{Delay in report}:
+#' }
+#'
+#' @inheritParams dist_delay
+#' @param x A numeric vector of operating times.
+#' @param status A vector of binary data (0 or 1) indicating whether unit \emph{i}
+#'   is a right censored observation (= 0) or a failure (= 1).
+#' @param seed If \code{seed = NULL} a random seed is used. Otherwise the user
+#'   can specify an integer for the seed.
+#'
+#' @return A numeric vector of corrected operating times for the censored units
+#'   and the input operating times for the failed units if
+#'   \code{details = FALSE}. If \code{details = TRUE} the output is a list which
+#'   consists of the following elements:
+#'   \itemize{
+#'   \item \code{time} : Numeric vector of corrected operating times for the
+#'     censored observations and input operating times for failed units.
+#'   \item \code{x_sim} : Simulated random numbers of specified distribution with
+#'     estimated parameters. The length of \code{x_sim} is equal to the number of
+#'     censored observations.
+#'   \item \code{coefficients} : Estimated coefficients of supposed
+#'     distribution.
+#'   \item \code{int_seed} : Integer seed number for reproducibility.}
+#'
+#' @export
+#'
+#' @examples
+#' date_of_production   <- c("2014-07-28", "2014-02-17", "2014-07-14",
+#'                           "2014-06-26", "2014-03-10", "2014-05-14",
+#'                           "2014-05-06", "2014-03-07", "2014-03-09",
+#'                           "2014-04-13", "2014-05-20", "2014-07-07",
+#'                           "2014-01-27", "2014-01-30", "2014-03-17",
+#'                           "2014-02-09", "2014-04-14", "2014-04-20",
+#'                           "2014-03-13", "2014-02-23", "2014-04-03",
+#'                           "2014-01-08", "2014-01-08")
+#' date_of_registration <- c(NA, "2014-03-29", "2014-12-06", "2014-09-09",
+#'                           NA, NA, "2014-06-16", NA, "2014-05-23",
+#'                           "2014-05-09", "2014-05-31", NA, "2014-04-13",
+#'                           NA, NA, "2014-03-12", NA, "2014-06-02",
+#'                           NA, "2014-03-21", "2014-06-19", NA, NA)
+#'
+#' op_time <- rep(1000, length(date_of_production))
+#' state <- c(0, 1, 1, 1, 0, 0, 1, 0, 1, 1, 1, 0, 1, 0, 0, 1, 0, 1, 0, 1, 1, 0, 0)
+#'
+#' # Example 1 - MCS for delay in registration:
+#' list_detail <- mcs_delay(
+#'   date_1 = date_of_production,
+#'   date_2 = date_of_registration,
+#'   x = op_time,
+#'   status = state,
+#'   distribution = "lognormal",
+#'   seed = NULL
+#' )
+
+mcs_delay <- function(
+  date_1,
+  date_2,
+  x,
+  status,
+  distribution = c("lognormal", "exponential"),
+  seed = NULL
+) {
+
+  distribution <- match.arg(distribution)
+
+  # Generate integer that sets the seed (if NULL) in set.seed() function.
+  if (purrr::is_null(seed)) {
+    seed <- as.integer(stats::runif(n = 1, min = 0, max = 1e6))
+  }
+
+  set.seed(seed = seed)
+
+  # Number of Monte Carlo simulated random numbers, i.e. number of censored data.
+  n_rand <- sum(is.na(date_register))
+  if (any(!stats::complete.cases(date_prod) | !stats::complete.cases(date_register))) {
+    prod_date <- date_prod[(stats::complete.cases(date_prod) &
+                              stats::complete.cases(date_register))]
+    register_date <- date_register[(stats::complete.cases(date_prod) &
+                                      stats::complete.cases(date_register))]
+  } else {
+    prod_date <- date_prod
+    register_date <- date_register
+  }
+
+  if (distribution == "lognormal") {
+    params <- dist_delay_register(date_prod = prod_date,
+                                  date_register = register_date,
+                                  distribution = "lognormal")
+
+    x_sim <- stats::rlnorm(n = n_rand, meanlog = params[[1]], sdlog = params[[2]])
+  } else {
+    stop("No valid distribution!")
+  }
+
+  x[is.na(date_register)] <- x[is.na(date_register)] - x_sim
+
+  if (details == FALSE) {
+    output <- x
+  } else {
+    output <- list(time = x, x_sim = x_sim, coefficients = params,
+                   int_seed = int_seed)
+  }
+  return(output)
 }
 
 
@@ -285,9 +422,15 @@ dist_delay_register <- function(
 #'                                   seed = NULL,
 #'                                   details = TRUE)
 
-mcs_delay_register <- function(date_prod, date_register, x, status,
-                               distribution = "lognormal", seed = NULL,
-                               details = FALSE) {
+mcs_delay_register <- function(
+  date_prod,
+  date_register,
+  x,
+  status,
+  distribution = "lognormal",
+  seed = NULL,
+  details = FALSE
+) {
 
   # Generate integer that sets the seed (if NULL) in set.seed() function.
   if (!is.null(seed)) {
@@ -485,9 +628,15 @@ dist_delay_report <- function(
 #'                                 seed = NULL,
 #'                                 details = TRUE)
 
-mcs_delay_report <- function(date_repair, date_report, x, status,
-                             distribution = "lognormal", details = FALSE,
-                             seed = NULL) {
+mcs_delay_report <- function(
+  date_repair,
+  date_report,
+  x,
+  status,
+  distribution = "lognormal",
+  details = FALSE,
+  seed = NULL
+) {
 
   # Generate integer that sets the seed (if NULL) in set.seed() function.
   if (!is.null(seed)) {

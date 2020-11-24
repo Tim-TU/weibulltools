@@ -28,8 +28,14 @@ using a supposed continuous distribution. First, the element-wise differences
 in days of both vectors \code{date_1} and \code{date_2} are calculated and then
 the parameter(s) of the assumed distribution are estimated using MLE.
 }
+\details{
+The distribution parameter(s) are determined on the basis of complete cases,
+i.e. there is no \code{NA} in one of the related vector elements
+\code{c(date_1[i], date_2[i])}. Time differences less than or equal to 0 are
+not considered as well.
+}
 \examples{
-# Example 1: Delay in registration:
+# Example 1 - Delay in registration:
 date_of_production   <- c("2014-07-28", "2014-02-17", "2014-07-14",
                           "2014-06-26", "2014-03-10", "2014-05-14",
                           "2014-05-06", "2014-03-07", "2014-03-09",
@@ -50,7 +56,7 @@ params_delay_regist  <- dist_delay(
   distribution = "lognormal"
 )
 
-# Example 2: Delay in report:
+# Example 2 - Delay in report:
 date_of_repair <- c(NA, "2014-09-15", "2015-07-04", "2015-04-10", NA,
                     NA, "2015-04-24", NA, "2015-04-25", "2015-04-24",
                     "2015-06-12", NA, "2015-05-04", NA, NA,
