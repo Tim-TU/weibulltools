@@ -145,7 +145,6 @@ plot_prob_plotly <- function(
       mode = "markers",
       hoverinfo = "text",
       name = name,
-      color = ~method,
       legendgroup = ~method,
       text = paste(
         "ID:", prob_tbl$id,
@@ -233,8 +232,9 @@ plot_mod_plotly <- function(
     type = "scatter",
     mode = "lines",
     hoverinfo = "text",
-    color = ~as.factor(method),
     name = name,
+    color = ~method,
+    colors = c("#1f77b4", "#ff7f0e", "#2ca02c", "#d62728", "#9467bd", "#8c564b"),
     legendgroup = ~method,
     text = ~hovertext
   )

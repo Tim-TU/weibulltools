@@ -14,7 +14,7 @@ plot_layout_helper <- function(x, distribution, plot_method = c("plotly", "ggplo
     x_ticks <- round(as.numeric(x_ticks), digits = 10)
     x_ticks <- x_ticks[!duplicated(x_ticks)]
     x_labels <- x_ticks
-    x_labels[c(rep(F, 3), rep(T, 6))] <- ''
+    x_labels[c(rep(F, 3), rep(T, 6))] <- " "
   } else {
     # We don't need these values, therefore we return NULL
     x_ticks <- if (plot_method == "plotly") NULL else ggplot2::waiver()
