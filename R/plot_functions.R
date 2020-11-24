@@ -1443,13 +1443,18 @@ plot_conf.confint <- function(p_obj, x, title_trace, ...) {
 #' two or three is also supported (\code{c(loc, sc)} or \code{c(loc, sc, thres)}).
 #'
 #' @param p_obj A plot object to which the population lines are added or
-#'   \code{NULL}. If \code{NULL} the population lines are drawn in an empty grid.
+#'   \code{NULL}. If \code{NULL} the population lines are plotted in an empty grid.
 #' @param x A numeric vector of length two or greater used for the x coordinates
 #'   of the population line. If \code{length(x) == 2} a sequence of length 200
 #'   between \code{x[1]} and \code{x[2]} is created. This sequence is equidistant
 #'   with respect to the scale of the x axis. If \code{length(x) > 2} the elements
 #'   of \code{x} are the x coordinates of the population line.
 #' @param loc_sc_params_tbl A tibble. See 'Details'.
+#' @param distribution Supposed distribution of the random variable. In the
+#'   context of this function \code{"weibull"}, \code{"lognormal"} and
+#'   \code{"loglogistic"} stand for the two- \strong{and} the three-parametric
+#'   version of the respective distribution. The distinction is made via
+#'   \code{loc_sc_params_tbl}.
 #' @param tol The failure probability is restricted to the interval
 #'   \eqn{[tol, 1 - tol]}. The default value is in accordance with the decimal
 #'   places shown in the hover for \code{plot_method = "plotly"}.
@@ -1510,7 +1515,7 @@ plot_conf.confint <- function(p_obj, x, title_trace, ...) {
 #'   loc_sc_params_tbl = tibble(
 #'     param_1 = c(log(20000), log(20000)),
 #'     param_2 = c(1, 1),
-#'     param_3 = c(NA, 1)
+#'     param_3 = c(NA, 5)
 #'   )
 #' )
 #'
