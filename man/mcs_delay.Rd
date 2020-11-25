@@ -49,28 +49,44 @@ A numeric vector of corrected operating times for the censored units
   \item \code{int_seed} : Integer seed number for reproducibility.}
 }
 \description{
-In general, the amount of available information about units in the field is
-pretty different. While there are many data on failures during the warranty period,
-little is known about the units without a failure (\emph{censored data}).
-As a result, the operating time of these units are often inaccurate and must
+In general, the amount of available data about units in the field is very
+different. While there are many information on failures during the warranty
+period, little is known about the units without a failure (\emph{censored data}).
+As a result, the operating times of these units are often inaccurate and must
 be adjusted by delays. But usually delays are only known for defective units.
 See 'Details' for more information.
 
 This function reduces the operating times of (multiple) right censored observations
-by simulated delays. The simulation is based on the supposed delay distribution
-(see \code{\link{dist_delay}}).
+by simulated delays which were drawn from the distribution determined by
+complete data (described in 'Details' of \code{\link{dist_delay}}).
 }
 \details{
+In field data analysis time-dependent characteristics (e.g. \emph{time in service})
+are often imprecisely recorded. These inaccuracies are caused by unconsidered delays.
+
+For a better understanding of the MCS application in the context of field data,
+two cases are described below.
 \itemize{
-  \item \emph{Delay in registration}: It is common that a supplier, who provides
-    parts to the manufacturing industry does not know when the unit in which
-    its parts are installed were put in service (due to unknown registration
+  \item \strong{Delay in registration}: It is common that a supplier, who provides
+    parts to the manufacturing industry does not know when the unit, in which
+    its parts are installed, were put in service (due to unknown registration
     or sales date). Without taking the described delay into account, the time
-    in service of operating units would be the difference between the present
+    in service of intact units would be the difference between the present
     date and the production date. But the actual operating time is (much) shorter,
     since the stress on the component will not start until the complete system
     is put in service. Therefore the intact units must be reduced by delays.
-  \item: \emph{Delay in report}:
+  \item \strong{Delay in report}: Authorized repairers often do not immediately
+    notify the manufacturer or OEM of repairs that occur during the warranty
+    period, but instead pass the information about these repairs in form of
+    collected applications e.g. monthly or quarterly. The resulting time
+    difference between the reporting of the repair in the guarantee database
+    and the actual repair date is called the reporting delay. For a given date
+    where the analysis is made there could be units which had a failure but are
+    not registered therefore treated as censored units. In order to take this
+    case into account and according to the principle of equal
+    opportunities, the lifetime of intact units is reduced by simulated
+    reporting delays, so that the case described before is taken into account
+    due to lifetime reduction.
 }
 }
 \examples{
@@ -100,4 +116,10 @@ list_detail <- mcs_delay(
   distribution = "lognormal",
   seed = NULL
 )
+}
+\references{
+Verband der Automobilindustrie e.V. (VDA); Qualitätsmanagement in
+  der Automobilindustrie. Zuverlässigkeitssicherung bei Automobilherstellern
+  und Liferanten. Zuverlässigkeits-Methoden und -Hilfsmittel.; 4th Edition, 2016,
+  <ISSN:0943-9412>
 }

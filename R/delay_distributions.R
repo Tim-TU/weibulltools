@@ -4,7 +4,8 @@
 #' This function models a delay random variable (e.g. in logistic, registration, report)
 #' using a supposed continuous distribution. First, the element-wise differences
 #' in days of both vectors \code{date_1} and \code{date_2} are calculated and then
-#' the parameter(s) of the assumed distribution are estimated using MLE.
+#' the parameter(s) of the assumed distribution are estimated using MLE. See
+#' 'Details' for more information.
 #'
 #' @details
 #' The distribution parameter(s) are determined on the basis of complete cases,
@@ -116,36 +117,64 @@ dist_delay <- function(
     estimates <- c(sc = ml_sc)
   }
 
-  return(estimates)
+  dist_output <- list(
+    coefficients = estimates,
+    distribution = distribution
+  )
+
+  class(dist_output) <- "delay_model"
+
+  return(dist_output)
 }
 
 
 #' Correction of Operating Times by Delays using a Monte Carlo Approach
 #'
 #' @description
-#' In general, the amount of available information about units in the field is
-#' pretty different. While there are many data on failures during the warranty period,
-#' little is known about the units without a failure (\emph{censored data}).
-#' As a result, the operating time of these units are often inaccurate and must
+#' In general, the amount of available data about units in the field is very
+#' different. While there are many information on failures during the warranty
+#' period, little is known about the units without a failure (\emph{censored data}).
+#' As a result, the operating times of these units are often inaccurate and must
 #' be adjusted by delays. But usually delays are only known for defective units.
 #' See 'Details' for more information.
 #'
 #' This function reduces the operating times of (multiple) right censored observations
-#' by simulated delays. The simulation is based on the supposed delay distribution
-#' (see \code{\link{dist_delay}}).
+#' by simulated delays which were drawn from the distribution determined by
+#' complete cases (described in 'Details' of \code{\link{dist_delay}}).
 #'
 #' @details
+#' In field data analysis time-dependent characteristics (e.g. \emph{time in service})
+#' are often imprecisely recorded. These inaccuracies are caused by unconsidered delays.
+#'
+#' For a better understanding of the MCS application in the context of field data,
+#' two cases are described below.
 #' \itemize{
-#'   \item \emph{Delay in registration}: It is common that a supplier, who provides
-#'     parts to the manufacturing industry does not know when the unit in which
-#'     its parts are installed were put in service (due to unknown registration
+#'   \item \strong{Delay in registration}: It is common that a supplier, who provides
+#'     parts to the manufacturing industry does not know when the unit, in which
+#'     its parts are installed, were put in service (due to unknown registration
 #'     or sales date). Without taking the described delay into account, the time
-#'     in service of operating units would be the difference between the present
+#'     in service of intact units would be the difference between the present
 #'     date and the production date. But the actual operating time is (much) shorter,
 #'     since the stress on the component will not start until the complete system
 #'     is put in service. Therefore the intact units must be reduced by delays.
-#'   \item: \emph{Delay in report}:
+#'   \item \strong{Delay in report}: Authorized repairers often do not immediately
+#'     notify the manufacturer or OEM of repairs that occur during the warranty
+#'     period, but instead pass the information about these repairs in form of
+#'     collected applications e.g. monthly or quarterly. The resulting time
+#'     difference between the reporting of the repair in the guarantee database
+#'     and the actual repair date is called the reporting delay. For a given date
+#'     where the analysis is made there could be units which had a failure but are
+#'     not registered therefore treated as censored units. In order to take this
+#'     case into account and according to the principle of equal
+#'     opportunities, the lifetime of intact units is reduced by simulated
+#'     reporting delays, so that the case described before is taken into account
+#'     due to lifetime reduction.
 #' }
+#'
+#' @references Verband der Automobilindustrie e.V. (VDA); Qualitätsmanagement in
+#'   der Automobilindustrie. Zuverlässigkeitssicherung bei Automobilherstellern
+#'   und Lieferanten. Zuverlässigkeits-Methoden und -Hilfsmittel.; 4th Edition, 2016,
+#'   <ISSN:0943-9412>
 #'
 #' @inheritParams dist_delay
 #' @param x A numeric vector of operating times.
@@ -209,44 +238,98 @@ mcs_delay <- function(
 
   distribution <- match.arg(distribution)
 
-  # Generate integer that sets the seed (if NULL) in set.seed() function.
+  # convert date_1 and date_2 to lists if they are vectors:
+  if (!is.list(date_1)) date_1 <- list(date_1)
+  if (!is.list(date_2)) date_2 <- list(date_2)
+
+  # Step 1: Parameter estimation using complete cases:
+  par_list <- purrr::map2(
+    date_1,
+    date_2,
+    dist_helper,
+    distribution = distribution
+  )
+
+  # Step 2: Simulation of random numbers:
+  ## Generate integer that sets the seed (if NULL) in set.seed() function.
   if (purrr::is_null(seed)) {
     seed <- as.integer(stats::runif(n = 1, min = 0, max = 1e6))
   }
-
   set.seed(seed = seed)
 
-  # Number of Monte Carlo simulated random numbers, i.e. number of censored data.
-  n_rand <- sum(is.na(date_register))
-  if (any(!stats::complete.cases(date_prod) | !stats::complete.cases(date_register))) {
-    prod_date <- date_prod[(stats::complete.cases(date_prod) &
-                              stats::complete.cases(date_register))]
-    register_date <- date_register[(stats::complete.cases(date_prod) &
-                                      stats::complete.cases(date_register))]
-  } else {
-    prod_date <- date_prod
-    register_date <- date_register
+  sim_list <- purrr::map2(
+    date_2,
+    par_list,
+    mcs_helper,
+    status = status
+  )
+
+  print(sim_list)
+  ## Adjustment of operating times:
+  x <- x - Reduce('+', sim_list)
+
+
+  # # Number of Monte Carlo simulated random numbers, i.e. number of censored data.
+  # n_rand <- sum(is.na(date_register))
+  # if (any(!stats::complete.cases(date_prod) | !stats::complete.cases(date_register))) {
+  #   prod_date <- date_prod[(stats::complete.cases(date_prod) &
+  #                             stats::complete.cases(date_register))]
+  #   register_date <- date_register[(stats::complete.cases(date_prod) &
+  #                                     stats::complete.cases(date_register))]
+  # } else {
+  #   prod_date <- date_prod
+  #   register_date <- date_register
+  # }
+  #
+  # if (distribution == "lognormal") {
+  #   params <- dist_delay_register(date_prod = prod_date,
+  #                                 date_register = register_date,
+  #                                 distribution = "lognormal")
+  #
+  #   x_sim <- stats::rlnorm(n = n_rand, meanlog = params[[1]], sdlog = params[[2]])
+  # } else {
+  #   stop("No valid distribution!")
+  # }
+  #
+  # x[is.na(date_register)] <- x[is.na(date_register)] - x_sim
+  #
+  # if (details == FALSE) {
+  #   output <- x
+  # } else {
+  #   output <- list(time = x, x_sim = x_sim, coefficients = params,
+  #                  int_seed = int_seed)
+  # }
+  # return(output)
+  return(x)
+}
+
+# helper function to estimate the parameters:
+dist_helper <- function(date_1, date_2, distribution) {
+  # complete cases, i.e. date pairs that can be used to estimate delays
+  ind <- !is.na(date_1) & !is.na(date_2)
+
+  dist_delay(date_1 = date_1, date_2 = date_2, distribution = distribution)
+}
+
+# helper function to generate MCS random numbers:
+mcs_helper <- function(date_2, status, par_list) {
+
+  # adjustment can only be done for units that have status = 0 and a date_2 entry
+  # of NA, otherwise operation time could be exactly determined by taking differences!
+  replacable <- is.na(date_2) & status == 0
+
+  # generate random numbers:
+  if (par_list$distribution == "lognormal") {
+    x_sim <- stats::rlnorm(length(date_2), par_list$coefficients[1], par_list$coefficients[2])
   }
 
-  if (distribution == "lognormal") {
-    params <- dist_delay_register(date_prod = prod_date,
-                                  date_register = register_date,
-                                  distribution = "lognormal")
-
-    x_sim <- stats::rlnorm(n = n_rand, meanlog = params[[1]], sdlog = params[[2]])
-  } else {
-    stop("No valid distribution!")
+  if (par_list$distribution == "exponential") {
+    x_sim <- stats::rexp(length(date_2), 1 / par_list$coefficients[1])
   }
 
-  x[is.na(date_register)] <- x[is.na(date_register)] - x_sim
+  x_sim[!replacable] <- 0
 
-  if (details == FALSE) {
-    output <- x
-  } else {
-    output <- list(time = x, x_sim = x_sim, coefficients = params,
-                   int_seed = int_seed)
-  }
-  return(output)
+  return(x_sim)
 }
 
 
@@ -347,6 +430,12 @@ dist_delay_register <- function(
 #' Adjustment of Operating Times by Delays in Registration using a Monte Carlo
 #' Approach
 #'
+#' @description
+#' \lifecycle{soft-deprecated}
+#'
+#' \code{mcs_delay_register()} is no longer under active development, switching
+#' to \code{mcs_delay()} is recommended.
+#'
 #' In general the amount of information about units in the field, that have not
 #' failed yet, are rare. For example it is common that a supplier, who provides
 #' parts to the automotive industry does not know when a vehicle was put in
@@ -431,6 +520,7 @@ mcs_delay_register <- function(
   seed = NULL,
   details = FALSE
 ) {
+  deprecate_soft("2.0.0", "mcs_delay_register()")
 
   # Generate integer that sets the seed (if NULL) in set.seed() function.
   if (!is.null(seed)) {
@@ -566,6 +656,12 @@ dist_delay_report <- function(
 
 #' Adjustment of Operating Times by Delays in Report using a Monte Carlo Approach
 #'
+#' @description
+#' \lifecycle{soft-deprecated}
+#'
+#' \code{mcs_delay_report()} is no longer under active development, switching
+#' to \code{mcs_delay()} is recommended.
+#'
 #' The delay in report describes the time between the occurence of a damage and
 #' the registration in the warranty database. For a given date where the analysis
 #' is made there could be units which had a failure but are not registered in the
@@ -637,6 +733,7 @@ mcs_delay_report <- function(
   details = FALSE,
   seed = NULL
 ) {
+  deprecate_soft("2.0.0", "mcs_delay_report()")
 
   # Generate integer that sets the seed (if NULL) in set.seed() function.
   if (!is.null(seed)) {
@@ -682,6 +779,12 @@ mcs_delay_report <- function(
 
 
 #' Adjustment of Operating Times by Delays using a Monte Carlo Approach
+#'
+#' @description
+#' \lifecycle{soft-deprecated}
+#'
+#' \code{mcs_delays()} is no longer under active development, switching
+#' to \code{mcs_delay()} is recommended.
 #'
 #' This function is a wrapper that combines both, the
 #' \code{\link{mcs_delay_register}} and \code{\link{mcs_delay_report}} function
@@ -767,9 +870,18 @@ mcs_delay_report <- function(
 #'                                 seed = NULL,
 #'                                 details = TRUE)
 
-mcs_delays <- function(date_prod, date_register, date_repair, date_report, x,
-                       status, distribution = "lognormal", details = FALSE,
-                       seed = NULL) {
+mcs_delays <- function(
+  date_prod,
+  date_register,
+  date_repair,
+  date_report,
+  x,
+  status,
+  distribution = "lognormal",
+  details = FALSE,
+  seed = NULL
+) {
+  deprecate_soft("2.0.0", "mcs_delays()")
 
   # Generate integer that sets the seed (if NULL) in set.seed() function.
   if (!is.null(seed)) {

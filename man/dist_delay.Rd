@@ -26,7 +26,8 @@ A named vector of estimated parameter(s) for the specified
 This function models a delay random variable (e.g. in logistic, registration, report)
 using a supposed continuous distribution. First, the element-wise differences
 in days of both vectors \code{date_1} and \code{date_2} are calculated and then
-the parameter(s) of the assumed distribution are estimated using MLE.
+the parameter(s) of the assumed distribution are estimated using MLE. See
+'Details' for more information.
 }
 \details{
 The distribution parameter(s) are determined on the basis of complete cases,

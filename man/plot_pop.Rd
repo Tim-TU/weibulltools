@@ -16,7 +16,7 @@ plot_pop(
 }
 \arguments{
 \item{p_obj}{A plot object to which the population lines are added or
-\code{NULL}. If \code{NULL} the population lines are drawn in an empty grid.}
+\code{NULL}. If \code{NULL} the population lines are plotted in an empty grid.}
 
 \item{x}{A numeric vector of length two or greater used for the x coordinates
 of the population line. If \code{length(x) == 2} a sequence of length 200
@@ -26,7 +26,11 @@ of \code{x} are the x coordinates of the population line.}
 
 \item{loc_sc_params_tbl}{A tibble. See 'Details'.}
 
-\item{distribution}{Supposed distribution of the random variable.}
+\item{distribution}{Supposed distribution of the random variable. In the
+context of this function \code{"weibull"}, \code{"lognormal"} and
+\code{"loglogistic"} stand for the two- \strong{and} the three-parametric
+version of the respective distribution. The distinction is made via
+\code{loc_sc_params_tbl}.}
 
 \item{tol}{The failure probability is restricted to the interval
 \eqn{[tol, 1 - tol]}. The default value is in accordance with the decimal
@@ -104,7 +108,7 @@ pop_weibull_4 <- plot_pop(
   loc_sc_params_tbl = tibble(
     param_1 = c(log(20000), log(20000)),
     param_2 = c(1, 1),
-    param_3 = c(NA, 1)
+    param_3 = c(NA, 5)
   )
 )
 

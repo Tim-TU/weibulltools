@@ -73,6 +73,11 @@ A numerical vector of corrected operating times for the censored units
   \item \code{int_seed} : Integer seed number for reproducibility.}
 }
 \description{
+\lifecycle{soft-deprecated}
+
+\code{mcs_delays()} is no longer under active development, switching
+to \code{mcs_delay()} is recommended.
+
 This function is a wrapper that combines both, the
 \code{\link{mcs_delay_register}} and \code{\link{mcs_delay_report}} function
 for adjusting the operation times of censored units.
