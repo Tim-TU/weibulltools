@@ -9,6 +9,7 @@ mcs_delay(
   date_2,
   x,
   status,
+  id = paste0("ID", seq_len(length(x))),
   distribution = c("lognormal", "exponential"),
   seed = NULL
 )
@@ -16,19 +17,30 @@ mcs_delay(
 \arguments{
 \item{date_1}{A vector of class \code{"character"} or \code{"Date"}, in the
 format "yyyy-mm-dd", indicating the earlier of the two dates. If no date is
-available use \code{NA}.}
+available use \code{NA}. If more than one delay should be considered it must
+be a list with the earlier dates of the delays (See 'Examples').}
 
 \item{date_2}{A vector of class \code{"character"} or \code{"Date"}, in the
 format "yyyy-mm-dd", indicating the later of the two dates. If no date is
-available use \code{NA}.}
+available use \code{NA}. If more than one delay should be considered it must
+be a list with the later dates of the delays (See 'Examples').}
 
 \item{x}{A numeric vector of operating times.}
 
 \item{status}{A vector of binary data (0 or 1) indicating whether unit \emph{i}
 is a right censored observation (= 0) or a failure (= 1).}
 
-\item{distribution}{Supposed distribution of the random variable. The default
-value is \code{"lognormal"}.}
+\item{id}{Identification for every unit.}
+
+\item{distribution}{Supposed distribution of the delay random variable. The
+default value is \code{"lognormal"}. If more than one delay is to be
+considered and different distributions should be assumed for each delay,
+the argument \code{distribution} must have the same length as list \code{date_1}
+(or \code{date_2}). For example, in the case of two delays with different
+distributions, one has to specify the argument as
+\code{distribution = c("lognormal", "exponential")}. Then the lognormal
+distribution is applied to the first delay and the exponential distribution
+to the second (See 'Examples').}
 
 \item{seed}{If \code{seed = NULL} a random seed is used. Otherwise the user
 can specify an integer for the seed.}
@@ -57,8 +69,8 @@ be adjusted by delays. But usually delays are only known for defective units.
 See 'Details' for more information.
 
 This function reduces the operating times of (multiple) right censored observations
-by simulated delays which were drawn from the distribution determined by
-complete data (described in 'Details' of \code{\link{dist_delay}}).
+by simulated delays (in days) which were drawn from the distribution determined
+by complete cases (described in 'Details' of \code{\link{dist_delay}}).
 }
 \details{
 In field data analysis time-dependent characteristics (e.g. \emph{time in service})
@@ -80,13 +92,13 @@ two cases are described below.
     period, but instead pass the information about these repairs in form of
     collected applications e.g. monthly or quarterly. The resulting time
     difference between the reporting of the repair in the guarantee database
-    and the actual repair date is called the reporting delay. For a given date
-    where the analysis is made there could be units which had a failure but are
-    not registered therefore treated as censored units. In order to take this
-    case into account and according to the principle of equal
-    opportunities, the lifetime of intact units is reduced by simulated
-    reporting delays, so that the case described before is taken into account
-    due to lifetime reduction.
+    and the actual repair date, which is often assumed to be the failure date,
+    is called the reporting delay. For a given date where the analysis is made
+    there could be units which had a failure but are not registered and therefore
+    treated as censored units. In order to take this case into account and
+    according to the principle of equal opportunities, the lifetime of intact
+    units is reduced by simulated reporting delays, so that the case described
+    before is taken into account due to lifetime reduction.
 }
 }
 \examples{
@@ -108,18 +120,18 @@ op_time <- rep(1000, length(date_of_production))
 state <- c(0, 1, 1, 1, 0, 0, 1, 0, 1, 1, 1, 0, 1, 0, 0, 1, 0, 1, 0, 1, 1, 0, 0)
 
 # Example 1 - MCS for delay in registration:
-list_detail <- mcs_delay(
-  date_1 = date_of_production,
-  date_2 = date_of_registration,
+mcs_list <- mcs_delay(
+  date_1 = list(date_of_production, date_of_repair),
+  date_2 = list(date_of_registration, date_of_report),
   x = op_time,
   status = state,
-  distribution = "lognormal",
+  distribution = c("lognormal", "exponential"),
   seed = NULL
 )
 }
 \references{
 Verband der Automobilindustrie e.V. (VDA); Qualitätsmanagement in
   der Automobilindustrie. Zuverlässigkeitssicherung bei Automobilherstellern
-  und Liferanten. Zuverlässigkeits-Methoden und -Hilfsmittel.; 4th Edition, 2016,
+  und Lieferanten. Zuverlässigkeits-Methoden und -Hilfsmittel.; 4th Edition, 2016,
   <ISSN:0943-9412>
 }
