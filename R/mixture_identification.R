@@ -139,6 +139,7 @@ mixmod_regression.default <- function(
 
   # mimic output of estimate_cdf
   cdf <- tibble::tibble(
+    id = "XXXXXX",
     x = x,
     status = status,
     prob = y,
@@ -157,20 +158,20 @@ mixmod_regression_ <- function(cdf_estimation,
                                conf_level = .95
 ) {
 
-  distribution <- match.arg(distribution)
-
   # Preparing for segmented regression
   cdf_failed <- dplyr::filter(cdf_estimation, status == 1)
 
   if (distribution == "weibull") {
-    mrr <- stats::lm(log(x) ~ SPREDA::qsev(prob), cdf_failed)
+    cdf_failed$q <- SPREDA::qsev(cdf_failed$prob)
   }
   if (distribution == "lognormal") {
-    mrr <- stats::lm(log(x) ~ qnorm(prob), cdf_failed)
+    cdf_failed$q <- stats::qnorm(cdf_failed$prob)
   }
   if (distribution == "loglogistic") {
-    mrr <- stats::lm(log(x) ~ qlogis(prob), cdf_failed)
+    cdf_failed$q <- stats::qlogis(cdf_failed$prob)
   }
+
+  mrr <- stats::lm(log(x) ~ q, cdf_failed)
 
   # segmented regression
   seg_mrr <- try(
@@ -188,7 +189,6 @@ mixmod_regression_ <- function(cdf_estimation,
   )
 
   r_sq0 <- mrr_0$r_squared
-  mrr_0$x_range <- range(x)
 
   mrr_output <- mrr_0
 
@@ -196,7 +196,7 @@ mixmod_regression_ <- function(cdf_estimation,
   if ("try-error" %in% class(seg_mrr)) {
     message("An admissible breakpoint could not be found!
             Simple linear regression model was estimated!")
-  } else if (length(x_f[seg_mrr$id.group != 0]) < 5) {
+  } else if (sum(seg_mrr$id.group != 0) < 5) {
         message("Second segment contains less than 5 elements.
                 Simple linear regression model was estimated!")
   } else {
@@ -211,7 +211,6 @@ mixmod_regression_ <- function(cdf_estimation,
     )
 
     r_sq1 <- mrr_1$r_squared
-    mrr_1$x_range <- range(cdf_failed_1$x)
 
     cdf_failed_rest <- cdf_failed %>% dplyr::filter(group != 0)
 
@@ -222,17 +221,10 @@ mixmod_regression_ <- function(cdf_estimation,
     )
 
     r_sq23 <- mrr_23$r_squared
-    mrr_23$x_range <- range(cdf_failed_rest$x)
 
-    if (distribution == "weibull") {
-      mrr2 <- stats::lm(log(x) ~ SPREDA::qsev(prob), cdf_failed_rest)
-    }
-    if (distribution == "lognormal") {
-      mrr2 <- stats::lm(log(x) ~ qnorm(prob), cdf_failed_rest)
-    }
-    if (distribution == "loglogistic") {
-      mrr2 <- stats::lm(log(x) ~ qlogis(prob), cdf_failed_rest)
-    }
+    x <- cdf_failed_rest$x
+    q <- cdf_failed_rest$q
+    mrr2 <- stats::lm(log(x) ~ q)
 
     seg_mrr2 <- try(
       segmented::segmented.lm(
@@ -267,7 +259,6 @@ mixmod_regression_ <- function(cdf_estimation,
       )
 
       r_sq2 <- mrr_2$r_squared
-      mrr_2$x_range <- range(cdf_failed_rest_2$x)
 
       cdf_failed_12 <- dplyr::bind_rows(
         cdf_failed_1,
@@ -281,7 +272,6 @@ mixmod_regression_ <- function(cdf_estimation,
       )
 
       r_sq12 <- mrr_12$r_squared
-      mrr_12$x_range <- range(cdf_failed_12$x)
 
       cdf_failed_3 <- dplyr::filter(cdf_failed_rest, group == 1)
 
@@ -292,7 +282,6 @@ mixmod_regression_ <- function(cdf_estimation,
       )
 
       r_sq3 <- mrr_3$r_squared
-      mrr_3$x_range <- range(cdf_failed_3$x)
 
       mean_r_sq <- mean(c(r_sq1, r_sq2, r_sq3))
 
