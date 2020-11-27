@@ -46,19 +46,35 @@ to the second (See 'Examples').}
 can specify an integer for the seed.}
 }
 \value{
-A numeric vector of corrected operating times for the censored units
-  and the input operating times for the failed units if
-  \code{details = FALSE}. If \code{details = TRUE} the output is a list which
-  consists of the following elements:
+A list containing the following elements:
   \itemize{
-  \item \code{time} : Numeric vector of corrected operating times for the
-    censored observations and input operating times for failed units.
-  \item \code{x_sim} : Simulated random numbers of specified distribution with
-    estimated parameters. The length of \code{x_sim} is equal to the number of
-    censored observations.
-  \item \code{coefficients} : Estimated coefficients of supposed
-    distribution.
-  \item \code{int_seed} : Integer seed number for reproducibility.}
+    \item \code{data} A tibble with classes \code{"mcs_data"} and
+      \code{"reliability_data"} containing the following columns:
+      \itemize{
+        \item \code{date_1} Earlier dates. If argument \code{date_1} is a list
+          of length \emph{i, i > 1} (described in \strong{Arguments}) multiple
+          columns with names \code{date_1.1}, \code{date_1.2}, ..., \code{date_1.i}
+          and the corresponding values of the earlier dates are used.
+        \item \code{date_2} Later dates. In the case of a list with length greater
+          than 1, the routine described above is used.
+        \item \code{x} Adjusted operating times for the censored observations
+          and input operating times for the failed units.
+        \item \code{status} Binary data (0 or 1) indicating whether a unit is
+          a right censored observation (= 0) or a failure (= 1).
+        \item \code{id} Identification for every unit.
+      }
+    \item \code{sim_data} A tibble with column \code{sim_delay} that holds the
+      simulated delay-specific numbers for censored units and \code{0} for
+      failed observations. If more than one delay was considered multiple columns
+      \code{sim_delay_1}, \code{sim_delay_2}, ..., \code{sim_delay_i} with
+      corresponding delay-specific random numbers are presented.
+    \item \code{estimation_list} A list containing a named list
+      (\code{"delay_distribution"}) with output of \code{\link{dist_delay}}. For
+      multiple delays the list contains as many lists ((\code{"delay_distribution_1"}),
+      (\code{"delay_distribution_2"}), ..., (\code{"delay_distribution_i"})) as
+      there are delays.
+    \item \code{seed} : Integer seed number for reproducibility.
+  }
 }
 \description{
 In general, the amount of available data about units in the field is very
@@ -102,6 +118,7 @@ two cases are described below.
 }
 }
 \examples{
+# Data for examples:
 date_of_production   <- c("2014-07-28", "2014-02-17", "2014-07-14",
                           "2014-06-26", "2014-03-10", "2014-05-14",
                           "2014-05-06", "2014-03-07", "2014-03-09",
@@ -110,23 +127,63 @@ date_of_production   <- c("2014-07-28", "2014-02-17", "2014-07-14",
                           "2014-02-09", "2014-04-14", "2014-04-20",
                           "2014-03-13", "2014-02-23", "2014-04-03",
                           "2014-01-08", "2014-01-08")
+
 date_of_registration <- c(NA, "2014-03-29", "2014-12-06", "2014-09-09",
                           NA, NA, "2014-06-16", NA, "2014-05-23",
                           "2014-05-09", "2014-05-31", NA, "2014-04-13",
                           NA, NA, "2014-03-12", NA, "2014-06-02",
                           NA, "2014-03-21", "2014-06-19", NA, NA)
 
-op_time <- rep(1000, length(date_of_production))
-state <- c(0, 1, 1, 1, 0, 0, 1, 0, 1, 1, 1, 0, 1, 0, 0, 1, 0, 1, 0, 1, 1, 0, 0)
+date_of_repair <-       c(NA, "2014-09-15", "2015-07-04", "2015-04-10", NA,
+                          NA, "2015-04-24", NA, "2015-04-25", "2015-04-24",
+                          "2015-06-12", NA, "2015-05-04", NA, NA,
+                          "2015-05-22", NA, "2015-09-17", NA, "2015-08-15",
+                          "2015-11-26", NA, NA)
+
+date_of_report <-       c(NA, "2014-10-09", "2015-08-28", "2015-04-15", NA,
+                          NA, "2015-05-16", NA, "2015-05-28", "2015-05-15",
+                          "2015-07-11", NA, "2015-08-14", NA, NA,
+                          "2015-06-05", NA, "2015-10-17", NA, "2015-08-21",
+                          "2015-12-02", NA, NA)
+
+time_in_service <- rep(1000, length(date_of_production))
+status <- c(0, 1, 1, 1, 0, 0, 1, 0, 1, 1, 1, 0, 1, 0, 0, 1, 0, 1, 0, 1, 1, 0, 0)
 
 # Example 1 - MCS for delay in registration:
-mcs_list <- mcs_delay(
+mcs_regist <- mcs_delay(
+  date_1 = date_of_production,
+  date_2 = date_of_registration,
+  x = time_in_service,
+  status = status,
+  distribution = "lognormal"
+)
+
+# Example 2 - MCS for delay in report:
+mcs_report <- mcs_delay(
+  date_1 = date_of_repair,
+  date_2 = date_of_report,
+  x = time_in_service,
+  status = status,
+  distribution = "exponential"
+)
+
+# Example 3 - MCS for delays in registration and report with same distribution:
+mcs_delays <- mcs_delay(
   date_1 = list(date_of_production, date_of_repair),
   date_2 = list(date_of_registration, date_of_report),
-  x = op_time,
-  status = state,
-  distribution = c("lognormal", "exponential"),
-  seed = NULL
+  x = time_in_service,
+  status = status,
+  distribution = "lognormal"
+)
+
+# Example 4 - MCS for delays in registration and report with different distributions:
+## Assuming lognormal registration and exponential reporting delays.
+mcs_delays_2 <- mcs_delay(
+  date_1 = list(date_of_production, date_of_repair),
+  date_2 = list(date_of_registration, date_of_report),
+  x = time_in_service,
+  status = status,
+  distribution = c("lognormal", "exponential")
 )
 }
 \references{

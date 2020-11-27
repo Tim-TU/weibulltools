@@ -72,6 +72,7 @@ delays. The simulation is based on the distribution of operating times that were
 calculated from complete data (see \code{\link{dist_delay_register}}).
 }
 \examples{
+
 date_of_production   <- c("2014-07-28", "2014-02-17", "2014-07-14",
                           "2014-06-26", "2014-03-10", "2014-05-14",
                           "2014-05-06", "2014-03-07", "2014-03-09",

@@ -22,8 +22,8 @@
 #' @param distribution Supposed distribution of the random variable. The default
 #'   value is \code{"lognormal"}.
 #'
-#' @return A named vector of estimated parameter(s) for the specified
-#'   distribution.
+#' @return A list of class \code{"delay_estimation"} containing a named vector of
+#'   estimated parameter(s) and the specified distribution.
 #' @export
 #'
 #' @examples
@@ -87,16 +87,16 @@ dist_delay <- function(
   # test for delays: all NA and smaller or equal to 0.
   # all NA:
   if (all(is.na(t_delay))) {
-    stop("All differences are NA; No parameters can be estimated!")
+    stop("all differences are NA; no parameters can be estimated!")
   }
   # all smaller or equal to zero:
   if (all(t_delay <= 0, na.rm = TRUE)) {
-    stop("All differences are smaller or equal to 0; No parameters can be
+    stop("all differences are smaller or equal to 0; no parameters can be
     estimated!")
   }
   # any smaller or equal to zero:
-  if (any(t_delay <= 0, na.rm = TRUE)) {
-    warning("At least one of the time differences is smaller or equal to 0 and is
+  if (!all(t_delay <= 0, na.rm = TRUE) && any(t_delay <= 0, na.rm = TRUE)) {
+    warning("at least one of the time differences is smaller or equal to 0 and is
     ignored in the estimation step!")
 
     t_delay <- t_delay[t_delay > 0]
@@ -122,7 +122,7 @@ dist_delay <- function(
     distribution = distribution
   )
 
-  class(dist_output) <- c("delay_estimation", "model_estimation", class(dist_output))
+  class(dist_output) <- c("delay_estimation", class(dist_output))
 
   return(dist_output)
 }
@@ -200,23 +200,40 @@ dist_delay <- function(
 #' @param seed If \code{seed = NULL} a random seed is used. Otherwise the user
 #'   can specify an integer for the seed.
 #'
-#' @return A numeric vector of corrected operating times for the censored units
-#'   and the input operating times for the failed units if
-#'   \code{details = FALSE}. If \code{details = TRUE} the output is a list which
-#'   consists of the following elements:
+#' @return A list containing the following elements:
 #'   \itemize{
-#'   \item \code{time} : Numeric vector of corrected operating times for the
-#'     censored observations and input operating times for failed units.
-#'   \item \code{x_sim} : Simulated random numbers of specified distribution with
-#'     estimated parameters. The length of \code{x_sim} is equal to the number of
-#'     censored observations.
-#'   \item \code{coefficients} : Estimated coefficients of supposed
-#'     distribution.
-#'   \item \code{int_seed} : Integer seed number for reproducibility.}
+#'     \item \code{data} A tibble with classes \code{"mcs_data"} and
+#'       \code{"reliability_data"} containing the following columns:
+#'       \itemize{
+#'         \item \code{date_1} Earlier dates. If argument \code{date_1} is a list
+#'           of length \emph{i, i > 1} (described in \strong{Arguments}) multiple
+#'           columns with names \code{date_1.1}, \code{date_1.2}, ..., \code{date_1.i}
+#'           and the corresponding values of the earlier dates are used.
+#'         \item \code{date_2} Later dates. In the case of a list with length greater
+#'           than 1, the routine described above is used.
+#'         \item \code{x} Adjusted operating times for the censored observations
+#'           and input operating times for the failed units.
+#'         \item \code{status} Binary data (0 or 1) indicating whether a unit is
+#'           a right censored observation (= 0) or a failure (= 1).
+#'         \item \code{id} Identification for every unit.
+#'       }
+#'     \item \code{sim_data} A tibble with column \code{sim_delay} that holds the
+#'       simulated delay-specific numbers for censored units and \code{0} for
+#'       failed observations. If more than one delay was considered multiple columns
+#'       \code{sim_delay_1}, \code{sim_delay_2}, ..., \code{sim_delay_i} with
+#'       corresponding delay-specific random numbers are presented.
+#'     \item \code{estimation_list} A list containing a named list
+#'       (\code{"delay_distribution"}) with output of \code{\link{dist_delay}}. For
+#'       multiple delays the list contains as many lists ((\code{"delay_distribution_1"}),
+#'       (\code{"delay_distribution_2"}), ..., (\code{"delay_distribution_i"})) as
+#'       there are delays.
+#'     \item \code{seed} : Integer seed number for reproducibility.
+#'   }
 #'
 #' @export
 #'
 #' @examples
+#' # Data for examples:
 #' date_of_production   <- c("2014-07-28", "2014-02-17", "2014-07-14",
 #'                           "2014-06-26", "2014-03-10", "2014-05-14",
 #'                           "2014-05-06", "2014-03-07", "2014-03-09",
@@ -225,23 +242,63 @@ dist_delay <- function(
 #'                           "2014-02-09", "2014-04-14", "2014-04-20",
 #'                           "2014-03-13", "2014-02-23", "2014-04-03",
 #'                           "2014-01-08", "2014-01-08")
+#'
 #' date_of_registration <- c(NA, "2014-03-29", "2014-12-06", "2014-09-09",
 #'                           NA, NA, "2014-06-16", NA, "2014-05-23",
 #'                           "2014-05-09", "2014-05-31", NA, "2014-04-13",
 #'                           NA, NA, "2014-03-12", NA, "2014-06-02",
 #'                           NA, "2014-03-21", "2014-06-19", NA, NA)
 #'
-#' op_time <- rep(1000, length(date_of_production))
-#' state <- c(0, 1, 1, 1, 0, 0, 1, 0, 1, 1, 1, 0, 1, 0, 0, 1, 0, 1, 0, 1, 1, 0, 0)
+#' date_of_repair <-       c(NA, "2014-09-15", "2015-07-04", "2015-04-10", NA,
+#'                           NA, "2015-04-24", NA, "2015-04-25", "2015-04-24",
+#'                           "2015-06-12", NA, "2015-05-04", NA, NA,
+#'                           "2015-05-22", NA, "2015-09-17", NA, "2015-08-15",
+#'                           "2015-11-26", NA, NA)
+#'
+#' date_of_report <-       c(NA, "2014-10-09", "2015-08-28", "2015-04-15", NA,
+#'                           NA, "2015-05-16", NA, "2015-05-28", "2015-05-15",
+#'                           "2015-07-11", NA, "2015-08-14", NA, NA,
+#'                           "2015-06-05", NA, "2015-10-17", NA, "2015-08-21",
+#'                           "2015-12-02", NA, NA)
+#'
+#' time_in_service <- rep(1000, length(date_of_production))
+#' status <- c(0, 1, 1, 1, 0, 0, 1, 0, 1, 1, 1, 0, 1, 0, 0, 1, 0, 1, 0, 1, 1, 0, 0)
 #'
 #' # Example 1 - MCS for delay in registration:
-#' mcs_list <- mcs_delay(
+#' mcs_regist <- mcs_delay(
+#'   date_1 = date_of_production,
+#'   date_2 = date_of_registration,
+#'   x = time_in_service,
+#'   status = status,
+#'   distribution = "lognormal"
+#' )
+#'
+#' # Example 2 - MCS for delay in report:
+#' mcs_report <- mcs_delay(
+#'   date_1 = date_of_repair,
+#'   date_2 = date_of_report,
+#'   x = time_in_service,
+#'   status = status,
+#'   distribution = "exponential"
+#' )
+#'
+#' # Example 3 - MCS for delays in registration and report with same distribution:
+#' mcs_delays <- mcs_delay(
 #'   date_1 = list(date_of_production, date_of_repair),
 #'   date_2 = list(date_of_registration, date_of_report),
-#'   x = op_time,
-#'   status = state,
-#'   distribution = c("lognormal", "exponential"),
-#'   seed = NULL
+#'   x = time_in_service,
+#'   status = status,
+#'   distribution = "lognormal"
+#' )
+#'
+#' # Example 4 - MCS for delays in registration and report with different distributions:
+#' ## Assuming lognormal registration and exponential reporting delays.
+#' mcs_delays_2 <- mcs_delay(
+#'   date_1 = list(date_of_production, date_of_repair),
+#'   date_2 = list(date_of_registration, date_of_report),
+#'   x = time_in_service,
+#'   status = status,
+#'   distribution = c("lognormal", "exponential")
 #' )
 
 mcs_delay <- function(
@@ -254,32 +311,27 @@ mcs_delay <- function(
   seed = NULL
 ) {
 
-  # check for (multiple distributions)
+  # Checks:
+  ## Check for (multiple) distributions:
   distribution <- match.arg(distribution, distribution, several.ok = TRUE)
   distribution <- as.list(distribution)
 
-  # check for different lengths in date_1 and date_2:
-  if (length(date_1) != length(date_2)) {
-    stop("'date_1' and 'date_2' differ in lengths!")
-  }
-  # case of multiple delays and more distributions than delays are specified!
-  if (is.list(date_1) && (length(distribution) > length(date_1))) {
-    warning(cat("argument 'distribution' has length", length(distribution),
-                "but argument 'date_1' has length", paste0(length(date_1), ":\n"),
-                "only the first element(s) of 'distribution' will be used\n"))
-    distribution <- distribution[1:length(date_1)]
-  }
-
-  # case of one delay and length of distribution > 1!
-  if (!is.list(date_1) && (length(distribution) > 1)) {
-    warning(cat("argument 'distribution' has length", paste0(length(distribution), ":\n"),
-                "only the first element of 'distribution' will be used\n"))
-    distribution <- distribution[1]
-  }
-
-  # convert date_1 and date_2 to lists if they are vectors:
+  ## Convert date_1 and date_2 to lists if they are vectors:
   if (!is.list(date_1)) date_1 <- list(date_1)
   if (!is.list(date_2)) date_2 <- list(date_2)
+
+  ## Check for different length in date_1 and date_2:
+  if (length(unlist(date_1)) != length(unlist(date_2))) {
+    stop("elements of 'date_1' and 'date_2' differ in lengths!")
+  }
+
+  ## Case of multiple delays and more distributions than delays are specified!
+  if (length(distribution) > length(date_1)) { # modification
+    warning("argument 'distribution' has length ", length(distribution),
+            " but date_* arguments have lengths ", length(date_1), " and ",
+            length(date_2), ":\n", "only the first element(s) of 'distribution' will be used!")
+    distribution <- distribution[seq_along(date_1)]
+  }
 
   # Step 1: Parameter estimation using complete cases:
   par_list <- purrr::pmap(
@@ -305,42 +357,37 @@ mcs_delay <- function(
     status = status
   )
 
-  # set names for outputs:
+  ## Adjustment of operating times:
+  x <- x - Reduce('+', sim_list)
+
+  # Prepare data_list which has to be converted to a tibble:
+  data_list <- c(date_1, date_2, list(x, status, id))
+
+  # Defining and setting names for output elements:
+  ## lengths of lists sim_list, par_list, date_1, date_2 remains the same:
   if (length(sim_list) != 1) {
-    sim_list_names <- paste0("sim_delay_", seq_len(length(sim_list)))
-    par_list_names <- paste0("delay_distribution_", seq_len(length(sim_list)))
+    sim_list_names <- paste0("sim_delay_", seq_along(sim_list))
+    par_list_names <- paste0("delay_distribution_", seq_along(sim_list))
+    data_list_names <- c(
+      paste0("date_1.", seq_along(date_1)),
+      paste0("date_2.", seq_along(date_2))
+    )
   } else {
-    sim_names <- "sim_delay"
+    sim_list_names <- "sim_delay"
     par_list_names <- "delay_distribution"
+    data_list_names <- c("date_1", "date_2")
   }
 
   names(sim_list) <- sim_list_names
   names(par_list) <- par_list_names
+  names(data_list) <- c(data_list_names, "x", "status", "id")
 
-  ## Adjustment of operating times:
-  x <- x - Reduce('+', sim_list)
-
-  # create mcs_object:
-  ## name and list preparation of dates:
-  if (length(date_1) != 1) {
-    col_names <- c(
-      paste0("date_1.", seq_len(length(date_1))),
-      paste0("date_2.", seq_len(length(date_2)))
-    )
-  } else {
-    col_names <- c("date_1", "date_2")
-  }
-
-  col_list <- c(date_1, date_2, list(x, status, id))
-  names(col_list) <- c(col_names, "x", "status", "id")
-
-  ## define mcs_tbl with class "reliability_data":
-  mcs_tbl <- tibble::as_tibble(col_list)
-
-  class(mcs_tbl) <- c("mcs_data", "reliability_data", class(mcs_tbl))
+  # Defining data_tbl with class "mcs_data" and "reliability_data":
+  data_tbl <- tibble::as_tibble(data_list)
+  class(data_tbl) <- c("mcs_data", "reliability_data", class(data_tbl))
 
   mcs_output <- list(
-     data = mcs_tbl,
+     data = data_tbl,
      sim_data = tibble::as_tibble(sim_list),
      estimation_list = par_list,
      seed = seed
@@ -439,16 +486,16 @@ dist_delay_register <- function(
   # test for delays: all NA and smaller or equal to 0.
   # all NA:
   if (all(is.na(t_regist))) {
-    stop("All differences are NA; No parameters can be estimated!")
+    stop("all differences are NA; no parameters can be estimated!")
   }
   # all smaller or equal to zero:
   if (all(t_regist <= 0, na.rm = TRUE)) {
-    stop("All differences are smaller or equal to 0; No parameters can be
+    stop("all differences are smaller or equal to 0; no parameters can be
     estimated!")
   }
   # any smaller or equal to zero:
-  if (any(t_regist <= 0, na.rm = TRUE)) {
-    warning("At least one of the time differences is smaller or equal to 0 and is
+  if (!all(t_regist <= 0, na.rm = TRUE) && any(t_regist <= 0, na.rm = TRUE)) {
+    warning("at least one of the time differences is smaller or equal to 0 and is
     ignored in the estimation step.")
 
     t_regist <- t_regist[t_regist > 0]
@@ -514,6 +561,7 @@ dist_delay_register <- function(
 #' @export
 #'
 #' @examples
+#'
 #' date_of_production   <- c("2014-07-28", "2014-02-17", "2014-07-14",
 #'                           "2014-06-26", "2014-03-10", "2014-05-14",
 #'                           "2014-05-06", "2014-03-07", "2014-03-09",
@@ -667,16 +715,16 @@ dist_delay_report <- function(
   # test for delays: all NA and smaller or equal to 0.
   # all NA:
   if (all(is.na(t_report))) {
-    stop("All differences are NA; No parameters can be estimated!")
+    stop("all differences are NA; no parameters can be estimated!")
   }
   # all smaller or equal to zero:
   if (all(t_report <= 0, na.rm = TRUE)) {
-    stop("All differences are smaller or equal to 0; No parameters can be
+    stop("all differences are smaller or equal to 0; no parameters can be
     estimated!")
   }
   # any smaller or equal to zero:
-  if (any(t_report <= 0, na.rm = TRUE)) {
-    warning("At least one of the time differences is smaller or equal to 0 and is
+  if (!all(t_report <= 0, na.rm = TRUE) && any(t_report <= 0, na.rm = TRUE)) {
+    warning("at least one of the time differences is smaller or equal to 0 and is
     ignored in the estimation step!")
 
     t_report <- t_report[t_report > 0]

@@ -1,4 +1,4 @@
-# weibulltools v1.1.0
+# weibulltools v2.0.0
 ## Breaking Changes
 * Renamed argument `event` with `status`.
 * Output of probability estimators: Renamed column `characteristic` with `x`.
@@ -36,6 +36,7 @@
 * `mr_method()`, `johnson_method()`, `kaplan_method()` and `nelson_method()`: Use `estimate_cdf()` instead.
 * `dist_delay_register()` and `dist_delay_report()` are deprecated. Use `dist_delay()` instead. 
 * `mcs_delay_register()`, `mcs_delay_report()` and `mcs_delays()`  are deprecated. Use `mcs_delay()` instead.
+
 ## Minor improvements and bug fixes
 * Fixed bug inside `plot_mod_mix()` for the case of no mixture distribution
 * Fixed bug inside `confint_betabinom()`; many cases near one -> unique()
