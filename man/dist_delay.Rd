@@ -2,7 +2,7 @@
 % Please edit documentation in R/delay_distributions.R
 \name{dist_delay}
 \alias{dist_delay}
-\title{Parameter Estimation of a Supposed Statistical Delay Distribution}
+\title{Parameter Estimation of a Delay Distribution}
 \usage{
 dist_delay(date_1, date_2, distribution = c("lognormal", "exponential"))
 }
@@ -27,7 +27,7 @@ This function models a delay (in days) random variable (e.g. in logistic,
 registration, report) using a supposed continuous distribution. First, the
 element-wise differences in days of both vectors \code{date_1} and
 \code{date_2} are calculated and then the parameter(s) of the assumed
-distribution are estimated using MLE. See Details' for more information.
+distribution are estimated using MLE. See 'Details' for more information.
 }
 \details{
 The distribution parameter(s) are determined on the basis of complete cases,

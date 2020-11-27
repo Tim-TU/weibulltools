@@ -17,13 +17,10 @@ mcs_mileage(
 \arguments{
 \item{x}{A numeric vector of operating times. If not available use \code{NA}.}
 
-\item{status}{A vector of binary data (0 or 1) indicating whether unit \emph{i}
-is a right censored observation (= 0) or a failure (= 1).}
-
-\item{mileage}{A numeric vector of driven distances. If not available use \code{NA}.}
+\item{mileage}{A numeric vector of distances covered. If not available use \code{NA}.}
 
 \item{distribution}{Supposed distribution of the random variable. The default
-value is \code{"lognormal"}. So far no other distribution is implemented.}
+value is \code{"lognormal"}.}
 
 \item{seed}{If \code{seed = NULL} a random seed is used. Otherwise the user
 can specify an integer for the seed.}

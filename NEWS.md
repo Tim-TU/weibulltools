@@ -7,6 +7,7 @@
 * `rank_regression()`, `ml_estimation()`: Renamed output: `loc_sc_coefficients` -> `loc_sc_params`, `loc_sc_vcov` -> `loc_sc_varcov`
 * `plot_pop()`: Added argument `tol` to restrict the range of failure probabilities. Removed argument `color`. Renamed argument `params` to `loc_sc_params_tbl`, which only supports location and scale parameters (also for `distribution = "weibull"`). Changed behaviour of `loc_sc_params_tbl`: A tibble is now recommended instead of a vector.
 * `plot_prob_mix`: Removed default value `NULL` for argument `mix_output`.
+* `dist_mileage()`: Removed `status` argument and switched arguments `x` and `mileage`  -> (`mileage`, `x`, `distribution`)
 
 ## New Features
 * Added support for ggplot2 in all plot functions. Plot method can be selected in `plot_prob()` via argument `plot_method`.
@@ -28,6 +29,7 @@
 
 ## Documentation
 * Capitalized parameter documentation.
+* Reworked documentation of `dist_mileage()` and `mcs_mileage()`
 
 ## Lifecycle changes
 

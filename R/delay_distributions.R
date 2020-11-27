@@ -1,11 +1,11 @@
-#' Parameter Estimation of a Supposed Statistical Delay Distribution
+#' Parameter Estimation of a Delay Distribution
 #'
 #' @description
 #' This function models a delay (in days) random variable (e.g. in logistic,
 #' registration, report) using a supposed continuous distribution. First, the
 #' element-wise differences in days of both vectors \code{date_1} and
 #' \code{date_2} are calculated and then the parameter(s) of the assumed
-#' distribution are estimated using MLE. See Details' for more information.
+#' distribution are estimated using MLE. See 'Details' for more information.
 #'
 #' @details
 #' The distribution parameter(s) are determined on the basis of complete cases,
@@ -84,20 +84,18 @@ dist_delay <- function(
     )
   )
 
-  # test for delays: all NA and smaller or equal to 0.
-  # all NA:
+  # Checks:
+  ## all NA:
   if (all(is.na(t_delay))) {
     stop("all differences are NA; no parameters can be estimated!")
   }
-  # all smaller or equal to zero:
+  ## all smaller or equal to zero:
   if (all(t_delay <= 0, na.rm = TRUE)) {
-    stop("all differences are smaller or equal to 0; no parameters can be
-    estimated!")
+    stop("all differences are smaller or equal to 0; no parameters can be estimated!")
   }
-  # any smaller or equal to zero:
+  ## any smaller or equal to zero:
   if (!all(t_delay <= 0, na.rm = TRUE) && any(t_delay <= 0, na.rm = TRUE)) {
-    warning("at least one of the time differences is smaller or equal to 0 and is
-    ignored in the estimation step!")
+    warning("at least one of the time differences is smaller or equal to 0 and is ignored for the estimation step!")
 
     t_delay <- t_delay[t_delay > 0]
   }
@@ -122,7 +120,7 @@ dist_delay <- function(
     distribution = distribution
   )
 
-  class(dist_output) <- c("delay_estimation", class(dist_output))
+  class(dist_output) <- c("delay_estimation", "model_estimation", class(dist_output))
 
   return(dist_output)
 }

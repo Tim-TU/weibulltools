@@ -1,18 +1,30 @@
-#' Parameter Estimation of the Mileage Distribution
+#' Parameter Estimation of an Annual Mileage Distribution
 #'
-#' This function introduces a random variable of annual mileage using the units in
-#' the sample that had a failure and afterwards estimates the parameter(s) of a
-#' supposed distribution, using MLE.
+#' @description
+#' This function models a mileage random variable on an annual basis with respect
+#' to a supposed continuous distribution. First, the distances are normalized to
+#' one year (365 days) using a linear relationship between the known distances and
+#' operating times. Second, the parameter(s) of the assumed distribution are
+#' estimated using MLE. See 'Details' for more information.
 #'
+#' @details
+#' The distribution parameter(s) are determined on the basis of complete cases,
+#' i.e. there is no \code{NA} in one of the related vector elements
+#' \code{c(mileage[i], x[i])}. Distances and operating times less than or equal
+#' to 0 are not considered as well.
+#'
+#' \strong{Assumption of linear interpolation}: Imagine a component in a vehicle
+#'   has endured a distance of 25000 kilometers (km) in 500 days (d), the annual
+#'   distance of this unit is \deqn{25000 km \cdot (\frac{365 d} {500 d}) = 18250 km}{%
+#'                 25000 km * (365 d / 500 d) = 18250 km}
+#'
+#' @param mileage A numeric vector of distances covered. If not available use \code{NA}.
 #' @param x A numeric vector of operating times. If not available use \code{NA}.
-#' @param status A vector of binary data (0 or 1) indicating whether unit \emph{i}
-#'   is a right censored observation (= 0) or a failure (= 1).
-#' @param mileage A numeric vector of driven distances. If not available use \code{NA}.
 #' @param distribution Supposed distribution of the random variable. The default
-#'   value is \code{"lognormal"}. So far no other distribution is implemented.
+#'   value is \code{"lognormal"}.
 #'
-#' @return A named vector of estimated parameters for the specified mileage
-#'   distribution.
+#' @return A list of class \code{"mileage_estimation"} containing a named vector of
+#'   estimated parameter(s) and the specified distribution.
 #' @export
 #'
 #' @examples
@@ -21,40 +33,82 @@
 #'                           "2014-05-31", NA, "2014-04-13", NA, NA, "2014-03-12",
 #'                           NA, "2014-06-02", NA, "2014-03-21", "2014-06-19",
 #'                           NA, NA)
-#' date_of_repair <- c(NA, "2014-09-15", "2015-07-04", "2015-04-10", NA,
-#'                     NA, "2015-04-24", NA, "2015-04-25", "2015-04-24",
-#'                     "2015-06-12", NA, "2015-05-04", NA, NA, "2015-05-22",
-#'                     NA, "2015-09-17", NA, "2015-08-15", "2015-11-26", NA, NA)
+#' date_of_repair       <- c(NA, "2014-09-15", "2015-07-04", "2015-04-10", NA,
+#'                           NA, "2015-04-24", NA, "2015-04-25", "2015-04-24",
+#'                           "2015-06-12", NA, "2015-05-04", NA, NA, "2015-05-22",
+#'                           NA, "2015-09-17", NA, "2015-08-15", "2015-11-26",
+#'                           NA, NA)
+#' mileage              <- c(NA, 15655, 13629, 18292, NA, NA, 33555, NA, 21737,
+#'                           29870, 21068, NA, 122283, NA, NA, 36088, NA, 11153,
+#'                           NA, 122842, 20349, NA, NA)
 #'
-#' op_time <- as.numeric(difftime(as.Date(date_of_repair),
-#'                                as.Date(date_of_registration),
-#'                                units = "days"))
-#' mileage <- c(NA, 15655, 13629, 18292, NA, NA, 33555, NA, 21737,
-#'              29870, 21068, NA, 122283, NA, NA, 36088, NA, 11153,
-#'              NA, 122842, 20349, NA, NA)
-#' state <- c(0, 1, 1, 1, 0, 0, 1, 0, 1, 1, 1, 0, 1, 0, 0, 1, 0, 1, 0, 1, 1, 0, 0)
+#' op_time <- as.numeric(
+#'   difftime(
+#'     as.Date(date_of_repair, format = "%Y-%m-%d"),
+#'     as.Date(date_of_registration, format = "%Y-%m-%d"),
+#'     units = "days"
+#'   )
+#' )
 #'
-#' params_mileage_annual <- dist_mileage(x = op_time, status = state,
-#'                                       mileage = mileage,
-#'                                       distribution = "lognormal")
+#' Example 1 - Assuming a lognormal annual mileage distribution:
+#' params_mileage_annual <- dist_mileage(
+#'   mileage = mileage,
+#'   x = op_time,
+#'   distribution = "lognormal"
+#' )
 
-dist_mileage <- function(x, status, mileage, distribution = "lognormal") {
+dist_mileage <- function(
+  mileage,
+  x,
+  distribution = c("lognormal", "exponential")
+) {
 
-  x_status <- x[status == 1]
-  miles_status <- mileage[status == 1]
-  miles_annual <- (miles_status / x_status) * 365
+  distribution <- match.arg(distribution)
 
-  if (distribution == "lognormal") {
-    logmu_mileage <- mean(log(miles_annual[miles_annual > 0]), na.rm = TRUE)
-    logsd_mileage <- stats::sd(log(miles_annual[miles_annual > 0]), na.rm = TRUE)
+  # Checks:
+  ## all NA:
+  if (all(is.na(mileage)) || all(is.na(x))) {
+    stop("all elements of 'mileage' and/or 'x' are NA; no parameters can be estimated!")
+  }
+  ## all smaller or equal to zero:
+  if (all(mileage <= 0, na.rm = TRUE) || all(x <= 0, na.rm = TRUE)) {
+    stop("all elements of 'mileage' and/or 'x' are 0; no parameters can be estimated!")
+  }
+  ## any smaller or equal to zero:
+  if ((!all(is.na(mileage)) && !all(is.na(x))) && (any(mileage <= 0, na.rm = TRUE) || any(x <= 0, na.rm = TRUE))) {
+    warning("at least one element of 'mileage' and/or 'x' is smaller or equal to 0;",
+    " the related elements in 'mileage' and 'x' are ignored for the estimation step!")
 
-    estimates <- c(logmu_mileage, logsd_mileage)
-    names(estimates) <- c("meanlog_mileage", "sdlog_mileage")
-  } else {
-    stop("No valid distribution!")
+    selector <- x > 0 & mileage > 0
+    x <- x[selector]
+    mileage <- mileage[selector]
   }
 
-  return(estimates)
+  miles_annual <- (mileage / x) * 365
+
+  if (distribution == "lognormal") {
+    # sample size used for the computation of the population standard deviation.
+    n <- sum(!is.na(miles_annual))
+    ml_loc <- mean(log(miles_annual), na.rm = TRUE)
+    ml_sc <- stats::sd(log(miles_annual), na.rm = TRUE) * (n - 1) / n
+
+    estimates <- c(loc = ml_loc, sc = ml_sc)
+  }
+
+  if (distribution == "exponential") {
+    ml_sc <- mean(miles_annual, na.rm = TRUE)
+
+    estimates <- c(sc = ml_sc)
+  }
+
+  dist_output <- list(
+    coefficients = estimates,
+    distribution = distribution
+  )
+
+  class(dist_output) <- c("mileage_estimation", "model_estimation", class(dist_output))
+
+  return(dist_output)
 }
 
 

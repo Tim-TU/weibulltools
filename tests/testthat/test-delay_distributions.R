@@ -437,7 +437,7 @@ test_that("dist_delay_report remains stable", {
   expect_snapshot_output(params_del_report)
 })
 
-# mcs_delay_register:
+# mcs_delay_register():
 test_that("mcs_delay_register remains stable by defining the seed", {
   date_of_production   <- c("2014-07-28", "2014-02-17", "2014-07-14",
                             "2014-06-26", "2014-03-10", "2014-05-14",
@@ -470,7 +470,7 @@ test_that("mcs_delay_register remains stable by defining the seed", {
   expect_snapshot_output(mcs_delay_register_list)
 })
 
-# mcs_delay_report:
+# mcs_delay_report():
 test_that("mcs_delay_report remains stable by defining the seed", {
   date_of_repair <- c(NA, "2014-09-15", "2015-07-04", "2015-04-10", NA,
                       NA, "2015-04-24", NA, "2015-04-25", "2015-04-24",
@@ -501,7 +501,7 @@ test_that("mcs_delay_report remains stable by defining the seed", {
   expect_snapshot_output(mcs_delay_report_list)
 })
 
-# mcs_delays:
+# mcs_delays():
 test_that("mcs_delays remains stable by defining the seed", {
   date_of_production   <- c("2014-07-28", "2014-02-17", "2014-07-14",
                             "2014-06-26", "2014-03-10", "2014-05-14",
