@@ -122,6 +122,7 @@ test_that("dist_delay remains stable", {
     distribution = "exponential"
   )
   expect_snapshot_output(params_delay_report$coefficients)
+  expect_snapshot_output(params_delay_report$delay)
 })
 
 ## mcs_delay():

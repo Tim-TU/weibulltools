@@ -3,6 +3,11 @@
           sc 
     28.91667 
 
+---
+
+     [1]  NA  24  55   5  NA  NA  22  NA  33  21  29  NA 102  NA  NA  14  NA  30  NA
+    [20]   6   6  NA  NA
+
 # mcs_delay remains stable by defining the seed
 
     # A tibble: 23 x 7

@@ -15,13 +15,18 @@ dist_mileage(mileage, x, distribution = c("lognormal", "exponential"))
 value is \code{"lognormal"}.}
 }
 \value{
-A list of class \code{"mileage_estimation"} containing a named vector of
-  estimated parameter(s) and the specified distribution.
+A list of class \code{"mileage_estimation"} which contains:
+  \itemize{
+    \item \code{coefficients} A named vector of estimated parameter(s).
+    \item \code{miles_annual} A numeric vector of element-wise computed annual
+      distances using linear interpolation described in 'Details'.
+    \item \code{distribution} Specified distribution.
+  }
 }
 \description{
 This function models a mileage random variable on an annual basis with respect
 to a supposed continuous distribution. First, the distances are normalized to
-one year (365 days) using a linear relationship between the known distances and
+one year (365 days) using a linear relationship between the distances and
 operating times. Second, the parameter(s) of the assumed distribution are
 estimated using MLE. See 'Details' for more information.
 }

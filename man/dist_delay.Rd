@@ -19,8 +19,13 @@ available use \code{NA}.}
 value is \code{"lognormal"}.}
 }
 \value{
-A list of class \code{"delay_estimation"} containing a named vector of
-  estimated parameter(s) and the specified distribution.
+A list of class \code{"delay_estimation"} which contains:
+  \itemize{
+    \item \code{coefficients} A named vector of estimated parameter(s).
+    \item \code{delay} A numeric vector of element-wise computed differences
+      in days.
+    \item \code{distribution} Specified distribution.
+  }
 }
 \description{
 This function models a delay (in days) random variable (e.g. in logistic,

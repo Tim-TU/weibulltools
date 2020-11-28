@@ -22,8 +22,13 @@
 #' @param distribution Supposed distribution of the random variable. The default
 #'   value is \code{"lognormal"}.
 #'
-#' @return A list of class \code{"delay_estimation"} containing a named vector of
-#'   estimated parameter(s) and the specified distribution.
+#' @return A list of class \code{"delay_estimation"} which contains:
+#'   \itemize{
+#'     \item \code{coefficients} A named vector of estimated parameter(s).
+#'     \item \code{delay} A numeric vector of element-wise computed differences
+#'       in days.
+#'     \item \code{distribution} Specified distribution.
+#'   }
 #' @export
 #'
 #' @examples
@@ -75,8 +80,8 @@ dist_delay <- function(
 
   distribution <- match.arg(distribution)
 
-  # delay variable:
-  t_delay <- as.numeric(
+  # Defining delay variable (for estimation) and origin variable (output):
+  t_delay <- t_delay_origin <- as.numeric(
     difftime(
       time1 = as.Date(date_2, format = "%Y-%m-%d"),
       time2 = as.Date(date_1, format = "%Y-%m-%d"),
@@ -89,15 +94,17 @@ dist_delay <- function(
   if (all(is.na(t_delay))) {
     stop("all differences are NA; no parameters can be estimated!")
   }
-  ## all smaller or equal to zero:
-  if (all(t_delay <= 0, na.rm = TRUE)) {
-    stop("all differences are smaller or equal to 0; no parameters can be estimated!")
-  }
-  ## any smaller or equal to zero:
-  if (!all(t_delay <= 0, na.rm = TRUE) && any(t_delay <= 0, na.rm = TRUE)) {
-    warning("at least one of the time differences is smaller or equal to 0 and is ignored for the estimation step!")
-
-    t_delay <- t_delay[t_delay > 0]
+  ## any or all delays are smaller or equal to zero:
+  if (any(t_delay <= 0, na.rm = TRUE)) {
+    if (all(t_delay <= 0, na.rm = TRUE)) {
+      ### all:
+      stop("all differences are smaller or equal to 0; no parameters can be estimated!")
+    } else {
+      ### any:
+      warning("at least one of the time differences is smaller or equal to 0 and is",
+              " ignored for the estimation step!")
+      t_delay <- t_delay[t_delay > 0]
+    }
   }
 
   if (distribution == "lognormal") {
@@ -117,6 +124,7 @@ dist_delay <- function(
 
   dist_output <- list(
     coefficients = estimates,
+    delay = t_delay_origin,
     distribution = distribution
   )
 

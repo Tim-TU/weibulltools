@@ -3,7 +3,7 @@
 #' @description
 #' This function models a mileage random variable on an annual basis with respect
 #' to a supposed continuous distribution. First, the distances are normalized to
-#' one year (365 days) using a linear relationship between the known distances and
+#' one year (365 days) using a linear relationship between the distances and
 #' operating times. Second, the parameter(s) of the assumed distribution are
 #' estimated using MLE. See 'Details' for more information.
 #'
@@ -23,8 +23,13 @@
 #' @param distribution Supposed distribution of the random variable. The default
 #'   value is \code{"lognormal"}.
 #'
-#' @return A list of class \code{"mileage_estimation"} containing a named vector of
-#'   estimated parameter(s) and the specified distribution.
+#' @return A list of class \code{"mileage_estimation"} which contains:
+#'   \itemize{
+#'     \item \code{coefficients} A named vector of estimated parameter(s).
+#'     \item \code{miles_annual} A numeric vector of element-wise computed annual
+#'       distances using linear interpolation described in 'Details'.
+#'     \item \code{distribution} Specified distribution.
+#'   }
 #' @export
 #'
 #' @examples
@@ -65,26 +70,55 @@ dist_mileage <- function(
 
   distribution <- match.arg(distribution)
 
+  # computing annual mileage:
+  ## Case 1: Elements in x and mileage are both 0 -> NaN (OK, since is.na(NaN) == T)
+  ## Case 2: Element in x is 0 and mileage is  < 0 -> -Inf (Ok, since (-Inf <= 0) == T)
+  ## Case 3: Element in x is 0 and mileage is > 0 -> Inf (OK, since is.infinite is used)
+  ## Case 4: Element in x > 0 and in mileage < 0 and viceversa -> negative (OK, will be removed)
+  ## Case 5: Element in x is NA or in mileage is NA or both are NA -> NA (OK)
+  ## Case 6: Elements in x and mileage are both <0 -> positive (one element should be set to NA)
+  ## RESULT: Return all computed annual miles but the above cases are excluded for
+  ##         paramter estimation!
+
+  ## Case 6: Set x values where both x and mileage are negative to 'NA'.
+  ##  Filters also NAs and hence setting to NA is ok.
+  if (any(x <= 0 & mileage <= 0, na.rm = TRUE)) {
+    warning("corresponding element(s) of both, 'mileage' and 'x' are negative!
+            the computed annual distance is set to NA")
+
+    x[x <= 0 & mileage <= 0] <- NA
+  }
+
+  miles_annual <- miles_annual_origin <- (mileage / x) * 365
+
   # Checks:
+  ## case of Inf, i.e. numeric divided by 0:
+  ## miles_annual should not contain a Inf value -> mean(c(1, 2, Inf)) -> Inf
+  ## is.finite can not be used since is.finite(NA) == FALSE -> is.infinite work
+  if (any(is.infinite(miles_annual))) {
+    warning("at least one computed annual distance is infinite and is ignored
+            for the estimation step!")
+
+    miles_annual <- miles_annual[!is.infinite(miles_annual)]
+  }
+
   ## all NA:
-  if (all(is.na(mileage)) || all(is.na(x))) {
-    stop("all elements of 'mileage' and/or 'x' are NA; no parameters can be estimated!")
+  if (all(is.na(miles_annual))) {
+    stop("all computed annual distances are NA; no parameters can be estimated!")
   }
-  ## all smaller or equal to zero:
-  if (all(mileage <= 0, na.rm = TRUE) || all(x <= 0, na.rm = TRUE)) {
-    stop("all elements of 'mileage' and/or 'x' are 0; no parameters can be estimated!")
+  ## any or all annual distances are smaller or equal to zero:
+  if (any(miles_annual <= 0, na.rm = TRUE)) {
+    if (all(miles_annual <= 0, na.rm = TRUE)) {
+      ### all:
+      stop("all computed annual distances are smaller or equal to 0; no",
+           " parameters can be estimated!")
+    } else {
+      ### any:
+      warning("at least one computed annual distance is smaller or equal to 0 and is
+              ignored for the estimation step!")
+      miles_annual <- miles_annual[miles_annual > 0]
+    }
   }
-  ## any smaller or equal to zero:
-  if ((!all(is.na(mileage)) && !all(is.na(x))) && (any(mileage <= 0, na.rm = TRUE) || any(x <= 0, na.rm = TRUE))) {
-    warning("at least one element of 'mileage' and/or 'x' is smaller or equal to 0;",
-    " the related elements in 'mileage' and 'x' are ignored for the estimation step!")
-
-    selector <- x > 0 & mileage > 0
-    x <- x[selector]
-    mileage <- mileage[selector]
-  }
-
-  miles_annual <- (mileage / x) * 365
 
   if (distribution == "lognormal") {
     # sample size used for the computation of the population standard deviation.
@@ -103,6 +137,7 @@ dist_mileage <- function(
 
   dist_output <- list(
     coefficients = estimates,
+    miles_annual = miles_annual_origin,
     distribution = distribution
   )
 
