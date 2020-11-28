@@ -174,6 +174,17 @@ plot_mod_helper <- function(
   }
 
   if (length(x) > 2) {
+    if (
+      length(x) < 30 &&
+      distribution %in% c("weibull3", "lognormal3", "loglogistic3")
+    ) {
+      warning(
+        "x has less than 30 values and distribution is three-parametric.
+        Consider using x = range(x) to avoid visual kinks in regression line.
+        "
+      )
+    }
+
     x_p <- x
   }
 

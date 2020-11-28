@@ -92,11 +92,11 @@ estimate_cdf <- function(x, ...) {
 #'
 #' @export
 estimate_cdf.default <- function(x,
-                     status,
-                     id = rep("XXXXXX", length(x)),
-                     methods,
-                     options,
-                     ...
+                                 status,
+                                 id = rep("XXXXXX", length(x)),
+                                 methods,
+                                 options,
+                                 ...
 ) {
   data <- reliability_data(x = x, status = status, id = id)
 
