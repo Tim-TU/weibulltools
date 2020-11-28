@@ -114,7 +114,7 @@ plot_layout_plotly <- function(
 }
 
 plot_prob_plotly <- function(
-  p_obj, prob_tbl,
+  p_obj, tbl_prob,
   distribution = c(
     "weibull", "lognormal", "loglogistic", "normal", "logistic", "sev"
   ),
@@ -129,27 +129,36 @@ plot_prob_plotly <- function(
   mark_x <- unlist(strsplit(title_x, " "))[1]
   mark_y <- unlist(strsplit(title_y, " "))[1]
 
-  name <- if (length(unique(prob_tbl$method)) == 1) {
+  n <- length(unique(tbl_prob$method))
+  name <- if (n == 1) {
     title_trace
   } else {
-    paste0(title_trace, ": ", prob_tbl$method)
+    paste0(title_trace, ": ", tbl_prob$method)
+  }
+
+  if (n == 2) {
+    tbl_prob$method <- factor(
+      tbl_prob$method,
+      c(unique(tbl_prob$method), "_null")
+    )
   }
 
   # Construct probability plot:
   p_prob <- p_obj %>%
     plotly::add_trace(
-      data = prob_tbl,
+      data = tbl_prob,
       x = ~x,
       y = ~q,
       type = "scatter",
       mode = "markers",
       hoverinfo = "text",
       name = name,
+      color = ~method,
       legendgroup = ~method,
       text = paste(
-        "ID:", prob_tbl$id,
-        paste("<br>", paste0(mark_x, ":")), format(prob_tbl$x, digits = 3),
-        paste("<br>", paste0(mark_y, ":")), format(prob_tbl$prob, digits = 6)
+        "ID:", tbl_prob$id,
+        paste("<br>", paste0(mark_x, ":")), format(tbl_prob$x, digits = 3),
+        paste("<br>", paste0(mark_y, ":")), format(tbl_prob$prob, digits = 6)
       )
     ) %>%
     plotly::layout(showlegend = TRUE)
@@ -218,11 +227,20 @@ plot_mod_plotly <- function(
     )) %>%
     dplyr::ungroup()
 
-  name <- if (length(unique(tbl_pred$method)) == 1) {
+  n <- length(unique(tbl_pred$method))
+  name <- if (n == 1) {
     title_trace
   } else {
     paste0(title_trace, ": ", tbl_pred$method)
   }
+
+  if (n == 2) {
+    tbl_pred$method <- factor(
+      tbl_pred$method,
+      levels = c(unique(tbl_pred$method, "_null"))
+    )
+  }
+
 
   p_mod <- plotly::add_lines(
     p = p_obj,
@@ -234,7 +252,6 @@ plot_mod_plotly <- function(
     hoverinfo = "text",
     name = name,
     color = ~method,
-    colors = c("#1f77b4", "#ff7f0e", "#2ca02c", "#d62728", "#9467bd", "#8c564b"),
     legendgroup = ~method,
     text = ~hovertext
   )

@@ -271,12 +271,12 @@ plot_prob_ <- function(
   plot_method
 ) {
 
-  prob_tbl <- plot_prob_helper(
+  tbl_prob <- plot_prob_helper(
     cdf_estimation, distribution
   )
 
   p_obj <- plot_layout(
-    x = prob_tbl$x,
+    x = tbl_prob$x,
     distribution = distribution,
     title_main = title_main,
     title_x = title_x,
@@ -289,7 +289,7 @@ plot_prob_ <- function(
 
   plot_prob_fun(
     p_obj = p_obj,
-    prob_tbl = prob_tbl,
+    tbl_prob = tbl_prob,
     distribution = distribution,
     title_main = title_main,
     title_x = title_x,

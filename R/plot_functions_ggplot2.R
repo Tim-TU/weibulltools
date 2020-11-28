@@ -49,7 +49,7 @@ plot_layout_ggplot2 <- function(
 }
 
 plot_prob_ggplot2 <- function(
-  p_obj, prob_tbl,
+  p_obj, tbl_prob,
   distribution = c(
     "weibull", "lognormal", "loglogistic", "normal", "logistic", "sev"
   ),
@@ -61,13 +61,13 @@ plot_prob_ggplot2 <- function(
 
   distribution <- match.arg(distribution)
 
-  if (length(unique(prob_tbl$method)) == 1) {
-    prob_tbl$method <- ""
+  if (length(unique(tbl_prob$method)) == 1) {
+    tbl_prob$method <- ""
   }
 
   p_prob <- p_obj +
     ggplot2::geom_point(
-      data = prob_tbl, mapping = ggplot2::aes(x = x, y = q, color = method)
+      data = tbl_prob, mapping = ggplot2::aes(x = x, y = q, color = method)
     ) +
     ggplot2::labs(color = title_trace)
 
