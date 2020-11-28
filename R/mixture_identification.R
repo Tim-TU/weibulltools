@@ -77,11 +77,19 @@ mixmod_regression.cdf_estimation <- function(
 
   distribution <- match.arg(distribution)
 
-  mixmod_regression_(
-    cdf_estimation = x,
-    distribution = distribution,
-    conf_level = conf_level
-  )
+  x_split <- split(x, x$method)
+
+  out <- purrr::map(x_split, function(cdf_estimation) {
+    mixmod_regression_(
+      cdf_estimation = cdf_estimation,
+      distribution = distribution,
+      conf_level = conf_level
+    )
+  })
+
+  class(out) <- c("mixmod_regression_list", class(out))
+
+  out
 }
 
 
