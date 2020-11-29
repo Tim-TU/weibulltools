@@ -17,8 +17,8 @@
 
 \item{distribution}{Supposed distribution of the random variable.}
 
-\item{conf_level}{Confidence level of the interval. The default value is
-\code{conf_level = 0.95}.}
+\item{conf_level}{Confidence level of the interval. One of \code{0.9},
+\code{0.95} or \code{0.99}.}
 }
 \value{
 Returns a list with the following components:

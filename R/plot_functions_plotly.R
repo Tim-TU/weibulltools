@@ -129,17 +129,19 @@ plot_prob_plotly <- function(
   mark_x <- unlist(strsplit(title_x, " "))[1]
   mark_y <- unlist(strsplit(title_y, " "))[1]
 
-  n <- length(unique(tbl_prob$method))
-  name <- if (n == 1) {
-    title_trace
-  } else {
-    paste0(title_trace, ": ", tbl_prob$method)
-  }
+  n_group <- length(unique(tbl_prob$group))
+  n_method <- length(unique(tbl_prob$method))
 
-  if (n == 2) {
+  group <- if (n_group > 1) tbl_prob$group
+  method <- if (n_method > 1) tbl_prob$method
+
+  name <- paste0(title_trace, ": ", paste(method, group, sep = ", "))
+
+  # Prevent warning in RColorBrewer::brewer.pal
+  if (n_method < 3) {
     tbl_prob$method <- factor(
       tbl_prob$method,
-      c(unique(tbl_prob$method), "_null")
+      c(unique(tbl_prob$method), "_null1", "_null2")
     )
   }
 
@@ -154,6 +156,7 @@ plot_prob_plotly <- function(
       hoverinfo = "text",
       name = name,
       color = ~method,
+      symbol = ~group,
       legendgroup = ~method,
       text = paste(
         "ID:", tbl_prob$id,

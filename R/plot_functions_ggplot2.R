@@ -61,13 +61,22 @@ plot_prob_ggplot2 <- function(
 
   distribution <- match.arg(distribution)
 
-  if (length(unique(tbl_prob$method)) == 1) {
+  n_method <- length(unique(tbl_prob$method))
+  n_group <- length(unique(tbl_prob$group))
+
+  if (n_method == 1) {
     tbl_prob$method <- ""
+  }
+
+  mapping <- if (n_group == 1) {
+    ggplot2::aes(x = x, y = q, color = method)
+  } else {
+    ggplot2::aes(x = x, y = q, color = method, shape = group)
   }
 
   p_prob <- p_obj +
     ggplot2::geom_point(
-      data = tbl_prob, mapping = ggplot2::aes(x = x, y = q, color = method)
+      data = tbl_prob, mapping = mapping
     ) +
     ggplot2::labs(color = title_trace)
 

@@ -448,7 +448,7 @@ plot_prob_mix.mixmod_regression <- function(x,
   cdf_estimation <- purrr::map2_dfr(x, seq_along(x), function(model_estimation, i) {
     model_estimation$data %>%
       # Mark group
-      dplyr::mutate(group = i, method = as.character(i))
+      dplyr::mutate(group = as.character(i))
   })
 
   plot_prob.cdf_estimation(
@@ -503,6 +503,45 @@ plot_prob_mix.mixmod_em <- function(x,
     plot_method = plot_method
   )
 }
+
+
+
+#' @rdname plot_prob_mix.model_estimation
+#'
+#' @export
+plot_prob_mix.mixmod_regression_list <- function(x,
+                                                 title_main = "Probability Plot",
+                                                 title_x = "Characteristic",
+                                                 title_y = "Unreliability",
+                                                 title_trace = "Sample",
+                                                 plot_method = c("plotly", "ggplot2"),
+                                                 ...
+) {
+
+  plot_method <- match.arg(plot_method)
+
+  # Take all data
+  cdf_estimation <- purrr::map_dfr(x, function(mixmod_regression) {
+    purrr::map2_dfr(
+      mixmod_regression,
+      seq_along(mixmod_regression),
+      function(model_estimation, i) {
+        model_estimation$data %>% dplyr::mutate(group = as.character(i))
+      }
+    )
+  })
+
+  plot_prob.cdf_estimation(
+    x = cdf_estimation,
+    title_main = title_main,
+    title_x = title_x,
+    title_y = title_y,
+    title_trace = title_trace,
+    plot_method = plot_method
+  )
+}
+
+
 
 #' Probability Plot for Separated Mixture Models
 #'

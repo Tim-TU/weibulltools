@@ -69,6 +69,8 @@ plot_prob_helper <- function(
   }
   tbl$q <- q
 
+  if (!hasName(tbl, "group")) tbl$group <- "null"
+
   tbl
 }
 
