@@ -415,10 +415,7 @@ plot_prob_mix.model_estimation <- function(x,
 ) {
   plot_method <- match.arg(plot_method)
 
-  data <- reliability_data(x$data, x = x, status = status)
-
-  cdf_estimation <- estimate_cdf(data, "johnson") %>%
-    dplyr::filter(status == 1)
+  cdf_estimation <- x$data
 
   plot_prob.cdf_estimation(
     x = cdf_estimation,
@@ -447,25 +444,15 @@ plot_prob_mix.mixmod_regression <- function(x,
 
   plot_method <- match.arg(plot_method)
 
-
   # Take all data
-  data <- purrr::map2_dfr(x, seq_along(x), function(model_estimation, i) {
+  cdf_estimation <- purrr::map2_dfr(x, seq_along(x), function(model_estimation, i) {
     model_estimation$data %>%
       # Mark group
-      dplyr::mutate(group = i)
+      dplyr::mutate(group = i, method = as.character(i))
   })
 
-  rel_data <- reliability_data(data, x = x, status = status) %>%
-    dplyr::mutate(group = data$group)
-
-  # Apply johnson method to all data
-  john <- estimate_cdf(rel_data, "johnson")
-
-  # Set group as method
-  john$method <- as.character(data$group)
-
   plot_prob.cdf_estimation(
-    x = john,
+    x = cdf_estimation,
     title_main = title_main,
     title_x = title_x,
     title_y = title_y,
