@@ -234,7 +234,7 @@ plot_mod_helper <- function(
 }
 
 # for plot_mod_mix.model_estimation(_list)
-plot_mod_mix_helper_2 <- function(model_estimation, index) {
+plot_mod_mix_helper_2 <- function(model_estimation, method, group) {
   distribution <- model_estimation$distribution
   data <- model_estimation$data %>%
     dplyr::filter(status == 1)
@@ -259,7 +259,8 @@ plot_mod_mix_helper_2 <- function(model_estimation, index) {
     y_p = y_p,
     param_val = list(c(param_1, param_2)),
     param_label = list(c(label_1, label_2)),
-    method = as.character(index)
+    method = method,
+    group = group
   )
 
   # Choice of distribution:

@@ -187,10 +187,6 @@ plot_prob_mix_plotly <- function(
   mark_x <- unlist(strsplit(title_x, " "))[1]
   mark_y <- unlist(strsplit(title_y, " "))[1]
 
-  # Defining colors (max 5 subgroups):
-  colors <- c(I("#3C8DBC"), I("#FF0000"), I("#008000"), I("#ffa500"), I("#000000"))
-  colors <- colors[seq_along(unique(tbl_group$groups))]
-
   # Construct probability plot:
   plot <- p_obj %>%
     plotly::add_trace(
@@ -200,8 +196,8 @@ plot_prob_mix_plotly <- function(
       type = "scatter",
       mode = "markers",
       hoverinfo = "text",
-      color = ~groups,
-      colors = colors,
+      color = ~method,
+      shape = ~group,
       text = ~paste(
         "ID:", id_s,
         paste("<br>", paste0(mark_x, ":")),
@@ -230,14 +226,15 @@ plot_mod_plotly <- function(
     )) %>%
     dplyr::ungroup()
 
-  n <- length(unique(tbl_pred$method))
-  name <- if (n == 1) {
-    title_trace
-  } else {
-    paste0(title_trace, ": ", tbl_pred$method)
-  }
+  n_method <- length(unique(tbl_pred$method))
+  n_group <- length(unique(tbl_pred$group))
 
-  if (n == 2) {
+  method <- if (n_method > 1) tbl_pred$method
+  group <- if (n_group > 1) tbl_pred$group
+
+  name <- paste0(title_trace, ": ", paste(method, group, sep = ", "))
+
+  if (n_method < 3) {
     tbl_pred$method <- factor(
       tbl_pred$method,
       levels = c(unique(tbl_pred$method, "_null"))

@@ -78,7 +78,6 @@ reliability_data <- function(data = NULL, x, status, id = NULL, .keep_all = FALS
       tbl <- dplyr::select(data, x = {{x}}, status = {{status}}, id = {{id}})
     }
 
-    # Check if id is null without breaking if id is just a promise
     if (!"id" %in% names(tbl)) {
       tbl$id <- paste0("ID", seq_len(nrow(data)))
     }
