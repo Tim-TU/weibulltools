@@ -867,7 +867,7 @@ plot_mod.model_estimation_list <- function(
 #'
 #' plot_reg_weibull <- plot_mod(
 #'   p_obj = plot_weibull,
-#'   model_estimation = mrr,
+#'   x = mrr,
 #'   title_trace = "Estimated Weibull CDF"
 #' )
 #'
@@ -891,7 +891,7 @@ plot_mod.model_estimation_list <- function(
 #'
 #' plot_reg_lognormal <- plot_mod(
 #'   p_obj = plot_lognormal,
-#'   model_estimation = mrr_ln,
+#'   x = mrr_ln,
 #'   title_trace = "Estimated Lognormal CDF"
 #' )
 #'

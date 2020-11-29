@@ -132,10 +132,7 @@ plot_prob_plotly <- function(
   n_group <- length(unique(tbl_prob$group))
   n_method <- length(unique(tbl_prob$method))
 
-  group <- if (n_group > 1) tbl_prob$group
-  method <- if (n_method > 1) tbl_prob$method
-
-  name <- paste0(title_trace, ": ", paste(method, group, sep = ", "))
+  name <- to_prob_mod_name(tbl_prob, n_method, n_group, title_trace)
 
   # Prevent warning in RColorBrewer::brewer.pal
   if (n_method < 3) {
@@ -229,10 +226,7 @@ plot_mod_plotly <- function(
   n_method <- length(unique(tbl_pred$method))
   n_group <- length(unique(tbl_pred$group))
 
-  method <- if (n_method > 1) tbl_pred$method
-  group <- if (n_group > 1) tbl_pred$group
-
-  name <- paste0(title_trace, ": ", paste(method, group, sep = ", "))
+  name <- to_prob_mod_name(tbl_pred, n_method, n_group, title_trace)
 
   if (n_method < 3) {
     tbl_pred$method <- factor(
@@ -403,4 +397,20 @@ to_name <- function(param_val, param_label) {
   }
 
   text
+}
+
+to_prob_mod_name <- function(tbl, n_method, n_group, title_trace) {
+  if (n_method == 1) {
+    if (n_group == 1) {
+      title_trace
+    } else {
+      paste0(title_trace, ": ", tbl$group)
+    }
+  } else {
+    if (n_group == 1) {
+      paste0(title_trace, ": ", tbl$method)
+    } else {
+      paste0(title_trace, ": ", tbl$method, ", ", tbl$group)
+    }
+  }
 }

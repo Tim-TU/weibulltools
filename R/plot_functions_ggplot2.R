@@ -74,11 +74,17 @@ plot_prob_ggplot2 <- function(
     ggplot2::aes(x = x, y = q, color = method, shape = group)
   }
 
+  labs <- if (n_group == 1) {
+    ggplot2::labs(color = title_trace)
+  } else {
+    ggplot2::labs(color = title_trace, shape = "Subgroups")
+  }
+
   p_prob <- p_obj +
     ggplot2::geom_point(
       data = tbl_prob, mapping = mapping
     ) +
-    ggplot2::labs(color = title_trace)
+    labs
 
   return(p_prob)
 }
@@ -109,15 +115,28 @@ plot_mod_ggplot2 <- function(
   p_obj, tbl_pred, title_trace = "Fit"
 ) {
 
-  if (length(unique(tbl_pred$method)) == 1) {
+  n_method <- length(unique(tbl_pred$method))
+  n_group <- length(unique(tbl_pred$group))
+
+  if (n_method == 1) {
     tbl_pred$method <- ""
+  }
+
+  mapping <- if (n_group == 1) {
+    ggplot2::aes(x = x_p, y = q, color = method)
+  } else {
+    # group aesthetic must be paste of method and group to create distinct
+    # groups
+    ggplot2::aes(x = x_p, y = q, color = method, group = paste(method, group))
   }
 
   p_mod <- p_obj +
     ggplot2::geom_line(
-      data = tbl_pred, mapping = ggplot2::aes(x = x_p, y = q, color = method)
+      data = tbl_pred, mapping = mapping
     ) +
-    ggplot2::labs(color = paste(p_obj$labels$colour, "+", title_trace))
+    ggplot2::labs(
+      color = paste(p_obj$labels$colour, "+", title_trace)
+    )
 
   return(p_mod)
 }
@@ -125,7 +144,7 @@ plot_mod_ggplot2 <- function(
 plot_mod_mix_ggplot2 <- function(p_obj, tbl_group, title_trace) {
   p_mod <- p_obj +
     ggplot2::geom_line(
-      data = tbl_group, mapping = ggplot2::aes(x = x_p, y = q, color = groups)
+      data = tbl_group, mapping = ggplot2::aes(x = x_p, y = q, color = method)
     ) +
     ggplot2::labs(color = paste(p_obj$labels$colour, "+", title_trace))
 

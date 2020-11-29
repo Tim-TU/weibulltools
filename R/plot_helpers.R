@@ -224,13 +224,14 @@ plot_mod_helper <- function(
     c("\u03BC:", "\u03C3:", "\u03B3:")
   }
 
-  tbl_pred$param_val <- list(param_val)
-  tbl_pred$param_label <- list(param_label)
-  tbl_pred$method <- method
-
-  tbl_pred$q <- q
-
-  tbl_pred
+  tbl_pred <- tbl_pred %>%
+    dplyr::mutate(
+      param_val = list(param_val),
+      param_label = list(param_label),
+      method = method,
+      group = "_null",
+      q = q
+    )
 }
 
 # for plot_mod_mix.model_estimation(_list)
