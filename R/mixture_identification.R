@@ -79,13 +79,21 @@ mixmod_regression.cdf_estimation <- function(
 
   x_split <- split(x, x$method)
 
-  out <- purrr::map(x_split, function(cdf_estimation) {
-    mixmod_regression_(
-      cdf_estimation = cdf_estimation,
+  if (length(unique(x$method)) == 1) {
+    out <- mixmod_regression_(
+      cdf_estimation = x,
       distribution = distribution,
       conf_level = conf_level
     )
-  })
+  } else {
+    out <- purrr::map(x_split, function(cdf_estimation) {
+      mixmod_regression_(
+        cdf_estimation = cdf_estimation,
+        distribution = distribution,
+        conf_level = conf_level
+      )
+    })
+  }
 
   class(out) <- c("mixmod_regression_list", class(out))
 
@@ -154,7 +162,9 @@ mixmod_regression.default <- function(
     method = NA
   )
 
-  mixmod_regression(
+  class(cdf) <- c("cdf_estimation", class(cdf))
+
+  mixmod_regression_(
     cdf_estimation = cdf,
     distribution = distribution,
     conf_level = conf_level

@@ -3,17 +3,17 @@
     $mod_1
     Rank Regression
     Coefficients:
-       eta    beta  
-    639.47    0.72  
+         eta      beta  
+    776.9755    0.6804  
     
     $mod_2
     Rank Regression
     Coefficients:
         eta     beta  
-    311.704    3.976  
+    310.647    3.902  
     
     attr(,"class")
-    [1] "mixmod_regression" "list"             
+    [1] "mixmod_regression_list" "mixmod_regression"      "list"                  
 
 # mixmod_em remains stable
 

@@ -96,7 +96,7 @@ plot_prob_mix_helper <- function(
 
     # Defining subset function for x_ranges provided by mixmod_regression():
     subset_x <- function(x, mrr_model) {
-      subset(x, x >= mrr_model$x_range[[1]] & x <= mrr_model$x_range[[2]])
+      subset(x, x >= min(mrr_model$data$x) & x <= max(mrr_model$data$x))
     }
 
     if (exists("mod_3", where = mix_output)) {
