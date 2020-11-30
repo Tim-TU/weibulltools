@@ -13,7 +13,7 @@
     310.647    3.902  
     
     attr(,"class")
-    [1] "mixmod_regression_list" "mixmod_regression"      "list"                  
+    [1] "mixmod_regression" "list"             
 
 # mixmod_em remains stable
 

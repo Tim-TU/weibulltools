@@ -48,12 +48,36 @@ test_that("plot_prob_helper remains stable", {
 
 # plot_mod_helper ----
 test_that("plot_mod_helper remains stable", {
+  data <- reliability_data(shock, x = distance, status = status)
 
+  cdf <- estimate_cdf(data, "johnson")
+
+  mrr <- rank_regression(cdf)
+
+  helper <- plot_mod_helper(
+    x = range(mrr$data$x),
+    loc_sc_params = mrr$loc_sc_params,
+    distribution = "weibull"
+  )
+
+  expect_snapshot_output(helper)
 })
 
 # plot_mod_mix_helper ----
 test_that("plot_mod_mix_helper remains stable", {
+  data <- reliability_data(shock, x = distance, status = status)
 
+  cdf <- estimate_cdf(data, "johnson")
+
+  mrr <- rank_regression(cdf)
+
+  helper <- plot_mod_mix_helper(
+    model_estimation = mrr,
+    method = "johnson",
+    group = "group"
+  )
+
+  expect_snapshot_output(helper)
 })
 
 # plot_pop_helper ----
