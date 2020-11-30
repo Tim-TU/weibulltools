@@ -77,13 +77,27 @@ mixmod_regression.cdf_estimation <- function(
 
   distribution <- match.arg(distribution)
 
-  mixmod_regression.default(
-    x = x$x,
-    y = x$prob,
-    status = x$status,
-    distribution = distribution,
-    conf_level = conf_level
-  )
+  x_split <- split(x, x$method)
+
+  if (length(unique(x$method)) == 1) {
+    out <- mixmod_regression_(
+      cdf_estimation = x,
+      distribution = distribution,
+      conf_level = conf_level
+    )
+  } else {
+    out <- purrr::map(x_split, function(cdf_estimation) {
+      mixmod_regression_(
+        cdf_estimation = cdf_estimation,
+        distribution = distribution,
+        conf_level = conf_level
+      )
+    })
+  }
+
+  class(out) <- c("mixmod_regression_list", class(out))
+
+  out
 }
 
 
@@ -139,35 +153,60 @@ mixmod_regression.default <- function(
 
   distribution <- match.arg(distribution)
 
+  # mimic output of estimate_cdf
+  cdf <- tibble::tibble(
+    id = "XXXXXX",
+    x = x,
+    status = status,
+    prob = y,
+    method = NA
+  )
+
+  class(cdf) <- c("cdf_estimation", class(cdf))
+
+  mixmod_regression_(
+    cdf_estimation = cdf,
+    distribution = distribution,
+    conf_level = conf_level
+  )
+}
+
+mixmod_regression_ <- function(cdf_estimation,
+                               distribution,
+                               conf_level = .95
+) {
+
   # Preparing for segmented regression
-  x_f <- x[status == 1]
-  y_f <- y[status == 1]
+  cdf_failed <- dplyr::filter(cdf_estimation, status == 1)
 
   if (distribution == "weibull") {
-    mrr <- stats::lm(log(x_f) ~ SPREDA::qsev(y_f))
+    cdf_failed$q <- SPREDA::qsev(cdf_failed$prob)
   }
   if (distribution == "lognormal") {
-    mrr <- stats::lm(log(x_f) ~ qnorm(y_f))
+    cdf_failed$q <- stats::qnorm(cdf_failed$prob)
   }
   if (distribution == "loglogistic") {
-    mrr <- stats::lm(log(x_f) ~ qlogis(y_f))
+    cdf_failed$q <- stats::qlogis(cdf_failed$prob)
   }
 
+  mrr <- stats::lm(log(x) ~ q, cdf_failed)
+
   # segmented regression
-  seg_mrr <- try(segmented::segmented.lm(mrr,
-                   control = segmented::seg.control(it.max = 20, n.boot = 20)),
-                   silent = TRUE)
+  seg_mrr <- try(
+    segmented::segmented.lm(
+      mrr,
+      control = segmented::seg.control(it.max = 20, n.boot = 20)
+    ),
+    silent = TRUE
+  )
 
   mrr_0 <- rank_regression(
-    x = x,
-    y = y,
-    status = status,
+    cdf_estimation,
     distribution = distribution,
     conf_level = conf_level
   )
 
   r_sq0 <- mrr_0$r_squared
-  mrr_0$x_range <- range(x)
 
   mrr_output <- mrr_0
 
@@ -175,50 +214,45 @@ mixmod_regression.default <- function(
   if ("try-error" %in% class(seg_mrr)) {
     message("An admissible breakpoint could not be found!
             Simple linear regression model was estimated!")
-  } else if (length(x_f[seg_mrr$id.group != 0]) < 5) {
+  } else if (sum(seg_mrr$id.group != 0) < 5) {
         message("Second segment contains less than 5 elements.
                 Simple linear regression model was estimated!")
   } else {
-    groups <- seg_mrr$id.group
-    x_1 <- x_f[groups == 0]
-    y_1 <- y_f[groups == 0]
-    mrr_1 <- rank_regression(x = x_1, y = y_1,
-                             status = rep(1, length(x_1)),
-                             distribution = distribution,
-                             conf_level = conf_level)
+    cdf_failed$group <- seg_mrr$id.group
+
+    cdf_failed_1 <- cdf_failed %>% dplyr::filter(group == 0)
+
+    mrr_1 <- rank_regression(
+      cdf_failed_1,
+      distribution = distribution,
+      conf_level = conf_level
+    )
 
     r_sq1 <- mrr_1$r_squared
-    mrr_1$x_range <- range(x_1)
 
-    x_rest <- x_f[groups != 0]
-    y_rest <- y_f[groups != 0]
+    cdf_failed_rest <- cdf_failed %>% dplyr::filter(group != 0)
 
     mrr_23 <- rank_regression(
-      x = x_rest,
-      y = y_rest,
-      status = rep(1, length(x_rest)),
+      cdf_failed_rest,
       distribution = distribution,
       conf_level = conf_level
     )
 
     r_sq23 <- mrr_23$r_squared
-    mrr_23$x_range <- range(x_rest)
 
-    if (distribution == "weibull") {
-      mrr2 <- stats::lm(log(x_rest) ~ SPREDA::qsev(y_rest))
-    }
-    if (distribution == "lognormal") {
-      mrr2 <- stats::lm(log(x_rest) ~ qnorm(y_rest))
-    }
-    if (distribution == "loglogistic") {
-      mrr2 <- stats::lm(log(x_rest) ~ qlogis(y_rest))
-    }
+    x <- cdf_failed_rest$x
+    q <- cdf_failed_rest$q
+    mrr2 <- stats::lm(log(x) ~ q)
 
-    seg_mrr2 <- try(segmented::segmented.lm(mrr2,
-                    control = segmented::seg.control(it.max = 20, n.boot = 20)),
-                    silent = TRUE)
+    seg_mrr2 <- try(
+      segmented::segmented.lm(
+        mrr2,
+        control = segmented::seg.control(it.max = 20, n.boot = 20)
+      ),
+      silent = TRUE
+    )
 
-    if ("try-error" %in% class(seg_mrr2) || length(x_rest[seg_mrr2$id.group != 0]) < 5) {
+    if ("try-error" %in% class(seg_mrr2) || sum(seg_mrr2$id.group != 0) < 5) {
 
       if (mean(c(r_sq1, r_sq23)) < r_sq0) {
         print("Simple linear regression model was estimated!")
@@ -232,61 +266,57 @@ mixmod_regression.default <- function(
                 Simple linear regression model was estimated for all elements after first breakpoint!")
       }
     } else {
-      groups2 <- seg_mrr2$id.group
-        x_2 <- x_rest[groups2 == 0]
-        y_2 <- y_rest[groups2 == 0]
+      cdf_failed_rest$group <- seg_mrr2$id.group
 
-        mrr_2 <- rank_regression(
-          x = x_2,
-          y = y_2,
-          status = rep(1, length(x_2)),
-          distribution = distribution,
-          conf_level = conf_level
-        )
+      cdf_failed_2 <- dplyr::filter(cdf_failed_rest, group == 0)
 
-        r_sq2 <- mrr_2$r_squared
-        mrr_2$x_range <- range(x_2)
+      mrr_2 <- rank_regression(
+        cdf_failed_2,
+        distribution = distribution,
+        conf_level = conf_level
+      )
 
-        mrr_12 <- rank_regression(
-          x = c(x_1, x_2),
-          y = c(y_1, y_2),
-          status = rep(1, length(c(x_1, x_2))),
-          distribution = distribution,
-          conf_level = conf_level
-        )
+      r_sq2 <- mrr_2$r_squared
 
-        r_sq12 <- mrr_12$r_squared
-        mrr_12$x_range <- range(c(x_1, x_2))
-        x_3 <- x_rest[groups2 == 1]
-        y_3 <- y_rest[groups2 == 1]
+      cdf_failed_12 <- dplyr::bind_rows(
+        cdf_failed_1,
+        cdf_failed_2
+      )
 
-        mrr_3 <- rank_regression(
-          x = x_3,
-          y = y_3,
-          status = rep(1, length(x_3)),
-          distribution = distribution,
-          conf_level = conf_level
-        )
+      mrr_12 <- rank_regression(
+        cdf_failed_12,
+        distribution = distribution,
+        conf_level = conf_level
+      )
 
-        r_sq3 <- mrr_3$r_squared
-        mrr_3$x_range <- range(x_3)
+      r_sq12 <- mrr_12$r_squared
 
-        mean_r_sq <- mean(c(r_sq1, r_sq2, r_sq3))
+      cdf_failed_3 <- dplyr::filter(cdf_failed_rest, group == 1)
 
-        if (mean_r_sq < r_sq0 | mean_r_sq < mean(c(r_sq1, r_sq23)) | mean_r_sq < mean(c(r_sq12, r_sq3))) {
-          if (mean(c(r_sq1, r_sq23)) > r_sq0 && mean(c(r_sq1, r_sq23)) > mean(c(r_sq12, r_sq3))) {
-            mrr_output <- list(mod_1 = mrr_1, mod_2 = mrr_23)
-          } else if (mean(c(r_sq12, r_sq3)) > r_sq0) {
-            mrr_output <- list(mod_1 = mrr_12, mod_2 = mrr_3)
-          } else {
-            mrr_output <- mrr_0
-          }
+      mrr_3 <- rank_regression(
+        cdf_failed_3,
+        distribution = distribution,
+        conf_level = conf_level
+      )
+
+      r_sq3 <- mrr_3$r_squared
+
+      mean_r_sq <- mean(c(r_sq1, r_sq2, r_sq3))
+
+      if (mean_r_sq < r_sq0 | mean_r_sq < mean(c(r_sq1, r_sq23)) | mean_r_sq < mean(c(r_sq12, r_sq3))) {
+        if (mean(c(r_sq1, r_sq23)) > r_sq0 && mean(c(r_sq1, r_sq23)) > mean(c(r_sq12, r_sq3))) {
+          mrr_output <- list(mod_1 = mrr_1, mod_2 = mrr_23)
+        } else if (mean(c(r_sq12, r_sq3)) > r_sq0) {
+          mrr_output <- list(mod_1 = mrr_12, mod_2 = mrr_3)
         } else {
-          mrr_output <- list(mod_1 = mrr_1, mod_2 = mrr_2, mod_3 = mrr_3)
-          message("Problem of overestimation may have occured.
-                   Further investigations are recommended!")
+          mrr_output <- mrr_0
         }
+      } else {
+        mrr_output <- list(mod_1 = mrr_1, mod_2 = mrr_2, mod_3 = mrr_3)
+        message("Problem of overestimation may have occured.
+                   Further investigations are recommended!")
       }
+    }
   }
 
   if (!inherits(mrr_output, "rank_regression")) {

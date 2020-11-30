@@ -42,7 +42,7 @@
 #' data_2 <- reliability_data(x = cycles, status = state, id = id)
 #'
 #' @export
-reliability_data <- function(data = NULL, x, status, id = NULL) {
+reliability_data <- function(data = NULL, x, status, id = NULL, .keep_all = FALSE) {
   if (purrr::is_null(data)) {
     if (!is_characteristic(x)) {
       stop("x must be numeric!")
@@ -72,12 +72,17 @@ reliability_data <- function(data = NULL, x, status, id = NULL) {
 
     data <- tibble::as_tibble(data)
 
-    tbl <- dplyr::select(data, x = {{x}}, status = {{status}}, id = {{id}})
+    if (.keep_all) {
+      tbl <- dplyr::rename(data, x = {{x}}, status = {{status}}, id = {{id}})
+    } else {
+      tbl <- dplyr::select(data, x = {{x}}, status = {{status}}, id = {{id}})
+    }
 
-    # Check if id is null without breaking if id is just a promise
     if (!"id" %in% names(tbl)) {
       tbl$id <- paste0("ID", seq_len(nrow(data)))
     }
+
+    tbl <- dplyr::relocate(tbl, x, status, id)
   }
 
   class(tbl) <- c("reliability_data", class(tbl))

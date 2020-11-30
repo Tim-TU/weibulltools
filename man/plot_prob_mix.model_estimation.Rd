@@ -4,6 +4,7 @@
 \alias{plot_prob_mix.model_estimation}
 \alias{plot_prob_mix.mixmod_regression}
 \alias{plot_prob_mix.mixmod_em}
+\alias{plot_prob_mix.mixmod_regression_list}
 \title{Probability Plot for Separated Mixture Models}
 \usage{
 \method{plot_prob_mix}{model_estimation}(
@@ -27,6 +28,16 @@
 )
 
 \method{plot_prob_mix}{mixmod_em}(
+  x,
+  title_main = "Probability Plot",
+  title_x = "Characteristic",
+  title_y = "Unreliability",
+  title_trace = "Sample",
+  plot_method = c("plotly", "ggplot2"),
+  ...
+)
+
+\method{plot_prob_mix}{mixmod_regression_list}(
   x,
   title_main = "Probability Plot",
   title_x = "Characteristic",

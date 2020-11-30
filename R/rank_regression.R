@@ -74,8 +74,8 @@ rank_regression <- function(x, ...) {
 #'
 #' @param x A tibble returned by \code{\link{estimate_cdf}}.
 #' @param distribution Supposed distribution of the random variable.
-#' @param conf_level Confidence level of the interval. The default value is
-#'   \code{conf_level = 0.95}.
+#' @param conf_level Confidence level of the interval. If \code{distribution} is
+#'   \code{"weibull"} this must be one of \code{0.9}, \code{0.95} or \code{0.99}.
 #'
 #' @examples
 #' # Example 1: Fitting a two-parameter Weibull:
@@ -122,10 +122,8 @@ rank_regression.cdf_estimation <- function(
   distribution <- match.arg(distribution)
 
   if (length(unique(x$method)) == 1) {
-    rank_regression.default(
-      x = x$x,
-      y = x$prob,
-      status = x$status,
+    rank_regression_(
+      cdf_estimation = x,
       distribution = distribution,
       conf_level = conf_level
     )
@@ -133,11 +131,9 @@ rank_regression.cdf_estimation <- function(
     # Apply rank_regression to each method separately
     x_split <- split(x, x$method)
 
-    model_estimation_list <- purrr::map(x_split, function(cdf) {
-      rank_regression.default(
-        x = cdf$x,
-        y = cdf$prob,
-        status = cdf$status,
+    model_estimation_list <- purrr::map(x_split, function(cdf_estimation) {
+      rank_regression_(
+        cdf_estimation = cdf_estimation,
         distribution = distribution,
         conf_level = conf_level
       )
@@ -166,8 +162,8 @@ rank_regression.cdf_estimation <- function(
 #' @param status A vector of binary data (0 or 1) indicating whether a unit is
 #'   a right censored observation (= 0) or a failure (= 1).
 #' @param distribution Supposed distribution of the random variable.
-#' @param conf_level Confidence level of the interval. The default value is
-#'   \code{conf_level = 0.95}.
+#' @param conf_level Confidence level of the interval. If \code{distribution} is
+#'   \code{"weibull"} this must be one of \code{0.9}, \code{0.95} or \code{0.99}.
 #'
 #' @examples
 #' # Example 1: Fitting a two-parameter Weibull:
@@ -218,9 +214,22 @@ rank_regression.default <- function(
 
   distribution <- match.arg(distribution)
 
+  cdf_estimation <- tibble::tibble(x = x, status = status, prob = y)
+
+  rank_regression_(cdf_estimation, distribution, conf_level)
+}
+
+
+
+rank_regression_ <- function(
+  cdf_estimation, distribution, conf_level
+) {
+
   # In terms of MRR only failed items can be used:
-  x_f <- x[status == 1]
-  y_f <- y[status == 1]
+  cdf_failed <- cdf_estimation %>% dplyr::filter(status == 1)
+
+  x_f <- cdf_failed$x
+  y_f <- cdf_failed$prob
 
   # Median-Rank-Regression Weibull:
   if (distribution == "weibull") {
@@ -456,7 +465,7 @@ rank_regression.default <- function(
     )
   }
 
-  mrr_output$data <- tibble::tibble(x = x, status = status)
+  mrr_output$data <- cdf_estimation
 
   mrr_output$distribution <- distribution
 

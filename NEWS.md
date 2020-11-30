@@ -12,7 +12,8 @@
 * Added support for ggplot2 in all plot functions. Plot method can be selected in `plot_prob()` via argument `plot_method`.
 * Added function `reliability_data()`: Create consistent reliability data.
 * New argument in `mr_method()`: With `ties.method` it can be specified how ties should be treated.
-* Added `estimate_cdf()`: Unite functionality of `mr_method()`, `johnson_method()`, `kaplan_method()` and `nelson_method()`. Support multiple methods.
+* Added `estimate_cdf()`: Unite functionality of `mr_method()`, `johnson_method()`, `kaplan_method()` and `nelson_method()`.
+* Support of multiple methods in `estimate_cdf()` and all functions that depend on the `cdf_estimation` (`rank_regression()`, `plot_prob()`, `plot_mod()`, `plot_conf()`, `mixmod_regression()`, `plot_prob_mix()`, `plot_mod_mix()`).
 * `rank_regression()` is now an S3 generic. `rank_regression()` becomes `rank_regression.default()`. Added `rank_regression.cdf_estimation()`.
 * `plot_prob()` is now an S3 generic. `plot_prob()` becomes `plot_prob.default()`. Added `plot_prob.cdf_estimation()`.
 * `plot_prob_mix()` is now an S3 generic. `plot_prob_mix()` becomes `plot_prob.default()`. Added `plot_prob_mix.model_estimation()`, `plot_prob_mix.mixmod_regression()` and `plot_prob_mix.mixmod_em()`.

@@ -271,12 +271,12 @@ plot_prob_ <- function(
   plot_method
 ) {
 
-  prob_tbl <- plot_prob_helper(
+  tbl_prob <- plot_prob_helper(
     cdf_estimation, distribution
   )
 
   p_obj <- plot_layout(
-    x = prob_tbl$x,
+    x = tbl_prob$x,
     distribution = distribution,
     title_main = title_main,
     title_x = title_x,
@@ -289,7 +289,7 @@ plot_prob_ <- function(
 
   plot_prob_fun(
     p_obj = p_obj,
-    prob_tbl = prob_tbl,
+    tbl_prob = tbl_prob,
     distribution = distribution,
     title_main = title_main,
     title_x = title_x,
@@ -415,10 +415,7 @@ plot_prob_mix.model_estimation <- function(x,
 ) {
   plot_method <- match.arg(plot_method)
 
-  data <- reliability_data(x$data, x = x, status = status)
-
-  cdf_estimation <- estimate_cdf(data, "johnson") %>%
-    dplyr::filter(status == 1)
+  cdf_estimation <- x$data
 
   plot_prob.cdf_estimation(
     x = cdf_estimation,
@@ -447,25 +444,15 @@ plot_prob_mix.mixmod_regression <- function(x,
 
   plot_method <- match.arg(plot_method)
 
-
   # Take all data
-  data <- purrr::map2_dfr(x, seq_along(x), function(model_estimation, i) {
+  cdf_estimation <- purrr::map2_dfr(x, seq_along(x), function(model_estimation, i) {
     model_estimation$data %>%
       # Mark group
-      dplyr::mutate(group = i)
+      dplyr::mutate(group = as.character(i))
   })
 
-  rel_data <- reliability_data(data, x = x, status = status) %>%
-    dplyr::mutate(group = data$group)
-
-  # Apply johnson method to all data
-  john <- estimate_cdf(rel_data, "johnson")
-
-  # Set group as method
-  john$method <- as.character(data$group)
-
   plot_prob.cdf_estimation(
-    x = john,
+    x = cdf_estimation,
     title_main = title_main,
     title_x = title_x,
     title_y = title_y,
@@ -516,6 +503,45 @@ plot_prob_mix.mixmod_em <- function(x,
     plot_method = plot_method
   )
 }
+
+
+
+#' @rdname plot_prob_mix.model_estimation
+#'
+#' @export
+plot_prob_mix.mixmod_regression_list <- function(x,
+                                                 title_main = "Probability Plot",
+                                                 title_x = "Characteristic",
+                                                 title_y = "Unreliability",
+                                                 title_trace = "Sample",
+                                                 plot_method = c("plotly", "ggplot2"),
+                                                 ...
+) {
+
+  plot_method <- match.arg(plot_method)
+
+  # Take all data
+  cdf_estimation <- purrr::map_dfr(x, function(mixmod_regression) {
+    purrr::map2_dfr(
+      mixmod_regression,
+      seq_along(mixmod_regression),
+      function(model_estimation, index) {
+        model_estimation$data %>% dplyr::mutate(group = as.character(index))
+      }
+    )
+  })
+
+  plot_prob.cdf_estimation(
+    x = cdf_estimation,
+    title_main = title_main,
+    title_x = title_x,
+    title_y = title_y,
+    title_trace = title_trace,
+    plot_method = plot_method
+  )
+}
+
+
 
 #' Probability Plot for Separated Mixture Models
 #'
@@ -589,6 +615,13 @@ plot_prob_mix.default <- function(
                         plot_method = c("plotly", "ggplot2"),
                         ...
 ) {
+
+  deprecate_soft(
+    "2.0.0", "plot_prob_mix.default()",
+    details = "x, status and id are no longer necessary. Use
+    plot_prob_mix(mix_output, distribution) instead.
+    "
+  )
 
   distribution <- match.arg(distribution)
   plot_method <- match.arg(plot_method)
@@ -834,7 +867,7 @@ plot_mod.model_estimation_list <- function(
 #'
 #' plot_reg_weibull <- plot_mod(
 #'   p_obj = plot_weibull,
-#'   model_estimation = mrr,
+#'   x = mrr,
 #'   title_trace = "Estimated Weibull CDF"
 #' )
 #'
@@ -858,7 +891,7 @@ plot_mod.model_estimation_list <- function(
 #'
 #' plot_reg_lognormal <- plot_mod(
 #'   p_obj = plot_lognormal,
-#'   model_estimation = mrr_ln,
+#'   x = mrr_ln,
 #'   title_trace = "Estimated Lognormal CDF"
 #' )
 #'
@@ -996,6 +1029,9 @@ plot_mod_mix <- function(p_obj, x, ...) {
 
 
 
+#' Adding Estimated Population Lines of a Separated Mixture Model to a
+#' Probability Plot
+#'
 #' @export
 plot_mod_mix.model_estimation <- function(p_obj, x, title_trace = "Fit", ...) {
   plot_mod_mix.model_estimation_list(p_obj, list(x), title_trace = title_trace)
@@ -1020,7 +1056,8 @@ plot_mod_mix.mixmod_regression <- function(p_obj, x, title_trace = "Fit", ...) {
   tbl_pred <- purrr::map2_dfr(x, seq_along(x), function(model_estimation, index) {
     plot_mod_mix_helper_2(
       model_estimation = model_estimation,
-      index = index
+      method = "_null",
+      group = as.character(index)
     )
   })
 
@@ -1036,9 +1073,58 @@ plot_mod_mix.mixmod_regression <- function(p_obj, x, title_trace = "Fit", ...) {
 
 
 
+#' @rdname plot_mod_mix.model_estimation
+#'
+#' @export
+plot_mod_mix.mixmod_regression_list <- function(p_obj,
+                                                x,
+                                                title_trace = "Fit",
+                                                ...
+) {
+  # Plot method is determined by p_obj
+  plot_method <- if (inherits(p_obj, "gg")) {
+    "ggplot2"
+  } else if (inherits(p_obj, "plotly")) {
+    "plotly"
+  }  else {
+    stop(
+      "p_obj is not a valid plot object. Provide either a ggplot2 or a plotly
+      plot object."
+    )
+  }
+
+  tbl_pred <- purrr::map2_dfr(x, names(x), function(mixmod_regression, method) {
+    purrr::map2_dfr(
+      mixmod_regression,
+      seq_along(mixmod_regression),
+      function(model_estimation, index) {
+        plot_mod_mix_helper_2(
+          model_estimation = model_estimation,
+          method = method,
+          group = as.character(index)
+        )
+      }
+    )
+  })
+
+  plot_mod_fun <- if (plot_method == "plotly") plot_mod_plotly else
+    plot_mod_ggplot2
+
+  plot_mod_fun(
+    p_obj = p_obj,
+    tbl_pred = tbl_pred,
+    title_trace = title_trace
+  )
+}
+
+
+
+#' @rdname plot_mod_mix.model_estimation
+#'
 #' @export
 plot_mod_mix.mixmod_em <- function(p_obj, x, title_trace = "Fit", ...) {
 
+  # Remove em results to get model_estimation_list
   model_estimation_list <- x[-length(x)]
   class(model_estimation_list) <- c(
     "model_estimation_list", class(model_estimation_list)

@@ -114,7 +114,7 @@ plot_layout_plotly <- function(
 }
 
 plot_prob_plotly <- function(
-  p_obj, prob_tbl,
+  p_obj, tbl_prob,
   distribution = c(
     "weibull", "lognormal", "loglogistic", "normal", "logistic", "sev"
   ),
@@ -129,16 +129,23 @@ plot_prob_plotly <- function(
   mark_x <- unlist(strsplit(title_x, " "))[1]
   mark_y <- unlist(strsplit(title_y, " "))[1]
 
-  name <- if (length(unique(prob_tbl$method)) == 1) {
-    title_trace
-  } else {
-    paste0(title_trace, ": ", prob_tbl$method)
+  n_group <- length(unique(tbl_prob$group))
+  n_method <- length(unique(tbl_prob$method))
+
+  name <- to_prob_mod_name(tbl_prob, n_method, n_group, title_trace)
+
+  # Prevent warning in RColorBrewer::brewer.pal
+  if (n_method < 3) {
+    tbl_prob$method <- factor(
+      tbl_prob$method,
+      c(unique(tbl_prob$method), "_null1", "_null2")
+    )
   }
 
   # Construct probability plot:
   p_prob <- p_obj %>%
     plotly::add_trace(
-      data = prob_tbl,
+      data = tbl_prob,
       x = ~x,
       y = ~q,
       type = "scatter",
@@ -146,11 +153,12 @@ plot_prob_plotly <- function(
       hoverinfo = "text",
       name = name,
       color = ~method,
+      symbol = ~group,
       legendgroup = ~method,
       text = paste(
-        "ID:", prob_tbl$id,
-        paste("<br>", paste0(mark_x, ":")), format(prob_tbl$x, digits = 3),
-        paste("<br>", paste0(mark_y, ":")), format(prob_tbl$prob, digits = 6)
+        "ID:", tbl_prob$id,
+        paste("<br>", paste0(mark_x, ":")), format(tbl_prob$x, digits = 3),
+        paste("<br>", paste0(mark_y, ":")), format(tbl_prob$prob, digits = 6)
       )
     ) %>%
     plotly::layout(showlegend = TRUE)
@@ -176,10 +184,6 @@ plot_prob_mix_plotly <- function(
   mark_x <- unlist(strsplit(title_x, " "))[1]
   mark_y <- unlist(strsplit(title_y, " "))[1]
 
-  # Defining colors (max 5 subgroups):
-  colors <- c(I("#3C8DBC"), I("#FF0000"), I("#008000"), I("#ffa500"), I("#000000"))
-  colors <- colors[seq_along(unique(tbl_group$groups))]
-
   # Construct probability plot:
   plot <- p_obj %>%
     plotly::add_trace(
@@ -189,8 +193,8 @@ plot_prob_mix_plotly <- function(
       type = "scatter",
       mode = "markers",
       hoverinfo = "text",
-      color = ~groups,
-      colors = colors,
+      color = ~method,
+      symbols = ~group,
       text = ~paste(
         "ID:", id_s,
         paste("<br>", paste0(mark_x, ":")),
@@ -219,11 +223,18 @@ plot_mod_plotly <- function(
     )) %>%
     dplyr::ungroup()
 
-  name <- if (length(unique(tbl_pred$method)) == 1) {
-    title_trace
-  } else {
-    paste0(title_trace, ": ", tbl_pred$method)
+  n_method <- length(unique(tbl_pred$method))
+  n_group <- length(unique(tbl_pred$group))
+
+  name <- to_prob_mod_name(tbl_pred, n_method, n_group, title_trace)
+
+  if (n_method < 3) {
+    tbl_pred$method <- factor(
+      tbl_pred$method,
+      levels = c(unique(tbl_pred$method, "_null1", "_null2"))
+    )
   }
+
 
   p_mod <- plotly::add_lines(
     p = p_obj,
@@ -233,8 +244,8 @@ plot_mod_plotly <- function(
     type = "scatter",
     mode = "lines",
     hoverinfo = "text",
-    color = ~as.factor(method),
     name = name,
+    color = ~method,
     legendgroup = ~method,
     text = ~hovertext
   )
@@ -386,4 +397,20 @@ to_name <- function(param_val, param_label) {
   }
 
   text
+}
+
+to_prob_mod_name <- function(tbl, n_method, n_group, title_trace) {
+  if (n_method == 1) {
+    if (n_group == 1) {
+      title_trace
+    } else {
+      paste0(title_trace, ": ", tbl$group)
+    }
+  } else {
+    if (n_group == 1) {
+      paste0(title_trace, ": ", tbl$method)
+    } else {
+      paste0(title_trace, ": ", tbl$method, ", ", tbl$group)
+    }
+  }
 }

@@ -14,7 +14,7 @@ plot_layout_helper <- function(x, distribution, plot_method = c("plotly", "ggplo
     x_ticks <- round(as.numeric(x_ticks), digits = 10)
     x_ticks <- x_ticks[!duplicated(x_ticks)]
     x_labels <- x_ticks
-    x_labels[c(rep(F, 3), rep(T, 6))] <- ''
+    x_labels[c(rep(F, 3), rep(T, 6))] <- " "
   } else {
     # We don't need these values, therefore we return NULL
     x_ticks <- if (plot_method == "plotly") NULL else ggplot2::waiver()
@@ -69,6 +69,8 @@ plot_prob_helper <- function(
   }
   tbl$q <- q
 
+  if (!hasName(tbl, "group")) tbl$group <- "null"
+
   tbl
 }
 
@@ -96,7 +98,7 @@ plot_prob_mix_helper <- function(
 
     # Defining subset function for x_ranges provided by mixmod_regression():
     subset_x <- function(x, mrr_model) {
-      subset(x, x >= mrr_model$x_range[[1]] & x <= mrr_model$x_range[[2]])
+      subset(x, x >= min(mrr_model$data$x) & x <= max(mrr_model$data$x))
     }
 
     if (exists("mod_3", where = mix_output)) {
@@ -174,6 +176,17 @@ plot_mod_helper <- function(
   }
 
   if (length(x) > 2) {
+    if (
+      length(x) < 30 &&
+      distribution %in% c("weibull3", "lognormal3", "loglogistic3")
+    ) {
+      warning(
+        "x has less than 30 values and distribution is three-parametric.
+        Consider using x = range(x) to avoid visual kinks in regression line.
+        "
+      )
+    }
+
     x_p <- x
   }
 
@@ -211,17 +224,18 @@ plot_mod_helper <- function(
     c("\u03BC:", "\u03C3:", "\u03B3:")
   }
 
-  tbl_pred$param_val <- list(param_val)
-  tbl_pred$param_label <- list(param_label)
-  tbl_pred$method <- method
-
-  tbl_pred$q <- q
-
-  tbl_pred
+  tbl_pred <- tbl_pred %>%
+    dplyr::mutate(
+      param_val = list(param_val),
+      param_label = list(param_label),
+      method = method,
+      group = "_null",
+      q = q
+    )
 }
 
 # for plot_mod_mix.model_estimation(_list)
-plot_mod_mix_helper_2 <- function(model_estimation, index) {
+plot_mod_mix_helper_2 <- function(model_estimation, method, group) {
   distribution <- model_estimation$distribution
   data <- model_estimation$data %>%
     dplyr::filter(status == 1)
@@ -246,7 +260,8 @@ plot_mod_mix_helper_2 <- function(model_estimation, index) {
     y_p = y_p,
     param_val = list(c(param_1, param_2)),
     param_label = list(c(label_1, label_2)),
-    method = as.character(index)
+    method = method,
+    group = group
   )
 
   # Choice of distribution:
