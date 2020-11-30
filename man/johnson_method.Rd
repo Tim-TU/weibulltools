@@ -27,7 +27,8 @@ A tibble containing id, lifetime characteristic, status of the
 \lifecycle{soft-deprecated}
 
 The functionality of this function is incorporated into \code{\link{estimate_cdf}}.
-
+}
+\details{
 This non-parametric approach is used to estimate the failure probabilities in
 terms of uncensored or (multiple) right censored data. Compared to complete data the
 correction is done by calculating adjusted ranks which takes non-defective

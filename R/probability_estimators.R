@@ -94,11 +94,17 @@ estimate_cdf <- function(x, ...) {
 estimate_cdf.default <- function(x,
                                  status,
                                  id = rep("XXXXXX", length(x)),
-                                 methods,
+                                 methods = c("mr", "johnson", "kaplan", "nelson"),
                                  options,
                                  ...
 ) {
   data <- reliability_data(x = x, status = status, id = id)
+
+  methods <- if (missing(methods)) {
+    "mr"
+  } else {
+    unique(match.arg(methods, several.ok = TRUE))
+  }
 
   estimate_cdf.reliability_data(
     data = data,
@@ -122,18 +128,17 @@ estimate_cdf.default <- function(x,
 #'
 #' @export
 estimate_cdf.reliability_data <- function(
-  data, methods, options = list(), ...
+  data, methods = c("mr", "johnson", "kaplan", "nelson"), options = list(), ...
 ) {
 
   if (!inherits(data, "reliability_data")) {
     stop("data must be a tibble returned from reliability_data().")
   }
 
-  # Remove duplicates
-  methods <- unique(methods)
-
-  if (!all(methods %in% c("mr", "johnson", "kaplan", "nelson"))) {
-    stop('methods must be one or more of "mr", "johnson", "kaplan" or "nelson".')
+  methods <- if (missing(methods)) {
+    "mr"
+  } else {
+    unique(match.arg(methods, several.ok = TRUE))
   }
 
   method_funs <- list(
@@ -163,6 +168,7 @@ estimate_cdf.reliability_data <- function(
 #'
 #' The functionality of this function is incorporated into \code{\link{estimate_cdf}}.
 #'
+#' @details
 #' This non-parametric approach (\emph{Median Ranks}) is used to estimate the
 #' failure probabilities in terms of complete data. Two methods are available to
 #' estimate the cumulative distribution function \emph{F(t)}:
@@ -253,6 +259,7 @@ mr_method_ <- function(data, method = "benard", ties.method = "max") {
 #'
 #' The functionality of this function is incorporated into \code{\link{estimate_cdf}}.
 #'
+#' @details
 #' This non-parametric approach is used to estimate the failure probabilities in
 #' terms of uncensored or (multiple) right censored data. Compared to complete data the
 #' correction is done by calculating adjusted ranks which takes non-defective
@@ -342,6 +349,7 @@ johnson_method_ <- function(data) {
 #'
 #' The functionality of this function is incorporated into \code{\link{estimate_cdf}}.
 #'
+#' @details
 #' Whereas the non-parametric Kaplan-Meier estimator is used to estimate the
 #' survival function \emph{S(t)} in terms of (multiple) right censored data, the
 #' complement is an estimate of the cumulative distribution function \emph{F(t)}.
@@ -461,6 +469,7 @@ kaplan_method_ <- function(data) {
 #'
 #' The functionality of this function is incorporated into \code{\link{estimate_cdf}}.
 #'
+#' @details
 #' This non-parametric approach estimates the cumulative hazard rate in
 #' terms of (multiple) right censored data. By equating the definition of the
 #' hazard rate with the hazard rate according to Nelson-Aalen one can calculate

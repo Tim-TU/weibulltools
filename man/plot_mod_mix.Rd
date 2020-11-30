@@ -6,16 +6,32 @@
 \title{Adding Estimated Population Lines of a Separated Mixture Model to a
 Probability Plot}
 \usage{
-plot_mod_mix(p_obj, x, ...)
+plot_mod_mix(
+  p_obj,
+  x,
+  status,
+  mix_output,
+  distribution = c("weibull", "lognormal", "loglogistic"),
+  title_trace = "Fit",
+  ...
+)
 }
 \arguments{
-\item{p_obj}{A plotly object provided by function \code{\link{plot_prob_mix}}.}
+\item{p_obj}{A plotly object provided by function \code{\link{plot_prob}}.}
 
 \item{x}{A numeric vector containing the x-coordinates of the regression line.}
+
+\item{status}{A vector of binary data (0 or 1) indicating whether unit \emph{i}
+is a right censored observation (= 0) or a failure (= 1).}
 
 \item{mix_output}{A list provided by \code{\link{mixmod_regression}} or
 \code{\link{mixmod_em}}, which consists of elements necessary to visualize
 the regression lines.}
+
+\item{distribution}{Supposed distribution of the random variable.}
+
+\item{title_trace}{A character string whis is assigned to the trace shown in
+the legend.}
 }
 \value{
 Returns a plotly object containing the probability plot with
@@ -23,14 +39,15 @@ Returns a plotly object containing the probability plot with
 }
 \description{
 This function adds one or multiple estimated regression lines to an existing
-probability plot (\code{\link{plot_prob_mix}}). Depending on the output of the
+probability plot (\code{\link{plot_prob}}). Depending on the output of the
 function \code{\link{mixmod_regression}} or \code{\link{mixmod_em}} one or
 multiple lines are plotted.
 }
 \details{
-The name of the legend entry is a combination of the \code{title_trace} and the
-number of determined subgroups. If \code{title_trace = "Line"} and the data
-could be splitted in two groups, the legend entries would be "Line 1" and "Line 2".
+The name of the legend entry is a combination of the \code{title_trace} and
+the number of determined subgroups. If \code{title_trace = "Line"} and the
+data could be splitted in two groups, the legend entries would be "Line: 1"
+and "Line: 2".
 }
 \examples{
 # Data is taken from given reference:
@@ -49,7 +66,7 @@ id <- 1:length(hours)
 mix_mod_em <- mixmod_em(x = hours, status = state, distribution = "weibull",
                         conf_level = 0.95, k = 2, method = "EM", n_iter = 150)
 
-plot_weibull_em <- plot_prob_mix(x = hours,
+plot_weibull_em <- plot_prob(x = hours,
                                  status = state,
                                  id = id,
                                  distribution = "weibull",
@@ -73,7 +90,7 @@ mix_mod_reg <- mixmod_regression(x = john$x,
                                  status = john$status,
                                  distribution = "weibull")
 
-plot_weibull_reg <- plot_prob_mix(x = hours,
+plot_weibull_reg <- plot_prob(x = hours,
                                   status = state,
                                   id = id,
                                   distribution = "weibull",

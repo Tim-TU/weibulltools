@@ -10,6 +10,7 @@
   status,
   distribution = c("weibull", "lognormal", "loglogistic"),
   conf_level = 0.95,
+  control = segmented::seg.control(),
   ...
 )
 }
@@ -26,12 +27,13 @@ probabilities regarding the lifetime data in \code{x}.}
 unit \emph{i} is a right censored observation (= 0) or a
 failure (= 1).}
 
-\item{distribution}{Supposed distribution of the random variable. The
-value can be \code{"weibull"}, \code{"lognormal"} or \code{"loglogistic"}.
-Other distributions have not been implemented yet.}
+\item{distribution}{Supposed distribution of the random variable.}
 
-\item{conf_level}{Confidence level of the interval. The default value is
-\code{conf_level = 0.95}.}
+\item{conf_level}{Confidence level of the interval. If \code{distribution} is
+\code{"weibull"} this must be one of \code{0.9}, \code{0.95} or \code{0.99}.}
+
+\item{control}{Output of call to \code{\link[segmented]{seg.control}}, which
+is passed to \code{\link[segmented:segmented.lm]{segmented.lm}}.}
 }
 \value{
 Returns a list where the length of the list depends on

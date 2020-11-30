@@ -46,69 +46,38 @@ test_that("plot_prob_helper remains stable", {
   expect_snapshot_output(helper_2)
 })
 
-# plot_prob_mix_helper ----
-test_that("plot_prob_mix_helper remains stable", {
-  set.seed(1)
+# plot_mod_helper ----
+test_that("plot_mod_helper remains stable", {
+  data <- reliability_data(shock, x = distance, status = status)
 
-  # Data is taken from given reference:
-  hours <- c(2, 28, 67, 119, 179, 236, 282, 317, 348, 387, 3, 31, 69, 135,
-             191, 241, 284, 318, 348, 392, 5, 31, 76, 144, 203, 257, 286,
-             320, 350, 412, 8, 52, 78, 157, 211, 261, 298, 327, 360, 446,
-             13, 53, 104, 160, 221, 264, 303, 328, 369, 21, 64, 113, 168,
-             226, 278, 314, 328, 377)
-  state <- c(1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1,
-             1, 0, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 0, 0,
-             1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-             0, 1, 1, 1, 1, 1, 1)
-  id <- 1:length(hours)
+  cdf <- estimate_cdf(data, "johnson")
 
-  data <- reliability_data(x = hours, status = state, id = id)
+  mrr <- rank_regression(cdf)
 
-  # Example 2 - Using result of mixmod_em in mix_output:
-  mix_mod_em <- mixmod_em(
-    data,
-    distribution = "weibull",
-    conf_level = 0.95,
-    k = 2,
-    method = "EM",
-    n_iter = 150
-  )
-
-  helper_2 <- plot_prob_mix_helper(
-    data,
-    distribution = "weibull",
-    mix_output = mix_mod_em,
-    title_trace = "Subgroup"
-  )
-
-  expect_snapshot_output(helper_2)
-
-  # Example 3 - Using result of mixmod_regression in mix_output:
-  tbl_john <- estimate_cdf(data, methods = "johnson")
-
-  mix_mod_reg <- mixmod_regression(
-    tbl_john,
+  helper <- plot_mod_helper(
+    x = range(mrr$data$x),
+    loc_sc_params = mrr$loc_sc_params,
     distribution = "weibull"
   )
 
-  helper_3 <- plot_prob_mix_helper(
-    data,
-    distribution = "weibull",
-    mix_output = mix_mod_reg,
-    title_trace = "Subgroup"
-  )
-
-  expect_snapshot_output(helper_3)
-})
-
-# plot_mod_helper ----
-test_that("plot_mod_helper remains stable", {
-
+  expect_snapshot_output(helper)
 })
 
 # plot_mod_mix_helper ----
 test_that("plot_mod_mix_helper remains stable", {
+  data <- reliability_data(shock, x = distance, status = status)
 
+  cdf <- estimate_cdf(data, "johnson")
+
+  mrr <- rank_regression(cdf)
+
+  helper <- plot_mod_mix_helper(
+    model_estimation = mrr,
+    method = "johnson",
+    group = "group"
+  )
+
+  expect_snapshot_output(helper)
 })
 
 # plot_pop_helper ----

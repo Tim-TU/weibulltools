@@ -26,7 +26,8 @@ A tibble containing id, lifetime characteristic, status of the
 \lifecycle{soft-deprecated}
 
 The functionality of this function is incorporated into \code{\link{estimate_cdf}}.
-
+}
+\details{
 This non-parametric approach estimates the cumulative hazard rate in
 terms of (multiple) right censored data. By equating the definition of the
 hazard rate with the hazard rate according to Nelson-Aalen one can calculate

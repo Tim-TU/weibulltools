@@ -28,8 +28,8 @@ a right censored observation (= 0) or a failure (= 1).}
 
 \item{distribution}{Supposed distribution of the random variable.}
 
-\item{conf_level}{Confidence level of the interval. One of \code{0.9},
-\code{0.95} or \code{0.99}.}
+\item{conf_level}{Confidence level of the interval. If \code{distribution} is
+\code{"weibull"} this must be one of \code{0.9}, \code{0.95} or \code{0.99}.}
 }
 \value{
 Returns a list with the following components:

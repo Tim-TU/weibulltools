@@ -26,7 +26,8 @@ A tibble containing id, lifetime characteristic, status of the
 \lifecycle{soft-deprecated}
 
 The functionality of this function is incorporated into \code{\link{estimate_cdf}}.
-
+}
+\details{
 Whereas the non-parametric Kaplan-Meier estimator is used to estimate the
 survival function \emph{S(t)} in terms of (multiple) right censored data, the
 complement is an estimate of the cumulative distribution function \emph{F(t)}.

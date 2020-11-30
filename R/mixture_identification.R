@@ -39,13 +39,9 @@ mixmod_regression <- function(x, ...) {
 #'
 #' @inherit mixmod_regression description details return references
 #'
-#' @param x An object of class \code{cdf_estimation} returned from
-#'   \code{\link{estimate_cdf}}.
-#' @param distribution Supposed distribution of the random variable. The
-#'   value can be \code{"weibull"}, \code{"lognormal"} or \code{"loglogistic"}.
-#'   Other distributions have not been implemented yet.
-#' @param conf_level Confidence level of the interval. The default value is
-#'   \code{conf_level = 0.95}.
+#' @inheritParams rank_regression.cdf_estimation
+#' @param control Output of call to \code{\link[segmented]{seg.control}}, which
+#'   is passed to \code{\link[segmented:segmented.lm]{segmented.lm}}.
 #'
 #' @examples
 #' # Data is taken from given reference:
@@ -72,6 +68,7 @@ mixmod_regression.cdf_estimation <- function(
                         x,
                         distribution = c("weibull", "lognormal", "loglogistic"),
                         conf_level = .95,
+                        control = segmented::seg.control(),
                         ...
 ) {
 
@@ -83,19 +80,21 @@ mixmod_regression.cdf_estimation <- function(
     out <- mixmod_regression_(
       cdf_estimation = x,
       distribution = distribution,
-      conf_level = conf_level
+      conf_level = conf_level,
+      control = control
     )
   } else {
     out <- purrr::map(x_split, function(cdf_estimation) {
       mixmod_regression_(
         cdf_estimation = cdf_estimation,
         distribution = distribution,
-        conf_level = conf_level
+        conf_level = conf_level,
+        control = control
       )
     })
-  }
 
-  class(out) <- c("mixmod_regression_list", class(out))
+    class(out) <- c("mixmod_regression_list", class(out))
+  }
 
   out
 }
@@ -115,11 +114,7 @@ mixmod_regression.cdf_estimation <- function(
 #' @param status A vector of binary data (0 or 1) indicating whether
 #'   unit \emph{i} is a right censored observation (= 0) or a
 #'   failure (= 1).
-#' @param distribution Supposed distribution of the random variable. The
-#'   value can be \code{"weibull"}, \code{"lognormal"} or \code{"loglogistic"}.
-#'   Other distributions have not been implemented yet.
-#' @param conf_level Confidence level of the interval. The default value is
-#'   \code{conf_level = 0.95}.
+#' @inheritParams mixmod_regression.cdf_estimation
 #'
 #' @examples
 #' # Data is taken from given reference:
@@ -148,6 +143,7 @@ mixmod_regression.default <- function(
                         status,
                         distribution = c("weibull", "lognormal", "loglogistic"),
                         conf_level = .95,
+                        control = segmented::seg.control(),
                         ...
 ) {
 
@@ -159,7 +155,7 @@ mixmod_regression.default <- function(
     x = x,
     status = status,
     prob = y,
-    method = NA
+    method = "_null"
   )
 
   class(cdf) <- c("cdf_estimation", class(cdf))
@@ -167,13 +163,15 @@ mixmod_regression.default <- function(
   mixmod_regression_(
     cdf_estimation = cdf,
     distribution = distribution,
-    conf_level = conf_level
+    conf_level = conf_level,
+    control = control
   )
 }
 
 mixmod_regression_ <- function(cdf_estimation,
                                distribution,
-                               conf_level = .95
+                               conf_level,
+                               control
 ) {
 
   # Preparing for segmented regression
@@ -195,7 +193,7 @@ mixmod_regression_ <- function(cdf_estimation,
   seg_mrr <- try(
     segmented::segmented.lm(
       mrr,
-      control = segmented::seg.control(it.max = 20, n.boot = 20)
+      control = control
     ),
     silent = TRUE
   )
@@ -247,7 +245,7 @@ mixmod_regression_ <- function(cdf_estimation,
     seg_mrr2 <- try(
       segmented::segmented.lm(
         mrr2,
-        control = segmented::seg.control(it.max = 20, n.boot = 20)
+        control = control
       ),
       silent = TRUE
     )

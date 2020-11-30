@@ -36,9 +36,11 @@ Returns a plotly object containing the probability plot with
   plotting positions and the estimated regression line.
 }
 \description{
-This function adds regression lines to an existing probability plot using a
-model estimated by \code{\link{rank_regression}} or
-\code{\link{ml_estimation}}.
+This function adds one or multiple estimated regression lines to an existing
+probability plot (\code{\link{plot_prob}}). Depending on the output of the
+functions \code{\link{rank_regression}}, \code{ml_estimation},
+\code{\link{mixmod_regression}} or \code{\link{mixmod_em}} one or
+multiple lines are plotted.
 }
 \examples{
 # Alloy T7987 dataset taken from Meeker and Escobar(1998, p. 131)

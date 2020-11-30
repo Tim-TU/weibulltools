@@ -9,11 +9,16 @@
 * `plot_prob_mix`: Removed default value `NULL` for argument `mix_output`.
 
 ## New Features
-* Added support for ggplot2 in all plot functions. Plot method can be selected in `plot_prob()` via argument `plot_method`.
+* Added support for ggplot2 in all plot functions. Plot method can be selected in `plot_prob()` or `plot_prob_mix()` via argument `plot_method`.
 * Added function `reliability_data()`: Create consistent reliability data.
 * New argument in `mr_method()`: With `ties.method` it can be specified how ties should be treated.
 * Added `estimate_cdf()`: Unite functionality of `mr_method()`, `johnson_method()`, `kaplan_method()` and `nelson_method()`.
 * Support of multiple methods in `estimate_cdf()` and all functions that depend on the `cdf_estimation` (`rank_regression()`, `plot_prob()`, `plot_mod()`, `plot_conf()`, `mixmod_regression()`, `plot_prob_mix()`, `plot_mod_mix()`).
+* Added `print.rank_regression()`, `print.ml_estimation()`, `print.model_estimation()` and `print.model_estimation_list()`.
+* Added `vcov.model_estimation()`.
+* Added lifecycle badges
+
+## Introduction of S3 interface
 * `rank_regression()` is now an S3 generic. `rank_regression()` becomes `rank_regression.default()`. Added `rank_regression.cdf_estimation()`.
 * `plot_prob()` is now an S3 generic. `plot_prob()` becomes `plot_prob.default()`. Added `plot_prob.cdf_estimation()`.
 * `plot_prob_mix()` is now an S3 generic. `plot_prob_mix()` becomes `plot_prob.default()`. Added `plot_prob_mix.model_estimation()`, `plot_prob_mix.mixmod_regression()` and `plot_prob_mix.mixmod_em()`.
@@ -21,9 +26,6 @@
 * `plot_conf()` is now an S3 generic. `plot_conf()` becomes `plot_conf.default()`. Added `plot_conf.confint()`.
 * `plot_pop()`: Added support for multiple population lines and comparison of two- and three-parametric distributions.
 * `confint_betabinom()`, `confint_fisher()`: Added argument `b_lives` which allows the user to specify probabilities of interest.
-* Added `print.rank_regression()`, `print.ml_estimation()`, `print.model_estimation()` and `print.model_estimation_list()`.
-* Added `vcov.model_estimation()`.
-* Added lifecycle badges
 
 ## Documentation
 * Capitalized parameter documentation.
@@ -33,11 +35,13 @@
 ### Deprecated
 * `plot_layout()`
 * `mr_method()`, `johnson_method()`, `kaplan_method()` and `nelson_method()`: Use `estimate_cdf()` instead.
+* `plot_prob_mix.default()` and `plot_mod_mix.default()`. Use further S3 methods instead.
 
 ## Minor improvements and bug fixes
-* Fixed bug inside `plot_mod_mix()` for the case of no mixture distribution
-* Fixed bug inside `confint_betabinom()`; many cases near one -> unique()
-* Fixed bug inside `mr_method()`: Assigning a rank for the same lifetime 
+* Fixed bug inside `plot_mod_mix()` for the case of no mixture distribution.
+* Fixed bug inside `confint_betabinom()`; many cases near one -> unique().
+* Fixed bug inside `mr_method()`: Assigning a rank for the same lifetime. 
+* Fixed bug inside `mixmod_regression`: call to `segmented::segmented.lm()` was defective.
 * Added trace type "scatter" and scatter mode "markers" to `plot_layout`.
 
 # weibulltools v1.0.1

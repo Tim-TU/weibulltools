@@ -3,11 +3,21 @@
 \name{plot_mod.model_estimation}
 \alias{plot_mod.model_estimation}
 \alias{plot_mod.model_estimation_list}
-\title{Add Estimated Population Line(s) to a Probability Plot}
+\alias{plot_mod.mixmod_regression}
+\alias{plot_mod.mixmod_regression_list}
+\alias{plot_mod.mixmod_em}
+\title{Adding Estimated Population Lines of a Separated Mixture Model to a
+Probability Plot}
 \usage{
 \method{plot_mod}{model_estimation}(p_obj, x, title_trace = "Fit", ...)
 
 \method{plot_mod}{model_estimation_list}(p_obj, x, title_trace = "Fit", ...)
+
+\method{plot_mod}{mixmod_regression}(p_obj, x, title_trace = "Fit", ...)
+
+\method{plot_mod}{mixmod_regression_list}(p_obj, x, title_trace = "Fit", ...)
+
+\method{plot_mod}{mixmod_em}(p_obj, x, title_trace = "Fit", ...)
 }
 \arguments{
 \item{p_obj}{A plot object returned from \code{\link{plot_prob}}.}
@@ -24,9 +34,18 @@ Returns a plotly object containing the probability plot with
   plotting positions and the estimated regression line.
 }
 \description{
-This function adds regression lines to an existing probability plot using a
-model estimated by \code{\link{rank_regression}} or
-\code{\link{ml_estimation}}.
+This function adds one or multiple estimated regression lines to an existing
+probability plot (\code{\link{plot_prob}}). Depending on the output of the
+functions \code{\link{rank_regression}}, \code{ml_estimation},
+\code{\link{mixmod_regression}} or \code{\link{mixmod_em}} one or
+multiple lines are plotted.
+}
+\details{
+The name of the legend entry is a combination of the \code{title_trace} and
+the number of determined subgroups from \code{\link{mixmod_regression}} or
+\code{\link{mixmod_em}}. If \code{title_trace = "Line"} and the
+data could be splitted in two groups, the legend entries would be "Line: 1"
+and "Line: 2".
 }
 \examples{
 # Alloy T7987 dataset taken from Meeker and Escobar(1998, p. 131)

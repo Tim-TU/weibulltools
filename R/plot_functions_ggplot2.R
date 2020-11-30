@@ -89,28 +89,6 @@ plot_prob_ggplot2 <- function(
   return(p_prob)
 }
 
-plot_prob_mix_ggplot2 <- function(
-  p_obj,
-  tbl_group,
-  distribution = c(
-    "weibull", "lognormal", "loglogistic", "normal", "logistic", "sev"
-  ),
-  title_main = "Probability Plot",
-  title_x = "Characteristic",
-  title_y = "Unreliability",
-  title_trace = "Sample"
-) {
-
-  distribution <- match.arg(distribution)
-
-  p_prob_mix <- p_obj + ggplot2::geom_point(
-      data = tbl_group, mapping = ggplot2::aes(x = x_s, y = q, color = groups)
-    ) +
-    ggplot2::labs(color = title_trace)
-
-  return(p_prob_mix)
-}
-
 plot_mod_ggplot2 <- function(
   p_obj, tbl_pred, title_trace = "Fit"
 ) {
@@ -137,16 +115,6 @@ plot_mod_ggplot2 <- function(
     ggplot2::labs(
       color = paste(p_obj$labels$colour, "+", title_trace)
     )
-
-  return(p_mod)
-}
-
-plot_mod_mix_ggplot2 <- function(p_obj, tbl_group, title_trace) {
-  p_mod <- p_obj +
-    ggplot2::geom_line(
-      data = tbl_group, mapping = ggplot2::aes(x = x_p, y = q, color = method)
-    ) +
-    ggplot2::labs(color = paste(p_obj$labels$colour, "+", title_trace))
 
   return(p_mod)
 }

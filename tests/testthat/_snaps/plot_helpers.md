@@ -96,39 +96,39 @@
     10 ID68    104      1    NA 0.0694  kaplan  -1.48 null 
     # ... with 124 more rows
 
-# plot_prob_mix_helper remains stable
+# plot_mod_helper remains stable
 
-    # A tibble: 45 x 8
-        id_s   x_s status  rank    y_s method  groups         q
-       <int> <dbl>  <dbl> <dbl>  <dbl> <chr>   <fct>      <dbl>
-     1    24   144      1  1.21 0.0195 johnson Subgroup 1 -3.93
-     2    44   160      1  2.44 0.0462 johnson Subgroup 1 -3.05
-     3    53   168      1  3.68 0.0729 johnson Subgroup 1 -2.58
-     4    15   191      1  4.95 0.100  johnson Subgroup 1 -2.25
-     5    25   203      1  6.23 0.128  johnson Subgroup 1 -1.99
-     6    35   211      1  7.50 0.155  johnson Subgroup 1 -1.78
-     7    45   221      1  8.78 0.183  johnson Subgroup 1 -1.60
-     8    54   226      1 10.1  0.210  johnson Subgroup 1 -1.44
-     9     6   236      1 11.3  0.238  johnson Subgroup 1 -1.30
-    10    36   261      1 12.7  0.267  johnson Subgroup 1 -1.17
-    # ... with 35 more rows
+    # A tibble: 100 x 7
+         x_p    y_p param_val param_label method group     q
+       <dbl>  <dbl> <list>    <list>      <chr>  <chr> <dbl>
+     1 6700  0.0183 <chr [3]> <chr [3]>   null   _null -3.99
+     2 6798. 0.0190 <chr [3]> <chr [3]>   null   _null -3.95
+     3 6897. 0.0198 <chr [3]> <chr [3]>   null   _null -3.91
+     4 6997. 0.0206 <chr [3]> <chr [3]>   null   _null -3.87
+     5 7100. 0.0214 <chr [3]> <chr [3]>   null   _null -3.83
+     6 7203. 0.0223 <chr [3]> <chr [3]>   null   _null -3.79
+     7 7308. 0.0232 <chr [3]> <chr [3]>   null   _null -3.75
+     8 7415. 0.0241 <chr [3]> <chr [3]>   null   _null -3.71
+     9 7523. 0.0251 <chr [3]> <chr [3]>   null   _null -3.67
+    10 7633. 0.0261 <chr [3]> <chr [3]>   null   _null -3.63
+    # ... with 90 more rows
 
----
+# plot_mod_mix_helper remains stable
 
-    # A tibble: 45 x 5
-         x_s    y_s  id_s groups         q
-       <dbl>  <dbl> <int> <fct>      <dbl>
-     1     2 0.0120     1 Subgroup 1 -4.42
-     2     3 0.0291    11 Subgroup 1 -3.52
-     3     5 0.0462    21 Subgroup 1 -3.05
-     4     8 0.0634    31 Subgroup 1 -2.73
-     5    21 0.0808    50 Subgroup 1 -2.47
-     6    28 0.0982     2 Subgroup 1 -2.27
-     7    31 0.116     12 Subgroup 1 -2.10
-     8    64 0.134     51 Subgroup 1 -1.94
-     9    69 0.153     13 Subgroup 1 -1.79
-    10    76 0.172     23 Subgroup 1 -1.67
-    # ... with 35 more rows
+    # A tibble: 200 x 7
+         x_p    y_p param_val param_label method  group     q
+       <dbl>  <dbl> <list>    <list>      <chr>   <chr> <dbl>
+     1 6700  0.0183 <chr [2]> <chr [2]>   johnson group -3.99
+     2 6804. 0.0191 <chr [2]> <chr [2]>   johnson group -3.95
+     3 6909. 0.0199 <chr [2]> <chr [2]>   johnson group -3.91
+     4 7013. 0.0207 <chr [2]> <chr [2]>   johnson group -3.87
+     5 7118. 0.0216 <chr [2]> <chr [2]>   johnson group -3.82
+     6 7222. 0.0225 <chr [2]> <chr [2]>   johnson group -3.78
+     7 7327. 0.0234 <chr [2]> <chr [2]>   johnson group -3.75
+     8 7431. 0.0243 <chr [2]> <chr [2]>   johnson group -3.71
+     9 7536. 0.0252 <chr [2]> <chr [2]>   johnson group -3.67
+    10 7640. 0.0262 <chr [2]> <chr [2]>   johnson group -3.63
+    # ... with 190 more rows
 
 # plot_pop_helper remains stable
 
