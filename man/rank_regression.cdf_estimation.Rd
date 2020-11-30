@@ -13,12 +13,13 @@
 )
 }
 \arguments{
-\item{x}{A tibble returned by \code{\link{estimate_cdf}}.}
+\item{x}{An object of class \code{cdf_estimation} returned from
+\code{\link{estimate_cdf}}.}
 
 \item{distribution}{Supposed distribution of the random variable.}
 
-\item{conf_level}{Confidence level of the interval. One of \code{0.9},
-\code{0.95} or \code{0.99}.}
+\item{conf_level}{Confidence level of the interval. If \code{distribution} is
+\code{"weibull"} this must be one of \code{0.9}, \code{0.95} or \code{0.99}.}
 }
 \value{
 Returns a list with the following components:

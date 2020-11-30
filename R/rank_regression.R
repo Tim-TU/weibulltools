@@ -72,7 +72,8 @@ rank_regression <- function(x, ...) {
 #'
 #' @inherit rank_regression description details return references
 #'
-#' @param x A tibble returned by \code{\link{estimate_cdf}}.
+#' @param x An object of class \code{cdf_estimation} returned from
+#'  \code{\link{estimate_cdf}}.
 #' @param distribution Supposed distribution of the random variable.
 #' @param conf_level Confidence level of the interval. If \code{distribution} is
 #'   \code{"weibull"} this must be one of \code{0.9}, \code{0.95} or \code{0.99}.
@@ -161,9 +162,7 @@ rank_regression.cdf_estimation <- function(
 #'   regarding the lifetime data in x.
 #' @param status A vector of binary data (0 or 1) indicating whether a unit is
 #'   a right censored observation (= 0) or a failure (= 1).
-#' @param distribution Supposed distribution of the random variable.
-#' @param conf_level Confidence level of the interval. If \code{distribution} is
-#'   \code{"weibull"} this must be one of \code{0.9}, \code{0.95} or \code{0.99}.
+#' @inheritParams rank_regression.cdf_estimation
 #'
 #' @examples
 #' # Example 1: Fitting a two-parameter Weibull:

@@ -231,10 +231,9 @@ plot_mod_plotly <- function(
   if (n_method < 3) {
     tbl_pred$method <- factor(
       tbl_pred$method,
-      levels = c(unique(tbl_pred$method, "_null1", "_null2"))
+      levels = c(unique(tbl_pred$method), "_null1", "_null2")
     )
   }
-
 
   p_mod <- plotly::add_lines(
     p = p_obj,

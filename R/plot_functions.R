@@ -618,44 +618,21 @@ plot_prob_mix.default <- function(
 
   deprecate_soft(
     "2.0.0", "plot_prob_mix.default()",
-    details = "x, status and id are no longer necessary. Use
-    plot_prob_mix(mix_output, distribution) instead.
+    details = "
+    x, status, id and distribution are no longer necessary (they are
+    part of mix_output). Use plot_prob_mix(x = mix_output) instead.
     "
   )
 
-  distribution <- match.arg(distribution)
   plot_method <- match.arg(plot_method)
 
-  if (("em_results" %in%  names(mix_output)) && distribution != "weibull") {
-    stop("No valid distribution! Use weibull to visualize EM results")
-  }
-
-  data <- reliability_data(x = x, status = status, id = id)
-  tbl_group <- plot_prob_mix_helper(
-    data, distribution, mix_output, title_trace
-  )
-
-  # Plot layout:
-  p_obj <- plot_layout(
-    x = x,
-    distribution = distribution,
+  plot_prob_mix(
+    mix_output,
     title_main = title_main,
     title_x = title_x,
     title_y = title_y,
+    title_trace = title_trace,
     plot_method = plot_method
-  )
-
-  plot_prob_mix_fun <- if (plot_method == "plotly") plot_prob_mix_plotly else
-    plot_prob_mix_ggplot2
-
-  plot_prob_mix_fun(
-    p_obj = p_obj,
-    tbl_group = tbl_group,
-    distribution = distribution,
-    title_main = title_main,
-    title_x = title_x,
-    title_y = title_y,
-    title_trace = title_trace
   )
 }
 
@@ -1054,9 +1031,17 @@ plot_mod_mix.mixmod_regression <- function(p_obj, x, title_trace = "Fit", ...) {
   }
 
   tbl_pred <- purrr::map2_dfr(x, seq_along(x), function(model_estimation, index) {
-    plot_mod_mix_helper_2(
+    method <- if (purrr::is_null(model_estimation$data$method)) {
+      # Case mixmod_em (plot_mod_mix.mixmod_em calls this method internally)
+      as.character(index)
+    } else {
+      # Case mixmod_regression
+      model_estimation$data$method[1]
+    }
+
+    plot_mod_mix_helper(
       model_estimation = model_estimation,
-      method = "_null",
+      method = method,
       group = as.character(index)
     )
   })
@@ -1098,7 +1083,7 @@ plot_mod_mix.mixmod_regression_list <- function(p_obj,
       mixmod_regression,
       seq_along(mixmod_regression),
       function(model_estimation, index) {
-        plot_mod_mix_helper_2(
+        plot_mod_mix_helper(
           model_estimation = model_estimation,
           method = method,
           group = as.character(index)
@@ -1126,9 +1111,6 @@ plot_mod_mix.mixmod_em <- function(p_obj, x, title_trace = "Fit", ...) {
 
   # Remove em results to get model_estimation_list
   model_estimation_list <- x[-length(x)]
-  class(model_estimation_list) <- c(
-    "model_estimation_list", class(model_estimation_list)
-  )
 
   plot_mod_mix.mixmod_regression(
     p_obj = p_obj,
@@ -1151,11 +1133,13 @@ plot_mod_mix.default <- function(p_obj,
                                  ...
 ) {
 
-  distribution <- match.arg(distribution)
-
-  if (("em_results" %in%  names(mix_output)) && distribution != "weibull") {
-    stop("No valid distribution! Use weibull to visualize EM results")
-  }
+  deprecate_soft(
+    "2.0.0", "plot_mod_mix.default()",
+    details = "
+    x, status and distribution are no longer necessary (they are
+    part of mix_output). Use plot_mod_mix(x = mix_output) instead.
+    "
+  )
 
   # Plot method is determined by p_obj
   plot_method <- if (inherits(p_obj, "gg")) {
@@ -1169,15 +1153,10 @@ plot_mod_mix.default <- function(p_obj,
     )
   }
 
-  tbl_group <- plot_mod_mix_helper(
-    x, status, mix_output, distribution, title_trace
-  )
-
-  plot_mod_mix_fun <- if (plot_method == "plotly") plot_mod_mix_plotly else
-    plot_mod_mix_ggplot2
-
-  plot_mod_mix_fun(
-    p_obj, tbl_group, title_trace
+  plot_mod_mix(
+    p_obj = p_obj,
+    x = mix_output,
+    title_trace = title_trace
   )
 }
 
