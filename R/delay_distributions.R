@@ -92,16 +92,16 @@ dist_delay <- function(
   # Checks:
   ## all NA:
   if (all(is.na(t_delay))) {
-    stop("all differences are NA; no parameters can be estimated!")
+    stop("All differences are NA. No parameters can be estimated!")
   }
   ## any or all delays are smaller or equal to zero:
   if (any(t_delay <= 0, na.rm = TRUE)) {
     if (all(t_delay <= 0, na.rm = TRUE)) {
       ### all:
-      stop("all differences are smaller or equal to 0; no parameters can be estimated!")
+      stop("All differences are smaller or equal to 0. No parameters can be estimated!")
     } else {
       ### any:
-      warning("at least one of the time differences is smaller or equal to 0 and is",
+      warning("At least one of the time differences is smaller or equal to 0 and is",
               " ignored for the estimation step!")
       t_delay <- t_delay[t_delay > 0]
     }
@@ -128,25 +128,27 @@ dist_delay <- function(
     distribution = distribution
   )
 
-  class(dist_output) <- c("delay_estimation", "model_estimation", class(dist_output))
+  class(dist_output) <- c("delay_estimation", class(dist_output))
 
   return(dist_output)
 }
 
 
-#' Correction of Operating Times by Delays using a Monte Carlo Approach
+#' Adjustment of Operating Times by Delays using a Monte Carlo Approach
 #'
 #' @description
-#' In general, the amount of available data about units in the field is very
-#' different. While there are many information on failures during the warranty
-#' period, little is known about the units without a failure (\emph{censored data}).
-#' As a result, the operating times of these units are often inaccurate and must
-#' be adjusted by delays. But usually delays are only known for defective units.
-#' See 'Details' for more information.
+#' In general, the amount of available information about units in the field is very
+#' different. During the warranty period, there are only a few cases with complete
+#' data (mainly \emph{failured units}) but a lot cases with incomplete data (usually
+#' \emph{censored units}). As a result, the operating time of units with incomplete
+#' information is often inaccurate and must be adjusted by delays.
 #'
-#' This function reduces the operating times of (multiple) right censored observations
-#' by simulated delays (in days) which were drawn from the distribution determined
-#' by complete cases (described in 'Details' of \code{\link{dist_delay}}).
+#' This function reduces the operating times of incomplete observations by simulated
+#' delays (in days). A unit is considered incomplete if the later date is unknown,
+#' i.e. \code{date_2 = NA}. See 'Details' for some practical examples.
+#'
+#' Random delay numbers are drawn from the distribution determined by complete cases
+#' (described in 'Details' of \code{\link{dist_delay}}).
 #'
 #' @details
 #' In field data analysis time-dependent characteristics (e.g. \emph{time in service})
@@ -155,26 +157,29 @@ dist_delay <- function(
 #' For a better understanding of the MCS application in the context of field data,
 #' two cases are described below.
 #' \itemize{
-#'   \item \strong{Delay in registration}: It is common that a supplier, who provides
+#'   \item \strong{Delay in registration}: It is common that a supplier, which provides
 #'     parts to the manufacturing industry does not know when the unit, in which
-#'     its parts are installed, were put in service (due to unknown registration
-#'     or sales date). Without taking the described delay into account, the time
-#'     in service of intact units would be the difference between the present
-#'     date and the production date. But the actual operating time is (much) shorter,
-#'     since the stress on the component will not start until the complete system
-#'     is put in service. Therefore the intact units must be reduced by delays.
+#'     its parts are installed, were put in service (due to unknown \code{date_2},
+#'     i.e. registration or sales date). Without taking the described delay into
+#'     account, the time in service of the failed units would be the difference
+#'     between the repair date and \code{date_1} (i.e. the production date) and for
+#'     intact units the difference between the present date and \code{date_1}. But
+#'     the real operating times are (much) shorter, since the stress on the
+#'     components have not started until the whole systems were put in service.
+#'     Therefore units with incomplete data (missing \code{date_2}) must be reduced by
+#'     the delays.
 #'   \item \strong{Delay in report}: Authorized repairers often do not immediately
-#'     notify the manufacturer or OEM of repairs that occur during the warranty
-#'     period, but instead pass the information about these repairs in form of
-#'     collected applications e.g. monthly or quarterly. The resulting time
-#'     difference between the reporting of the repair in the guarantee database
-#'     and the actual repair date, which is often assumed to be the failure date,
-#'     is called the reporting delay. For a given date where the analysis is made
-#'     there could be units which had a failure but are not registered and therefore
-#'     treated as censored units. In order to take this case into account and
-#'     according to the principle of equal opportunities, the lifetime of intact
-#'     units is reduced by simulated reporting delays, so that the case described
-#'     before is taken into account due to lifetime reduction.
+#'     notify the manufacturer or OEM of repairs that were made during the warranty
+#'     period, but instead pass the information about these repairs in collected
+#'     forms e.g. weekly, monthly or quarterly. The resulting time difference between
+#'     the reporting \code{date_2} of the repair in the guarantee database and the
+#'     actual repair date \code{date_1}, which is often assumed to be the failure
+#'     date, is called the reporting delay. For a given date where the analysis
+#'     is made there could be units which had a failure but are not registered
+#'     and therefore treated as censored units. In order to take this case into
+#'     account and according to the principle of equal opportunities, the lifetime
+#'     of units with no report date (\code{date_2 = NA}) is reduced by simulated
+#'     reporting delays.
 #' }
 #'
 #' @references Verband der Automobilindustrie e.V. (VDA); Qualitätsmanagement in
@@ -185,14 +190,18 @@ dist_delay <- function(
 #' @param date_1 A vector of class \code{"character"} or \code{"Date"}, in the
 #'   format "yyyy-mm-dd", indicating the earlier of the two dates. If no date is
 #'   available use \code{NA}. If more than one delay should be considered it must
-#'   be a list with the earlier dates of the delays (See 'Examples').
+#'   be a list with the earlier dates of each delay (See 'Examples').
 #' @param date_2 A vector of class \code{"character"} or \code{"Date"}, in the
 #'   format "yyyy-mm-dd", indicating the later of the two dates. If no date is
 #'   available use \code{NA}. If more than one delay should be considered it must
-#'   be a list with the later dates of the delays (See 'Examples').
+#'   be a list with the later dates of each delay (See 'Examples').
 #' @param x A numeric vector of operating times.
-#' @param status A vector of binary data (0 or 1) indicating whether unit \emph{i}
-#'   is a right censored observation (= 0) or a failure (= 1).
+#' @param status Optional argument that determines the class of the returned list
+#'   element \code{data}. If \code{NULL} (default) \code{data} has class
+#'   \code{"mcs_data"}. If provided, it has to be a vector of binary data (0 or 1)
+#'   indicating whether unit \emph{i} is a right censored observation (= 0) or a
+#'   failure (= 1). In the later case \code{data} has classes \code{"mcs_data"} and
+#'   \code{"reliability_data"}.
 #' @param id Identification for every unit.
 #' @param distribution Supposed distribution of the delay random variable. The
 #'   default value is \code{"lognormal"}. If more than one delay is to be
@@ -208,8 +217,9 @@ dist_delay <- function(
 #'
 #' @return A list containing the following elements:
 #'   \itemize{
-#'     \item \code{data} A tibble with classes \code{"mcs_data"} and
-#'       \code{"reliability_data"} containing the following columns:
+#'     \item \code{data} A tibble with class \code{"mcs_data"} (if \code{status = NULL})
+#'       or with classes \code{"mcs_data"} and \code{"reliability_data"} (if \code{status}
+#'       is provided) containing the following columns:
 #'       \itemize{
 #'         \item \code{date_1} Earlier dates. If argument \code{date_1} is a list
 #'           of length \emph{i, i > 1} (described in \strong{Arguments}) multiple
@@ -217,21 +227,23 @@ dist_delay <- function(
 #'           and the corresponding values of the earlier dates are used.
 #'         \item \code{date_2} Later dates. In the case of a list with length greater
 #'           than 1, the routine described above is used.
-#'         \item \code{x} Adjusted operating times for the censored observations
-#'           and input operating times for the failed units.
-#'         \item \code{status} Binary data (0 or 1) indicating whether a unit is
-#'           a right censored observation (= 0) or a failure (= 1).
+#'         \item \code{x} Adjusted operating times for incomplete observations
+#'           and input operating times for the complete observations.
+#'         \item \code{status} (\strong{optional}) If argument \code{status = NULL}
+#'           column \code{status} does not exist. If argument \code{status} is provided
+#'           the column contains the entered binary data (0 or 1) indicating whether
+#'           a unit is a right censored observation (= 0) or a failure (= 1).
 #'         \item \code{id} Identification for every unit.
 #'       }
 #'     \item \code{sim_data} A tibble with column \code{sim_delay} that holds the
-#'       simulated delay-specific numbers for censored units and \code{0} for
-#'       failed observations. If more than one delay was considered multiple columns
-#'       \code{sim_delay_1}, \code{sim_delay_2}, ..., \code{sim_delay_i} with
+#'       simulated delay-specific numbers for incomplete cases and \code{0} for
+#'       complete cases. If more than one delay was considered multiple columns
+#'       \code{sim_delay.1}, \code{sim_delay.2}, ..., \code{sim_delay.i} with
 #'       corresponding delay-specific random numbers are presented.
-#'     \item \code{estimation_list} A list containing a named list
+#'     \item \code{model_estimation} A list containing a named list
 #'       (\code{"delay_distribution"}) with output of \code{\link{dist_delay}}. For
-#'       multiple delays the list contains as many lists ((\code{"delay_distribution_1"}),
-#'       (\code{"delay_distribution_2"}), ..., (\code{"delay_distribution_i"})) as
+#'       multiple delays the list contains as many lists ((\code{"delay_distribution.1"}),
+#'       (\code{"delay_distribution.2"}), ..., (\code{"delay_distribution.i"})) as
 #'       there are delays.
 #'     \item \code{seed} : Integer seed number for reproducibility.
 #'   }
@@ -311,7 +323,7 @@ mcs_delay <- function(
   date_1,
   date_2,
   x,
-  status,
+  status = NULL,
   id = paste0("ID", seq_len(length(x))),
   distribution = c("lognormal", "exponential"),
   seed = NULL
@@ -319,25 +331,18 @@ mcs_delay <- function(
 
   # Checks:
   ## Check for (multiple) distributions:
-  distribution <- match.arg(distribution, distribution, several.ok = TRUE)
-  distribution <- as.list(distribution)
+  distribution <- match.arg(distribution, several.ok = TRUE)
 
   ## Convert date_1 and date_2 to lists if they are vectors:
   if (!is.list(date_1)) date_1 <- list(date_1)
   if (!is.list(date_2)) date_2 <- list(date_2)
 
   ## Check for different length in date_1 and date_2:
-  if (length(unlist(date_1)) != length(unlist(date_2))) {
-    stop("elements of 'date_1' and 'date_2' differ in lengths!")
-  }
-
-  ## Case of multiple delays and more distributions than delays are specified!
-  if (length(distribution) > length(date_1)) { # modification
-    warning("argument 'distribution' has length ", length(distribution),
-            " but date_* arguments have lengths ", length(date_1), " and ",
-            length(date_2), ":\n", "only the first element(s) of 'distribution' will be used!")
-    distribution <- distribution[seq_along(date_1)]
-  }
+  purrr::walk2(date_1, date_2, function(e1, e2) {
+    if (length(e1) != length(e2)) {
+      stop("Elements of 'date_1' and 'date_2' differ in lengths!")
+    }
+  })
 
   # Step 1: Parameter estimation using complete cases:
   par_list <- purrr::pmap(
@@ -359,21 +364,24 @@ mcs_delay <- function(
   sim_list <- purrr::map2(
     date_2,
     par_list,
-    mcs_helper,
-    status = status
+    mcs_helper
   )
 
   ## Adjustment of operating times:
-  x <- x - Reduce('+', sim_list)
+  x <- x - purrr::reduce(sim_list, `+`)
 
   # Prepare data_list which has to be converted to a tibble:
-  data_list <- c(date_1, date_2, list(x, status, id))
+  if (purrr::is_null(status)) {
+    data_list <- c(date_1, date_2, list(x, id))
+  } else {
+    data_list <- c(date_1, date_2, list(x, status, id))
+  }
 
   # Defining and setting names for output elements:
   ## lengths of lists sim_list, par_list, date_1, date_2 remains the same:
-  if (length(sim_list) != 1) {
-    sim_list_names <- paste0("sim_delay_", seq_along(sim_list))
-    par_list_names <- paste0("delay_distribution_", seq_along(sim_list))
+  if (length(sim_list) > 1) {
+    sim_list_names <- paste0("sim_delay.", seq_along(sim_list))
+    par_list_names <- paste0("delay_distribution.", seq_along(sim_list))
     data_list_names <- c(
       paste0("date_1.", seq_along(date_1)),
       paste0("date_2.", seq_along(date_2))
@@ -386,16 +394,23 @@ mcs_delay <- function(
 
   names(sim_list) <- sim_list_names
   names(par_list) <- par_list_names
-  names(data_list) <- c(data_list_names, "x", "status", "id")
 
-  # Defining data_tbl with class "mcs_data" and "reliability_data":
+  if (purrr::is_null(status)) {
+    names(data_list) <- c(data_list_names, "x", "id")
+    class_assign <- "mcs_data"
+  } else {
+    names(data_list) <- c(data_list_names, "x", "status", "id")
+    class_assign <- c("mcs_data", "reliability_data")
+  }
+
+  # Defining data_tbl with class "mcs_data" and/or "reliability_data":
   data_tbl <- tibble::as_tibble(data_list)
-  class(data_tbl) <- c("mcs_data", "reliability_data", class(data_tbl))
+  class(data_tbl) <- c(class_assign, class(data_tbl))
 
   mcs_output <- list(
      data = data_tbl,
      sim_data = tibble::as_tibble(sim_list),
-     estimation_list = par_list,
+     model_estimation = par_list,
      seed = seed
   )
 
@@ -403,19 +418,26 @@ mcs_delay <- function(
 }
 
 # helper function to generate MCS random numbers:
-mcs_helper <- function(date_2, status, par_list) {
+mcs_helper <- function(x, par_list) {
 
-  # adjustment can only be done for units that have status = 0 and a date_2 entry
-  # of NA, otherwise operation time could be exactly determined by taking differences!
-  replacable <- is.na(date_2) & status == 0
+  # adjustment can only be done for units that have a x entry of NA! Otherwise
+  # data would be complete and no simulation is needed.
+  replacable <- is.na(x)
 
   # generate random numbers:
   if (par_list$distribution == "lognormal") {
-    x_sim <- stats::rlnorm(length(date_2), par_list$coefficients[1], par_list$coefficients[2])
+    x_sim <- stats::rlnorm(
+      length(x),
+      par_list$coefficients[1],
+      par_list$coefficients[2]
+    )
   }
 
   if (par_list$distribution == "exponential") {
-    x_sim <- stats::rexp(length(date_2), 1 / par_list$coefficients[1])
+    x_sim <- stats::rexp(
+      length(x),
+      1 / par_list$coefficients[1]
+    )
   }
 
   x_sim[!replacable] <- 0

@@ -2,13 +2,13 @@
 % Please edit documentation in R/delay_distributions.R
 \name{mcs_delay}
 \alias{mcs_delay}
-\title{Correction of Operating Times by Delays using a Monte Carlo Approach}
+\title{Adjustment of Operating Times by Delays using a Monte Carlo Approach}
 \usage{
 mcs_delay(
   date_1,
   date_2,
   x,
-  status,
+  status = NULL,
   id = paste0("ID", seq_len(length(x))),
   distribution = c("lognormal", "exponential"),
   seed = NULL
@@ -18,17 +18,21 @@ mcs_delay(
 \item{date_1}{A vector of class \code{"character"} or \code{"Date"}, in the
 format "yyyy-mm-dd", indicating the earlier of the two dates. If no date is
 available use \code{NA}. If more than one delay should be considered it must
-be a list with the earlier dates of the delays (See 'Examples').}
+be a list with the earlier dates of each delay (See 'Examples').}
 
 \item{date_2}{A vector of class \code{"character"} or \code{"Date"}, in the
 format "yyyy-mm-dd", indicating the later of the two dates. If no date is
 available use \code{NA}. If more than one delay should be considered it must
-be a list with the later dates of the delays (See 'Examples').}
+be a list with the later dates of each delay (See 'Examples').}
 
 \item{x}{A numeric vector of operating times.}
 
-\item{status}{A vector of binary data (0 or 1) indicating whether unit \emph{i}
-is a right censored observation (= 0) or a failure (= 1).}
+\item{status}{Optional argument that determines the class of the returned list
+element \code{data}. If \code{NULL} (default) \code{data} has class
+\code{"mcs_data"}. If provided, it has to be a vector of binary data (0 or 1)
+indicating whether unit \emph{i} is a right censored observation (= 0) or a
+failure (= 1). In the later case \code{data} has classes \code{"mcs_data"} and
+\code{"reliability_data"}.}
 
 \item{id}{Identification for every unit.}
 
@@ -48,8 +52,9 @@ can specify an integer for the seed.}
 \value{
 A list containing the following elements:
   \itemize{
-    \item \code{data} A tibble with classes \code{"mcs_data"} and
-      \code{"reliability_data"} containing the following columns:
+    \item \code{data} A tibble with class \code{"mcs_data"} (if \code{status = NULL})
+      or with classes \code{"mcs_data"} and \code{"reliability_data"} (if \code{status}
+      is provided) containing the following columns:
       \itemize{
         \item \code{date_1} Earlier dates. If argument \code{date_1} is a list
           of length \emph{i, i > 1} (described in \strong{Arguments}) multiple
@@ -57,36 +62,40 @@ A list containing the following elements:
           and the corresponding values of the earlier dates are used.
         \item \code{date_2} Later dates. In the case of a list with length greater
           than 1, the routine described above is used.
-        \item \code{x} Adjusted operating times for the censored observations
-          and input operating times for the failed units.
-        \item \code{status} Binary data (0 or 1) indicating whether a unit is
-          a right censored observation (= 0) or a failure (= 1).
+        \item \code{x} Adjusted operating times for incomplete observations
+          and input operating times for the complete observations.
+        \item \code{status} (\strong{optional}) If argument \code{status = NULL}
+          column \code{status} does not exist. If argument \code{status} is provided
+          the column contains the entered binary data (0 or 1) indicating whether
+          a unit is a right censored observation (= 0) or a failure (= 1).
         \item \code{id} Identification for every unit.
       }
     \item \code{sim_data} A tibble with column \code{sim_delay} that holds the
-      simulated delay-specific numbers for censored units and \code{0} for
-      failed observations. If more than one delay was considered multiple columns
-      \code{sim_delay_1}, \code{sim_delay_2}, ..., \code{sim_delay_i} with
+      simulated delay-specific numbers for incomplete cases and \code{0} for
+      complete cases. If more than one delay was considered multiple columns
+      \code{sim_delay.1}, \code{sim_delay.2}, ..., \code{sim_delay.i} with
       corresponding delay-specific random numbers are presented.
-    \item \code{estimation_list} A list containing a named list
+    \item \code{model_estimation} A list containing a named list
       (\code{"delay_distribution"}) with output of \code{\link{dist_delay}}. For
-      multiple delays the list contains as many lists ((\code{"delay_distribution_1"}),
-      (\code{"delay_distribution_2"}), ..., (\code{"delay_distribution_i"})) as
+      multiple delays the list contains as many lists ((\code{"delay_distribution.1"}),
+      (\code{"delay_distribution.2"}), ..., (\code{"delay_distribution.i"})) as
       there are delays.
     \item \code{seed} : Integer seed number for reproducibility.
   }
 }
 \description{
-In general, the amount of available data about units in the field is very
-different. While there are many information on failures during the warranty
-period, little is known about the units without a failure (\emph{censored data}).
-As a result, the operating times of these units are often inaccurate and must
-be adjusted by delays. But usually delays are only known for defective units.
-See 'Details' for more information.
+In general, the amount of available information about units in the field is very
+different. During the warranty period, there are only a few cases with complete
+data (mainly \emph{failured units}) but a lot cases with incomplete data (usually
+\emph{censored units}). As a result, the operating time of units with incomplete
+information is often inaccurate and must be adjusted by delays.
 
-This function reduces the operating times of (multiple) right censored observations
-by simulated delays (in days) which were drawn from the distribution determined
-by complete cases (described in 'Details' of \code{\link{dist_delay}}).
+This function reduces the operating times of incomplete observations by simulated
+delays (in days). A unit is considered incomplete if the later date is unknown,
+i.e. \code{date_2 = NA}. See 'Details' for some practical examples.
+
+Random delay numbers are drawn from the distribution determined by complete cases
+(described in 'Details' of \code{\link{dist_delay}}).
 }
 \details{
 In field data analysis time-dependent characteristics (e.g. \emph{time in service})
@@ -95,26 +104,29 @@ are often imprecisely recorded. These inaccuracies are caused by unconsidered de
 For a better understanding of the MCS application in the context of field data,
 two cases are described below.
 \itemize{
-  \item \strong{Delay in registration}: It is common that a supplier, who provides
+  \item \strong{Delay in registration}: It is common that a supplier, which provides
     parts to the manufacturing industry does not know when the unit, in which
-    its parts are installed, were put in service (due to unknown registration
-    or sales date). Without taking the described delay into account, the time
-    in service of intact units would be the difference between the present
-    date and the production date. But the actual operating time is (much) shorter,
-    since the stress on the component will not start until the complete system
-    is put in service. Therefore the intact units must be reduced by delays.
+    its parts are installed, were put in service (due to unknown \code{date_2},
+    i.e. registration or sales date). Without taking the described delay into
+    account, the time in service of the failed units would be the difference
+    between the repair date and \code{date_1} (i.e. the production date) and for
+    intact units the difference between the present date and \code{date_1}. But
+    the real operating times are (much) shorter, since the stress on the
+    components have not started until the whole systems were put in service.
+    Therefore units with incomplete data (missing \code{date_2}) must be reduced by
+    the delays.
   \item \strong{Delay in report}: Authorized repairers often do not immediately
-    notify the manufacturer or OEM of repairs that occur during the warranty
-    period, but instead pass the information about these repairs in form of
-    collected applications e.g. monthly or quarterly. The resulting time
-    difference between the reporting of the repair in the guarantee database
-    and the actual repair date, which is often assumed to be the failure date,
-    is called the reporting delay. For a given date where the analysis is made
-    there could be units which had a failure but are not registered and therefore
-    treated as censored units. In order to take this case into account and
-    according to the principle of equal opportunities, the lifetime of intact
-    units is reduced by simulated reporting delays, so that the case described
-    before is taken into account due to lifetime reduction.
+    notify the manufacturer or OEM of repairs that were made during the warranty
+    period, but instead pass the information about these repairs in collected
+    forms e.g. weekly, monthly or quarterly. The resulting time difference between
+    the reporting \code{date_2} of the repair in the guarantee database and the
+    actual repair date \code{date_1}, which is often assumed to be the failure
+    date, is called the reporting delay. For a given date where the analysis
+    is made there could be units which had a failure but are not registered
+    and therefore treated as censored units. In order to take this case into
+    account and according to the principle of equal opportunities, the lifetime
+    of units with no report date (\code{date_2 = NA}) is reduced by simulated
+    reporting delays.
 }
 }
 \examples{

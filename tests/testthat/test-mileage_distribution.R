@@ -26,11 +26,11 @@ test_that("dist_mileage warns if any computed annual distances is smaller or equ
       mileage = mileage,
       x = op_time
     ),
-    "at least one computed annual distance*"
+    "At least one computed annual distance*"
   )
 })
 
-test_that("dist_mileage stops if all computed annual distances are smaller or equal to zero", {
+test_that("dist_mileage stops if at least one distance is smaller than zero", {
   op_time <- c(65, 500, 200, 350)
   mileage <- c(0, -10, 0, -5) # mileage / x
 
@@ -39,7 +39,7 @@ test_that("dist_mileage stops if all computed annual distances are smaller or eq
       mileage = mileage,
       x = op_time
     ),
-    "all computed annual distances are smaller or equal to 0*"
+    "There is at least one negative element in argument 'mileage'!"
   )
 })
 
@@ -49,20 +49,38 @@ test_that("dist_mileage stops if all computed annual distances are NAs", {
       mileage = NA,
       x = NA
     ),
-    "all computed annual distances are NA*"
+    "All computed annual distances are NA*"
   )
 })
 
-test_that("dist_mileage warns when there are cases where both, mileage and x are negative", {
+test_that("dist_mileage remains stable", {
+  date_of_registration <- c(NA, "2014-03-29", "2014-12-06", "2014-09-09", NA,
+                            NA, "2014-06-16", NA, "2014-05-23", "2014-05-09",
+                            "2014-05-31", NA, "2014-04-13", NA, NA, "2014-03-12",
+                            NA, "2014-06-02", NA, "2014-03-21", "2014-06-19",
+                            NA, NA)
+  date_of_repair       <- c(NA, "2014-09-15", "2015-07-04", "2015-04-10", NA,
+                            NA, "2015-04-24", NA, "2015-04-25", "2015-04-24",
+                            "2015-06-12", NA, "2015-05-04", NA, NA, "2015-05-22",
+                            NA, "2015-09-17", NA, "2015-08-15", "2015-11-26",
+                            NA, NA)
+  mileage              <- c(NA, 15655, 13629, 18292, NA, NA, 33555, NA, 21737,
+                            29870, 21068, NA, 122283, NA, NA, 36088, NA, 11153,
+                            NA, 122842, 20349, NA, NA)
 
-  mileage <- c(100, 1000, 200, NA, 10, -200)
-  op_time <- c(10, 200, 30, NA, 10, -10)
-
-  expect_warning(
-    dist_mileage(
-      mileage = mileage,
-      x = op_time
-    ),
-    "corresponding element\\(s\\) of both,*"
+  op_time <- as.numeric(
+    difftime(
+      as.Date(date_of_repair, format = "%Y-%m-%d"),
+      as.Date(date_of_registration, format = "%Y-%m-%d"),
+      units = "days"
+    )
   )
+
+    params_mileage_annual <- dist_mileage(
+      mileage = mileage,
+      x = op_time,
+      distribution = "lognormal"
+    )
+  expect_snapshot_output(params_mileage_annual$coefficients)
+  expect_snapshot_output(params_mileage_annual$miles_annual)
 })

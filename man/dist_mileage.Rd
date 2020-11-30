@@ -19,15 +19,15 @@ A list of class \code{"mileage_estimation"} which contains:
   \itemize{
     \item \code{coefficients} A named vector of estimated parameter(s).
     \item \code{miles_annual} A numeric vector of element-wise computed annual
-      distances using linear interpolation described in 'Details'.
+      distances using the linear relationship described in 'Details'.
     \item \code{distribution} Specified distribution.
   }
 }
 \description{
 This function models a mileage random variable on an annual basis with respect
-to a supposed continuous distribution. First, the distances are normalized to
-one year (365 days) using a linear relationship between the distances and
-operating times. Second, the parameter(s) of the assumed distribution are
+to a supposed continuous distribution. First, the distances are calculated for
+one year (365 days) using a linear relationship between the distance and
+operating time. Second, the parameter(s) of the assumed distribution are
 estimated using MLE. See 'Details' for more information.
 }
 \details{
@@ -36,7 +36,7 @@ i.e. there is no \code{NA} in one of the related vector elements
 \code{c(mileage[i], x[i])}. Distances and operating times less than or equal
 to 0 are not considered as well.
 
-\strong{Assumption of linear interpolation}: Imagine a component in a vehicle
+\strong{Assumption of linear relationship}: Imagine a component in a vehicle
   has endured a distance of 25000 kilometers (km) in 500 days (d), the annual
   distance of this unit is \deqn{25000 km \cdot (\frac{365 d} {500 d}) = 18250 km}{%
                 25000 km * (365 d / 500 d) = 18250 km}

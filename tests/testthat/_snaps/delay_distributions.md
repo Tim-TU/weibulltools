@@ -28,7 +28,7 @@
 ---
 
     # A tibble: 23 x 2
-       sim_delay_1 sim_delay_2
+       sim_delay.1 sim_delay.2
              <dbl>       <dbl>
      1        21.2      10.2  
      2         0         0    
