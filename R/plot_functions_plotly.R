@@ -194,7 +194,7 @@ plot_prob_mix_plotly <- function(
       mode = "markers",
       hoverinfo = "text",
       color = ~method,
-      shape = ~group,
+      symbols = ~group,
       text = ~paste(
         "ID:", id_s,
         paste("<br>", paste0(mark_x, ":")),
@@ -231,7 +231,7 @@ plot_mod_plotly <- function(
   if (n_method < 3) {
     tbl_pred$method <- factor(
       tbl_pred$method,
-      levels = c(unique(tbl_pred$method, "_null"))
+      levels = c(unique(tbl_pred$method, "_null1", "_null2"))
     )
   }
 

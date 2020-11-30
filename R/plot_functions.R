@@ -618,7 +618,7 @@ plot_prob_mix.default <- function(
 
   deprecate_soft(
     "2.0.0", "plot_prob_mix.default()",
-    details = "x, status and id are not longer necessary. Use
+    details = "x, status and id are no longer necessary. Use
     plot_prob_mix(mix_output, distribution) instead.
     "
   )

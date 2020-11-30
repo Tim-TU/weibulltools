@@ -74,8 +74,8 @@ rank_regression <- function(x, ...) {
 #'
 #' @param x A tibble returned by \code{\link{estimate_cdf}}.
 #' @param distribution Supposed distribution of the random variable.
-#' @param conf_level Confidence level of the interval. One of \code{0.9},
-#'   \code{0.95} or \code{0.99}.
+#' @param conf_level Confidence level of the interval. If \code{distribution} is
+#'   \code{"weibull"} this must be one of \code{0.9}, \code{0.95} or \code{0.99}.
 #'
 #' @examples
 #' # Example 1: Fitting a two-parameter Weibull:
@@ -162,8 +162,8 @@ rank_regression.cdf_estimation <- function(
 #' @param status A vector of binary data (0 or 1) indicating whether a unit is
 #'   a right censored observation (= 0) or a failure (= 1).
 #' @param distribution Supposed distribution of the random variable.
-#' @param conf_level Confidence level of the interval. One of \code{0.9},
-#'   \code{0.95} or \code{0.99}.
+#' @param conf_level Confidence level of the interval. If \code{distribution} is
+#'   \code{"weibull"} this must be one of \code{0.9}, \code{0.95} or \code{0.99}.
 #'
 #' @examples
 #' # Example 1: Fitting a two-parameter Weibull:
