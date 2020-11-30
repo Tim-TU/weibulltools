@@ -166,48 +166,6 @@ plot_prob_plotly <- function(
   return(p_prob)
 }
 
-# only used in plot_prob_mix.default
-plot_prob_mix_plotly <- function(
-  p_obj,
-  tbl_group,
-  distribution = c(
-    "weibull", "lognormal", "loglogistic", "normal", "logistic", "sev"
-  ),
-  title_main = "Probability Plot",
-  title_x = "Characteristic",
-  title_y = "Unreliability",
-  title_trace = "Sample"
-) {
-
-  distribution <- match.arg(distribution)
-
-  mark_x <- unlist(strsplit(title_x, " "))[1]
-  mark_y <- unlist(strsplit(title_y, " "))[1]
-
-  # Construct probability plot:
-  plot <- p_obj %>%
-    plotly::add_trace(
-      data = tbl_group,
-      x = ~x_s,
-      y = ~q,
-      type = "scatter",
-      mode = "markers",
-      hoverinfo = "text",
-      color = ~method,
-      symbols = ~group,
-      text = ~paste(
-        "ID:", id_s,
-        paste("<br>", paste0(mark_x, ":")),
-        format(x_s, digits = 3),
-        paste("<br>", paste0(mark_y, ":")),
-        format(y_s, digits = 6)
-      )
-    ) %>%
-    plotly::layout(showlegend = TRUE)
-
-  return(plot)
-}
-
 plot_mod_plotly <- function(
   p_obj, tbl_pred, title_trace = "Fit"
 ) {
@@ -247,39 +205,6 @@ plot_mod_plotly <- function(
     color = ~method,
     legendgroup = ~method,
     text = ~hovertext
-  )
-
-  return(p_mod)
-}
-
-# only used in plot_mod_mix.default
-plot_mod_mix_plotly <- function(p_obj, tbl_group, title_trace) {
-
-  # Get axis labels in hover:
-  x_mark <- unlist(strsplit(p_obj$x$layoutAttrs[[2]]$xaxis$title$text,  " "))[1]
-  y_mark <- unlist(strsplit(p_obj$x$layoutAttrs[[2]]$yaxis$title$text,  " "))[1]
-
-  p_mod <- p_obj %>% plotly::add_lines(
-    data = tbl_group %>% dplyr::group_by(groups),
-    x = ~x_p,
-    y = ~q,
-    type = "scatter",
-    mode = "lines",
-    line = list(color = ~cols),
-    name = ~groups,
-    hoverinfo = "text",
-    text = paste(
-      paste0(x_mark, ":"),
-      format(tbl_group$x_p, digits = 3),
-      paste(
-        "<br>",
-        paste0(y_mark, ":")
-      ),
-      format(tbl_group$y_p, digits = 6),
-      "<br>",
-      paste(tbl_group$lab_1, tbl_group$par_1),
-      "<br>",
-      paste(tbl_group$lab_2, tbl_group$par_2))
   )
 
   return(p_mod)

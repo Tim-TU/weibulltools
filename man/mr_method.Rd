@@ -35,7 +35,8 @@ A tibble containing id, lifetime characteristic, status of the
 \lifecycle{soft-deprecated}
 
 The functionality of this function is incorporated into \code{\link{estimate_cdf}}.
-
+}
+\details{
 This non-parametric approach (\emph{Median Ranks}) is used to estimate the
 failure probabilities in terms of complete data. Two methods are available to
 estimate the cumulative distribution function \emph{F(t)}:

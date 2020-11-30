@@ -299,49 +299,32 @@ plot_prob_ <- function(
 }
 
 
+
 #' Probability Plot for Separated Mixture Models
 #'
 #' This function is used to apply the graphical technique of probability
 #' plotting to univariate mixture models that were separated with functions
 #' \code{\link{mixmod_regression}} or \code{\link{mixmod_em}}.
 #'
-#' Depending on the separation method the function \code{\link{johnson_method}}
-#' is called in two ways. If \code{mixmod_regression} is used, \code{johnson_method}
-#' is applied to all data. If data was splitted by \code{mixmod_em} the function
-#' \code{johnson_method} is applied to subgroup-specific data. The calculated plotting
-#' positions are colored regarding the obtained split of the used splitting function.
+#' If data was splitted by \code{mixmod_em} the function \code{johnson_method}
+#' is applied to subgroup-specific data. The calculated plotting positions are
+#' shaped regarding the obtained split of the used splitting function.
 #'
 #' In \code{\link{mixmod_regression}} a maximum of three subgroups can be determined
 #' and thus being plotted. The intention of this function is to give the
 #' user a hint for the existence of a mixture model. An in-depth analysis should
 #' be done afterwards.
 #'
-#' The marker label for x is determined by the first word provided in the
-#' argument \code{title_x}, i.e. if \code{title_x = "Mileage in km"} the x label
-#' of the marker is "Mileage".
+#' The marker label for x and y are determined by the first word provided in the
+#' argument \code{title_x} respective \code{title_y}, i.e. if
+#' \code{title_x = "Mileage in km"} the x label of the marker is "Mileage".
 #'
-#' The marker label for y is determined by the string provided in the
-#' argument \code{title_y}, i.e. if \code{title_y = "Probability in percent"} the y
-#' label of the marker is "Probability".
+#' The name of the legend entry is a combination of the \code{title_trace} and
+#' the number of determined subgroups. If \code{title_trace = "Group"} and the
+#' data could be splitted in two groups, the legend entries would be "Group: 1"
+#' and "Group: 2".
 #'
-#' The name of the legend entry is a combination of the \code{title_trace} and the
-#' number of determined subgroups. If \code{title_trace = "Group"} and the data
-#' could be splitted in two groups, the legend entries would be "Group 1" and "Group 2".
-#'
-#' @encoding UTF-8
-#' @references Doganaksoy, N.; Hahn, G.; Meeker, W. Q., Reliability Analysis by
-#'   Failure Mode, Quality Progress, 35(6), 47-52, 2002
-#'
-#' @export
-plot_prob_mix <- function(x, ...) {
-  UseMethod("plot_prob_mix")
-}
-
-
-
-#' Probability Plot for Separated Mixture Models
-#'
-#' @inherit plot_prob_mix description details return references
+#' @inherit plot_prob return references
 #'
 #' @inheritParams plot_prob.default
 #'
@@ -359,7 +342,7 @@ plot_prob_mix <- function(x, ...) {
 #' id <- 1:length(hours)
 #'
 #' # Example 1 - mix_output = NULL:
-#' plot_weibull <- plot_prob_mix(x = hours,
+#' plot_weibull <- plot_prob(x = hours,
 #'                               status = state,
 #'                               id = id,
 #'                               distribution = "weibull",
@@ -373,7 +356,7 @@ plot_prob_mix <- function(x, ...) {
 #' mix_mod_em <- mixmod_em(x = hours, status = state, distribution = "weibull",
 #'                         conf_level = 0.95, k = 2, method = "EM", n_iter = 150)
 #'
-#' plot_weibull_em <- plot_prob_mix(x = hours,
+#' plot_weibull_em <- plot_prob(x = hours,
 #'                                  status = state,
 #'                                  id = id,
 #'                                  distribution = "weibull",
@@ -392,7 +375,7 @@ plot_prob_mix <- function(x, ...) {
 #'   distribution = "weibull"
 #' )
 #'
-#' plot_weibull_reg <- plot_prob_mix(
+#' plot_weibull_reg <- plot_prob(
 #'   x = hours,
 #'   status = state,
 #'   id = id,
@@ -405,7 +388,7 @@ plot_prob_mix <- function(x, ...) {
 #' )
 #'
 #' @export
-plot_prob_mix.model_estimation <- function(x,
+plot_prob.model_estimation <- function(x,
                                            title_main = "Probability Plot",
                                            title_x = "Characteristic",
                                            title_y = "Unreliability",
@@ -430,10 +413,10 @@ plot_prob_mix.model_estimation <- function(x,
 
 
 
-#' @rdname plot_prob_mix.model_estimation
+#' @rdname plot_prob.model_estimation
 #'
 #' @export
-plot_prob_mix.mixmod_regression <- function(x,
+plot_prob.mixmod_regression <- function(x,
                                            title_main = "Probability Plot",
                                            title_x = "Characteristic",
                                            title_y = "Unreliability",
@@ -463,10 +446,10 @@ plot_prob_mix.mixmod_regression <- function(x,
 
 
 
-#' @rdname plot_prob_mix.model_estimation
+#' @rdname plot_prob.model_estimation
 #'
 #' @export
-plot_prob_mix.mixmod_em <- function(x,
+plot_prob.mixmod_em <- function(x,
                                     title_main = "Probability Plot",
                                     title_x = "Characteristic",
                                     title_y = "Unreliability",
@@ -506,10 +489,10 @@ plot_prob_mix.mixmod_em <- function(x,
 
 
 
-#' @rdname plot_prob_mix.model_estimation
+#' @rdname plot_prob.model_estimation
 #'
 #' @export
-plot_prob_mix.mixmod_regression_list <- function(x,
+plot_prob.mixmod_regression_list <- function(x,
                                                  title_main = "Probability Plot",
                                                  title_x = "Characteristic",
                                                  title_y = "Unreliability",
@@ -545,7 +528,34 @@ plot_prob_mix.mixmod_regression_list <- function(x,
 
 #' Probability Plot for Separated Mixture Models
 #'
-#' @inherit plot_prob_mix description details return references
+#' @description
+#' \lifecycle{soft-deprecated}
+#'
+#' This function is used to apply the graphical technique of probability
+#' plotting to univariate mixture models that were separated with functions
+#' \code{\link{mixmod_regression}} or \code{\link{mixmod_em}}.
+#'
+#' @details
+#' If data was splitted by \code{mixmod_em} the function \code{johnson_method}
+#' is applied to subgroup-specific data. The calculated plotting positions are
+#' shaped regarding the obtained split of the used splitting function.
+#'
+#' In \code{\link{mixmod_regression}} a maximum of three subgroups can be determined
+#' and thus being plotted. The intention of this function is to give the
+#' user a hint for the existence of a mixture model. An in-depth analysis should
+#' be done afterwards.
+#'
+#' The marker label for x and y are determined by the first word provided in the
+#' argument \code{title_x} respective \code{title_y}, i.e. if
+#' \code{title_x = "Mileage in km"} the x label of the marker is "Mileage".
+#'
+#' The name of the legend entry is a combination of the \code{title_trace} and the
+#' number of determined subgroups. If \code{title_trace = "Group"} and the data
+#' could be splitted in two groups, the legend entries would be "Group 1" and "Group 2".
+#'
+#' @encoding UTF-8
+#' @references Doganaksoy, N.; Hahn, G.; Meeker, W. Q., Reliability Analysis by
+#'   Failure Mode, Quality Progress, 35(6), 47-52, 2002
 #'
 #' @inheritParams plot_prob.default
 #' @param mix_output A list provided by \code{\link{mixmod_regression}} or
@@ -602,7 +612,7 @@ plot_prob_mix.mixmod_regression_list <- function(x,
 #' )
 #'
 #' @export
-plot_prob_mix.default <- function(
+plot_prob_mix <- function(
                         x,
                         status,
                         id = rep("XXXXXX", length(x)),
@@ -617,16 +627,12 @@ plot_prob_mix.default <- function(
 ) {
 
   deprecate_soft(
-    "2.0.0", "plot_prob_mix.default()",
-    details = "
-    x, status, id and distribution are no longer necessary (they are
-    part of mix_output). Use plot_prob_mix(x = mix_output) instead.
-    "
+    "2.0.0", "plot_prob_mix()", "plot_prob()"
   )
 
   plot_method <- match.arg(plot_method)
 
-  plot_prob_mix(
+  plot_prob(
     mix_output,
     title_main = title_main,
     title_x = title_x,
@@ -919,7 +925,7 @@ plot_mod.default <- function(p_obj,
 #' Probability Plot
 #'
 #' This function adds one or multiple estimated regression lines to an existing
-#' probability plot (\code{\link{plot_prob_mix}}). Depending on the output of the
+#' probability plot (\code{\link{plot_prob}}). Depending on the output of the
 #' function \code{\link{mixmod_regression}} or \code{\link{mixmod_em}} one or
 #' multiple lines are plotted.
 #'
@@ -931,7 +937,7 @@ plot_mod.default <- function(p_obj,
 #' @references Doganaksoy, N.; Hahn, G.; Meeker, W. Q., Reliability Analysis by
 #'   Failure Mode, Quality Progress, 35(6), 47-52, 2002
 #'
-#' @param p_obj A plotly object provided by function \code{\link{plot_prob_mix}}.
+#' @param p_obj A plotly object provided by function \code{\link{plot_prob}}.
 #' @param mix_output A list provided by \code{\link{mixmod_regression}} or
 #'   \code{\link{mixmod_em}}, which consists of elements necessary to visualize
 #'   the regression lines.
@@ -958,7 +964,7 @@ plot_mod.default <- function(p_obj,
 #' mix_mod_em <- mixmod_em(x = hours, status = state, distribution = "weibull",
 #'                         conf_level = 0.95, k = 2, method = "EM", n_iter = 150)
 #'
-#' plot_weibull_em <- plot_prob_mix(x = hours,
+#' plot_weibull_em <- plot_prob(x = hours,
 #'                                  status = state,
 #'                                  id = id,
 #'                                  distribution = "weibull",
@@ -982,7 +988,7 @@ plot_mod.default <- function(p_obj,
 #'                                  status = john$status,
 #'                                  distribution = "weibull")
 #'
-#' plot_weibull_reg <- plot_prob_mix(x = hours,
+#' plot_weibull_reg <- plot_prob(x = hours,
 #'                                   status = state,
 #'                                   id = id,
 #'                                   distribution = "weibull",

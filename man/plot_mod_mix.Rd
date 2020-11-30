@@ -9,7 +9,7 @@ Probability Plot}
 plot_mod_mix(p_obj, x, ...)
 }
 \arguments{
-\item{p_obj}{A plotly object provided by function \code{\link{plot_prob_mix}}.}
+\item{p_obj}{A plotly object provided by function \code{\link{plot_prob}}.}
 
 \item{x}{A numeric vector containing the x-coordinates of the regression line.}
 
@@ -23,7 +23,7 @@ Returns a plotly object containing the probability plot with
 }
 \description{
 This function adds one or multiple estimated regression lines to an existing
-probability plot (\code{\link{plot_prob_mix}}). Depending on the output of the
+probability plot (\code{\link{plot_prob}}). Depending on the output of the
 function \code{\link{mixmod_regression}} or \code{\link{mixmod_em}} one or
 multiple lines are plotted.
 }
@@ -49,7 +49,7 @@ id <- 1:length(hours)
 mix_mod_em <- mixmod_em(x = hours, status = state, distribution = "weibull",
                         conf_level = 0.95, k = 2, method = "EM", n_iter = 150)
 
-plot_weibull_em <- plot_prob_mix(x = hours,
+plot_weibull_em <- plot_prob(x = hours,
                                  status = state,
                                  id = id,
                                  distribution = "weibull",
@@ -73,7 +73,7 @@ mix_mod_reg <- mixmod_regression(x = john$x,
                                  status = john$status,
                                  distribution = "weibull")
 
-plot_weibull_reg <- plot_prob_mix(x = hours,
+plot_weibull_reg <- plot_prob(x = hours,
                                   status = state,
                                   id = id,
                                   distribution = "weibull",

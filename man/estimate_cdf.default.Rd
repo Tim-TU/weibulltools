@@ -4,7 +4,14 @@
 \alias{estimate_cdf.default}
 \title{Estimation of Failure Probabilities}
 \usage{
-\method{estimate_cdf}{default}(x, status, id = rep("XXXXXX", length(x)), methods, options, ...)
+\method{estimate_cdf}{default}(
+  x,
+  status,
+  id = rep("XXXXXX", length(x)),
+  methods = c("mr", "johnson", "kaplan", "nelson"),
+  options,
+  ...
+)
 }
 \arguments{
 \item{x}{A numeric vector which consists of lifetime data. Lifetime

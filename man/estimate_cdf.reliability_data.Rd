@@ -4,7 +4,12 @@
 \alias{estimate_cdf.reliability_data}
 \title{Estimation of Failure Probabilities}
 \usage{
-\method{estimate_cdf}{reliability_data}(data, methods, options = list(), ...)
+\method{estimate_cdf}{reliability_data}(
+  data,
+  methods = c("mr", "johnson", "kaplan", "nelson"),
+  options = list(),
+  ...
+)
 }
 \arguments{
 \item{data}{A tibble returned by \link{reliability_data}.}
