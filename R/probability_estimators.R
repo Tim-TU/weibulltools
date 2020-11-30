@@ -94,11 +94,17 @@ estimate_cdf <- function(x, ...) {
 estimate_cdf.default <- function(x,
                                  status,
                                  id = rep("XXXXXX", length(x)),
-                                 methods,
+                                 methods = c("mr", "johnson", "kaplan", "nelson"),
                                  options,
                                  ...
 ) {
   data <- reliability_data(x = x, status = status, id = id)
+
+  methods <- if (missing(methods)) {
+    "mr"
+  } else {
+    unique(match.arg(methods, several.ok = TRUE))
+  }
 
   estimate_cdf.reliability_data(
     data = data,
@@ -122,15 +128,18 @@ estimate_cdf.default <- function(x,
 #'
 #' @export
 estimate_cdf.reliability_data <- function(
-  data, methods, options = list(), ...
+  data, methods = c("mr", "johnson", "kaplan", "nelson"), options = list(), ...
 ) {
 
   if (!inherits(data, "reliability_data")) {
     stop("data must be a tibble returned from reliability_data().")
   }
 
-  # Remove duplicates
-  methods <- unique(methods)
+  methods <- if (missing(methods)) {
+    "mr"
+  } else {
+    unique(match.arg(methods, several.ok = TRUE))
+  }
 
   if (!all(methods %in% c("mr", "johnson", "kaplan", "nelson"))) {
     stop('methods must be one or more of "mr", "johnson", "kaplan" or "nelson".')
