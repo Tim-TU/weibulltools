@@ -53,12 +53,6 @@
 #'   \item \code{mr_ties.method}: \code{c("max", "min", "average")}, default is "max".
 #' }
 #'
-#' @param data A tibble returned by \link{reliability_data}.
-#' @param methods One or multiple methods of \code{"mr"}, \code{"johnson"},
-#'   \code{"kaplan"} or \code{"nelson"} used for estimating the failure
-#'   probabilities. See 'Details'.
-#' @param options A list of named options. See 'Options'.
-#'
 #' @return A tibble containing the following columns:
 #' \itemize{
 #'   \item \code{id}: Identification.
@@ -73,19 +67,78 @@
 #' }
 #'
 #' @export
-estimate_cdf <- function(
-  data, methods, options = list()
+estimate_cdf <- function(x, ...) {
+  UseMethod("estimate_cdf")
+}
+
+
+
+#' Estimation of Failure Probabilities
+#'
+#' @inherit estimate_cdf description details return
+#' @inheritSection estimate_cdf Options
+#'
+#' @param x A numeric vector which consists of lifetime data. Lifetime
+#'   data could be every characteristic influencing the reliability of a product,
+#'   e.g. operating time (days/months in service), mileage (km, miles), load
+#'   cycles.
+#' @param status A vector of binary data (0 or 1) indicating whether unit \emph{i}
+#'   is a right censored observation (= 0) or a failure (= 1).
+#' @param id A character vector for the identification of every unit.
+#' @param methods One or multiple methods of \code{"mr"}, \code{"johnson"},
+#'   \code{"kaplan"} or \code{"nelson"} used for estimating the failure
+#'   probabilities. See 'Details'.
+#' @param options A list of named options. See 'Options'.
+#'
+#' @export
+estimate_cdf.default <- function(x,
+                                 status,
+                                 id = rep("XXXXXX", length(x)),
+                                 methods = c("mr", "johnson", "kaplan", "nelson"),
+                                 options,
+                                 ...
+) {
+  data <- reliability_data(x = x, status = status, id = id)
+
+  methods <- if (missing(methods)) {
+    "mr"
+  } else {
+    unique(match.arg(methods, several.ok = TRUE))
+  }
+
+  estimate_cdf.reliability_data(
+    data = data,
+    methods = methods,
+    options = options
+  )
+}
+
+
+
+#' Estimation of Failure Probabilities
+#'
+#' @inherit estimate_cdf description details return
+#' @inheritSection estimate_cdf Options
+#'
+#' @param data A tibble returned by \link{reliability_data}.
+#' @param methods One or multiple methods of \code{"mr"}, \code{"johnson"},
+#'   \code{"kaplan"} or \code{"nelson"} used for estimating the failure
+#'   probabilities. See 'Details'.
+#' @param options A list of named options. See 'Options'.
+#'
+#' @export
+estimate_cdf.reliability_data <- function(
+  data, methods = c("mr", "johnson", "kaplan", "nelson"), options = list(), ...
 ) {
 
   if (!inherits(data, "reliability_data")) {
     stop("data must be a tibble returned from reliability_data().")
   }
 
-  # Remove duplicates
-  methods <- unique(methods)
-
-  if (!all(methods %in% c("mr", "johnson", "kaplan", "nelson"))) {
-    stop('methods must be one or more of "mr", "johnson", "kaplan" or "nelson".')
+  methods <- if (missing(methods)) {
+    "mr"
+  } else {
+    unique(match.arg(methods, several.ok = TRUE))
   }
 
   method_funs <- list(
@@ -115,6 +168,7 @@ estimate_cdf <- function(
 #'
 #' The functionality of this function is incorporated into \code{\link{estimate_cdf}}.
 #'
+#' @details
 #' This non-parametric approach (\emph{Median Ranks}) is used to estimate the
 #' failure probabilities in terms of complete data. Two methods are available to
 #' estimate the cumulative distribution function \emph{F(t)}:
@@ -123,12 +177,8 @@ estimate_cdf <- function(
 #'   \item "invbeta"; Exact Median Ranks using the inverse beta distribution
 #' }
 #'
-#' @param x A numeric vector which consists of lifetime data. Lifetime
-#'   data could be every characteristic influencing the reliability of a product,
-#'   e.g. operating time (days/months in service), mileage (km, miles), load
-#'   cycles.
+#' @inheritParams estimate_cdf.default
 #' @param status A vector of ones indicating that every unit \emph{i} has failed.
-#' @param id A character vector for the identification of every unit.
 #' @param method Method for the estimation of the cdf. Can be "benard" (default)
 #' or "invbeta".
 #' @param ties.method A character string specifying how ties are treated, default is "max".
@@ -209,6 +259,7 @@ mr_method_ <- function(data, method = "benard", ties.method = "max") {
 #'
 #' The functionality of this function is incorporated into \code{\link{estimate_cdf}}.
 #'
+#' @details
 #' This non-parametric approach is used to estimate the failure probabilities in
 #' terms of uncensored or (multiple) right censored data. Compared to complete data the
 #' correction is done by calculating adjusted ranks which takes non-defective
@@ -298,6 +349,7 @@ johnson_method_ <- function(data) {
 #'
 #' The functionality of this function is incorporated into \code{\link{estimate_cdf}}.
 #'
+#' @details
 #' Whereas the non-parametric Kaplan-Meier estimator is used to estimate the
 #' survival function \emph{S(t)} in terms of (multiple) right censored data, the
 #' complement is an estimate of the cumulative distribution function \emph{F(t)}.
@@ -417,6 +469,7 @@ kaplan_method_ <- function(data) {
 #'
 #' The functionality of this function is incorporated into \code{\link{estimate_cdf}}.
 #'
+#' @details
 #' This non-parametric approach estimates the cumulative hazard rate in
 #' terms of (multiple) right censored data. By equating the definition of the
 #' hazard rate with the hazard rate according to Nelson-Aalen one can calculate

@@ -36,9 +36,11 @@ Returns a plotly object containing the probability plot with
   plotting positions and the estimated regression line.
 }
 \description{
-This function adds regression lines to an existing probability plot using a
-model estimated by \code{\link{rank_regression}} or
-\code{\link{ml_estimation}}.
+This function adds one or multiple estimated regression lines to an existing
+probability plot (\code{\link{plot_prob}}). Depending on the output of the
+functions \code{\link{rank_regression}}, \code{ml_estimation},
+\code{\link{mixmod_regression}} or \code{\link{mixmod_em}} one or
+multiple lines are plotted.
 }
 \examples{
 # Alloy T7987 dataset taken from Meeker and Escobar(1998, p. 131)
@@ -72,7 +74,7 @@ mrr <- rank_regression(
 
 plot_reg_weibull <- plot_mod(
   p_obj = plot_weibull,
-  model_estimation = mrr,
+  x = mrr,
   title_trace = "Estimated Weibull CDF"
 )
 
@@ -96,7 +98,7 @@ mrr_ln <- rank_regression(
 
 plot_reg_lognormal <- plot_mod(
   p_obj = plot_lognormal,
-  model_estimation = mrr_ln,
+  x = mrr_ln,
   title_trace = "Estimated Lognormal CDF"
 )
 

@@ -271,12 +271,12 @@ plot_prob_ <- function(
   plot_method
 ) {
 
-  prob_tbl <- plot_prob_helper(
+  tbl_prob <- plot_prob_helper(
     cdf_estimation, distribution
   )
 
   p_obj <- plot_layout(
-    x = prob_tbl$x,
+    x = tbl_prob$x,
     distribution = distribution,
     title_main = title_main,
     title_x = title_x,
@@ -289,7 +289,7 @@ plot_prob_ <- function(
 
   plot_prob_fun(
     p_obj = p_obj,
-    prob_tbl = prob_tbl,
+    tbl_prob = tbl_prob,
     distribution = distribution,
     title_main = title_main,
     title_x = title_x,
@@ -299,49 +299,32 @@ plot_prob_ <- function(
 }
 
 
+
 #' Probability Plot for Separated Mixture Models
 #'
 #' This function is used to apply the graphical technique of probability
 #' plotting to univariate mixture models that were separated with functions
 #' \code{\link{mixmod_regression}} or \code{\link{mixmod_em}}.
 #'
-#' Depending on the separation method the function \code{\link{johnson_method}}
-#' is called in two ways. If \code{mixmod_regression} is used, \code{johnson_method}
-#' is applied to all data. If data was splitted by \code{mixmod_em} the function
-#' \code{johnson_method} is applied to subgroup-specific data. The calculated plotting
-#' positions are colored regarding the obtained split of the used splitting function.
+#' If data was splitted by \code{mixmod_em} the function \code{johnson_method}
+#' is applied to subgroup-specific data. The calculated plotting positions are
+#' shaped regarding the obtained split of the used splitting function.
 #'
 #' In \code{\link{mixmod_regression}} a maximum of three subgroups can be determined
 #' and thus being plotted. The intention of this function is to give the
 #' user a hint for the existence of a mixture model. An in-depth analysis should
 #' be done afterwards.
 #'
-#' The marker label for x is determined by the first word provided in the
-#' argument \code{title_x}, i.e. if \code{title_x = "Mileage in km"} the x label
-#' of the marker is "Mileage".
+#' The marker label for x and y are determined by the first word provided in the
+#' argument \code{title_x} respective \code{title_y}, i.e. if
+#' \code{title_x = "Mileage in km"} the x label of the marker is "Mileage".
 #'
-#' The marker label for y is determined by the string provided in the
-#' argument \code{title_y}, i.e. if \code{title_y = "Probability in percent"} the y
-#' label of the marker is "Probability".
+#' The name of the legend entry is a combination of the \code{title_trace} and
+#' the number of determined subgroups. If \code{title_trace = "Group"} and the
+#' data could be splitted in two groups, the legend entries would be "Group: 1"
+#' and "Group: 2".
 #'
-#' The name of the legend entry is a combination of the \code{title_trace} and the
-#' number of determined subgroups. If \code{title_trace = "Group"} and the data
-#' could be splitted in two groups, the legend entries would be "Group 1" and "Group 2".
-#'
-#' @encoding UTF-8
-#' @references Doganaksoy, N.; Hahn, G.; Meeker, W. Q., Reliability Analysis by
-#'   Failure Mode, Quality Progress, 35(6), 47-52, 2002
-#'
-#' @export
-plot_prob_mix <- function(x, ...) {
-  UseMethod("plot_prob_mix")
-}
-
-
-
-#' Probability Plot for Separated Mixture Models
-#'
-#' @inherit plot_prob_mix description details return references
+#' @inherit plot_prob return references
 #'
 #' @inheritParams plot_prob.default
 #'
@@ -359,7 +342,7 @@ plot_prob_mix <- function(x, ...) {
 #' id <- 1:length(hours)
 #'
 #' # Example 1 - mix_output = NULL:
-#' plot_weibull <- plot_prob_mix(x = hours,
+#' plot_weibull <- plot_prob(x = hours,
 #'                               status = state,
 #'                               id = id,
 #'                               distribution = "weibull",
@@ -373,7 +356,7 @@ plot_prob_mix <- function(x, ...) {
 #' mix_mod_em <- mixmod_em(x = hours, status = state, distribution = "weibull",
 #'                         conf_level = 0.95, k = 2, method = "EM", n_iter = 150)
 #'
-#' plot_weibull_em <- plot_prob_mix(x = hours,
+#' plot_weibull_em <- plot_prob(x = hours,
 #'                                  status = state,
 #'                                  id = id,
 #'                                  distribution = "weibull",
@@ -392,7 +375,7 @@ plot_prob_mix <- function(x, ...) {
 #'   distribution = "weibull"
 #' )
 #'
-#' plot_weibull_reg <- plot_prob_mix(
+#' plot_weibull_reg <- plot_prob(
 #'   x = hours,
 #'   status = state,
 #'   id = id,
@@ -405,7 +388,7 @@ plot_prob_mix <- function(x, ...) {
 #' )
 #'
 #' @export
-plot_prob_mix.model_estimation <- function(x,
+plot_prob.model_estimation <- function(x,
                                            title_main = "Probability Plot",
                                            title_x = "Characteristic",
                                            title_y = "Unreliability",
@@ -415,10 +398,7 @@ plot_prob_mix.model_estimation <- function(x,
 ) {
   plot_method <- match.arg(plot_method)
 
-  data <- reliability_data(x$data, x = x, status = status)
-
-  cdf_estimation <- estimate_cdf(data, "johnson") %>%
-    dplyr::filter(status == 1)
+  cdf_estimation <- x$data
 
   plot_prob.cdf_estimation(
     x = cdf_estimation,
@@ -433,10 +413,10 @@ plot_prob_mix.model_estimation <- function(x,
 
 
 
-#' @rdname plot_prob_mix.model_estimation
+#' @rdname plot_prob.model_estimation
 #'
 #' @export
-plot_prob_mix.mixmod_regression <- function(x,
+plot_prob.mixmod_regression <- function(x,
                                            title_main = "Probability Plot",
                                            title_x = "Characteristic",
                                            title_y = "Unreliability",
@@ -447,25 +427,15 @@ plot_prob_mix.mixmod_regression <- function(x,
 
   plot_method <- match.arg(plot_method)
 
-
   # Take all data
-  data <- purrr::map2_dfr(x, seq_along(x), function(model_estimation, i) {
+  cdf_estimation <- purrr::map2_dfr(x, seq_along(x), function(model_estimation, i) {
     model_estimation$data %>%
       # Mark group
-      dplyr::mutate(group = i)
+      dplyr::mutate(group = as.character(i))
   })
 
-  rel_data <- reliability_data(data, x = x, status = status) %>%
-    dplyr::mutate(group = data$group)
-
-  # Apply johnson method to all data
-  john <- estimate_cdf(rel_data, "johnson")
-
-  # Set group as method
-  john$method <- as.character(data$group)
-
   plot_prob.cdf_estimation(
-    x = john,
+    x = cdf_estimation,
     title_main = title_main,
     title_x = title_x,
     title_y = title_y,
@@ -476,10 +446,10 @@ plot_prob_mix.mixmod_regression <- function(x,
 
 
 
-#' @rdname plot_prob_mix.model_estimation
+#' @rdname plot_prob.model_estimation
 #'
 #' @export
-plot_prob_mix.mixmod_em <- function(x,
+plot_prob.mixmod_em <- function(x,
                                     title_main = "Probability Plot",
                                     title_x = "Characteristic",
                                     title_y = "Unreliability",
@@ -517,9 +487,75 @@ plot_prob_mix.mixmod_em <- function(x,
   )
 }
 
+
+
+#' @rdname plot_prob.model_estimation
+#'
+#' @export
+plot_prob.mixmod_regression_list <- function(x,
+                                                 title_main = "Probability Plot",
+                                                 title_x = "Characteristic",
+                                                 title_y = "Unreliability",
+                                                 title_trace = "Sample",
+                                                 plot_method = c("plotly", "ggplot2"),
+                                                 ...
+) {
+
+  plot_method <- match.arg(plot_method)
+
+  # Take all data
+  cdf_estimation <- purrr::map_dfr(x, function(mixmod_regression) {
+    purrr::map2_dfr(
+      mixmod_regression,
+      seq_along(mixmod_regression),
+      function(model_estimation, index) {
+        model_estimation$data %>% dplyr::mutate(group = as.character(index))
+      }
+    )
+  })
+
+  plot_prob.cdf_estimation(
+    x = cdf_estimation,
+    title_main = title_main,
+    title_x = title_x,
+    title_y = title_y,
+    title_trace = title_trace,
+    plot_method = plot_method
+  )
+}
+
+
+
 #' Probability Plot for Separated Mixture Models
 #'
-#' @inherit plot_prob_mix description details return references
+#' @description
+#' \lifecycle{soft-deprecated}
+#'
+#' This function is used to apply the graphical technique of probability
+#' plotting to univariate mixture models that were separated with functions
+#' \code{\link{mixmod_regression}} or \code{\link{mixmod_em}}.
+#'
+#' @details
+#' If data was splitted by \code{mixmod_em} the function \code{johnson_method}
+#' is applied to subgroup-specific data. The calculated plotting positions are
+#' shaped regarding the obtained split of the used splitting function.
+#'
+#' In \code{\link{mixmod_regression}} a maximum of three subgroups can be determined
+#' and thus being plotted. The intention of this function is to give the
+#' user a hint for the existence of a mixture model. An in-depth analysis should
+#' be done afterwards.
+#'
+#' The marker label for x and y are determined by the first word provided in the
+#' argument \code{title_x} respective \code{title_y}, i.e. if
+#' \code{title_x = "Mileage in km"} the x label of the marker is "Mileage".
+#'
+#' The name of the legend entry is a combination of the \code{title_trace} and the
+#' number of determined subgroups. If \code{title_trace = "Group"} and the data
+#' could be splitted in two groups, the legend entries would be "Group 1" and "Group 2".
+#'
+#' @encoding UTF-8
+#' @references Doganaksoy, N.; Hahn, G.; Meeker, W. Q., Reliability Analysis by
+#'   Failure Mode, Quality Progress, 35(6), 47-52, 2002
 #'
 #' @inheritParams plot_prob.default
 #' @param mix_output A list provided by \code{\link{mixmod_regression}} or
@@ -576,7 +612,7 @@ plot_prob_mix.mixmod_em <- function(x,
 #' )
 #'
 #' @export
-plot_prob_mix.default <- function(
+plot_prob_mix <- function(
                         x,
                         status,
                         id = rep("XXXXXX", length(x)),
@@ -590,47 +626,35 @@ plot_prob_mix.default <- function(
                         ...
 ) {
 
-  distribution <- match.arg(distribution)
+  deprecate_soft(
+    "2.0.0", "plot_prob_mix()", "plot_prob()"
+  )
+
   plot_method <- match.arg(plot_method)
 
-  if (("em_results" %in%  names(mix_output)) && distribution != "weibull") {
-    stop("No valid distribution! Use weibull to visualize EM results")
-  }
-
-  data <- reliability_data(x = x, status = status, id = id)
-  tbl_group <- plot_prob_mix_helper(
-    data, distribution, mix_output, title_trace
-  )
-
-  # Plot layout:
-  p_obj <- plot_layout(
-    x = x,
-    distribution = distribution,
+  plot_prob(
+    mix_output,
     title_main = title_main,
     title_x = title_x,
     title_y = title_y,
+    title_trace = title_trace,
     plot_method = plot_method
-  )
-
-  plot_prob_mix_fun <- if (plot_method == "plotly") plot_prob_mix_plotly else
-    plot_prob_mix_ggplot2
-
-  plot_prob_mix_fun(
-    p_obj = p_obj,
-    tbl_group = tbl_group,
-    distribution = distribution,
-    title_main = title_main,
-    title_x = title_x,
-    title_y = title_y,
-    title_trace = title_trace
   )
 }
 
 #' Add Estimated Population Line(s) to a Probability Plot
 #'
-#' This function adds regression lines to an existing probability plot using a
-#' model estimated by \code{\link{rank_regression}} or
-#' \code{\link{ml_estimation}}.
+#' This function adds one or multiple estimated regression lines to an existing
+#' probability plot (\code{\link{plot_prob}}). Depending on the output of the
+#' functions \code{\link{rank_regression}}, \code{ml_estimation},
+#' \code{\link{mixmod_regression}} or \code{\link{mixmod_em}} one or
+#' multiple lines are plotted.
+#'
+#' The name of the legend entry is a combination of the \code{title_trace} and
+#' the number of determined subgroups from \code{\link{mixmod_regression}} or
+#' \code{\link{mixmod_em}}. If \code{title_trace = "Line"} and the
+#' data could be splitted in two groups, the legend entries would be "Line: 1"
+#' and "Line: 2".
 #'
 #' @section Methods (by class):
 #' \describe{
@@ -658,9 +682,10 @@ plot_mod <- function(
   UseMethod("plot_mod", x)
 }
 
-#' Add Estimated Population Line(s) to a Probability Plot
+#' Adding Estimated Population Lines of a Separated Mixture Model to a
+#' Probability Plot
 #'
-#' @inherit plot_mod description return references
+#' @inherit plot_mod description details return references
 #'
 #' @param p_obj A plot object returned from \code{\link{plot_prob}}.
 #' @param x An object of class \code{model_estimation} or
@@ -745,6 +770,8 @@ plot_mod.model_estimation <- function(
   )
 }
 
+
+
 #' @rdname plot_mod.model_estimation
 #'
 #' @export
@@ -786,6 +813,114 @@ plot_mod.model_estimation_list <- function(
     title_trace = title_trace
   )
 }
+
+
+
+#' @rdname plot_mod.model_estimation
+#'
+#' @export
+plot_mod.mixmod_regression <- function(p_obj, x, title_trace = "Fit", ...) {
+  # Plot method is determined by p_obj
+  plot_method <- if (inherits(p_obj, "gg")) {
+    "ggplot2"
+  } else if (inherits(p_obj, "plotly")) {
+    "plotly"
+  }  else {
+    stop(
+      "p_obj is not a valid plot object. Provide either a ggplot2 or a plotly
+      plot object."
+    )
+  }
+
+  tbl_pred <- purrr::map2_dfr(x, seq_along(x), function(model_estimation, index) {
+    method <- if (purrr::is_null(model_estimation$data$method)) {
+      # Case mixmod_em (plot_mod.mixmod_em calls this method internally)
+      as.character(index)
+    } else {
+      # Case mixmod_regression
+      model_estimation$data$method[1]
+    }
+
+    plot_mod_mix_helper(
+      model_estimation = model_estimation,
+      method = method,
+      group = as.character(index)
+    )
+  })
+
+  plot_mod_fun <- if (plot_method == "plotly") plot_mod_plotly else
+    plot_mod_ggplot2
+
+  plot_mod_fun(
+    p_obj = p_obj,
+    tbl_pred = tbl_pred,
+    title_trace = title_trace
+  )
+}
+
+
+
+#' @rdname plot_mod.model_estimation
+#'
+#' @export
+plot_mod.mixmod_regression_list <- function(p_obj,
+                                            x,
+                                            title_trace = "Fit",
+                                            ...
+) {
+  # Plot method is determined by p_obj
+  plot_method <- if (inherits(p_obj, "gg")) {
+    "ggplot2"
+  } else if (inherits(p_obj, "plotly")) {
+    "plotly"
+  }  else {
+    stop(
+      "p_obj is not a valid plot object. Provide either a ggplot2 or a plotly
+      plot object."
+    )
+  }
+
+  tbl_pred <- purrr::map2_dfr(x, names(x), function(mixmod_regression, method) {
+    purrr::map2_dfr(
+      mixmod_regression,
+      seq_along(mixmod_regression),
+      function(model_estimation, index) {
+        plot_mod_mix_helper(
+          model_estimation = model_estimation,
+          method = method,
+          group = as.character(index)
+        )
+      }
+    )
+  })
+
+  plot_mod_fun <- if (plot_method == "plotly") plot_mod_plotly else
+    plot_mod_ggplot2
+
+  plot_mod_fun(
+    p_obj = p_obj,
+    tbl_pred = tbl_pred,
+    title_trace = title_trace
+  )
+}
+
+
+
+#' @rdname plot_mod.model_estimation
+#'
+#' @export
+plot_mod.mixmod_em <- function(p_obj, x, title_trace = "Fit", ...) {
+
+  # Remove em results to get model_estimation_list
+  model_estimation_list <- x[-length(x)]
+
+  plot_mod.mixmod_regression(
+    p_obj = p_obj,
+    x = model_estimation_list,
+    title_trace = title_trace
+  )
+}
+
 
 
 #' Add Estimated Population Line to a Probability Plot
@@ -834,7 +969,7 @@ plot_mod.model_estimation_list <- function(
 #'
 #' plot_reg_weibull <- plot_mod(
 #'   p_obj = plot_weibull,
-#'   model_estimation = mrr,
+#'   x = mrr,
 #'   title_trace = "Estimated Weibull CDF"
 #' )
 #'
@@ -858,7 +993,7 @@ plot_mod.model_estimation_list <- function(
 #'
 #' plot_reg_lognormal <- plot_mod(
 #'   p_obj = plot_lognormal,
-#'   model_estimation = mrr_ln,
+#'   x = mrr_ln,
 #'   title_trace = "Estimated Lognormal CDF"
 #' )
 #'
@@ -909,19 +1044,20 @@ plot_mod.default <- function(p_obj,
 #' Probability Plot
 #'
 #' This function adds one or multiple estimated regression lines to an existing
-#' probability plot (\code{\link{plot_prob_mix}}). Depending on the output of the
+#' probability plot (\code{\link{plot_prob}}). Depending on the output of the
 #' function \code{\link{mixmod_regression}} or \code{\link{mixmod_em}} one or
 #' multiple lines are plotted.
 #'
-#' The name of the legend entry is a combination of the \code{title_trace} and the
-#' number of determined subgroups. If \code{title_trace = "Line"} and the data
-#' could be splitted in two groups, the legend entries would be "Line 1" and "Line 2".
+#' The name of the legend entry is a combination of the \code{title_trace} and
+#' the number of determined subgroups. If \code{title_trace = "Line"} and the
+#' data could be splitted in two groups, the legend entries would be "Line: 1"
+#' and "Line: 2".
 #'
 #' @encoding UTF-8
 #' @references Doganaksoy, N.; Hahn, G.; Meeker, W. Q., Reliability Analysis by
 #'   Failure Mode, Quality Progress, 35(6), 47-52, 2002
 #'
-#' @param p_obj A plotly object provided by function \code{\link{plot_prob_mix}}.
+#' @param p_obj A plotly object provided by function \code{\link{plot_prob}}.
 #' @param mix_output A list provided by \code{\link{mixmod_regression}} or
 #'   \code{\link{mixmod_em}}, which consists of elements necessary to visualize
 #'   the regression lines.
@@ -948,7 +1084,7 @@ plot_mod.default <- function(p_obj,
 #' mix_mod_em <- mixmod_em(x = hours, status = state, distribution = "weibull",
 #'                         conf_level = 0.95, k = 2, method = "EM", n_iter = 150)
 #'
-#' plot_weibull_em <- plot_prob_mix(x = hours,
+#' plot_weibull_em <- plot_prob(x = hours,
 #'                                  status = state,
 #'                                  id = id,
 #'                                  distribution = "weibull",
@@ -972,7 +1108,7 @@ plot_mod.default <- function(p_obj,
 #'                                  status = john$status,
 #'                                  distribution = "weibull")
 #'
-#' plot_weibull_reg <- plot_prob_mix(x = hours,
+#' plot_weibull_reg <- plot_prob(x = hours,
 #'                                   status = state,
 #'                                   id = id,
 #'                                   distribution = "weibull",
@@ -990,86 +1126,20 @@ plot_mod.default <- function(p_obj,
 #'                                    title_trace = "Fitted Line")
 #'
 #' @export
-plot_mod_mix <- function(p_obj, x, ...) {
-  UseMethod("plot_mod_mix", x)
-}
-
-
-
-#' @export
-plot_mod_mix.model_estimation <- function(p_obj, x, title_trace = "Fit", ...) {
-  plot_mod_mix.model_estimation_list(p_obj, list(x), title_trace = title_trace)
-}
-
-
-
-#' @export
-plot_mod_mix.mixmod_regression <- function(p_obj, x, title_trace = "Fit", ...) {
-  # Plot method is determined by p_obj
-  plot_method <- if (inherits(p_obj, "gg")) {
-    "ggplot2"
-  } else if (inherits(p_obj, "plotly")) {
-    "plotly"
-  }  else {
-    stop(
-      "p_obj is not a valid plot object. Provide either a ggplot2 or a plotly
-      plot object."
-    )
-  }
-
-  tbl_pred <- purrr::map2_dfr(x, seq_along(x), function(model_estimation, index) {
-    plot_mod_mix_helper_2(
-      model_estimation = model_estimation,
-      index = index
-    )
-  })
-
-  plot_mod_fun <- if (plot_method == "plotly") plot_mod_plotly else
-    plot_mod_ggplot2
-
-  plot_mod_fun(
-    p_obj = p_obj,
-    tbl_pred = tbl_pred,
-    title_trace = title_trace
-  )
-}
-
-
-
-#' @export
-plot_mod_mix.mixmod_em <- function(p_obj, x, title_trace = "Fit", ...) {
-
-  model_estimation_list <- x[-length(x)]
-  class(model_estimation_list) <- c(
-    "model_estimation_list", class(model_estimation_list)
-  )
-
-  plot_mod_mix.mixmod_regression(
-    p_obj = p_obj,
-    x = model_estimation_list,
-    title_trace = title_trace
-  )
-}
-
-
-
-#' @export
-plot_mod_mix.default <- function(p_obj,
-                                 x,
-                                 status,
-                                 mix_output,
-                                 distribution = c(
-                                   "weibull", "lognormal", "loglogistic"
-                                 ),
-                                 title_trace = "Fit",
-                                 ...
+plot_mod_mix <- function(p_obj,
+                         x,
+                         status,
+                         mix_output,
+                         distribution = c(
+                           "weibull", "lognormal", "loglogistic"
+                         ),
+                         title_trace = "Fit",
+                         ...
 ) {
 
-  distribution <- match.arg(distribution)
-
-  if (("em_results" %in%  names(mix_output)) && distribution != "weibull") {
-    stop("No valid distribution! Use weibull to visualize EM results")
-  }
+  deprecate_soft(
+    "2.0.0", "plot_mod_mix()", "plot_mod()"
+  )
 
   # Plot method is determined by p_obj
   plot_method <- if (inherits(p_obj, "gg")) {
@@ -1083,15 +1153,10 @@ plot_mod_mix.default <- function(p_obj,
     )
   }
 
-  tbl_group <- plot_mod_mix_helper(
-    x, status, mix_output, distribution, title_trace
-  )
-
-  plot_mod_mix_fun <- if (plot_method == "plotly") plot_mod_mix_plotly else
-    plot_mod_mix_ggplot2
-
-  plot_mod_mix_fun(
-    p_obj, tbl_group, title_trace
+  plot_mod(
+    p_obj = p_obj,
+    x = mix_output,
+    title_trace = title_trace
   )
 }
 

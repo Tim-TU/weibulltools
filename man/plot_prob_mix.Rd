@@ -5,36 +5,124 @@
 \alias{plot_prob_mix}
 \title{Probability Plot for Separated Mixture Models}
 \usage{
-plot_prob_mix(x, ...)
+plot_prob_mix(
+  x,
+  status,
+  id = rep("XXXXXX", length(x)),
+  distribution = c("weibull", "lognormal", "loglogistic"),
+  mix_output,
+  title_main = "Probability Plot",
+  title_x = "Characteristic",
+  title_y = "Unreliability",
+  title_trace = "Sample",
+  plot_method = c("plotly", "ggplot2"),
+  ...
+)
+}
+\arguments{
+\item{x}{A numeric vector which consists of lifetime data. Lifetime
+data could be every characteristic influencing the reliability of a product,
+e.g. operating time (days/months in service), mileage (km, miles), load
+cycles.}
+
+\item{status}{A vector of binary data (0 or 1) indicating whether unit \emph{i}
+is a right censored observation (= 0) or a failure (= 1).}
+
+\item{id}{A character vector for the identification of every unit.}
+
+\item{distribution}{Supposed distribution of the random variable.}
+
+\item{mix_output}{A list provided by \code{\link{mixmod_regression}} or
+\code{\link{mixmod_em}}, which consists of values necessary to visualize the
+subgroups.The default value of \code{mix_output} is \code{NULL}.}
+
+\item{title_main}{A character string which is assigned to the main title
+of the plot.}
+
+\item{title_x}{A character string which is assigned to the title of the
+x axis.}
+
+\item{title_y}{A character string which is assigned to the title of the
+y axis.}
+
+\item{title_trace}{A character string whis is assigned to the trace shown in
+the legend.}
+
+\item{plot_method}{Package, which is used for generating the plot output.}
 }
 \description{
+\lifecycle{soft-deprecated}
+
 This function is used to apply the graphical technique of probability
 plotting to univariate mixture models that were separated with functions
 \code{\link{mixmod_regression}} or \code{\link{mixmod_em}}.
 }
 \details{
-Depending on the separation method the function \code{\link{johnson_method}}
-is called in two ways. If \code{mixmod_regression} is used, \code{johnson_method}
-is applied to all data. If data was splitted by \code{mixmod_em} the function
-\code{johnson_method} is applied to subgroup-specific data. The calculated plotting
-positions are colored regarding the obtained split of the used splitting function.
+If data was splitted by \code{mixmod_em} the function \code{johnson_method}
+is applied to subgroup-specific data. The calculated plotting positions are
+shaped regarding the obtained split of the used splitting function.
 
 In \code{\link{mixmod_regression}} a maximum of three subgroups can be determined
 and thus being plotted. The intention of this function is to give the
 user a hint for the existence of a mixture model. An in-depth analysis should
 be done afterwards.
 
-The marker label for x is determined by the first word provided in the
-argument \code{title_x}, i.e. if \code{title_x = "Mileage in km"} the x label
-of the marker is "Mileage".
-
-The marker label for y is determined by the string provided in the
-argument \code{title_y}, i.e. if \code{title_y = "Probability in percent"} the y
-label of the marker is "Probability".
+The marker label for x and y are determined by the first word provided in the
+argument \code{title_x} respective \code{title_y}, i.e. if
+\code{title_x = "Mileage in km"} the x label of the marker is "Mileage".
 
 The name of the legend entry is a combination of the \code{title_trace} and the
 number of determined subgroups. If \code{title_trace = "Group"} and the data
 could be splitted in two groups, the legend entries would be "Group 1" and "Group 2".
+}
+\examples{
+# Data is taken from given reference:
+hours <- c(2, 28, 67, 119, 179, 236, 282, 317, 348, 387, 3, 31, 69, 135,
+          191, 241, 284, 318, 348, 392, 5, 31, 76, 144, 203, 257, 286,
+          320, 350, 412, 8, 52, 78, 157, 211, 261, 298, 327, 360, 446,
+          13, 53, 104, 160, 221, 264, 303, 328, 369, 21, 64, 113, 168,
+          226, 278, 314, 328, 377)
+state <- c(1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1,
+          1, 0, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 0, 0,
+          1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+          0, 1, 1, 1, 1, 1, 1)
+id <- 1:length(hours)
+
+# Example 1 - Using result of mixmod_em in mix_output:
+mix_mod_em <- mixmod_em(x = hours, status = state, distribution = "weibull",
+                        conf_level = 0.95, k = 2, method = "EM", n_iter = 150)
+
+plot_weibull_em <- plot_prob_mix(x = hours,
+                                 status = state,
+                                 id = id,
+                                 distribution = "weibull",
+                                 mix_output = mix_mod_em,
+                                 title_main = "Weibull Mixture EM",
+                                 title_x = "Time in Hours",
+                                 title_y = "Probability of Failure",
+                                 title_trace = "Subgroup")
+
+# Example 2 - Using result of mixmod_regression in mix_output:
+john <- johnson_method(x = hours, status = state)
+mix_mod_reg <- mixmod_regression(
+  x = john$x,
+  y = john$prob,
+  status = john$status,
+  distribution = "weibull"
+)
+
+plot_weibull_reg <- plot_prob_mix(
+  x = hours,
+  status = state,
+  id = id,
+  distribution = "weibull",
+  mix_output = mix_mod_reg,
+  title_main = "Weibull Mixture Regression",
+  title_x = "Time in Hours",
+  title_y = "Probability of Failure",
+  title_trace = "Subgroup"
+)
+
 }
 \references{
 Doganaksoy, N.; Hahn, G.; Meeker, W. Q., Reliability Analysis by

@@ -1,11 +1,3 @@
-test_that("estimate_cdf fails for non reliability data", {
-  tbl <- tibble::tibble(x = 1:10)
-  expect_error(
-    estimate_cdf(tbl, methods = "mr"),
-    "data must be a tibble returned from reliability_data()"
-  )
-})
-
 test_that("mr_method_ warns for right-censored data", {
   obs <- seq(10000, 100000, 10000)
 
