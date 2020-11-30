@@ -644,9 +644,17 @@ plot_prob_mix <- function(
 
 #' Add Estimated Population Line(s) to a Probability Plot
 #'
-#' This function adds regression lines to an existing probability plot using a
-#' model estimated by \code{\link{rank_regression}} or
-#' \code{\link{ml_estimation}}.
+#' This function adds one or multiple estimated regression lines to an existing
+#' probability plot (\code{\link{plot_prob}}). Depending on the output of the
+#' functions \code{\link{rank_regression}}, \code{ml_estimation},
+#' \code{\link{mixmod_regression}} or \code{\link{mixmod_em}} one or
+#' multiple lines are plotted.
+#'
+#' The name of the legend entry is a combination of the \code{title_trace} and
+#' the number of determined subgroups from \code{\link{mixmod_regression}} or
+#' \code{\link{mixmod_em}}. If \code{title_trace = "Line"} and the
+#' data could be splitted in two groups, the legend entries would be "Line: 1"
+#' and "Line: 2".
 #'
 #' @section Methods (by class):
 #' \describe{
@@ -674,9 +682,10 @@ plot_mod <- function(
   UseMethod("plot_mod", x)
 }
 
-#' Add Estimated Population Line(s) to a Probability Plot
+#' Adding Estimated Population Lines of a Separated Mixture Model to a
+#' Probability Plot
 #'
-#' @inherit plot_mod description return references
+#' @inherit plot_mod description details return references
 #'
 #' @param p_obj A plot object returned from \code{\link{plot_prob}}.
 #' @param x An object of class \code{model_estimation} or
@@ -761,6 +770,8 @@ plot_mod.model_estimation <- function(
   )
 }
 
+
+
 #' @rdname plot_mod.model_estimation
 #'
 #' @export
@@ -802,6 +813,114 @@ plot_mod.model_estimation_list <- function(
     title_trace = title_trace
   )
 }
+
+
+
+#' @rdname plot_mod.model_estimation
+#'
+#' @export
+plot_mod.mixmod_regression <- function(p_obj, x, title_trace = "Fit", ...) {
+  # Plot method is determined by p_obj
+  plot_method <- if (inherits(p_obj, "gg")) {
+    "ggplot2"
+  } else if (inherits(p_obj, "plotly")) {
+    "plotly"
+  }  else {
+    stop(
+      "p_obj is not a valid plot object. Provide either a ggplot2 or a plotly
+      plot object."
+    )
+  }
+
+  tbl_pred <- purrr::map2_dfr(x, seq_along(x), function(model_estimation, index) {
+    method <- if (purrr::is_null(model_estimation$data$method)) {
+      # Case mixmod_em (plot_mod.mixmod_em calls this method internally)
+      as.character(index)
+    } else {
+      # Case mixmod_regression
+      model_estimation$data$method[1]
+    }
+
+    plot_mod_mix_helper(
+      model_estimation = model_estimation,
+      method = method,
+      group = as.character(index)
+    )
+  })
+
+  plot_mod_fun <- if (plot_method == "plotly") plot_mod_plotly else
+    plot_mod_ggplot2
+
+  plot_mod_fun(
+    p_obj = p_obj,
+    tbl_pred = tbl_pred,
+    title_trace = title_trace
+  )
+}
+
+
+
+#' @rdname plot_mod.model_estimation
+#'
+#' @export
+plot_mod.mixmod_regression_list <- function(p_obj,
+                                            x,
+                                            title_trace = "Fit",
+                                            ...
+) {
+  # Plot method is determined by p_obj
+  plot_method <- if (inherits(p_obj, "gg")) {
+    "ggplot2"
+  } else if (inherits(p_obj, "plotly")) {
+    "plotly"
+  }  else {
+    stop(
+      "p_obj is not a valid plot object. Provide either a ggplot2 or a plotly
+      plot object."
+    )
+  }
+
+  tbl_pred <- purrr::map2_dfr(x, names(x), function(mixmod_regression, method) {
+    purrr::map2_dfr(
+      mixmod_regression,
+      seq_along(mixmod_regression),
+      function(model_estimation, index) {
+        plot_mod_mix_helper(
+          model_estimation = model_estimation,
+          method = method,
+          group = as.character(index)
+        )
+      }
+    )
+  })
+
+  plot_mod_fun <- if (plot_method == "plotly") plot_mod_plotly else
+    plot_mod_ggplot2
+
+  plot_mod_fun(
+    p_obj = p_obj,
+    tbl_pred = tbl_pred,
+    title_trace = title_trace
+  )
+}
+
+
+
+#' @rdname plot_mod.model_estimation
+#'
+#' @export
+plot_mod.mixmod_em <- function(p_obj, x, title_trace = "Fit", ...) {
+
+  # Remove em results to get model_estimation_list
+  model_estimation_list <- x[-length(x)]
+
+  plot_mod.mixmod_regression(
+    p_obj = p_obj,
+    x = model_estimation_list,
+    title_trace = title_trace
+  )
+}
+
 
 
 #' Add Estimated Population Line to a Probability Plot
@@ -929,9 +1048,10 @@ plot_mod.default <- function(p_obj,
 #' function \code{\link{mixmod_regression}} or \code{\link{mixmod_em}} one or
 #' multiple lines are plotted.
 #'
-#' The name of the legend entry is a combination of the \code{title_trace} and the
-#' number of determined subgroups. If \code{title_trace = "Line"} and the data
-#' could be splitted in two groups, the legend entries would be "Line 1" and "Line 2".
+#' The name of the legend entry is a combination of the \code{title_trace} and
+#' the number of determined subgroups. If \code{title_trace = "Line"} and the
+#' data could be splitted in two groups, the legend entries would be "Line: 1"
+#' and "Line: 2".
 #'
 #' @encoding UTF-8
 #' @references Doganaksoy, N.; Hahn, G.; Meeker, W. Q., Reliability Analysis by
@@ -1006,145 +1126,19 @@ plot_mod.default <- function(p_obj,
 #'                                    title_trace = "Fitted Line")
 #'
 #' @export
-plot_mod_mix <- function(p_obj, x, ...) {
-  UseMethod("plot_mod_mix", x)
-}
-
-
-
-#' Adding Estimated Population Lines of a Separated Mixture Model to a
-#' Probability Plot
-#'
-#' @export
-plot_mod_mix.model_estimation <- function(p_obj, x, title_trace = "Fit", ...) {
-  plot_mod_mix.model_estimation_list(p_obj, list(x), title_trace = title_trace)
-}
-
-
-
-#' @export
-plot_mod_mix.mixmod_regression <- function(p_obj, x, title_trace = "Fit", ...) {
-  # Plot method is determined by p_obj
-  plot_method <- if (inherits(p_obj, "gg")) {
-    "ggplot2"
-  } else if (inherits(p_obj, "plotly")) {
-    "plotly"
-  }  else {
-    stop(
-      "p_obj is not a valid plot object. Provide either a ggplot2 or a plotly
-      plot object."
-    )
-  }
-
-  tbl_pred <- purrr::map2_dfr(x, seq_along(x), function(model_estimation, index) {
-    method <- if (purrr::is_null(model_estimation$data$method)) {
-      # Case mixmod_em (plot_mod_mix.mixmod_em calls this method internally)
-      as.character(index)
-    } else {
-      # Case mixmod_regression
-      model_estimation$data$method[1]
-    }
-
-    plot_mod_mix_helper(
-      model_estimation = model_estimation,
-      method = method,
-      group = as.character(index)
-    )
-  })
-
-  plot_mod_fun <- if (plot_method == "plotly") plot_mod_plotly else
-    plot_mod_ggplot2
-
-  plot_mod_fun(
-    p_obj = p_obj,
-    tbl_pred = tbl_pred,
-    title_trace = title_trace
-  )
-}
-
-
-
-#' @rdname plot_mod_mix.model_estimation
-#'
-#' @export
-plot_mod_mix.mixmod_regression_list <- function(p_obj,
-                                                x,
-                                                title_trace = "Fit",
-                                                ...
-) {
-  # Plot method is determined by p_obj
-  plot_method <- if (inherits(p_obj, "gg")) {
-    "ggplot2"
-  } else if (inherits(p_obj, "plotly")) {
-    "plotly"
-  }  else {
-    stop(
-      "p_obj is not a valid plot object. Provide either a ggplot2 or a plotly
-      plot object."
-    )
-  }
-
-  tbl_pred <- purrr::map2_dfr(x, names(x), function(mixmod_regression, method) {
-    purrr::map2_dfr(
-      mixmod_regression,
-      seq_along(mixmod_regression),
-      function(model_estimation, index) {
-        plot_mod_mix_helper(
-          model_estimation = model_estimation,
-          method = method,
-          group = as.character(index)
-        )
-      }
-    )
-  })
-
-  plot_mod_fun <- if (plot_method == "plotly") plot_mod_plotly else
-    plot_mod_ggplot2
-
-  plot_mod_fun(
-    p_obj = p_obj,
-    tbl_pred = tbl_pred,
-    title_trace = title_trace
-  )
-}
-
-
-
-#' @rdname plot_mod_mix.model_estimation
-#'
-#' @export
-plot_mod_mix.mixmod_em <- function(p_obj, x, title_trace = "Fit", ...) {
-
-  # Remove em results to get model_estimation_list
-  model_estimation_list <- x[-length(x)]
-
-  plot_mod_mix.mixmod_regression(
-    p_obj = p_obj,
-    x = model_estimation_list,
-    title_trace = title_trace
-  )
-}
-
-
-
-#' @export
-plot_mod_mix.default <- function(p_obj,
-                                 x,
-                                 status,
-                                 mix_output,
-                                 distribution = c(
-                                   "weibull", "lognormal", "loglogistic"
-                                 ),
-                                 title_trace = "Fit",
-                                 ...
+plot_mod_mix <- function(p_obj,
+                         x,
+                         status,
+                         mix_output,
+                         distribution = c(
+                           "weibull", "lognormal", "loglogistic"
+                         ),
+                         title_trace = "Fit",
+                         ...
 ) {
 
   deprecate_soft(
-    "2.0.0", "plot_mod_mix.default()",
-    details = "
-    x, status and distribution are no longer necessary (they are
-    part of mix_output). Use plot_mod_mix(x = mix_output) instead.
-    "
+    "2.0.0", "plot_mod_mix()", "plot_mod()"
   )
 
   # Plot method is determined by p_obj
@@ -1159,7 +1153,7 @@ plot_mod_mix.default <- function(p_obj,
     )
   }
 
-  plot_mod_mix(
+  plot_mod(
     p_obj = p_obj,
     x = mix_output,
     title_trace = title_trace
