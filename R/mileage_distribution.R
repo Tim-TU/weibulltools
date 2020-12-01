@@ -280,7 +280,7 @@ dist_mileage <- function(
 #' # methods = "kaplan"
 #' #)
 #'
-#' plot_prob_estimation <- plot_prob(prob_estimation)
+#' # plot_prob_estimation <- plot_prob(prob_estimation)
 
 mcs_mileage <- function(
   mileage,
