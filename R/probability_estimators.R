@@ -208,7 +208,7 @@ mr_method <- function(
   method = c("benard", "invbeta"),
   ties.method = c("max", "min", "average")
 ) {
-  deprecate_soft("1.1.0", "mr_method()")
+  deprecate_soft("2.0.0", "mr_method()")
 
   method <- match.arg(method)
   ties.method <- match.arg(ties.method)
@@ -285,7 +285,7 @@ mr_method_ <- function(data, method = "benard", ties.method = "max") {
 #' @export
 johnson_method <- function(x, status, id = rep("XXXXXX", length(x))) {
 
-  deprecate_soft("1.1.0", "johnson_method()")
+  deprecate_soft("2.0.0", "johnson_method()")
 
   if (!((length(x) == length(status)) && (length(x) == length(id)))) {
     stop("x, status and id must be of same length.")
@@ -396,7 +396,7 @@ johnson_method_ <- function(data) {
 #' @export
 kaplan_method <- function(x, status, id = rep("XXXXXX", length(x))) {
 
-  deprecate_soft("1.1.0", "kaplan_method()")
+  deprecate_soft("2.0.0", "kaplan_method()")
 
   if (!((length(x) == length(status)) && (length(x) == length(id)))) {
     stop("x, status and id must be of same length.")
@@ -495,7 +495,7 @@ kaplan_method_ <- function(data) {
 #' @export
 nelson_method <- function(x, status, id = rep("XXXXXX", length(x))) {
 
-  deprecate_soft("1.1.0", "nelson_method()")
+  deprecate_soft("2.0.0", "nelson_method()")
 
   if (!((length(x) == length(status)) && (length(x) == length(id)))) {
     stop("x, status and id must be of same length.")

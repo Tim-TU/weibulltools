@@ -56,6 +56,11 @@ A numeric vector of corrected operating times for the censored units
   \item \code{int_seed} : Integer seed number for reproducibility.}
 }
 \description{
+\lifecycle{soft-deprecated}
+
+\code{mcs_delay_report()} is no longer under active development, switching
+to \code{mcs_delay()} is recommended.
+
 The delay in report describes the time between the occurence of a damage and
 the registration in the warranty database. For a given date where the analysis
 is made there could be units which had a failure but are not registered in the

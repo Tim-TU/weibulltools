@@ -2,29 +2,44 @@
 % Please edit documentation in R/mileage_distribution.R
 \name{dist_mileage}
 \alias{dist_mileage}
-\title{Parameter Estimation of the Mileage Distribution}
+\title{Parameter Estimation of an Annual Mileage Distribution}
 \usage{
-dist_mileage(x, status, mileage, distribution = "lognormal")
+dist_mileage(mileage, x, distribution = c("lognormal", "exponential"))
 }
 \arguments{
+\item{mileage}{A numeric vector of distances covered. If not available use \code{NA}.}
+
 \item{x}{A numeric vector of operating times. If not available use \code{NA}.}
 
-\item{status}{A vector of binary data (0 or 1) indicating whether unit \emph{i}
-is a right censored observation (= 0) or a failure (= 1).}
-
-\item{mileage}{A numeric vector of driven distances. If not available use \code{NA}.}
-
 \item{distribution}{Supposed distribution of the random variable. The default
-value is \code{"lognormal"}. So far no other distribution is implemented.}
+value is \code{"lognormal"}.}
 }
 \value{
-A named vector of estimated parameters for the specified mileage
-  distribution.
+A list of class \code{"mileage_estimation"} which contains:
+  \itemize{
+    \item \code{coefficients} A named vector of estimated parameter(s).
+    \item \code{miles_annual} A numeric vector of element-wise computed annual
+      distances using the linear relationship described in 'Details'.
+    \item \code{distribution} Specified distribution.
+  }
 }
 \description{
-This function introduces a random variable of annual mileage using the units in
-the sample that had a failure and afterwards estimates the parameter(s) of a
-supposed distribution, using MLE.
+This function models a mileage random variable on an annual basis with respect
+to a supposed continuous distribution. First, the distances are calculated for
+one year (365 days) using a linear relationship between the distance and
+operating time. Second, the parameter(s) of the assumed distribution are
+estimated using MLE. See 'Details' for more information.
+}
+\details{
+The distribution parameter(s) are determined on the basis of complete cases,
+i.e. there is no \code{NA} in one of the related vector elements
+\code{c(mileage[i], x[i])}. Distances and operating times less than or equal
+to 0 are not considered as well.
+
+\strong{Assumption of linear relationship}: Imagine a component in a vehicle
+  has endured a distance of 25000 kilometers (km) in 500 days (d), the annual
+  distance of this unit is \deqn{25000 km \cdot (\frac{365 d} {500 d}) = 18250 km}{%
+                25000 km * (365 d / 500 d) = 18250 km}
 }
 \examples{
 date_of_registration <- c(NA, "2014-03-29", "2014-12-06", "2014-09-09", NA,
@@ -32,20 +47,27 @@ date_of_registration <- c(NA, "2014-03-29", "2014-12-06", "2014-09-09", NA,
                           "2014-05-31", NA, "2014-04-13", NA, NA, "2014-03-12",
                           NA, "2014-06-02", NA, "2014-03-21", "2014-06-19",
                           NA, NA)
-date_of_repair <- c(NA, "2014-09-15", "2015-07-04", "2015-04-10", NA,
-                    NA, "2015-04-24", NA, "2015-04-25", "2015-04-24",
-                    "2015-06-12", NA, "2015-05-04", NA, NA, "2015-05-22",
-                    NA, "2015-09-17", NA, "2015-08-15", "2015-11-26", NA, NA)
+date_of_repair       <- c(NA, "2014-09-15", "2015-07-04", "2015-04-10", NA,
+                          NA, "2015-04-24", NA, "2015-04-25", "2015-04-24",
+                          "2015-06-12", NA, "2015-05-04", NA, NA, "2015-05-22",
+                          NA, "2015-09-17", NA, "2015-08-15", "2015-11-26",
+                          NA, NA)
+mileage              <- c(NA, 15655, 13629, 18292, NA, NA, 33555, NA, 21737,
+                          29870, 21068, NA, 122283, NA, NA, 36088, NA, 11153,
+                          NA, 122842, 20349, NA, NA)
 
-op_time <- as.numeric(difftime(as.Date(date_of_repair),
-                               as.Date(date_of_registration),
-                               units = "days"))
-mileage <- c(NA, 15655, 13629, 18292, NA, NA, 33555, NA, 21737,
-             29870, 21068, NA, 122283, NA, NA, 36088, NA, 11153,
-             NA, 122842, 20349, NA, NA)
-state <- c(0, 1, 1, 1, 0, 0, 1, 0, 1, 1, 1, 0, 1, 0, 0, 1, 0, 1, 0, 1, 1, 0, 0)
+op_time <- as.numeric(
+  difftime(
+    as.Date(date_of_repair, format = "\%Y-\%m-\%d"),
+    as.Date(date_of_registration, format = "\%Y-\%m-\%d"),
+    units = "days"
+  )
+)
 
-params_mileage_annual <- dist_mileage(x = op_time, status = state,
-                                      mileage = mileage,
-                                      distribution = "lognormal")
+Example 1 - Assuming a lognormal annual mileage distribution:
+params_mileage_annual <- dist_mileage(
+  mileage = mileage,
+  x = op_time,
+  distribution = "lognormal"
+)
 }

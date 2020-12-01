@@ -57,6 +57,11 @@ A numeric vector of corrected operating times for the censored units
   \item \code{int_seed} : Integer seed number for reproducibility.}
 }
 \description{
+\lifecycle{soft-deprecated}
+
+\code{mcs_delay_register()} is no longer under active development, switching
+to \code{mcs_delay()} is recommended.
+
 In general the amount of information about units in the field, that have not
 failed yet, are rare. For example it is common that a supplier, who provides
 parts to the automotive industry does not know when a vehicle was put in
@@ -67,6 +72,7 @@ delays. The simulation is based on the distribution of operating times that were
 calculated from complete data (see \code{\link{dist_delay_register}}).
 }
 \examples{
+
 date_of_production   <- c("2014-07-28", "2014-02-17", "2014-07-14",
                           "2014-06-26", "2014-03-10", "2014-05-14",
                           "2014-05-06", "2014-03-07", "2014-03-09",

@@ -2,68 +2,79 @@
 % Please edit documentation in R/mileage_distribution.R
 \name{mcs_mileage}
 \alias{mcs_mileage}
-\title{Estimation of Driving Distances for Censored Observations using a Monte Carlo
-Approach}
+\title{Simulation of Unknown Covered Distances using a Monte Carlo Approach}
 \usage{
 mcs_mileage(
-  x,
-  status,
   mileage,
-  distribution = "lognormal",
-  seed = NULL,
-  details = FALSE
+  x,
+  status = NULL,
+  id = paste0("ID", seq_len(length(x))),
+  distribution = c("lognormal", "exponential"),
+  seed = NULL
 )
 }
 \arguments{
-\item{x}{A numeric vector of operating times. If not available use \code{NA}.}
+\item{mileage}{A numeric vector of distances covered. If unknown use \code{NA}.}
 
-\item{status}{A vector of binary data (0 or 1) indicating whether unit \emph{i}
-is a right censored observation (= 0) or a failure (= 1).}
+\item{x}{A numeric vector of operating times. If unknown use \code{NA}.}
 
-\item{mileage}{A numeric vector of driven distances. If not available use \code{NA}.}
+\item{status}{Optional argument that determines the class of the returned list
+element \code{data}. If \code{NULL} (default) \code{data} has class
+\code{"mcs_data"}. If provided, it has to be a vector of binary data (0 or 1)
+indicating whether unit \emph{i} is a right censored observation (= 0) or a
+failure (= 1). In the later case \code{data} has classes \code{"mcs_data"} and
+\code{"reliability_data"}.}
+
+\item{id}{Identification for every unit.}
 
 \item{distribution}{Supposed distribution of the random variable. The default
-value is \code{"lognormal"}. So far no other distribution is implemented.}
+value is \code{"lognormal"}.}
 
 \item{seed}{If \code{seed = NULL} a random seed is used. Otherwise the user
 can specify an integer for the seed.}
-
-\item{details}{A logical variable, where the default value is \code{FALSE}.
-If \code{FALSE} the output consists of a vector with simulated driving
-distances for the censored units regarding to their current operating time
-and the input driving distances for the failed units. If \code{TRUE} the
-output consists of a detailed list, i.e the same vector as described before,
-simulated annual driving distances, estimated distribution parameters and a
-seed for reproducibility.}
 }
 \value{
-A numerical vector of simulated driving distances for the censored
-  units and the input driving distances for the failed units if
-  \code{details = FALSE}. If \code{details = TRUE} the output is a list which
-  consists of the following elements:
+A list containing the following elements:
   \itemize{
-  \item \code{mileage} : Simulated driving distances for the censored
-    units and the input driving distances for the failed units.
-  \item \code{mileage_sim_annual} : Simulated annual driving distances of
-    specified distribution with estimated parameters. The length of
-    \code{x_sim} is equal to the number of censored observations.
-  \item \code{coefficients} : Estimated coefficients of supposed
-    distribution.
-  \item \code{int_seed} : Integer seed number for reproducibility.}
+    \item \code{data} A tibble with class \code{"mcs_data"} (if \code{status = NULL})
+      or with classes \code{"mcs_data"} and \code{"reliability_data"} (if \code{status}
+      is provided) containing the following columns:
+      \itemize{
+        \item \code{mileage} Simulated distances for units where \code{mileage}
+          was unknown and input distances where where \code{mileage} was known.
+        \item \code{x} Input operating times.
+        \item \code{status} (\strong{optional}) If argument \code{status = NULL}
+          column \code{status} does not exist. If argument \code{status} is provided
+          the column contains the entered binary data (0 or 1) indicating whether
+          a unit is a right censored observation (= 0) or a failure (= 1).
+        \item \code{id} Identification for every unit.
+      }
+    \item \code{sim_data} A tibble with column \code{sim_mileage} that holds the
+      simulated distance numbers for units where these were unknown and \code{0}
+      for for units where these were known.
+    \item \code{model_estimation} A list containing a named list
+      (\code{"mileage_distribution"}) with output of \code{\link{dist_mileage}}.
+    \item \code{seed} : Integer seed number for reproducibility.
+  }
 }
 \description{
-This function simulates driving distances for censored observations under the
-condition that the operating time of these items is known up to a certain date
-where analysis is made. Operating times for these units can be estimated with
-functions like \code{\link{mcs_delay_register}}, \code{\link{mcs_delay_report}}
-and \code{\link{mcs_delays}}.
-The failed observations (where the driving distances are known) are used to
-estimate an annual mileage distribution. If the mileage distribution is fully
-specified annual random driving distances are drawn from this distribution and
-afterwards adjusted to the operating times of the censored observations.
+This function simulates distances for units where these are unknown, i.e.
+\code{mileage = NA}.
+
+First, a random number of an annual mileage distribution, which was estimated
+by \code{\link{dist_mileage}}, is drawn. Second, the drawn number (annual basis) is
+converted on the basis of a linear relationship using actual operating time
+(in days). See 'Details'.
+}
+\details{
+\strong{Assumption of linear relationship}: Imagine the distance of the vehicle
+is unknown. A distance of 3500.25 kilometers (km) was drawn from the annual
+distribution and the known operating time is 200 days (d). So the resulting
+distance of this vehicle is \deqn{3500.25 km \cdot (\frac{200 d} {365 d}) = 1917.945 km}{%
+                3500.25 km * (200 d / 365 d) = 1917.945 km}
 }
 \examples{
-# Example 1 - Simplified vector output (complete data):
+# Example 1 - MCS for Complete Data, nothing to impute:
 date_of_registration <- c("2014-08-17", "2014-03-29", "2014-12-06",
                           "2014-09-09", "2014-05-14", "2014-07-01",
                           "2014-06-16", "2014-04-03", "2014-05-23",
@@ -87,10 +98,12 @@ mileage <- c(5227, 15655, 13629, 18292, 24291, 34455, 33555, 21659, 21737,
              122437, 122842, 20349, 65656, 40777)
 state <- sample(c(0, 1), size = length(op_time), replace = TRUE)
 
-mileage_corrected <- mcs_mileage(x = op_time, status = state,
-                                 mileage = mileage,
-                                 distribution = "lognormal", seed = NULL,
-                                 details = FALSE)
+mcs_mileages <- mcs_mileage(
+  mileage = mileage,
+  x = op_time,
+  status = state,
+  distribution = "lognormal"
+  )
 
 # Example 2 - Detailed list output (complete data):
 list_detail <- mcs_mileage(x = op_time, status = state, mileage = mileage,

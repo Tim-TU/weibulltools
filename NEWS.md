@@ -1,4 +1,4 @@
-# weibulltools v1.1.0
+# weibulltools v2.0.0
 ## Breaking Changes
 * Renamed argument `event` with `status`.
 * Output of probability estimators: Renamed column `characteristic` with `x`.
@@ -7,6 +7,7 @@
 * `rank_regression()`, `ml_estimation()`: Renamed output: `loc_sc_coefficients` -> `loc_sc_params`, `loc_sc_vcov` -> `loc_sc_varcov`
 * `plot_pop()`: Added argument `tol` to restrict the range of failure probabilities. Removed argument `color`. Renamed argument `params` to `loc_sc_params_tbl`, which only supports location and scale parameters (also for `distribution = "weibull"`). Changed behaviour of `loc_sc_params_tbl`: A tibble is now recommended instead of a vector.
 * `plot_prob_mix`: Removed default value `NULL` for argument `mix_output`.
+* `dist_mileage()`: Removed `status` argument and switched arguments `x` and `mileage`  -> (`mileage`, `x`, `distribution`)
 
 ## New Features
 * Added support for ggplot2 in all plot functions. Plot method can be selected in `plot_prob()` or `plot_prob_mix()` via argument `plot_method`.
@@ -16,6 +17,8 @@
 * Support of multiple methods in `estimate_cdf()` and all functions that depend on the `cdf_estimation` (`rank_regression()`, `plot_prob()`, `plot_mod()`, `plot_conf()`, `mixmod_regression()`, `plot_prob_mix()`, `plot_mod_mix()`).
 * Added `print.rank_regression()`, `print.ml_estimation()`, `print.model_estimation()` and `print.model_estimation_list()`.
 * Added `vcov.model_estimation()`.
+* Added function `dist_delay()`: Generalizes the distribution-specific modeling of delays. 
+* Added function `mcs_delay()`: Generalizes the adjustment of operating times by delays.
 * Added lifecycle badges
 
 ## Introduction of S3 interface
@@ -29,12 +32,15 @@
 
 ## Documentation
 * Capitalized parameter documentation.
+* Reworked documentation of `dist_mileage()` and `mcs_mileage()`
 
 ## Lifecycle changes
 
 ### Deprecated
 * `plot_layout()`
 * `mr_method()`, `johnson_method()`, `kaplan_method()` and `nelson_method()`: Use `estimate_cdf()` instead.
+* `dist_delay_register()` and `dist_delay_report()` are deprecated. Use `dist_delay()` instead. 
+* `mcs_delay_register()`, `mcs_delay_report()` and `mcs_delays()`  are deprecated. Use `mcs_delay()` instead.
 * `plot_prob_mix.default()` and `plot_mod_mix.default()`. Use further S3 methods instead.
 
 ## Minor improvements and bug fixes
