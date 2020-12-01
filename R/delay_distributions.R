@@ -19,8 +19,7 @@
 #' @param date_2 A vector of class \code{"character"} or \code{"Date"}, in the
 #'   format "yyyy-mm-dd", indicating the later of the two dates. If no date is
 #'   available use \code{NA}.
-#' @param distribution Supposed distribution of the random variable. The default
-#'   value is \code{"lognormal"}.
+#' @param distribution Supposed distribution of the random variable.
 #'
 #' @return A list of class \code{"delay_estimation"} which contains:
 #'   \itemize{
@@ -203,12 +202,11 @@ dist_delay <- function(
 #'   failure (= 1). In the later case \code{data} has classes \code{"mcs_data"} and
 #'   \code{"reliability_data"}.
 #' @param id Identification for every unit.
-#' @param distribution Supposed distribution of the delay random variable. The
-#'   default value is \code{"lognormal"}. If more than one delay is to be
-#'   considered and different distributions should be assumed for each delay,
-#'   the argument \code{distribution} must have the same length as list \code{date_1}
-#'   (or \code{date_2}). For example, in the case of two delays with different
-#'   distributions, one has to specify the argument as
+#' @param distribution Supposed distribution of the delay random variable. If more
+#'   than one delay is to be considered and different distributions should be
+#'   assumed for each delay, the argument \code{distribution} must have the same
+#'   length as list \code{date_1} (or \code{date_2}). For example, in the case of
+#'   two delays with different distributions, one has to specify the argument as
 #'   \code{distribution = c("lognormal", "exponential")}. Then the lognormal
 #'   distribution is applied to the first delay and the exponential distribution
 #'   to the second (See 'Examples').
@@ -331,6 +329,9 @@ mcs_delay <- function(
 
   # Checks:
   ## Check for (multiple) distributions:
+  if (missing(distribution)) {
+    distribution <- "lognormal"
+  }
   distribution <- match.arg(distribution, several.ok = TRUE)
 
   ## Convert date_1 and date_2 to lists if they are vectors:
@@ -465,8 +466,8 @@ mcs_helper <- function(x, par_list) {
 #' @param date_register A vector of class \code{"character"} or \code{"Date"}, in
 #'   the format "yyyy-mm-dd", indicating the date of registration of a unit.
 #'   If no date is available use \code{NA}.
-#' @param distribution Supposed distribution of the random variable. The default
-#'   value is \code{"lognormal"}. So far no other distribution is implemented.
+#' @param distribution Supposed distribution of the random variable. Only
+#'   \code{"lognormal"} is implemented.
 #'
 #' @return A named vector of estimated parameters for the specified
 #'   distribution.
@@ -498,7 +499,7 @@ dist_delay_register <- function(
   date_register,
   distribution = "lognormal"
 ) {
-  deprecate_soft("2.0.0", "dist_delay_register()")
+  deprecate_soft("2.0.0", "dist_delay_register()", "dist_delay()")
 
   distribution <- match.arg(distribution)
 
@@ -514,17 +515,16 @@ dist_delay_register <- function(
   # test for delays: all NA and smaller or equal to 0.
   # all NA:
   if (all(is.na(t_regist))) {
-    stop("all differences are NA; no parameters can be estimated!")
+    stop("All differences are NA. No parameters can be estimated!")
   }
   # all smaller or equal to zero:
   if (all(t_regist <= 0, na.rm = TRUE)) {
-    stop("all differences are smaller or equal to 0; no parameters can be
-    estimated!")
+    stop("All differences are smaller or equal to 0. No parameters can be estimated!")
   }
   # any smaller or equal to zero:
   if (!all(t_regist <= 0, na.rm = TRUE) && any(t_regist <= 0, na.rm = TRUE)) {
-    warning("at least one of the time differences is smaller or equal to 0 and is
-    ignored in the estimation step.")
+    warning("At least one of the time differences is smaller or equal to 0 and is",
+            " ignored for the estimation step!")
 
     t_regist <- t_regist[t_regist > 0]
   }
@@ -562,8 +562,8 @@ dist_delay_register <- function(
 #' @param x A numeric vector of operating times.
 #' @param status A vector of binary data (0 or 1) indicating whether unit \emph{i}
 #'   is a right censored observation (= 0) or a failure (= 1).
-#' @param distribution Supposed distribution of the random variable. The default
-#'   value is \code{"lognormal"}. So far no other distribution is implemented.
+#' @param distribution Supposed distribution of the random variable. Only
+#'   \code{"lognormal"} is implemented.
 #' @param seed If \code{seed = NULL} a random seed is used. Otherwise the user
 #'   can specify an integer for the seed.
 #' @param details A logical. If \code{FALSE} the output consists of a vector with
@@ -634,7 +634,7 @@ mcs_delay_register <- function(
   seed = NULL,
   details = FALSE
 ) {
-  deprecate_soft("2.0.0", "mcs_delay_register()")
+  deprecate_soft("2.0.0", "mcs_delay_register()", "mcs_delay()")
 
   # Generate integer that sets the seed (if NULL) in set.seed() function.
   if (!is.null(seed)) {
@@ -727,7 +727,7 @@ dist_delay_report <- function(
   date_report,
   distribution = "lognormal"
 ) {
-  deprecate_soft("2.0.0", "dist_delay_report()")
+  deprecate_soft("2.0.0", "dist_delay_report()", "dist_delay()")
 
   distribution <- match.arg(distribution)
 
@@ -743,17 +743,16 @@ dist_delay_report <- function(
   # test for delays: all NA and smaller or equal to 0.
   # all NA:
   if (all(is.na(t_report))) {
-    stop("all differences are NA; no parameters can be estimated!")
+    stop("All differences are NA. No parameters can be estimated!")
   }
   # all smaller or equal to zero:
   if (all(t_report <= 0, na.rm = TRUE)) {
-    stop("all differences are smaller or equal to 0; no parameters can be
-    estimated!")
+    stop("All differences are smaller or equal to 0. No parameters can be estimated!")
   }
   # any smaller or equal to zero:
   if (!all(t_report <= 0, na.rm = TRUE) && any(t_report <= 0, na.rm = TRUE)) {
-    warning("at least one of the time differences is smaller or equal to 0 and is
-    ignored in the estimation step!")
+    warning("At least one of the time differences is smaller or equal to 0 and is",
+            " ignored for the estimation step!")
 
     t_report <- t_report[t_report > 0]
   }
@@ -847,7 +846,7 @@ mcs_delay_report <- function(
   details = FALSE,
   seed = NULL
 ) {
-  deprecate_soft("2.0.0", "mcs_delay_report()")
+  deprecate_soft("2.0.0", "mcs_delay_report()", "mcs_delay()")
 
   # Generate integer that sets the seed (if NULL) in set.seed() function.
   if (!is.null(seed)) {
@@ -995,7 +994,7 @@ mcs_delays <- function(
   details = FALSE,
   seed = NULL
 ) {
-  deprecate_soft("2.0.0", "mcs_delays()")
+  deprecate_soft("2.0.0", "mcs_delays()", "mcs_delay()")
 
   # Generate integer that sets the seed (if NULL) in set.seed() function.
   if (!is.null(seed)) {

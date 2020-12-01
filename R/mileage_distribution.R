@@ -11,7 +11,7 @@
 #' The distribution parameter(s) are determined on the basis of complete cases,
 #' i.e. there is no \code{NA} in one of the related vector elements
 #' \code{c(mileage[i], x[i])}. Distances and operating times less than or equal
-#' to 0 are not considered as well.
+#' to zero are not considered as well.
 #'
 #' \strong{Assumption of linear relationship}: Imagine a component in a vehicle
 #'   has endured a distance of 25000 kilometers (km) in 500 days (d), the annual
@@ -69,16 +69,6 @@ dist_mileage <- function(
 ) {
 
   distribution <- match.arg(distribution)
-
-  # computing annual mileage:
-  ## Case 1: Elements in x and mileage are both 0 -> NaN (OK, since is.na(NaN) == T)
-  ## Case 2: Element in x is 0 and mileage is  < 0 -> -Inf (Ok, since (-Inf <= 0) == T)
-  ## Case 3: Element in x is 0 and mileage is > 0 -> Inf (OK, since is.infinite is used)
-  ## Case 4: Element in x > 0 and in mileage < 0 and viceversa -> negative (OK, will be removed)
-  ## Case 5: Element in x is NA or in mileage is NA or both are NA -> NA (OK)
-  ## Case 6: Elements in x and mileage are both <0 -> positive (one element should be set to NA)
-  ## RESULT: Return all computed annual miles but the above cases are excluded for
-  ##         paramter estimation!
 
   # Check for negative mileage, stop if TRUE:
   if (any(mileage < 0, na.rm = TRUE)) {
