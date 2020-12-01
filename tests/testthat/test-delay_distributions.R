@@ -145,7 +145,7 @@ test_that("mcs_delay stops if date_1 and date_2 differ in lengths; vector case",
     mcs_delay(
       date_1 = date_of_production,
       date_2 = date_of_registration,
-      x = time_in_service,
+      time = time_in_service,
       status = status,
       distribution = "lognormal"
     ),
@@ -176,7 +176,7 @@ test_that("mcs_delay stops if status is not a binary (0 or 1)", {
     mcs_delay(
       date_1 = date_of_production,
       date_2 = date_of_registration,
-      x = time_in_service,
+      time = time_in_service,
       status = letters[seq_along(time_in_service)],
       distribution = "lognormal"
     ),
@@ -221,7 +221,7 @@ test_that("mcs_delay remains stable by defining the seed", {
   mcs_delays <- mcs_delay(
     date_1 = list(date_of_production, date_of_repair),
     date_2 = list(date_of_registration, date_of_report),
-    x = time_in_service,
+    time = time_in_service,
     status = status,
     distribution = c("lognormal", "exponential")
   )
@@ -407,7 +407,7 @@ test_that("mcs_delay_register remains stable by defining the seed", {
     mcs_delay_register_list <- mcs_delay_register(
       date_prod = date_of_production,
       date_register = date_of_registration,
-      x = op_time,
+      time = op_time,
       status = status,
       distribution = "lognormal",
       details = TRUE
@@ -439,7 +439,7 @@ test_that("mcs_delay_report remains stable by defining the seed", {
     mcs_delay_report_list <- mcs_delay_report(
       date_repair = date_of_repair,
       date_report = date_of_report,
-      x = op_time,
+      time = op_time,
       status = status,
       distribution = "lognormal",
       details = TRUE
@@ -489,7 +489,7 @@ test_that("mcs_delays remains stable by defining the seed", {
       date_register = date_of_registration,
       date_repair = date_of_repair,
       date_report = date_of_report,
-      x = op_time,
+      time = op_time,
       status = status,
       distribution = "lognormal",
       details = TRUE)

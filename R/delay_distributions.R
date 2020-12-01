@@ -10,7 +10,7 @@
 #' @details
 #' The distribution parameter(s) are determined on the basis of complete cases,
 #' i.e. there is no \code{NA} in one of the related vector elements
-#' \code{c(date_1[i], date_2[i])}. Time differences less than or equal to 0 are
+#' \code{c(date_1[i], date_2[i])}. Time differences less than or equal to zero are
 #' not considered as well.
 #'
 #' @param date_1 A vector of class \code{"character"} or \code{"Date"}, in the
@@ -200,7 +200,7 @@ dist_delay <- function(
 #'   If more than one delay should be considered it must be a list where the first
 #'   element contains the later dates of the first delay and the second element
 #'   contains the later dates of the second delay, and so forth. (See 'Examples').
-#' @param x A numeric vector of operating times. Use \code{NA} for missing elements.
+#' @param time A numeric vector of operating times. Use \code{NA} for missing elements.
 #' @param status Optional argument. If used it has to be a vector of binary
 #'   data (0 or 1) indicating whether unit \emph{i} is a right censored observation
 #'   (= 0) or a failure (= 1). The effect of \code{status} on the return is described
@@ -218,12 +218,16 @@ dist_delay <- function(
 #' @return A list containing the following elements:
 #'   \itemize{
 #'     \item \code{data} A tibble with class attributes \code{"mcs_data"} and
-#'       \code{"reliability_data"} if \code{status} is provided. The attribute
-#'       \code{"reliability_data"} enables the direct usage of \code{data} inside
-#'       \code{estimate_cdf} (\code{\link{estimate_cdf.reliability_data}}).
+#'       \code{"reliability_data"} if \code{status} is provided. Since the
+#'       attribute \code{"reliability_data"} enables the direct usage of \code{data}
+#'       inside \code{estimate_cdf} (\code{\link{estimate_cdf.reliability_data}}),
+#'       the required lifetime characteristic is automatically set to the operating
+#'       time \code{time}.
 #'
 #'       If \code{status = NULL} class attribute is \code{"mcs_data"}, which is not
-#'       supported by \code{"reliability_data"} due to missing \code{status}.
+#'       supported by \code{estimate_cdf} due to missing \code{status}.
+#'
+#'       The tibble contains the following columns:
 #'       \itemize{
 #'         \item \code{date_1} Earlier dates. If argument \code{date_1} is a list
 #'           of length \emph{i, i > 1} (described in \strong{Arguments}) multiple
@@ -231,7 +235,7 @@ dist_delay <- function(
 #'           and the corresponding values of the earlier dates are used.
 #'         \item \code{date_2} Later dates. In the case of a list with length greater
 #'           than 1, the routine described above is used.
-#'         \item \code{x} Adjusted operating times for incomplete observations
+#'         \item \code{time} Adjusted operating times for incomplete observations
 #'           and input operating times for the complete observations.
 #'         \item \code{status} (\strong{optional})
 #'           \itemize{
@@ -292,7 +296,7 @@ dist_delay <- function(
 #' mcs_regist <- mcs_delay(
 #'   date_1 = date_of_production,
 #'   date_2 = date_of_registration,
-#'   x = time_in_service,
+#'   time = time_in_service,
 #'   status = status,
 #'   distribution = "lognormal"
 #' )
@@ -301,26 +305,36 @@ dist_delay <- function(
 #' mcs_report <- mcs_delay(
 #'   date_1 = date_of_repair,
 #'   date_2 = date_of_report,
-#'   x = time_in_service,
+#'   time = time_in_service,
 #'   status = status,
 #'   distribution = "exponential"
 #' )
 #'
-#' # Example 3 - MCS for delays in registration and report with same distribution:
+#' # Example 3 - Reproducibility of random numbers:
+#' set.seed(1234)
+#' mcs_report_reproduce <- mcs_delay(
+#'   date_1 = date_of_repair,
+#'   date_2 = date_of_report,
+#'   time = time_in_service,
+#'   status = status,
+#'   distribution = "exponential"
+#' )
+#'
+#' # Example 4 - MCS for delays in registration and report with same distribution:
 #' mcs_delays <- mcs_delay(
 #'   date_1 = list(date_of_production, date_of_repair),
 #'   date_2 = list(date_of_registration, date_of_report),
-#'   x = time_in_service,
+#'   time = time_in_service,
 #'   status = status,
 #'   distribution = "lognormal"
 #' )
 #'
-#' # Example 4 - MCS for delays in registration and report with different distributions:
+#' # Example 5 - MCS for delays in registration and report with different distributions:
 #' ## Assuming lognormal registration and exponential reporting delays.
 #' mcs_delays_2 <- mcs_delay(
 #'   date_1 = list(date_of_production, date_of_repair),
 #'   date_2 = list(date_of_registration, date_of_report),
-#'   x = time_in_service,
+#'   time = time_in_service,
 #'   status = status,
 #'   distribution = c("lognormal", "exponential")
 #' )
@@ -328,9 +342,9 @@ dist_delay <- function(
 mcs_delay <- function(
   date_1,
   date_2,
-  x,
+  time,
   status = NULL,
-  id = paste0("ID", seq_len(length(x))),
+  id = paste0("ID", seq_len(length(time))),
   distribution = c("lognormal", "exponential")
 ) {
 
@@ -370,17 +384,17 @@ mcs_delay <- function(
   )
 
   ## Adjustment of operating times:
-  x <- x - purrr::reduce(sim_list, `+`)
+  time <- time - purrr::reduce(sim_list, `+`)
 
   # Prepare data_list which has to be converted to a tibble:
   if (purrr::is_null(status)) {
-    data_list <- c(date_1, date_2, list(x, id))
+    data_list <- c(date_1, date_2, list(time, id))
   } else {
     # check for status:
     if (!is_status(status)) {
       stop("status must be numeric! all elements must be either 0 or 1!")
     }
-    data_list <- c(date_1, date_2, list(x, status, id))
+    data_list <- c(date_1, date_2, list(time, status, id))
   }
 
   # Defining and setting names for output elements:
@@ -402,11 +416,11 @@ mcs_delay <- function(
   names(par_list) <- par_list_names
 
   if (purrr::is_null(status)) {
-    names(data_list) <- c(data_list_names, "x", "id")
+    names(data_list) <- c(data_list_names, "time", "id")
     class_assign <- "mcs_data"
   } else {
-    names(data_list) <- c(data_list_names, "x", "status", "id")
-    class_assign <- c("mcs_data", "reliability_data")
+    names(data_list) <- c(data_list_names, "time", "status", "id")
+    class_assign <- c("mcs_data", "reliability_data") # is not working since 'time' != x
   }
 
   # Defining data_tbl with class "mcs_data" and/or "reliability_data":
@@ -563,7 +577,7 @@ dist_delay_register <- function(
 #' calculated from complete data (see \code{\link{dist_delay_register}}).
 #'
 #' @inheritParams dist_delay_register
-#' @param x A numeric vector of operating times.
+#' @param time A numeric vector of operating times.
 #' @param status A vector of binary data (0 or 1) indicating whether unit \emph{i}
 #'   is a right censored observation (= 0) or a failure (= 1).
 #' @param distribution Supposed distribution of the random variable. Only
@@ -612,7 +626,7 @@ dist_delay_register <- function(
 #' # Example 1 - Simplified vector output:
 #' x_corrected <- mcs_delay_register(date_prod = date_of_production,
 #'                                   date_register = date_of_registration,
-#'                                   x = op_time,
+#'                                   time = op_time,
 #'                                   status = state,
 #'                                   distribution = "lognormal",
 #'                                   details = FALSE)
@@ -620,7 +634,7 @@ dist_delay_register <- function(
 #' # Example 2 - Detailed list output:
 #' list_detail <- mcs_delay_register(date_prod = date_of_production,
 #'                                   date_register = date_of_registration,
-#'                                   x = op_time,
+#'                                   time = op_time,
 #'                                   status = state,
 #'                                   distribution = "lognormal",
 #'                                   details = TRUE)
@@ -628,7 +642,7 @@ dist_delay_register <- function(
 mcs_delay_register <- function(
   date_prod,
   date_register,
-  x,
+  time,
   status,
   distribution = "lognormal",
   details = FALSE
@@ -657,12 +671,12 @@ mcs_delay_register <- function(
     stop("No valid distribution!")
   }
 
-  x[is.na(date_register)] <- x[is.na(date_register)] - x_sim
+  time[is.na(date_register)] <- time[is.na(date_register)] - x_sim
 
   if (details == FALSE) {
-    output <- x
+    output <- time
   } else {
-    output <- list(time = x, x_sim = x_sim, coefficients = params)
+    output <- list(time = time, x_sim = x_sim, coefficients = params)
   }
   return(output)
 }
@@ -812,7 +826,7 @@ dist_delay_report <- function(
 #' # Example 1 - Simplified vector output:
 #' x_corrected <- mcs_delay_report(date_repair = date_of_repair,
 #'                                 date_report = date_of_report,
-#'                                 x = op_time,
+#'                                 time = op_time,
 #'                                 status = state,
 #'                                 distribution = "lognormal",
 #'                                 details = FALSE)
@@ -820,7 +834,7 @@ dist_delay_report <- function(
 #' # Example 2 - Detailed list output:
 #' list_detail <- mcs_delay_report(date_repair = date_of_repair,
 #'                                 date_report = date_of_report,
-#'                                 x = op_time,
+#'                                 time = op_time,
 #'                                 status = state,
 #'                                 distribution = "lognormal",
 #'                                 details = TRUE)
@@ -828,7 +842,7 @@ dist_delay_report <- function(
 mcs_delay_report <- function(
   date_repair,
   date_report,
-  x,
+  time,
   status,
   distribution = "lognormal",
   details = FALSE
@@ -858,12 +872,12 @@ mcs_delay_report <- function(
     stop("No valid distribution!")
   }
 
-  x[status == 0] <- x[status == 0] - x_sim
+  time[status == 0] <- time[status == 0] - x_sim
 
   if (details == FALSE) {
-    output <- x
+    output <- time
   } else {
-    output <- list(time = x, x_sim = x_sim, coefficients = params)
+    output <- list(time = time, x_sim = x_sim, coefficients = params)
   }
   return(output)
 }
@@ -944,7 +958,7 @@ mcs_delay_report <- function(
 #'                           date_register = date_of_registration,
 #'                           date_repair = date_of_repair,
 #'                           date_report = date_of_report,
-#'                           x = op_time,
+#'                           time = op_time,
 #'                           status = state,
 #'                           distribution = "lognormal",
 #'                           details = FALSE)
@@ -954,7 +968,7 @@ mcs_delay_report <- function(
 #'                                 date_register = date_of_registration,
 #'                                 date_repair = date_of_repair,
 #'                                 date_report = date_of_report,
-#'                                 x = op_time,
+#'                                 time = op_time,
 #'                                 status = state,
 #'                                 distribution = "lognormal",
 #'                                 details = TRUE)
@@ -964,7 +978,7 @@ mcs_delays <- function(
   date_register,
   date_repair,
   date_report,
-  x,
+  time,
   status,
   distribution = "lognormal",
   details = FALSE
@@ -1013,13 +1027,13 @@ mcs_delays <- function(
     stop("No valid distribution!")
   }
 
-  x[is.na(date_register)] <- x[is.na(date_register)] - x_sim_regist
-  x[status == 0] <- x[status == 0] - x_sim_report
+  time[is.na(date_register)] <- time[is.na(date_register)] - x_sim_regist
+  time[status == 0] <- time[status == 0] - x_sim_report
 
   if (details == FALSE) {
-    output <- x
+    output <- time
   } else {
-    output <- list(time = x, x_sim_regist = x_sim_regist,
+    output <- list(time = time, x_sim_regist = x_sim_regist,
                    x_sim_report = x_sim_report,
                    coefficients_regist = params_regist,
                    coefficients_report = params_report)

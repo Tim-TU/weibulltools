@@ -4,15 +4,16 @@
 \alias{dist_mileage}
 \title{Parameter Estimation of an Annual Mileage Distribution}
 \usage{
-dist_mileage(mileage, x, distribution = c("lognormal", "exponential"))
+dist_mileage(mileage, time, distribution = c("lognormal", "exponential"))
 }
 \arguments{
-\item{mileage}{A numeric vector of distances covered. If not available use \code{NA}.}
+\item{mileage}{A numeric vector of distances covered. Use \code{NA} for missing
+elements.}
 
-\item{x}{A numeric vector of operating times. If not available use \code{NA}.}
+\item{time}{A numeric vector of operating times. Use \code{NA} for missing
+elements.}
 
-\item{distribution}{Supposed distribution of the random variable. The default
-value is \code{"lognormal"}.}
+\item{distribution}{Supposed distribution of the random variable.}
 }
 \value{
 A list of class \code{"mileage_estimation"} which contains:
@@ -33,7 +34,7 @@ estimated using MLE. See 'Details' for more information.
 \details{
 The distribution parameter(s) are determined on the basis of complete cases,
 i.e. there is no \code{NA} in one of the related vector elements
-\code{c(mileage[i], x[i])}. Distances and operating times less than or equal
+\code{c(mileage[i], time[i])}. Distances and operating times less than or equal
 to zero are not considered as well.
 
 \strong{Assumption of linear relationship}: Imagine a component in a vehicle
@@ -42,32 +43,53 @@ to zero are not considered as well.
                 25000 km * (365 d / 500 d) = 18250 km}
 }
 \examples{
-date_of_registration <- c(NA, "2014-03-29", "2014-12-06", "2014-09-09", NA,
-                          NA, "2014-06-16", NA, "2014-05-23", "2014-05-09",
-                          "2014-05-31", NA, "2014-04-13", NA, NA, "2014-03-12",
-                          NA, "2014-06-02", NA, "2014-03-21", "2014-06-19",
-                          NA, NA)
+# Data for examples:
+date_of_registration <- c("2014-08-17", "2014-03-29", "2014-12-06",
+                          "2014-09-09", "2014-05-14", "2014-07-01",
+                          "2014-06-16", "2014-04-03", "2014-05-23",
+                          "2014-05-09", "2014-05-31", "2014-08-12",
+                          "2014-04-13", "2014-02-15", "2014-07-07",
+                          "2014-03-12", "2014-05-27", "2014-06-02",
+                          "2014-05-20", "2014-03-21", "2014-06-19",
+                          "2014-02-12", "2014-03-27")
 date_of_repair       <- c(NA, "2014-09-15", "2015-07-04", "2015-04-10", NA,
                           NA, "2015-04-24", NA, "2015-04-25", "2015-04-24",
                           "2015-06-12", NA, "2015-05-04", NA, NA, "2015-05-22",
                           NA, "2015-09-17", NA, "2015-08-15", "2015-11-26",
                           NA, NA)
+date_of_analysis     <- "2015-12-31"
+
+## Assume that mileage is only known for units that have failed (date_of_repair != NA).
 mileage              <- c(NA, 15655, 13629, 18292, NA, NA, 33555, NA, 21737,
                           29870, 21068, NA, 122283, NA, NA, 36088, NA, 11153,
                           NA, 122842, 20349, NA, NA)
 
-op_time <- as.numeric(
-  difftime(
-    as.Date(date_of_repair, format = "\%Y-\%m-\%d"),
-    as.Date(date_of_registration, format = "\%Y-\%m-\%d"),
-    units = "days"
-  )
+## time in service is the difference between repair and registration for failed
+## items and the difference between date of analysis and date of registration
+## for intact units.
+time_in_service <- difftime(
+  as.Date(date_of_repair, format = "\%Y-\%m-\%d"),
+  as.Date(date_of_registration, format = "\%Y-\%m-\%d"),
+  units = "days"
 )
+time_in_service[is.na(time_in_service)] <- difftime(
+  as.Date(date_of_analysis, format = "\%Y-\%m-\%d"),
+  as.Date(date_of_registration[is.na(time_in_service)], format = "\%Y-\%m-\%d"),
+  units = "days"
+)
+time_in_service <- as.numeric(time_in_service)
 
-Example 1 - Assuming a lognormal annual mileage distribution:
+# Example 1 - Assuming lognormal annual mileage distribution:
 params_mileage_annual <- dist_mileage(
   mileage = mileage,
-  x = op_time,
+  time = time_in_service,
   distribution = "lognormal"
+)
+
+# Example 2 - Assuming exponential annual mileage distribution:
+params_mileage_annual_2 <- dist_mileage(
+  mileage = mileage,
+  time = time_in_service,
+  distribution = "exponential"
 )
 }

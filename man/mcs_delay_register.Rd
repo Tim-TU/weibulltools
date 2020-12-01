@@ -8,7 +8,7 @@ Approach}
 mcs_delay_register(
   date_prod,
   date_register,
-  x,
+  time,
   status,
   distribution = "lognormal",
   details = FALSE
@@ -23,7 +23,7 @@ Use \code{NA} for missing elements.}
 the format "yyyy-mm-dd", indicating the date of registration of a unit.
 Use \code{NA} for missing elements.}
 
-\item{x}{A numeric vector of operating times.}
+\item{time}{A numeric vector of operating times.}
 
 \item{status}{A vector of binary data (0 or 1) indicating whether unit \emph{i}
 is a right censored observation (= 0) or a failure (= 1).}
@@ -89,7 +89,7 @@ state <- c(0, 1, 1, 1, 0, 0, 1, 0, 1, 1, 1, 0, 1, 0, 0, 1, 0, 1, 0, 1, 1, 0, 0)
 # Example 1 - Simplified vector output:
 x_corrected <- mcs_delay_register(date_prod = date_of_production,
                                   date_register = date_of_registration,
-                                  x = op_time,
+                                  time = op_time,
                                   status = state,
                                   distribution = "lognormal",
                                   details = FALSE)
@@ -97,7 +97,7 @@ x_corrected <- mcs_delay_register(date_prod = date_of_production,
 # Example 2 - Detailed list output:
 list_detail <- mcs_delay_register(date_prod = date_of_production,
                                   date_register = date_of_registration,
-                                  x = op_time,
+                                  time = op_time,
                                   status = state,
                                   distribution = "lognormal",
                                   details = TRUE)

@@ -9,7 +9,7 @@ mcs_delays(
   date_register,
   date_repair,
   date_report,
-  x,
+  time,
   status,
   distribution = "lognormal",
   details = FALSE
@@ -32,7 +32,7 @@ Use \code{NA} for missing elements.}
 format "yyyy-mm-dd", indicating the date of report of a failed unit.
 Use \code{NA} for missing elements.}
 
-\item{x}{A numeric vector of operating times.}
+\item{time}{A numeric vector of operating times.}
 
 \item{status}{A vector of binary data (0 or 1) indicating whether unit \emph{i}
 is a right censored observation (= 0) or a failure (= 1).}
@@ -115,7 +115,7 @@ x_corrected <- mcs_delays(date_prod = date_of_production,
                           date_register = date_of_registration,
                           date_repair = date_of_repair,
                           date_report = date_of_report,
-                          x = op_time,
+                          time = op_time,
                           status = state,
                           distribution = "lognormal",
                           details = FALSE)
@@ -125,7 +125,7 @@ list_detail <- mcs_delays(date_prod = date_of_production,
                                 date_register = date_of_registration,
                                 date_repair = date_of_repair,
                                 date_report = date_of_report,
-                                x = op_time,
+                                time = op_time,
                                 status = state,
                                 distribution = "lognormal",
                                 details = TRUE)

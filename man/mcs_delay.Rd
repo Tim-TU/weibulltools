@@ -7,9 +7,9 @@
 mcs_delay(
   date_1,
   date_2,
-  x,
+  time,
   status = NULL,
-  id = paste0("ID", seq_len(length(x))),
+  id = paste0("ID", seq_len(length(time))),
   distribution = c("lognormal", "exponential")
 )
 }
@@ -30,7 +30,7 @@ mcs_delay(
   element contains the later dates of the first delay and the second element
   contains the later dates of the second delay, and so forth. (See 'Examples').}
 
-\item{x}{A numeric vector of operating times. Use \code{NA} for missing elements.}
+\item{time}{A numeric vector of operating times. Use \code{NA} for missing elements.}
 
 \item{status}{Optional argument. If used it has to be a vector of binary
 data (0 or 1) indicating whether unit \emph{i} is a right censored observation
@@ -52,12 +52,16 @@ to the second (See 'Examples').}
 A list containing the following elements:
   \itemize{
     \item \code{data} A tibble with class attributes \code{"mcs_data"} and
-      \code{"reliability_data"} if \code{status} is provided. The attribute
-      \code{"reliability_data"} enables the direct usage of \code{data} inside
-      \code{estimate_cdf} (\code{\link{estimate_cdf.reliability_data}}).
+      \code{"reliability_data"} if \code{status} is provided. Since the
+      attribute \code{"reliability_data"} enables the direct usage of \code{data}
+      inside \code{estimate_cdf} (\code{\link{estimate_cdf.reliability_data}}),
+      the required lifetime characteristic is automatically set to the operating
+      time \code{time}.
 
       If \code{status = NULL} class attribute is \code{"mcs_data"}, which is not
-      supported by \code{"reliability_data"} due to missing \code{status}.
+      supported by \code{estimate_cdf} due to missing \code{status}.
+
+      The tibble contains the following columns:
       \itemize{
         \item \code{date_1} Earlier dates. If argument \code{date_1} is a list
           of length \emph{i, i > 1} (described in \strong{Arguments}) multiple
@@ -65,7 +69,7 @@ A list containing the following elements:
           and the corresponding values of the earlier dates are used.
         \item \code{date_2} Later dates. In the case of a list with length greater
           than 1, the routine described above is used.
-        \item \code{x} Adjusted operating times for incomplete observations
+        \item \code{time} Adjusted operating times for incomplete observations
           and input operating times for the complete observations.
         \item \code{status} (\strong{optional})
           \itemize{
@@ -170,7 +174,7 @@ status <- c(0, 1, 1, 1, 0, 0, 1, 0, 1, 1, 1, 0, 1, 0, 0, 1, 0, 1, 0, 1, 1, 0, 0)
 mcs_regist <- mcs_delay(
   date_1 = date_of_production,
   date_2 = date_of_registration,
-  x = time_in_service,
+  time = time_in_service,
   status = status,
   distribution = "lognormal"
 )
@@ -179,26 +183,36 @@ mcs_regist <- mcs_delay(
 mcs_report <- mcs_delay(
   date_1 = date_of_repair,
   date_2 = date_of_report,
-  x = time_in_service,
+  time = time_in_service,
   status = status,
   distribution = "exponential"
 )
 
-# Example 3 - MCS for delays in registration and report with same distribution:
+# Example 3 - Reproducibility of random numbers:
+set.seed(1234)
+mcs_report_reproduce <- mcs_delay(
+  date_1 = date_of_repair,
+  date_2 = date_of_report,
+  time = time_in_service,
+  status = status,
+  distribution = "exponential"
+)
+
+# Example 4 - MCS for delays in registration and report with same distribution:
 mcs_delays <- mcs_delay(
   date_1 = list(date_of_production, date_of_repair),
   date_2 = list(date_of_registration, date_of_report),
-  x = time_in_service,
+  time = time_in_service,
   status = status,
   distribution = "lognormal"
 )
 
-# Example 4 - MCS for delays in registration and report with different distributions:
+# Example 5 - MCS for delays in registration and report with different distributions:
 ## Assuming lognormal registration and exponential reporting delays.
 mcs_delays_2 <- mcs_delay(
   date_1 = list(date_of_production, date_of_repair),
   date_2 = list(date_of_registration, date_of_report),
-  x = time_in_service,
+  time = time_in_service,
   status = status,
   distribution = c("lognormal", "exponential")
 )

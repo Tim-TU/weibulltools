@@ -36,7 +36,7 @@ distribution are estimated using MLE. See 'Details' for more information.
 \details{
 The distribution parameter(s) are determined on the basis of complete cases,
 i.e. there is no \code{NA} in one of the related vector elements
-\code{c(date_1[i], date_2[i])}. Time differences less than or equal to 0 are
+\code{c(date_1[i], date_2[i])}. Time differences less than or equal to zero are
 not considered as well.
 }
 \examples{

@@ -6,65 +6,68 @@
 \usage{
 mcs_mileage(
   mileage,
-  x,
+  time,
   status = NULL,
-  id = paste0("ID", seq_len(length(x))),
-  distribution = c("lognormal", "exponential"),
-  seed = NULL
+  id = paste0("ID", seq_len(length(time))),
+  distribution = c("lognormal", "exponential")
 )
 }
 \arguments{
-\item{mileage}{A numeric vector of distances covered. If unknown use \code{NA}.}
+\item{mileage}{A numeric vector of distances covered. Use \code{NA} for missing
+elements.}
 
-\item{x}{A numeric vector of operating times. If unknown use \code{NA}.}
+\item{time}{A numeric vector of operating times. Use \code{NA} for missing
+elements.}
 
-\item{status}{Optional argument that determines the class of the returned list
-element \code{data}. If \code{NULL} (default) \code{data} has class
-\code{"mcs_data"}. If provided, it has to be a vector of binary data (0 or 1)
-indicating whether unit \emph{i} is a right censored observation (= 0) or a
-failure (= 1). In the later case \code{data} has classes \code{"mcs_data"} and
-\code{"reliability_data"}.}
+\item{status}{Optional argument. If used it has to be a vector of binary data
+(0 or 1) indicating whether unit i is a right censored observation (= 0) or
+a failure (= 1). The effect of status on the return is described in 'Value'.}
 
-\item{id}{Identification for every unit.}
+\item{id}{A vector for the identification of every unit.}
 
-\item{distribution}{Supposed distribution of the random variable. The default
-value is \code{"lognormal"}.}
-
-\item{seed}{If \code{seed = NULL} a random seed is used. Otherwise the user
-can specify an integer for the seed.}
+\item{distribution}{Supposed distribution of the random variable.}
 }
 \value{
 A list containing the following elements:
   \itemize{
-    \item \code{data} A tibble with class \code{"mcs_data"} (if \code{status = NULL})
-      or with classes \code{"mcs_data"} and \code{"reliability_data"} (if \code{status}
-      is provided) containing the following columns:
+    \item \code{data} A tibble with class attributes \code{"mcs_data"} and
+      \code{"reliability_data"} if \code{status} is provided. Since the
+      attribute \code{"reliability_data"} enables the direct usage of \code{data}
+      inside \code{estimate_cdf} (\code{\link{estimate_cdf.reliability_data}}),
+      the required lifetime characteristic is automatically set to the distance
+      \code{mileage}.
+
+      If \code{status = NULL} class attribute is \code{"mcs_data"}, which is not
+      supported by \code{estimate_cdf} due to missing \code{status}.
+
+      The tibble contains the following columns:
       \itemize{
-        \item \code{mileage} Simulated distances for units where \code{mileage}
-          was unknown and input distances where where \code{mileage} was known.
-        \item \code{x} Input operating times.
-        \item \code{status} (\strong{optional}) If argument \code{status = NULL}
-          column \code{status} does not exist. If argument \code{status} is provided
-          the column contains the entered binary data (0 or 1) indicating whether
-          a unit is a right censored observation (= 0) or a failure (= 1).
-        \item \code{id} Identification for every unit.
+        \item \code{mileage} Simulated distances for unknown \code{mileage} and
+          input distances for known \code{mileage}.
+        \item \code{time} Input operating times.
+        \item \code{status} (\strong{optional})
+          \itemize{
+            \item If argument \code{status = NULL} column \code{status} does
+              not exist.
+            \item If argument \code{status} is provided the column contains
+              the entered binary data (0 or 1).
+          }
+        \item \code{id} Identification of every unit.
       }
     \item \code{sim_data} A tibble with column \code{sim_mileage} that holds the
-      simulated distance numbers for units where these were unknown and \code{0}
-      for for units where these were known.
+      simulated distances for unknown \code{mileage} and \code{0} otherwise.
     \item \code{model_estimation} A list containing a named list
       (\code{"mileage_distribution"}) with output of \code{\link{dist_mileage}}.
-    \item \code{seed} : Integer seed number for reproducibility.
   }
 }
 \description{
 This function simulates distances for units where these are unknown, i.e.
 \code{mileage = NA}.
 
-First, a random number of an annual mileage distribution, which was estimated
-by \code{\link{dist_mileage}}, is drawn. Second, the drawn number (annual basis) is
-converted on the basis of a linear relationship using actual operating time
-(in days). See 'Details'.
+First, random numbers of the annual mileage distribution, estimated by
+\code{\link{dist_mileage}}, are drawn. Second, the drawn annual distances are
+converted with respect to the actual operating times (in days) using a linear
+relationship. See 'Details'.
 }
 \details{
 \strong{Assumption of linear relationship}: Imagine the distance of the vehicle
@@ -74,7 +77,7 @@ distance of this vehicle is \deqn{3500.25 km \cdot (\frac{200 d} {365 d}) = 1917
                 3500.25 km * (200 d / 365 d) = 1917.945 km}
 }
 \examples{
-# Example 1 - MCS for Complete Data, nothing to impute:
+# Data for examples:
 date_of_registration <- c("2014-08-17", "2014-03-29", "2014-12-06",
                           "2014-09-09", "2014-05-14", "2014-07-01",
                           "2014-06-16", "2014-04-03", "2014-05-23",
@@ -83,43 +86,63 @@ date_of_registration <- c("2014-08-17", "2014-03-29", "2014-12-06",
                           "2014-03-12", "2014-05-27", "2014-06-02",
                           "2014-05-20", "2014-03-21", "2014-06-19",
                           "2014-02-12", "2014-03-27")
-date_of_repair <- c("2014-10-21", "2014-09-15", "2015-07-04", "2015-04-10",
-                    "2015-02-15", "2015-04-14", "2015-04-24", "2015-02-27",
-                    "2015-04-25", "2015-04-24", "2015-06-12", "2015-08-26",
-                    "2015-05-04", "2015-04-04", "2015-09-06", "2015-05-22",
-                    "2015-08-21", "2015-09-17", "2015-09-15", "2015-08-15",
-                    "2015-11-26", "2015-08-22", "2015-10-05")
+date_of_repair       <- c(NA, "2014-09-15", "2015-07-04", "2015-04-10", NA,
+                          NA, "2015-04-24", NA, "2015-04-25", "2015-04-24",
+                          "2015-06-12", NA, "2015-05-04", NA, NA, "2015-05-22",
+                          NA, "2015-09-17", NA, "2015-08-15", "2015-11-26",
+                          NA, NA)
+date_of_analysis     <- "2015-12-31"
 
-op_time <- as.numeric(difftime(as.Date(date_of_repair),
-                               as.Date(date_of_registration),
-                               units = "days"))
-mileage <- c(5227, 15655, 13629, 18292, 24291, 34455, 33555, 21659, 21737,
-             29870, 21068, 22986, 122283, 31592, 49050, 36088, 10918, 11153,
-             122437, 122842, 20349, 65656, 40777)
-state <- sample(c(0, 1), size = length(op_time), replace = TRUE)
+## Assume that mileage is only known for units that have failed (date_of_repair != NA).
+mileage              <- c(NA, 15655, 13629, 18292, NA, NA, 33555, NA, 21737,
+                          29870, 21068, NA, 122283, NA, NA, 36088, NA, 11153,
+                          NA, 122842, 20349, NA, NA)
 
-mcs_mileages <- mcs_mileage(
+## time in service is the difference between repair and registration for failed
+## items and the difference between date of analysis and date of registration
+## for intact units.
+time_in_service <- difftime(
+  as.Date(date_of_repair, format = "\%Y-\%m-\%d"),
+  as.Date(date_of_registration, format = "\%Y-\%m-\%d"),
+  units = "days"
+)
+time_in_service[is.na(time_in_service)] <- difftime(
+  as.Date(date_of_analysis, format = "\%Y-\%m-\%d"),
+  as.Date(date_of_registration[is.na(time_in_service)], format = "\%Y-\%m-\%d"),
+  units = "days"
+)
+time_in_service <- as.numeric(time_in_service)
+
+# Example 1 - Reproducibility of drawn random numbers:
+set.seed(1234)
+mcs_distances <- mcs_mileage(
   mileage = mileage,
-  x = op_time,
-  status = state,
+  time = time_in_service,
   distribution = "lognormal"
-  )
+)
 
-# Example 2 - Detailed list output (complete data):
-list_detail <- mcs_mileage(x = op_time, status = state, mileage = mileage,
-                               distribution = "lognormal", seed = NULL,
-                               details = TRUE)
+# Example 2 - MCS for distances assuming a exponential annual mileage distribution:
+mcs_distances_2 <- mcs_mileage(
+  mileage = mileage,
+  time = time_in_service,
+  distribution = "exponential"
+)
 
-# Example 3 - Detailed list output (realistic example):
-op_time <- c(65, 170, 210, 213, 277, 287, 312, 330, 337, 350, 377, 379, 386,
-             413, 426, 436, 451, 472, 483, 512, 525, 556, 557)
-mileage <- c(NA, 15655, 13629, NA, 24291, 34455, NA, 21659, 21737,
-             NA, 21068, 22986, NA, 31592, 49050, NA, 10918, 11153,
-             NA, 122842, 20349, NA, 40777)
-state <- c(0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0,
-           1, 1, 0, 1)
+status <- ifelse(!is.na(date_of_repair), 1, 0)
 
-list_detail <- mcs_mileage(x = op_time, status = state, mileage = mileage,
-                               distribution = "lognormal", seed = NULL,
-                               details = TRUE)
+# Example 3 - MCS for distances using status:
+mcs_distances_3 <- mcs_mileage(
+  mileage = mileage,
+  time = time_in_service,
+  status = status,
+  distribution = "lognormal"
+)
+
+## Using result of *$data in estimate_cdf()
+prob_estimation <- estimate_cdf(
+  x = mcs_distances_3$data,
+  methods = "kaplan"
+)
+
+plot_prob_estimation <- plot_prob(prob_estimation)
 }
