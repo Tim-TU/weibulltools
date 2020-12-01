@@ -3,9 +3,18 @@
 \encoding{UTF-8}
 \name{confint_betabinom.model_estimation}
 \alias{confint_betabinom.model_estimation}
+\alias{confint_betabinom.model_estimation_list}
 \title{Beta Binomial Confidence Bounds for Quantiles and/or Probabilities}
 \usage{
 \method{confint_betabinom}{model_estimation}(
+  x,
+  b_lives = c(0.01, 0.1, 0.5),
+  bounds = c("two_sided", "lower", "upper"),
+  conf_level = 0.95,
+  direction = c("y", "x")
+)
+
+\method{confint_betabinom}{model_estimation_list}(
   x,
   b_lives = c(0.01, 0.1, 0.5),
   bounds = c("two_sided", "lower", "upper"),

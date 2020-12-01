@@ -215,6 +215,8 @@ plot_conf_plotly <- function(p_obj, tbl_p, title_trace) {
   x_mark <- unlist(strsplit(p_obj$x$layoutAttrs[[2]]$xaxis$title$text,  " "))[1]
   y_mark <- unlist(strsplit(p_obj$x$layoutAttrs[[2]]$yaxis$title$text,  " "))[1]
 
+  color <- if (all(tbl_p$method == "conf_null")) I("#CC2222") else ~method
+
   p_conf <- plotly::add_lines(
     p = p_obj,
     # tbl_p is grouped by bound. Therefore two separate lines are drawn
@@ -224,9 +226,9 @@ plot_conf_plotly <- function(p_obj, tbl_p, title_trace) {
     type = "scatter", mode = "lines",
     hoverinfo = "text",
     line = list(dash = "dash", width = 1),
-    color = I("#CC2222"),
+    color = color,
     name = title_trace,
-    legendgroup = "Interval",
+    legendgroup = ~method,
     text = paste(
       paste0(x_mark, ":"),
       format(tbl_p$x, digits = 3),

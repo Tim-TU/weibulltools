@@ -1325,6 +1325,8 @@ plot_conf.default <- function(
   ...
 ) {
 
+  deprecate_soft("2.0.0", "plot_conf.default()", "plot_conf.confint()")
+
   direction <- match.arg(direction)
   distribution <- match.arg(distribution)
 
@@ -1463,33 +1465,31 @@ plot_conf.default <- function(
 #'
 #' @export
 #'
-plot_conf.confint <- function(p_obj, x, title_trace, ...) {
-  bounds <- attr(x, "bounds")
-  direction <- attr(x, "direction")
-  distribution <- attr(x, "distribution")
+plot_conf.confint <- function(p_obj, x, title_trace = "Confidence Limit", ...) {
 
-  if (direction == "x") {
-    x <- switch(
-      bounds,
-      "two_sided" = list(x$lower_bound, x$upper_bound),
-      "lower" = list(x$lower_bound),
-      "upper" = list(x$upper_bound)
-    )
+  distribution <- x$distribution[1]
 
-    y <- x$x
-  } else {
-    x <- x$x
-
-    y <- switch(
-      bounds,
-      "two_sided" = list(x$lower_bound, x$upper_bound),
-      "lower" = list(x$lower_bound),
-      "upper" = list(x$upper_bound)
+  # Plot method is determined by p_obj
+  plot_method <- if (inherits(p_obj, "gg")) {
+    "ggplot2"
+  } else if (inherits(p_obj, "plotly")) {
+    "plotly"
+  }  else {
+    stop(
+      "p_obj is not a valid plot object. Provide either a ggplot2 or a plotly
+      plot object."
     )
   }
 
-  plot_conf.default(
-    p_obj, x, y, direction, distribution, title_trace
+  tbl_p <- plot_conf_helper_2(
+    x, distribution
+  )
+
+  plot_conf_fun <- if (plot_method == "plotly") plot_conf_plotly else
+    plot_conf_ggplot2
+
+  plot_conf_fun(
+    p_obj, tbl_p, title_trace
   )
 }
 

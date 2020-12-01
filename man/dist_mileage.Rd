@@ -34,7 +34,7 @@ estimated using MLE. See 'Details' for more information.
 The distribution parameter(s) are determined on the basis of complete cases,
 i.e. there is no \code{NA} in one of the related vector elements
 \code{c(mileage[i], x[i])}. Distances and operating times less than or equal
-to 0 are not considered as well.
+to zero are not considered as well.
 
 \strong{Assumption of linear relationship}: Imagine a component in a vehicle
   has endured a distance of 25000 kilometers (km) in 500 days (d), the annual

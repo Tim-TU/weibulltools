@@ -15,8 +15,7 @@ available use \code{NA}.}
 format "yyyy-mm-dd", indicating the later of the two dates. If no date is
 available use \code{NA}.}
 
-\item{distribution}{Supposed distribution of the random variable. The default
-value is \code{"lognormal"}.}
+\item{distribution}{Supposed distribution of the random variable.}
 }
 \value{
 A list of class \code{"delay_estimation"} which contains:

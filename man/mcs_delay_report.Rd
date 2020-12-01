@@ -28,8 +28,8 @@ If no date is available use \code{NA}.}
 \item{status}{A vector of binary data (0 or 1) indicating whether unit \emph{i}
 is a right censored observation (= 0) or a failure (= 1).}
 
-\item{distribution}{Supposed distribution of the random variable. The default
-value is \code{"lognormal"}. So far no other distribution is implemented.}
+\item{distribution}{Supposed distribution of the random variable. Only
+\code{"lognormal"} is implemented.}
 
 \item{details}{A logical. If \code{FALSE} the output consists of a vector with
 corrected operating times for the censored units and the input operating

@@ -15,8 +15,8 @@ If no date is available use \code{NA}.}
 the format "yyyy-mm-dd", indicating the date of registration of a unit.
 If no date is available use \code{NA}.}
 
-\item{distribution}{Supposed distribution of the random variable. The default
-value is \code{"lognormal"}. So far no other distribution is implemented.}
+\item{distribution}{Supposed distribution of the random variable. Only
+\code{"lognormal"} is implemented.}
 }
 \value{
 A named vector of estimated parameters for the specified

@@ -15,8 +15,8 @@ If no date is available use \code{NA}.}
 format "yyyy-mm-dd", indicating the date of report of a failed unit.
 If no date is available use \code{NA}.}
 
-\item{distribution}{Supposed distribution of the random variable. The default
-value is \code{"lognormal"}. So far no other distribution is implemented.}
+\item{distribution}{Supposed distribution of the random variable. Only
+\code{"lognormal"} is implemented.}
 }
 \value{
 A named vector of estimated parameters for the specified

@@ -36,12 +36,11 @@ failure (= 1). In the later case \code{data} has classes \code{"mcs_data"} and
 
 \item{id}{Identification for every unit.}
 
-\item{distribution}{Supposed distribution of the delay random variable. The
-default value is \code{"lognormal"}. If more than one delay is to be
-considered and different distributions should be assumed for each delay,
-the argument \code{distribution} must have the same length as list \code{date_1}
-(or \code{date_2}). For example, in the case of two delays with different
-distributions, one has to specify the argument as
+\item{distribution}{Supposed distribution of the delay random variable. If more
+than one delay is to be considered and different distributions should be
+assumed for each delay, the argument \code{distribution} must have the same
+length as list \code{date_1} (or \code{date_2}). For example, in the case of
+two delays with different distributions, one has to specify the argument as
 \code{distribution = c("lognormal", "exponential")}. Then the lognormal
 distribution is applied to the first delay and the exponential distribution
 to the second (See 'Examples').}
