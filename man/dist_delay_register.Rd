@@ -9,14 +9,14 @@ dist_delay_register(date_prod, date_register, distribution = "lognormal")
 \arguments{
 \item{date_prod}{A vector of class \code{"character"} or \code{"Date"}, in the
 format "yyyy-mm-dd", indicating the date of production of a unit.
-If no date is available use \code{NA}.}
+Use \code{NA} for missing elements.}
 
 \item{date_register}{A vector of class \code{"character"} or \code{"Date"}, in
 the format "yyyy-mm-dd", indicating the date of registration of a unit.
-If no date is available use \code{NA}.}
+Use \code{NA} for missing elements.}
 
-\item{distribution}{Supposed distribution of the random variable. The default
-value is \code{"lognormal"}. So far no other distribution is implemented.}
+\item{distribution}{Supposed distribution of the random variable. Only
+\code{"lognormal"} is implemented.}
 }
 \value{
 A named vector of estimated parameters for the specified

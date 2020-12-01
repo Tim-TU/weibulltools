@@ -107,7 +107,7 @@ estimate_cdf.default <- function(x,
   }
 
   estimate_cdf.reliability_data(
-    data = data,
+    x = data,
     methods = methods,
     options = options
   )
@@ -120,7 +120,7 @@ estimate_cdf.default <- function(x,
 #' @inherit estimate_cdf description details return
 #' @inheritSection estimate_cdf Options
 #'
-#' @param data A tibble returned by \link{reliability_data}.
+#' @param x A tibble returned by \link{reliability_data}.
 #' @param methods One or multiple methods of \code{"mr"}, \code{"johnson"},
 #'   \code{"kaplan"} or \code{"nelson"} used for estimating the failure
 #'   probabilities. See 'Details'.
@@ -128,11 +128,11 @@ estimate_cdf.default <- function(x,
 #'
 #' @export
 estimate_cdf.reliability_data <- function(
-  data, methods = c("mr", "johnson", "kaplan", "nelson"), options = list(), ...
+  x, methods = c("mr", "johnson", "kaplan", "nelson"), options = list(), ...
 ) {
 
-  if (!inherits(data, "reliability_data")) {
-    stop("data must be a tibble returned from reliability_data().")
+  if (!inherits(x, "reliability_data")) {
+    stop("x must be a tibble returned from reliability_data().")
   }
 
   methods <- if (missing(methods)) {
@@ -151,12 +151,12 @@ estimate_cdf.reliability_data <- function(
   purrr::map_dfr(methods, function(method) {
     if (method == "mr") {
       method_funs[[method]](
-        data = data,
+        data = x,
         method = if (is.null(options$mr_method)) "benard" else options$mr_method,
         ties.method = if (is.null(options$mr_ties.method)) "max" else options$mr_ties.method
       )
     } else {
-      method_funs[[method]](data = data)
+      method_funs[[method]](data = x)
     }
   })
 }

@@ -68,9 +68,6 @@
           loc        sc 
     3.8164980 0.6304333 
     
-    $int_seed
-    [1] 1234
-    
 
 # mcs_delay_report remains stable by defining the seed
 
@@ -87,9 +84,6 @@
     $coefficients
          loc       sc 
     3.003578 0.839370 
-    
-    $int_seed
-    [1] 1234
     
 
 # mcs_delays remains stable by defining the seed
@@ -114,8 +108,5 @@
     $coefficients_report
          loc       sc 
     3.003578 0.839370 
-    
-    $int_seed
-    [1] 1234
     
 

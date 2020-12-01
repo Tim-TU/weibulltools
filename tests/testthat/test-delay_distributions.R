@@ -153,6 +153,38 @@ test_that("mcs_delay stops if date_1 and date_2 differ in lengths; vector case",
   )
 })
 
+test_that("mcs_delay stops if status is not a binary (0 or 1)", {
+  date_of_production   <- c("2014-07-28", "2014-02-17", "2014-07-14",
+                            "2014-06-26", "2014-03-10", "2014-05-14",
+                            "2014-05-06", "2014-03-07", "2014-03-09",
+                            "2014-04-13", "2014-05-20", "2014-07-07",
+                            "2014-01-27", "2014-01-30", "2014-03-17",
+                            "2014-02-09", "2014-04-14", "2014-04-20",
+                            "2014-03-13", "2014-02-23", "2014-04-03",
+                            "2014-01-08", "2014-01-08")
+
+  date_of_registration <- c(NA, "2014-03-29", "2014-12-06", "2014-09-09",
+                            NA, NA, "2014-06-16", NA, "2014-05-23",
+                            "2014-05-09", "2014-05-31", NA, "2014-04-13",
+                            NA, NA, "2014-03-12", NA, "2014-06-02",
+                            NA, "2014-03-21", "2014-06-19", NA, NA)
+
+  time_in_service <- rep(1000, length(date_of_production))
+  status <- c(0, 1, 1, 1, 0, 0, 1, 0, 1, 1, 1, 0, 1, 0, 0, 1, 0, 1, 0, 1, 1, 0, 0)
+
+  expect_error(
+    mcs_delay(
+      date_1 = date_of_production,
+      date_2 = date_of_registration,
+      x = time_in_service,
+      status = letters[seq_along(time_in_service)],
+      distribution = "lognormal"
+    ),
+    "status must be numeric! all elements must be either 0 or 1!"
+  )
+})
+
+
 test_that("mcs_delay remains stable by defining the seed", {
   date_of_production   <- c("2014-07-28", "2014-02-17", "2014-07-14",
                             "2014-06-26", "2014-03-10", "2014-05-14",
@@ -184,13 +216,14 @@ test_that("mcs_delay remains stable by defining the seed", {
   time_in_service <- rep(1000, length(date_of_production))
   status <- c(0, 1, 1, 1, 0, 0, 1, 0, 1, 1, 1, 0, 1, 0, 0, 1, 0, 1, 0, 1, 1, 0, 0)
 
+  set.seed(1234)
+
   mcs_delays <- mcs_delay(
     date_1 = list(date_of_production, date_of_repair),
     date_2 = list(date_of_registration, date_of_report),
     x = time_in_service,
     status = status,
-    distribution = c("lognormal", "exponential"),
-    seed = 1234
+    distribution = c("lognormal", "exponential")
   )
   expect_snapshot_output(mcs_delays$data)
   expect_snapshot_output(mcs_delays$sim_data)
@@ -216,7 +249,7 @@ test_that("dist_delay_register warns if any time difference is smaller or equal 
         date_prod = date_of_production,
         date_register = date_of_registration
       ),
-      "at least one of the time differences is smaller or equal to 0*"
+      "At least one of the time differences is smaller or equal to 0*"
     )
   )
 })
@@ -231,7 +264,7 @@ test_that("dist_delay_register stops if all time difference are smaller or equal
         date_prod = date_of_production,
         date_register = date_of_registration
       ),
-      "all differences are smaller or equal to 0*"
+      "All differences are smaller or equal to 0*"
     )
   )
 })
@@ -243,7 +276,7 @@ test_that("dist_delay_register stops if all time differences are NAs", {
         date_prod = NA,
         date_register = NA
       ),
-      "all differences are NA*"
+      "All differences are NA*"
     )
   )
 })
@@ -293,7 +326,7 @@ test_that("dist_delay_report warns if any time difference is smaller or equal to
         date_repair = date_of_repair,
         date_report = date_of_report
       ),
-      "at least one of the time differences is smaller or equal to 0*"
+      "At least one of the time differences is smaller or equal to 0*"
     )
   )
 })
@@ -309,7 +342,7 @@ test_that("dist_delay_report stops if all time difference are smaller or equal t
         date_repair = date_of_repair,
         date_report = date_of_report
       ),
-      "all differences are smaller or equal to 0*"
+      "All differences are smaller or equal to 0*"
     )
   )
 })
@@ -321,7 +354,7 @@ test_that("dist_delay_report stops if all time differences are NAs", {
         date_repair = NA,
         date_report = NA
       ),
-      "all differences are NA*"
+      "All differences are NA*"
     )
   )
 })
@@ -368,6 +401,8 @@ test_that("mcs_delay_register remains stable by defining the seed", {
   op_time <- rep(1000, length(date_of_production))
   status <- c(0, 1, 1, 1, 0, 0, 1, 0, 1, 1, 1, 0, 1, 0, 0, 1, 0, 1, 0, 1, 1, 0, 0)
 
+  set.seed(1234)
+
   suppressWarnings(
     mcs_delay_register_list <- mcs_delay_register(
       date_prod = date_of_production,
@@ -375,7 +410,6 @@ test_that("mcs_delay_register remains stable by defining the seed", {
       x = op_time,
       status = status,
       distribution = "lognormal",
-      seed = 1234,
       details = TRUE
     )
   )
@@ -399,6 +433,8 @@ test_that("mcs_delay_report remains stable by defining the seed", {
   op_time <- rep(1000, length(date_of_repair))
   status <- c(0, 1, 1, 1, 0, 0, 1, 0, 1, 1, 1, 0, 1, 0, 0, 1, 0, 1, 0, 1, 1, 0, 0)
 
+  set.seed(1234)
+
   suppressWarnings(
     mcs_delay_report_list <- mcs_delay_report(
       date_repair = date_of_repair,
@@ -406,7 +442,6 @@ test_that("mcs_delay_report remains stable by defining the seed", {
       x = op_time,
       status = status,
       distribution = "lognormal",
-      seed = 1234,
       details = TRUE
     )
   )
@@ -446,6 +481,8 @@ test_that("mcs_delays remains stable by defining the seed", {
   op_time <- rep(1000, length(date_of_repair))
   status <- c(0, 1, 1, 1, 0, 0, 1, 0, 1, 1, 1, 0, 1, 0, 0, 1, 0, 1, 0, 1, 1, 0, 0)
 
+  set.seed(1234)
+
   suppressWarnings(
     mcs_delays_list <- mcs_delays(
       date_prod = date_of_production,
@@ -455,7 +492,6 @@ test_that("mcs_delays remains stable by defining the seed", {
       x = op_time,
       status = status,
       distribution = "lognormal",
-      seed = 1234,
       details = TRUE)
   )
   expect_snapshot_output(mcs_delays_list)

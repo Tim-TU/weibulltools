@@ -12,43 +12,39 @@ mcs_delays(
   x,
   status,
   distribution = "lognormal",
-  details = FALSE,
-  seed = NULL
+  details = FALSE
 )
 }
 \arguments{
 \item{date_prod}{A vector of class \code{"character"} or \code{"Date"}, in the
 format "yyyy-mm-dd", indicating the date of production of a unit.
-If no date is available use \code{NA}.}
+Use \code{NA} for missing elements.}
 
 \item{date_register}{A vector of class \code{"character"} or \code{"Date"}, in
 the format "yyyy-mm-dd", indicating the date of registration of a unit.
-If no date is available use \code{NA}.}
+Use \code{NA} for missing elements.}
 
 \item{date_repair}{a vector of class \code{"character"} or \code{"Date"}, in the
 format "yyyy-mm-dd", indicating the date of repair of a failed unit.
-If no date is available use \code{NA}.}
+Use \code{NA} for missing elements.}
 
 \item{date_report}{a vector of class \code{"character"} or \code{"Date"}, in the
 format "yyyy-mm-dd", indicating the date of report of a failed unit.
-If no date is available use \code{NA}.}
+Use \code{NA} for missing elements.}
 
 \item{x}{A numeric vector of operating times.}
 
 \item{status}{A vector of binary data (0 or 1) indicating whether unit \emph{i}
 is a right censored observation (= 0) or a failure (= 1).}
 
-\item{distribution}{Supposed distribution of the random variable. The default
-value is \code{"lognormal"}. So far no other distribution is implemented.}
+\item{distribution}{Supposed distribution of the random variable. Only
+\code{"lognormal"} is implemented.}
 
 \item{details}{A logical. If \code{FALSE} the output consists of a vector with
 corrected operating times for the censored units and the input operating
 times for the failed units. If \code{TRUE} the output consists of a detailed
-list, i.e the same vector as described before, simulated random numbers,
-estimated distribution parameters and a seed for reproducibility.}
-
-\item{seed}{If \code{seed = NULL} a random seed is used. Otherwise the user
-can specify an integer for the seed.}
+list, i.e the same vector as described before, simulated random numbers and
+estimated distribution parameters.}
 }
 \value{
 A numerical vector of corrected operating times for the censored units
@@ -69,8 +65,8 @@ A numerical vector of corrected operating times for the censored units
   \item \code{coefficients_regist} : Estimated coefficients of supposed
     distribution for delay in registration.
   \item \code{coefficients_report} : Estimated coefficients of supposed
-    distribution for delay in report.
-  \item \code{int_seed} : Integer seed number for reproducibility.}
+    distribution for delay in report
+  }
 }
 \description{
 \lifecycle{soft-deprecated}
@@ -122,7 +118,6 @@ x_corrected <- mcs_delays(date_prod = date_of_production,
                           x = op_time,
                           status = state,
                           distribution = "lognormal",
-                          seed = NULL,
                           details = FALSE)
 
 # Example 2 - Detailed list output:
@@ -133,6 +128,5 @@ list_detail <- mcs_delays(date_prod = date_of_production,
                                 x = op_time,
                                 status = state,
                                 distribution = "lognormal",
-                                seed = NULL,
                                 details = TRUE)
 }
