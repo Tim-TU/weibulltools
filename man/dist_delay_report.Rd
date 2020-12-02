@@ -9,14 +9,14 @@ dist_delay_report(date_repair, date_report, distribution = "lognormal")
 \arguments{
 \item{date_repair}{a vector of class \code{"character"} or \code{"Date"}, in the
 format "yyyy-mm-dd", indicating the date of repair of a failed unit.
-If no date is available use \code{NA}.}
+Use \code{NA} for missing elements.}
 
 \item{date_report}{a vector of class \code{"character"} or \code{"Date"}, in the
 format "yyyy-mm-dd", indicating the date of report of a failed unit.
-If no date is available use \code{NA}.}
+Use \code{NA} for missing elements.}
 
-\item{distribution}{Supposed distribution of the random variable. The default
-value is \code{"lognormal"}. So far no other distribution is implemented.}
+\item{distribution}{Supposed distribution of the random variable. Only
+\code{"lognormal"} is implemented.}
 }
 \value{
 A named vector of estimated parameters for the specified

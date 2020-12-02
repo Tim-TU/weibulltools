@@ -8,38 +8,34 @@ Approach}
 mcs_delay_register(
   date_prod,
   date_register,
-  x,
+  time,
   status,
   distribution = "lognormal",
-  seed = NULL,
   details = FALSE
 )
 }
 \arguments{
 \item{date_prod}{A vector of class \code{"character"} or \code{"Date"}, in the
 format "yyyy-mm-dd", indicating the date of production of a unit.
-If no date is available use \code{NA}.}
+Use \code{NA} for missing elements.}
 
 \item{date_register}{A vector of class \code{"character"} or \code{"Date"}, in
 the format "yyyy-mm-dd", indicating the date of registration of a unit.
-If no date is available use \code{NA}.}
+Use \code{NA} for missing elements.}
 
-\item{x}{A numeric vector of operating times.}
+\item{time}{A numeric vector of operating times.}
 
 \item{status}{A vector of binary data (0 or 1) indicating whether unit \emph{i}
 is a right censored observation (= 0) or a failure (= 1).}
 
-\item{distribution}{Supposed distribution of the random variable. The default
-value is \code{"lognormal"}. So far no other distribution is implemented.}
-
-\item{seed}{If \code{seed = NULL} a random seed is used. Otherwise the user
-can specify an integer for the seed.}
+\item{distribution}{Supposed distribution of the random variable. Only
+\code{"lognormal"} is implemented.}
 
 \item{details}{A logical. If \code{FALSE} the output consists of a vector with
 corrected operating times for the censored units and the input operating
 times for the failed units. If \code{TRUE} the output consists of a detailed
-list, i.e the same vector as described before, simulated random numbers,
-estimated distribution parameters and a seed for reproducibility.}
+list, i.e the same vector as described before, simulated random numbers and
+estimated distribution parameters.}
 }
 \value{
 A numeric vector of corrected operating times for the censored units
@@ -54,7 +50,7 @@ A numeric vector of corrected operating times for the censored units
     censored observations.
   \item \code{coefficients} : Estimated coefficients of supposed
     distribution.
-  \item \code{int_seed} : Integer seed number for reproducibility.}
+  }
 }
 \description{
 \lifecycle{soft-deprecated}
@@ -93,18 +89,16 @@ state <- c(0, 1, 1, 1, 0, 0, 1, 0, 1, 1, 1, 0, 1, 0, 0, 1, 0, 1, 0, 1, 1, 0, 0)
 # Example 1 - Simplified vector output:
 x_corrected <- mcs_delay_register(date_prod = date_of_production,
                                   date_register = date_of_registration,
-                                  x = op_time,
+                                  time = op_time,
                                   status = state,
                                   distribution = "lognormal",
-                                  seed = NULL,
                                   details = FALSE)
 
 # Example 2 - Detailed list output:
 list_detail <- mcs_delay_register(date_prod = date_of_production,
                                   date_register = date_of_registration,
-                                  x = op_time,
+                                  time = op_time,
                                   status = state,
                                   distribution = "lognormal",
-                                  seed = NULL,
                                   details = TRUE)
 }

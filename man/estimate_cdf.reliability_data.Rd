@@ -5,14 +5,14 @@
 \title{Estimation of Failure Probabilities}
 \usage{
 \method{estimate_cdf}{reliability_data}(
-  data,
+  x,
   methods = c("mr", "johnson", "kaplan", "nelson"),
   options = list(),
   ...
 )
 }
 \arguments{
-\item{data}{A tibble returned by \link{reliability_data}.}
+\item{x}{A tibble returned by \link{reliability_data}.}
 
 \item{methods}{One or multiple methods of \code{"mr"}, \code{"johnson"},
 \code{"kaplan"} or \code{"nelson"} used for estimating the failure
