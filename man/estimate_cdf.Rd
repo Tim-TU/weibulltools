@@ -2,9 +2,26 @@
 % Please edit documentation in R/probability_estimators.R
 \name{estimate_cdf}
 \alias{estimate_cdf}
+\alias{estimate_cdf.reliability_data}
 \title{Estimation of Failure Probabilities}
 \usage{
 estimate_cdf(x, ...)
+
+\method{estimate_cdf}{reliability_data}(
+  x,
+  methods = c("mr", "johnson", "kaplan", "nelson"),
+  options = list(),
+  ...
+)
+}
+\arguments{
+\item{x}{A tibble returned by \link{reliability_data}.}
+
+\item{methods}{One or multiple methods of \code{"mr"}, \code{"johnson"},
+\code{"kaplan"} or \code{"nelson"} used for estimating the failure
+probabilities. See 'Details'.}
+
+\item{options}{A list of named options. See 'Options'.}
 }
 \value{
 A tibble containing the following columns:
@@ -74,3 +91,9 @@ argument:
 }
 }
 
+\examples{
+
+}
+\seealso{
+estimate_cdf.default
+}

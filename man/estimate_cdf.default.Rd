@@ -98,3 +98,9 @@ argument:
 }
 }
 
+\examples{
+
+}
+\seealso{
+estimate_cdf
+}

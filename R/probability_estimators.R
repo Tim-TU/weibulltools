@@ -46,6 +46,12 @@
 #'     on the basis of Nelson-Aalen failure probabilities.
 #' }
 #'
+#' @param x A tibble returned by \link{reliability_data}.
+#' @param methods One or multiple methods of \code{"mr"}, \code{"johnson"},
+#'   \code{"kaplan"} or \code{"nelson"} used for estimating the failure
+#'   probabilities. See 'Details'.
+#' @param options A list of named options. See 'Options'.
+#'
 #' @section Options:
 #'
 #' \itemize{
@@ -66,7 +72,12 @@
 #'     probability.
 #' }
 #'
+#' @seealso estimate_cdf.default
+#'
+#' @examples
+#'
 #' @export
+#'
 estimate_cdf <- function(x, ...) {
   UseMethod("estimate_cdf")
 }
@@ -89,6 +100,10 @@ estimate_cdf <- function(x, ...) {
 #'   \code{"kaplan"} or \code{"nelson"} used for estimating the failure
 #'   probabilities. See 'Details'.
 #' @param options A list of named options. See 'Options'.
+#'
+#' @seealso estimate_cdf
+#'
+#' @examples
 #'
 #' @export
 estimate_cdf.default <- function(x,
@@ -115,16 +130,7 @@ estimate_cdf.default <- function(x,
 
 
 
-#' Estimation of Failure Probabilities
-#'
-#' @inherit estimate_cdf description details return
-#' @inheritSection estimate_cdf Options
-#'
-#' @param x A tibble returned by \link{reliability_data}.
-#' @param methods One or multiple methods of \code{"mr"}, \code{"johnson"},
-#'   \code{"kaplan"} or \code{"nelson"} used for estimating the failure
-#'   probabilities. See 'Details'.
-#' @param options A list of named options. See 'Options'.
+#' @rdname estimate_cdf
 #'
 #' @export
 estimate_cdf.reliability_data <- function(
