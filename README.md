@@ -11,39 +11,40 @@ maturing](https://img.shields.io/badge/lifecycle-maturing-blue.svg)](https://www
 status](https://www.r-pkg.org/badges/version/weibulltools)](https://CRAN.R-project.org/package=weibulltools)
 <!-- badges: end -->
 
-Unlike other R packages for survival analysis, the weibulltools package
-focuses on reliability methods and has the advantage of being open
-source and easily accessible contrary to other reliability analysis
-software. In addition to that the package can be integrated into
-(partly) automated data analysis processes and even can be connected to
-big data systems.
+## Overview
 
-The weibulltools package contains methods for examining bench test or
-field data using the well-known weibull analysis. It includes Monte
-Carlo simulation for estimating the life span of products that have not
-failed yet, taking account of registering and reporting delays. On this
-basis, if the products looked upon are vehicles, the covered mileage can
-be estimated as well. The weibulltools package also provides methods for
-probability estimation within samples that contain failures as well as
-censored data. Methods for estimating the parameters of lifetime
-distributions as well as the confidence intervals of quantiles and
-probabilities are also included. If desired, the data can automatically
-be divided into subgroups using segmented regression. And if the number
-of subgroups in a Weibull Mixture Model is known, data can be analyzed
-using the EM-Algorithm. Besides the calculation methods, methods for
-interactive visualization of the edited data using *Plotly* are provided
-as well.
+The *weibulltools* package focuses on statistical methods and
+visualizations that are often used in reliability engineering.
+
+The goal of *weibulltools* is to equip the user with a compact and
+easily accessible set of methods and visualization tools that make the
+examination and adjustment as well as the analysis and interpretation of
+field data (and bench tests) as simple as possible.
+
+Besides the well-known weibull analysis, *weibulltools* supports
+multiple lifetime distributions and also contains Monte Carlo methods
+for the correction and completion of imprecisely recorded or unknown
+lifetime characteristics.  
+Plots are created statically ([ggplot2](https://ggplot2.tidyverse.org/))
+or interactively ([plotly](https://plotly.com/r/)) and can be customized
+with the corresponding functions of the respective visualization
+package.
 
 ## Installation
 
-You can install the released version of weibulltools from
-[CRAN](https://CRAN.R-project.org) with:
+The latest released version of *weibulltools* from
+[CRAN](https://cran.r-project.org/web/packages/weibulltools/) can be
+installed with:
 
 ``` r
 install.packages("weibulltools")
 ```
 
-And the development version from [GitHub](https://github.com/) with:
+### Development version
+
+Install the development version of *weibulltools* from
+[GitHub](https://github.com/Tim-TU/weibulltools/) to use new features or
+to get a bug fix.
 
 ``` r
 # install.packages("devtools")
@@ -58,3 +59,11 @@ This is a basic example which shows you how to solve a common problem:
 library(weibulltools)
 ## basic example code
 ```
+
+## Getting help
+
+If you notice a bug or have suggestions for improvements, please submit
+an issue with a minimal reproducible example on
+[GitHub](https://github.com/Tim-TU/weibulltools/issues). For further
+questions, please contact [Tim-Gunnar
+Hensel](mailto:tim-gunnar.hensel@tu-berlin.de).

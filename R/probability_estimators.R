@@ -131,10 +131,6 @@ estimate_cdf.reliability_data <- function(
   x, methods = c("mr", "johnson", "kaplan", "nelson"), options = list(), ...
 ) {
 
-  if (!inherits(x, "reliability_data")) {
-    stop("x must be a tibble returned from reliability_data().")
-  }
-
   methods <- if (missing(methods)) {
     "mr"
   } else {
