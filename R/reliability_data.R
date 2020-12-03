@@ -19,10 +19,10 @@
 #' @return A tibble with class attribute \code{"reliability_data"} containing the
 #' following columns (if \code{.keep_all = FALSE}):
 #' \itemize{
-#'   \item \code{x} Lifetime characteristic.
-#'   \item \code{status} Binary data (0 or 1) indicating whether a unit is a right
+#'   \item \code{x} : Lifetime characteristic.
+#'   \item \code{status} : Binary data (0 or 1) indicating whether a unit is a right
 #'     censored observation (= 0) or a failure (= 1).
-#'   \item \code{id} Identification for every unit.
+#'   \item \code{id} : Identification for every unit.
 #' }
 #' If \code{.keep_all = TRUE} the remaining columns of \code{data} are also preserved.
 #'

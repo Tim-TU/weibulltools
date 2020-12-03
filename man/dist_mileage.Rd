@@ -18,10 +18,10 @@ elements.}
 \value{
 A list of class \code{"mileage_estimation"} which contains:
   \itemize{
-    \item \code{coefficients} A named vector of estimated parameter(s).
-    \item \code{miles_annual} A numeric vector of element-wise computed annual
+    \item \code{coefficients} : A named vector of estimated parameter(s).
+    \item \code{miles_annual} : A numeric vector of element-wise computed annual
       distances using the linear relationship described in 'Details'.
-    \item \code{distribution} Specified distribution.
+    \item \code{distribution} : Specified distribution.
   }
 }
 \description{

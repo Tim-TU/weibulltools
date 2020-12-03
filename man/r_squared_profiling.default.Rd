@@ -13,27 +13,30 @@
 )
 }
 \arguments{
-\item{x}{A numeric vector which consists of lifetime data. Lifetime
-data could be every characteristic influencing the reliability of a product,
+\item{x}{A numeric vector which consists of lifetime data. Lifetime data
+could be every characteristic influencing the reliability of a product,
 e.g. operating time (days/months in service), mileage (km, miles), load
 cycles.}
 
 \item{y}{A numeric vector which consists of estimated failure probabilities
-regarding the lifetime data in \code{x}.}
+regarding the lifetime data in x.}
 
-\item{thres}{A numeric value of the threshold parameter.}
+\item{thres}{A numeric value for the threshold parameter.}
 
-\item{distribution}{Supposed distribution of the random variable. The
-value can be \code{"weibull3"}, \code{"lognormal3"} or \code{"loglogistic3"}.}
+\item{distribution}{Supposed three-parametric distribution of the random variable.}
+}
+\value{
+Returns the coefficient of determination with respect to the threshold parameter
+\code{thres}.
 }
 \description{
 This function evaluates the coefficient of determination with respect to a
 given threshold parameter of a three-parametric lifetime distribution.
-In terms of \emph{Median Rank Regression} this function can be optimized
+In terms of \emph{Rank Regression} this function can be optimized
 (\code{\link{optim}}) to estimate the threshold parameter.
 }
 \examples{
-# Alloy T7987 dataset taken from Meeker and Escobar(1998, p. 131)
+# Data:
 cycles   <- c(300, 300, 300, 300, 300, 291, 274, 271, 269, 257, 256, 227, 226,
               224, 213, 211, 205, 203, 197, 196, 190, 189, 188, 187, 184, 180,
               180, 177, 176, 173, 172, 171, 170, 170, 169, 168, 168, 162, 159,
@@ -41,30 +44,50 @@ cycles   <- c(300, 300, 300, 300, 300, 291, 274, 271, 269, 257, 256, 227, 226,
               139, 136, 135, 133, 131, 129, 123, 121, 121, 118, 117, 117, 114,
               112, 108, 104, 99, 99, 96, 94)
 status <- c(rep(0, 5), rep(1, 67))
-data <- reliability_data(x = cycles, status = status)
 
-tbl_john <- estimate_cdf(data, "johnson")
+prob_tbl <- estimate_cdf(
+  x = cycles,
+  status = status,
+  methods = "johnson"
+)
 
-# Determining threshold parameter for which the coefficient of determination is
-# maximized subject to the condition that the threshold parameter must be smaller
-# as the first failure cycle, i.e 94:
-threshold <- seq(0, min(cycles[status == 1]) - 0.1, length.out = 100)
+# Determining the optimal coefficient of determination:
+## Range of threshold parameter must be smaller than the first failure:
+threshold <- seq(
+  0,
+  min(cycles[status == 1]) - 0.1,
+  length.out = 100
+)
 
+## Coefficient of determination with respect to threshold values:
 profile_r2 <- sapply(
-  threshold, r_squared_profiling,
-  x = tbl_john$x[tbl_john$status == 1],
-  y = tbl_john$prob[tbl_john$status == 1],
+  threshold,
+  r_squared_profiling,
+  x = prob_tbl$x[prob_tbl$status == 1],
+  y = prob_tbl$prob[prob_tbl$status == 1],
   distribution = "weibull3"
 )
 
+## Threshold value (among the candidats) that maximizes the coefficient of determination:
 threshold[which.max(profile_r2)]
 
-# plot:
-plot(threshold, profile_r2, type = "l")
-abline(v = threshold[which.max(profile_r2)], h = max(profile_r2), col = "red")
+## plot:
+plot(
+  threshold,
+  profile_r2,
+  type = "l"
+)
+abline(
+  v = threshold[which.max(profile_r2)],
+  h = max(profile_r2),
+  col = "red"
+)
 
 }
 \references{
 Meeker, William Q; Escobar, Luis A., Statistical methods for
   reliability data, New York: Wiley series in probability and statistics, 1998
+}
+\seealso{
+\code{\link{r_squared_profiling}}
 }

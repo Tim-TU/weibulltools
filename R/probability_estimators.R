@@ -8,39 +8,39 @@
 #' @details
 #' One or multiple techniques can be used for the \code{methods} argument:
 #' \itemize{
-#'   \item \code{"mr"}: Method \emph{Median Ranks} is used to estimate the failure
+#'   \item \code{"mr"} : Method \emph{Median Ranks} is used to estimate the failure
 #'     probabilities of failed units without considering censored items.
 #'     Tied observations can be handled in three ways (See 'Options'):
 #'     \itemize{
-#'       \item "max": Highest observed rank is assigned to tied observations.
-#'       \item "min": Lowest observed rank is assigned to tied observations.
-#'       \item "average": Mean rank is assigned to tied observations.
+#'       \item \code{"max"} : Highest observed rank is assigned to tied observations.
+#'       \item \code{"min"} : Lowest observed rank is assigned to tied observations.
+#'       \item \code{"average"} : Mean rank is assigned to tied observations.
 #'     }
 #'     Two formulas can be used to determine cumulative failure probabilities
 #'     \emph{F(t)} (See 'Options'):
 #'     \itemize{
-#'       \item "benard": Benard's approximation for Median Ranks.
-#'       \item "invbeta": Exact Median Ranks using the inverse beta distribution.
+#'       \item \code{"benard"} : Benard's approximation for Median Ranks.
+#'       \item \code{"invbeta"} : Exact Median Ranks using the inverse beta distribution.
 #'     }
-#'   \item \code{"johnson"}: The \emph{Johnson} method is used to estimate the
+#'   \item \code{"johnson"} : The \emph{Johnson} method is used to estimate the
 #'     failure probabilities of failed units, taking censored units into account.
 #'     Compared to complete data, correction of probabilities is done by the
 #'     computation of adjusted ranks.
-#'   \item \code{"kaplan"}: The method of \emph{Kaplan} and \emph{Meier} is used
+#'   \item \code{"kaplan"} : The method of \emph{Kaplan} and \emph{Meier} is used
 #'     to estimate the survival function \emph{S(t)} with respect to (multiple)
 #'     right censored data. The complement of \emph{S(t)}, i.e. \emph{F(t)}, is
 #'     returned. In contrast to the original \emph{Kaplan-Meier} estimator, one
 #'     modification is made (see 'References').
 #'
-#'     \strong{Note}: The \emph{Kaplan-Meier} estimator does not assign ranks to
+#'     \strong{Note} : The \emph{Kaplan-Meier} estimator does not assign ranks to
 #'     observations, so the beta-binomial confidence intervals \emph{cannot} be
 #'     calculated using this method.
-#'   \item \code{"nelson"}: The \emph{Nelson-Aalen} estimator models the cumulative
+#'   \item \code{"nelson"} : The \emph{Nelson-Aalen} estimator models the cumulative
 #'     hazard rate function in case of (multiple) right censored data. Equating the
 #'     formal definition of the hazard rate with that according to \emph{Nelson-Aalen}
 #'     results in a formula for the calculation of failure probabilities.
 #'
-#'     \strong{Note}: The \emph{Nelson-Aalen} estimator does not assign ranks to
+#'     \strong{Note} : The \emph{Nelson-Aalen} estimator does not assign ranks to
 #'     observations, so the beta-binomial confidence intervals \emph{cannot} be
 #'     calculated using this method.
 #' }
@@ -53,21 +53,21 @@
 #'
 #' @return A tibble containing the following columns:
 #' \itemize{
-#'   \item \code{id}: Identification for every unit.
-#'   \item \code{x}: Lifetime characteristic.
-#'   \item \code{status}: Binary data (0 or 1) indicating whether a unit is a
+#'   \item \code{id} : Identification for every unit.
+#'   \item \code{x} : Lifetime characteristic.
+#'   \item \code{status} : Binary data (0 or 1) indicating whether a unit is a
 #'     right censored observation (= 0) or a failure (= 1).
-#'   \item \code{rank}: The (computed) ranks. Determined for methods \code{"mr"}
+#'   \item \code{rank} : The (computed) ranks. Determined for methods \code{"mr"}
 #'     and \code{"johnson"}, filled with \code{NA} for other methods.
-#'   \item \code{prob}: Estimated failure probabilities, \code{NA} if \code{status = 0}.
-#'   \item \code{method}: Specified method for the estimation of failure probabilities.
+#'   \item \code{prob} : Estimated failure probabilities, \code{NA} if \code{status = 0}.
+#'   \item \code{method} : Specified method for the estimation of failure probabilities.
 #' }
 #'
 #' @section Options:
-#' The listed options can only be applied for method 'mr':
+#' The listed options can only be applied for method \code{"mr"}:
 #' \itemize{
-#'   \item \code{mr_method}: \code{"benard"} (default) or \code{"invbeta"}.
-#'   \item \code{mr_ties.method}: \code{"max"} (default), \code{"min"} or \code{"average"}.
+#'   \item \code{mr_method} : \code{"benard"} (default) or \code{"invbeta"}.
+#'   \item \code{mr_ties.method} : \code{"max"} (default), \code{"min"} or \code{"average"}.
 #' }
 #'
 #' @references \emph{NIST/SEMATECH e-Handbook of Statistical Methods},
@@ -258,8 +258,8 @@ estimate_cdf.reliability_data <- function(x,
 #' failure probabilities in terms of complete data. Two methods are available to
 #' estimate the cumulative distribution function \emph{F(t)}:
 #' \itemize{
-#'   \item "benard"; Benard's approximation for Median Ranks
-#'   \item "invbeta"; Exact Median Ranks using the inverse beta distribution
+#'   \item "benard" : Benard's approximation for Median Ranks
+#'   \item "invbeta" : Exact Median Ranks using the inverse beta distribution
 #' }
 #'
 #' @inheritParams estimate_cdf.default
@@ -271,12 +271,12 @@ estimate_cdf.reliability_data <- function(x,
 #'
 #' @return A tibble with failed units containing the following columns:
 #' \itemize{
-#'   \item \code{id}: Identification for every unit.
-#'   \item \code{x}: Lifetime characteristic.
-#'   \item \code{status}: Status of failed units (always 1).
-#'   \item \code{rank}: The assigned ranks.
-#'   \item \code{prob}: Estimated failure probabilities.
-#'   \item \code{method}: Specified method for the estimation of failure
+#'   \item \code{id} : Identification for every unit.
+#'   \item \code{x} : Lifetime characteristic.
+#'   \item \code{status} : Status of failed units (always 1).
+#'   \item \code{rank} : The assigned ranks.
+#'   \item \code{prob} : Estimated failure probabilities.
+#'   \item \code{method} : Specified method for the estimation of failure
 #'     probabilities (always 'mr').
 #' }
 #'
@@ -384,13 +384,13 @@ mr_method_ <- function(data,
 #'
 #' @return A tibble containing the following columns:
 #' \itemize{
-#'   \item \code{id}: Identification for every unit.
-#'   \item \code{x}: Lifetime characteristic.
-#'   \item \code{status}: Binary data (0 or 1) indicating whether a unit is a
+#'   \item \code{id} : Identification for every unit.
+#'   \item \code{x} : Lifetime characteristic.
+#'   \item \code{status} : Binary data (0 or 1) indicating whether a unit is a
 #'     right censored observation (= 0) or a failure (= 1).
-#'   \item \code{rank}: The adjusted ranks.
-#'   \item \code{prob}: Estimated failure probabilities, \code{NA} if \code{status = 0}.
-#'   \item \code{method}: Specified method for the estimation of failure
+#'   \item \code{rank} : The adjusted ranks.
+#'   \item \code{prob} : Estimated failure probabilities, \code{NA} if \code{status = 0}.
+#'   \item \code{method} : Specified method for the estimation of failure
 #'     probabilities (always 'johnson').
 #' }
 #'
@@ -498,7 +498,7 @@ johnson_method_ <- function(data) {
 #' One modification is made in contrast to the orginial Kaplan-Meier estimator
 #' (see 'References').
 #'
-#' \strong{Note}: The \emph{Kaplan-Meier} estimator does not assign ranks to
+#' \strong{Note} : The \emph{Kaplan-Meier} estimator does not assign ranks to
 #' observations, so the beta-binomial confidence intervals \emph{cannot} be
 #' calculated using this method.
 #'
@@ -506,13 +506,13 @@ johnson_method_ <- function(data) {
 #'
 #' @return A tibble containing the following columns:
 #' \itemize{
-#'   \item \code{id}: Identification for every unit.
-#'   \item \code{x}: Lifetime characteristic.
-#'   \item \code{status}: Binary data (0 or 1) indicating whether a unit is a
+#'   \item \code{id} : Identification for every unit.
+#'   \item \code{x} : Lifetime characteristic.
+#'   \item \code{status} : Binary data (0 or 1) indicating whether a unit is a
 #'     right censored observation (= 0) or a failure (= 1).
-#'   \item \code{rank}: Filled with \code{NA}.
-#'   \item \code{prob}: Estimated failure probabilities, \code{NA} if \code{status = 0}.
-#'   \item \code{method}: Specified method for the estimation of failure
+#'   \item \code{rank} : Filled with \code{NA}.
+#'   \item \code{prob} : Estimated failure probabilities, \code{NA} if \code{status = 0}.
+#'   \item \code{method} : Specified method for the estimation of failure
 #'     probabilities (always 'kaplan').
 #' }
 #'
@@ -633,7 +633,7 @@ kaplan_method_ <- function(data) {
 #' hazard rate with the hazard rate according to Nelson-Aalen one can calculate
 #' the failure probabilities.
 #'
-#' \strong{Note}: The \emph{Nelson-Aalen} estimator does not assign ranks to
+#' \strong{Note} : The \emph{Nelson-Aalen} estimator does not assign ranks to
 #' observations, so the beta-binomial confidence intervals \emph{cannot} be
 #' calculated using this method.
 #'
@@ -641,13 +641,13 @@ kaplan_method_ <- function(data) {
 #'
 #' @return A tibble containing the following columns:
 #' \itemize{
-#'   \item \code{id}: Identification for every unit.
-#'   \item \code{x}: Lifetime characteristic.
-#'   \item \code{status}: Binary data (0 or 1) indicating whether a unit is a
+#'   \item \code{id} : Identification for every unit.
+#'   \item \code{x} : Lifetime characteristic.
+#'   \item \code{status} : Binary data (0 or 1) indicating whether a unit is a
 #'     right censored observation (= 0) or a failure (= 1).
-#'   \item \code{rank}: Filled with \code{NA}.
-#'   \item \code{prob}: Estimated failure probabilities, \code{NA} if \code{status = 0}.
-#'   \item \code{method}: Specified method for the estimation of failure
+#'   \item \code{rank} : Filled with \code{NA}.
+#'   \item \code{prob} : Estimated failure probabilities, \code{NA} if \code{status = 0}.
+#'   \item \code{method} : Specified method for the estimation of failure
 #'     probabilities (always 'nelson').
 #' }
 #'

@@ -20,10 +20,10 @@ for missing elements.}
 \value{
 A list of class \code{"delay_estimation"} which contains:
   \itemize{
-    \item \code{coefficients} A named vector of estimated parameter(s).
-    \item \code{delay} A numeric vector of element-wise computed differences
+    \item \code{coefficients} : A named vector of estimated parameter(s).
+    \item \code{delay} : A numeric vector of element-wise computed differences
       in days.
-    \item \code{distribution} Specified distribution.
+    \item \code{distribution} : Specified distribution.
   }
 }
 \description{

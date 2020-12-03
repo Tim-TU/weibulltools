@@ -20,13 +20,13 @@ is a right censored observation (= 0) or a failure (= 1).}
 \value{
 A tibble containing the following columns:
 \itemize{
-  \item \code{id}: Identification for every unit.
-  \item \code{x}: Lifetime characteristic.
-  \item \code{status}: Binary data (0 or 1) indicating whether a unit is a
+  \item \code{id} : Identification for every unit.
+  \item \code{x} : Lifetime characteristic.
+  \item \code{status} : Binary data (0 or 1) indicating whether a unit is a
     right censored observation (= 0) or a failure (= 1).
-  \item \code{rank}: Filled with \code{NA}.
-  \item \code{prob}: Estimated failure probabilities, \code{NA} if \code{status = 0}.
-  \item \code{method}: Specified method for the estimation of failure
+  \item \code{rank} : Filled with \code{NA}.
+  \item \code{prob} : Estimated failure probabilities, \code{NA} if \code{status = 0}.
+  \item \code{method} : Specified method for the estimation of failure
     probabilities (always 'nelson').
 }
 }
@@ -42,7 +42,7 @@ terms of (multiple) right censored data. By equating the definition of the
 hazard rate with the hazard rate according to Nelson-Aalen one can calculate
 the failure probabilities.
 
-\strong{Note}: The \emph{Nelson-Aalen} estimator does not assign ranks to
+\strong{Note} : The \emph{Nelson-Aalen} estimator does not assign ranks to
 observations, so the beta-binomial confidence intervals \emph{cannot} be
 calculated using this method.
 }
