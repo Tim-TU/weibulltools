@@ -4,7 +4,7 @@
 \alias{johnson_method}
 \title{Estimation of Failure Probabilities using Johnson's Method}
 \usage{
-johnson_method(x, status, id = rep("XXXXXX", length(x)))
+johnson_method(x, status, id = NULL)
 }
 \arguments{
 \item{x}{A numeric vector which consists of lifetime data. Lifetime
@@ -15,18 +15,26 @@ cycles.}
 \item{status}{A vector of binary data (0 or 1) indicating whether unit \emph{i}
 is a right censored observation (= 0) or a failure (= 1).}
 
-\item{id}{A character vector for the identification of every unit.}
+\item{id}{A vector for the identification of every unit. Default is \code{NULL}.}
 }
 \value{
-A tibble containing id, lifetime characteristic, status of the
-  unit, the adjusted rank and the estimated failure probability. For right
-  censored observations the cells of the rank and probabilty columns are
-  filled with NA values.
+A tibble containing the following columns:
+\itemize{
+  \item \code{id}: Identification for every unit.
+  \item \code{x}: Lifetime characteristic.
+  \item \code{status}: Binary data (0 or 1) indicating whether a unit is a
+    right censored observation (= 0) or a failure (= 1).
+  \item \code{rank}: The adjusted ranks.
+  \item \code{prob}: Estimated failure probabilities, \code{NA} if \code{status = 1}.
+  \item \code{method}: Specified method for the estimation of failure
+    probabilities (always 'johnson').
+}
 }
 \description{
 \lifecycle{soft-deprecated}
 
-The functionality of this function is incorporated into \code{\link{estimate_cdf}}.
+\code{johnson_method()} is no longer under active development, switching
+to \code{\link{estimate_cdf}} is recommended.
 }
 \details{
 This non-parametric approach is used to estimate the failure probabilities in
@@ -35,11 +43,23 @@ correction is done by calculating adjusted ranks which takes non-defective
 units into account.
 }
 \examples{
+# vectors:
 obs   <- seq(10000, 100000, 10000)
 state <- c(0, 1, 1, 0, 0, 0, 1, 0, 1, 0)
 uic   <- c("3435", "1203", "958X", "XX71", "abcd", "tz46",
            "fl29", "AX23", "Uy12", "kl1a")
 
-tbl_john <- johnson_method(x = obs, status = state, id = uic)
+# Example 1 - Johnson method for intact and failed units:
+tbl_john <- johnson_method(
+  x = obs,
+  status = state,
+  id = uic
+)
+
+# Example 2 - Johnson's method works for defectives only:
+tbl_john_2 <- johnson_method(
+  x = obs,
+  status = rep(1, length(obs))
+)
 
 }

@@ -84,10 +84,9 @@
 #' )
 #'
 #' @export
-dist_mileage <- function(
-  mileage,
-  time,
-  distribution = c("lognormal", "exponential")
+dist_mileage <- function(mileage,
+                         time,
+                         distribution = c("lognormal", "exponential")
 ) {
 
   distribution <- match.arg(distribution)
@@ -283,12 +282,11 @@ dist_mileage <- function(
 #' # plot_prob_estimation <- plot_prob(prob_estimation)
 #'
 #' @export
-mcs_mileage <- function(
-  mileage,
-  time,
-  status = NULL,
-  id = paste0("ID", seq_len(length(time))),
-  distribution = c("lognormal", "exponential")
+mcs_mileage <- function(mileage,
+                        time,
+                        status = NULL,
+                        id = paste0("ID", seq_len(length(time))),
+                        distribution = c("lognormal", "exponential")
 ) {
 
   # Checks:

@@ -56,7 +56,7 @@ A numeric vector of corrected operating times for the censored units
 \lifecycle{soft-deprecated}
 
 \code{mcs_delay_register()} is no longer under active development, switching
-to \code{mcs_delay()} is recommended.
+to \code{\link{mcs_delay}} is recommended.
 
 In general the amount of information about units in the field, that have not
 failed yet, are rare. For example it is common that a supplier, who provides

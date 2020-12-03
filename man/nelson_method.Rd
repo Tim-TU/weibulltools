@@ -4,7 +4,7 @@
 \alias{nelson_method}
 \title{Estimation of Failure Probabilities using the Nelson-Aalen Estimator}
 \usage{
-nelson_method(x, status, id = rep("XXXXXX", length(x)))
+nelson_method(x, status, id = NULL)
 }
 \arguments{
 \item{x}{A numeric vector which consists of lifetime data. Lifetime
@@ -15,33 +15,49 @@ cycles.}
 \item{status}{A vector of binary data (0 or 1) indicating whether unit \emph{i}
 is a right censored observation (= 0) or a failure (= 1).}
 
-\item{id}{A character vector for the identification of every unit.}
+\item{id}{A vector for the identification of every unit. Default is \code{NULL}.}
 }
 \value{
-A tibble containing id, lifetime characteristic, status of the
-  unit and the estimated failure probabilty. For right censored observations
-  the cells of probability column are filled with NA.
+A tibble containing the following columns:
+\itemize{
+  \item \code{id}: Identification for every unit.
+  \item \code{x}: Lifetime characteristic.
+  \item \code{status}: Binary data (0 or 1) indicating whether a unit is a
+    right censored observation (= 0) or a failure (= 1).
+  \item \code{rank}: Filled with \code{NA}.
+  \item \code{prob}: Estimated failure probabilities, \code{NA} if \code{status = 1}.
+  \item \code{method}: Specified method for the estimation of failure
+    probabilities (always 'nelson').
+}
 }
 \description{
 \lifecycle{soft-deprecated}
 
-The functionality of this function is incorporated into \code{\link{estimate_cdf}}.
+\code{nelson_method()} is no longer under active development, switching
+to \code{\link{estimate_cdf}} is recommended.
 }
 \details{
 This non-parametric approach estimates the cumulative hazard rate in
 terms of (multiple) right censored data. By equating the definition of the
 hazard rate with the hazard rate according to Nelson-Aalen one can calculate
 the failure probabilities.
-Since the failure probability estimation in this function is not based on
-\emph{Median Ranks}, the Betabinomial confidence intervals cannot be calculated
-on the basis of Nelson-Aalen failure probabilities.
+
+\strong{Note}: The \emph{Nelson-Aalen} estimator does not assign ranks to
+observations, so the beta-binomial confidence intervals \emph{cannot} be
+calculated using this method.
 }
 \examples{
+# vectors:
 obs   <- seq(10000, 100000, 10000)
 state <- c(0, 1, 1, 0, 0, 0, 1, 0, 1, 0)
 uic   <- c("3435", "1203", "958X", "XX71", "abcd", "tz46",
            "fl29", "AX23","Uy12", "kl1a")
 
-tbl_nel <- nelson_method(x = obs, status = state, id = uic)
+# Example - Nelson-Aalen estimator applied to intact and failed units:
+tbl_nel <- nelson_method(
+  x = obs,
+  status = state,
+  id = uic
+)
 
 }

@@ -47,6 +47,7 @@
 * `plot_prob_mix.default()` and `plot_mod_mix.default()`. Use further S3 methods instead.
 
 ## Minor improvements and bug fixes
+* The default of `id` inside `mr_method()`, `johnson_method()`, `kaplan_method()` and `nelson_method()` is set to `NULL`. 
 * Fixed bug inside `plot_mod_mix()` for the case of no mixture distribution.
 * Fixed bug inside `confint_betabinom()`; many cases near one -> unique().
 * Fixed bug inside `mr_method()`: Assigning a rank for the same lifetime. 

@@ -7,9 +7,10 @@
 reliability_data(data = NULL, x, status, id = NULL, .keep_all = FALSE)
 }
 \arguments{
-\item{data}{Either NULL or a data frame/tibble. If data is NULL, x, status and
-id must be vectors containing the data. Otherwise x, status and id can be either
-column names or column positions.}
+\item{data}{Either \code{NULL} or a \code{data.frame}/\code{tibble}. If data is
+\code{NULL}, \code{x}, \code{status} and \code{id} must be vectors containing
+the data. Otherwise \code{x}, \code{status} and \code{id} can be either column
+names or column positions.}
 
 \item{x}{Lifetime data, that means any characteristic influencing the reliability
 of a product, e.g. operating time (days/months in service), mileage (km, miles),
@@ -18,24 +19,49 @@ load cycles.}
 \item{status}{Binary data (0 or 1) indicating whether a unit is a right
 censored observation (= 0) or a failure (= 1).}
 
-\item{id}{Identification for every unit.}
+\item{id}{Identification of every unit.}
+
+\item{.keep_all}{If \code{TRUE}, keep all variables in \code{data}.}
 }
 \value{
-A tibble with class \code{"reliability_data"} containing the following
-columns:
+A tibble with class attribute \code{"reliability_data"} containing the
+following columns (if \code{.keep_all = FALSE}):
 \itemize{
   \item \code{x} Lifetime characteristic.
   \item \code{status} Binary data (0 or 1) indicating whether a unit is a right
     censored observation (= 0) or a failure (= 1).
   \item \code{id} Identification for every unit.
 }
+If \code{.keep_all = TRUE} the remaining columns of \code{data} are also preserved.
 }
 \description{
-Create consistent reliability data based on an existing data.frame/tibble
+Create consistent reliability data based on an existing \code{data.frame}/\code{tibble}
 (preferred) or on multiple equal length vectors.
 }
 \examples{
-# Alloy T7987 dataset taken from Meeker and Escobar (1998, p. 131)
+# Example 1 -  Based on an existing data.frame/tibble and column names:
+data <- reliability_data(
+  data = shock,
+  x = distance,
+  status = status
+)
+
+# Example 2 - Based on an existing data.frame/tibble and column positions:
+data_2 <- reliability_data(
+  data = shock,
+  x = 1,
+  status = 3
+)
+
+# Example 3 - Keep all variables of the tibble/data.frame entered to argument data:
+data_3 <- reliability_data(
+  data = shock,
+  x = distance,
+  status = status,
+  .keep_all = TRUE
+)
+
+# Example 4 - Based on vectors:
 cycles   <- c(300, 300, 300, 300, 300, 291, 274, 271, 269, 257, 256, 227, 226,
               224, 213, 211, 205, 203, 197, 196, 190, 189, 188, 187, 184, 180,
               180, 177, 176, 173, 172, 171, 170, 170, 169, 168, 168, 162, 159,
@@ -45,11 +71,10 @@ cycles   <- c(300, 300, 300, 300, 300, 291, 274, 271, 269, 257, 256, 227, 226,
 state <- c(rep(0, 5), rep(1, 67))
 id <- "XXXXXX"
 
-# Example 1: Based on existing data.frame/tibble
-tbl <- tibble::tibble(x = cycles, status = state, id = id)
-data <- reliability_data(tbl, x = x, status = status, id = id)
-
-# Example 2: Based on vectors
-data_2 <- reliability_data(x = cycles, status = state, id = id)
+data_4 <- reliability_data(
+  x = cycles,
+  status = state,
+  id = id
+)
 
 }

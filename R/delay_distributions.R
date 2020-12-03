@@ -71,10 +71,9 @@
 #' )
 #'
 #' @export
-dist_delay <- function(
-  date_1,
-  date_2,
-  distribution = c("lognormal", "exponential")
+dist_delay <- function(date_1,
+                       date_2,
+                       distribution = c("lognormal", "exponential")
 ) {
 
   distribution <- match.arg(distribution)
@@ -339,13 +338,12 @@ dist_delay <- function(
 #' )
 #'
 #' @export
-mcs_delay <- function(
-  date_1,
-  date_2,
-  time,
-  status = NULL,
-  id = paste0("ID", seq_len(length(time))),
-  distribution = c("lognormal", "exponential")
+mcs_delay <- function(date_1,
+                      date_2,
+                      time,
+                      status = NULL,
+                      id = paste0("ID", seq_len(length(time))),
+                      distribution = c("lognormal", "exponential")
 ) {
 
   # Checks:
@@ -439,7 +437,9 @@ mcs_delay <- function(
 
 
 # helper function to generate MCS random numbers:
-mcs_helper <- function(x, par_list) {
+mcs_helper <- function(x,
+                       par_list
+) {
 
   # adjustment can only be done for units that have a x entry of NA! Otherwise
   # data would be complete and no simulation is needed.
@@ -474,7 +474,7 @@ mcs_helper <- function(x, par_list) {
 #' \lifecycle{soft-deprecated}
 #'
 #' \code{dist_delay_register()} is no longer under active development, switching
-#' to \code{dist_delay()} is recommended.
+#' to \code{\link{dist_delay}} is recommended.
 #'
 #' This function introduces a delay random variable by calculating the time
 #' difference between the registration and production date for the sample units
@@ -515,10 +515,9 @@ mcs_helper <- function(x, par_list) {
 #' )
 #'
 #' @export
-dist_delay_register <- function(
-  date_prod,
-  date_register,
-  distribution = "lognormal"
+dist_delay_register <- function(date_prod,
+                                date_register,
+                                distribution = "lognormal"
 ) {
   deprecate_soft("2.0.0", "dist_delay_register()", "dist_delay()")
 
@@ -569,7 +568,7 @@ dist_delay_register <- function(
 #' \lifecycle{soft-deprecated}
 #'
 #' \code{mcs_delay_register()} is no longer under active development, switching
-#' to \code{mcs_delay()} is recommended.
+#' to \code{\link{mcs_delay}} is recommended.
 #'
 #' In general the amount of information about units in the field, that have not
 #' failed yet, are rare. For example it is common that a supplier, who provides
@@ -642,13 +641,12 @@ dist_delay_register <- function(
 #'                                   details = TRUE)
 #'
 #' @export
-mcs_delay_register <- function(
-  date_prod,
-  date_register,
-  time,
-  status,
-  distribution = "lognormal",
-  details = FALSE
+mcs_delay_register <- function(date_prod,
+                               date_register,
+                               time,
+                               status,
+                               distribution = "lognormal",
+                               details = FALSE
 ) {
   deprecate_soft("2.0.0", "mcs_delay_register()", "mcs_delay()")
 
@@ -692,7 +690,7 @@ mcs_delay_register <- function(
 #' \lifecycle{soft-deprecated}
 #'
 #' \code{dist_delay_report()} is no longer under active development, switching
-#' to \code{dist_delay()} is recommended.
+#' to \code{\link{dist_delay}} is recommended.
 #'
 #' This function introduces a delay random variable by calculating the time
 #' difference between the report and repair date for the sample units
@@ -731,10 +729,9 @@ mcs_delay_register <- function(
 #' )
 #'
 #' @export
-dist_delay_report <- function(
-  date_repair,
-  date_report,
-  distribution = "lognormal"
+dist_delay_report <- function(date_repair,
+                              date_report,
+                              distribution = "lognormal"
 ) {
   deprecate_soft("2.0.0", "dist_delay_report()", "dist_delay()")
 
@@ -784,7 +781,7 @@ dist_delay_report <- function(
 #' \lifecycle{soft-deprecated}
 #'
 #' \code{mcs_delay_report()} is no longer under active development, switching
-#' to \code{mcs_delay()} is recommended.
+#' to \code{\link{mcs_delay}} is recommended.
 #'
 #' The delay in report describes the time between the occurence of a damage and
 #' the registration in the warranty database. For a given date where the analysis
@@ -845,13 +842,12 @@ dist_delay_report <- function(
 #'                                 details = TRUE)
 #'
 #' @export
-mcs_delay_report <- function(
-  date_repair,
-  date_report,
-  time,
-  status,
-  distribution = "lognormal",
-  details = FALSE
+mcs_delay_report <- function(date_repair,
+                             date_report,
+                             time,
+                             status,
+                             distribution = "lognormal",
+                             details = FALSE
 ) {
   deprecate_soft("2.0.0", "mcs_delay_report()", "mcs_delay()")
 
@@ -896,7 +892,7 @@ mcs_delay_report <- function(
 #' \lifecycle{soft-deprecated}
 #'
 #' \code{mcs_delays()} is no longer under active development, switching
-#' to \code{mcs_delay()} is recommended.
+#' to \code{\link{mcs_delay}} is recommended.
 #'
 #' This function is a wrapper that combines both, the
 #' \code{\link{mcs_delay_register}} and \code{\link{mcs_delay_report}} function
@@ -979,15 +975,14 @@ mcs_delay_report <- function(
 #'                                 details = TRUE)
 #'
 #' @export
-mcs_delays <- function(
-  date_prod,
-  date_register,
-  date_repair,
-  date_report,
-  time,
-  status,
-  distribution = "lognormal",
-  details = FALSE
+mcs_delays <- function(date_prod,
+                       date_register,
+                       date_repair,
+                       date_report,
+                       time,
+                       status,
+                       distribution = "lognormal",
+                       details = FALSE
 ) {
   deprecate_soft("2.0.0", "mcs_delays()", "mcs_delay()")
 
