@@ -216,6 +216,7 @@ mcs_delays_2 <- mcs_delay(
   status = status,
   distribution = c("lognormal", "exponential")
 )
+
 }
 \references{
 Verband der Automobilindustrie e.V. (VDA); Qualitätsmanagement in

@@ -227,7 +227,7 @@ mr_method <- function(
 mr_method_ <- function(data, method = "benard", ties.method = "max") {
 
   if (!all(data$status == 1)) {
-    message("The method 'mr'only considers failed units (status == 1) and does",
+    message("The 'mr' method only considers failed units (status == 1) and does",
             " not retain intact units (status == 0).")
   }
 

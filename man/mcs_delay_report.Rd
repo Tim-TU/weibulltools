@@ -97,4 +97,5 @@ list_detail <- mcs_delay_report(date_repair = date_of_repair,
                                 status = state,
                                 distribution = "lognormal",
                                 details = TRUE)
+
 }

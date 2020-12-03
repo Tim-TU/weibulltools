@@ -51,4 +51,5 @@ params_delay_report  <- dist_delay_report(
   date_report = date_of_report,
   distribution = "lognormal"
 )
+
 }

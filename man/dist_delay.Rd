@@ -79,4 +79,5 @@ params_delay_report  <- dist_delay(
   date_2 = date_of_report,
   distribution = "exponential"
 )
+
 }

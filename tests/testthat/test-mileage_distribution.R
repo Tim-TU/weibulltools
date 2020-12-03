@@ -115,7 +115,7 @@ test_that("mcs_mileage stops if status is not a binary (0 or 1)", {
       time = time_in_service,
       status = letters[seq_along(time_in_service)]
     ),
-    "status must be numeric! all elements must be either 0 or 1!"
+    "'status' must be numeric with elements 0 or 1!"
   )
 })
 

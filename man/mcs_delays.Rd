@@ -129,4 +129,5 @@ list_detail <- mcs_delays(date_prod = date_of_production,
                                 status = state,
                                 distribution = "lognormal",
                                 details = TRUE)
+
 }

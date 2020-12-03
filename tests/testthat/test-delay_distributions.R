@@ -180,7 +180,7 @@ test_that("mcs_delay stops if status is not a binary (0 or 1)", {
       status = letters[seq_along(time_in_service)],
       distribution = "lognormal"
     ),
-    "status must be numeric! all elements must be either 0 or 1!"
+    "'status' must be numeric with elements 0 or 1!"
   )
 })
 

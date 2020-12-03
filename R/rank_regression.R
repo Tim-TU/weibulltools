@@ -635,5 +635,3 @@ r_squared_profiling.default <- function(
 
   summary(mrr_thres)$r.squared
 }
-
-

@@ -145,4 +145,5 @@ mcs_distances_3 <- mcs_mileage(
 #)
 
 # plot_prob_estimation <- plot_prob(prob_estimation)
+
 }

@@ -53,4 +53,5 @@ params_delay_regist  <- dist_delay_register(
   date_register = date_of_registration,
   distribution = "lognormal"
 )
+
 }

@@ -31,7 +31,6 @@
 #'       distances using the linear relationship described in 'Details'.
 #'     \item \code{distribution} Specified distribution.
 #'   }
-#' @export
 #'
 #' @examples
 #' # Data for examples:
@@ -83,7 +82,8 @@
 #'   time = time_in_service,
 #'   distribution = "exponential"
 #' )
-
+#'
+#' @export
 dist_mileage <- function(
   mileage,
   time,
@@ -154,6 +154,7 @@ dist_mileage <- function(
 }
 
 
+
 #' Simulation of Unknown Covered Distances using a Monte Carlo Approach
 #'
 #' @description
@@ -173,6 +174,7 @@ dist_mileage <- function(
 #'                 3500.25 km * (200 d / 365 d) = 1917.945 km}
 #'
 #' @inheritParams dist_mileage
+#'
 #' @param status Optional argument. If used it has to be a vector of binary data
 #'   (0 or 1) indicating whether unit i is a right censored observation (= 0) or
 #'   a failure (= 1). The effect of status on the return is described in 'Value'.
@@ -209,8 +211,6 @@ dist_mileage <- function(
 #'     \item \code{model_estimation} A list containing a named list
 #'       (\code{"mileage_distribution"}) with output of \code{\link{dist_mileage}}.
 #'   }
-#'
-#' @export
 #'
 #' @examples
 #' # Data for examples:
@@ -281,7 +281,8 @@ dist_mileage <- function(
 #' #)
 #'
 #' # plot_prob_estimation <- plot_prob(prob_estimation)
-
+#'
+#' @export
 mcs_mileage <- function(
   mileage,
   time,
@@ -327,7 +328,7 @@ mcs_mileage <- function(
   } else {
     # check for status:
     if (!is_status(status)) {
-      stop("status must be numeric! all elements must be either 0 or 1!")
+      stop("'status' must be numeric with elements 0 or 1!")
     }
 
     data_tbl <- tibble::tibble(
