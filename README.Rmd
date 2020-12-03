@@ -11,7 +11,7 @@ knitr::opts_chunk$set(
   fig.path = "man/figures/README-",
   out.width = "100%"
 )
-options(tibble.print_min = 6, tibble.print_max = 6)
+options(tibble.print_min = 5, tibble.print_max = 5)
 ```
 
 # weibulltools
@@ -28,6 +28,7 @@ The *weibulltools* package focuses on statistical methods and visualizations tha
 The goal of *weibulltools* is to equip the user with a compact and easily accessible set of methods and visualization tools that make the examination and adjustment as well as the analysis and interpretation of field data (and bench tests) as simple as possible.  
 
 Besides the well-known weibull analysis, *weibulltools* supports multiple lifetime distributions and also contains Monte Carlo methods for the correction and completion of imprecisely recorded or unknown lifetime characteristics.  
+
 Plots are created statically ([ggplot2](https://ggplot2.tidyverse.org/)) or interactively ([plotly](https://plotly.com/r/)) and can be customized with the corresponding functions of the respective visualization package.
 
 ## Installation
@@ -46,13 +47,56 @@ Install the development version of *weibulltools* from [GitHub](https://github.c
 devtools::install_github("Tim-TU/weibulltools")
 ```
 
-## Example
+## Usage
 
-This is a basic example which shows you how to solve a common problem:
+### Getting started
+Create consistent reliability data with columns:  
 
-```{r example}
+* `x` - lifetime characteristic  
+* `status` - binary data (0 for censored units and 1 for failed units)
+* `id` (optional) - identifier for units  
+
+```{r, message = FALSE}
 library(weibulltools)
-## basic example code
+
+rel_tbl <- reliability_data(data = shock, x = distance, status = status)
+rel_tbl
+```
+
+### Probability estimation and visualization
+Estimation of failure probabilities using different non-parametric methods: 
+
+```{r, probability estimation}
+prob_tbl <- estimate_cdf(x = rel_tbl, methods = c("mr", "kaplan", "johnson", "nelson"))
+prob_tbl
+```
+
+Visualization of the obtained results in a distribution-specific probability plot: 
+
+```{r, probability visualization}
+prob_vis <- plot_prob(x = prob_tbl, distribution = "weibull", 
+                      title_main = "Weibull Probability Plot", 
+                      title_x = "Distance", 
+                      title_y = "Probability of Failure in %", 
+                      title_trace = "Methods",
+                      plot_method = "gg")
+prob_vis
+```
+
+### Model estimation and visualization
+Parametric model estimation with respect to the used methods: 
+
+```{r, model estimation}
+rr_list <- rank_regression(x = prob_tbl, distribution = "weibull")
+rr_list
+```
+
+Model visualization in an existing probability plot:
+
+```{r, model visualization}
+mod_vis <- plot_mod(p_obj = prob_vis, x = rr_list, distribution = "weibull", 
+                    title_trace = "RR") 
+mod_vis
 ```
 
 ## Getting help

@@ -33,8 +33,9 @@
 * `confint_betabinom()`, `confint_fisher()`: Added argument `b_lives` which allows the user to specify probabilities of interest.
 
 ## Documentation
+* Revised README
 * Capitalized parameter documentation.
-* Reworked documentation of `dist_mileage()` and `mcs_mileage()`
+* Revised documentation of `dist_mileage()` and `mcs_mileage()`
 
 ## Lifecycle changes
 
