@@ -59,7 +59,7 @@
 #'     right censored observation (= 0) or a failure (= 1).
 #'   \item \code{rank}: The (computed) ranks. Determined for methods \code{"mr"}
 #'     and \code{"johnson"}, filled with \code{NA} for other methods.
-#'   \item \code{prob}: Estimated failure probabilities, \code{NA} if \code{status = 1}.
+#'   \item \code{prob}: Estimated failure probabilities, \code{NA} if \code{status = 0}.
 #'   \item \code{method}: Specified method for the estimation of failure probabilities.
 #' }
 #'
@@ -389,7 +389,7 @@ mr_method_ <- function(data,
 #'   \item \code{status}: Binary data (0 or 1) indicating whether a unit is a
 #'     right censored observation (= 0) or a failure (= 1).
 #'   \item \code{rank}: The adjusted ranks.
-#'   \item \code{prob}: Estimated failure probabilities, \code{NA} if \code{status = 1}.
+#'   \item \code{prob}: Estimated failure probabilities, \code{NA} if \code{status = 0}.
 #'   \item \code{method}: Specified method for the estimation of failure
 #'     probabilities (always 'johnson').
 #' }
@@ -511,7 +511,7 @@ johnson_method_ <- function(data) {
 #'   \item \code{status}: Binary data (0 or 1) indicating whether a unit is a
 #'     right censored observation (= 0) or a failure (= 1).
 #'   \item \code{rank}: Filled with \code{NA}.
-#'   \item \code{prob}: Estimated failure probabilities, \code{NA} if \code{status = 1}.
+#'   \item \code{prob}: Estimated failure probabilities, \code{NA} if \code{status = 0}.
 #'   \item \code{method}: Specified method for the estimation of failure
 #'     probabilities (always 'kaplan').
 #' }
@@ -646,7 +646,7 @@ kaplan_method_ <- function(data) {
 #'   \item \code{status}: Binary data (0 or 1) indicating whether a unit is a
 #'     right censored observation (= 0) or a failure (= 1).
 #'   \item \code{rank}: Filled with \code{NA}.
-#'   \item \code{prob}: Estimated failure probabilities, \code{NA} if \code{status = 1}.
+#'   \item \code{prob}: Estimated failure probabilities, \code{NA} if \code{status = 0}.
 #'   \item \code{method}: Specified method for the estimation of failure
 #'     probabilities (always 'nelson').
 #' }
