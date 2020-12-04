@@ -3,49 +3,107 @@
 \encoding{UTF-8}
 \name{ml_estimation}
 \alias{ml_estimation}
+\alias{ml_estimation.reliability_data}
 \title{ML Estimation for Parametric Lifetime Distributions}
 \usage{
 ml_estimation(x, ...)
+
+\method{ml_estimation}{reliability_data}(
+  x,
+  distribution = c("weibull", "lognormal", "loglogistic", "normal", "logistic", "sev",
+    "weibull3", "lognormal3", "loglogistic3"),
+  wts = rep(1, nrow(x)),
+  conf_level = 0.95,
+  ...
+)
+}
+\arguments{
+\item{x}{An object of class \code{reliability_data} returned by
+\code{\link{reliability_data}}.}
+
+\item{distribution}{Supposed distribution of the random variable.}
+
+\item{wts}{Optional vector of case weights. The length of \code{wts} must be the
+same as the number of observations in \code{x}. Default is that \code{wts} is a
+vector with all components being 1 (same weights).}
+
+\item{conf_level}{Confidence level of the interval.}
 }
 \value{
-Returns a list with the following components:
+Returns a list with the following elements:
   \itemize{
-  \item \code{coefficients} : Provided, if \code{distribution} is \code{"weibull"}.
-    \eqn{\eta} is the estimated scale and \eqn{\beta} the estimated shape parameter.
-  \item \code{confint} : Provided, if \code{distribution} is \code{"weibull"}.
-    Confidence interval for \eqn{\eta} and \eqn{\beta}.
-  \item \code{loc_sc_params} : Estimated location-scale parameters.
-  \item \code{loc_sc_confint} : Confidence interval for location-scale parameters.
-  \item \code{loc_sc_varcov} : Estimated Variance-Covariance matrix of the used
-    location-scale distribution.
-  \item \code{logL} : The log-likelihood value.
-  \item \code{aic} : Akaike Information Criterion.
-  \item \code{bic} : Bayesian Information Criterion.}
+    \item \code{coefficients} : If \code{distribution} is \code{"weibull"}, the
+      estimated scale (\eqn{\eta}) and shape (\eqn{\beta}) parameters are provided
+      (and additionally the threshold parameter \eqn{\gamma} if \code{distribution}
+      is \code{"weibull3"}). For any other distribution, \code{coefficients} is
+      identical to \code{loc_sc_params}.
+    \item \code{confint} : Only included if \code{distribution} is \code{"weibull"}
+      or \code{"weibull3"}. Confidence intervals for \eqn{\eta} and \eqn{\beta}
+      (and \eqn{\gamma} if \code{distribution} is \code{"weibull3"}).
+    \item \code{loc_sc_params} : Estimated (log-)location-scale parameters.
+      Threshold parameter is included if \code{distribution} is \code{"weibull3"},
+      \code{"lognormal3"} or \code{"loglogistic3"}.
+    \item \code{loc_sc_confint} : Confidence intervals the (log-)location-scale
+      parameters.
+    \item \code{loc_sc_varcov} : Estimated variance-covariance matrix for the
+      (log-)location-scale parameters.
+    \item \code{logL} : The log-likelihood value.
+    \item \code{aic} : Akaike Information Criterion.
+    \item \code{bic} : Bayesian Information Criterion.
+    \item \code{data} : A tibble with class \code{"reliability_data"} returned
+      by \code{\link{reliability_data}}.
+    \item \code{distribution} : Specified distribution.
+  }
 }
 \description{
-This method estimates the parameters and calculates normal approximation confidence
-intervals for a two- or three-parametric lifetime distribution in the frequently used
-(log-) location-scale parameterization. \code{ml_estimation} uses the
-\code{\link{Lifedata.MLE}} function which is defined in the
-\emph{SPREDA} package.
-For the Weibull the estimates are transformed such that they are in line with
-the parameterization provided by the \emph{stats} package like
-\code{\link{pweibull}}. The method is applicable for complete and (multiple)
-right censored data.
-}
-\section{Methods (by class)}{
+This method estimates the parameters of a two- or three-parametric lifetime
+distribution for complete and (multiple) right censored data. The parameters
+are determined in the frequently used (log-) location-scale
+parameterization.
 
-\describe{
-  \item{\code{\link[=ml_estimation.reliability_data]{reliability_data}}}{
-    Preferred. Provide the output of \code{\link{reliability_data}} directly.
-  }
-  \item{\code{\link[=ml_estimation.default]{default}}}{
-    Provide \code{x} and \code{status} manually.
-  }
+For the Weibull, estimates are transformed such that
+they are in line with the parameterization provided by the \emph{stats} package
+(see \link[stats]{Weibull}).
 }
+\details{
+\code{ml_estimation} calls \code{\link[SPREDA:lifedata.MLE]{Lifedata.MLE}},
+which is implemented in \emph{SPREDA}, to obtain the estimates. Normal
+approximation confidence intervals for the parameters are computed as well.
 }
+\examples{
+# Reliability data preparation:
+## Data for two-parametric model:
+data_2p <- reliability_data(
+  data = shock,
+  x = distance,
+  status = status
+)
 
+## Data for three-parametric model:
+data_3p <- reliability_data(
+  data = alloy,
+  x = cycles,
+  status = status
+)
+
+# Example 1 - Fitting a two-parametric weibull distribution:
+ml_2p <- ml_estimation(
+  x = data_2p,
+  distribution = "weibull"
+)
+
+# Example 2 - Fitting a three-parametric lognormal distribution:
+ml_3p <- ml_estimation(
+  x = data_3p,
+  distribution = "lognormal3",
+  conf_level = 0.99
+)
+
+}
 \references{
 Meeker, William Q; Escobar, Luis A., Statistical methods for
   reliability data, New York: Wiley series in probability and statistics, 1998
+}
+\seealso{
+\code{\link{ml_estimation.default}}
 }

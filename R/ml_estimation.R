@@ -1,45 +1,90 @@
 #' ML Estimation for Parametric Lifetime Distributions
 #'
-#' This method estimates the parameters and calculates normal approximation confidence
-#' intervals for a two- or three-parametric lifetime distribution in the frequently used
-#' (log-) location-scale parameterization. \code{ml_estimation} uses the
-#' \code{\link{Lifedata.MLE}} function which is defined in the
-#' \emph{SPREDA} package.
-#' For the Weibull the estimates are transformed such that they are in line with
-#' the parameterization provided by the \emph{stats} package like
-#' \code{\link{pweibull}}. The method is applicable for complete and (multiple)
-#' right censored data.
+#' @description
+#' This method estimates the parameters of a two- or three-parametric lifetime
+#' distribution for complete and (multiple) right censored data. The parameters
+#' are determined in the frequently used (log-) location-scale
+#' parameterization.
 #'
-#' @section Methods (by class):
-#' \describe{
-#'   \item{\code{\link[=ml_estimation.reliability_data]{reliability_data}}}{
-#'     Preferred. Provide the output of \code{\link{reliability_data}} directly.
+#' For the Weibull, estimates are transformed such that
+#' they are in line with the parameterization provided by the \emph{stats} package
+#' (see \link[stats]{Weibull}).
+#'
+#' @details
+#' \code{ml_estimation} calls \code{\link[SPREDA:lifedata.MLE]{Lifedata.MLE}},
+#' which is implemented in \emph{SPREDA}, to obtain the estimates. Normal
+#' approximation confidence intervals for the parameters are computed as well.
+#'
+#' @param x An object of class \code{reliability_data} returned by
+#'   \code{\link{reliability_data}}.
+#' @param distribution Supposed distribution of the random variable.
+#' @param wts Optional vector of case weights. The length of \code{wts} must be the
+#'   same as the number of observations in \code{x}. Default is that \code{wts} is a
+#'   vector with all components being 1 (same weights).
+#' @param conf_level Confidence level of the interval.
+#'
+#' @return Returns a list with the following elements:
+#'   \itemize{
+#'     \item \code{coefficients} : If \code{distribution} is \code{"weibull"}, the
+#'       estimated scale (\eqn{\eta}) and shape (\eqn{\beta}) parameters are provided
+#'       (and additionally the threshold parameter \eqn{\gamma} if \code{distribution}
+#'       is \code{"weibull3"}). For any other distribution, \code{coefficients} is
+#'       identical to \code{loc_sc_params}.
+#'     \item \code{confint} : Only included if \code{distribution} is \code{"weibull"}
+#'       or \code{"weibull3"}. Confidence intervals for \eqn{\eta} and \eqn{\beta}
+#'       (and \eqn{\gamma} if \code{distribution} is \code{"weibull3"}).
+#'     \item \code{loc_sc_params} : Estimated (log-)location-scale parameters.
+#'       Threshold parameter is included if \code{distribution} is \code{"weibull3"},
+#'       \code{"lognormal3"} or \code{"loglogistic3"}.
+#'     \item \code{loc_sc_confint} : Confidence intervals the (log-)location-scale
+#'       parameters.
+#'     \item \code{loc_sc_varcov} : Estimated variance-covariance matrix for the
+#'       (log-)location-scale parameters.
+#'     \item \code{logL} : The log-likelihood value.
+#'     \item \code{aic} : Akaike Information Criterion.
+#'     \item \code{bic} : Bayesian Information Criterion.
+#'     \item \code{data} : A tibble with class \code{"reliability_data"} returned
+#'       by \code{\link{reliability_data}}.
+#'     \item \code{distribution} : Specified distribution.
 #'   }
-#'   \item{\code{\link[=ml_estimation.default]{default}}}{
-#'     Provide \code{x} and \code{status} manually.
-#'   }
-#' }
 #'
 #' @encoding UTF-8
+#'
 #' @references Meeker, William Q; Escobar, Luis A., Statistical methods for
 #'   reliability data, New York: Wiley series in probability and statistics, 1998
 #'
-#' @return Returns a list with the following components:
-#'   \itemize{
-#'   \item \code{coefficients} : Provided, if \code{distribution} is \code{"weibull"}.
-#'     \eqn{\eta} is the estimated scale and \eqn{\beta} the estimated shape parameter.
-#'   \item \code{confint} : Provided, if \code{distribution} is \code{"weibull"}.
-#'     Confidence interval for \eqn{\eta} and \eqn{\beta}.
-#'   \item \code{loc_sc_params} : Estimated location-scale parameters.
-#'   \item \code{loc_sc_confint} : Confidence interval for location-scale parameters.
-#'   \item \code{loc_sc_varcov} : Estimated Variance-Covariance matrix of the used
-#'     location-scale distribution.
-#'   \item \code{logL} : The log-likelihood value.
-#'   \item \code{aic} : Akaike Information Criterion.
-#'   \item \code{bic} : Bayesian Information Criterion.}
+#' @seealso \code{\link{ml_estimation.default}}
+#'
+#' @examples
+#' # Reliability data preparation:
+#' ## Data for two-parametric model:
+#' data_2p <- reliability_data(
+#'   data = shock,
+#'   x = distance,
+#'   status = status
+#' )
+#'
+#' ## Data for three-parametric model:
+#' data_3p <- reliability_data(
+#'   data = alloy,
+#'   x = cycles,
+#'   status = status
+#' )
+#'
+#' # Example 1 - Fitting a two-parametric weibull distribution:
+#' ml_2p <- ml_estimation(
+#'   x = data_2p,
+#'   distribution = "weibull"
+#' )
+#'
+#' # Example 2 - Fitting a three-parametric lognormal distribution:
+#' ml_3p <- ml_estimation(
+#'   x = data_3p,
+#'   distribution = "lognormal3",
+#'   conf_level = 0.99
+#' )
 #'
 #' @export
-#'
 ml_estimation <- function(x, ...) {
   UseMethod("ml_estimation")
 }
@@ -50,55 +95,101 @@ ml_estimation <- function(x, ...) {
 #'
 #' @inherit ml_estimation description details return references
 #'
-#' @param x An object of class \code{reliability_data} returned by
-#'   \code{\link{reliability_data}}.
-#' @param distribution Supposed distribution of the random variable.
-#' @param wts Optional vector of case weights. The length of \code{wts} must be the
-#'   same as the number of observations \code{x}. Default is that \code{wts} is a
-#'   vector with all components being 1 (same weights).
-#' @param conf_level Confidence level of the interval. The default value is
-#'   \code{conf_level = 0.95}.
+#' @inheritParams ml_estimation
+#'
+#' @param x A numeric vector which consists of lifetime data. Lifetime
+#'   data could be every characteristic influencing the reliability of a product,
+#'   e.g. operating time (days/months in service), mileage (km, miles), load
+#'   cycles.
+#' @param status A vector of binary data (0 or 1) indicating whether unit \emph{i}
+#'   is a right censored observation (= 0) or a failure (= 1).
+#'
+#' @return Returns a list with the following elements:
+#'   \itemize{
+#'     \item \code{coefficients} : If \code{distribution} is \code{"weibull"}, the
+#'       estimated scale (\eqn{\eta}) and shape (\eqn{\beta}) parameters are provided
+#'       (and additionally the threshold parameter \eqn{\gamma} if \code{distribution}
+#'       is \code{"weibull3"}). For any other distribution, \code{coefficients} is
+#'       identical to \code{loc_sc_params}.
+#'     \item \code{confint} : Only included if \code{distribution} is \code{"weibull"}
+#'       or \code{"weibull3"}. Confidence intervals for \eqn{\eta} and \eqn{\beta}
+#'       (and \eqn{\gamma} if \code{distribution} is \code{"weibull3"}).
+#'     \item \code{loc_sc_params} : Estimated (log-)location-scale parameters.
+#'       Threshold parameter is included if \code{distribution} is \code{"weibull3"},
+#'       \code{"lognormal3"} or \code{"loglogistic3"}.
+#'     \item \code{loc_sc_confint} : Confidence intervals the (log-)location-scale
+#'       parameters.
+#'     \item \code{loc_sc_varcov} : Estimated variance-covariance matrix for the
+#'       (log-)location-scale parameters.
+#'     \item \code{logL} : The log-likelihood value.
+#'     \item \code{aic} : Akaike Information Criterion.
+#'     \item \code{bic} : Bayesian Information Criterion.
+#'     \item \code{data} : A tibble with columns \code{x} and \code{status}.
+#'     \item \code{distribution} : Specified distribution.
+#'   }
+#'
+#' @seealso \code{\link{ml_estimation}}
 #'
 #' @examples
-#' # Example 1: Fitting a two-parameter Weibull:
-#' obs   <- seq(10000, 100000, 10000)
-#' status <- c(0, 1, 1, 0, 0, 0, 1, 0, 1, 0)
-#' data <- reliability_data(x = obs, status = status)
+#' # Vectors:
+#' obs <- seq(10000, 100000, 10000)
+#' status_1 <- c(0, 1, 1, 0, 0, 0, 1, 0, 1, 0)
 #'
-#' mle <- ml_estimation(
-#'   data,
+#' cycles <- alloy$cycles
+#' status_2 <- alloy$status
+
+#'
+#' # Example 1 - Fitting a two-parametric weibull distribution:
+#' ml <- ml_estimation(
+#'   x = obs,
+#'   status = status_1,
 #'   distribution = "weibull",
-#'   conf_level = 0.90
+#'   conf_level = .90
 #' )
 #'
-#' # Example 2: Fitting a three-parameter Weibull:
-#' # Alloy T7987 dataset taken from Meeker and Escobar(1998, p. 131)
-#' cycles   <- c(300, 300, 300, 300, 300, 291, 274, 271, 269, 257, 256, 227, 226,
-#'               224, 213, 211, 205, 203, 197, 196, 190, 189, 188, 187, 184, 180,
-#'               180, 177, 176, 173, 172, 171, 170, 170, 169, 168, 168, 162, 159,
-#'               159, 159, 159, 152, 152, 149, 149, 144, 143, 141, 141, 140, 139,
-#'               139, 136, 135, 133, 131, 129, 123, 121, 121, 118, 117, 117, 114,
-#'               112, 108, 104, 99, 99, 96, 94)
-#' status <- c(rep(0, 5), rep(1, 67))
-#' data_2 <- reliability_data(x = cycles, status = status)
-#'
-#' mle_weib3 <- ml_estimation(
-#'   data_2,
-#'   distribution = "weibull3",
-#'   conf_level = 0.95
+#' # Example 2 - Fitting a three-parametric lognormal distribution:
+#' ml_2 <- ml_estimation(
+#'   x = cycles,
+#'   status = status_2,
+#'   distribution = "lognormal"
 #' )
 #'
 #' @export
-#'
-ml_estimation.reliability_data <- function(
-  x,
-  distribution = c(
-    "weibull", "lognormal", "loglogistic", "normal", "logistic", "sev",
-    "weibull3", "lognormal3", "loglogistic3"),
-  wts = rep(1, nrow(x)),
-  conf_level = .95,
-  ...
+ml_estimation.default <- function(x,
+                                  status,
+                                  distribution = c(
+                                    "weibull", "lognormal", "loglogistic",
+                                    "normal", "logistic", "sev",
+                                    "weibull3", "lognormal3", "loglogistic3"
+                                  ),
+                                  wts = rep(1, length(x)),
+                                  conf_level = .95,
+                                  ...
 ) {
+
+  distribution <- match.arg(distribution)
+
+  data <- reliability_data(x = x, status = status, id = "")
+
+  ml_estimation_(data, distribution, wts, conf_level)
+}
+
+
+
+#' @rdname ml_estimation
+#'
+#' @export
+ml_estimation.reliability_data <- function(x,
+                                           distribution = c(
+                                             "weibull", "lognormal", "loglogistic",
+                                             "normal", "logistic", "sev",
+                                             "weibull3", "lognormal3", "loglogistic3"
+                                           ),
+                                           wts = rep(1, nrow(x)),
+                                           conf_level = .95,
+                                           ...
+) {
+
   distribution <- match.arg(distribution)
 
   ml_estimation_(
@@ -111,74 +202,15 @@ ml_estimation.reliability_data <- function(
 
 
 
-#' ML Estimation for Parametric Lifetime Distributions
-#'
-#' @inherit ml_estimation description details return references
-#'
-#' @param x A numeric vector which consists of lifetime data. Lifetime
-#'   data could be every characteristic influencing the reliability of a product,
-#'   e.g. operating time (days/months in service), mileage (km, miles), load
-#'   cycles.
-#' @param status A vector of binary data (0 or 1) indicating whether unit \emph{i}
-#'   is a right censored observation (= 0) or a failure (= 1).
-#' @param distribution Supposed distribution of the random variable.
-#' @param wts Optional vector of case weights. The length of \code{wts} must be the
-#'   same as the number of observations \code{x}. Default is that \code{wts} is a
-#'   vector with all components being 1 (same weights).
-#' @param conf_level Confidence level of the interval. The default value is
-#'   \code{conf_level = 0.95}.
-#'
-#' @examples
-#' # Example 1: Fitting a two-parameter Weibull:
-#' obs   <- seq(10000, 100000, 10000)
-#' status <- c(0, 1, 1, 0, 0, 0, 1, 0, 1, 0)
-#' data <- reliability_data(x = obs, status = status)
-#'
-#' mle <- ml_estimation(
-#'   data,
-#'   distribution = "weibull",
-#'   conf_level = 0.90
-#' )
-#'
-#' # Example 2: Fitting a three-parameter Weibull:
-#' # Alloy T7987 dataset taken from Meeker and Escobar(1998, p. 131)
-#' cycles   <- c(300, 300, 300, 300, 300, 291, 274, 271, 269, 257, 256, 227, 226,
-#'               224, 213, 211, 205, 203, 197, 196, 190, 189, 188, 187, 184, 180,
-#'               180, 177, 176, 173, 172, 171, 170, 170, 169, 168, 168, 162, 159,
-#'               159, 159, 159, 152, 152, 149, 149, 144, 143, 141, 141, 140, 139,
-#'               139, 136, 135, 133, 131, 129, 123, 121, 121, 118, 117, 117, 114,
-#'               112, 108, 104, 99, 99, 96, 94)
-#' status <- c(rep(0, 5), rep(1, 67))
-#' data_2 <- reliability_data(x = cycles, status = status)
-#'
-#' mle_weib3 <- ml_estimation(
-#'   data,
-#'   distribution = "weibull3",
-#'   conf_level = 0.95
-#' )
-#'
-#' @export
-#'
-ml_estimation.default <- function(
-  x, status,
-  distribution = c(
-    "weibull", "lognormal", "loglogistic", "normal", "logistic", "sev",
-    "weibull3", "lognormal3", "loglogistic3"),
-  wts = rep(1, length(x)),
-  conf_level = .95,
-  ...
+ml_estimation_ <- function(data,
+                           distribution,
+                           wts,
+                           conf_level
 ) {
 
-  distribution <- match.arg(distribution)
-
-  data <- reliability_data(x = x, status = status, id = "")
-
-  ml_estimation_(data, distribution, wts, conf_level)
-}
-
-ml_estimation_ <- function(data, distribution, wts, conf_level) {
   x <- data$x
   status <- data$status
+  id <- data$id
 
   # Log-Location-Scale Models:
   if (distribution %in% c("weibull", "lognormal", "loglogistic")) {
@@ -416,9 +448,13 @@ ml_estimation_ <- function(data, distribution, wts, conf_level) {
 
   class(ml_output) <- c("ml_estimation", "model_estimation", class(ml_output))
 
-  ml_output$data <- tibble::tibble(
-    x = x, status = status
-  )
+  if (all(id == "", na.rm = TRUE)) {
+    ml_output$data <- tibble::tibble(
+      x = x, status = status
+    )
+  } else {
+    ml_output$data <- data
+  }
 
   ml_output$distribution <- distribution
 
@@ -440,26 +476,24 @@ print.ml_estimation <- function(x,
 
 #' Log-Likelihood Profile Function for Log-Location-Scale Distributions with Threshold
 #'
+#' @description
 #' This function evaluates the log-likelihood with respect to a given threshold
 #' parameter of a three-parametric lifetime distribution. In terms of
 #' \emph{Maximum Likelihood Estimation} this function can be optimized (\code{\link{optim}})
 #' to estimate the threshold parameter.
 #'
-#' @encoding UTF-8
-#' @references Meeker, William Q; Escobar, Luis A., Statistical methods for
-#'   reliability data, New York: Wiley series in probability and statistics, 1998
-#'
-#' @param x A numeric vector which consists of lifetime data. Lifetime
-#'   data could be every characteristic influencing the reliability of a product,
-#'   e.g. operating time (days/months in service), mileage (km, miles), load
-#'   cycles.
+#' @inheritParams r_squared_profiling.default
 #' @param status A vector of binary data (0 or 1) indicating whether unit \emph{i}
 #'   is a right censored observation (= 0) or a failure (= 1).
-#' @param thres A numeric value of the threshold parameter.
-#' @param distribution Supposed distribution of the random variable. The
-#'   value can be \code{"weibull3"}, \code{"lognormal3"} or \code{"loglogistic3"}.
-#' @return Returns the log-likelihood value for a specified threshold value.
-#' @export
+#'
+#' @return
+#' Returns the log-likelihood value for the data with respect to the threshold
+#' parameter \code{thres}.
+#'
+#' @encoding UTF-8
+#'
+#' @references Meeker, William Q; Escobar, Luis A., Statistical methods for
+#'   reliability data, New York: Wiley series in probability and statistics, 1998
 #'
 #' @examples
 #' # Alloy T7987 dataset taken from Meeker and Escobar(1998, p. 131)
@@ -484,13 +518,14 @@ print.ml_estimation <- function(x,
 #' # plot:
 #' # plot(threshold, profile_logL, type = "l")
 #' # abline(v = threshold[which.max(profile_logL)], h = max(profile_logL), col = "red")
-loglik_profiling <- function(
-  x,
-  status,
-  thres,
-  distribution = c(
-    "weibull3", "lognormal3", "loglogistic3"
-  )
+#'
+#' @export
+loglik_profiling <- function(x,
+                             status,
+                             thres,
+                             distribution = c(
+                               "weibull3", "lognormal3", "loglogistic3"
+                             )
 ) {
 
   distribution <- match.arg(distribution)
@@ -504,38 +539,33 @@ loglik_profiling <- function(
   -ml_thres$min
 }
 
+
+
 #' Log-Likelihood Function for (Log-) Location-Scale Distributions (with Threshold)
 #'
+#' @description
 #' This function computes the log-likelihood value with respect to a given set
 #' of parameters. For two-parametric models the location and scale parameters
 #' are required. If a three-parametric lifetime distribution is needed an
-#' additional threshold parameter is required. In terms of
+#' additional threshold parameter has to be provided. In terms of
 #' \emph{Maximum Likelihood Estimation} this function can be optimized (\code{\link{optim}})
 #' to estimate the parameters and variance-covariance matrix of the parameters.
 #'
-#' @encoding UTF-8
-#' @references Meeker, William Q; Escobar, Luis A., Statistical methods for
-#'   reliability data, New York: Wiley series in probability and statistics, 1998
+#' @inheritParams ml_estimation.default
 #'
-#' @param x A numeric vector which consists of lifetime data. Lifetime
-#'   data could be every characteristic influencing the reliability of a product,
-#'   e.g. operating time (days/months in service), mileage (km, miles), load
-#'   cycles.
-#' @param status A vector of binary data (0 or 1) indicating whether unit \emph{i}
-#'   is a right censored observation (= 0) or a failure (= 1).
-#' @param wts Optional vector of case weights. The length of \code{wts} must be the
-#'   same as the number of observations \code{x}. Default is that \code{wts} is a
-#'   vector with all components being 1 (same weights).
 #' @param pars A numeric vector of parameters. The first element is the location
 #'   parameter (\eqn{\mu}), the second is the scale parameter (\eqn{\sigma}) and if
 #'   a three-parametric model is used the third element is the threshold parameter
 #'   (\eqn{\gamma}).
-#' @param distribution Supposed distribution of the random variable. The
-#'   value can be \code{"weibull"}, \code{"lognormal"}, \code{"loglogistic"},
-#'   \code{"normal"}, \code{"logistic"}, \code{"sev"} \emph{(smallest extreme value)},
-#'   \code{"weibull3"}, \code{"lognormal3"} or \code{"loglogistic3"}.
-#'   Other distributions have not been implemented yet.
-#' @export
+#'
+#' @return
+#' Returns the log-likelihood value for the data with respect to the parameters
+#' given in \code{pars}.
+#'
+#' @encoding UTF-8
+#'
+#' @references Meeker, William Q; Escobar, Luis A., Statistical methods for
+#'   reliability data, New York: Wiley series in probability and statistics, 1998
 #'
 #' @examples
 #' # Alloy T7987 dataset taken from Meeker and Escobar(1998, p. 131)
@@ -547,24 +577,25 @@ loglik_profiling <- function(
 #'               112, 108, 104, 99, 99, 96, 94)
 #' state <- c(rep(0, 5), rep(1, 67))
 #'
-#' # Example 1: Evaluating Log-Likelihood function of two-parametric weibull:
+#' # Example 1 - Evaluating Log-Likelihood function of two-parametric weibull:
 #' loglik_weib <- loglik_function(x = cycles, status = state, pars = c(5.29, 0.33),
 #'                                distribution = "weibull")
 #'
-#' # Example 2: Evaluating Log-Likelihood function of three-parametric weibull:
+#' # Example 2 - Evaluating Log-Likelihood function of three-parametric weibull:
 #' loglik_weib3 <- loglik_function(x = cycles, status = state,
 #'                                 pars = c(4.54, 0.76, 92.99),
 #'                                 distribution = "weibull3")
-
-loglik_function <- function(
-  x,
-  status,
-  wts = rep(1, length(x)),
-  pars,
-  distribution = c(
-    "weibull", "lognormal", "loglogistic", "normal", "logistic", "sev",
-    "weibull3", "lognormal3", "loglogistic3"
-  )
+#'
+#' @export
+loglik_function <- function(x,
+                            status,
+                            wts = rep(1, length(x)),
+                            pars,
+                            distribution = c(
+                              "weibull", "lognormal", "loglogistic",
+                              "normal", "logistic", "sev",
+                              "weibull3", "lognormal3", "loglogistic3"
+                            )
 ) {
 
   distribution <- match.arg(distribution)

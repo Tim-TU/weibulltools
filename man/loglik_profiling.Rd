@@ -13,21 +13,21 @@ loglik_profiling(
 )
 }
 \arguments{
-\item{x}{A numeric vector which consists of lifetime data. Lifetime
-data could be every characteristic influencing the reliability of a product,
+\item{x}{A numeric vector which consists of lifetime data. Lifetime data
+could be every characteristic influencing the reliability of a product,
 e.g. operating time (days/months in service), mileage (km, miles), load
 cycles.}
 
 \item{status}{A vector of binary data (0 or 1) indicating whether unit \emph{i}
 is a right censored observation (= 0) or a failure (= 1).}
 
-\item{thres}{A numeric value of the threshold parameter.}
+\item{thres}{A numeric value for the threshold parameter.}
 
-\item{distribution}{Supposed distribution of the random variable. The
-value can be \code{"weibull3"}, \code{"lognormal3"} or \code{"loglogistic3"}.}
+\item{distribution}{Supposed three-parametric distribution of the random variable.}
 }
 \value{
-Returns the log-likelihood value for a specified threshold value.
+Returns the log-likelihood value for the data with respect to the threshold
+parameter \code{thres}.
 }
 \description{
 This function evaluates the log-likelihood with respect to a given threshold
@@ -58,6 +58,7 @@ threshold[which.max(profile_logL)]
 # plot:
 # plot(threshold, profile_logL, type = "l")
 # abline(v = threshold[which.max(profile_logL)], h = max(profile_logL), col = "red")
+
 }
 \references{
 Meeker, William Q; Escobar, Luis A., Statistical methods for
