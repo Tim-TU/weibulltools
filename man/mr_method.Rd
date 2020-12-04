@@ -55,7 +55,7 @@ estimate the cumulative distribution function \emph{F(t)}:
 }
 }
 \examples{
-# vectors:
+# Vectors:
 obs   <- seq(10000, 100000, 10000)
 state <- rep(1, length(obs))
 uic   <- c("3435", "1203", "958X", "XX71", "abcd", "tz46",

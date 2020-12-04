@@ -48,7 +48,7 @@ observations, so the beta-binomial confidence intervals \emph{cannot} be
 calculated using this method.
 }
 \examples{
-# vectors:
+# Vectors:
 obs   <- seq(10000, 100000, 10000)
 state <- c(0, 1, 1, 0, 0, 0, 1, 0, 1, 0)
 state_2 <- c(0, 1, 1, 0, 0, 0, 1, 0, 0, 1)

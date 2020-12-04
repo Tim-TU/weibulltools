@@ -1,11 +1,11 @@
 #' Reliability data
 #'
 #' @description
-#' Create consistent reliability data based on an existing \code{data.frame}/\code{tibble}
+#' Create consistent reliability data based on an existing \code{data.frame}
 #' (preferred) or on multiple equal length vectors.
 #'
-#' @param data Either \code{NULL} or a \code{data.frame}/\code{tibble}. If data is
-#' \code{NULL}, \code{x}, \code{status} and \code{id} must be vectors containing
+#' @param data Either \code{NULL} or a \code{data.frame}. If data is \code{NULL},
+#' \code{x}, \code{status} and \code{id} must be vectors containing
 #' the data. Otherwise \code{x}, \code{status} and \code{id} can be either column
 #' names or column positions.
 #' @param x Lifetime data, that means any characteristic influencing the reliability
@@ -16,8 +16,8 @@
 #' @param id Identification of every unit.
 #' @param .keep_all If \code{TRUE}, keep all variables in \code{data}.
 #'
-#' @return A tibble with class attribute \code{"reliability_data"} containing the
-#' following columns (if \code{.keep_all = FALSE}):
+#' @return A tibble with class \code{"reliability_data"} containing the following
+#' columns (if \code{.keep_all = FALSE}):
 #' \itemize{
 #'   \item \code{x} : Lifetime characteristic.
 #'   \item \code{status} : Binary data (0 or 1) indicating whether a unit is a right

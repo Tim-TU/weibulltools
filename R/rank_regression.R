@@ -6,7 +6,7 @@
 #' censored data. The parameters are estimated in the frequently used (log-) location-scale
 #' parameterization. For the Weibull, estimates are transformed such that
 #' they are in line with the parameterization provided by the \emph{stats} package
-#' (see \code{\link{pweibull}}).
+#' (see \link[stats]{Weibull}).
 #'
 #' @details
 #' If \code{distribution} is \code{"weibull"} or \code{"weibull3"}, the approximated
@@ -172,7 +172,7 @@ rank_regression <- function(x, ...) {
 #' @seealso \code{\link{rank_regression}}
 #'
 #' @examples
-#' # vectors:
+#' # Vectors:
 #' obs <- seq(10000, 100000, 10000)
 #' status_1 <- c(0, 1, 1, 0, 0, 0, 1, 0, 1, 0)
 #'

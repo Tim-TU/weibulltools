@@ -437,9 +437,7 @@ mcs_delay <- function(date_1,
 
 
 # helper function to generate MCS random numbers:
-mcs_helper <- function(x,
-                       par_list
-) {
+mcs_helper <- function(x, par_list) {
 
   # adjustment can only be done for units that have a x entry of NA! Otherwise
   # data would be complete and no simulation is needed.

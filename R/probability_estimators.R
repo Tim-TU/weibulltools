@@ -144,7 +144,7 @@ estimate_cdf <- function(x,
 #' @seealso \code{\link{estimate_cdf}}
 #'
 #' @examples
-#' # vectors:
+#' # Vectors:
 #' cycles <- alloy$cycles
 #' status <- alloy$status
 #'
@@ -281,7 +281,7 @@ estimate_cdf.reliability_data <- function(x,
 #' }
 #'
 #' @examples
-#' # vectors:
+#' # Vectors:
 #' obs   <- seq(10000, 100000, 10000)
 #' state <- rep(1, length(obs))
 #' uic   <- c("3435", "1203", "958X", "XX71", "abcd", "tz46",
@@ -395,7 +395,7 @@ mr_method_ <- function(data,
 #' }
 #'
 #' @examples
-#' # vectors:
+#' # Vectors:
 #' obs   <- seq(10000, 100000, 10000)
 #' state <- c(0, 1, 1, 0, 0, 0, 1, 0, 1, 0)
 #' uic   <- c("3435", "1203", "958X", "XX71", "abcd", "tz46",
@@ -522,7 +522,7 @@ johnson_method_ <- function(data) {
 #' December 3, 2020
 #'
 #' @examples
-#' # vectors:
+#' # Vectors:
 #' obs   <- seq(10000, 100000, 10000)
 #' state <- c(0, 1, 1, 0, 0, 0, 1, 0, 1, 0)
 #' state_2 <- c(0, 1, 1, 0, 0, 0, 1, 0, 0, 1)
@@ -652,7 +652,7 @@ kaplan_method_ <- function(data) {
 #' }
 #'
 #' @examples
-#' # vectors:
+#' # Vectors:
 #' obs   <- seq(10000, 100000, 10000)
 #' state <- c(0, 1, 1, 0, 0, 0, 1, 0, 1, 0)
 #' uic   <- c("3435", "1203", "958X", "XX71", "abcd", "tz46",

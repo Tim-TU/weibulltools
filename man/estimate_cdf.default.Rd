@@ -98,7 +98,7 @@ The listed options can only be applied for method \code{"mr"}:
 }
 
 \examples{
-# vectors:
+# Vectors:
 cycles <- alloy$cycles
 status <- alloy$status
 

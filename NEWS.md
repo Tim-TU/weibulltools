@@ -23,6 +23,8 @@
 * Added function `mcs_delay()`: Generalizes the adjustment of operating times by delays and supports multiple delays at once.
 * Added lifecycle badges
 
+## Minor Changes
+
 ## Introduction of S3 interface
 * `rank_regression()` is now an S3 generic. `rank_regression()` becomes `rank_regression.default()`. Added `rank_regression.cdf_estimation()`.
 * `plot_prob()` is now an S3 generic. `plot_prob()` becomes `plot_prob.default()`. Added `plot_prob.cdf_estimation()`.
