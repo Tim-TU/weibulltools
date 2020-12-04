@@ -1367,6 +1367,7 @@ plot_conf.default <- function(
 #'
 #' @inheritParams plot_conf.default
 #' @inheritParams plot_prob.cdf_estimation
+#' @param p_obj A plot object returned from \code{\link{plot_prob}}.
 #' @param x Confindence interval as returned by \code{\link{confint_betabinom}}
 #'   or \code{\link{confint_fisher}}.
 #'
@@ -1465,9 +1466,13 @@ plot_conf.default <- function(
 #'
 #' @export
 #'
-plot_conf.confint <- function(p_obj, x, title_trace = "Confidence Limit", ...) {
-
-  distribution <- x$distribution[1]
+plot_conf.confint <- function(p_obj,
+                              x,
+                              mod,
+                              title_trace_mod = "Fit",
+                              title_trace_conf = "Confidence Limit",
+                              ...
+) {
 
   # Plot method is determined by p_obj
   plot_method <- if (inherits(p_obj, "gg")) {
@@ -1481,6 +1486,43 @@ plot_conf.confint <- function(p_obj, x, title_trace = "Confidence Limit", ...) {
     )
   }
 
+  p_mod <- if (inherits(mod, "model_estimation")) {
+    failed_data <- dplyr::filter(mod$data, status == 1)
+
+    plot_mod.default(
+      p_obj = p_obj,
+      x = x$x,
+      loc_sc_params = mod$loc_sc_params,
+      distribution = mod$distribution,
+      title_trace = title_trace_mod
+    )
+  } else if (inherits(mod, "model_estimation_list")) {
+    methods <- names(mod)
+
+    tbl_pred <- purrr::map2_dfr(mod, methods, function(model_estimation, method) {
+      plot_mod_helper(
+        x = x$x,
+        loc_sc_params = model_estimation$loc_sc_params,
+        distribution = model_estimation$distribution,
+        method = method
+      )
+    })
+
+    plot_mod_fun <- if (plot_method == "plotly") plot_mod_plotly else
+      plot_mod_ggplot2
+
+    plot_mod_fun(
+      p_obj = p_obj,
+      tbl_pred = tbl_pred,
+      title_trace = title_trace_mod
+    )
+  } else {
+    stop("'mod' must be an object returned from 'ml_estimation()' or
+         'rank_regression()'")
+  }
+
+  distribution <- x$distribution[1]
+
   tbl_p <- plot_conf_helper_2(
     x, distribution
   )
@@ -1489,7 +1531,7 @@ plot_conf.confint <- function(p_obj, x, title_trace = "Confidence Limit", ...) {
     plot_conf_ggplot2
 
   plot_conf_fun(
-    p_obj, tbl_p, title_trace
+    p_mod, tbl_p, title_trace_conf
   )
 }
 

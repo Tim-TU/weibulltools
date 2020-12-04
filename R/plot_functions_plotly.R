@@ -108,7 +108,8 @@ plot_layout_plotly <- function(
       legend = l,
       xaxis = x_config,
       yaxis = y_config,
-      margin = m
+      margin = m,
+      hovermode = "x"
     )
   return(p)
 }
