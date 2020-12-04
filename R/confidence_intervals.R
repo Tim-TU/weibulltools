@@ -245,6 +245,15 @@ confint_betabinom_ <- function(
   model_estimation, b_lives, bounds, conf_level, direction
 ) {
 
+  method <- model_estimation$data$method[1]
+
+  if (method %in% c("kaplan", "nelson")) {
+    stop(
+      "The beta-binomial confidence intervals cannot be calculated for method '",
+      method, "'. Use method 'mr' or 'johnson'."
+    )
+  }
+
   x <- model_estimation$data$x
   status <- model_estimation$data$status
 
@@ -306,7 +315,7 @@ confint_betabinom_ <- function(
       distribution = distribution,
       bounds = bounds,
       direction = direction,
-      method = model_estimation$data$method[1]
+      method = method
     )
 
   class(tbl_out) <- c("confint", class(tbl_out))
