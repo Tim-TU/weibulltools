@@ -11,50 +11,157 @@ maturing](https://img.shields.io/badge/lifecycle-maturing-blue.svg)](https://www
 status](https://www.r-pkg.org/badges/version/weibulltools)](https://CRAN.R-project.org/package=weibulltools)
 <!-- badges: end -->
 
-Unlike other R packages for survival analysis, the weibulltools package
-focuses on reliability methods and has the advantage of being open
-source and easily accessible contrary to other reliability analysis
-software. In addition to that the package can be integrated into
-(partly) automated data analysis processes and even can be connected to
-big data systems.
+## Overview
 
-The weibulltools package contains methods for examining bench test or
-field data using the well-known weibull analysis. It includes Monte
-Carlo simulation for estimating the life span of products that have not
-failed yet, taking account of registering and reporting delays. On this
-basis, if the products looked upon are vehicles, the covered mileage can
-be estimated as well. The weibulltools package also provides methods for
-probability estimation within samples that contain failures as well as
-censored data. Methods for estimating the parameters of lifetime
-distributions as well as the confidence intervals of quantiles and
-probabilities are also included. If desired, the data can automatically
-be divided into subgroups using segmented regression. And if the number
-of subgroups in a Weibull Mixture Model is known, data can be analyzed
-using the EM-Algorithm. Besides the calculation methods, methods for
-interactive visualization of the edited data using *Plotly* are provided
-as well.
+The *weibulltools* package focuses on statistical methods and
+visualizations that are often used in reliability engineering.
+
+The goal of *weibulltools* is to equip the user with a compact and
+easily accessible set of methods and visualization tools that make the
+examination and adjustment as well as the analysis and interpretation of
+field data (and bench tests) as simple as possible.
+
+Besides the well-known weibull analysis, *weibulltools* supports
+multiple lifetime distributions and also contains Monte Carlo methods
+for the correction and completion of imprecisely recorded or unknown
+lifetime characteristics.
+
+Plots are created statically ([ggplot2](https://ggplot2.tidyverse.org/))
+or interactively ([plotly](https://plotly.com/r/)) and can be customized
+with the corresponding functions of the respective visualization
+package.
 
 ## Installation
 
-You can install the released version of weibulltools from
-[CRAN](https://CRAN.R-project.org) with:
+The latest released version of *weibulltools* from
+[CRAN](https://cran.r-project.org/web/packages/weibulltools/) can be
+installed with:
 
 ``` r
 install.packages("weibulltools")
 ```
 
-And the development version from [GitHub](https://github.com/) with:
+### Development version
+
+Install the development version of *weibulltools* from
+[GitHub](https://github.com/Tim-TU/weibulltools/) to use new features or
+to get a bug fix.
 
 ``` r
 # install.packages("devtools")
 devtools::install_github("Tim-TU/weibulltools")
 ```
 
-## Example
+## Usage
 
-This is a basic example which shows you how to solve a common problem:
+### Getting started
+
+Create consistent reliability data with columns:
+
+  - `x` - lifetime characteristic  
+  - `status` - binary data (0 for censored units and 1 for failed units)
+  - `id` (optional) - identifier for units
+
+<!-- end list -->
 
 ``` r
 library(weibulltools)
-## basic example code
+
+rel_tbl <- reliability_data(data = shock, x = distance, status = status)
+rel_tbl
+#> # A tibble: 38 x 3
+#>       x status id   
+#>   <int>  <dbl> <chr>
+#> 1  6700      1 ID1  
+#> 2  6950      0 ID2  
+#> 3  7820      0 ID3  
+#> 4  8790      0 ID4  
+#> 5  9120      1 ID5  
+#> # ... with 33 more rows
 ```
+
+### Probability estimation and visualization
+
+Estimation of failure probabilities using different non-parametric
+methods:
+
+``` r
+prob_tbl <- estimate_cdf(x = rel_tbl, methods = c("mr", "kaplan", "johnson", "nelson"))
+#> The method 'mr'only considers failed units (status == 1) and does not retain intact units (status == 0).
+prob_tbl
+#> # A tibble: 125 x 6
+#>   id        x status  rank   prob method
+#>   <chr> <int>  <dbl> <dbl>  <dbl> <chr> 
+#> 1 ID1    6700      1     1 0.0614 mr    
+#> 2 ID5    9120      1     2 0.149  mr    
+#> 3 ID13  12200      1     3 0.237  mr    
+#> 4 ID15  13150      1     4 0.325  mr    
+#> 5 ID19  14300      1     5 0.412  mr    
+#> # ... with 120 more rows
+```
+
+Visualization of the obtained results in a distribution-specific
+probability plot:
+
+``` r
+prob_vis <- plot_prob(x = prob_tbl, distribution = "weibull", 
+                      title_main = "Weibull Probability Plot", 
+                      title_x = "Distance", 
+                      title_y = "Probability of Failure in %", 
+                      title_trace = "Methods",
+                      plot_method = "gg")
+prob_vis
+```
+
+<img src="man/figures/README-probability visualization-1.png" width="100%" />
+
+### Model estimation and visualization
+
+Parametric model estimation with respect to the used methods:
+
+``` r
+rr_list <- rank_regression(x = prob_tbl, distribution = "weibull")
+rr_list
+#> List of 4 model estimations:
+#> Rank Regression
+#> Coefficients:
+#>       eta       beta  
+#> 28554.796      2.753  
+#> Method of CDF Estimation: johnson 
+#> 
+#> Rank Regression
+#> Coefficients:
+#>       eta       beta  
+#> 27815.241      2.651  
+#> Method of CDF Estimation: kaplan 
+#> 
+#> Rank Regression
+#> Coefficients:
+#>       eta       beta  
+#> 19652.111      2.528  
+#> Method of CDF Estimation: mr 
+#> 
+#> Rank Regression
+#> Coefficients:
+#>       eta       beta  
+#> 28523.655      2.596  
+#> Method of CDF Estimation: nelson
+```
+
+Model visualization in an existing probability plot:
+
+``` r
+mod_vis <- plot_mod(p_obj = prob_vis, x = rr_list, distribution = "weibull", 
+                    title_trace = "RR") 
+mod_vis
+```
+
+<img src="man/figures/README-model visualization-1.png" width="100%" />
+
+## Getting help
+
+If you notice a bug or have suggestions for improvements, please submit
+an issue with a minimal reproducible example on
+[GitHub](https://github.com/Tim-TU/weibulltools/issues). For further
+questions, please contact [Tim-Gunnar
+Hensel](mailto:tim-gunnar.hensel@tu-berlin.de).

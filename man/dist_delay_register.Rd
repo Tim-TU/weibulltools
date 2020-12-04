@@ -9,11 +9,11 @@ dist_delay_register(date_prod, date_register, distribution = "lognormal")
 \arguments{
 \item{date_prod}{A vector of class \code{"character"} or \code{"Date"}, in the
 format "yyyy-mm-dd", indicating the date of production of a unit.
-If no date is available use \code{NA}.}
+Use \code{NA} for missing elements.}
 
 \item{date_register}{A vector of class \code{"character"} or \code{"Date"}, in
 the format "yyyy-mm-dd", indicating the date of registration of a unit.
-If no date is available use \code{NA}.}
+Use \code{NA} for missing elements.}
 
 \item{distribution}{Supposed distribution of the random variable. Only
 \code{"lognormal"} is implemented.}
@@ -26,7 +26,7 @@ A named vector of estimated parameters for the specified
 \lifecycle{soft-deprecated}
 
 \code{dist_delay_register()} is no longer under active development, switching
-to \code{dist_delay()} is recommended.
+to \code{\link{dist_delay}} is recommended.
 
 This function introduces a delay random variable by calculating the time
 difference between the registration and production date for the sample units
@@ -53,4 +53,5 @@ params_delay_regist  <- dist_delay_register(
   date_register = date_of_registration,
   distribution = "lognormal"
 )
+
 }

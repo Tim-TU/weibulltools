@@ -7,91 +7,101 @@
 mcs_delay(
   date_1,
   date_2,
-  x,
+  time,
   status = NULL,
-  id = paste0("ID", seq_len(length(x))),
-  distribution = c("lognormal", "exponential"),
-  seed = NULL
+  id = paste0("ID", seq_len(length(time))),
+  distribution = c("lognormal", "exponential")
 )
 }
 \arguments{
 \item{date_1}{A vector of class \code{"character"} or \code{"Date"}, in the
-format "yyyy-mm-dd", indicating the earlier of the two dates. If no date is
-available use \code{NA}. If more than one delay should be considered it must
-be a list with the earlier dates of each delay (See 'Examples').}
+  format "yyyy-mm-dd", indicating the earlier of the two dates. Use \code{NA}
+  for missing elements.
+
+  If more than one delay should be considered it must be a list where the first
+  element contains the earlier dates of the first delay and the second element
+  contains the earlier dates of the second delay, and so forth.(See 'Examples').}
 
 \item{date_2}{A vector of class \code{"character"} or \code{"Date"}, in the
-format "yyyy-mm-dd", indicating the later of the two dates. If no date is
-available use \code{NA}. If more than one delay should be considered it must
-be a list with the later dates of each delay (See 'Examples').}
+  format "yyyy-mm-dd", indicating the later of the two dates. Use \code{NA}
+  for missing elements.
 
-\item{x}{A numeric vector of operating times.}
+  If more than one delay should be considered it must be a list where the first
+  element contains the later dates of the first delay and the second element
+  contains the later dates of the second delay, and so forth. (See 'Examples').}
 
-\item{status}{Optional argument that determines the class of the returned list
-element \code{data}. If \code{NULL} (default) \code{data} has class
-\code{"mcs_data"}. If provided, it has to be a vector of binary data (0 or 1)
-indicating whether unit \emph{i} is a right censored observation (= 0) or a
-failure (= 1). In the later case \code{data} has classes \code{"mcs_data"} and
-\code{"reliability_data"}.}
+\item{time}{A numeric vector of operating times. Use \code{NA} for missing elements.}
 
-\item{id}{Identification for every unit.}
+\item{status}{Optional argument. If used it has to be a vector of binary
+data (0 or 1) indicating whether unit \emph{i} is a right censored observation
+(= 0) or a failure (= 1). The effect of \code{status} on the return is described
+in 'Value'.}
+
+\item{id}{A vector for the identification of every unit.}
 
 \item{distribution}{Supposed distribution of the delay random variable. If more
-than one delay is to be considered and different distributions should be
-assumed for each delay, the argument \code{distribution} must have the same
-length as list \code{date_1} (or \code{date_2}). For example, in the case of
+than one delay is to be considered and different distributions are assumed
+for each delay, the argument \code{distribution} must have the same length
+as list \code{date_1} (and \code{date_2}). For example, in the case of
 two delays with different distributions, one has to specify the argument as
 \code{distribution = c("lognormal", "exponential")}. Then the lognormal
 distribution is applied to the first delay and the exponential distribution
 to the second (See 'Examples').}
-
-\item{seed}{If \code{seed = NULL} a random seed is used. Otherwise the user
-can specify an integer for the seed.}
 }
 \value{
 A list containing the following elements:
   \itemize{
-    \item \code{data} A tibble with class \code{"mcs_data"} (if \code{status = NULL})
-      or with classes \code{"mcs_data"} and \code{"reliability_data"} (if \code{status}
-      is provided) containing the following columns:
+    \item \code{data} : A tibble with class attributes \code{"mcs_data"} and
+      \code{"reliability_data"} if \code{status} is provided. Since the
+      attribute \code{"reliability_data"} enables the direct usage of \code{data}
+      inside \code{estimate_cdf} (\code{\link{estimate_cdf.reliability_data}}),
+      the required lifetime characteristic is automatically set to the operating
+      time \code{time}.
+
+      If \code{status = NULL} class attribute is \code{"mcs_data"}, which is not
+      supported by \code{estimate_cdf} due to missing \code{status}.
+
+      The tibble contains the following columns:
       \itemize{
-        \item \code{date_1} Earlier dates. If argument \code{date_1} is a list
+        \item \code{date_1} : Earlier dates. If argument \code{date_1} is a list
           of length \emph{i, i > 1} (described in \strong{Arguments}) multiple
           columns with names \code{date_1.1}, \code{date_1.2}, ..., \code{date_1.i}
           and the corresponding values of the earlier dates are used.
-        \item \code{date_2} Later dates. In the case of a list with length greater
+        \item \code{date_2} : Later dates. In the case of a list with length greater
           than 1, the routine described above is used.
-        \item \code{x} Adjusted operating times for incomplete observations
+        \item \code{time} : Adjusted operating times for incomplete observations
           and input operating times for the complete observations.
-        \item \code{status} (\strong{optional}) If argument \code{status = NULL}
-          column \code{status} does not exist. If argument \code{status} is provided
-          the column contains the entered binary data (0 or 1) indicating whether
-          a unit is a right censored observation (= 0) or a failure (= 1).
-        \item \code{id} Identification for every unit.
+        \item \code{status} (\strong{optional}) :
+          \itemize{
+            \item If argument \code{status = NULL} column \code{status} does
+              not exist.
+            \item If argument \code{status} is provided the column contains
+              the entered binary data (0 or 1).
+          }
+        \item \code{id} : Identification of every unit.
       }
-    \item \code{sim_data} A tibble with column \code{sim_delay} that holds the
+    \item \code{sim_data} : A tibble with column \code{sim_delay} that holds the
       simulated delay-specific numbers for incomplete cases and \code{0} for
       complete cases. If more than one delay was considered multiple columns
       \code{sim_delay.1}, \code{sim_delay.2}, ..., \code{sim_delay.i} with
       corresponding delay-specific random numbers are presented.
-    \item \code{model_estimation} A list containing a named list
+    \item \code{model_estimation} : A list containing a named list
       (\code{"delay_distribution"}) with output of \code{\link{dist_delay}}. For
-      multiple delays the list contains as many lists ((\code{"delay_distribution.1"}),
-      (\code{"delay_distribution.2"}), ..., (\code{"delay_distribution.i"})) as
-      there are delays.
-    \item \code{seed} : Integer seed number for reproducibility.
+      multiple delays the list contains as many lists as there are delays, i.e.
+      (\code{"delay_distribution.1"}, \code{"delay_distribution.2"}, ...,
+      \code{"delay_distribution.i"}).
   }
 }
 \description{
 In general, the amount of available information about units in the field is very
 different. During the warranty period, there are only a few cases with complete
-data (mainly \emph{failured units}) but a lot cases with incomplete data (usually
+data (mainly \emph{failured units}) but lots of cases with incomplete data (usually
 \emph{censored units}). As a result, the operating time of units with incomplete
 information is often inaccurate and must be adjusted by delays.
 
 This function reduces the operating times of incomplete observations by simulated
-delays (in days). A unit is considered incomplete if the later date is unknown,
-i.e. \code{date_2 = NA}. See 'Details' for some practical examples.
+delays (in days). A unit is considered as incomplete if the later of the two
+dates is unknown, i.e. \code{date_2 = NA}. See 'Details' for some practical examples.
 
 Random delay numbers are drawn from the distribution determined by complete cases
 (described in 'Details' of \code{\link{dist_delay}}).
@@ -112,14 +122,14 @@ two cases are described below.
     intact units the difference between the present date and \code{date_1}. But
     the real operating times are (much) shorter, since the stress on the
     components have not started until the whole systems were put in service.
-    Therefore units with incomplete data (missing \code{date_2}) must be reduced by
+    Hence, units with incomplete data (missing \code{date_2}) must be reduced by
     the delays.
   \item \strong{Delay in report}: Authorized repairers often do not immediately
     notify the manufacturer or OEM of repairs that were made during the warranty
     period, but instead pass the information about these repairs in collected
     forms e.g. weekly, monthly or quarterly. The resulting time difference between
-    the reporting \code{date_2} of the repair in the guarantee database and the
-    actual repair date \code{date_1}, which is often assumed to be the failure
+    the reporting (\code{date_2}) of the repair in the guarantee database and the
+    actual repair date (\code{date_1}), which is often assumed to be the failure
     date, is called the reporting delay. For a given date where the analysis
     is made there could be units which had a failure but are not registered
     and therefore treated as censored units. In order to take this case into
@@ -164,7 +174,7 @@ status <- c(0, 1, 1, 1, 0, 0, 1, 0, 1, 1, 1, 0, 1, 0, 0, 1, 0, 1, 0, 1, 1, 0, 0)
 mcs_regist <- mcs_delay(
   date_1 = date_of_production,
   date_2 = date_of_registration,
-  x = time_in_service,
+  time = time_in_service,
   status = status,
   distribution = "lognormal"
 )
@@ -173,29 +183,40 @@ mcs_regist <- mcs_delay(
 mcs_report <- mcs_delay(
   date_1 = date_of_repair,
   date_2 = date_of_report,
-  x = time_in_service,
+  time = time_in_service,
   status = status,
   distribution = "exponential"
 )
 
-# Example 3 - MCS for delays in registration and report with same distribution:
+# Example 3 - Reproducibility of random numbers:
+set.seed(1234)
+mcs_report_reproduce <- mcs_delay(
+  date_1 = date_of_repair,
+  date_2 = date_of_report,
+  time = time_in_service,
+  status = status,
+  distribution = "exponential"
+)
+
+# Example 4 - MCS for delays in registration and report with same distribution:
 mcs_delays <- mcs_delay(
   date_1 = list(date_of_production, date_of_repair),
   date_2 = list(date_of_registration, date_of_report),
-  x = time_in_service,
+  time = time_in_service,
   status = status,
   distribution = "lognormal"
 )
 
-# Example 4 - MCS for delays in registration and report with different distributions:
+# Example 5 - MCS for delays in registration and report with different distributions:
 ## Assuming lognormal registration and exponential reporting delays.
 mcs_delays_2 <- mcs_delay(
   date_1 = list(date_of_production, date_of_repair),
   date_2 = list(date_of_registration, date_of_report),
-  x = time_in_service,
+  time = time_in_service,
   status = status,
   distribution = c("lognormal", "exponential")
 )
+
 }
 \references{
 Verband der Automobilindustrie e.V. (VDA); Qualitätsmanagement in

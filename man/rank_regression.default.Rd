@@ -18,7 +18,7 @@
 \item{x}{A numeric vector which consists of lifetime data. Lifetime data
 could be every characteristic influencing the reliability of a product,
 e.g. operating time (days/months in service), mileage (km, miles), load
-cycles}
+cycles.}
 
 \item{y}{A numeric vector which consists of estimated failure probabilities
 regarding the lifetime data in x.}
@@ -32,25 +32,30 @@ a right censored observation (= 0) or a failure (= 1).}
 \code{"weibull"} this must be one of \code{0.9}, \code{0.95} or \code{0.99}.}
 }
 \value{
-Returns a list with the following components:
+Returns a list with the following elements:
   \itemize{
-  \item \code{coefficients} : Provided, if \code{distribution} is \code{"weibull"}
-    or \code{"weibull3"}. \eqn{\eta} is the estimated scale and \eqn{\beta}
-    the estimated shape parameter. The estimated threshold parameter \eqn{\gamma}
-    is available if the three-parametric weibull is used.
-  \item \code{confint} : Provided, if \code{distribution} is \code{"weibull"}
-    or \code{"weibull3"}. Confidence intervals for \eqn{\eta} and \eqn{\beta}
-    (and \eqn{\gamma} if the three-parametric weibull is used).
-  \item \code{loc_sc_params} : Estimated location-scale parameters.
-    Threshold parameter is provided for \code{"weibull3"}, \code{"lognormal3"}
-    and \code{"loglogistic3"}.
-  \item \code{loc_sc_confint} : Confidence intervals for location-scale parameters.
-    If distribution is \code{"lognormal3"} or \code{"loglogistic3"} a confidence
-    interval for the threshold is not computed.
-  \item \code{loc_sc_varcov} : Provided, if \code{distribution} is not
-    \code{"weibull"} or \code{"weibull3"}. Estimated heteroscedasticity-consistent
-    Variance-Covariance matrix of the used location-scale distribution.
-  \item \code{r_squared} : Coefficient of determination.}
+    \item \code{coefficients} : If \code{distribution} is \code{"weibull"}, the
+      estimated scale (\eqn{\eta}) and shape (\eqn{\beta}) parameters are provided
+      (and additionally the threshold parameter \eqn{\gamma} if \code{distribution}
+      is \code{"weibull3"}). For any other distribution, \code{coefficients} is
+      identical to \code{loc_sc_params}.
+    \item \code{confint} : Only included if \code{distribution} is \code{"weibull"}
+      or \code{"weibull3"}. Approximated confidence intervals for \eqn{\eta} and
+      \eqn{\beta} (and \eqn{\gamma} if \code{distribution} is \code{"weibull3"}).
+    \item \code{loc_sc_params} : Estimated location-scale parameters. Threshold
+      parameter is included if \code{distribution} is \code{"weibull3"},
+      \code{"lognormal3"} or \code{"loglogistic3"}.
+    \item \code{loc_sc_confint} : Confidence intervals for location-scale parameters.
+      If distribution is \code{"lognormal3"} or \code{"loglogistic3"} a confidence
+      interval for the threshold parameter is not computed.
+    \item \code{loc_sc_varcov} : Provided, if \code{distribution} is not
+      \code{"weibull"} or \code{"weibull3"}. Estimated heteroscedasticity-consistent
+      variance-covariance matrix of the used location-scale distribution.
+    \item \code{r_squared} : Coefficient of determination.
+    \item \code{data} : A tibble returned from \code{\link{estimate_cdf}},
+      excluding column \code{method}.
+    \item \code{distribution} : Specified distribution.
+  }
 }
 \description{
 This method fits an \strong{x on y} regression to a linearized
@@ -58,55 +63,60 @@ two- or three-parameter cdf and is applicable for complete and (multiple) right
 censored data. The parameters are estimated in the frequently used (log-) location-scale
 parameterization. For the Weibull, estimates are transformed such that
 they are in line with the parameterization provided by the \emph{stats} package
-like \code{\link{pweibull}}.
+(see \link[stats]{Weibull}).
 }
 \details{
-When using this method, the approximated confidence intervals for the Weibull
-parameters (based on p. 51 of Ralf Mock) can only be estimated for the
-following confidence levels:
+If \code{distribution} is \code{"weibull"} or \code{"weibull3"}, the approximated
+confidence intervals for the parameters can only be estimated on the following
+confidence levels (see 'References' \emph{(Mock, 1995)}):
 \itemize{
   \item \code{conf_level} = 0.90,
   \item \code{conf_level} = 0.95,
-  \item \code{conf_level} = 0.99.}
+  \item \code{conf_level} = 0.99.
+}
 
 If the distribution is not the Weibull, the confidence intervals of the
-parameters are calculated using a heteroscedasticity-consistent covariance matrix.
-Here it should be said that there is no statistical foundation to calculate the
-standard errors for the parameters using \emph{Least Squares} in context of
-\emph{Median Rank Regression}. For an accepted statistical method use MLE
+parameters are computed on the basis of a heteroscedasticity-consistent
+covariance matrix. Here it should be said that there is no statistical foundation
+to determine the standard errors of the parameters using \emph{Least Squares}
+in context of \emph{Rank Regression}. For an accepted statistical method use MLE
 (\code{\link{ml_estimation}}).
 }
 \examples{
-# Example 1: Fitting a two-parameter Weibull:
-obs   <- seq(10000, 100000, 10000)
-status <- c(0, 1, 1, 0, 0, 0, 1, 0, 1, 0)
-data <- reliability_data(x = obs, status = status)
+# Vectors:
+obs <- seq(10000, 100000, 10000)
+status_1 <- c(0, 1, 1, 0, 0, 0, 1, 0, 1, 0)
 
-tbl_john <- estimate_cdf(data, "johnson")
+cycles <- alloy$cycles
+status_2 <- alloy$status
 
-mrr <- rank_regression(
-  tbl_john,
+# Example 1 - Fitting a two-parametric weibull distribution:
+tbl_john <- estimate_cdf(
+  x = obs,
+  status = status_1,
+  methods = "johnson"
+)
+
+rr <- rank_regression(
+  x = tbl_john$x,
+  y = tbl_john$prob,
+  status = tbl_john$status,
   distribution = "weibull",
   conf_level = .90
 )
 
-# Example 2: Fitting a three-parameter Weibull:
-# Alloy T7987 dataset taken from Meeker and Escobar(1998, p. 131)
-cycles   <- c(300, 300, 300, 300, 300, 291, 274, 271, 269, 257, 256, 227, 226,
-              224, 213, 211, 205, 203, 197, 196, 190, 189, 188, 187, 184, 180,
-              180, 177, 176, 173, 172, 171, 170, 170, 169, 168, 168, 162, 159,
-              159, 159, 159, 152, 152, 149, 149, 144, 143, 141, 141, 140, 139,
-              139, 136, 135, 133, 131, 129, 123, 121, 121, 118, 117, 117, 114,
-              112, 108, 104, 99, 99, 96, 94)
-status <- c(rep(0, 5), rep(1, 67))
+# Example 2: Fitting a three-parametric lognormal distribution:
+tbl_kaplan <- estimate_cdf(
+  x = cycles,
+  status = status_2,
+  methods = "kaplan"
+)
 
-data <- reliability_data(x = cycles, status = status)
-
-tbl_john <- estimate_cdf(data, "johnson")
-mrr <- rank_regression(
-  tbl_john,
-  distribution = "weibull3",
-  conf_level = .90
+rr_2 <- rank_regression(
+  x = tbl_kaplan$x,
+  y = tbl_kaplan$prob,
+  status = tbl_kaplan$status,
+  distribution = "lognormal3"
 )
 
 }
@@ -116,4 +126,7 @@ mrr <- rank_regression(
   Zuverlässigkeitsanalysen, vdf Hochschulverlag AG an der ETH Zürich, 1995
     \item Meeker, William Q; Escobar, Luis A., Statistical methods for
   reliability data, New York: Wiley series in probability and statistics, 1998}
+}
+\seealso{
+\code{\link{rank_regression}}
 }

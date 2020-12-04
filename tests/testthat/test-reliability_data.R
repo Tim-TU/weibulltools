@@ -31,7 +31,7 @@ test_that("vector-based approach recycles status and id", {
 })
 
 test_that("vector-based approach fails if x is shorter than status or id", {
-  expect_error(reliability_data(x = 1, status = stat_2, id = id_2), "length of x.*")
+  expect_error(reliability_data(x = 1, status = stat_2, id = id_2), "Length of 'x'.*")
 })
 
 # ID handling ----

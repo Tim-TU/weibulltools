@@ -8,23 +8,22 @@ Approach}
 mcs_delay_register(
   date_prod,
   date_register,
-  x,
+  time,
   status,
   distribution = "lognormal",
-  seed = NULL,
   details = FALSE
 )
 }
 \arguments{
 \item{date_prod}{A vector of class \code{"character"} or \code{"Date"}, in the
 format "yyyy-mm-dd", indicating the date of production of a unit.
-If no date is available use \code{NA}.}
+Use \code{NA} for missing elements.}
 
 \item{date_register}{A vector of class \code{"character"} or \code{"Date"}, in
 the format "yyyy-mm-dd", indicating the date of registration of a unit.
-If no date is available use \code{NA}.}
+Use \code{NA} for missing elements.}
 
-\item{x}{A numeric vector of operating times.}
+\item{time}{A numeric vector of operating times.}
 
 \item{status}{A vector of binary data (0 or 1) indicating whether unit \emph{i}
 is a right censored observation (= 0) or a failure (= 1).}
@@ -32,14 +31,11 @@ is a right censored observation (= 0) or a failure (= 1).}
 \item{distribution}{Supposed distribution of the random variable. Only
 \code{"lognormal"} is implemented.}
 
-\item{seed}{If \code{seed = NULL} a random seed is used. Otherwise the user
-can specify an integer for the seed.}
-
 \item{details}{A logical. If \code{FALSE} the output consists of a vector with
 corrected operating times for the censored units and the input operating
 times for the failed units. If \code{TRUE} the output consists of a detailed
-list, i.e the same vector as described before, simulated random numbers,
-estimated distribution parameters and a seed for reproducibility.}
+list, i.e the same vector as described before, simulated random numbers and
+estimated distribution parameters.}
 }
 \value{
 A numeric vector of corrected operating times for the censored units
@@ -54,13 +50,13 @@ A numeric vector of corrected operating times for the censored units
     censored observations.
   \item \code{coefficients} : Estimated coefficients of supposed
     distribution.
-  \item \code{int_seed} : Integer seed number for reproducibility.}
+  }
 }
 \description{
 \lifecycle{soft-deprecated}
 
 \code{mcs_delay_register()} is no longer under active development, switching
-to \code{mcs_delay()} is recommended.
+to \code{\link{mcs_delay}} is recommended.
 
 In general the amount of information about units in the field, that have not
 failed yet, are rare. For example it is common that a supplier, who provides
@@ -72,7 +68,6 @@ delays. The simulation is based on the distribution of operating times that were
 calculated from complete data (see \code{\link{dist_delay_register}}).
 }
 \examples{
-
 date_of_production   <- c("2014-07-28", "2014-02-17", "2014-07-14",
                           "2014-06-26", "2014-03-10", "2014-05-14",
                           "2014-05-06", "2014-03-07", "2014-03-09",
@@ -93,18 +88,17 @@ state <- c(0, 1, 1, 1, 0, 0, 1, 0, 1, 1, 1, 0, 1, 0, 0, 1, 0, 1, 0, 1, 1, 0, 0)
 # Example 1 - Simplified vector output:
 x_corrected <- mcs_delay_register(date_prod = date_of_production,
                                   date_register = date_of_registration,
-                                  x = op_time,
+                                  time = op_time,
                                   status = state,
                                   distribution = "lognormal",
-                                  seed = NULL,
                                   details = FALSE)
 
 # Example 2 - Detailed list output:
 list_detail <- mcs_delay_register(date_prod = date_of_production,
                                   date_register = date_of_registration,
-                                  x = op_time,
+                                  time = op_time,
                                   status = state,
                                   distribution = "lognormal",
-                                  seed = NULL,
                                   details = TRUE)
+
 }

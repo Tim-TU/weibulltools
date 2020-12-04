@@ -9,11 +9,11 @@ dist_delay_report(date_repair, date_report, distribution = "lognormal")
 \arguments{
 \item{date_repair}{a vector of class \code{"character"} or \code{"Date"}, in the
 format "yyyy-mm-dd", indicating the date of repair of a failed unit.
-If no date is available use \code{NA}.}
+Use \code{NA} for missing elements.}
 
 \item{date_report}{a vector of class \code{"character"} or \code{"Date"}, in the
 format "yyyy-mm-dd", indicating the date of report of a failed unit.
-If no date is available use \code{NA}.}
+Use \code{NA} for missing elements.}
 
 \item{distribution}{Supposed distribution of the random variable. Only
 \code{"lognormal"} is implemented.}
@@ -26,7 +26,7 @@ A named vector of estimated parameters for the specified
 \lifecycle{soft-deprecated}
 
 \code{dist_delay_report()} is no longer under active development, switching
-to \code{dist_delay()} is recommended.
+to \code{\link{dist_delay}} is recommended.
 
 This function introduces a delay random variable by calculating the time
 difference between the report and repair date for the sample units
@@ -51,4 +51,5 @@ params_delay_report  <- dist_delay_report(
   date_report = date_of_report,
   distribution = "lognormal"
 )
+
 }

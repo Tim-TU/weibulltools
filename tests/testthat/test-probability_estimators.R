@@ -5,7 +5,7 @@ test_that("mr_method_ warns for right-censored data", {
 
   expect_message(
     mr_method_(tbl),
-    "The mr method only considers.*"
+    "The 'mr' method only considers.*"
   )
 })
 

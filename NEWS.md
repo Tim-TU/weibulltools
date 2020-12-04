@@ -3,11 +3,13 @@
 * Renamed argument `event` with `status`.
 * Output of probability estimators: Renamed column `characteristic` with `x`.
 * `plot_conf()`: Switched arguments distribution and direction.
-* `rank_regression()`, `ml_estimation()`: Removed details argument.
+* `rank_regression()`, `ml_estimation()`: Removed `details` argument.
 * `rank_regression()`, `ml_estimation()`: Renamed output: `loc_sc_coefficients` -> `loc_sc_params`, `loc_sc_vcov` -> `loc_sc_varcov`
 * `plot_pop()`: Added argument `tol` to restrict the range of failure probabilities. Removed argument `color`. Renamed argument `params` to `loc_sc_params_tbl`, which only supports location and scale parameters (also for `distribution = "weibull"`). Changed behaviour of `loc_sc_params_tbl`: A tibble is now recommended instead of a vector.
 * `plot_prob_mix`: Removed default value `NULL` for argument `mix_output`.
-* `dist_mileage()`: Removed `status` argument and switched arguments `x` and `mileage`  -> (`mileage`, `x`, `distribution`)
+* `dist_mileage()`: Removed `status` argument and switched argument positions of `x` and `mileage`  -> (`mileage`, `x`, `distribution`). Argument `x` was renamed to `time`.
+* `mcs_mileage()`: Removed arguments `seed` and `details`, incorporated new default argument `id`. For now, the argument `status` is optional. Argument positions of `x` and `mileage` are switched -> (`mileage`, `x`). Argument `x` was renamed to `time`. 
+* `mcs_delay_register()`, `mcs_delay_report()`, `mcs_delays()`: Argument `seed` and element `int_seed` of the output list have been removed. For reproducibility use `set.seed()` before calling one of these functions. Argument `x` was renamed to `time`.   
 
 ## New Features
 * Added support for ggplot2 in all plot functions. Plot method can be selected in `plot_prob()` or `plot_prob_mix()` via argument `plot_method`.
@@ -18,8 +20,10 @@
 * Added `print.rank_regression()`, `print.ml_estimation()`, `print.model_estimation()` and `print.model_estimation_list()`.
 * Added `vcov.model_estimation()`.
 * Added function `dist_delay()`: Generalizes the distribution-specific modeling of delays. 
-* Added function `mcs_delay()`: Generalizes the adjustment of operating times by delays.
+* Added function `mcs_delay()`: Generalizes the adjustment of operating times by delays and supports multiple delays at once.
 * Added lifecycle badges
+
+## Minor Changes
 
 ## Introduction of S3 interface
 * `rank_regression()` is now an S3 generic. `rank_regression()` becomes `rank_regression.default()`. Added `rank_regression.cdf_estimation()`.
@@ -31,8 +35,9 @@
 * `confint_betabinom()`, `confint_fisher()`: Added argument `b_lives` which allows the user to specify probabilities of interest.
 
 ## Documentation
+* Revised README
 * Capitalized parameter documentation.
-* Reworked documentation of `dist_mileage()` and `mcs_mileage()`
+* Revised documentation of `dist_mileage()` and `mcs_mileage()`
 
 ## Lifecycle changes
 
@@ -44,6 +49,7 @@
 * `plot_prob_mix.default()` and `plot_mod_mix.default()`. Use further S3 methods instead.
 
 ## Minor improvements and bug fixes
+* The default of `id` inside `mr_method()`, `johnson_method()`, `kaplan_method()` and `nelson_method()` is set to `NULL`. 
 * Fixed bug inside `plot_mod_mix()` for the case of no mixture distribution.
 * Fixed bug inside `confint_betabinom()`; many cases near one -> unique().
 * Fixed bug inside `mr_method()`: Assigning a rank for the same lifetime. 

@@ -7,23 +7,22 @@
 mcs_delay_report(
   date_repair,
   date_report,
-  x,
+  time,
   status,
   distribution = "lognormal",
-  details = FALSE,
-  seed = NULL
+  details = FALSE
 )
 }
 \arguments{
 \item{date_repair}{a vector of class \code{"character"} or \code{"Date"}, in the
 format "yyyy-mm-dd", indicating the date of repair of a failed unit.
-If no date is available use \code{NA}.}
+Use \code{NA} for missing elements.}
 
 \item{date_report}{a vector of class \code{"character"} or \code{"Date"}, in the
 format "yyyy-mm-dd", indicating the date of report of a failed unit.
-If no date is available use \code{NA}.}
+Use \code{NA} for missing elements.}
 
-\item{x}{A numeric vector of operating times.}
+\item{time}{A numeric vector of operating times.}
 
 \item{status}{A vector of binary data (0 or 1) indicating whether unit \emph{i}
 is a right censored observation (= 0) or a failure (= 1).}
@@ -34,11 +33,8 @@ is a right censored observation (= 0) or a failure (= 1).}
 \item{details}{A logical. If \code{FALSE} the output consists of a vector with
 corrected operating times for the censored units and the input operating
 times for the failed units. If \code{TRUE} the output consists of a detailed
-list, i.e the same vector as described before, simulated random numbers,
-estimated distribution parameters and a seed for reproducibility.}
-
-\item{seed}{If \code{seed = NULL} a random seed is used. Otherwise the user
-can specify an integer for the seed.}
+list, i.e the same vector as described before, simulated random numbers and
+estimated distribution parameters.}
 }
 \value{
 A numeric vector of corrected operating times for the censored units
@@ -53,13 +49,13 @@ A numeric vector of corrected operating times for the censored units
     censored observations.
   \item \code{coefficients} : Estimated coefficients of supposed
     distribution.
-  \item \code{int_seed} : Integer seed number for reproducibility.}
+  }
 }
 \description{
 \lifecycle{soft-deprecated}
 
 \code{mcs_delay_report()} is no longer under active development, switching
-to \code{mcs_delay()} is recommended.
+to \code{\link{mcs_delay}} is recommended.
 
 The delay in report describes the time between the occurence of a damage and
 the registration in the warranty database. For a given date where the analysis
@@ -89,18 +85,17 @@ state <- c(0, 1, 1, 1, 0, 0, 1, 0, 1, 1, 1, 0, 1, 0, 0, 1, 0, 1, 0, 1, 1, 0, 0)
 # Example 1 - Simplified vector output:
 x_corrected <- mcs_delay_report(date_repair = date_of_repair,
                                 date_report = date_of_report,
-                                x = op_time,
+                                time = op_time,
                                 status = state,
                                 distribution = "lognormal",
-                                seed = NULL,
                                 details = FALSE)
 
 # Example 2 - Detailed list output:
 list_detail <- mcs_delay_report(date_repair = date_of_repair,
                                 date_report = date_of_report,
-                                x = op_time,
+                                time = op_time,
                                 status = state,
                                 distribution = "lognormal",
-                                seed = NULL,
                                 details = TRUE)
+
 }

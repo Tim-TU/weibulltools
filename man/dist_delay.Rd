@@ -8,22 +8,22 @@ dist_delay(date_1, date_2, distribution = c("lognormal", "exponential"))
 }
 \arguments{
 \item{date_1}{A vector of class \code{"character"} or \code{"Date"}, in the
-format "yyyy-mm-dd", indicating the earlier of the two dates. If no date is
-available use \code{NA}.}
+format "yyyy-mm-dd", indicating the earlier of the two dates. Use \code{NA}
+for missing elements.}
 
 \item{date_2}{A vector of class \code{"character"} or \code{"Date"}, in the
-format "yyyy-mm-dd", indicating the later of the two dates. If no date is
-available use \code{NA}.}
+format "yyyy-mm-dd", indicating the later of the two dates. Use \code{NA}
+for missing elements.}
 
 \item{distribution}{Supposed distribution of the random variable.}
 }
 \value{
 A list of class \code{"delay_estimation"} which contains:
   \itemize{
-    \item \code{coefficients} A named vector of estimated parameter(s).
-    \item \code{delay} A numeric vector of element-wise computed differences
+    \item \code{coefficients} : A named vector of estimated parameter(s).
+    \item \code{delay} : A numeric vector of element-wise computed differences
       in days.
-    \item \code{distribution} Specified distribution.
+    \item \code{distribution} : Specified distribution.
   }
 }
 \description{
@@ -36,7 +36,7 @@ distribution are estimated using MLE. See 'Details' for more information.
 \details{
 The distribution parameter(s) are determined on the basis of complete cases,
 i.e. there is no \code{NA} in one of the related vector elements
-\code{c(date_1[i], date_2[i])}. Time differences less than or equal to 0 are
+\code{c(date_1[i], date_2[i])}. Time differences less than or equal to zero are
 not considered as well.
 }
 \examples{
@@ -79,4 +79,5 @@ params_delay_report  <- dist_delay(
   date_2 = date_of_report,
   distribution = "exponential"
 )
+
 }

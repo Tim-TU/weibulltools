@@ -4,7 +4,7 @@
 \alias{kaplan_method}
 \title{Estimation of Failure Probabilities using Kaplan-Meier}
 \usage{
-kaplan_method(x, status, id = rep("XXXXXX", length(x)))
+kaplan_method(x, status, id = NULL)
 }
 \arguments{
 \item{x}{A numeric vector which consists of lifetime data. Lifetime
@@ -15,55 +15,63 @@ cycles.}
 \item{status}{A vector of binary data (0 or 1) indicating whether unit \emph{i}
 is a right censored observation (= 0) or a failure (= 1).}
 
-\item{id}{A character vector for the identification of every unit.}
+\item{id}{A vector for the identification of every unit. Default is \code{NULL}.}
 }
 \value{
-A tibble containing id, lifetime characteristic, status of the
-  unit and the estimated failure probabilty. For right censored observations
-  the cells of probability column are filled with NA.
+A tibble containing the following columns:
+\itemize{
+  \item \code{id} : Identification for every unit.
+  \item \code{x} : Lifetime characteristic.
+  \item \code{status} : Binary data (0 or 1) indicating whether a unit is a
+    right censored observation (= 0) or a failure (= 1).
+  \item \code{rank} : Filled with \code{NA}.
+  \item \code{prob} : Estimated failure probabilities, \code{NA} if \code{status = 0}.
+  \item \code{method} : Specified method for the estimation of failure
+    probabilities (always 'kaplan').
+}
 }
 \description{
 \lifecycle{soft-deprecated}
 
-The functionality of this function is incorporated into \code{\link{estimate_cdf}}.
+\code{kaplan_method()} is no longer under active development, switching
+to \code{\link{estimate_cdf}} is recommended.
 }
 \details{
 Whereas the non-parametric Kaplan-Meier estimator is used to estimate the
 survival function \emph{S(t)} in terms of (multiple) right censored data, the
 complement is an estimate of the cumulative distribution function \emph{F(t)}.
 One modification is made in contrast to the orginial Kaplan-Meier estimator
-(based on \emph{NIST/SEMATECH e-Handbook of Statistical Methods}, 8.2.1.5.):
-If the last unit (unit with highest observed lifetime) is a defective unit,
-the estimator is adjusted in such a way that the survival estimate for this
-unit is not \emph{zero} and therefore the estimate for the failure probability is
-not equal to \emph{one}. Otherwise the estimate in this context would be too
-pessimisitc.
-Since the failure probability estimation in this function is not based on
-\emph{Median Ranks}, the Betabinomial confidence intervals cannot be
-calculated on the basis of Kaplan-Meier failure probabilities.
+(see 'References').
+
+\strong{Note} : The \emph{Kaplan-Meier} estimator does not assign ranks to
+observations, so the beta-binomial confidence intervals \emph{cannot} be
+calculated using this method.
 }
 \examples{
-# Example 1
+# Vectors:
 obs   <- seq(10000, 100000, 10000)
 state <- c(0, 1, 1, 0, 0, 0, 1, 0, 1, 0)
+state_2 <- c(0, 1, 1, 0, 0, 0, 1, 0, 0, 1)
 uic   <- c("3435", "1203", "958X", "XX71", "abcd", "tz46",
            "fl29", "AX23","Uy12", "kl1a")
 
-tbl_kap <- kaplan_method(x = obs, status = state, id = uic)
+# Example 1 - Observation with highest characteristic is an intact unit:
+tbl_kap <- kaplan_method(
+  x = obs,
+  status = state,
+  id = uic
+)
 
-# Example 2
-tbl <- tibble(obs = c(10000, 10000, 20000, 20000, 30000,
-                         30000, 30000, 30000, 40000, 50000,
-                         50000, 60000, 70000, 70000, 70000,
-                         70000, 80000, 80000, 80000, 80000,
-                         90000, 90000, 100000),
-                 state = rep(1, 23))
-
-tbl_kap2 <- kaplan_method(x = tbl$obs, status = tbl$state)
+# Example 2 - Observation with highest characteristic is a defective unit:
+tbl_kap_2 <- kaplan_method(
+  x = obs,
+  status = state_2
+)
 
 }
 \references{
 \emph{NIST/SEMATECH e-Handbook of Statistical Methods},
 \emph{8.2.1.5. Empirical model fitting - distribution free (Kaplan-Meier) approach},
-https://www.itl.nist.gov/div898/handbook/apr/section2/apr215.htm, 30/04/2018
+\href{https://www.itl.nist.gov/div898/handbook/apr/section2/apr215.htm}{NIST SEMATECH},
+December 3, 2020
 }
