@@ -151,7 +151,7 @@ ml_estimation <- function(x, ...) {
 #' ml_2 <- ml_estimation(
 #'   x = cycles,
 #'   status = status_2,
-#'   distribution = "lognormal"
+#'   distribution = "lognormal3"
 #' )
 #'
 #' @export
@@ -496,28 +496,41 @@ print.ml_estimation <- function(x,
 #'   reliability data, New York: Wiley series in probability and statistics, 1998
 #'
 #' @examples
-#' # Alloy T7987 dataset taken from Meeker and Escobar(1998, p. 131)
-#' cycles   <- c(300, 300, 300, 300, 300, 291, 274, 271, 269, 257, 256, 227, 226,
-#'               224, 213, 211, 205, 203, 197, 196, 190, 189, 188, 187, 184, 180,
-#'               180, 177, 176, 173, 172, 171, 170, 170, 169, 168, 168, 162, 159,
-#'               159, 159, 159, 152, 152, 149, 149, 144, 143, 141, 141, 140, 139,
-#'               139, 136, 135, 133, 131, 129, 123, 121, 121, 118, 117, 117, 114,
-#'               112, 108, 104, 99, 99, 96, 94)
-#' state <- c(rep(0, 5), rep(1, 67))
+#' # Vectors:
+#' cycles <- alloy$cycles
+#' status <- alloy$status
 #'
-#' # Determining threshold parameter for which the log-likelihood is maximized
-#' # subject to the condition that the threshold parameter must be smaller
-#' # as the first failure cycle, i.e 94:
-#' threshold <- seq(0, min(cycles[state == 1]) - 0.1, length.out = 100)
-#' profile_logL <- sapply(threshold, loglik_profiling,
-#'                      x = cycles,
-#'                      status = state,
-#'                      distribution = "weibull3")
+#' # Determining the optimal loglikelihood value:
+#' ## Range of threshold parameter must be smaller than the first failure:
+#' threshold <- seq(
+#'   0,
+#'   min(cycles[status == 1]) - 0.1,
+#'   length.out = 100
+#' )
+#'
+#' ## loglikelihood value with respect to threshold values:
+#' profile_logL <- loglik_profiling(
+#'   x = cycles,
+#'   status = status,
+#'   thres = threshold,
+#'   distribution = "weibull3"
+#' )
+#'
+#' ## Threshold value (among the candidates) that maximizes the
+#' ## loglikelihood:
 #' threshold[which.max(profile_logL)]
 #'
-#' # plot:
-#' # plot(threshold, profile_logL, type = "l")
-#' # abline(v = threshold[which.max(profile_logL)], h = max(profile_logL), col = "red")
+#' ## plot:
+#' plot(
+#'   threshold,
+#'   profile_logL,
+#'   type = "l"
+#' )
+#' abline(
+#'   v = threshold[which.max(profile_logL)],
+#'   h = max(profile_logL),
+#'   col = "red"
+#' )
 #'
 #' @export
 loglik_profiling <- function(x,
@@ -530,12 +543,37 @@ loglik_profiling <- function(x,
 
   distribution <- match.arg(distribution)
 
+  loglik_prof_vectorized <- Vectorize(
+    FUN = loglik_profiling_,
+    vectorize.args = "thres"
+  )
+
+  loglik_prof_vectorized(
+    x = x,
+    status = status,
+    thres = thres,
+    distribution = distribution
+  )
+}
+
+
+loglik_profiling_ <- function(x,
+                              status,
+                              thres,
+                              distribution = c(
+                                "weibull3", "lognormal3", "loglogistic3"
+                              )
+) {
+
   # Subtracting value of threshold, i.e. influence of threshold is eliminated:
   x_thres <- x - thres
 
   # Log-Likelihood profiling:
-  ml_thres <- SPREDA::Lifedata.MLE(survival::Surv(x_thres, status) ~ 1,
-                                   dist = substr(distribution, start = 1, stop = nchar(distribution) - 1))
+  ml_thres <- SPREDA::Lifedata.MLE(
+    survival::Surv(x_thres, status) ~ 1,
+    dist = substr(distribution, start = 1, stop = nchar(distribution) - 1)
+  )
+
   -ml_thres$min
 }
 
@@ -568,23 +606,25 @@ loglik_profiling <- function(x,
 #'   reliability data, New York: Wiley series in probability and statistics, 1998
 #'
 #' @examples
-#' # Alloy T7987 dataset taken from Meeker and Escobar(1998, p. 131)
-#' cycles   <- c(300, 300, 300, 300, 300, 291, 274, 271, 269, 257, 256, 227, 226,
-#'               224, 213, 211, 205, 203, 197, 196, 190, 189, 188, 187, 184, 180,
-#'               180, 177, 176, 173, 172, 171, 170, 170, 169, 168, 168, 162, 159,
-#'               159, 159, 159, 152, 152, 149, 149, 144, 143, 141, 141, 140, 139,
-#'               139, 136, 135, 133, 131, 129, 123, 121, 121, 118, 117, 117, 114,
-#'               112, 108, 104, 99, 99, 96, 94)
-#' state <- c(rep(0, 5), rep(1, 67))
+#' # Vectors:
+#' cycles <- alloy$cycles
+#' status <- alloy$status
 #'
 #' # Example 1 - Evaluating Log-Likelihood function of two-parametric weibull:
-#' loglik_weib <- loglik_function(x = cycles, status = state, pars = c(5.29, 0.33),
-#'                                distribution = "weibull")
+#' loglik_weib <- loglik_function(
+#'   x = cycles,
+#'   status = status,
+#'   pars = c(5.29, 0.33),
+#'   distribution = "weibull"
+#' )
 #'
 #' # Example 2 - Evaluating Log-Likelihood function of three-parametric weibull:
-#' loglik_weib3 <- loglik_function(x = cycles, status = state,
-#'                                 pars = c(4.54, 0.76, 92.99),
-#'                                 distribution = "weibull3")
+#' loglik_weib3 <- loglik_function(
+#'   x = cycles,
+#'   status = status,
+#'   pars = c(4.54, 0.76, 92.99),
+#'   distribution = "weibull3"
+#' )
 #'
 #' @export
 loglik_function <- function(x,

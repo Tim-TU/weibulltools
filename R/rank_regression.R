@@ -601,17 +601,16 @@ print.rank_regression <- function(x,
 #' )
 #'
 #' ## Coefficient of determination with respect to threshold values:
-#' profile_r2 <- sapply(
-#'   threshold,
-#'   r_squared_profiling,
+#' profile_r2 <- r_squared_profiling(
 #'   x = dplyr::filter(
 #'     prob_tbl,
 #'     status == 1
 #'   ),
+#'   thres = threshold,
 #'   distribution = "weibull3"
 #' )
 #'
-#' ## Threshold value (among the candidats) that maximizes the coefficient of determination:
+#' ## Threshold value (among the candidates) that maximizes the coefficient of determination:
 #' threshold[which.max(profile_r2)]
 #'
 #' ## plot:
@@ -651,15 +650,11 @@ r_squared_profiling <- function(x,
 #' @seealso \code{\link{r_squared_profiling}}
 #'
 #' @examples
-#' # Data:
-#' cycles   <- c(300, 300, 300, 300, 300, 291, 274, 271, 269, 257, 256, 227, 226,
-#'               224, 213, 211, 205, 203, 197, 196, 190, 189, 188, 187, 184, 180,
-#'               180, 177, 176, 173, 172, 171, 170, 170, 169, 168, 168, 162, 159,
-#'               159, 159, 159, 152, 152, 149, 149, 144, 143, 141, 141, 140, 139,
-#'               139, 136, 135, 133, 131, 129, 123, 121, 121, 118, 117, 117, 114,
-#'               112, 108, 104, 99, 99, 96, 94)
-#' status <- c(rep(0, 5), rep(1, 67))
+#' # Vectors:
+#' cycles <- alloy$cycles
+#' status <- alloy$status
 #'
+#' # Probability estimation:
 #' prob_tbl <- estimate_cdf(
 #'   x = cycles,
 #'   status = status,
@@ -675,15 +670,15 @@ r_squared_profiling <- function(x,
 #' )
 #'
 #' ## Coefficient of determination with respect to threshold values:
-#' profile_r2 <- sapply(
-#'   threshold,
-#'   r_squared_profiling,
+#' profile_r2 <- r_squared_profiling(
 #'   x = prob_tbl$x[prob_tbl$status == 1],
 #'   y = prob_tbl$prob[prob_tbl$status == 1],
+#'   thres = threshold,
 #'   distribution = "weibull3"
 #' )
 #'
-#' ## Threshold value (among the candidats) that maximizes the coefficient of determination:
+#' ## Threshold value (among the candidates) that maximizes the
+#' ## coefficient of determination:
 #' threshold[which.max(profile_r2)]
 #'
 #' ## plot:
@@ -714,21 +709,17 @@ r_squared_profiling.default <- function(x,
 
   distribution <- match.arg(distribution)
 
-  # Subtracting value of threshold, i.e. influence of threshold is eliminated:
-  x_thres <- x - thres
+  r_sq_prof_vectorized <- Vectorize(
+    FUN = r_squared_profiling_,
+    vectorize.args = "thres"
+  )
 
-  # Rank Regression adjusted x on y:
-  if (distribution == "weibull3") {
-    mrr_thres <- stats::lm(log(x_thres) ~ SPREDA::qsev(y))
-  }
-  if (distribution == "lognormal3") {
-    mrr_thres <- stats::lm(log(x_thres) ~ stats::qnorm(y))
-  }
-  if (distribution == "loglogistic3") {
-    mrr_thres <- stats::lm(log(x_thres) ~ stats::qlogis(y))
-  }
-
-  summary(mrr_thres)$r.squared
+  r_sq_prof_vectorized(
+    x = x,
+    y = y,
+    thres = thres,
+    distribution = distribution
+  )
 }
 
 
@@ -751,4 +742,32 @@ r_squared_profiling.cdf_estimation <- function(x,
     thres = thres,
     distribution = distribution
   )
+}
+
+
+
+r_squared_profiling_ <- function(x,
+                                 y,
+                                 thres,
+                                 distribution = c("weibull3",
+                                                  "lognormal3",
+                                                  "loglogistic3")
+
+) {
+
+  # Subtracting value of threshold, i.e. influence of threshold is eliminated:
+  x_thres <- x - thres
+
+  # Rank Regression adjusted x on y:
+  if (distribution == "weibull3") {
+    mrr_thres <- stats::lm(log(x_thres) ~ SPREDA::qsev(y))
+  }
+  if (distribution == "lognormal3") {
+    mrr_thres <- stats::lm(log(x_thres) ~ stats::qnorm(y))
+  }
+  if (distribution == "loglogistic3") {
+    mrr_thres <- stats::lm(log(x_thres) ~ stats::qlogis(y))
+  }
+
+  summary(mrr_thres)$r.squared
 }

@@ -36,15 +36,11 @@ In terms of \emph{Rank Regression} this function can be optimized
 (\code{\link{optim}}) to estimate the threshold parameter.
 }
 \examples{
-# Data:
-cycles   <- c(300, 300, 300, 300, 300, 291, 274, 271, 269, 257, 256, 227, 226,
-              224, 213, 211, 205, 203, 197, 196, 190, 189, 188, 187, 184, 180,
-              180, 177, 176, 173, 172, 171, 170, 170, 169, 168, 168, 162, 159,
-              159, 159, 159, 152, 152, 149, 149, 144, 143, 141, 141, 140, 139,
-              139, 136, 135, 133, 131, 129, 123, 121, 121, 118, 117, 117, 114,
-              112, 108, 104, 99, 99, 96, 94)
-status <- c(rep(0, 5), rep(1, 67))
+# Vectors:
+cycles <- alloy$cycles
+status <- alloy$status
 
+# Probability estimation:
 prob_tbl <- estimate_cdf(
   x = cycles,
   status = status,
@@ -60,15 +56,15 @@ threshold <- seq(
 )
 
 ## Coefficient of determination with respect to threshold values:
-profile_r2 <- sapply(
-  threshold,
-  r_squared_profiling,
+profile_r2 <- r_squared_profiling(
   x = prob_tbl$x[prob_tbl$status == 1],
   y = prob_tbl$prob[prob_tbl$status == 1],
+  thres = threshold,
   distribution = "weibull3"
 )
 
-## Threshold value (among the candidats) that maximizes the coefficient of determination:
+## Threshold value (among the candidates) that maximizes the
+## coefficient of determination:
 threshold[which.max(profile_r2)]
 
 ## plot:

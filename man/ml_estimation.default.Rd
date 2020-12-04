@@ -91,7 +91,7 @@ ml <- ml_estimation(
 ml_2 <- ml_estimation(
   x = cycles,
   status = status_2,
-  distribution = "lognormal"
+  distribution = "lognormal3"
 )
 
 }

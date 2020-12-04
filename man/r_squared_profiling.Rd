@@ -68,17 +68,16 @@ threshold <- seq(
 )
 
 ## Coefficient of determination with respect to threshold values:
-profile_r2 <- sapply(
-  threshold,
-  r_squared_profiling,
+profile_r2 <- r_squared_profiling(
   x = dplyr::filter(
     prob_tbl,
     status == 1
   ),
+  thres = threshold,
   distribution = "weibull3"
 )
 
-## Threshold value (among the candidats) that maximizes the coefficient of determination:
+## Threshold value (among the candidates) that maximizes the coefficient of determination:
 threshold[which.max(profile_r2)]
 
 ## plot:
