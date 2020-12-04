@@ -23,6 +23,8 @@
 * Added function `mcs_delay()`: Generalizes the adjustment of operating times by delays and supports multiple delays at once.
 * Added lifecycle badges
 
+## Minor Changes
+
 ## Introduction of S3 interface
 * `rank_regression()` is now an S3 generic. `rank_regression()` becomes `rank_regression.default()`. Added `rank_regression.cdf_estimation()`.
 * `plot_prob()` is now an S3 generic. `plot_prob()` becomes `plot_prob.default()`. Added `plot_prob.cdf_estimation()`.
@@ -33,8 +35,9 @@
 * `confint_betabinom()`, `confint_fisher()`: Added argument `b_lives` which allows the user to specify probabilities of interest.
 
 ## Documentation
+* Revised README
 * Capitalized parameter documentation.
-* Reworked documentation of `dist_mileage()` and `mcs_mileage()`
+* Revised documentation of `dist_mileage()` and `mcs_mileage()`
 
 ## Lifecycle changes
 
@@ -46,6 +49,7 @@
 * `plot_prob_mix.default()` and `plot_mod_mix.default()`. Use further S3 methods instead.
 
 ## Minor improvements and bug fixes
+* The default of `id` inside `mr_method()`, `johnson_method()`, `kaplan_method()` and `nelson_method()` is set to `NULL`. 
 * Fixed bug inside `plot_mod_mix()` for the case of no mixture distribution.
 * Fixed bug inside `confint_betabinom()`; many cases near one -> unique().
 * Fixed bug inside `mr_method()`: Assigning a rank for the same lifetime. 

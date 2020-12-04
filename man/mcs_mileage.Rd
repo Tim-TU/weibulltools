@@ -30,7 +30,7 @@ a failure (= 1). The effect of status on the return is described in 'Value'.}
 \value{
 A list containing the following elements:
   \itemize{
-    \item \code{data} A tibble with class attributes \code{"mcs_data"} and
+    \item \code{data} : A tibble with class attributes \code{"mcs_data"} and
       \code{"reliability_data"} if \code{status} is provided. Since the
       attribute \code{"reliability_data"} enables the direct usage of \code{data}
       inside \code{estimate_cdf} (\code{\link{estimate_cdf.reliability_data}}),
@@ -42,21 +42,21 @@ A list containing the following elements:
 
       The tibble contains the following columns:
       \itemize{
-        \item \code{mileage} Simulated distances for unknown \code{mileage} and
+        \item \code{mileage} : Simulated distances for unknown \code{mileage} and
           input distances for known \code{mileage}.
-        \item \code{time} Input operating times.
-        \item \code{status} (\strong{optional})
+        \item \code{time} : Input operating times.
+        \item \code{status} (\strong{optional}) :
           \itemize{
             \item If argument \code{status = NULL} column \code{status} does
               not exist.
             \item If argument \code{status} is provided the column contains
               the entered binary data (0 or 1).
           }
-        \item \code{id} Identification of every unit.
+        \item \code{id} : Identification of every unit.
       }
-    \item \code{sim_data} A tibble with column \code{sim_mileage} that holds the
+    \item \code{sim_data} : A tibble with column \code{sim_mileage} that holds the
       simulated distances for unknown \code{mileage} and \code{0} otherwise.
-    \item \code{model_estimation} A list containing a named list
+    \item \code{model_estimation} : A list containing a named list
       (\code{"mileage_distribution"}) with output of \code{\link{dist_mileage}}.
   }
 }
@@ -145,4 +145,5 @@ mcs_distances_3 <- mcs_mileage(
 #)
 
 # plot_prob_estimation <- plot_prob(prob_estimation)
+
 }

@@ -23,12 +23,11 @@
 #'
 #' @return A list of class \code{"delay_estimation"} which contains:
 #'   \itemize{
-#'     \item \code{coefficients} A named vector of estimated parameter(s).
-#'     \item \code{delay} A numeric vector of element-wise computed differences
+#'     \item \code{coefficients} : A named vector of estimated parameter(s).
+#'     \item \code{delay} : A numeric vector of element-wise computed differences
 #'       in days.
-#'     \item \code{distribution} Specified distribution.
+#'     \item \code{distribution} : Specified distribution.
 #'   }
-#' @export
 #'
 #' @examples
 #' # Example 1 - Delay in registration:
@@ -70,11 +69,11 @@
 #'   date_2 = date_of_report,
 #'   distribution = "exponential"
 #' )
-
-dist_delay <- function(
-  date_1,
-  date_2,
-  distribution = c("lognormal", "exponential")
+#'
+#' @export
+dist_delay <- function(date_1,
+                       date_2,
+                       distribution = c("lognormal", "exponential")
 ) {
 
   distribution <- match.arg(distribution)
@@ -133,6 +132,7 @@ dist_delay <- function(
 }
 
 
+
 #' Adjustment of Operating Times by Delays using a Monte Carlo Approach
 #'
 #' @description
@@ -181,11 +181,6 @@ dist_delay <- function(
 #'     reporting delays.
 #' }
 #'
-#' @references Verband der Automobilindustrie e.V. (VDA); Qualitätsmanagement in
-#'   der Automobilindustrie. Zuverlässigkeitssicherung bei Automobilherstellern
-#'   und Lieferanten. Zuverlässigkeits-Methoden und -Hilfsmittel.; 4th Edition, 2016,
-#'   <ISSN:0943-9412>
-#'
 #' @param date_1 A vector of class \code{"character"} or \code{"Date"}, in the
 #'   format "yyyy-mm-dd", indicating the earlier of the two dates. Use \code{NA}
 #'   for missing elements.
@@ -217,7 +212,7 @@ dist_delay <- function(
 #'
 #' @return A list containing the following elements:
 #'   \itemize{
-#'     \item \code{data} A tibble with class attributes \code{"mcs_data"} and
+#'     \item \code{data} : A tibble with class attributes \code{"mcs_data"} and
 #'       \code{"reliability_data"} if \code{status} is provided. Since the
 #'       attribute \code{"reliability_data"} enables the direct usage of \code{data}
 #'       inside \code{estimate_cdf} (\code{\link{estimate_cdf.reliability_data}}),
@@ -229,36 +224,39 @@ dist_delay <- function(
 #'
 #'       The tibble contains the following columns:
 #'       \itemize{
-#'         \item \code{date_1} Earlier dates. If argument \code{date_1} is a list
+#'         \item \code{date_1} : Earlier dates. If argument \code{date_1} is a list
 #'           of length \emph{i, i > 1} (described in \strong{Arguments}) multiple
 #'           columns with names \code{date_1.1}, \code{date_1.2}, ..., \code{date_1.i}
 #'           and the corresponding values of the earlier dates are used.
-#'         \item \code{date_2} Later dates. In the case of a list with length greater
+#'         \item \code{date_2} : Later dates. In the case of a list with length greater
 #'           than 1, the routine described above is used.
-#'         \item \code{time} Adjusted operating times for incomplete observations
+#'         \item \code{time} : Adjusted operating times for incomplete observations
 #'           and input operating times for the complete observations.
-#'         \item \code{status} (\strong{optional})
+#'         \item \code{status} (\strong{optional}) :
 #'           \itemize{
 #'             \item If argument \code{status = NULL} column \code{status} does
 #'               not exist.
 #'             \item If argument \code{status} is provided the column contains
 #'               the entered binary data (0 or 1).
 #'           }
-#'         \item \code{id} Identification of every unit.
+#'         \item \code{id} : Identification of every unit.
 #'       }
-#'     \item \code{sim_data} A tibble with column \code{sim_delay} that holds the
+#'     \item \code{sim_data} : A tibble with column \code{sim_delay} that holds the
 #'       simulated delay-specific numbers for incomplete cases and \code{0} for
 #'       complete cases. If more than one delay was considered multiple columns
 #'       \code{sim_delay.1}, \code{sim_delay.2}, ..., \code{sim_delay.i} with
 #'       corresponding delay-specific random numbers are presented.
-#'     \item \code{model_estimation} A list containing a named list
+#'     \item \code{model_estimation} : A list containing a named list
 #'       (\code{"delay_distribution"}) with output of \code{\link{dist_delay}}. For
 #'       multiple delays the list contains as many lists as there are delays, i.e.
 #'       (\code{"delay_distribution.1"}, \code{"delay_distribution.2"}, ...,
 #'       \code{"delay_distribution.i"}).
 #'   }
 #'
-#' @export
+#' @references Verband der Automobilindustrie e.V. (VDA); Qualitätsmanagement in
+#'   der Automobilindustrie. Zuverlässigkeitssicherung bei Automobilherstellern
+#'   und Lieferanten. Zuverlässigkeits-Methoden und -Hilfsmittel.; 4th Edition, 2016,
+#'   <ISSN:0943-9412>
 #'
 #' @examples
 #' # Data for examples:
@@ -338,14 +336,14 @@ dist_delay <- function(
 #'   status = status,
 #'   distribution = c("lognormal", "exponential")
 #' )
-
-mcs_delay <- function(
-  date_1,
-  date_2,
-  time,
-  status = NULL,
-  id = paste0("ID", seq_len(length(time))),
-  distribution = c("lognormal", "exponential")
+#'
+#' @export
+mcs_delay <- function(date_1,
+                      date_2,
+                      time,
+                      status = NULL,
+                      id = paste0("ID", seq_len(length(time))),
+                      distribution = c("lognormal", "exponential")
 ) {
 
   # Checks:
@@ -392,7 +390,7 @@ mcs_delay <- function(
   } else {
     # check for status:
     if (!is_status(status)) {
-      stop("status must be numeric! all elements must be either 0 or 1!")
+      stop("'status' must be numeric with elements 0 or 1!")
     }
     data_list <- c(date_1, date_2, list(time, status, id))
   }
@@ -436,6 +434,8 @@ mcs_delay <- function(
   return(mcs_output)
 }
 
+
+
 # helper function to generate MCS random numbers:
 mcs_helper <- function(x, par_list) {
 
@@ -465,13 +465,14 @@ mcs_helper <- function(x, par_list) {
 }
 
 
+
 #' Parameter Estimation of the Delay in Registration Distribution
 #'
 #' @description
 #' \lifecycle{soft-deprecated}
 #'
 #' \code{dist_delay_register()} is no longer under active development, switching
-#' to \code{dist_delay()} is recommended.
+#' to \code{\link{dist_delay}} is recommended.
 #'
 #' This function introduces a delay random variable by calculating the time
 #' difference between the registration and production date for the sample units
@@ -489,7 +490,6 @@ mcs_helper <- function(x, par_list) {
 #'
 #' @return A named vector of estimated parameters for the specified
 #'   distribution.
-#' @export
 #'
 #' @examples
 #' date_of_production   <- c("2014-07-28", "2014-02-17", "2014-07-14",
@@ -511,11 +511,11 @@ mcs_helper <- function(x, par_list) {
 #'   date_register = date_of_registration,
 #'   distribution = "lognormal"
 #' )
-
-dist_delay_register <- function(
-  date_prod,
-  date_register,
-  distribution = "lognormal"
+#'
+#' @export
+dist_delay_register <- function(date_prod,
+                                date_register,
+                                distribution = "lognormal"
 ) {
   deprecate_soft("2.0.0", "dist_delay_register()", "dist_delay()")
 
@@ -558,6 +558,7 @@ dist_delay_register <- function(
 }
 
 
+
 #' Adjustment of Operating Times by Delays in Registration using a Monte Carlo
 #' Approach
 #'
@@ -565,7 +566,7 @@ dist_delay_register <- function(
 #' \lifecycle{soft-deprecated}
 #'
 #' \code{mcs_delay_register()} is no longer under active development, switching
-#' to \code{mcs_delay()} is recommended.
+#' to \code{\link{mcs_delay}} is recommended.
 #'
 #' In general the amount of information about units in the field, that have not
 #' failed yet, are rare. For example it is common that a supplier, who provides
@@ -577,6 +578,7 @@ dist_delay_register <- function(
 #' calculated from complete data (see \code{\link{dist_delay_register}}).
 #'
 #' @inheritParams dist_delay_register
+#'
 #' @param time A numeric vector of operating times.
 #' @param status A vector of binary data (0 or 1) indicating whether unit \emph{i}
 #'   is a right censored observation (= 0) or a failure (= 1).
@@ -602,10 +604,7 @@ dist_delay_register <- function(
 #'     distribution.
 #'   }
 #'
-#' @export
-#'
 #' @examples
-#'
 #' date_of_production   <- c("2014-07-28", "2014-02-17", "2014-07-14",
 #'                           "2014-06-26", "2014-03-10", "2014-05-14",
 #'                           "2014-05-06", "2014-03-07", "2014-03-09",
@@ -638,14 +637,14 @@ dist_delay_register <- function(
 #'                                   status = state,
 #'                                   distribution = "lognormal",
 #'                                   details = TRUE)
-
-mcs_delay_register <- function(
-  date_prod,
-  date_register,
-  time,
-  status,
-  distribution = "lognormal",
-  details = FALSE
+#'
+#' @export
+mcs_delay_register <- function(date_prod,
+                               date_register,
+                               time,
+                               status,
+                               distribution = "lognormal",
+                               details = FALSE
 ) {
   deprecate_soft("2.0.0", "mcs_delay_register()", "mcs_delay()")
 
@@ -682,18 +681,21 @@ mcs_delay_register <- function(
 }
 
 
+
 #' Parameter Estimation of the Delay in Report Distribution
 #'
 #' @description
 #' \lifecycle{soft-deprecated}
 #'
 #' \code{dist_delay_report()} is no longer under active development, switching
-#' to \code{dist_delay()} is recommended.
+#' to \code{\link{dist_delay}} is recommended.
 #'
 #' This function introduces a delay random variable by calculating the time
 #' difference between the report and repair date for the sample units
 #' and afterwards estimates the parameter(s) of a supposed distribution,
 #' using MLE.
+#'
+#' @inheritParams dist_delay_register
 #'
 #' @param date_repair a vector of class \code{"character"} or \code{"Date"}, in the
 #'   format "yyyy-mm-dd", indicating the date of repair of a failed unit.
@@ -701,11 +703,9 @@ mcs_delay_register <- function(
 #' @param date_report a vector of class \code{"character"} or \code{"Date"}, in the
 #'   format "yyyy-mm-dd", indicating the date of report of a failed unit.
 #'   Use \code{NA} for missing elements.
-#' @inheritParams dist_delay_register
 #'
 #' @return A named vector of estimated parameters for the specified
 #'   distribution.
-#' @export
 #'
 #' @examples
 #' date_of_repair <- c(NA, "2014-09-15", "2015-07-04", "2015-04-10", NA,
@@ -725,11 +725,11 @@ mcs_delay_register <- function(
 #'   date_report = date_of_report,
 #'   distribution = "lognormal"
 #' )
-
-dist_delay_report <- function(
-  date_repair,
-  date_report,
-  distribution = "lognormal"
+#'
+#' @export
+dist_delay_report <- function(date_repair,
+                              date_report,
+                              distribution = "lognormal"
 ) {
   deprecate_soft("2.0.0", "dist_delay_report()", "dist_delay()")
 
@@ -771,13 +771,15 @@ dist_delay_report <- function(
   return(estimates)
 }
 
+
+
 #' Adjustment of Operating Times by Delays in Report using a Monte Carlo Approach
 #'
 #' @description
 #' \lifecycle{soft-deprecated}
 #'
 #' \code{mcs_delay_report()} is no longer under active development, switching
-#' to \code{mcs_delay()} is recommended.
+#' to \code{\link{mcs_delay}} is recommended.
 #'
 #' The delay in report describes the time between the occurence of a damage and
 #' the registration in the warranty database. For a given date where the analysis
@@ -804,8 +806,6 @@ dist_delay_report <- function(
 #'   \item \code{coefficients} : Estimated coefficients of supposed
 #'     distribution.
 #'   }
-#'
-#' @export
 #'
 #' @examples
 #' date_of_repair <- c(NA, "2014-09-15", "2015-07-04", "2015-04-10", NA,
@@ -838,14 +838,14 @@ dist_delay_report <- function(
 #'                                 status = state,
 #'                                 distribution = "lognormal",
 #'                                 details = TRUE)
-
-mcs_delay_report <- function(
-  date_repair,
-  date_report,
-  time,
-  status,
-  distribution = "lognormal",
-  details = FALSE
+#'
+#' @export
+mcs_delay_report <- function(date_repair,
+                             date_report,
+                             time,
+                             status,
+                             distribution = "lognormal",
+                             details = FALSE
 ) {
   deprecate_soft("2.0.0", "mcs_delay_report()", "mcs_delay()")
 
@@ -883,13 +883,14 @@ mcs_delay_report <- function(
 }
 
 
+
 #' Adjustment of Operating Times by Delays using a Monte Carlo Approach
 #'
 #' @description
 #' \lifecycle{soft-deprecated}
 #'
 #' \code{mcs_delays()} is no longer under active development, switching
-#' to \code{mcs_delay()} is recommended.
+#' to \code{\link{mcs_delay}} is recommended.
 #'
 #' This function is a wrapper that combines both, the
 #' \code{\link{mcs_delay_register}} and \code{\link{mcs_delay_report}} function
@@ -918,8 +919,6 @@ mcs_delay_report <- function(
 #'   \item \code{coefficients_report} : Estimated coefficients of supposed
 #'     distribution for delay in report
 #'   }
-#'
-#' @export
 #'
 #' @examples
 #' date_of_production   <- c("2014-07-28", "2014-02-17", "2014-07-14",
@@ -972,21 +971,20 @@ mcs_delay_report <- function(
 #'                                 status = state,
 #'                                 distribution = "lognormal",
 #'                                 details = TRUE)
-
-mcs_delays <- function(
-  date_prod,
-  date_register,
-  date_repair,
-  date_report,
-  time,
-  status,
-  distribution = "lognormal",
-  details = FALSE
+#'
+#' @export
+mcs_delays <- function(date_prod,
+                       date_register,
+                       date_repair,
+                       date_report,
+                       time,
+                       status,
+                       distribution = "lognormal",
+                       details = FALSE
 ) {
   deprecate_soft("2.0.0", "mcs_delays()", "mcs_delay()")
 
-  # Number of Monte Carlo simulated random numbers, i.e. number of censored
-  # data.
+  # Number of Monte Carlo simulated random numbers, i.e. number of censored data.
 
   n_rand_regist <- sum(is.na(date_register))
   n_rand_report <- sum(status == 0)

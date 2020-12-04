@@ -51,7 +51,7 @@ to the second (See 'Examples').}
 \value{
 A list containing the following elements:
   \itemize{
-    \item \code{data} A tibble with class attributes \code{"mcs_data"} and
+    \item \code{data} : A tibble with class attributes \code{"mcs_data"} and
       \code{"reliability_data"} if \code{status} is provided. Since the
       attribute \code{"reliability_data"} enables the direct usage of \code{data}
       inside \code{estimate_cdf} (\code{\link{estimate_cdf.reliability_data}}),
@@ -63,29 +63,29 @@ A list containing the following elements:
 
       The tibble contains the following columns:
       \itemize{
-        \item \code{date_1} Earlier dates. If argument \code{date_1} is a list
+        \item \code{date_1} : Earlier dates. If argument \code{date_1} is a list
           of length \emph{i, i > 1} (described in \strong{Arguments}) multiple
           columns with names \code{date_1.1}, \code{date_1.2}, ..., \code{date_1.i}
           and the corresponding values of the earlier dates are used.
-        \item \code{date_2} Later dates. In the case of a list with length greater
+        \item \code{date_2} : Later dates. In the case of a list with length greater
           than 1, the routine described above is used.
-        \item \code{time} Adjusted operating times for incomplete observations
+        \item \code{time} : Adjusted operating times for incomplete observations
           and input operating times for the complete observations.
-        \item \code{status} (\strong{optional})
+        \item \code{status} (\strong{optional}) :
           \itemize{
             \item If argument \code{status = NULL} column \code{status} does
               not exist.
             \item If argument \code{status} is provided the column contains
               the entered binary data (0 or 1).
           }
-        \item \code{id} Identification of every unit.
+        \item \code{id} : Identification of every unit.
       }
-    \item \code{sim_data} A tibble with column \code{sim_delay} that holds the
+    \item \code{sim_data} : A tibble with column \code{sim_delay} that holds the
       simulated delay-specific numbers for incomplete cases and \code{0} for
       complete cases. If more than one delay was considered multiple columns
       \code{sim_delay.1}, \code{sim_delay.2}, ..., \code{sim_delay.i} with
       corresponding delay-specific random numbers are presented.
-    \item \code{model_estimation} A list containing a named list
+    \item \code{model_estimation} : A list containing a named list
       (\code{"delay_distribution"}) with output of \code{\link{dist_delay}}. For
       multiple delays the list contains as many lists as there are delays, i.e.
       (\code{"delay_distribution.1"}, \code{"delay_distribution.2"}, ...,
@@ -216,6 +216,7 @@ mcs_delays_2 <- mcs_delay(
   status = status,
   distribution = c("lognormal", "exponential")
 )
+
 }
 \references{
 Verband der Automobilindustrie e.V. (VDA); Qualitätsmanagement in

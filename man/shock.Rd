@@ -3,24 +3,24 @@
 \docType{data}
 \name{shock}
 \alias{shock}
-\title{Distance to failure for vehicle shock absorbers}
+\title{Distance to Failure for Vehicle Shock Absorbers}
 \format{
 A tibble with 38 rows and 3 variables:
 \describe{
   \item{distance}{Observed distance.}
   \item{failure_mode}{
     One of two failure modes (\code{mode_1} and \code{mode_2})
-    or \code{censored} if no failure occured yet.
+    or \code{censored} if no failure occured.
   }
   \item{status}{
     If \code{failure_mode} is either \code{mode_1} or \code{mode_2}
-    this is {1} else {0}.
+    this is \code{1} else \code{0}.
   }
 }
 }
 \source{
-Meeker, William Q; Escobar, Luis A., Statistical methods for
-reliability data, New York: Wiley series in probability and statistics
+Meeker, William Q; Escobar, Luis A., Statistical Methods for
+Reliability Data, New York: Wiley series in probability and statistics
 (1998, p.630)
 }
 \usage{

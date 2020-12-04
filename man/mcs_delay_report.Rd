@@ -55,7 +55,7 @@ A numeric vector of corrected operating times for the censored units
 \lifecycle{soft-deprecated}
 
 \code{mcs_delay_report()} is no longer under active development, switching
-to \code{mcs_delay()} is recommended.
+to \code{\link{mcs_delay}} is recommended.
 
 The delay in report describes the time between the occurence of a damage and
 the registration in the warranty database. For a given date where the analysis
@@ -97,4 +97,5 @@ list_detail <- mcs_delay_report(date_repair = date_of_repair,
                                 status = state,
                                 distribution = "lognormal",
                                 details = TRUE)
+
 }

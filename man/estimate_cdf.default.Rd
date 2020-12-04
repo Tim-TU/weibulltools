@@ -7,7 +7,7 @@
 \method{estimate_cdf}{default}(
   x,
   status,
-  id = rep("XXXXXX", length(x)),
+  id = NULL,
   methods = c("mr", "johnson", "kaplan", "nelson"),
   options,
   ...
@@ -22,10 +22,10 @@ cycles.}
 \item{status}{A vector of binary data (0 or 1) indicating whether unit \emph{i}
 is a right censored observation (= 0) or a failure (= 1).}
 
-\item{id}{A character vector for the identification of every unit.}
+\item{id}{A vector for the identification of every unit. Default is \code{NULL}.}
 
 \item{methods}{One or multiple methods of \code{"mr"}, \code{"johnson"},
-\code{"kaplan"} or \code{"nelson"} used for estimating the failure
+\code{"kaplan"} or \code{"nelson"} used for the estimation of failure
 probabilities. See 'Details'.}
 
 \item{options}{A list of named options. See 'Options'.}
@@ -33,68 +33,111 @@ probabilities. See 'Details'.}
 \value{
 A tibble containing the following columns:
 \itemize{
-  \item \code{id}: Identification.
-  \item \code{x}: Lifetime characteristic.
-  \item \code{status}: Binary data (0 or 1) indicating whether a unit is a
-    right censored observation (=0) or a failure (=1).
-  \item \code{rank}: Adjusted rank. Applicable for method \code{"mr"}
-    and \code{"johnson"}, otherwise \code{NA}.
-  \item \code{prob}: Estimated failure probability.
-  \item \code{method}: Method, which was used for estimating the failure
-    probability.
+  \item \code{id} : Identification for every unit.
+  \item \code{x} : Lifetime characteristic.
+  \item \code{status} : Binary data (0 or 1) indicating whether a unit is a
+    right censored observation (= 0) or a failure (= 1).
+  \item \code{rank} : The (computed) ranks. Determined for methods \code{"mr"}
+    and \code{"johnson"}, filled with \code{NA} for other methods.
+  \item \code{prob} : Estimated failure probabilities, \code{NA} if \code{status = 0}.
+  \item \code{method} : Specified method for the estimation of failure probabilities.
 }
 }
 \description{
-Estimate failure probabilities for uncensored or (multiple) right-censored
-data.
+This function applies a non-parametric method to estimate the failure
+probabilities of complete data taking (multiple) right-censored observations
+into account.
 }
 \details{
-One or multiple of the following methods can be used as the \code{methods}
-argument:
+One or multiple techniques can be used for the \code{methods} argument:
 \itemize{
-  \item \code{"mr"}: This non-parametric approach (\emph{Median Ranks}) is
-    used to estimate the failure probabilities in terms of complete data.
-    Tied observations can be handled in three ways, "max", "min" and "average"
-    (usage is listed in 'Options')).
-    Two methods are available to estimate the cumulative distribution
-    function \emph{F(t)} (See 'Options'):
+  \item \code{"mr"} : Method \emph{Median Ranks} is used to estimate the failure
+    probabilities of failed units without considering censored items.
+    Tied observations can be handled in three ways (See 'Options'):
     \itemize{
-      \item "benard"; Benard's approximation for Median Ranks.
-      \item "invbeta"; Exact Median Ranks using the inverse beta distribution.
+      \item \code{"max"} : Highest observed rank is assigned to tied observations.
+      \item \code{"min"} : Lowest observed rank is assigned to tied observations.
+      \item \code{"average"} : Mean rank is assigned to tied observations.
     }
-  \item \code{"johnson"}: This non-parametric approach is used to estimate
-    the failure probabilities in terms of uncensored or (multiple) right
-    censored data. Compared to complete data the correction is done by
-    calculating adjusted ranks which takes non-defective units into account.
-  \item \code{"kaplan"}: Whereas the non-parametric Kaplan-Meier estimator is
-    used to estimate the survival function \emph{S(t)} in terms of (multiple)
-    right censored data, the complement is an estimate of the cumulative
-    distribution function \emph{F(t)}. One modification is made in contrast
-    to the orginial Kaplan-Meier estimator (based on
-    \emph{NIST/SEMATECH e-Handbook of Statistical Methods}, 8.2.1.5.): If the
-    last unit (unit with highest observed lifetime) is a defective unit, the
-    estimator is adjusted in such a way that the survival estimate for this
-    unit is not \emph{zero} and therefore the estimate for the failure
-    probability is not equal to \emph{one}. Otherwise the estimate in this
-    context would be too pessimisitc.
-    Since the failure probability estimation in this function is not based on
-    \emph{Median Ranks}, the Betabinomial confidence intervals \emph{cannot} be
-    calculated on the basis of Kaplan-Meier failure probabilities.
-  \item \code{"nelson"}: This non-parametric approach estimates the cumulative
-    hazard rate in terms of (multiple) right censored data. By equating the
-    definition of the hazard rate with the hazard rate according to
-    Nelson-Aalen one can calculate the failure probabilities.
-    Since the failure probability estimation in this function is not based on
-    \emph{Median Ranks}, the Betabinomial confidence intervals cannot be calculated
-    on the basis of Nelson-Aalen failure probabilities.
+    Two formulas can be used to determine cumulative failure probabilities
+    \emph{F(t)} (See 'Options'):
+    \itemize{
+      \item \code{"benard"} : Benard's approximation for Median Ranks.
+      \item \code{"invbeta"} : Exact Median Ranks using the inverse beta distribution.
+    }
+  \item \code{"johnson"} : The \emph{Johnson} method is used to estimate the
+    failure probabilities of failed units, taking censored units into account.
+    Compared to complete data, correction of probabilities is done by the
+    computation of adjusted ranks.
+  \item \code{"kaplan"} : The method of \emph{Kaplan} and \emph{Meier} is used
+    to estimate the survival function \emph{S(t)} with respect to (multiple)
+    right censored data. The complement of \emph{S(t)}, i.e. \emph{F(t)}, is
+    returned. In contrast to the original \emph{Kaplan-Meier} estimator, one
+    modification is made (see 'References').
+
+    \strong{Note} : The \emph{Kaplan-Meier} estimator does not assign ranks to
+    observations, so the beta-binomial confidence intervals \emph{cannot} be
+    calculated using this method.
+  \item \code{"nelson"} : The \emph{Nelson-Aalen} estimator models the cumulative
+    hazard rate function in case of (multiple) right censored data. Equating the
+    formal definition of the hazard rate with that according to \emph{Nelson-Aalen}
+    results in a formula for the calculation of failure probabilities.
+
+    \strong{Note} : The \emph{Nelson-Aalen} estimator does not assign ranks to
+    observations, so the beta-binomial confidence intervals \emph{cannot} be
+    calculated using this method.
 }
 }
 \section{Options}{
 
-
+The listed options can only be applied for method \code{"mr"}:
 \itemize{
-  \item \code{mr_method}: \code{"benard"} (default) or \code{"invbeta"}.
-  \item \code{mr_ties.method}: \code{c("max", "min", "average")}, default is "max".
+  \item \code{mr_method} : \code{"benard"} (default) or \code{"invbeta"}.
+  \item \code{mr_ties.method} : \code{"max"} (default), \code{"min"} or \code{"average"}.
 }
 }
 
+\examples{
+# Vectors:
+cycles <- alloy$cycles
+status <- alloy$status
+
+# Example 1 - Johnson method:
+prob_tbl <- estimate_cdf(
+  x = cycles,
+  status = status,
+  methods = "johnson"
+)
+
+# Example 2 - Multiple methods:
+prob_tbl_2 <- estimate_cdf(
+  x = cycles,
+  status = status,
+  methods = c("johnson", "kaplan", "nelson")
+)
+
+# Example 3 - Method 'mr' with options:
+prob_tbl_3 <- estimate_cdf(
+  x = cycles,
+  status = status,
+  methods = "mr",
+  options = list(
+    mr_method = "invbeta",
+    mr_ties.method = "average"
+  )
+)
+
+# Example 4 - Multiple methods and option for 'mr':
+prob_tbl_4 <- estimate_cdf(
+  x = cycles,
+  status = status,
+  methods = c("mr", "johnson"),
+  options = list(
+    mr_ties.method = "max"
+  )
+)
+
+}
+\seealso{
+\code{\link{estimate_cdf}}
+}

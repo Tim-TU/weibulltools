@@ -26,12 +26,11 @@
 #'
 #' @return A list of class \code{"mileage_estimation"} which contains:
 #'   \itemize{
-#'     \item \code{coefficients} A named vector of estimated parameter(s).
-#'     \item \code{miles_annual} A numeric vector of element-wise computed annual
+#'     \item \code{coefficients} : A named vector of estimated parameter(s).
+#'     \item \code{miles_annual} : A numeric vector of element-wise computed annual
 #'       distances using the linear relationship described in 'Details'.
-#'     \item \code{distribution} Specified distribution.
+#'     \item \code{distribution} : Specified distribution.
 #'   }
-#' @export
 #'
 #' @examples
 #' # Data for examples:
@@ -83,11 +82,11 @@
 #'   time = time_in_service,
 #'   distribution = "exponential"
 #' )
-
-dist_mileage <- function(
-  mileage,
-  time,
-  distribution = c("lognormal", "exponential")
+#'
+#' @export
+dist_mileage <- function(mileage,
+                         time,
+                         distribution = c("lognormal", "exponential")
 ) {
 
   distribution <- match.arg(distribution)
@@ -154,6 +153,7 @@ dist_mileage <- function(
 }
 
 
+
 #' Simulation of Unknown Covered Distances using a Monte Carlo Approach
 #'
 #' @description
@@ -173,6 +173,7 @@ dist_mileage <- function(
 #'                 3500.25 km * (200 d / 365 d) = 1917.945 km}
 #'
 #' @inheritParams dist_mileage
+#'
 #' @param status Optional argument. If used it has to be a vector of binary data
 #'   (0 or 1) indicating whether unit i is a right censored observation (= 0) or
 #'   a failure (= 1). The effect of status on the return is described in 'Value'.
@@ -180,7 +181,7 @@ dist_mileage <- function(
 #'
 #' @return A list containing the following elements:
 #'   \itemize{
-#'     \item \code{data} A tibble with class attributes \code{"mcs_data"} and
+#'     \item \code{data} : A tibble with class attributes \code{"mcs_data"} and
 #'       \code{"reliability_data"} if \code{status} is provided. Since the
 #'       attribute \code{"reliability_data"} enables the direct usage of \code{data}
 #'       inside \code{estimate_cdf} (\code{\link{estimate_cdf.reliability_data}}),
@@ -192,25 +193,23 @@ dist_mileage <- function(
 #'
 #'       The tibble contains the following columns:
 #'       \itemize{
-#'         \item \code{mileage} Simulated distances for unknown \code{mileage} and
+#'         \item \code{mileage} : Simulated distances for unknown \code{mileage} and
 #'           input distances for known \code{mileage}.
-#'         \item \code{time} Input operating times.
-#'         \item \code{status} (\strong{optional})
+#'         \item \code{time} : Input operating times.
+#'         \item \code{status} (\strong{optional}) :
 #'           \itemize{
 #'             \item If argument \code{status = NULL} column \code{status} does
 #'               not exist.
 #'             \item If argument \code{status} is provided the column contains
 #'               the entered binary data (0 or 1).
 #'           }
-#'         \item \code{id} Identification of every unit.
+#'         \item \code{id} : Identification of every unit.
 #'       }
-#'     \item \code{sim_data} A tibble with column \code{sim_mileage} that holds the
+#'     \item \code{sim_data} : A tibble with column \code{sim_mileage} that holds the
 #'       simulated distances for unknown \code{mileage} and \code{0} otherwise.
-#'     \item \code{model_estimation} A list containing a named list
+#'     \item \code{model_estimation} : A list containing a named list
 #'       (\code{"mileage_distribution"}) with output of \code{\link{dist_mileage}}.
 #'   }
-#'
-#' @export
 #'
 #' @examples
 #' # Data for examples:
@@ -281,13 +280,13 @@ dist_mileage <- function(
 #' #)
 #'
 #' # plot_prob_estimation <- plot_prob(prob_estimation)
-
-mcs_mileage <- function(
-  mileage,
-  time,
-  status = NULL,
-  id = paste0("ID", seq_len(length(time))),
-  distribution = c("lognormal", "exponential")
+#'
+#' @export
+mcs_mileage <- function(mileage,
+                        time,
+                        status = NULL,
+                        id = paste0("ID", seq_len(length(time))),
+                        distribution = c("lognormal", "exponential")
 ) {
 
   # Checks:
@@ -327,7 +326,7 @@ mcs_mileage <- function(
   } else {
     # check for status:
     if (!is_status(status)) {
-      stop("status must be numeric! all elements must be either 0 or 1!")
+      stop("'status' must be numeric with elements 0 or 1!")
     }
 
     data_tbl <- tibble::tibble(

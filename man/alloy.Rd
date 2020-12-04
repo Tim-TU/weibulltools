@@ -3,7 +3,7 @@
 \docType{data}
 \name{alloy}
 \alias{alloy}
-\title{Fatigue life for alloy T7989 specimens}
+\title{Fatigue Life for Alloy T7989 Specimens}
 \format{
 A tibble with 72 rows and 2 variables:
 \describe{
@@ -12,15 +12,15 @@ A tibble with 72 rows and 2 variables:
 }
 }
 \source{
-Meeker, William Q; Escobar, Luis A., Statistical methods for
-reliability data, New York: Wiley series in probability and statistics
+Meeker, William Q; Escobar, Luis A., Statistical Methods for
+Reliability Data, New York: Wiley series in probability and statistics
 (1998, p.131)
 }
 \usage{
 alloy
 }
 \description{
-A dataset containing the number of cycles of fatigue life for alloy T7987
+A dataset containing the number of cycles of fatigue life for Alloy T7987
 specimens.
 }
 \keyword{datasets}
