@@ -4,7 +4,7 @@
 \alias{plot_conf.confint}
 \title{Add Confidence Region(s) for Quantiles or Probabilities}
 \usage{
-\method{plot_conf}{confint}(p_obj, x, title_trace, ...)
+\method{plot_conf}{confint}(p_obj, x, title_trace = "Confidence Limit", ...)
 }
 \arguments{
 \item{p_obj}{A plot object returned from \code{\link{plot_mod}}.}

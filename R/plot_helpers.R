@@ -75,7 +75,7 @@ plot_prob_helper <- function(
 }
 
 plot_mod_helper <- function(
-  x, loc_sc_params, distribution, method = "null"
+  x, loc_sc_params, distribution, method = "mod_null"
 ) {
   if (length(x) == 2) {
     if (distribution %in% c("weibull", "lognormal", "loglogistic")) {
@@ -186,6 +186,42 @@ plot_mod_mix_helper <- function(model_estimation, method, group) {
   tbl_p
 }
 
+
+
+plot_conf_helper_2 <- function(confint, distribution) {
+  tbl_upper <- if (hasName(confint, "upper_bound")) tibble::tibble(
+    x = confint$x,
+    y = confint$upper_bound,
+    bound = "Upper",
+    method = confint$method
+  )
+
+  tbl_lower <- if (hasName(confint, "lower_bound")) tibble::tibble(
+    x = confint$x,
+    y = confint$lower_bound,
+    bound = "Lower",
+    method = confint$method
+  )
+
+  tbl_p <- dplyr::bind_rows(tbl_upper, tbl_lower)
+
+  if (distribution %in% c("weibull", "weibull3", "sev")) {
+    tbl_p$q <- SPREDA::qsev(tbl_p$y)
+  }
+  if (distribution %in% c("lognormal", "lognormal3", "normal")) {
+    tbl_p$q <- stats::qnorm(tbl_p$y)
+  }
+  if (distribution %in% c("loglogistic", "loglogistic3", "logistic")) {
+    tbl_p$q <- stats::qlogis(tbl_p$y)
+  }
+
+  tbl_p <- dplyr::group_by(tbl_p, bound)
+
+  return(tbl_p)
+}
+
+
+
 plot_conf_helper <- function(tbl_mod, x, y, direction, distribution) {
   # Construct x, y from x/y, upper/lower bounds (depending on direction and bounds)
   lst <- Map(tibble::tibble, x = x, y = y)
@@ -208,6 +244,7 @@ plot_conf_helper <- function(tbl_mod, x, y, direction, distribution) {
   }
 
   tbl_p <- dplyr::group_by(tbl_p, bound)
+  tbl_p$method <- "conf_null"
 
   return(tbl_p)
 }

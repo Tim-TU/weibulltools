@@ -99,18 +99,18 @@
 # plot_mod_helper remains stable
 
     # A tibble: 100 x 7
-         x_p    y_p param_val param_label method group     q
-       <dbl>  <dbl> <list>    <list>      <chr>  <chr> <dbl>
-     1 6700  0.0183 <chr [3]> <chr [3]>   null   _null -3.99
-     2 6798. 0.0190 <chr [3]> <chr [3]>   null   _null -3.95
-     3 6897. 0.0198 <chr [3]> <chr [3]>   null   _null -3.91
-     4 6997. 0.0206 <chr [3]> <chr [3]>   null   _null -3.87
-     5 7100. 0.0214 <chr [3]> <chr [3]>   null   _null -3.83
-     6 7203. 0.0223 <chr [3]> <chr [3]>   null   _null -3.79
-     7 7308. 0.0232 <chr [3]> <chr [3]>   null   _null -3.75
-     8 7415. 0.0241 <chr [3]> <chr [3]>   null   _null -3.71
-     9 7523. 0.0251 <chr [3]> <chr [3]>   null   _null -3.67
-    10 7633. 0.0261 <chr [3]> <chr [3]>   null   _null -3.63
+         x_p    y_p param_val param_label method   group     q
+       <dbl>  <dbl> <list>    <list>      <chr>    <chr> <dbl>
+     1 6700  0.0183 <chr [3]> <chr [3]>   mod_null _null -3.99
+     2 6798. 0.0190 <chr [3]> <chr [3]>   mod_null _null -3.95
+     3 6897. 0.0198 <chr [3]> <chr [3]>   mod_null _null -3.91
+     4 6997. 0.0206 <chr [3]> <chr [3]>   mod_null _null -3.87
+     5 7100. 0.0214 <chr [3]> <chr [3]>   mod_null _null -3.83
+     6 7203. 0.0223 <chr [3]> <chr [3]>   mod_null _null -3.79
+     7 7308. 0.0232 <chr [3]> <chr [3]>   mod_null _null -3.75
+     8 7415. 0.0241 <chr [3]> <chr [3]>   mod_null _null -3.71
+     9 7523. 0.0251 <chr [3]> <chr [3]>   mod_null _null -3.67
+    10 7633. 0.0261 <chr [3]> <chr [3]>   mod_null _null -3.63
     # ... with 90 more rows
 
 # plot_mod_mix_helper remains stable
