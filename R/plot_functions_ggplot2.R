@@ -120,12 +120,20 @@ plot_mod_ggplot2 <- function(
 }
 
 plot_conf_ggplot2 <- function(p_obj, tbl_p, title_trace) {
+  mapping <- if (all(tbl_p$method == "conf_null")) {
+    ggplot2::aes(
+      x = x, y = q, group = bound, color = I("#CC2222")
+    )
+  } else {
+    ggplot2::aes(
+      x = x, y = q, group = paste(bound, method), color = method
+    )
+  }
+
   p_conf <- p_obj +
     ggplot2::geom_line(
       data = tbl_p,
-      mapping = ggplot2::aes(
-        x = x, y = q, group = bound, color = I("#CC2222")
-      ),
+      mapping = mapping,
       linetype = "CC"
     )
 

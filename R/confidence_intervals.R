@@ -101,20 +101,42 @@ confint_betabinom.model_estimation <- function(
                                       conf_level = 0.95,
                                       direction = c("y", "x")
 ) {
-  data <- x$data
-  distribution <- x$distribution
-
-  confint_betabinom.default(
-    x = data$x,
-    status = data$status,
-    loc_sc_params = x$loc_sc_params,
-    distribution = x$distribution,
+  confint_betabinom_(
+    model_estimation = x,
     b_lives = b_lives,
     bounds = bounds,
     conf_level = conf_level,
     direction = direction
   )
 }
+
+
+
+#' @rdname confint_betabinom.model_estimation
+#'
+#' @export
+confint_betabinom.model_estimation_list <- function(
+                                      x,
+                                      b_lives = c(0.01, 0.1, 0.50),
+                                      bounds = c("two_sided", "lower", "upper"),
+                                      conf_level = 0.95,
+                                      direction = c("y", "x")
+) {
+  bounds <- match.arg(bounds)
+  direction <- match.arg(direction)
+
+  purrr::map_dfr(x, function(model_estimation) {
+    confint <- confint_betabinom_(
+      model_estimation = model_estimation,
+      b_lives = b_lives,
+      bounds = bounds,
+      conf_level = conf_level,
+      direction = direction
+    )
+  })
+}
+
+
 
 #' Beta Binomial Confidence Bounds for Quantiles and/or Probabilities
 #'
@@ -201,6 +223,43 @@ confint_betabinom.default <- function(x,
   direction <- match.arg(direction)
   distribution <- match.arg(distribution)
 
+  # Fake model_estimation
+  model_estimation <- list(
+    data = tibble::tibble(x = x, status = status, method = "null"),
+    loc_sc_params = loc_sc_params,
+    distribution = distribution
+  )
+
+  confint_betabinom_(
+    model_estimation = model_estimation,
+    b_lives = b_lives,
+    bounds = bounds,
+    conf_level = conf_level,
+    direction = direction
+  )
+}
+
+
+
+confint_betabinom_ <- function(
+  model_estimation, b_lives, bounds, conf_level, direction
+) {
+
+  method <- model_estimation$data$method[1]
+
+  if (method %in% c("kaplan", "nelson")) {
+    stop(
+      "The beta-binomial confidence intervals cannot be calculated for method '",
+      method, "'. Use method 'mr' or 'johnson'."
+    )
+  }
+
+  x <- model_estimation$data$x
+  status <- model_estimation$data$status
+
+  distribution <- model_estimation$distribution
+  loc_sc_params <- model_estimation$loc_sc_params
+
   n <- length(x)
   x_ob <- x[status == 1]
 
@@ -251,11 +310,15 @@ confint_betabinom.default <- function(x,
     tbl_out <- tibble::as_tibble(list_output)
   }
 
-  class(tbl_out) <- c("confint", class(tbl_out))
+  tbl_out <- tbl_out %>%
+    dplyr::mutate(
+      distribution = distribution,
+      bounds = bounds,
+      direction = direction,
+      method = method
+    )
 
-  attr(tbl_out, "distribution") <- distribution
-  attr(tbl_out, "bounds") <- bounds
-  attr(tbl_out, "direction") <- direction
+  class(tbl_out) <- c("confint", class(tbl_out))
 
   return(tbl_out)
 }
@@ -672,12 +735,16 @@ confint_fisher.default <- function(
     tbl_out <- tibble::as_tibble(list_output)
   }
 
+  tbl_out <- tbl_out %>%
+    dplyr::mutate(
+      distribution = distribution,
+      bounds = bounds,
+      direction = direction,
+      method = "conf_null"
+    )
+
   # Make output usable for generics
   class(tbl_out) <- c("confint", class(tbl_out))
-
-  attr(tbl_out, "distribution") <- distribution
-  attr(tbl_out, "bounds") <- bounds
-  attr(tbl_out, "direction") <- direction
 
   return(tbl_out)
 }

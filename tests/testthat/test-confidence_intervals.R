@@ -1,3 +1,14 @@
+test_that("confint_betabinom fails for methods kaplan and nelson", {
+  data <- reliability_data(shock, x = distance, status = status)
+  cdf_kaplan <- estimate_cdf(data, "k")
+  cdf_nelson <- estimate_cdf(data, "n")
+  rr_kaplan <- rank_regression(cdf_kaplan)
+  rr_nelson <- rank_regression(cdf_nelson)
+
+  expect_error(confint_betabinom(rr_kaplan), "The beta-binomial.*")
+  expect_error(confint_betabinom(rr_nelson), "The beta-binomial.*")
+})
+
 test_that("confint_betabinom remains stable", {
   obs   <- seq(10000, 100000, 10000)
   state <- c(0, 1, 1, 0, 0, 0, 1, 0, 1, 0)
