@@ -18,13 +18,13 @@
 \code{\link{ml_estimation}}.}
 
 \item{bounds}{A character string specifying the interval(s) which has/have to
-be computed. Must be one of "two_sided" (default), "lower" or "upper".}
+be computed. One of \code{"two_sided"}, \code{"lower"} and \code{"upper"}.}
 
-\item{conf_level}{Confidence level of the interval. The default value is
-\code{conf_level = 0.95}.}
+\item{conf_level}{Confidence level of the interval.}
 
 \item{direction}{A character string specifying the direction of the computed
-interval(s). Must be either "y" (failure probabilities) or "x" (quantiles).}
+interval(s). Must be either \code{"y"} (failure probabilities) or \code{"x"}
+(quantiles).}
 }
 \value{
 A tibble containing the lifetime characteristic, the
@@ -56,4 +56,5 @@ conf_fish <- confint_fisher(
   conf_level = 0.95,
   direction = "y"
 )
+
 }

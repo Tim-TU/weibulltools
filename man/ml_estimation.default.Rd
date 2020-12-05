@@ -32,7 +32,8 @@ vector with all components being 1 (same weights).}
 \item{conf_level}{Confidence level of the interval.}
 }
 \value{
-Returns a list with the following elements:
+Returns a list with the classes \code{"ml_estimation"} and
+  \code{"model_estimation"} containing the following elements:
   \itemize{
     \item \code{coefficients} : If \code{distribution} is \code{"weibull"}, the
       estimated scale (\eqn{\eta}) and shape (\eqn{\beta}) parameters are provided
@@ -59,12 +60,10 @@ Returns a list with the following elements:
 \description{
 This method estimates the parameters of a two- or three-parametric lifetime
 distribution for complete and (multiple) right censored data. The parameters
-are determined in the frequently used (log-) location-scale
-parameterization.
+are determined in the frequently used (log-)location-scale parameterization.
 
-For the Weibull, estimates are transformed such that
-they are in line with the parameterization provided by the \emph{stats} package
-(see \link[stats]{Weibull}).
+For the Weibull, estimates are transformed such that they are in line with the
+parameterization provided by the \emph{stats} package (see \link[stats]{Weibull}).
 }
 \details{
 \code{ml_estimation} calls \code{\link[SPREDA:lifedata.MLE]{Lifedata.MLE}},

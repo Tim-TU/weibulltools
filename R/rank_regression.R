@@ -6,9 +6,8 @@
 #' censored data. The parameters are determined in the frequently used
 #' (log-)location-scale parameterization.
 #'
-#' For the Weibull, estimates are transformed such that
-#' they are in line with the parameterization provided by the \emph{stats} package
-#' (see \link[stats]{Weibull}).
+#' For the Weibull, estimates are transformed such that they are in line with the
+#' parameterization provided by the \emph{stats} package (see \link[stats]{Weibull}).
 #'
 #' @details
 #' If \code{distribution} is \code{"weibull"} or \code{"weibull3"}, the approximated
@@ -33,7 +32,8 @@
 #' @param conf_level Confidence level of the interval. If \code{distribution} is
 #'   \code{"weibull"} this must be one of \code{0.9}, \code{0.95} or \code{0.99}.
 #'
-#' @return Returns a list with the following elements:
+#' @return Returns a list with the classes \code{"rank_regression"} and
+#'   \code{"model_estimation"} containing the following elements:
 #'   \itemize{
 #'     \item \code{coefficients} : If \code{distribution} is \code{"weibull"}, the
 #'       estimated scale (\eqn{\eta}) and shape (\eqn{\beta}) parameters are provided
@@ -57,9 +57,10 @@
 #'       \code{\link{estimate_cdf}}.
 #'     \item \code{distribution} : Specified distribution.
 #'   }
-#'   If more than one method was specified in \code{\link{estimate_cdf}}, the resulting
-#'   output is a list of lists, so that for each method the elements, specified
-#'   above, are included.
+#'   If more than one method was specified in \code{\link{estimate_cdf}}, the
+#'   resulting output is a list with class \code{"model_estimation_list"}. In
+#'   this case each list element has classes \code{"rank_regression"} and
+#'   \code{"model_estimation"} and the items listed above, are included.
 #'
 #' @encoding UTF-8
 #'
@@ -147,7 +148,8 @@ rank_regression <- function(x, ...) {
 #' @param status A vector of binary data (0 or 1) indicating whether a unit is
 #'   a right censored observation (= 0) or a failure (= 1).
 #'
-#' @return Returns a list with the following elements:
+#' @return Returns a list with the classes \code{"rank_regression"} and
+#'   \code{"model_estimation"} containing the following elements:
 #'   \itemize{
 #'     \item \code{coefficients} : If \code{distribution} is \code{"weibull"}, the
 #'       estimated scale (\eqn{\eta}) and shape (\eqn{\beta}) parameters are provided
@@ -342,10 +344,17 @@ rank_regression_ <- function(cdf_estimation,
   if (distribution %in% c("weibull3", "lognormal3", "loglogistic3")) {
     # Log-Location-Scale with threshold:
     ## Optimization of profile function:
-    optim_gamma <- stats::optim(par = 0, fn = r_squared_profiling, method = "L-BFGS-B",
-                                upper = (1 - (1 / 1e+5)) * min(x_f), lower = 0,
-                                control = list(fnscale = -1), x = x_f, y = y_f,
-                                distribution = distribution)
+    optim_gamma <- stats::optim(
+      par = 0,
+      fn = r_squared_profiling,
+      method = "L-BFGS-B",
+      upper = (1 - (1 / 1e+5)) * min(x_f),
+      lower = 0,
+      control = list(fnscale = -1),
+      x = x_f,
+      y = y_f,
+      distribution = distribution
+    )
 
     ## Estimate of Threshold:
     estimate_gamma <- optim_gamma$par

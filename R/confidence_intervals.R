@@ -1,48 +1,26 @@
-#' Beta Binomial Confidence Bounds for Quantiles and/or Probabilities
+#' Beta Binomial Confidence Bounds for Quantiles and Probabilities
 #'
-#' This non-parametric approach calculates confidence bounds for quantiles and/or
-#' failure probabilities using a procedure that is similar to that used in
-#' calculating median ranks. The location-scale (and threshold) parameters estimated
-#' by rank regression are needed.
+#' @description
+#' This non-parametric approach computes the beta binomial bounds (BB) for
+#' quantiles and failure probabilities using a procedure similar to the calculation
+#' of probabilities in terms of (\emph{Median Ranks}).
 #'
-#' @section Methods (by class):
-#' \describe{
-#'   \item{\code{\link[=confint_betabinom.model_estimation]{model_estimation}}}{
-#'     Preferred. Provide the output of \code{\link{rank_regression}}.
-#'    }
-#'   \item{\code{\link[=confint_betabinom.default]{default}}}{
-#'     Provide \code{x}, \code{status}, \code{loc_sc_params} and \code{distribution}
-#'     manually.
-#'   }
-#' }
+#' @details The difference to \emph{Median Ranks}, i.e. finding the probability of
+#' rank *j* at a 50% level, is to determine the probability of rank *j* on another
+#' level, the specified confidence level.
+#'
+#' @param x Object of class \code{model_estimation} (or \code{model_estimation_list})
+#'   returned from \code{\link{rank_regression}}.
+#' @param bounds A character string specifying the interval(s) which has/have to
+#'   be computed. One of \code{"two_sided"}, \code{"lower"} and \code{"upper"}.
+#' @param conf_level Confidence level of the interval.
+#' @param direction A character string specifying the direction of the computed
+#'   interval(s). Must be either \code{"y"} (failure probabilities) or \code{"x"}
+#'   (quantiles).
 #'
 #' @return A tibble containing the lifetime characteristic, interpolated
 #' ranks as a function of probabilities, the probabilities which are used to
 #' compute the ranks and computed values for the specified confidence bound(s).
-#'
-#'
-confint_betabinom <- function(x, ...) {
-  UseMethod("confint_betabinom")
-}
-
-#' Beta Binomial Confidence Bounds for Quantiles and/or Probabilities
-#'
-#' @inherit confint_betabinom description return
-#'
-#' @encoding UTF-8
-#' @references Meeker, William Q; Escobar, Luis A., Statistical methods for
-#'   reliability data, New York: Wiley series in probability and statistics, 1998
-#'
-#' @param x Object of class \code{model_estimation} returned from
-#'   \code{\link{rank_regression}}.
-#' @param bounds A character string specifying the interval(s) which has/have to
-#'   be computed. Must be one of "two_sided" (default), "lower" or "upper".
-#' @param conf_level Confidence level of the interval. The default value is
-#'   \code{conf_level = 0.95}.
-#' @param direction A character string specifying the direction of the computed
-#'   interval(s). Must be either "y" (failure probabilities) or "x" (quantiles).
-#'
-#' @export
 #'
 #' @examples
 #' # Example 1: Beta-Binomial Confidence Bounds for two-parameter Weibull:
@@ -94,6 +72,15 @@ confint_betabinom <- function(x, ...) {
 #' )
 #'
 #' @export
+confint_betabinom <- function(x, ...) {
+  UseMethod("confint_betabinom")
+}
+
+
+
+#' @rdname confint_betabinom
+#'
+#' @export
 confint_betabinom.model_estimation <- function(
                                       x,
                                       b_lives = c(0.01, 0.1, 0.50),
@@ -112,7 +99,7 @@ confint_betabinom.model_estimation <- function(
 
 
 
-#' @rdname confint_betabinom.model_estimation
+#' @rdname confint_betabinom
 #'
 #' @export
 confint_betabinom.model_estimation_list <- function(
@@ -140,11 +127,7 @@ confint_betabinom.model_estimation_list <- function(
 
 #' Beta Binomial Confidence Bounds for Quantiles and/or Probabilities
 #'
-#' @inherit confint_betabinom description return
-#'
-#' @encoding UTF-8
-#' @references Meeker, William Q; Escobar, Luis A., Statistical methods for
-#'   reliability data, New York: Wiley series in probability and statistics, 1998
+#' @inherit confint_betabinom description details return
 #'
 #' @param x A numeric vector which consists of lifetime data. \code{x} is used to
 #'   specify the range of confidence region(s).
@@ -241,15 +224,18 @@ confint_betabinom.default <- function(x,
 
 
 
-confint_betabinom_ <- function(
-  model_estimation, b_lives, bounds, conf_level, direction
+confint_betabinom_ <- function(model_estimation,
+                               b_lives,
+                               bounds,
+                               conf_level,
+                               direction
 ) {
 
   method <- model_estimation$data$method[1]
 
   if (method %in% c("kaplan", "nelson")) {
     stop(
-      "The beta-binomial confidence intervals cannot be calculated for method '",
+      "The beta binomial confidence intervals cannot be calculated for method '",
       method, "'. Use method 'mr' or 'johnson'."
     )
   }
@@ -323,6 +309,8 @@ confint_betabinom_ <- function(
   return(tbl_out)
 }
 
+
+
 #' Delta Method for Parametric Lifetime Distributions
 #'
 #' The Delta Method estimates the standard error for quantities that can be
@@ -364,7 +352,6 @@ confint_betabinom_ <- function(
 #'   confidence intervals. If standard errors of standardized z values are compueted
 #'   one can calculate confidence intervals for distribution probabilities (z-procedure,
 #'   which is used inside \code{\link{confint_fisher}}).
-#' @export
 #'
 #' @examples
 #' obs   <- seq(10000, 100000, 10000)
@@ -383,15 +370,17 @@ confint_betabinom_ <- function(
 #'   distribution = "weibull",
 #'   direction = "y"
 #' )
-delta_method <- function(
-  p,
-  loc_sc_params,
-  loc_sc_varcov,
-  distribution = c(
-    "weibull", "lognormal", "loglogistic", "normal", "logistic", "sev",
-    "weibull3", "lognormal3", "loglogistic3"
-  ),
-  direction = c("y", "x")
+#'
+#' @export
+delta_method <- function(p,
+                         loc_sc_params,
+                         loc_sc_varcov,
+                         distribution = c(
+                           "weibull", "lognormal", "loglogistic",
+                           "normal", "logistic", "sev",
+                           "weibull3", "lognormal3", "loglogistic3"
+                         ),
+                         direction = c("y", "x")
 ) {
 
   distribution <- match.arg(distribution)
@@ -408,20 +397,16 @@ delta_method <- function(
   )
 }
 
-delta_method_ <- function(p, loc_sc_params, loc_sc_varcov,
-                         distribution = c("weibull", "lognormal", "loglogistic",
-                                          "normal", "logistic", "sev", "weibull3",
-                                          "lognormal3", "loglogistic3"),
-                         direction = c("y", "x")) {
-
-  direction <- match.arg(direction)
-  distribution <- match.arg(distribution)
-
-  if (!(distribution %in% c("weibull", "lognormal", "loglogistic", "normal",
-                            "logistic", "sev", "weibull3", "lognormal3",
-                            "loglogistic3"))) {
-    stop("No valid distribution!")
-  }
+delta_method_ <- function(p,
+                          loc_sc_params,
+                          loc_sc_varcov,
+                          distribution = c(
+                            "weibull", "lognormal", "loglogistic",
+                            "normal", "logistic", "sev",
+                            "weibull3", "lognormal3", "loglogistic3"
+                          ),
+                          direction = c("y", "x")
+) {
 
   # Standard Errors for quantiles:
   if (direction == "x") {
@@ -556,14 +541,16 @@ confint_fisher <- function(x, ...) {
 #'   conf_level = 0.95,
 #'   direction = "y"
 #' )
+#'
 #' @export
-confint_fisher.model_estimation <- function(
-                                      x,
-                                      b_lives = c(0.01, 0.1, 0.50),
-                                      bounds = c("two_sided", "lower", "upper"),
-                                      conf_level = 0.95,
-                                      direction = c("y", "x"),
-                                      ...
+confint_fisher.model_estimation <- function(x,
+                                            b_lives = c(0.01, 0.1, 0.50),
+                                            bounds = c(
+                                              "two_sided", "lower", "upper"
+                                            ),
+                                            conf_level = 0.95,
+                                            direction = c("y", "x"),
+                                            ...
 ) {
   data <- x$data
   distribution <- x$distribution
@@ -614,20 +601,20 @@ confint_fisher.model_estimation <- function(
 #'   direction = "y"
 #' )
 #' @export
-confint_fisher.default <- function(
-  x,
-  status,
-  loc_sc_params,
-  loc_sc_varcov,
-  distribution = c(
-    "weibull", "lognormal", "loglogistic", "normal", "logistic", "sev",
-    "weibull3", "lognormal3", "loglogistic3"
-  ),
-  b_lives = c(0.01, 0.1, 0.50),
-  bounds = c("two_sided", "lower", "upper"),
-  conf_level = .95,
-  direction = c("y", "x"),
-  ...
+confint_fisher.default <- function(x,
+                                   status,
+                                   loc_sc_params,
+                                   loc_sc_varcov,
+                                   distribution = c(
+                                     "weibull", "lognormal", "loglogistic",
+                                     "normal", "logistic", "sev",
+                                     "weibull3", "lognormal3", "loglogistic3"
+                                   ),
+                                   b_lives = c(0.01, 0.1, 0.50),
+                                   bounds = c("two_sided", "lower", "upper"),
+                                   conf_level = .95,
+                                   direction = c("y", "x"),
+                                   ...
 ) {
 
   bounds <- match.arg(bounds)
@@ -751,7 +738,12 @@ confint_fisher.default <- function(
 
 
 
-add_b_lives <- function(x, loc_sc_params, distribution, b_lives) {
+add_b_lives <- function(x,
+                        loc_sc_params,
+                        distribution,
+                        b_lives
+) {
+
   # Range of failed items:
   x_min <- min(x, na.rm = TRUE)
   x_max <- max(x, na.rm = TRUE)

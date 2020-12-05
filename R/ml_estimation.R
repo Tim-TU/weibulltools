@@ -3,12 +3,10 @@
 #' @description
 #' This method estimates the parameters of a two- or three-parametric lifetime
 #' distribution for complete and (multiple) right censored data. The parameters
-#' are determined in the frequently used (log-) location-scale
-#' parameterization.
+#' are determined in the frequently used (log-)location-scale parameterization.
 #'
-#' For the Weibull, estimates are transformed such that
-#' they are in line with the parameterization provided by the \emph{stats} package
-#' (see \link[stats]{Weibull}).
+#' For the Weibull, estimates are transformed such that they are in line with the
+#' parameterization provided by the \emph{stats} package (see \link[stats]{Weibull}).
 #'
 #' @details
 #' \code{ml_estimation} calls \code{\link[SPREDA:lifedata.MLE]{Lifedata.MLE}},
@@ -23,7 +21,8 @@
 #'   vector with all components being 1 (same weights).
 #' @param conf_level Confidence level of the interval.
 #'
-#' @return Returns a list with the following elements:
+#' @return Returns a list with the classes \code{"ml_estimation"} and
+#'   \code{"model_estimation"} containing the following elements:
 #'   \itemize{
 #'     \item \code{coefficients} : If \code{distribution} is \code{"weibull"}, the
 #'       estimated scale (\eqn{\eta}) and shape (\eqn{\beta}) parameters are provided
@@ -104,7 +103,8 @@ ml_estimation <- function(x, ...) {
 #' @param status A vector of binary data (0 or 1) indicating whether unit \emph{i}
 #'   is a right censored observation (= 0) or a failure (= 1).
 #'
-#' @return Returns a list with the following elements:
+#' @return Returns a list with the classes \code{"ml_estimation"} and
+#'   \code{"model_estimation"} containing the following elements:
 #'   \itemize{
 #'     \item \code{coefficients} : If \code{distribution} is \code{"weibull"}, the
 #'       estimated scale (\eqn{\eta}) and shape (\eqn{\beta}) parameters are provided

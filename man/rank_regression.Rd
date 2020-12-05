@@ -26,7 +26,8 @@ rank_regression(x, ...)
 \code{"weibull"} this must be one of \code{0.9}, \code{0.95} or \code{0.99}.}
 }
 \value{
-Returns a list with the following elements:
+Returns a list with the classes \code{"rank_regression"} and
+  \code{"model_estimation"} containing the following elements:
   \itemize{
     \item \code{coefficients} : If \code{distribution} is \code{"weibull"}, the
       estimated scale (\eqn{\eta}) and shape (\eqn{\beta}) parameters are provided
@@ -50,9 +51,10 @@ Returns a list with the following elements:
       \code{\link{estimate_cdf}}.
     \item \code{distribution} : Specified distribution.
   }
-  If more than one method was specified in \code{\link{estimate_cdf}}, the resulting
-  output is a list of lists, so that for each method the elements, specified
-  above, are included.
+  If more than one method was specified in \code{\link{estimate_cdf}}, the
+  resulting output is a list with class \code{"model_estimation_list"}. In
+  this case each list element has classes \code{"rank_regression"} and
+  \code{"model_estimation"} and the items listed above, are included.
 }
 \description{
 This method fits an \strong{x on y} regression to a linearized two- or
@@ -60,9 +62,8 @@ three-parameter lifetime distribution for complete and (multiple) right
 censored data. The parameters are determined in the frequently used
 (log-)location-scale parameterization.
 
-For the Weibull, estimates are transformed such that
-they are in line with the parameterization provided by the \emph{stats} package
-(see \link[stats]{Weibull}).
+For the Weibull, estimates are transformed such that they are in line with the
+parameterization provided by the \emph{stats} package (see \link[stats]{Weibull}).
 }
 \details{
 If \code{distribution} is \code{"weibull"} or \code{"weibull3"}, the approximated

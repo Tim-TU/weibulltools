@@ -5,8 +5,8 @@ test_that("confint_betabinom fails for methods kaplan and nelson", {
   rr_kaplan <- rank_regression(cdf_kaplan)
   rr_nelson <- rank_regression(cdf_nelson)
 
-  expect_error(confint_betabinom(rr_kaplan), "The beta-binomial.*")
-  expect_error(confint_betabinom(rr_nelson), "The beta-binomial.*")
+  expect_error(confint_betabinom(rr_kaplan), "The beta binomial.*")
+  expect_error(confint_betabinom(rr_nelson), "The beta binomial.*")
 })
 
 test_that("confint_betabinom remains stable", {

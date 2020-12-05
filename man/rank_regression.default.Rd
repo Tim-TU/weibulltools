@@ -32,7 +32,8 @@ a right censored observation (= 0) or a failure (= 1).}
 \code{"weibull"} this must be one of \code{0.9}, \code{0.95} or \code{0.99}.}
 }
 \value{
-Returns a list with the following elements:
+Returns a list with the classes \code{"rank_regression"} and
+  \code{"model_estimation"} containing the following elements:
   \itemize{
     \item \code{coefficients} : If \code{distribution} is \code{"weibull"}, the
       estimated scale (\eqn{\eta}) and shape (\eqn{\beta}) parameters are provided
@@ -62,9 +63,8 @@ three-parameter lifetime distribution for complete and (multiple) right
 censored data. The parameters are determined in the frequently used
 (log-)location-scale parameterization.
 
-For the Weibull, estimates are transformed such that
-they are in line with the parameterization provided by the \emph{stats} package
-(see \link[stats]{Weibull}).
+For the Weibull, estimates are transformed such that they are in line with the
+parameterization provided by the \emph{stats} package (see \link[stats]{Weibull}).
 }
 \details{
 If \code{distribution} is \code{"weibull"} or \code{"weibull3"}, the approximated
