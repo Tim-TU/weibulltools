@@ -451,7 +451,7 @@ mixmod_em.reliability_data <- function(x,
   method <- match.arg(method)
 
   mixmod_em.default(
-    x = x$x,
+    x = get_characteristic(x),
     status = x$status,
     post = post,
     distribution = distribution,

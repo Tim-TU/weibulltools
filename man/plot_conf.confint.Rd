@@ -4,16 +4,20 @@
 \alias{plot_conf.confint}
 \title{Add Confidence Region(s) for Quantiles or Probabilities}
 \usage{
-\method{plot_conf}{confint}(p_obj, x, title_trace = "Confidence Limit", ...)
+\method{plot_conf}{confint}(
+  p_obj,
+  x,
+  mod,
+  title_trace_mod = "Fit",
+  title_trace_conf = "Confidence Limit",
+  ...
+)
 }
 \arguments{
-\item{p_obj}{A plot object returned from \code{\link{plot_mod}}.}
+\item{p_obj}{A plot object returned from \code{\link{plot_prob}}.}
 
 \item{x}{Confindence interval as returned by \code{\link{confint_betabinom}}
 or \code{\link{confint_fisher}}.}
-
-\item{title_trace}{A character string whis is assigned to the trace shown in
-the legend.}
 }
 \value{
 Returns a plotly object containing the probability plot with

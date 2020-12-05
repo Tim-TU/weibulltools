@@ -335,7 +335,10 @@ mcs_mileage <- function(mileage,
       status = status,
       id = id
     )
-    class(data_tbl) <- c("mcs_data", "reliability_data", class(data_tbl)) # is not working since 'mileage' != x
+
+    class(data_tbl) <- c("mcs_data", "reliability_data", class(data_tbl))
+
+    attr(data_tbl, "characteristic") <- "mileage"
   }
 
   mcs_output <- list(

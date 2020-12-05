@@ -177,7 +177,7 @@ ml_estimation.default <- function(
 }
 
 ml_estimation_ <- function(data, distribution, wts, conf_level) {
-  x <- data$x
+  x <- if (inherits(data, "reliability_data")) get_characteristic(x) else data$x
   status <- data$status
 
   # Log-Location-Scale Models:
