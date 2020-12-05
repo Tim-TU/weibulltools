@@ -74,6 +74,7 @@ delta_prob <- sapply(obs, delta_method,
   distribution = "weibull",
   direction = "y"
 )
+
 }
 \references{
 Meeker, William Q; Escobar, Luis A., Statistical methods for

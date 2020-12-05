@@ -1,12 +1,13 @@
 #' Rank Regression for Parametric Lifetime Distributions
 #'
 #' @description
-#' This method fits an \strong{x on y} regression to a linearized
-#' two- or three-parameter cdf and is applicable for complete and (multiple) right
-#' censored data. The parameters are estimated in the frequently used (log-) location-scale
-#' parameterization. For the Weibull, estimates are transformed such that
-#' they are in line with the parameterization provided by the \emph{stats} package
-#' (see \link[stats]{Weibull}).
+#' This method fits an \strong{x on y} regression to a linearized two- or
+#' three-parameter lifetime distribution for complete and (multiple) right
+#' censored data. The parameters are determined in the frequently used
+#' (log-)location-scale parameterization.
+#'
+#' For the Weibull, estimates are transformed such that they are in line with the
+#' parameterization provided by the \emph{stats} package (see \link[stats]{Weibull}).
 #'
 #' @details
 #' If \code{distribution} is \code{"weibull"} or \code{"weibull3"}, the approximated
@@ -22,8 +23,8 @@
 #' parameters are computed on the basis of a heteroscedasticity-consistent
 #' covariance matrix. Here it should be said that there is no statistical foundation
 #' to determine the standard errors of the parameters using \emph{Least Squares}
-#' in context of \emph{Rank Regression}. For an accepted statistical method use MLE
-#' (\code{\link{ml_estimation}}).
+#' in context of \emph{Rank Regression}. For an accepted statistical method use
+#' \link[=ml_estimation]{MLE}.
 #'
 #' @param x An object of class \code{cdf_estimation} returned from
 #'  \code{\link{estimate_cdf}}.
@@ -31,7 +32,8 @@
 #' @param conf_level Confidence level of the interval. If \code{distribution} is
 #'   \code{"weibull"} this must be one of \code{0.9}, \code{0.95} or \code{0.99}.
 #'
-#' @return Returns a list with the following elements:
+#' @return Returns a list with the classes \code{"rank_regression"} and
+#'   \code{"model_estimation"} containing the following elements:
 #'   \itemize{
 #'     \item \code{coefficients} : If \code{distribution} is \code{"weibull"}, the
 #'       estimated scale (\eqn{\eta}) and shape (\eqn{\beta}) parameters are provided
@@ -41,22 +43,24 @@
 #'     \item \code{confint} : Only included if \code{distribution} is \code{"weibull"}
 #'       or \code{"weibull3"}. Approximated confidence intervals for \eqn{\eta} and
 #'       \eqn{\beta} (and \eqn{\gamma} if \code{distribution} is \code{"weibull3"}).
-#'     \item \code{loc_sc_params} : Estimated location-scale parameters. Threshold
-#'       parameter is included if \code{distribution} is \code{"weibull3"},
+#'     \item \code{loc_sc_params} : Estimated (log-)location-scale parameters.
+#'       Threshold parameter is included if \code{distribution} is \code{"weibull3"},
 #'       \code{"lognormal3"} or \code{"loglogistic3"}.
-#'     \item \code{loc_sc_confint} : Confidence intervals for location-scale parameters.
-#'       If distribution is \code{"lognormal3"} or \code{"loglogistic3"} a confidence
-#'       interval for the threshold parameter is not computed.
+#'     \item \code{loc_sc_confint} : Confidence intervals for (log-)location-scale
+#'       parameters. If distribution is \code{"lognormal3"} or \code{"loglogistic3"}
+#'       a confidence interval for the threshold parameter is not computed.
 #'     \item \code{loc_sc_varcov} : Provided, if \code{distribution} is not
 #'       \code{"weibull"} or \code{"weibull3"}. Estimated heteroscedasticity-consistent
-#'       variance-covariance matrix of the used location-scale distribution.
+#'       variance-covariance matrix for the (log-)location-scale parameters.
 #'     \item \code{r_squared} : Coefficient of determination.
-#'     \item \code{data} : A tibble returned from \code{\link{estimate_cdf}}.
+#'     \item \code{data} : A tibble with class \code{"cdf_estimation"} returned by
+#'       \code{\link{estimate_cdf}}.
 #'     \item \code{distribution} : Specified distribution.
 #'   }
-#'   If more than one method was specified in \code{\link{estimate_cdf}}, the resulting
-#'   output is a list of lists, so that for each method the elements specified above
-#'   are included.
+#'   If more than one method was specified in \code{\link{estimate_cdf}}, the
+#'   resulting output is a list with class \code{"model_estimation_list"}. In
+#'   this case each list element has classes \code{"rank_regression"} and
+#'   \code{"model_estimation"} and the items listed above, are included.
 #'
 #' @encoding UTF-8
 #'
@@ -144,7 +148,8 @@ rank_regression <- function(x, ...) {
 #' @param status A vector of binary data (0 or 1) indicating whether a unit is
 #'   a right censored observation (= 0) or a failure (= 1).
 #'
-#' @return Returns a list with the following elements:
+#' @return Returns a list with the classes \code{"rank_regression"} and
+#'   \code{"model_estimation"} containing the following elements:
 #'   \itemize{
 #'     \item \code{coefficients} : If \code{distribution} is \code{"weibull"}, the
 #'       estimated scale (\eqn{\eta}) and shape (\eqn{\beta}) parameters are provided
@@ -154,18 +159,17 @@ rank_regression <- function(x, ...) {
 #'     \item \code{confint} : Only included if \code{distribution} is \code{"weibull"}
 #'       or \code{"weibull3"}. Approximated confidence intervals for \eqn{\eta} and
 #'       \eqn{\beta} (and \eqn{\gamma} if \code{distribution} is \code{"weibull3"}).
-#'     \item \code{loc_sc_params} : Estimated location-scale parameters. Threshold
-#'       parameter is included if \code{distribution} is \code{"weibull3"},
+#'     \item \code{loc_sc_params} : Estimated (log-)location-scale parameters.
+#'       Threshold parameter is included if \code{distribution} is \code{"weibull3"},
 #'       \code{"lognormal3"} or \code{"loglogistic3"}.
-#'     \item \code{loc_sc_confint} : Confidence intervals for location-scale parameters.
-#'       If distribution is \code{"lognormal3"} or \code{"loglogistic3"} a confidence
-#'       interval for the threshold parameter is not computed.
+#'     \item \code{loc_sc_confint} : Confidence intervals for (log-)location-scale
+#'       parameters. If distribution is \code{"lognormal3"} or \code{"loglogistic3"}
+#'       a confidence interval for the threshold parameter is not computed.
 #'     \item \code{loc_sc_varcov} : Provided, if \code{distribution} is not
 #'       \code{"weibull"} or \code{"weibull3"}. Estimated heteroscedasticity-consistent
-#'       variance-covariance matrix of the used location-scale distribution.
+#'       variance-covariance matrix for the (log-)location-scale parameters.
 #'     \item \code{r_squared} : Coefficient of determination.
-#'     \item \code{data} : A tibble returned from \code{\link{estimate_cdf}},
-#'       excluding column \code{method}.
+#'     \item \code{data} : A tibble with columns \code{x}, \code{status} and \code{prob}.
 #'     \item \code{distribution} : Specified distribution.
 #'   }
 #'
@@ -192,10 +196,10 @@ rank_regression <- function(x, ...) {
 #'   y = tbl_john$prob,
 #'   status = tbl_john$status,
 #'   distribution = "weibull",
-#'   conf_level = .90
+#'   conf_level = 0.90
 #' )
 #'
-#' # Example 2: Fitting a three-parametric lognormal distribution:
+#' # Example 2 - Fitting a three-parametric lognormal distribution:
 #' tbl_kaplan <- estimate_cdf(
 #'   x = cycles,
 #'   status = status_2,
@@ -210,7 +214,6 @@ rank_regression <- function(x, ...) {
 #' )
 #'
 #' @export
-#'
 rank_regression.default <- function(x,
                                     y,
                                     status,
@@ -219,7 +222,7 @@ rank_regression.default <- function(x,
                                                      "logistic", "sev",
                                                      "weibull3", "lognormal3",
                                                      "loglogistic3"),
-                                    conf_level = .95,
+                                    conf_level = 0.95,
                                     ...
 ) {
 
@@ -304,7 +307,7 @@ rank_regression_ <- function(cdf_estimation,
     } else if (conf_level == 0.99) {
       mock_val <- 3.4
     } else {
-      stop("conf_level must be 0.90, 0.95 or 0.99")
+      stop("'conf_level' must be 0.90, 0.95 or 0.99")
     }
 
     conf_beta <- c(
@@ -341,10 +344,17 @@ rank_regression_ <- function(cdf_estimation,
   if (distribution %in% c("weibull3", "lognormal3", "loglogistic3")) {
     # Log-Location-Scale with threshold:
     ## Optimization of profile function:
-    optim_gamma <- stats::optim(par = 0, fn = r_squared_profiling, method = "L-BFGS-B",
-                                upper = (1 - (1 / 1e+5)) * min(x_f), lower = 0,
-                                control = list(fnscale = -1), x = x_f, y = y_f,
-                                distribution = distribution)
+    optim_gamma <- stats::optim(
+      par = 0,
+      fn = r_squared_profiling,
+      method = "L-BFGS-B",
+      upper = (1 - (1 / 1e+5)) * min(x_f),
+      lower = 0,
+      control = list(fnscale = -1),
+      x = x_f,
+      y = y_f,
+      distribution = distribution
+    )
 
     ## Estimate of Threshold:
     estimate_gamma <- optim_gamma$par
@@ -372,7 +382,7 @@ rank_regression_ <- function(cdf_estimation,
       } else if (conf_level == 0.99) {
         mock_val <- 3.4
       } else {
-        stop("conf_level must be 0.90, 0.95 or 0.99")
+        stop("'conf_level' must be 0.90, 0.95 or 0.99")
       }
 
       conf_beta <- c(
@@ -600,17 +610,16 @@ print.rank_regression <- function(x,
 #' )
 #'
 #' ## Coefficient of determination with respect to threshold values:
-#' profile_r2 <- sapply(
-#'   threshold,
-#'   r_squared_profiling,
+#' profile_r2 <- r_squared_profiling(
 #'   x = dplyr::filter(
 #'     prob_tbl,
 #'     status == 1
 #'   ),
+#'   thres = threshold,
 #'   distribution = "weibull3"
 #' )
 #'
-#' ## Threshold value (among the candidats) that maximizes the coefficient of determination:
+#' ## Threshold value (among the candidates) that maximizes the coefficient of determination:
 #' threshold[which.max(profile_r2)]
 #'
 #' ## plot:
@@ -650,15 +659,11 @@ r_squared_profiling <- function(x,
 #' @seealso \code{\link{r_squared_profiling}}
 #'
 #' @examples
-#' # Data:
-#' cycles   <- c(300, 300, 300, 300, 300, 291, 274, 271, 269, 257, 256, 227, 226,
-#'               224, 213, 211, 205, 203, 197, 196, 190, 189, 188, 187, 184, 180,
-#'               180, 177, 176, 173, 172, 171, 170, 170, 169, 168, 168, 162, 159,
-#'               159, 159, 159, 152, 152, 149, 149, 144, 143, 141, 141, 140, 139,
-#'               139, 136, 135, 133, 131, 129, 123, 121, 121, 118, 117, 117, 114,
-#'               112, 108, 104, 99, 99, 96, 94)
-#' status <- c(rep(0, 5), rep(1, 67))
+#' # Vectors:
+#' cycles <- alloy$cycles
+#' status <- alloy$status
 #'
+#' # Probability estimation:
 #' prob_tbl <- estimate_cdf(
 #'   x = cycles,
 #'   status = status,
@@ -674,15 +679,15 @@ r_squared_profiling <- function(x,
 #' )
 #'
 #' ## Coefficient of determination with respect to threshold values:
-#' profile_r2 <- sapply(
-#'   threshold,
-#'   r_squared_profiling,
+#' profile_r2 <- r_squared_profiling(
 #'   x = prob_tbl$x[prob_tbl$status == 1],
 #'   y = prob_tbl$prob[prob_tbl$status == 1],
+#'   thres = threshold,
 #'   distribution = "weibull3"
 #' )
 #'
-#' ## Threshold value (among the candidats) that maximizes the coefficient of determination:
+#' ## Threshold value (among the candidates) that maximizes the
+#' ## coefficient of determination:
 #' threshold[which.max(profile_r2)]
 #'
 #' ## plot:
@@ -713,21 +718,17 @@ r_squared_profiling.default <- function(x,
 
   distribution <- match.arg(distribution)
 
-  # Subtracting value of threshold, i.e. influence of threshold is eliminated:
-  x_thres <- x - thres
+  r_sq_prof_vectorized <- Vectorize(
+    FUN = r_squared_profiling_,
+    vectorize.args = "thres"
+  )
 
-  # Rank Regression adjusted x on y:
-  if (distribution == "weibull3") {
-    mrr_thres <- stats::lm(log(x_thres) ~ SPREDA::qsev(y))
-  }
-  if (distribution == "lognormal3") {
-    mrr_thres <- stats::lm(log(x_thres) ~ stats::qnorm(y))
-  }
-  if (distribution == "loglogistic3") {
-    mrr_thres <- stats::lm(log(x_thres) ~ stats::qlogis(y))
-  }
-
-  summary(mrr_thres)$r.squared
+  r_sq_prof_vectorized(
+    x = x,
+    y = y,
+    thres = thres,
+    distribution = distribution
+  )
 }
 
 
@@ -750,4 +751,32 @@ r_squared_profiling.cdf_estimation <- function(x,
     thres = thres,
     distribution = distribution
   )
+}
+
+
+
+r_squared_profiling_ <- function(x,
+                                 y,
+                                 thres,
+                                 distribution = c("weibull3",
+                                                  "lognormal3",
+                                                  "loglogistic3")
+
+) {
+
+  # Subtracting value of threshold, i.e. influence of threshold is eliminated:
+  x_thres <- x - thres
+
+  # Rank Regression adjusted x on y:
+  if (distribution == "weibull3") {
+    mrr_thres <- stats::lm(log(x_thres) ~ SPREDA::qsev(y))
+  }
+  if (distribution == "lognormal3") {
+    mrr_thres <- stats::lm(log(x_thres) ~ stats::qnorm(y))
+  }
+  if (distribution == "loglogistic3") {
+    mrr_thres <- stats::lm(log(x_thres) ~ stats::qlogis(y))
+  }
+
+  summary(mrr_thres)$r.squared
 }

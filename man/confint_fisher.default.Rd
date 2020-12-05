@@ -44,10 +44,9 @@ threshold parameter Var(\eqn{\gamma}).}
 \item{distribution}{Supposed distribution of the random variable.}
 
 \item{bounds}{A character string specifying the interval(s) which has/have to
-be computed. Must be one of "two_sided" (default), "lower" or "upper".}
+be computed. One of \code{"two_sided"}, \code{"lower"} and \code{"upper"}.}
 
-\item{conf_level}{Confidence level of the interval. The default value is
-\code{conf_level = 0.95}.}
+\item{conf_level}{Confidence level of the interval.}
 
 \item{direction}{a character string specifying the direction of the computed
 standard errors. Must be either "y" (used for confidence intervals of failure

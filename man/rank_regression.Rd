@@ -26,7 +26,8 @@ rank_regression(x, ...)
 \code{"weibull"} this must be one of \code{0.9}, \code{0.95} or \code{0.99}.}
 }
 \value{
-Returns a list with the following elements:
+Returns a list with the classes \code{"rank_regression"} and
+  \code{"model_estimation"} containing the following elements:
   \itemize{
     \item \code{coefficients} : If \code{distribution} is \code{"weibull"}, the
       estimated scale (\eqn{\eta}) and shape (\eqn{\beta}) parameters are provided
@@ -36,30 +37,33 @@ Returns a list with the following elements:
     \item \code{confint} : Only included if \code{distribution} is \code{"weibull"}
       or \code{"weibull3"}. Approximated confidence intervals for \eqn{\eta} and
       \eqn{\beta} (and \eqn{\gamma} if \code{distribution} is \code{"weibull3"}).
-    \item \code{loc_sc_params} : Estimated location-scale parameters. Threshold
-      parameter is included if \code{distribution} is \code{"weibull3"},
+    \item \code{loc_sc_params} : Estimated (log-)location-scale parameters.
+      Threshold parameter is included if \code{distribution} is \code{"weibull3"},
       \code{"lognormal3"} or \code{"loglogistic3"}.
-    \item \code{loc_sc_confint} : Confidence intervals for location-scale parameters.
-      If distribution is \code{"lognormal3"} or \code{"loglogistic3"} a confidence
-      interval for the threshold parameter is not computed.
+    \item \code{loc_sc_confint} : Confidence intervals for (log-)location-scale
+      parameters. If distribution is \code{"lognormal3"} or \code{"loglogistic3"}
+      a confidence interval for the threshold parameter is not computed.
     \item \code{loc_sc_varcov} : Provided, if \code{distribution} is not
       \code{"weibull"} or \code{"weibull3"}. Estimated heteroscedasticity-consistent
-      variance-covariance matrix of the used location-scale distribution.
+      variance-covariance matrix for the (log-)location-scale parameters.
     \item \code{r_squared} : Coefficient of determination.
-    \item \code{data} : A tibble returned from \code{\link{estimate_cdf}}.
+    \item \code{data} : A tibble with class \code{"cdf_estimation"} returned by
+      \code{\link{estimate_cdf}}.
     \item \code{distribution} : Specified distribution.
   }
-  If more than one method was specified in \code{\link{estimate_cdf}}, the resulting
-  output is a list of lists, so that for each method the elements specified above
-  are included.
+  If more than one method was specified in \code{\link{estimate_cdf}}, the
+  resulting output is a list with class \code{"model_estimation_list"}. In
+  this case each list element has classes \code{"rank_regression"} and
+  \code{"model_estimation"} and the items listed above, are included.
 }
 \description{
-This method fits an \strong{x on y} regression to a linearized
-two- or three-parameter cdf and is applicable for complete and (multiple) right
-censored data. The parameters are estimated in the frequently used (log-) location-scale
-parameterization. For the Weibull, estimates are transformed such that
-they are in line with the parameterization provided by the \emph{stats} package
-(see \link[stats]{Weibull}).
+This method fits an \strong{x on y} regression to a linearized two- or
+three-parameter lifetime distribution for complete and (multiple) right
+censored data. The parameters are determined in the frequently used
+(log-)location-scale parameterization.
+
+For the Weibull, estimates are transformed such that they are in line with the
+parameterization provided by the \emph{stats} package (see \link[stats]{Weibull}).
 }
 \details{
 If \code{distribution} is \code{"weibull"} or \code{"weibull3"}, the approximated
@@ -75,8 +79,8 @@ If the distribution is not the Weibull, the confidence intervals of the
 parameters are computed on the basis of a heteroscedasticity-consistent
 covariance matrix. Here it should be said that there is no statistical foundation
 to determine the standard errors of the parameters using \emph{Least Squares}
-in context of \emph{Rank Regression}. For an accepted statistical method use MLE
-(\code{\link{ml_estimation}}).
+in context of \emph{Rank Regression}. For an accepted statistical method use
+\link[=ml_estimation]{MLE}.
 }
 \examples{
 # Reliability data preparation:
