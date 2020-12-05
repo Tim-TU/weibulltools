@@ -103,7 +103,7 @@ rr <- rank_regression(
   y = tbl_john$prob,
   status = tbl_john$status,
   distribution = "weibull",
-  conf_level = .90
+  conf_level = 0.90
 )
 
 # Example 2 - Fitting a three-parametric lognormal distribution:

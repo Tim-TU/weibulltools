@@ -70,7 +70,7 @@ mrr <- rank_regression(
   y = tbl_john$prob,
   status = tbl_john$status,
   distribution = "weibull",
-  conf_level = .95
+  conf_level = 0.95
 )
 
 conf_betabin <- confint_betabinom(
@@ -94,7 +94,7 @@ mrr_weib3 <- rank_regression(
   y = tbl_john_2$prob,
   status = tbl_john_2$status,
   distribution = "weibull3",
-  conf_level = .95
+  conf_level = 0.95
 )
 
 conf_betabin_weib3 <- confint_betabinom(

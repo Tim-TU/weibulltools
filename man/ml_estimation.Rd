@@ -24,8 +24,7 @@ ml_estimation(x, ...)
 \item{distribution}{Supposed distribution of the random variable.}
 
 \item{wts}{Optional vector of case weights. The length of \code{wts} must be the
-same as the number of observations in \code{x}. Default is that \code{wts} is a
-vector with all components being 1 (same weights).}
+same as the number of observations in \code{x}.}
 
 \item{conf_level}{Confidence level of the interval.}
 }

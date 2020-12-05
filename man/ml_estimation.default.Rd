@@ -26,8 +26,7 @@ is a right censored observation (= 0) or a failure (= 1).}
 \item{distribution}{Supposed distribution of the random variable.}
 
 \item{wts}{Optional vector of case weights. The length of \code{wts} must be the
-same as the number of observations in \code{x}. Default is that \code{wts} is a
-vector with all components being 1 (same weights).}
+same as the number of observations in \code{x}.}
 
 \item{conf_level}{Confidence level of the interval.}
 }
@@ -83,7 +82,7 @@ ml <- ml_estimation(
   x = obs,
   status = status_1,
   distribution = "weibull",
-  conf_level = .90
+  conf_level = 0.90
 )
 
 # Example 2 - Fitting a three-parametric lognormal distribution:

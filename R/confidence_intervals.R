@@ -34,7 +34,7 @@
 #' mrr <- rank_regression(
 #'   tbl_john,
 #'   distribution = "weibull",
-#'   conf_level = .95
+#'   conf_level = 0.95
 #' )
 #'
 #' conf_betabin <- confint_betabinom(
@@ -61,7 +61,7 @@
 #' mrr_weib3 <- rank_regression(
 #'   tbl_john_2,
 #'   distribution = "weibull3",
-#'   conf_level = .95
+#'   conf_level = 0.95
 #' )
 #'
 #' conf_betabin_weib3 <- confint_betabinom(
@@ -150,7 +150,7 @@ confint_betabinom.model_estimation_list <- function(
 #'   y = tbl_john$prob,
 #'   status = tbl_john$status,
 #'   distribution = "weibull",
-#'   conf_level = .95
+#'   conf_level = 0.95
 #' )
 #'
 #' conf_betabin <- confint_betabinom(
@@ -174,7 +174,7 @@ confint_betabinom.model_estimation_list <- function(
 #'   y = tbl_john_2$prob,
 #'   status = tbl_john_2$status,
 #'   distribution = "weibull3",
-#'   conf_level = .95
+#'   conf_level = 0.95
 #' )
 #'
 #' conf_betabin_weib3 <- confint_betabinom(
@@ -198,7 +198,7 @@ confint_betabinom.default <- function(x,
                                       ),
                                       b_lives = c(0.01, 0.1, 0.50),
                                       bounds = c("two_sided", "lower", "upper"),
-                                      conf_level = .95,
+                                      conf_level = 0.95,
                                       direction = c("y", "x")
 ) {
 
@@ -612,7 +612,7 @@ confint_fisher.default <- function(x,
                                    ),
                                    b_lives = c(0.01, 0.1, 0.50),
                                    bounds = c("two_sided", "lower", "upper"),
-                                   conf_level = .95,
+                                   conf_level = 0.95,
                                    direction = c("y", "x"),
                                    ...
 ) {

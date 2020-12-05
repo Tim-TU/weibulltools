@@ -64,7 +64,7 @@ tbl_john <- estimate_cdf(tbl, methods = "johnson")
 mrr <- rank_regression(
   tbl_john,
   distribution = "weibull",
-  conf_level = .95
+  conf_level = 0.95
 )
 
 conf_betabin <- confint_betabinom(
@@ -91,7 +91,7 @@ tbl_john_2 <- estimate_cdf(tbl_2, methods = "johnson")
 mrr_weib3 <- rank_regression(
   tbl_john_2,
   distribution = "weibull3",
-  conf_level = .95
+  conf_level = 0.95
 )
 
 conf_betabin_weib3 <- confint_betabinom(

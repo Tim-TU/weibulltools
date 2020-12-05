@@ -17,8 +17,7 @@
 #'   \code{\link{reliability_data}}.
 #' @param distribution Supposed distribution of the random variable.
 #' @param wts Optional vector of case weights. The length of \code{wts} must be the
-#'   same as the number of observations in \code{x}. Default is that \code{wts} is a
-#'   vector with all components being 1 (same weights).
+#'   same as the number of observations in \code{x}.
 #' @param conf_level Confidence level of the interval.
 #'
 #' @return Returns a list with the classes \code{"ml_estimation"} and
@@ -144,7 +143,7 @@ ml_estimation <- function(x, ...) {
 #'   x = obs,
 #'   status = status_1,
 #'   distribution = "weibull",
-#'   conf_level = .90
+#'   conf_level = 0.90
 #' )
 #'
 #' # Example 2 - Fitting a three-parametric lognormal distribution:
@@ -163,7 +162,7 @@ ml_estimation.default <- function(x,
                                     "weibull3", "lognormal3", "loglogistic3"
                                   ),
                                   wts = rep(1, length(x)),
-                                  conf_level = .95,
+                                  conf_level = 0.95,
                                   ...
 ) {
 
@@ -186,7 +185,7 @@ ml_estimation.reliability_data <- function(x,
                                              "weibull3", "lognormal3", "loglogistic3"
                                            ),
                                            wts = rep(1, nrow(x)),
-                                           conf_level = .95,
+                                           conf_level = 0.95,
                                            ...
 ) {
 
@@ -591,14 +590,13 @@ loglik_profiling_ <- function(x,
 #'
 #' @inheritParams ml_estimation.default
 #'
-#' @param pars A numeric vector of parameters. The first element is the location
-#'   parameter (\eqn{\mu}), the second is the scale parameter (\eqn{\sigma}) and if
-#'   a three-parametric model is used the third element is the threshold parameter
-#'   (\eqn{\gamma}).
+#' @param loc_sc_params A (named) numeric vector of (log-)location-scale parameters
+#'   in the order of location (\eqn{\mu}) and scale (\eqn{\sigma}). If a
+#'   three-parametric model is used the threshold (\eqn{\gamma}) is the third element.
 #'
 #' @return
 #' Returns the log-likelihood value for the data with respect to the parameters
-#' given in \code{pars}.
+#' given in \code{loc_sc_params}.
 #'
 #' @encoding UTF-8
 #'
@@ -614,7 +612,7 @@ loglik_profiling_ <- function(x,
 #' loglik_weib <- loglik_function(
 #'   x = cycles,
 #'   status = status,
-#'   pars = c(5.29, 0.33),
+#'   loc_sc_params = c(5.29, 0.33),
 #'   distribution = "weibull"
 #' )
 #'
@@ -622,7 +620,7 @@ loglik_profiling_ <- function(x,
 #' loglik_weib3 <- loglik_function(
 #'   x = cycles,
 #'   status = status,
-#'   pars = c(4.54, 0.76, 92.99),
+#'   loc_sc_params = c(4.54, 0.76, 92.99),
 #'   distribution = "weibull3"
 #' )
 #'
@@ -630,7 +628,7 @@ loglik_profiling_ <- function(x,
 loglik_function <- function(x,
                             status,
                             wts = rep(1, length(x)),
-                            pars,
+                            loc_sc_params,
                             distribution = c(
                               "weibull", "lognormal", "loglogistic",
                               "normal", "logistic", "sev",
@@ -641,9 +639,9 @@ loglik_function <- function(x,
   distribution <- match.arg(distribution)
 
   d <- status
-  mu <- pars[1]
-  sig <- pars[2]
-  thres <- pars[3]
+  mu <- loc_sc_params[1]
+  sig <- loc_sc_params[2]
+  thres <- loc_sc_params[3]
 
   if (is.na(thres)) {
     # Log- and Location-Scale Models:
