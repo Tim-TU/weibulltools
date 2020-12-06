@@ -101,17 +101,17 @@ data_3p <- reliability_data(
 # Probability estimation:
 prob_tbl_2p <- estimate_cdf(
   x = data_2p,
-  method = "johnson"
+  methods = "johnson"
 )
 
 prob_tbl_3p <- estimate_cdf(
   x = data_3p,
-  method = "johnson"
+  methods = "johnson"
 )
 
 prob_tbl_mult <- estimate_cdf(
   x = data_3p,
-  method = c("johnson", "kaplan")
+  methods = c("johnson", "kaplan")
 )
 
 # Example 1 - Fitting a two-parametric weibull distribution:

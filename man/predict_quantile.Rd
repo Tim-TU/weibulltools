@@ -12,38 +12,39 @@ predict_quantile(
 )
 }
 \arguments{
-\item{p}{A numeric vector which consists of failure probabilities
-regarding the lifetime data.}
+\item{p}{A numeric vector of probabilities.}
 
-\item{loc_sc_params}{A (named) numeric vector of estimated location
-and scale parameters for a specified distribution. The order of
-elements is important. First entry needs to be the location
-parameter \eqn{\mu} and the second element needs to be the scale
-parameter \eqn{\sigma}. If a three-parametric model is used the third element
-is the threshold parameter \eqn{\gamma}.}
+\item{loc_sc_params}{A (named) numeric vector of (log-)location-scale parameters
+in the order of location (\eqn{\mu}) and scale (\eqn{\sigma}). If a
+three-parametric model is selected, the threshold parameter (\eqn{\gamma})
+has to be the third element.}
 
 \item{distribution}{Supposed distribution of the random variable.}
 }
 \value{
-A vector containing the predicted quantiles for a given set of
-  failure probabilities and estimated parameters.
+A vector with predicted quantiles.
 }
 \description{
-This function predicts the quantiles for a given set of estimated
-location-scale (and threshold) parameters and specified failure probabilities.
+This function predicts the quantiles of two- or three-parametric lifetime
+distributions that belong to the (log-)location-scale family.
+}
+\details{
+For a given set of parameters and specified probabilities the quantiles
+of the chosen model are determined.
 }
 \examples{
-# Example 1: Predicted quantiles for two-parameter Weibull:
-quants <- predict_quantile(
+# Example 1 - Predicted quantiles for a two-parameter weibull distribution:
+quants_weib2 <- predict_quantile(
   p = c(0.01, 0.1, 0.5),
   loc_sc_params = c(5, 0.5),
   distribution = "weibull"
 )
 
-# Example 2: Predicted quantiles for three-parameter Weibull:
+# Example 2 - Predicted quantiles for a three-parameter weibull distribution:
 quants_weib3 <- predict_quantile(
   p = c(0.01, 0.1, 0.5),
   loc_sc_params = c(5, 0.5, 10),
   distribution = "weibull3"
 )
+
 }

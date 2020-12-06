@@ -1,42 +1,46 @@
 #' Prediction of Quantiles for Parametric Lifetime Distributions
 #'
-#' This function predicts the quantiles for a given set of estimated
-#' location-scale (and threshold) parameters and specified failure probabilities.
+#' @description
+#' This function predicts the quantiles of two- or three-parametric lifetime
+#' distributions that belong to the (log-)location-scale family.
 #'
-#' @param p A numeric vector which consists of failure probabilities
-#'   regarding the lifetime data.
-#' @param loc_sc_params A (named) numeric vector of estimated location
-#'   and scale parameters for a specified distribution. The order of
-#'   elements is important. First entry needs to be the location
-#'   parameter \eqn{\mu} and the second element needs to be the scale
-#'   parameter \eqn{\sigma}. If a three-parametric model is used the third element
-#'   is the threshold parameter \eqn{\gamma}.
+#' @details
+#' For a given set of parameters and specified probabilities the quantiles
+#' of the chosen model are determined.
+#'
+#' @param p A numeric vector of probabilities.
+#' @param loc_sc_params A (named) numeric vector of (log-)location-scale parameters
+#'   in the order of location (\eqn{\mu}) and scale (\eqn{\sigma}). If a
+#'   three-parametric model is selected, the threshold parameter (\eqn{\gamma})
+#'   has to be the third element.
 #' @param distribution Supposed distribution of the random variable.
 #'
-#' @return A vector containing the predicted quantiles for a given set of
-#'   failure probabilities and estimated parameters.
-#'
-#' @export
+#' @return A vector with predicted quantiles.
 #'
 #' @examples
-#' # Example 1: Predicted quantiles for two-parameter Weibull:
-#' quants <- predict_quantile(
+#' # Example 1 - Predicted quantiles for a two-parameter weibull distribution:
+#' quants_weib2 <- predict_quantile(
 #'   p = c(0.01, 0.1, 0.5),
 #'   loc_sc_params = c(5, 0.5),
 #'   distribution = "weibull"
 #' )
 #'
-#' # Example 2: Predicted quantiles for three-parameter Weibull:
+#' # Example 2 - Predicted quantiles for a three-parameter weibull distribution:
 #' quants_weib3 <- predict_quantile(
 #'   p = c(0.01, 0.1, 0.5),
 #'   loc_sc_params = c(5, 0.5, 10),
 #'   distribution = "weibull3"
 #' )
-
-predict_quantile <- function(p, loc_sc_params,
-                             distribution = c("weibull", "lognormal", "loglogistic",
-                                              "normal", "logistic", "sev", "weibull3",
-                                              "lognormal3", "loglogistic3")) {
+#'
+#' @export
+predict_quantile <- function(p,
+                             loc_sc_params,
+                             distribution = c(
+                               "weibull", "lognormal", "loglogistic",
+                               "normal", "logistic", "sev",
+                               "weibull3", "lognormal3", "loglogistic3"
+                             )
+) {
 
   distribution <- match.arg(distribution)
 
@@ -74,42 +78,51 @@ predict_quantile <- function(p, loc_sc_params,
     quantiles <- stats::qlogis(p) * loc_sc_params[[2]] + loc_sc_params[[1]]
   }
 
-  x_pred <- quantiles
-  return(x_pred)
+  return(quantiles)
 }
+
 
 
 #' Prediction of Failure Probabilities for Parametric Lifetime Distributions
 #'
-#' This function predicts the failure probabilities for a given set of estimated
-#' location-scale (and threshold) parameters and specified quantiles.
+#' @description
+#' This function predicts the (failure) probabilities of two- or three-parametric
+#' lifetime distributions that belong to the (log-)location-scale family.
 #'
-#' @param q A numeric vector which consists of lifetime data.
+#' @details
+#' For a given set of parameters and specified quantiles the (failure) probabilities
+#' of the chosen model are determined.
+#'
 #' @inheritParams predict_quantile
 #'
-#' @return A vector containing the predicted failure probabilities for a given
-#'   set of quantiles and estimated parameters.
-#' @export
+#' @param q A numeric vector of quantiles.
+#'
+#' @return A vector with predicted (failure) probabilities.
 #'
 #' @examples
-#' # Example 1: Predicted probabilities for two-parameter Weibull:
-#' probs <- predict_prob(
+#' # Example 1 - Predicted probabilities for a two-parameter weibull distribution:
+#' probs_weib2 <- predict_prob(
 #'   q = c(15, 48, 124),
 #'   loc_sc_params = c(5, 0.5),
 #'   distribution = "weibull"
 #' )
 #'
-#' # Example 2: Predicted probabilities for three-parameter Weibull:
+#' # Example 2 - Predicted quantiles for a three-parameter weibull distribution:
 #' probs_weib3 <- predict_prob(
 #'   q = c(25, 58, 134),
 #'   loc_sc_params = c(5, 0.5, 10),
 #'   distribution = "weibull3"
 #' )
-
-predict_prob <- function(q, loc_sc_params,
-                         distribution = c("weibull", "lognormal", "loglogistic",
-                                          "normal", "logistic", "sev", "weibull3",
-                                          "lognormal3", "loglogistic3")) {
+#'
+#' @export
+predict_prob <- function(q,
+                         loc_sc_params,
+                         distribution = c(
+                           "weibull", "lognormal", "loglogistic",
+                           "normal", "logistic", "sev",
+                           "weibull3","lognormal3", "loglogistic3"
+                         )
+) {
 
   distribution <- match.arg(distribution)
 
@@ -162,6 +175,5 @@ predict_prob <- function(q, loc_sc_params,
     cdf <- stats::plogis(z)
   }
 
-  y_pred <- cdf
-  return(y_pred)
+  return(cdf)
 }

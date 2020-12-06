@@ -2,7 +2,7 @@
 % Please edit documentation in R/confidence_intervals.R
 \name{confint_fisher.default}
 \alias{confint_fisher.default}
-\title{Fisher Confidence Bounds for Quantiles and/or Probabilities}
+\title{Fisher Confidence Bounds for Quantiles and Probabilities}
 \usage{
 \method{confint_fisher}{default}(
   x,
@@ -19,73 +19,162 @@
 )
 }
 \arguments{
-\item{x}{a numeric vector which consists of lifetime data. \code{x} is used to
-specify the range of confidence region(s).}
+\item{x}{A numeric vector which consists of lifetime data. Lifetime
+data could be every characteristic influencing the reliability of a product,
+e.g. operating time (days/months in service), mileage (km, miles), load
+cycles.}
 
 \item{status}{A vector of binary data (0 or 1) indicating whether unit \emph{i}
 is a right censored observation (= 0) or a failure (= 1).}
 
-\item{loc_sc_params}{a (named) numeric vector of estimated
-(by Maximum Likelihood) location and scale parameters for a specified
-distribution. The order of elements is important. First entry needs to be
-the location parameter \eqn{\mu} and the second element needs to be the
-scale parameter \eqn{\sigma}. If a three-parametric model is used the third element
-is the threshold parameter \eqn{\gamma}.}
+\item{loc_sc_params}{A (named) numeric vector of (log-)location-scale parameters
+returned from \code{\link{ml_estimation}}.}
 
-\item{loc_sc_varcov}{a (named) numeric matrix of estimated
-(by Maximum Likelihood) location and scale variances and covariances for a
-specified distribution. The order of elements is important. First entry
-of the diagonal needs to be the variance of the location parameter
-Var(\eqn{\mu}) and the second element of the diagonal needs to be the
-variance of the scale parameter Var(\eqn{\sigma}). If a three-parametric model
-is used the third element of the diagonal needs to be the variance of the
-threshold parameter Var(\eqn{\gamma}).}
+\item{loc_sc_varcov}{A (named) numeric matrix of estimated variances and
+covariances returned from \code{\link{ml_estimation}}.}
 
-\item{distribution}{Supposed distribution of the random variable.}
+\item{distribution}{Supposed distribution of the random variable. Has to be in
+line with the specification made in \code{\link{ml_estimation}}.}
 
-\item{bounds}{A character string specifying the interval(s) which has/have to
-be computed. One of \code{"two_sided"}, \code{"lower"} and \code{"upper"}.}
+\item{b_lives}{A numeric vector indicating the probabilities \emph{p} of the
+\emph{B_p} lives (quantiles) to be considered.}
+
+\item{bounds}{A character string specifying of which bounds have to be computed.
+One of \code{"two_sided"}, \code{"lower"} or \code{"upper"}.}
 
 \item{conf_level}{Confidence level of the interval.}
 
-\item{direction}{a character string specifying the direction of the computed
-standard errors. Must be either "y" (used for confidence intervals of failure
-probabilities in \code{\link{confint_fisher}}) or "x" (used for confidence
-intervals of quantiles in \code{\link{confint_fisher}}). If \code{p} is a
-quantile then \emph{direction} needs to be "y" and vice versa.}
+\item{direction}{A character string specifying the direction of the
+confidence interval. One of \code{"y"} (failure probabilities) or \code{"x"}
+(quantiles).}
 }
 \value{
-A tibble containing the lifetime characteristic, the
-  probabilities, estimated standard errors by the delta method and computed
-  values for the specified confidence bound(s).
+A tibble with class \code{"confint"} containing the following columns:
+  \itemize{
+    \item \code{x} : An ordered sequence of the lifetime characteristic regarding
+      the failed units, starting at \code{min(x)} and ending up at \code{max(x)}.
+      With \code{b_lives = c(0.01, 0.1, 0.5)} the 1\%, 10\% and 50\% quantiles
+      are additionally included in \code{x}, but only if the specified
+      probabilities are in the range of the estimated probabilities.
+    \item \code{prob} : An ordered sequence of probabilities with specified
+      \code{b_lives} included.
+    \item \code{std_err} : Estimated standard errors with respect to
+      \code{direction}.
+    \item \code{lower_bound} : Provided, if \code{bounds} is one of
+      \code{"two_sided"} or \code{"lower"}. Lower limit of the confidence region
+      with respect to \code{direction}, i.e. quantiles or probabilities.
+    \item \code{upper_bound} : Provided, if \code{bounds} is one of
+      \code{"two_sided"} or \code{"upper"}. Upper limit of the confidence region
+      with respect to \code{direction}, i.e. quantiles or probabilities.
+    \item \code{distribution} : Specified distribution (determined when calling
+    \code{\link{ml_estimation}}).
+    \item \code{bounds} : Specified bound(s).
+    \item \code{direction} : Specified direction.
+    \item \code{method} : A character that is always \code{"conf_null"}. Due to
+      generic visualization functions column \code{method} has to be provided.
+  }
 }
 \description{
 This method computes normal-approximation confidence intervals for quantiles
-and/or failure probabilities using the \code{\link{delta_method}}. The
-required (log-)location-scale (and threshold) parameters and variance-covariance matrix
-of these need to be estimated by Maximum Likelihood.
+and failure probabilities.
+}
+\details{
+The basis for the calculation of these confidence bounds are the standard errors
+determined by the \link[=delta_method]{delta method} and hence the required
+(log-)location-scale parameters as well as the variance-covariance matrix of
+these have to be estimated with \link[=ml_estimation]{maximum likelihood}.
+
+The bounds on the probability are determined by the \emph{z-procedure}. See
+'References' for more information on this approach.
 }
 \examples{
-obs   <- seq(10000, 100000, 10000)
-status <- c(0, 1, 1, 0, 0, 0, 1, 0, 1, 0)
-data <- reliability_data(x = obs, status = status)
+# Vectors:
+obs <- seq(10000, 100000, 10000)
+status_1 <- c(0, 1, 1, 0, 0, 0, 1, 0, 1, 0)
 
-tbl_john <- estimate_cdf(data, "johnson")
+cycles <- alloy$cycles
+status_2 <- alloy$status
 
-mle <- ml_estimation(
-  data,
+
+# Model estimation with ml_estimation():
+ml <- ml_estimation(
+  x = obs,
+  status = status_1,
   distribution = "weibull",
-  conf_level = 0.95
+  conf_level = 0.90
 )
 
-conf_fish <- confint_fisher(
-  x = tbl_john$x,
-  status = tbl_john$status,
-  loc_sc_params = mle$loc_sc_params,
-  loc_sc_varcov = mle$loc_sc_varcov,
+ml_2 <- ml_estimation(
+  x = cycles,
+  status = status_2,
+  distribution = "lognormal3"
+)
+
+# Example 1 - Two-sided 95\% confidence interval for probabilities ('y'):
+conf_fisher_1 <- confint_fisher(
+  x = obs,
+  status = status_1,
+  loc_sc_params = ml$loc_sc_params,
+  loc_sc_varcov = ml$loc_sc_varcov,
   distribution = "weibull",
   bounds = "two_sided",
   conf_level = 0.95,
   direction = "y"
 )
+
+# Example 2 - One-sided lower/upper 90\% confidence interval for quantiles ('x'):
+conf_fisher_2_1 <- confint_fisher(
+  x = obs,
+  status = status_1,
+  loc_sc_params = ml$loc_sc_params,
+  loc_sc_varcov = ml$loc_sc_varcov,
+  distribution = "weibull",
+  bounds = "lower",
+  conf_level = 0.90,
+  direction = "x"
+)
+
+conf_fisher_2_2 <- confint_fisher(
+  x = obs,
+  status = status_1,
+  loc_sc_params = ml$loc_sc_params,
+  loc_sc_varcov = ml$loc_sc_varcov,
+  distribution = "weibull",
+  bounds = "upper",
+  conf_level = 0.90,
+  direction = "x"
+)
+
+# Example 3 - Two-sided 90\% confidence intervals for both directions using
+# a three-parametric model:
+
+conf_fisher_3_1 <- confint_fisher(
+  x = cycles,
+  status = status_2,
+  loc_sc_params = ml_2$loc_sc_params,
+  loc_sc_varcov = ml_2$loc_sc_varcov,
+  distribution = "lognormal3",
+  bounds = "two_sided",
+  conf_level = 0.90,
+  direction = "y"
+)
+
+conf_fisher_3_2 <- confint_fisher(
+  x = cycles,
+  status = status_2,
+  loc_sc_params = ml_2$loc_sc_params,
+  loc_sc_varcov = ml_2$loc_sc_varcov,
+  distribution = "lognormal3",
+  bounds = "two_sided",
+  conf_level = 0.90,
+  direction = "x"
+)
+
+}
+\references{
+Meeker, William Q; Escobar, Luis A., Statistical methods for
+  reliability data, New York: Wiley series in probability and statistics, 1998
+}
+\seealso{
+\code{\link{confint_fisher}}
 }

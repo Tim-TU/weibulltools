@@ -9,7 +9,9 @@
 * `plot_prob_mix`: Removed default value `NULL` for argument `mix_output`.
 * `dist_mileage()`: Removed `status` argument and switched argument positions of `x` and `mileage`  -> (`mileage`, `x`, `distribution`). Argument `x` was renamed to `time`.
 * `mcs_mileage()`: Removed arguments `seed` and `details`, incorporated new default argument `id`. For now, the argument `status` is optional. Argument positions of `x` and `mileage` are switched -> (`mileage`, `x`). Argument `x` was renamed to `time`. 
-* `mcs_delay_register()`, `mcs_delay_report()`, `mcs_delays()`: Argument `seed` and element `int_seed` of the output list have been removed. For reproducibility use `set.seed()` before calling one of these functions. Argument `x` was renamed to `time`.   
+* `mcs_delay_register()`, `mcs_delay_report()`, `mcs_delays()`: Argument `seed` and element `int_seed` of the output list have been removed. For reproducibility use `set.seed()` before calling one of these functions. Argument `x` was renamed to `time`.  
+* `confint_betabinom.default()` and `confint_fisher.default()`: New argument `b_lives`.
+* `loglik_function()`: Renamed argument `pars` with `loc_sc_params`. 
 
 ## New Features
 * Added support for ggplot2 in all plot functions. Plot method can be selected in `plot_prob()` or `plot_prob_mix()` via argument `plot_method`.
@@ -37,7 +39,13 @@
 ## Documentation
 * Revised README
 * Capitalized parameter documentation.
-* Revised documentation of `dist_mileage()` and `mcs_mileage()`
+* Revised documentation of `dist_mileage()` and `mcs_mileage()`.
+* Revised documentation of `mr_method()`, `kaplan_method()`, `johnson_method()` and `nelson_method()`.
+* Revised documentation of `rank_regression()` and `ml_estimation()`.
+* Revised documentation of `predict_quantile()` and `predict_prob()`.
+* Revised documentation of `r_squared_profiling()`, `loglik_profiling()` and `loglik_function()`.
+* Revised documentation of `delta_method()`.
+* Revised documentation of `confint_betabinom()` and `confint_fisher()`.
 
 ## Lifecycle changes
 
