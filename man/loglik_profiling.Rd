@@ -13,21 +13,21 @@ loglik_profiling(
 )
 }
 \arguments{
-\item{x}{A numeric vector which consists of lifetime data. Lifetime
-data could be every characteristic influencing the reliability of a product,
+\item{x}{A numeric vector which consists of lifetime data. Lifetime data
+could be every characteristic influencing the reliability of a product,
 e.g. operating time (days/months in service), mileage (km, miles), load
 cycles.}
 
 \item{status}{A vector of binary data (0 or 1) indicating whether unit \emph{i}
 is a right censored observation (= 0) or a failure (= 1).}
 
-\item{thres}{A numeric value of the threshold parameter.}
+\item{thres}{A numeric value for the threshold parameter.}
 
-\item{distribution}{Supposed distribution of the random variable. The
-value can be \code{"weibull3"}, \code{"lognormal3"} or \code{"loglogistic3"}.}
+\item{distribution}{Supposed three-parametric distribution of the random variable.}
 }
 \value{
-Returns the log-likelihood value for a specified threshold value.
+Returns the log-likelihood value for the data with respect to the threshold
+parameter \code{thres}.
 }
 \description{
 This function evaluates the log-likelihood with respect to a given threshold
@@ -36,28 +36,42 @@ parameter of a three-parametric lifetime distribution. In terms of
 to estimate the threshold parameter.
 }
 \examples{
-# Alloy T7987 dataset taken from Meeker and Escobar(1998, p. 131)
-cycles   <- c(300, 300, 300, 300, 300, 291, 274, 271, 269, 257, 256, 227, 226,
-              224, 213, 211, 205, 203, 197, 196, 190, 189, 188, 187, 184, 180,
-              180, 177, 176, 173, 172, 171, 170, 170, 169, 168, 168, 162, 159,
-              159, 159, 159, 152, 152, 149, 149, 144, 143, 141, 141, 140, 139,
-              139, 136, 135, 133, 131, 129, 123, 121, 121, 118, 117, 117, 114,
-              112, 108, 104, 99, 99, 96, 94)
-state <- c(rep(0, 5), rep(1, 67))
+# Vectors:
+cycles <- alloy$cycles
+status <- alloy$status
 
-# Determining threshold parameter for which the log-likelihood is maximized
-# subject to the condition that the threshold parameter must be smaller
-# as the first failure cycle, i.e 94:
-threshold <- seq(0, min(cycles[state == 1]) - 0.1, length.out = 100)
-profile_logL <- sapply(threshold, loglik_profiling,
-                     x = cycles,
-                     status = state,
-                     distribution = "weibull3")
+# Determining the optimal loglikelihood value:
+## Range of threshold parameter must be smaller than the first failure:
+threshold <- seq(
+  0,
+  min(cycles[status == 1]) - 0.1,
+  length.out = 100
+)
+
+## loglikelihood value with respect to threshold values:
+profile_logL <- loglik_profiling(
+  x = cycles,
+  status = status,
+  thres = threshold,
+  distribution = "weibull3"
+)
+
+## Threshold value (among the candidates) that maximizes the
+## loglikelihood:
 threshold[which.max(profile_logL)]
 
-# plot:
-# plot(threshold, profile_logL, type = "l")
-# abline(v = threshold[which.max(profile_logL)], h = max(profile_logL), col = "red")
+## plot:
+plot(
+  threshold,
+  profile_logL,
+  type = "l"
+)
+abline(
+  v = threshold[which.max(profile_logL)],
+  h = max(profile_logL),
+  col = "red"
+)
+
 }
 \references{
 Meeker, William Q; Escobar, Luis A., Statistical methods for

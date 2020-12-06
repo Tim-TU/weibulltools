@@ -2,9 +2,40 @@
 % Please edit documentation in R/confidence_intervals.R
 \name{confint_betabinom}
 \alias{confint_betabinom}
-\title{Beta Binomial Confidence Bounds for Quantiles and/or Probabilities}
+\alias{confint_betabinom.model_estimation}
+\alias{confint_betabinom.model_estimation_list}
+\title{Beta Binomial Confidence Bounds for Quantiles and Probabilities}
 \usage{
 confint_betabinom(x, ...)
+
+\method{confint_betabinom}{model_estimation}(
+  x,
+  b_lives = c(0.01, 0.1, 0.5),
+  bounds = c("two_sided", "lower", "upper"),
+  conf_level = 0.95,
+  direction = c("y", "x")
+)
+
+\method{confint_betabinom}{model_estimation_list}(
+  x,
+  b_lives = c(0.01, 0.1, 0.5),
+  bounds = c("two_sided", "lower", "upper"),
+  conf_level = 0.95,
+  direction = c("y", "x")
+)
+}
+\arguments{
+\item{x}{Object of class \code{model_estimation} (or \code{model_estimation_list})
+returned from \code{\link{rank_regression}}.}
+
+\item{bounds}{A character string specifying the interval(s) which has/have to
+be computed. One of \code{"two_sided"}, \code{"lower"} and \code{"upper"}.}
+
+\item{conf_level}{Confidence level of the interval.}
+
+\item{direction}{A character string specifying the direction of the computed
+interval(s). Must be either \code{"y"} (failure probabilities) or \code{"x"}
+(quantiles).}
 }
 \value{
 A tibble containing the lifetime characteristic, interpolated
@@ -12,21 +43,62 @@ ranks as a function of probabilities, the probabilities which are used to
 compute the ranks and computed values for the specified confidence bound(s).
 }
 \description{
-This non-parametric approach calculates confidence bounds for quantiles and/or
-failure probabilities using a procedure that is similar to that used in
-calculating median ranks. The location-scale (and threshold) parameters estimated
-by rank regression are needed.
+This non-parametric approach computes the beta binomial bounds (BB) for
+quantiles and failure probabilities using a procedure similar to the calculation
+of probabilities in terms of (\emph{Median Ranks}).
 }
-\section{Methods (by class)}{
+\details{
+The difference to \emph{Median Ranks}, i.e. finding the probability of
+rank *j* at a 50% level, is to determine the probability of rank *j* on another
+level, the specified confidence level.
+}
+\examples{
+# Example 1: Beta-Binomial Confidence Bounds for two-parameter Weibull:
+obs   <- seq(10000, 100000, 10000)
+status <- c(0, 1, 1, 0, 0, 0, 1, 0, 1, 0)
 
-\describe{
-  \item{\code{\link[=confint_betabinom.model_estimation]{model_estimation}}}{
-    Preferred. Provide the output of \code{\link{rank_regression}}.
-   }
-  \item{\code{\link[=confint_betabinom.default]{default}}}{
-    Provide \code{x}, \code{status}, \code{loc_sc_params} and \code{distribution}
-    manually.
-  }
-}
-}
+tbl <- reliability_data(x = obs, status = status)
 
+tbl_john <- estimate_cdf(tbl, methods = "johnson")
+
+mrr <- rank_regression(
+  tbl_john,
+  distribution = "weibull",
+  conf_level = 0.95
+)
+
+conf_betabin <- confint_betabinom(
+  mrr,
+  bounds = "two_sided",
+  conf_level = 0.95,
+  direction = "y"
+)
+
+# Example 2: Beta-Binomial Confidence Bounds for three-parameter Weibull:
+# Alloy T7987 dataset taken from Meeker and Escobar(1998, p. 131)
+cycles   <- c(300, 300, 300, 300, 300, 291, 274, 271, 269, 257, 256, 227, 226,
+              224, 213, 211, 205, 203, 197, 196, 190, 189, 188, 187, 184, 180,
+              180, 177, 176, 173, 172, 171, 170, 170, 169, 168, 168, 162, 159,
+              159, 159, 159, 152, 152, 149, 149, 144, 143, 141, 141, 140, 139,
+              139, 136, 135, 133, 131, 129, 123, 121, 121, 118, 117, 117, 114,
+              112, 108, 104, 99, 99, 96, 94)
+state <- c(rep(0, 5), rep(1, 67))
+
+tbl_2 <- reliability_data(x = cycles, status = status)
+
+tbl_john_2 <- estimate_cdf(tbl_2, methods = "johnson")
+
+mrr_weib3 <- rank_regression(
+  tbl_john_2,
+  distribution = "weibull3",
+  conf_level = 0.95
+)
+
+conf_betabin_weib3 <- confint_betabinom(
+  mrr_weib3,
+  bounds = "two_sided",
+  conf_level = 0.95,
+  direction = "y"
+)
+
+}

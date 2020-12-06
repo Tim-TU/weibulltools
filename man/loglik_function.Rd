@@ -9,7 +9,7 @@ loglik_function(
   x,
   status,
   wts = rep(1, length(x)),
-  pars,
+  loc_sc_params,
   distribution = c("weibull", "lognormal", "loglogistic", "normal", "logistic", "sev",
     "weibull3", "lognormal3", "loglogistic3")
 )
@@ -24,46 +24,47 @@ cycles.}
 is a right censored observation (= 0) or a failure (= 1).}
 
 \item{wts}{Optional vector of case weights. The length of \code{wts} must be the
-same as the number of observations \code{x}. Default is that \code{wts} is a
-vector with all components being 1 (same weights).}
+same as the number of observations in \code{x}.}
 
-\item{pars}{A numeric vector of parameters. The first element is the location
-parameter (\eqn{\mu}), the second is the scale parameter (\eqn{\sigma}) and if
-a three-parametric model is used the third element is the threshold parameter
-(\eqn{\gamma}).}
+\item{loc_sc_params}{A (named) numeric vector of (log-)location-scale parameters
+in the order of location (\eqn{\mu}) and scale (\eqn{\sigma}). If a
+three-parametric model is used the threshold (\eqn{\gamma}) is the third element.}
 
-\item{distribution}{Supposed distribution of the random variable. The
-value can be \code{"weibull"}, \code{"lognormal"}, \code{"loglogistic"},
-\code{"normal"}, \code{"logistic"}, \code{"sev"} \emph{(smallest extreme value)},
-\code{"weibull3"}, \code{"lognormal3"} or \code{"loglogistic3"}.
-Other distributions have not been implemented yet.}
+\item{distribution}{Supposed distribution of the random variable.}
+}
+\value{
+Returns the log-likelihood value for the data with respect to the parameters
+given in \code{loc_sc_params}.
 }
 \description{
 This function computes the log-likelihood value with respect to a given set
 of parameters. For two-parametric models the location and scale parameters
 are required. If a three-parametric lifetime distribution is needed an
-additional threshold parameter is required. In terms of
+additional threshold parameter has to be provided. In terms of
 \emph{Maximum Likelihood Estimation} this function can be optimized (\code{\link{optim}})
 to estimate the parameters and variance-covariance matrix of the parameters.
 }
 \examples{
-# Alloy T7987 dataset taken from Meeker and Escobar(1998, p. 131)
-cycles   <- c(300, 300, 300, 300, 300, 291, 274, 271, 269, 257, 256, 227, 226,
-              224, 213, 211, 205, 203, 197, 196, 190, 189, 188, 187, 184, 180,
-              180, 177, 176, 173, 172, 171, 170, 170, 169, 168, 168, 162, 159,
-              159, 159, 159, 152, 152, 149, 149, 144, 143, 141, 141, 140, 139,
-              139, 136, 135, 133, 131, 129, 123, 121, 121, 118, 117, 117, 114,
-              112, 108, 104, 99, 99, 96, 94)
-state <- c(rep(0, 5), rep(1, 67))
+# Vectors:
+cycles <- alloy$cycles
+status <- alloy$status
 
-# Example 1: Evaluating Log-Likelihood function of two-parametric weibull:
-loglik_weib <- loglik_function(x = cycles, status = state, pars = c(5.29, 0.33),
-                               distribution = "weibull")
+# Example 1 - Evaluating Log-Likelihood function of two-parametric weibull:
+loglik_weib <- loglik_function(
+  x = cycles,
+  status = status,
+  loc_sc_params = c(5.29, 0.33),
+  distribution = "weibull"
+)
 
-# Example 2: Evaluating Log-Likelihood function of three-parametric weibull:
-loglik_weib3 <- loglik_function(x = cycles, status = state,
-                                pars = c(4.54, 0.76, 92.99),
-                                distribution = "weibull3")
+# Example 2 - Evaluating Log-Likelihood function of three-parametric weibull:
+loglik_weib3 <- loglik_function(
+  x = cycles,
+  status = status,
+  loc_sc_params = c(4.54, 0.76, 92.99),
+  distribution = "weibull3"
+)
+
 }
 \references{
 Meeker, William Q; Escobar, Luis A., Statistical methods for

@@ -55,6 +55,7 @@
 * Fixed bug inside `mr_method()`: Assigning a rank for the same lifetime. 
 * Fixed bug inside `mixmod_regression`: call to `segmented::segmented.lm()` was defective.
 * Added trace type "scatter" and scatter mode "markers" to `plot_layout`.
+* `delta_method()`, `r_squared_profiling()` and `loglik_profiling()` were vectorized.
 
 # weibulltools v1.0.1
 * Fixed installation error when using clang compiler

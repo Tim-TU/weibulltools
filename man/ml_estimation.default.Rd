@@ -26,69 +26,77 @@ is a right censored observation (= 0) or a failure (= 1).}
 \item{distribution}{Supposed distribution of the random variable.}
 
 \item{wts}{Optional vector of case weights. The length of \code{wts} must be the
-same as the number of observations \code{x}. Default is that \code{wts} is a
-vector with all components being 1 (same weights).}
+same as the number of observations in \code{x}.}
 
-\item{conf_level}{Confidence level of the interval. The default value is
-\code{conf_level = 0.95}.}
+\item{conf_level}{Confidence level of the interval.}
 }
 \value{
-Returns a list with the following components:
+Returns a list with the classes \code{"ml_estimation"} and
+  \code{"model_estimation"} containing the following elements:
   \itemize{
-  \item \code{coefficients} : Provided, if \code{distribution} is \code{"weibull"}.
-    \eqn{\eta} is the estimated scale and \eqn{\beta} the estimated shape parameter.
-  \item \code{confint} : Provided, if \code{distribution} is \code{"weibull"}.
-    Confidence interval for \eqn{\eta} and \eqn{\beta}.
-  \item \code{loc_sc_params} : Estimated location-scale parameters.
-  \item \code{loc_sc_confint} : Confidence interval for location-scale parameters.
-  \item \code{loc_sc_varcov} : Estimated Variance-Covariance matrix of the used
-    location-scale distribution.
-  \item \code{logL} : The log-likelihood value.
-  \item \code{aic} : Akaike Information Criterion.
-  \item \code{bic} : Bayesian Information Criterion.}
+    \item \code{coefficients} : If \code{distribution} is \code{"weibull"}, the
+      estimated scale (\eqn{\eta}) and shape (\eqn{\beta}) parameters are provided
+      (and additionally the threshold parameter \eqn{\gamma} if \code{distribution}
+      is \code{"weibull3"}). For any other distribution, \code{coefficients} is
+      identical to \code{loc_sc_params}.
+    \item \code{confint} : Only included if \code{distribution} is \code{"weibull"}
+      or \code{"weibull3"}. Confidence intervals for \eqn{\eta} and \eqn{\beta}
+      (and \eqn{\gamma} if \code{distribution} is \code{"weibull3"}).
+    \item \code{loc_sc_params} : Estimated (log-)location-scale parameters.
+      Threshold parameter is included if \code{distribution} is \code{"weibull3"},
+      \code{"lognormal3"} or \code{"loglogistic3"}.
+    \item \code{loc_sc_confint} : Confidence intervals the (log-)location-scale
+      parameters.
+    \item \code{loc_sc_varcov} : Estimated variance-covariance matrix for the
+      (log-)location-scale parameters.
+    \item \code{logL} : The log-likelihood value.
+    \item \code{aic} : Akaike Information Criterion.
+    \item \code{bic} : Bayesian Information Criterion.
+    \item \code{data} : A tibble with columns \code{x} and \code{status}.
+    \item \code{distribution} : Specified distribution.
+  }
 }
 \description{
-This method estimates the parameters and calculates normal approximation confidence
-intervals for a two- or three-parametric lifetime distribution in the frequently used
-(log-) location-scale parameterization. \code{ml_estimation} uses the
-\code{\link{Lifedata.MLE}} function which is defined in the
-\emph{SPREDA} package.
-For the Weibull the estimates are transformed such that they are in line with
-the parameterization provided by the \emph{stats} package like
-\code{\link{pweibull}}. The method is applicable for complete and (multiple)
-right censored data.
+This method estimates the parameters of a two- or three-parametric lifetime
+distribution for complete and (multiple) right censored data. The parameters
+are determined in the frequently used (log-)location-scale parameterization.
+
+For the Weibull, estimates are transformed such that they are in line with the
+parameterization provided by the \emph{stats} package (see \link[stats]{Weibull}).
+}
+\details{
+\code{ml_estimation} calls \code{\link[SPREDA:lifedata.MLE]{Lifedata.MLE}},
+which is implemented in \emph{SPREDA}, to obtain the estimates. Normal
+approximation confidence intervals for the parameters are computed as well.
 }
 \examples{
-# Example 1: Fitting a two-parameter Weibull:
-obs   <- seq(10000, 100000, 10000)
-status <- c(0, 1, 1, 0, 0, 0, 1, 0, 1, 0)
-data <- reliability_data(x = obs, status = status)
+# Vectors:
+obs <- seq(10000, 100000, 10000)
+status_1 <- c(0, 1, 1, 0, 0, 0, 1, 0, 1, 0)
 
-mle <- ml_estimation(
-  data,
+cycles <- alloy$cycles
+status_2 <- alloy$status
+
+# Example 1 - Fitting a two-parametric weibull distribution:
+ml <- ml_estimation(
+  x = obs,
+  status = status_1,
   distribution = "weibull",
   conf_level = 0.90
 )
 
-# Example 2: Fitting a three-parameter Weibull:
-# Alloy T7987 dataset taken from Meeker and Escobar(1998, p. 131)
-cycles   <- c(300, 300, 300, 300, 300, 291, 274, 271, 269, 257, 256, 227, 226,
-              224, 213, 211, 205, 203, 197, 196, 190, 189, 188, 187, 184, 180,
-              180, 177, 176, 173, 172, 171, 170, 170, 169, 168, 168, 162, 159,
-              159, 159, 159, 152, 152, 149, 149, 144, 143, 141, 141, 140, 139,
-              139, 136, 135, 133, 131, 129, 123, 121, 121, 118, 117, 117, 114,
-              112, 108, 104, 99, 99, 96, 94)
-status <- c(rep(0, 5), rep(1, 67))
-data_2 <- reliability_data(x = cycles, status = status)
-
-mle_weib3 <- ml_estimation(
-  data,
-  distribution = "weibull3",
-  conf_level = 0.95
+# Example 2 - Fitting a three-parametric lognormal distribution:
+ml_2 <- ml_estimation(
+  x = cycles,
+  status = status_2,
+  distribution = "lognormal3"
 )
 
 }
 \references{
 Meeker, William Q; Escobar, Luis A., Statistical methods for
   reliability data, New York: Wiley series in probability and statistics, 1998
+}
+\seealso{
+\code{\link{ml_estimation}}
 }
