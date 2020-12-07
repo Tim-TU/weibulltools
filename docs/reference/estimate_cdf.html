@@ -40,8 +40,9 @@
 
 
 <meta property="og:title" content="Estimation of Failure Probabilities — estimate_cdf" />
-<meta property="og:description" content="Estimate failure probabilities for uncensored or (multiple) right-censored
-data." />
+<meta property="og:description" content="This function applies a non-parametric method to estimate the failure
+probabilities of complete data taking (multiple) right-censored observations
+into account." />
 
 
 
@@ -131,56 +132,147 @@ data." />
     </div>
 
     <div class="ref-description">
-    <p>Estimate failure probabilities for uncensored or (multiple) right-censored
-data.</p>
+    <p>This function applies a non-parametric method to estimate the failure
+probabilities of complete data taking (multiple) right-censored observations
+into account.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>estimate_cdf</span><span class='op'>(</span><span class='va'>data</span>, <span class='va'>methods</span>, options <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>estimate_cdf</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>...</span><span class='op'>)</span>
+
+<span class='co'># S3 method for reliability_data</span>
+<span class='fu'>estimate_cdf</span><span class='op'>(</span>
+  <span class='va'>x</span>,
+  methods <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"mr"</span>, <span class='st'>"johnson"</span>, <span class='st'>"kaplan"</span>, <span class='st'>"nelson"</span><span class='op'>)</span>,
+  options <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='op'>)</span>,
+  <span class='va'>...</span>
+<span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>data</th>
+      <th>x</th>
       <td><p>A tibble returned by <a href='reliability_data.html'>reliability_data</a>.</p></td>
     </tr>
     <tr>
       <th>methods</th>
-      <td><p>Character vector of methods used for estimating the failure
+      <td><p>One or multiple methods of <code>"mr"</code>, <code>"johnson"</code>,
+<code>"kaplan"</code> or <code>"nelson"</code> used for the estimation of failure
 probabilities. See 'Details'.</p></td>
     </tr>
     <tr>
       <th>options</th>
-      <td><p>A list of named options passed to <code>&lt;method&gt;_method</code>. For
-now there is just the option "method" with <code>method = "mr"</code>. See
-<code><a href='mr_method.html'>mr_method</a></code>.</p></td>
+      <td><p>A list of named options. See 'Options'.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>A tibble containing the following columns:</p><ul>
-<li><p><code>id</code>: Identification.</p></li>
-<li><p><code>characteristic</code>: Lifetime characteristic.</p></li>
-<li><p><code>status</code>: Binary data (0 or 1) indicating whether a unit is a
-  right censored observation (=0) or a failure (=1).</p></li>
-<li><p><code>rank</code>: Adjusted rank. Applicable for method <code>"mr"</code>
-  and <code>"johnson"</code>, otherwise <code>NA</code>.</p></li>
-<li><p><code>prob</code>: Estimated failure probability.</p></li>
-<li><p><code>method</code>: Method for estimating the failure probability.</p></li>
+<li><p><code>id</code> : Identification for every unit.</p></li>
+<li><p><code>x</code> : Lifetime characteristic.</p></li>
+<li><p><code>status</code> : Binary data (0 or 1) indicating whether a unit is a
+    right censored observation (= 0) or a failure (= 1).</p></li>
+<li><p><code>rank</code> : The (computed) ranks. Determined for methods <code>"mr"</code>
+    and <code>"johnson"</code>, filled with <code>NA</code> for other methods.</p></li>
+<li><p><code>prob</code> : Estimated failure probabilities, <code>NA</code> if <code>status = 0</code>.</p></li>
+<li><p><code>method</code> : Specified method for the estimation of failure probabilities.</p></li>
 </ul>
 
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>Depending on the <code>methods</code> argument one or more of the following functions
-are called:</p><ul>
-<li><p><code>"mr"</code>: <code><a href='mr_method.html'>mr_method</a></code>. Works only for uncensored data.</p></li>
-<li><p><code>"johnson"</code>: <code><a href='johnson_method.html'>johnson_method</a></code>.</p></li>
-<li><p><code>"kaplan"</code>: <code><a href='kaplan_method.html'>kaplan_method</a></code>.</p></li>
-<li><p><code>"nelson"</code>: <code><a href='nelson_method.html'>nelson_method</a></code>.</p></li>
+    <p>One or multiple techniques can be used for the <code>methods</code> argument:</p><ul>
+<li><p><code>"mr"</code> : Method <em>Median Ranks</em> is used to estimate the failure
+    probabilities of failed units without considering censored items.
+    Tied observations can be handled in three ways (See 'Options'):</p><ul>
+<li><p><code>"max"</code> : Highest observed rank is assigned to tied observations.</p></li>
+<li><p><code>"min"</code> : Lowest observed rank is assigned to tied observations.</p></li>
+<li><p><code>"average"</code> : Mean rank is assigned to tied observations.</p></li>
+</ul><p>Two formulas can be used to determine cumulative failure probabilities
+    <em>F(t)</em> (See 'Options'):</p><ul>
+<li><p><code>"benard"</code> : Benard's approximation for Median Ranks.</p></li>
+<li><p><code>"invbeta"</code> : Exact Median Ranks using the inverse beta distribution.</p></li>
+</ul></li>
+<li><p><code>"johnson"</code> : The <em>Johnson</em> method is used to estimate the
+    failure probabilities of failed units, taking censored units into account.
+    Compared to complete data, correction of probabilities is done by the
+    computation of adjusted ranks.</p></li>
+<li><p><code>"kaplan"</code> : The method of <em>Kaplan</em> and <em>Meier</em> is used
+    to estimate the survival function <em>S(t)</em> with respect to (multiple)
+    right censored data. The complement of <em>S(t)</em>, i.e. <em>F(t)</em>, is
+    returned. In contrast to the original <em>Kaplan-Meier</em> estimator, one
+    modification is made (see 'References').</p>
+<p><strong>Note</strong> : The <em>Kaplan-Meier</em> estimator does not assign ranks to
+    observations, so the beta-binomial confidence intervals <em>cannot</em> be
+    calculated using this method.</p></li>
+<li><p><code>"nelson"</code> : The <em>Nelson-Aalen</em> estimator models the cumulative
+    hazard rate function in case of (multiple) right censored data. Equating the
+    formal definition of the hazard rate with that according to <em>Nelson-Aalen</em>
+    results in a formula for the calculation of failure probabilities.</p>
+<p><strong>Note</strong> : The <em>Nelson-Aalen</em> estimator does not assign ranks to
+    observations, so the beta-binomial confidence intervals <em>cannot</em> be
+    calculated using this method.</p></li>
 </ul>
 
+    <h2 class="hasAnchor" id="options"><a class="anchor" href="#options"></a>Options</h2>
 
+    
+
+<p>The listed options can only be applied for method <code>"mr"</code>:</p><ul>
+<li><p><code>mr_method</code> : <code>"benard"</code> (default) or <code>"invbeta"</code>.</p></li>
+<li><p><code>mr_ties.method</code> : <code>"max"</code> (default), <code>"min"</code> or <code>"average"</code>.</p></li>
+</ul>
+
+    <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
+
+    <p><em>NIST/SEMATECH e-Handbook of Statistical Methods</em>,
+<em>8.2.1.5. Empirical model fitting - distribution free (Kaplan-Meier) approach</em>,
+<a href='https://www.itl.nist.gov/div898/handbook/apr/section2/apr215.htm'>NIST SEMATECH</a>,
+December 3, 2020</p>
+    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
+
+    <div class='dont-index'><p><code><a href='estimate_cdf.default.html'>estimate_cdf.default</a></code></p></div>
+
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'><span class='co'># Reliability data:</span>
+<span class='va'>data</span> <span class='op'>&lt;-</span> <span class='fu'><a href='reliability_data.html'>reliability_data</a></span><span class='op'>(</span>
+  data <span class='op'>=</span> <span class='va'>alloy</span>,
+  x <span class='op'>=</span> <span class='va'>cycles</span>,
+  status <span class='op'>=</span> <span class='va'>status</span>
+<span class='op'>)</span>
+
+<span class='co'># Example 1 - Johnson method:</span>
+<span class='va'>prob_tbl</span> <span class='op'>&lt;-</span> <span class='fu'>estimate_cdf</span><span class='op'>(</span>
+  x <span class='op'>=</span> <span class='va'>data</span>,
+  methods <span class='op'>=</span> <span class='st'>"johnson"</span>
+<span class='op'>)</span>
+
+<span class='co'># Example 2 - Multiple methods:</span>
+<span class='va'>prob_tbl_2</span> <span class='op'>&lt;-</span> <span class='fu'>estimate_cdf</span><span class='op'>(</span>
+  x <span class='op'>=</span> <span class='va'>data</span>,
+  methods <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"johnson"</span>, <span class='st'>"kaplan"</span>, <span class='st'>"nelson"</span><span class='op'>)</span>
+<span class='op'>)</span>
+
+<span class='co'># Example 3 - Method 'mr' with options:</span>
+<span class='va'>prob_tbl_3</span> <span class='op'>&lt;-</span> <span class='fu'>estimate_cdf</span><span class='op'>(</span>
+  x <span class='op'>=</span> <span class='va'>data</span>,
+  methods <span class='op'>=</span> <span class='st'>"mr"</span>,
+  options <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>
+    mr_method <span class='op'>=</span> <span class='st'>"invbeta"</span>,
+    mr_ties.method <span class='op'>=</span> <span class='st'>"average"</span>
+  <span class='op'>)</span>
+<span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='message'>The 'mr' method only considers failed units (status == 1) and does not retain intact units (status == 0).</span></div><div class='input'>
+<span class='co'># Example 4 - Multiple methods and option for 'mr':</span>
+<span class='va'>prob_tbl_4</span> <span class='op'>&lt;-</span> <span class='fu'>estimate_cdf</span><span class='op'>(</span>
+  x <span class='op'>=</span> <span class='va'>data</span>,
+  methods <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"mr"</span>, <span class='st'>"johnson"</span><span class='op'>)</span>,
+  options <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>
+    mr_ties.method <span class='op'>=</span> <span class='st'>"max"</span>
+  <span class='op'>)</span>
+<span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='message'>The 'mr' method only considers failed units (status == 1) and does not retain intact units (status == 0).</span></div><div class='input'>
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
@@ -192,7 +284,7 @@ are called:</p><ul>
 
       <footer>
       <div class="copyright">
-  <p>Developed by Hensel Tim-Gunnar, Barkemeyer David.</p>
+  <p>Developed by Tim-Gunnar Hensel, David Barkemeyer.</p>
 </div>
 
 <div class="pkgdown">

@@ -40,7 +40,8 @@
 
 
 <meta property="og:title" content="Probability Plot for Separated Mixture Models — plot_prob_mix" />
-<meta property="og:description" content="This function is used to apply the graphical technique of probability
+<meta property="og:description" content="
+This function is used to apply the graphical technique of probability
 plotting to univariate mixture models that were separated with functions
 mixmod_regression or mixmod_em." />
 
@@ -132,22 +133,24 @@ mixmod_regression or mixmod_em." />
     </div>
 
     <div class="ref-description">
-    <p>This function is used to apply the graphical technique of probability
+    <p><img src='figures/lifecycle-soft-deprecated.svg' alt='Soft-deprecated lifecycle' /></p>
+<p>This function is used to apply the graphical technique of probability
 plotting to univariate mixture models that were separated with functions
 <code><a href='mixmod_regression.html'>mixmod_regression</a></code> or <code><a href='mixmod_em.html'>mixmod_em</a></code>.</p>
     </div>
 
     <pre class="usage"><span class='fu'>plot_prob_mix</span><span class='op'>(</span>
   <span class='va'>x</span>,
-  <span class='va'>event</span>,
+  <span class='va'>status</span>,
   id <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/rep.html'>rep</a></span><span class='op'>(</span><span class='st'>"XXXXXX"</span>, <span class='fu'><a href='https://rdrr.io/r/base/length.html'>length</a></span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span><span class='op'>)</span>,
   distribution <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"weibull"</span>, <span class='st'>"lognormal"</span>, <span class='st'>"loglogistic"</span><span class='op'>)</span>,
-  mix_output <span class='op'>=</span> <span class='cn'>NULL</span>,
+  <span class='va'>mix_output</span>,
   title_main <span class='op'>=</span> <span class='st'>"Probability Plot"</span>,
   title_x <span class='op'>=</span> <span class='st'>"Characteristic"</span>,
   title_y <span class='op'>=</span> <span class='st'>"Unreliability"</span>,
   title_trace <span class='op'>=</span> <span class='st'>"Sample"</span>,
-  plot_method <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"plotly"</span>, <span class='st'>"ggplot2"</span><span class='op'>)</span>
+  plot_method <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"plotly"</span>, <span class='st'>"ggplot2"</span><span class='op'>)</span>,
+  <span class='va'>...</span>
 <span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -161,7 +164,7 @@ e.g. operating time (days/months in service), mileage (km, miles), load
 cycles.</p></td>
     </tr>
     <tr>
-      <th>event</th>
+      <th>status</th>
       <td><p>A vector of binary data (0 or 1) indicating whether unit <em>i</em>
 is a right censored observation (= 0) or a failure (= 1).</p></td>
     </tr>
@@ -205,30 +208,18 @@ the legend.</p></td>
     </tr>
     </table>
 
-    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
-
-    <p>Returns a plotly object containing the layout of the probability plot
-  provided by <code><a href='plot_layout.html'>plot_layout</a></code> and the plotting positions.</p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>Depending on the separation method the function <code><a href='johnson_method.html'>johnson_method</a></code>
-is called in various ways. If <code>mixmod_regression</code> is used, <code>johnson_method</code>
-is applied to all data. If data was splitted by <code>mixmod_em</code> the function
-<code>johnson_method</code> is applied to subgroup-specific data. The calculated plotting
-positions are colored regarding the obtained split of the used splitting function.
-If <code>mix_output = NULL</code> <code>johnson_method</code> is applied to all data, too.
-The obtained plot is then equal to <code><a href='plot_prob.html'>plot_prob</a></code>. See <strong>Examples</strong>
-for all three cases.</p>
+    <p>If data was splitted by <code>mixmod_em</code> the function <code>johnson_method</code>
+is applied to subgroup-specific data. The calculated plotting positions are
+shaped regarding the obtained split of the used splitting function.</p>
 <p>In <code><a href='mixmod_regression.html'>mixmod_regression</a></code> a maximum of three subgroups can be determined
 and thus being plotted. The intention of this function is to give the
 user a hint for the existence of a mixture model. An in-depth analysis should
 be done afterwards.</p>
-<p>The marker label for x is determined by the first word provided in the
-argument <code>title_x</code>, i.e. if <code>title_x = "Mileage in km"</code> the x label
-of the marker is "Mileage".</p>
-<p>The marker label for y is determined by the string provided in the
-argument <code>title_y</code>, i.e. if <code>title_y = "Probability in percent"</code> the y
-label of the marker is "Probability".</p>
+<p>The marker label for x and y are determined by the first word provided in the
+argument <code>title_x</code> respective <code>title_y</code>, i.e. if
+<code>title_x = "Mileage in km"</code> the x label of the marker is "Mileage".</p>
 <p>The name of the legend entry is a combination of the <code>title_trace</code> and the
 number of determined subgroups. If <code>title_trace = "Group"</code> and the data
 could be splitted in two groups, the legend entries would be "Group 1" and "Group 2".</p>
@@ -250,23 +241,12 @@ could be splitted in two groups, the legend entries would be "Group 1" and "Grou
           <span class='fl'>0</span>, <span class='fl'>1</span>, <span class='fl'>1</span>, <span class='fl'>1</span>, <span class='fl'>1</span>, <span class='fl'>1</span>, <span class='fl'>1</span><span class='op'>)</span>
 <span class='va'>id</span> <span class='op'>&lt;-</span> <span class='fl'>1</span><span class='op'>:</span><span class='fu'><a href='https://rdrr.io/r/base/length.html'>length</a></span><span class='op'>(</span><span class='va'>hours</span><span class='op'>)</span>
 
-<span class='co'># Example 1 - mix_output = NULL:</span>
-<span class='va'>plot_weibull</span> <span class='op'>&lt;-</span> <span class='fu'>plot_prob_mix</span><span class='op'>(</span>x <span class='op'>=</span> <span class='va'>hours</span>,
-                              event <span class='op'>=</span> <span class='va'>state</span>,
-                              id <span class='op'>=</span> <span class='va'>id</span>,
-                              distribution <span class='op'>=</span> <span class='st'>"weibull"</span>,
-                              mix_output <span class='op'>=</span> <span class='cn'>NULL</span>,
-                              title_main <span class='op'>=</span> <span class='st'>"Weibull Probability Plot"</span>,
-                              title_x <span class='op'>=</span> <span class='st'>"Time in Hours"</span>,
-                              title_y <span class='op'>=</span> <span class='st'>"Probability of Failure"</span>,
-                              title_trace <span class='op'>=</span> <span class='st'>"Failed Items"</span><span class='op'>)</span>
-
-<span class='co'># Example 2 - Using result of mixmod_em in mix_output:</span>
-<span class='va'>mix_mod_em</span> <span class='op'>&lt;-</span> <span class='fu'><a href='mixmod_em.html'>mixmod_em</a></span><span class='op'>(</span>x <span class='op'>=</span> <span class='va'>hours</span>, event <span class='op'>=</span> <span class='va'>state</span>, distribution <span class='op'>=</span> <span class='st'>"weibull"</span>,
+<span class='co'># Example 1 - Using result of mixmod_em in mix_output:</span>
+<span class='va'>mix_mod_em</span> <span class='op'>&lt;-</span> <span class='fu'><a href='mixmod_em.html'>mixmod_em</a></span><span class='op'>(</span>x <span class='op'>=</span> <span class='va'>hours</span>, status <span class='op'>=</span> <span class='va'>state</span>, distribution <span class='op'>=</span> <span class='st'>"weibull"</span>,
                         conf_level <span class='op'>=</span> <span class='fl'>0.95</span>, k <span class='op'>=</span> <span class='fl'>2</span>, method <span class='op'>=</span> <span class='st'>"EM"</span>, n_iter <span class='op'>=</span> <span class='fl'>150</span><span class='op'>)</span>
 
 <span class='va'>plot_weibull_em</span> <span class='op'>&lt;-</span> <span class='fu'>plot_prob_mix</span><span class='op'>(</span>x <span class='op'>=</span> <span class='va'>hours</span>,
-                                 event <span class='op'>=</span> <span class='va'>state</span>,
+                                 status <span class='op'>=</span> <span class='va'>state</span>,
                                  id <span class='op'>=</span> <span class='va'>id</span>,
                                  distribution <span class='op'>=</span> <span class='st'>"weibull"</span>,
                                  mix_output <span class='op'>=</span> <span class='va'>mix_mod_em</span>,
@@ -274,24 +254,32 @@ could be splitted in two groups, the legend entries would be "Group 1" and "Grou
                                  title_x <span class='op'>=</span> <span class='st'>"Time in Hours"</span>,
                                  title_y <span class='op'>=</span> <span class='st'>"Probability of Failure"</span>,
                                  title_trace <span class='op'>=</span> <span class='st'>"Subgroup"</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='warning'>Warning: `plot_prob_mix()` is deprecated as of lifecycle 2.0.0.</span>
+#&gt; <span class='warning'>Please use `plot_prob()` instead.</span>
+#&gt; <span class='warning'><span style='color: #555555;'>This warning is displayed once every 8 hours.</span><span></span>
+#&gt; <span class='warning'></span><span style='color: #555555;'>Call `lifecycle::last_warnings()` to see where this warning was generated.</span><span></span></div><div class='input'>
+<span class='co'># Example 2 - Using result of mixmod_regression in mix_output:</span>
+<span class='va'>john</span> <span class='op'>&lt;-</span> <span class='fu'><a href='johnson_method.html'>johnson_method</a></span><span class='op'>(</span>x <span class='op'>=</span> <span class='va'>hours</span>, status <span class='op'>=</span> <span class='va'>state</span><span class='op'>)</span>
+<span class='va'>mix_mod_reg</span> <span class='op'>&lt;-</span> <span class='fu'><a href='mixmod_regression.html'>mixmod_regression</a></span><span class='op'>(</span>
+  x <span class='op'>=</span> <span class='va'>john</span><span class='op'>$</span><span class='va'>x</span>,
+  y <span class='op'>=</span> <span class='va'>john</span><span class='op'>$</span><span class='va'>prob</span>,
+  status <span class='op'>=</span> <span class='va'>john</span><span class='op'>$</span><span class='va'>status</span>,
+  distribution <span class='op'>=</span> <span class='st'>"weibull"</span>
+<span class='op'>)</span>
 
-<span class='co'># Example 3 - Using result of mixmod_regression in mix_output:</span>
-<span class='va'>john</span> <span class='op'>&lt;-</span> <span class='fu'><a href='johnson_method.html'>johnson_method</a></span><span class='op'>(</span>x <span class='op'>=</span> <span class='va'>hours</span>, event <span class='op'>=</span> <span class='va'>state</span><span class='op'>)</span>
-<span class='va'>mix_mod_reg</span> <span class='op'>&lt;-</span> <span class='fu'><a href='mixmod_regression.html'>mixmod_regression</a></span><span class='op'>(</span>x <span class='op'>=</span> <span class='va'>john</span><span class='op'>$</span><span class='va'>characteristic</span>,
-                                 y <span class='op'>=</span> <span class='va'>john</span><span class='op'>$</span><span class='va'>prob</span>,
-                                 event <span class='op'>=</span> <span class='va'>john</span><span class='op'>$</span><span class='va'>status</span>,
-                                 distribution <span class='op'>=</span> <span class='st'>"weibull"</span><span class='op'>)</span>
+<span class='va'>plot_weibull_reg</span> <span class='op'>&lt;-</span> <span class='fu'>plot_prob_mix</span><span class='op'>(</span>
+  x <span class='op'>=</span> <span class='va'>hours</span>,
+  status <span class='op'>=</span> <span class='va'>state</span>,
+  id <span class='op'>=</span> <span class='va'>id</span>,
+  distribution <span class='op'>=</span> <span class='st'>"weibull"</span>,
+  mix_output <span class='op'>=</span> <span class='va'>mix_mod_reg</span>,
+  title_main <span class='op'>=</span> <span class='st'>"Weibull Mixture Regression"</span>,
+  title_x <span class='op'>=</span> <span class='st'>"Time in Hours"</span>,
+  title_y <span class='op'>=</span> <span class='st'>"Probability of Failure"</span>,
+  title_trace <span class='op'>=</span> <span class='st'>"Subgroup"</span>
+<span class='op'>)</span>
 
-<span class='va'>plot_weibull_reg</span> <span class='op'>&lt;-</span> <span class='fu'>plot_prob_mix</span><span class='op'>(</span>x <span class='op'>=</span> <span class='va'>hours</span>,
-                                  event <span class='op'>=</span> <span class='va'>state</span>,
-                                  id <span class='op'>=</span> <span class='va'>id</span>,
-                                  distribution <span class='op'>=</span> <span class='st'>"weibull"</span>,
-                                  mix_output <span class='op'>=</span> <span class='va'>mix_mod_reg</span>,
-                                  title_main <span class='op'>=</span> <span class='st'>"Weibull Mixture Regression"</span>,
-                                  title_x <span class='op'>=</span> <span class='st'>"Time in Hours"</span>,
-                                  title_y <span class='op'>=</span> <span class='st'>"Probability of Failure"</span>,
-                                  title_trace <span class='op'>=</span> <span class='st'>"Subgroup"</span><span class='op'>)</span>
-</div></pre>
+</div></span></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
@@ -303,7 +291,7 @@ could be splitted in two groups, the legend entries would be "Group 1" and "Grou
 
       <footer>
       <div class="copyright">
-  <p>Developed by Hensel Tim-Gunnar, Barkemeyer David.</p>
+  <p>Developed by Tim-Gunnar Hensel, David Barkemeyer.</p>
 </div>
 
 <div class="pkgdown">

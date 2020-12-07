@@ -135,190 +135,31 @@ probability plot which also includes the estimated regression line." />
 probability plot which also includes the estimated regression line.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>plot_conf</span><span class='op'>(</span><span class='va'>p_obj</span>, <span class='va'>x</span>, <span class='va'>...</span><span class='op'>)</span>
+    <pre class="usage"><span class='fu'>plot_conf</span><span class='op'>(</span><span class='va'>p_obj</span>, <span class='va'>x</span>, <span class='va'>...</span><span class='op'>)</span></pre>
 
-<span class='co'># S3 method for default</span>
-<span class='fu'>plot_conf</span><span class='op'>(</span>
-  <span class='va'>p_obj</span>,
-  <span class='va'>x</span>,
-  <span class='va'>y</span>,
-  distribution <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"weibull"</span>, <span class='st'>"lognormal"</span>, <span class='st'>"loglogistic"</span>, <span class='st'>"normal"</span>, <span class='st'>"logistic"</span>, <span class='st'>"sev"</span>,
-    <span class='st'>"weibull3"</span>, <span class='st'>"lognormal3"</span>, <span class='st'>"loglogistic3"</span><span class='op'>)</span>,
-  direction <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"y"</span>, <span class='st'>"x"</span><span class='op'>)</span>,
-  title_trace <span class='op'>=</span> <span class='st'>"Confidence Limit"</span>
-<span class='op'>)</span>
-
-<span class='co'># S3 method for confint</span>
-<span class='fu'>plot_conf</span><span class='op'>(</span><span class='va'>p_obj</span>, <span class='va'>confint</span>, <span class='va'>title_trace</span><span class='op'>)</span></pre>
-
-    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
-    <table class="ref-arguments">
-    <colgroup><col class="name" /><col class="desc" /></colgroup>
-    <tr>
-      <th>p_obj</th>
-      <td><p>A plotly object provided by <code><a href='plot_mod.html'>plot_mod</a></code>.</p></td>
-    </tr>
-    <tr>
-      <th>x</th>
-      <td><p>A list containing the x-coordinates of the confidence region(s).
-The list can be of length 1 or 2. For more information see <strong>Details</strong>.</p></td>
-    </tr>
-    <tr>
-      <th>y</th>
-      <td><p>A list containing the y-coordinates of the Confidence Region(s).
-The list can be of length 1 or 2. For more information see <strong>Details</strong>.</p></td>
-    </tr>
-    <tr>
-      <th>distribution</th>
-      <td><p>Supposed distribution of the random variable.</p></td>
-    </tr>
-    <tr>
-      <th>direction</th>
-      <td><p>A character string specifying the direction of the plotted
-interval(s). Must be either "y" (failure probabilities) or "x" (quantiles).</p></td>
-    </tr>
-    <tr>
-      <th>title_trace</th>
-      <td><p>A character string whis is assigned to the trace shown in
-the legend.</p></td>
-    </tr>
-    <tr>
-      <th>confint</th>
-      <td><p>Confindence interval as returned by <code><a href='confint_betabinom.html'>confint_betabinom</a></code>
-or <code><a href='confint_fisher.html'>confint_fisher</a></code>.</p></td>
-    </tr>
-    </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>Returns a plotly object containing the probability plot with
   plotting positions, the estimated regression line and the estimated
   confidence region(s).</p>
-    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
-
-    <p>It is important that the length of the vectors provided as lists in <code>x</code>
-and <code>y</code> match with the length of the vectors <code>x</code> and <code>y</code> in
-the function <code><a href='plot_mod.html'>plot_mod</a></code>. For this reason the following procedure
-is recommended:</p><ul>
-<li><p>Calculate confidence intervals with the function
-    <code><a href='confint_betabinom.html'>confint_betabinom</a></code> or <code><a href='confint_fisher.html'>confint_fisher</a></code> and store
-    it in a <code>data.frame</code>. For instance call it df.</p></li>
-<li><p>Inside <code><a href='plot_mod.html'>plot_mod</a></code> use the output <code>df$characteristic</code>
-    for <code>x</code> and <code>df$prob</code> for <code>y</code> of the function(s) named before.</p></li>
-<li><p>In <strong>Examples</strong> the described approach is shown with code.</p></li>
-</ul>
-
     <h2 class="hasAnchor" id="methods-by-class-"><a class="anchor" href="#methods-by-class-"></a>Methods (by class)</h2>
 
     
-<ul>
-<li><p><code>default</code>: Provide x,y, direction and distribution manually.</p></li>
-<li><p><code>confint</code>: Add a confidence interval to <code>p_obj</code> based on the
-output of <code><a href='confint_fisher.html'>confint_fisher</a></code> or <code><a href='confint_betabinom.html'>confint_betabinom</a></code>.</p></li>
-</ul>
+
+<dl>
+  <dt><code><a href='plot_conf.confint.html'>confint</a></code></dt><dd><p>Preferred. Provide the output of either <code><a href='confint_betabinom.html'>confint_betabinom</a></code>
+    or <code><a href='confint_fisher.html'>confint_fisher</a></code> directly.</p></dd>
+  <dt><code><a href='plot_conf.default.html'>default</a></code></dt><dd><p>Provide <code>x</code>, <code>y</code>, <code>distribution</code> and <code>direction</code>
+    manually.</p></dd>
+
+</dl>
+
     <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
 
     <p>Meeker, William Q; Escobar, Luis A., Statistical methods for
   reliability data, New York: Wiley series in probability and statistics, 1998</p>
 
-    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='co'># Alloy T7987 dataset taken from Meeker and Escobar(1998, p. 131)</span>
-<span class='va'>cycles</span>   <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>300</span>, <span class='fl'>300</span>, <span class='fl'>300</span>, <span class='fl'>300</span>, <span class='fl'>300</span>, <span class='fl'>291</span>, <span class='fl'>274</span>, <span class='fl'>271</span>, <span class='fl'>269</span>, <span class='fl'>257</span>, <span class='fl'>256</span>, <span class='fl'>227</span>, <span class='fl'>226</span>,
-              <span class='fl'>224</span>, <span class='fl'>213</span>, <span class='fl'>211</span>, <span class='fl'>205</span>, <span class='fl'>203</span>, <span class='fl'>197</span>, <span class='fl'>196</span>, <span class='fl'>190</span>, <span class='fl'>189</span>, <span class='fl'>188</span>, <span class='fl'>187</span>, <span class='fl'>184</span>, <span class='fl'>180</span>,
-              <span class='fl'>180</span>, <span class='fl'>177</span>, <span class='fl'>176</span>, <span class='fl'>173</span>, <span class='fl'>172</span>, <span class='fl'>171</span>, <span class='fl'>170</span>, <span class='fl'>170</span>, <span class='fl'>169</span>, <span class='fl'>168</span>, <span class='fl'>168</span>, <span class='fl'>162</span>, <span class='fl'>159</span>,
-              <span class='fl'>159</span>, <span class='fl'>159</span>, <span class='fl'>159</span>, <span class='fl'>152</span>, <span class='fl'>152</span>, <span class='fl'>149</span>, <span class='fl'>149</span>, <span class='fl'>144</span>, <span class='fl'>143</span>, <span class='fl'>141</span>, <span class='fl'>141</span>, <span class='fl'>140</span>, <span class='fl'>139</span>,
-              <span class='fl'>139</span>, <span class='fl'>136</span>, <span class='fl'>135</span>, <span class='fl'>133</span>, <span class='fl'>131</span>, <span class='fl'>129</span>, <span class='fl'>123</span>, <span class='fl'>121</span>, <span class='fl'>121</span>, <span class='fl'>118</span>, <span class='fl'>117</span>, <span class='fl'>117</span>, <span class='fl'>114</span>,
-              <span class='fl'>112</span>, <span class='fl'>108</span>, <span class='fl'>104</span>, <span class='fl'>99</span>, <span class='fl'>99</span>, <span class='fl'>96</span>, <span class='fl'>94</span><span class='op'>)</span>
-<span class='va'>state</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/rep.html'>rep</a></span><span class='op'>(</span><span class='fl'>0</span>, <span class='fl'>5</span><span class='op'>)</span>, <span class='fu'><a href='https://rdrr.io/r/base/rep.html'>rep</a></span><span class='op'>(</span><span class='fl'>1</span>, <span class='fl'>67</span><span class='op'>)</span><span class='op'>)</span>
-<span class='va'>id</span> <span class='op'>&lt;-</span> <span class='fl'>1</span><span class='op'>:</span><span class='fu'><a href='https://rdrr.io/r/base/length.html'>length</a></span><span class='op'>(</span><span class='va'>cycles</span><span class='op'>)</span>
-
-<span class='va'>df_john</span> <span class='op'>&lt;-</span> <span class='fu'><a href='johnson_method.html'>johnson_method</a></span><span class='op'>(</span>x <span class='op'>=</span> <span class='va'>cycles</span>, event <span class='op'>=</span> <span class='va'>state</span>, id <span class='op'>=</span> <span class='va'>id</span><span class='op'>)</span>
-<span class='co'># Example 1: Probability Plot, Regression Line and Confidence Bounds for Three-Parameter-Weibull:</span>
-<span class='va'>mrr</span> <span class='op'>&lt;-</span> <span class='fu'><a href='rank_regression.html'>rank_regression</a></span><span class='op'>(</span>x <span class='op'>=</span> <span class='va'>df_john</span><span class='op'>$</span><span class='va'>characteristic</span>,
-                       y <span class='op'>=</span> <span class='va'>df_john</span><span class='op'>$</span><span class='va'>prob</span>,
-                       event <span class='op'>=</span> <span class='va'>df_john</span><span class='op'>$</span><span class='va'>status</span>,
-                       distribution <span class='op'>=</span> <span class='st'>"weibull3"</span>,
-                       conf_level <span class='op'>=</span> <span class='fl'>.90</span><span class='op'>)</span>
-
-<span class='va'>conf_betabin</span> <span class='op'>&lt;-</span> <span class='fu'><a href='confint_betabinom.html'>confint_betabinom</a></span><span class='op'>(</span>x <span class='op'>=</span> <span class='va'>df_john</span><span class='op'>$</span><span class='va'>characteristic</span>,
-                                  event <span class='op'>=</span> <span class='va'>df_john</span><span class='op'>$</span><span class='va'>status</span>,
-                                  loc_sc_params <span class='op'>=</span> <span class='va'>mrr</span><span class='op'>$</span><span class='va'>loc_sc_coefficients</span>,
-                                  distribution <span class='op'>=</span> <span class='st'>"weibull3"</span>,
-                                  bounds <span class='op'>=</span> <span class='st'>"two_sided"</span>,
-                                  conf_level <span class='op'>=</span> <span class='fl'>0.95</span>,
-                                  direction <span class='op'>=</span> <span class='st'>"y"</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='error'>Error: Tibble columns must have compatible sizes.</span>
-#&gt; <span class='error'>* Size 0: Columns `rank`, `prob`, `lower_bound`, and `upper_bound`.</span>
-#&gt; <span class='error'>* Size 100: Column `characteristic`.</span>
-#&gt; <span class='error'><span style='color: #0000BB;'>i</span><span> Only values of size one are recycled.</span></div><div class='input'>
-<span class='va'>plot_weibull</span> <span class='op'>&lt;-</span> <span class='fu'><a href='plot_prob.html'>plot_prob</a></span><span class='op'>(</span>x <span class='op'>=</span> <span class='va'>df_john</span><span class='op'>$</span><span class='va'>characteristic</span>,
-                          y <span class='op'>=</span> <span class='va'>df_john</span><span class='op'>$</span><span class='va'>prob</span>,
-                          event <span class='op'>=</span> <span class='va'>df_john</span><span class='op'>$</span><span class='va'>status</span>,
-                          id <span class='op'>=</span> <span class='va'>df_john</span><span class='op'>$</span><span class='va'>id</span>,
-                          distribution <span class='op'>=</span> <span class='st'>"weibull"</span>,
-                          title_main <span class='op'>=</span> <span class='st'>"Three-Parametric Weibull"</span>,
-                          title_x <span class='op'>=</span> <span class='st'>"Cycles"</span>,
-                          title_y <span class='op'>=</span> <span class='st'>"Probability of Failure in %"</span>,
-                          title_trace <span class='op'>=</span> <span class='st'>"Failed Items"</span><span class='op'>)</span>
-
-<span class='va'>plot_reg_weibull</span> <span class='op'>&lt;-</span> <span class='fu'><a href='plot_mod.html'>plot_mod</a></span><span class='op'>(</span>p_obj <span class='op'>=</span> <span class='va'>plot_weibull</span>,
-                             x <span class='op'>=</span> <span class='va'>conf_betabin</span><span class='op'>$</span><span class='va'>characteristic</span>,
-                             y <span class='op'>=</span> <span class='va'>conf_betabin</span><span class='op'>$</span><span class='va'>prob</span>,
-                             loc_sc_params <span class='op'>=</span> <span class='va'>mrr</span><span class='op'>$</span><span class='va'>loc_sc_coefficients</span>,
-                             distribution <span class='op'>=</span> <span class='st'>"weibull3"</span>,
-                             title_trace <span class='op'>=</span> <span class='st'>"Estimated Weibull CDF"</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='error'>Error in plot_mod_helper(x, y, loc_sc_params, distribution): Objekt 'conf_betabin' nicht gefunden</span></div><div class='input'>
-<span class='va'>plot_conf_beta</span> <span class='op'>&lt;-</span> <span class='fu'>plot_conf</span><span class='op'>(</span>p_obj <span class='op'>=</span> <span class='va'>plot_reg_weibull</span>,
-                            x <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='va'>conf_betabin</span><span class='op'>$</span><span class='va'>characteristic</span><span class='op'>)</span>,
-                            y <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='va'>conf_betabin</span><span class='op'>$</span><span class='va'>lower_bound</span>,
-                                     <span class='va'>conf_betabin</span><span class='op'>$</span><span class='va'>upper_bound</span><span class='op'>)</span>,
-                            direction <span class='op'>=</span> <span class='st'>"y"</span>,
-                            distribution <span class='op'>=</span> <span class='st'>"weibull3"</span>,
-                            title_trace <span class='op'>=</span> <span class='st'>"Confidence Region"</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='error'>Error in plot_conf(p_obj = plot_reg_weibull, x = list(conf_betabin$characteristic),     y = list(conf_betabin$lower_bound, conf_betabin$upper_bound),     direction = "y", distribution = "weibull3", title_trace = "Confidence Region"): Objekt 'conf_betabin' nicht gefunden</span></div><div class='input'>
-<span class='co'># Example 2: Probability Plot, Regression Line and Confidence Bounds for Three-Parameter-Lognormal:</span>
-<span class='va'>mrr_ln</span> <span class='op'>&lt;-</span> <span class='fu'><a href='rank_regression.html'>rank_regression</a></span><span class='op'>(</span>x <span class='op'>=</span> <span class='va'>df_john</span><span class='op'>$</span><span class='va'>characteristic</span>,
-                       y <span class='op'>=</span> <span class='va'>df_john</span><span class='op'>$</span><span class='va'>prob</span>,
-                       event <span class='op'>=</span> <span class='va'>df_john</span><span class='op'>$</span><span class='va'>status</span>,
-                       distribution <span class='op'>=</span> <span class='st'>"lognormal3"</span>,
-                       conf_level <span class='op'>=</span> <span class='fl'>.90</span><span class='op'>)</span>
-
-<span class='va'>conf_betabin_ln</span> <span class='op'>&lt;-</span> <span class='fu'><a href='confint_betabinom.html'>confint_betabinom</a></span><span class='op'>(</span>x <span class='op'>=</span> <span class='va'>df_john</span><span class='op'>$</span><span class='va'>characteristic</span>,
-                                  event <span class='op'>=</span> <span class='va'>df_john</span><span class='op'>$</span><span class='va'>status</span>,
-                                  loc_sc_params <span class='op'>=</span> <span class='va'>mrr_ln</span><span class='op'>$</span><span class='va'>loc_sc_coefficients</span>,
-                                  distribution <span class='op'>=</span> <span class='st'>"lognormal3"</span>,
-                                  bounds <span class='op'>=</span> <span class='st'>"two_sided"</span>,
-                                  conf_level <span class='op'>=</span> <span class='fl'>0.95</span>,
-                                  direction <span class='op'>=</span> <span class='st'>"y"</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='error'>Error: Tibble columns must have compatible sizes.</span>
-#&gt; <span class='error'>* Size 0: Columns `rank`, `prob`, `lower_bound`, and `upper_bound`.</span>
-#&gt; <span class='error'>* Size 100: Column `characteristic`.</span>
-#&gt; <span class='error'></span><span style='color: #0000BB;'>i</span><span> Only values of size one are recycled.</span></div><div class='input'>
-<span class='va'>plot_lognormal</span> <span class='op'>&lt;-</span> <span class='fu'><a href='plot_prob.html'>plot_prob</a></span><span class='op'>(</span>x <span class='op'>=</span> <span class='va'>df_john</span><span class='op'>$</span><span class='va'>characteristic</span>,
-                          y <span class='op'>=</span> <span class='va'>df_john</span><span class='op'>$</span><span class='va'>prob</span>,
-                          event <span class='op'>=</span> <span class='va'>df_john</span><span class='op'>$</span><span class='va'>status</span>,
-                          id <span class='op'>=</span> <span class='va'>df_john</span><span class='op'>$</span><span class='va'>id</span>,
-                          distribution <span class='op'>=</span> <span class='st'>"lognormal"</span>,
-                          title_main <span class='op'>=</span> <span class='st'>"Three-Parametric Lognormal"</span>,
-                          title_x <span class='op'>=</span> <span class='st'>"Cycles"</span>,
-                          title_y <span class='op'>=</span> <span class='st'>"Probability of Failure in %"</span>,
-                          title_trace <span class='op'>=</span> <span class='st'>"Failed Items"</span><span class='op'>)</span>
-
-<span class='va'>plot_reg_lognormal</span> <span class='op'>&lt;-</span> <span class='fu'><a href='plot_mod.html'>plot_mod</a></span><span class='op'>(</span>p_obj <span class='op'>=</span> <span class='va'>plot_lognormal</span>,
-                             x <span class='op'>=</span> <span class='va'>conf_betabin_ln</span><span class='op'>$</span><span class='va'>characteristic</span>,
-                             y <span class='op'>=</span> <span class='va'>conf_betabin_ln</span><span class='op'>$</span><span class='va'>prob</span>,
-                             loc_sc_params <span class='op'>=</span> <span class='va'>mrr_ln</span><span class='op'>$</span><span class='va'>loc_sc_coefficients</span>,
-                             distribution <span class='op'>=</span> <span class='st'>"lognormal3"</span>,
-                             title_trace <span class='op'>=</span> <span class='st'>"Estimated Lognormal CDF"</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='error'>Error in plot_mod_helper(x, y, loc_sc_params, distribution): Objekt 'conf_betabin_ln' nicht gefunden</span></div><div class='input'>
-<span class='va'>plot_conf_beta_ln</span> <span class='op'>&lt;-</span> <span class='fu'>plot_conf</span><span class='op'>(</span>p_obj <span class='op'>=</span> <span class='va'>plot_reg_lognormal</span>,
-                            x <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='va'>conf_betabin_ln</span><span class='op'>$</span><span class='va'>characteristic</span><span class='op'>)</span>,
-                            y <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='va'>conf_betabin_ln</span><span class='op'>$</span><span class='va'>lower_bound</span>,
-                                     <span class='va'>conf_betabin_ln</span><span class='op'>$</span><span class='va'>upper_bound</span><span class='op'>)</span>,
-                            direction <span class='op'>=</span> <span class='st'>"y"</span>,
-                            distribution <span class='op'>=</span> <span class='st'>"lognormal3"</span>,
-                            title_trace <span class='op'>=</span> <span class='st'>"Confidence Region"</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='error'>Error in plot_conf(p_obj = plot_reg_lognormal, x = list(conf_betabin_ln$characteristic),     y = list(conf_betabin_ln$lower_bound, conf_betabin_ln$upper_bound),     direction = "y", distribution = "lognormal3", title_trace = "Confidence Region"): Objekt 'conf_betabin_ln' nicht gefunden</span></div></span></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
@@ -330,7 +171,7 @@ output of <code><a href='confint_fisher.html'>confint_fisher</a></code> or <code
 
       <footer>
       <div class="copyright">
-  <p>Developed by Hensel Tim-Gunnar, Barkemeyer David.</p>
+  <p>Developed by Tim-Gunnar Hensel, David Barkemeyer.</p>
 </div>
 
 <div class="pkgdown">

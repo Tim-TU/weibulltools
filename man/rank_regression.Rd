@@ -80,7 +80,7 @@ parameters are computed on the basis of a heteroscedasticity-consistent
 covariance matrix. Here it should be said that there is no statistical foundation
 to determine the standard errors of the parameters using \emph{Least Squares}
 in context of \emph{Rank Regression}. For an accepted statistical method use
-\link[=ml_estimation]{MLE}.
+\link[=ml_estimation]{maximum likelihood}.
 }
 \examples{
 # Reliability data preparation:
@@ -101,17 +101,17 @@ data_3p <- reliability_data(
 # Probability estimation:
 prob_tbl_2p <- estimate_cdf(
   x = data_2p,
-  method = "johnson"
+  methods = "johnson"
 )
 
 prob_tbl_3p <- estimate_cdf(
   x = data_3p,
-  method = "johnson"
+  methods = "johnson"
 )
 
 prob_tbl_mult <- estimate_cdf(
   x = data_3p,
-  method = c("johnson", "kaplan")
+  methods = c("johnson", "kaplan")
 )
 
 # Example 1 - Fitting a two-parametric weibull distribution:

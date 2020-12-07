@@ -12,37 +12,39 @@ predict_prob(
 )
 }
 \arguments{
-\item{q}{A numeric vector which consists of lifetime data.}
+\item{q}{A numeric vector of quantiles.}
 
-\item{loc_sc_params}{A (named) numeric vector of estimated location
-and scale parameters for a specified distribution. The order of
-elements is important. First entry needs to be the location
-parameter \eqn{\mu} and the second element needs to be the scale
-parameter \eqn{\sigma}. If a three-parametric model is used the third element
-is the threshold parameter \eqn{\gamma}.}
+\item{loc_sc_params}{A (named) numeric vector of (log-)location-scale parameters
+in the order of location (\eqn{\mu}) and scale (\eqn{\sigma}). If a
+three-parametric model is selected, the threshold parameter (\eqn{\gamma})
+has to be the third element.}
 
 \item{distribution}{Supposed distribution of the random variable.}
 }
 \value{
-A vector containing the predicted failure probabilities for a given
-  set of quantiles and estimated parameters.
+A vector with predicted (failure) probabilities.
 }
 \description{
-This function predicts the failure probabilities for a given set of estimated
-location-scale (and threshold) parameters and specified quantiles.
+This function predicts the (failure) probabilities of two- or three-parametric
+lifetime distributions that belong to the (log-)location-scale family.
+}
+\details{
+For a given set of parameters and specified quantiles the (failure) probabilities
+of the chosen model are determined.
 }
 \examples{
-# Example 1: Predicted probabilities for two-parameter Weibull:
-probs <- predict_prob(
+# Example 1 - Predicted probabilities for a two-parameter weibull distribution:
+probs_weib2 <- predict_prob(
   q = c(15, 48, 124),
   loc_sc_params = c(5, 0.5),
   distribution = "weibull"
 )
 
-# Example 2: Predicted probabilities for three-parameter Weibull:
+# Example 2 - Predicted quantiles for a three-parameter weibull distribution:
 probs_weib3 <- predict_prob(
   q = c(25, 58, 134),
   loc_sc_params = c(5, 0.5, 10),
   distribution = "weibull3"
 )
+
 }

@@ -40,10 +40,8 @@
 
 
 <meta property="og:title" content="Delta Method for Parametric Lifetime Distributions — delta_method" />
-<meta property="og:description" content="The Delta Method estimates the standard error for quantities that can be
-written as non-linear functions of ML estimators like quantiles. I.e. the
-(log-)location-scale (and threshold) parameters and variance-covariance matrix
-of these need to be estimated by Maximum Likelihood." />
+<meta property="og:description" content="This function applies the delta method for two- or three-parametric lifetime
+distributions that belong to the (log-)location-scale family." />
 
 
 
@@ -133,10 +131,8 @@ of these need to be estimated by Maximum Likelihood." />
     </div>
 
     <div class="ref-description">
-    <p>The Delta Method estimates the standard error for quantities that can be
-written as non-linear functions of ML estimators like quantiles. I.e. the
-(log-)location-scale (and threshold) parameters and variance-covariance matrix
-of these need to be estimated by Maximum Likelihood.</p>
+    <p>This function applies the delta method for two- or three-parametric lifetime
+distributions that belong to the (log-)location-scale family.</p>
     </div>
 
     <pre class="usage"><span class='fu'>delta_method</span><span class='op'>(</span>
@@ -153,73 +149,89 @@ of these need to be estimated by Maximum Likelihood.</p>
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>p</th>
-      <td><p>a numeric value of a probability or a quantile. If the standard error
-of quantile is of interest a specific probability needs to be supplied and if
-the standard error of a standardized quantile (z-value) should be calculated
-a specific quantile should be provided.</p></td>
+      <td><p>A numeric vector of probabilities or quantiles. If the standard errors
+of quantiles should be determined the corresponding probabilities have to be
+specified, and if the standard errors of standardized quantiles (z-values)
+should be computed corresponding quantiles are required.</p></td>
     </tr>
     <tr>
       <th>loc_sc_params</th>
-      <td><p>a (named) numeric vector of estimated
-(by Maximum Likelihood) location and scale parameters for a specified
-distribution. The order of elements is important. First entry needs to be
-the location parameter \(\mu\) and the second element needs to be the
-scale parameter \(\sigma\). If a three-parametric model is used the third element
-is the threshold parameter \(\gamma\).</p></td>
+      <td><p>A (named) numeric vector of (log-)location-scale parameters
+returned from <code><a href='ml_estimation.html'>ml_estimation</a></code>.</p></td>
     </tr>
     <tr>
       <th>loc_sc_varcov</th>
-      <td><p>a (named) numeric matrix of estimated
-(by Maximum Likelihood) location and scale variances and covariances for a
-specified distribution. The order of elements is important. First entry
-of the diagonal needs to be the variance of the location parameter
-Var(\(\mu\)) and the second element of the diagonal needs to be the
-variance of the scale parameter Var(\(\sigma\)). If a three-parametric model
-is used the third element of the diagonal needs to be the variance of the
-threshold parameter Var(\(\gamma\)).</p></td>
+      <td><p>A (named) numeric matrix of estimated variances and
+covariances returned from <code><a href='ml_estimation.html'>ml_estimation</a></code>.</p></td>
     </tr>
     <tr>
       <th>distribution</th>
-      <td><p>Supposed distribution of the random variable. The
-value can be <code>"weibull"</code>, <code>"lognormal"</code>, <code>"loglogistic"</code>,
-<code>"normal"</code>, <code>"logistic"</code>, <code>"sev"</code> <em>(smallest extreme value)</em>,
-<code>"weibull3"</code>, <code>"lognormal3"</code> or <code>"loglogistic3"</code>.
-Other distributions have not been implemented yet.</p></td>
+      <td><p>Supposed distribution of the random variable. Has to be in
+line with the specification made in <code><a href='ml_estimation.html'>ml_estimation</a></code>.</p></td>
     </tr>
     <tr>
       <th>direction</th>
-      <td><p>a character string specifying the direction of the computed
-standard errors. Must be either "y" (used for confidence intervals of failure
-probabilities in <code><a href='confint_fisher.html'>confint_fisher</a></code>) or "x" (used for confidence
-intervals of quantiles in <code><a href='confint_fisher.html'>confint_fisher</a></code>). If <code>p</code> is a
-quantile then <em>direction</em> needs to be "y" and vice versa.</p></td>
+      <td><p>A character string specifying for which quantity the standard
+errors are calculated. One of <code>"y"</code> (if <code>p</code> are quantiles) or
+<code>"x"</code> (if <code>p</code> are probabilities).</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A numeric value with estimated standard errors of quantiles or standardized
-  z values. Both are required for the computation of normal approximation
-  confidence intervals. If standard errors of standardized z values are compueted
-  one can calculate confidence intervals for distribution probabilities (z-procedure,
-  which is used inside <code><a href='confint_fisher.html'>confint_fisher</a></code>).</p>
+    <p>A numeric vector of estimated standard errors for quantiles or
+  standardized quantiles (<em>z-values</em>).</p>
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+
+    <p>The delta method estimates the standard errors for quantities that can be
+written as non-linear functions of ML estimators. Hence, (log-)location-scale
+parameters as well as the variance-covariance matrix of these have to be estimated
+with <a href='ml_estimation.html'>maximum likelihood</a>.</p>
+<p>The estimated standard errors are needed to calculate Fisher's (normal
+approximation) confidence intervals. For confidence bounds on the probability,
+standard errors of the standardized quantiles (<code>direction = "y"</code>)
+have to be computed (<em>z-procedure</em>) and for bounds on quantiles, standard errors
+of quantiles (<code>direction = "x"</code>) are required. For more information see
+<code><a href='confint_fisher.html'>confint_fisher</a></code>.</p>
     <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
 
     <p>Meeker, William Q; Escobar, Luis A., Statistical methods for
   reliability data, New York: Wiley series in probability and statistics, 1998</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='va'>obs</span>   <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span><span class='fl'>10000</span>, <span class='fl'>100000</span>, <span class='fl'>10000</span><span class='op'>)</span>
-<span class='va'>state</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0</span>, <span class='fl'>1</span>, <span class='fl'>1</span>, <span class='fl'>0</span>, <span class='fl'>0</span>, <span class='fl'>0</span>, <span class='fl'>1</span>, <span class='fl'>0</span>, <span class='fl'>1</span>, <span class='fl'>0</span><span class='op'>)</span>
+    <pre class="examples"><div class='input'><span class='co'># Reliability data preparation:</span>
+<span class='va'>data</span> <span class='op'>&lt;-</span> <span class='fu'><a href='reliability_data.html'>reliability_data</a></span><span class='op'>(</span>
+  data <span class='op'>=</span> <span class='va'>shock</span>,
+  x <span class='op'>=</span> <span class='va'>distance</span>,
+  status <span class='op'>=</span> <span class='va'>status</span>
+<span class='op'>)</span>
 
-<span class='va'>mle</span> <span class='op'>&lt;-</span> <span class='fu'><a href='ml_estimation.html'>ml_estimation</a></span><span class='op'>(</span>x <span class='op'>=</span> <span class='va'>obs</span>, event <span class='op'>=</span> <span class='va'>state</span>,
-                     distribution <span class='op'>=</span> <span class='st'>"weibull"</span>, conf_level <span class='op'>=</span> <span class='fl'>0.95</span><span class='op'>)</span>
-<span class='va'>delta_prob</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/lapply.html'>sapply</a></span><span class='op'>(</span><span class='va'>obs</span>, <span class='va'>delta_method</span>,
-                          loc_sc_params <span class='op'>=</span> <span class='va'>mle</span><span class='op'>$</span><span class='va'>loc_sc_coefficients</span>,
-                          loc_sc_varcov <span class='op'>=</span> <span class='va'>mle</span><span class='op'>$</span><span class='va'>loc_sc_vcov</span>,
-                          distribution <span class='op'>=</span> <span class='st'>"weibull"</span>,
-                          direction <span class='op'>=</span> <span class='st'>"y"</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='error'>Error in t(dz_dpar) %*% loc_sc_varcov: verlangt numerische/komplexe Matrix/Vektor-Argumente</span></div></pre>
+<span class='co'># Parameter estimation using maximum likelihood:</span>
+<span class='va'>mle</span> <span class='op'>&lt;-</span> <span class='fu'><a href='ml_estimation.html'>ml_estimation</a></span><span class='op'>(</span>
+  x <span class='op'>=</span> <span class='va'>data</span>,
+  distribution <span class='op'>=</span> <span class='st'>"weibull"</span>,
+  conf_level <span class='op'>=</span> <span class='fl'>0.95</span>
+<span class='op'>)</span>
+
+<span class='co'># Example 1 - Standard errors of standardized quantiles:</span>
+<span class='va'>delta_y</span> <span class='op'>&lt;-</span> <span class='fu'>delta_method</span><span class='op'>(</span>
+  p <span class='op'>=</span> <span class='va'>shock</span><span class='op'>$</span><span class='va'>distance</span>,
+  loc_sc_params <span class='op'>=</span> <span class='va'>mle</span><span class='op'>$</span><span class='va'>loc_sc_params</span>,
+  loc_sc_varcov <span class='op'>=</span> <span class='va'>mle</span><span class='op'>$</span><span class='va'>loc_sc_varcov</span>,
+  distribution <span class='op'>=</span> <span class='st'>"weibull"</span>,
+  direction <span class='op'>=</span> <span class='st'>"y"</span>
+<span class='op'>)</span>
+
+<span class='co'># Example 2 - Standard errors of quantiles:</span>
+<span class='va'>delta_x</span> <span class='op'>&lt;-</span> <span class='fu'>delta_method</span><span class='op'>(</span>
+  p <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span><span class='fl'>0.01</span>, <span class='fl'>0.99</span>, <span class='fl'>0.01</span><span class='op'>)</span>,
+  loc_sc_params <span class='op'>=</span> <span class='va'>mle</span><span class='op'>$</span><span class='va'>loc_sc_params</span>,
+  loc_sc_varcov <span class='op'>=</span> <span class='va'>mle</span><span class='op'>$</span><span class='va'>loc_sc_varcov</span>,
+  distribution <span class='op'>=</span> <span class='st'>"weibull"</span>,
+  direction <span class='op'>=</span> <span class='st'>"x"</span>
+<span class='op'>)</span>
+
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
@@ -231,7 +243,7 @@ quantile then <em>direction</em> needs to be "y" and vice versa.</p></td>
 
       <footer>
       <div class="copyright">
-  <p>Developed by Hensel Tim-Gunnar, Barkemeyer David.</p>
+  <p>Developed by Tim-Gunnar Hensel, David Barkemeyer.</p>
 </div>
 
 <div class="pkgdown">

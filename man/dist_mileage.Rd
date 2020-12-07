@@ -29,7 +29,7 @@ This function models a mileage random variable on an annual basis with respect
 to a supposed continuous distribution. First, the distances are calculated for
 one year (365 days) using a linear relationship between the distance and
 operating time. Second, the parameter(s) of the assumed distribution are
-estimated using MLE. See 'Details' for more information.
+estimated with maximum likelihood. See 'Details' for more information.
 }
 \details{
 The distribution parameter(s) are determined on the basis of complete cases,

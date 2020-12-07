@@ -589,10 +589,7 @@ loglik_profiling_ <- function(x,
 #' to estimate the parameters and variance-covariance matrix of the parameters.
 #'
 #' @inheritParams ml_estimation.default
-#'
-#' @param loc_sc_params A (named) numeric vector of (log-)location-scale parameters
-#'   in the order of location (\eqn{\mu}) and scale (\eqn{\sigma}). If a
-#'   three-parametric model is used the threshold (\eqn{\gamma}) is the third element.
+#' @inheritParams predict_quantile
 #'
 #' @return
 #' Returns the log-likelihood value for the data with respect to the parameters

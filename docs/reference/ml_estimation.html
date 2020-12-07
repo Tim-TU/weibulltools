@@ -40,15 +40,11 @@
 
 
 <meta property="og:title" content="ML Estimation for Parametric Lifetime Distributions — ml_estimation" />
-<meta property="og:description" content="This method estimates the parameters and calculates normal approximation confidence
-intervals for a two- or three-parametric lifetime distribution in the frequently used
-(log-) location-scale parameterization. ml_estimation uses the
-Lifedata.MLE function which is defined in the
-SPREDA package.
-For the Weibull the estimates are transformed such that they are in line with
-the parameterization provided by the stats package like
-pweibull. The method is applicable for complete and (multiple)
-right censored data." />
+<meta property="og:description" content="This method estimates the parameters of a two- or three-parametric lifetime
+distribution for complete and (multiple) right censored data. The parameters
+are determined in the frequently used (log-)location-scale parameterization.
+For the Weibull, estimates are transformed such that they are in line with the
+parameterization provided by the stats package (see Weibull)." />
 
 
 
@@ -138,24 +134,23 @@ right censored data." />
     </div>
 
     <div class="ref-description">
-    <p>This method estimates the parameters and calculates normal approximation confidence
-intervals for a two- or three-parametric lifetime distribution in the frequently used
-(log-) location-scale parameterization. <code>ml_estimation</code> uses the
-<code>Lifedata.MLE</code> function which is defined in the
-<em>SPREDA</em> package.
-For the Weibull the estimates are transformed such that they are in line with
-the parameterization provided by the <em>stats</em> package like
-<code><a href='https://rdrr.io/r/stats/Weibull.html'>pweibull</a></code>. The method is applicable for complete and (multiple)
-right censored data.</p>
+    <p>This method estimates the parameters of a two- or three-parametric lifetime
+distribution for complete and (multiple) right censored data. The parameters
+are determined in the frequently used (log-)location-scale parameterization.</p>
+<p>For the Weibull, estimates are transformed such that they are in line with the
+parameterization provided by the <em>stats</em> package (see <a href='https://rdrr.io/r/stats/Weibull.html'>Weibull</a>).</p>
     </div>
 
-    <pre class="usage"><span class='fu'>ml_estimation</span><span class='op'>(</span>
+    <pre class="usage"><span class='fu'>ml_estimation</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>...</span><span class='op'>)</span>
+
+<span class='co'># S3 method for reliability_data</span>
+<span class='fu'>ml_estimation</span><span class='op'>(</span>
   <span class='va'>x</span>,
-  <span class='va'>event</span>,
   distribution <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"weibull"</span>, <span class='st'>"lognormal"</span>, <span class='st'>"loglogistic"</span>, <span class='st'>"normal"</span>, <span class='st'>"logistic"</span>, <span class='st'>"sev"</span>,
     <span class='st'>"weibull3"</span>, <span class='st'>"lognormal3"</span>, <span class='st'>"loglogistic3"</span><span class='op'>)</span>,
-  wts <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/rep.html'>rep</a></span><span class='op'>(</span><span class='fl'>1</span>, <span class='fu'><a href='https://rdrr.io/r/base/length.html'>length</a></span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span><span class='op'>)</span>,
-  conf_level <span class='op'>=</span> <span class='fl'>0.95</span>
+  wts <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/rep.html'>rep</a></span><span class='op'>(</span><span class='fl'>1</span>, <span class='fu'><a href='https://rdrr.io/r/base/nrow.html'>nrow</a></span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span><span class='op'>)</span>,
+  conf_level <span class='op'>=</span> <span class='fl'>0.95</span>,
+  <span class='va'>...</span>
 <span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -163,78 +158,92 @@ right censored data.</p>
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>x</th>
-      <td><p>A numeric vector which consists of lifetime data. Lifetime
-data could be every characteristic influencing the reliability of a product,
-e.g. operating time (days/months in service), mileage (km, miles), load
-cycles.</p></td>
-    </tr>
-    <tr>
-      <th>event</th>
-      <td><p>A vector of binary data (0 or 1) indicating whether unit <em>i</em>
-is a right censored observation (= 0) or a failure (= 1).</p></td>
+      <td><p>An object of class <code>reliability_data</code> returned by
+<code><a href='reliability_data.html'>reliability_data</a></code>.</p></td>
     </tr>
     <tr>
       <th>distribution</th>
-      <td><p>Supposed distribution of the random variable. The
-value can be <code>"weibull"</code>, <code>"lognormal"</code>, <code>"loglogistic"</code>,
-<code>"normal"</code>, <code>"logistic"</code>, <code>"sev"</code> <em>(smallest extreme value)</em>,
-<code>"weibull3"</code>, <code>"lognormal3"</code> or <code>"loglogistic3"</code>.
-Other distributions have not been implemented yet.</p></td>
+      <td><p>Supposed distribution of the random variable.</p></td>
     </tr>
     <tr>
       <th>wts</th>
       <td><p>Optional vector of case weights. The length of <code>wts</code> must be the
-same as the number of observations <code>x</code>. Default is that <code>wts</code> is a
-vector with all components being 1 (same weights).</p></td>
+same as the number of observations in <code>x</code>.</p></td>
     </tr>
     <tr>
       <th>conf_level</th>
-      <td><p>Confidence level of the interval. The default value is
-<code>conf_level = 0.95</code>.</p></td>
+      <td><p>Confidence level of the interval.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>Returns a list with the following components:</p><ul>
-<li><p><code>coefficients</code> : Provided, if <code>distribution</code> is <code>"weibull"</code>.
-    \(\eta\) is the estimated scale and \(\beta\) the estimated shape parameter.</p></li>
-<li><p><code>confint</code> : Provided, if <code>distribution</code> is <code>"weibull"</code>.
-    Confidence interval for \(\eta\) and \(\beta\).</p></li>
-<li><p><code>loc_sc_params</code> : Estimated location-scale parameters.</p></li>
-<li><p><code>loc_sc_confint</code> : Confidence interval for location-scale parameters.</p></li>
-<li><p><code>loc_sc_varcov</code> : Estimated Variance-Covariance matrix of the used
-    location-scale distribution.</p></li>
+    <p>Returns a list with the classes <code>"ml_estimation"</code> and
+  <code>"model_estimation"</code> containing the following elements:</p><ul>
+<li><p><code>coefficients</code> : If <code>distribution</code> is <code>"weibull"</code>, the
+      estimated scale (\(\eta\)) and shape (\(\beta\)) parameters are provided
+      (and additionally the threshold parameter \(\gamma\) if <code>distribution</code>
+      is <code>"weibull3"</code>). For any other distribution, <code>coefficients</code> is
+      identical to <code>loc_sc_params</code>.</p></li>
+<li><p><code>confint</code> : Only included if <code>distribution</code> is <code>"weibull"</code>
+      or <code>"weibull3"</code>. Confidence intervals for \(\eta\) and \(\beta\)
+      (and \(\gamma\) if <code>distribution</code> is <code>"weibull3"</code>).</p></li>
+<li><p><code>loc_sc_params</code> : Estimated (log-)location-scale parameters.
+      Threshold parameter is included if <code>distribution</code> is <code>"weibull3"</code>,
+      <code>"lognormal3"</code> or <code>"loglogistic3"</code>.</p></li>
+<li><p><code>loc_sc_confint</code> : Confidence intervals the (log-)location-scale
+      parameters.</p></li>
+<li><p><code>loc_sc_varcov</code> : Estimated variance-covariance matrix for the
+      (log-)location-scale parameters.</p></li>
 <li><p><code>logL</code> : The log-likelihood value.</p></li>
 <li><p><code>aic</code> : Akaike Information Criterion.</p></li>
 <li><p><code>bic</code> : Bayesian Information Criterion.</p></li>
+<li><p><code>data</code> : A tibble with class <code>"reliability_data"</code> returned
+      by <code><a href='reliability_data.html'>reliability_data</a></code>.</p></li>
+<li><p><code>distribution</code> : Specified distribution.</p></li>
 </ul>
 
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+
+    <p><code>ml_estimation</code> calls <code>Lifedata.MLE</code>,
+which is implemented in <em>SPREDA</em>, to obtain the estimates. Normal
+approximation confidence intervals for the parameters are computed as well.</p>
     <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
 
     <p>Meeker, William Q; Escobar, Luis A., Statistical methods for
   reliability data, New York: Wiley series in probability and statistics, 1998</p>
+    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
+
+    <div class='dont-index'><p><code><a href='ml_estimation.default.html'>ml_estimation.default</a></code></p></div>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='co'># Example 1: Fitting a two-parameter Weibull:</span>
-<span class='va'>obs</span>   <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span><span class='fl'>10000</span>, <span class='fl'>100000</span>, <span class='fl'>10000</span><span class='op'>)</span>
-<span class='va'>state</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0</span>, <span class='fl'>1</span>, <span class='fl'>1</span>, <span class='fl'>0</span>, <span class='fl'>0</span>, <span class='fl'>0</span>, <span class='fl'>1</span>, <span class='fl'>0</span>, <span class='fl'>1</span>, <span class='fl'>0</span><span class='op'>)</span>
+    <pre class="examples"><div class='input'><span class='co'># Reliability data preparation:</span>
+<span class='co'>## Data for two-parametric model:</span>
+<span class='va'>data_2p</span> <span class='op'>&lt;-</span> <span class='fu'><a href='reliability_data.html'>reliability_data</a></span><span class='op'>(</span>
+  data <span class='op'>=</span> <span class='va'>shock</span>,
+  x <span class='op'>=</span> <span class='va'>distance</span>,
+  status <span class='op'>=</span> <span class='va'>status</span>
+<span class='op'>)</span>
 
-<span class='va'>mle</span> <span class='op'>&lt;-</span> <span class='fu'>ml_estimation</span><span class='op'>(</span>x <span class='op'>=</span> <span class='va'>obs</span>, event <span class='op'>=</span> <span class='va'>state</span>,
-                     distribution <span class='op'>=</span> <span class='st'>"weibull"</span>, conf_level <span class='op'>=</span> <span class='fl'>0.90</span><span class='op'>)</span>
+<span class='co'>## Data for three-parametric model:</span>
+<span class='va'>data_3p</span> <span class='op'>&lt;-</span> <span class='fu'><a href='reliability_data.html'>reliability_data</a></span><span class='op'>(</span>
+  data <span class='op'>=</span> <span class='va'>alloy</span>,
+  x <span class='op'>=</span> <span class='va'>cycles</span>,
+  status <span class='op'>=</span> <span class='va'>status</span>
+<span class='op'>)</span>
 
-<span class='co'># Example 2: Fitting a three-parameter Weibull:</span>
-<span class='co'># Alloy T7987 dataset taken from Meeker and Escobar(1998, p. 131)</span>
-<span class='va'>cycles</span>   <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>300</span>, <span class='fl'>300</span>, <span class='fl'>300</span>, <span class='fl'>300</span>, <span class='fl'>300</span>, <span class='fl'>291</span>, <span class='fl'>274</span>, <span class='fl'>271</span>, <span class='fl'>269</span>, <span class='fl'>257</span>, <span class='fl'>256</span>, <span class='fl'>227</span>, <span class='fl'>226</span>,
-              <span class='fl'>224</span>, <span class='fl'>213</span>, <span class='fl'>211</span>, <span class='fl'>205</span>, <span class='fl'>203</span>, <span class='fl'>197</span>, <span class='fl'>196</span>, <span class='fl'>190</span>, <span class='fl'>189</span>, <span class='fl'>188</span>, <span class='fl'>187</span>, <span class='fl'>184</span>, <span class='fl'>180</span>,
-              <span class='fl'>180</span>, <span class='fl'>177</span>, <span class='fl'>176</span>, <span class='fl'>173</span>, <span class='fl'>172</span>, <span class='fl'>171</span>, <span class='fl'>170</span>, <span class='fl'>170</span>, <span class='fl'>169</span>, <span class='fl'>168</span>, <span class='fl'>168</span>, <span class='fl'>162</span>, <span class='fl'>159</span>,
-              <span class='fl'>159</span>, <span class='fl'>159</span>, <span class='fl'>159</span>, <span class='fl'>152</span>, <span class='fl'>152</span>, <span class='fl'>149</span>, <span class='fl'>149</span>, <span class='fl'>144</span>, <span class='fl'>143</span>, <span class='fl'>141</span>, <span class='fl'>141</span>, <span class='fl'>140</span>, <span class='fl'>139</span>,
-              <span class='fl'>139</span>, <span class='fl'>136</span>, <span class='fl'>135</span>, <span class='fl'>133</span>, <span class='fl'>131</span>, <span class='fl'>129</span>, <span class='fl'>123</span>, <span class='fl'>121</span>, <span class='fl'>121</span>, <span class='fl'>118</span>, <span class='fl'>117</span>, <span class='fl'>117</span>, <span class='fl'>114</span>,
-              <span class='fl'>112</span>, <span class='fl'>108</span>, <span class='fl'>104</span>, <span class='fl'>99</span>, <span class='fl'>99</span>, <span class='fl'>96</span>, <span class='fl'>94</span><span class='op'>)</span>
-<span class='va'>state</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/rep.html'>rep</a></span><span class='op'>(</span><span class='fl'>0</span>, <span class='fl'>5</span><span class='op'>)</span>, <span class='fu'><a href='https://rdrr.io/r/base/rep.html'>rep</a></span><span class='op'>(</span><span class='fl'>1</span>, <span class='fl'>67</span><span class='op'>)</span><span class='op'>)</span>
+<span class='co'># Example 1 - Fitting a two-parametric weibull distribution:</span>
+<span class='va'>ml_2p</span> <span class='op'>&lt;-</span> <span class='fu'>ml_estimation</span><span class='op'>(</span>
+  x <span class='op'>=</span> <span class='va'>data_2p</span>,
+  distribution <span class='op'>=</span> <span class='st'>"weibull"</span>
+<span class='op'>)</span>
 
-<span class='va'>mle_weib3</span> <span class='op'>&lt;-</span> <span class='fu'>ml_estimation</span><span class='op'>(</span>x <span class='op'>=</span> <span class='va'>cycles</span>, event <span class='op'>=</span> <span class='va'>state</span>,
-                           distribution <span class='op'>=</span> <span class='st'>"weibull3"</span>, conf_level <span class='op'>=</span> <span class='fl'>0.95</span><span class='op'>)</span>
+<span class='co'># Example 2 - Fitting a three-parametric lognormal distribution:</span>
+<span class='va'>ml_3p</span> <span class='op'>&lt;-</span> <span class='fu'>ml_estimation</span><span class='op'>(</span>
+  x <span class='op'>=</span> <span class='va'>data_3p</span>,
+  distribution <span class='op'>=</span> <span class='st'>"lognormal3"</span>,
+  conf_level <span class='op'>=</span> <span class='fl'>0.99</span>
+<span class='op'>)</span>
 
 </div></pre>
   </div>
@@ -248,7 +257,7 @@ vector with all components being 1 (same weights).</p></td>
 
       <footer>
       <div class="copyright">
-  <p>Developed by Hensel Tim-Gunnar, Barkemeyer David.</p>
+  <p>Developed by Tim-Gunnar Hensel, David Barkemeyer.</p>
 </div>
 
 <div class="pkgdown">

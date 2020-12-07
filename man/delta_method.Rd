@@ -15,64 +15,76 @@ delta_method(
 )
 }
 \arguments{
-\item{p}{a numeric value of a probability or a quantile. If the standard error
-of quantile is of interest a specific probability needs to be supplied and if
-the standard error of a standardized quantile (z-value) should be calculated
-a specific quantile should be provided.}
+\item{p}{A numeric vector of probabilities or quantiles. If the standard errors
+of quantiles should be determined the corresponding probabilities have to be
+specified, and if the standard errors of standardized quantiles (z-values)
+should be computed corresponding quantiles are required.}
 
-\item{loc_sc_params}{a (named) numeric vector of estimated
-(by Maximum Likelihood) location and scale parameters for a specified
-distribution. The order of elements is important. First entry needs to be
-the location parameter \eqn{\mu} and the second element needs to be the
-scale parameter \eqn{\sigma}. If a three-parametric model is used the third element
-is the threshold parameter \eqn{\gamma}.}
+\item{loc_sc_params}{A (named) numeric vector of (log-)location-scale parameters
+returned from \code{\link{ml_estimation}}.}
 
-\item{loc_sc_varcov}{a (named) numeric matrix of estimated
-(by Maximum Likelihood) location and scale variances and covariances for a
-specified distribution. The order of elements is important. First entry
-of the diagonal needs to be the variance of the location parameter
-Var(\eqn{\mu}) and the second element of the diagonal needs to be the
-variance of the scale parameter Var(\eqn{\sigma}). If a three-parametric model
-is used the third element of the diagonal needs to be the variance of the
-threshold parameter Var(\eqn{\gamma}).}
+\item{loc_sc_varcov}{A (named) numeric matrix of estimated variances and
+covariances returned from \code{\link{ml_estimation}}.}
 
-\item{distribution}{Supposed distribution of the random variable.}
+\item{distribution}{Supposed distribution of the random variable. Has to be in
+line with the specification made in \code{\link{ml_estimation}}.}
 
-\item{direction}{a character string specifying the direction of the computed
-standard errors. Must be either "y" (used for confidence intervals of failure
-probabilities in \code{\link{confint_fisher}}) or "x" (used for confidence
-intervals of quantiles in \code{\link{confint_fisher}}). If \code{p} is a
-quantile then \emph{direction} needs to be "y" and vice versa.}
+\item{direction}{A character string specifying for which quantity the standard
+errors are calculated. One of \code{"y"} (if \code{p} are quantiles) or
+\code{"x"} (if \code{p} are probabilities).}
 }
 \value{
-A numeric value with estimated standard errors of quantiles or standardized
-  z values. Both are required for the computation of normal approximation
-  confidence intervals. If standard errors of standardized z values are compueted
-  one can calculate confidence intervals for distribution probabilities (z-procedure,
-  which is used inside \code{\link{confint_fisher}}).
+A numeric vector of estimated standard errors for quantiles or
+  standardized quantiles (\emph{z-values}).
 }
 \description{
-The Delta Method estimates the standard error for quantities that can be
-written as non-linear functions of ML estimators like quantiles. I.e. the
-(log-)location-scale (and threshold) parameters and variance-covariance matrix
-of these need to be estimated by Maximum Likelihood.
+This function applies the delta method for two- or three-parametric lifetime
+distributions that belong to the (log-)location-scale family.
+}
+\details{
+The delta method estimates the standard errors for quantities that can be
+written as non-linear functions of ML estimators. Hence, (log-)location-scale
+parameters as well as the variance-covariance matrix of these have to be estimated
+with \link[=ml_estimation]{maximum likelihood}.
+
+The estimated standard errors are needed to calculate Fisher's (normal
+approximation) confidence intervals. For confidence bounds on the probability,
+standard errors of the standardized quantiles (\code{direction = "y"})
+have to be computed (\emph{z-procedure}) and for bounds on quantiles, standard errors
+of quantiles (\code{direction = "x"}) are required. For more information see
+\code{\link{confint_fisher}}.
 }
 \examples{
-obs   <- seq(10000, 100000, 10000)
-status <- c(0, 1, 1, 0, 0, 0, 1, 0, 1, 0)
-data <- reliability_data(x = obs, status = status)
+# Reliability data preparation:
+data <- reliability_data(
+  data = shock,
+  x = distance,
+  status = status
+)
 
+# Parameter estimation using maximum likelihood:
 mle <- ml_estimation(
-  data,
+  x = data,
   distribution = "weibull",
   conf_level = 0.95
 )
 
-delta_prob <- sapply(obs, delta_method,
+# Example 1 - Standard errors of standardized quantiles:
+delta_y <- delta_method(
+  p = shock$distance,
   loc_sc_params = mle$loc_sc_params,
   loc_sc_varcov = mle$loc_sc_varcov,
   distribution = "weibull",
   direction = "y"
+)
+
+# Example 2 - Standard errors of quantiles:
+delta_x <- delta_method(
+  p = seq(0.01, 0.99, 0.01),
+  loc_sc_params = mle$loc_sc_params,
+  loc_sc_varcov = mle$loc_sc_varcov,
+  distribution = "weibull",
+  direction = "x"
 )
 
 }

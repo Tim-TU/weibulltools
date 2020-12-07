@@ -31,7 +31,7 @@ to \code{\link{dist_delay}} is recommended.
 This function introduces a delay random variable by calculating the time
 difference between the registration and production date for the sample units
 and afterwards estimates the parameter(s) of a supposed distribution,
-using MLE.
+using maximum likelihood.
 }
 \examples{
 date_of_production   <- c("2014-07-28", "2014-02-17", "2014-07-14",

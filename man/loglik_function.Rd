@@ -28,7 +28,8 @@ same as the number of observations in \code{x}.}
 
 \item{loc_sc_params}{A (named) numeric vector of (log-)location-scale parameters
 in the order of location (\eqn{\mu}) and scale (\eqn{\sigma}). If a
-three-parametric model is used the threshold (\eqn{\gamma}) is the third element.}
+three-parametric model is selected, the threshold parameter (\eqn{\gamma})
+has to be the third element.}
 
 \item{distribution}{Supposed distribution of the random variable.}
 }
