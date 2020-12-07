@@ -13,7 +13,7 @@
 #' which is implemented in \emph{SPREDA}, to obtain the estimates. Normal
 #' approximation confidence intervals for the parameters are computed as well.
 #'
-#' @param x An object of class \code{reliability_data} returned by
+#' @param x Object of class \code{reliability_data} returned by
 #'   \code{\link{reliability_data}}.
 #' @param distribution Supposed distribution of the random variable.
 #' @param wts Optional vector of case weights. The length of \code{wts} must be the

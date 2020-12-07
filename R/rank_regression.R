@@ -26,7 +26,7 @@
 #' in context of \emph{Rank Regression}. For an accepted statistical method use
 #' \link[=ml_estimation]{maximum likelihood}.
 #'
-#' @param x An object of class \code{cdf_estimation} returned from
+#' @param x Object of class \code{cdf_estimation} returned from
 #'  \code{\link{estimate_cdf}}.
 #' @param distribution Supposed distribution of the random variable.
 #' @param conf_level Confidence level of the interval. If \code{distribution} is
@@ -559,7 +559,7 @@ print.rank_regression <- function(x,
 #' In terms of \emph{Rank Regression} this function can be optimized
 #' (\code{\link{optim}}) to estimate the threshold parameter.
 #'
-#' @param x An object of class \code{cdf_estimation} returned from
+#' @param x Object of class \code{cdf_estimation} returned from
 #'   \code{\link{estimate_cdf}}.
 #' @param y A numeric vector which consists of estimated failure probabilities
 #'   regarding the lifetime data in \code{x}.

@@ -1,75 +1,111 @@
 #' Mixture Model Identification using Segmented Regression
 #'
-#' This method uses piecewise linear regression to separate the data in
-#' subgroups, if appropriate. Since this happens in an automated fashion
-#' the function tends to overestimate the number of breakpoints and
-#' therefore returns too many subgroups. This problem is already stated in
-#' the documentation of the function \link{segmented.lm}, which is part of
-#' the \emph{segmented} package. A maximum of three subgroups can be obtained.
+#' @description
+#' This method uses piecewise linear regression to divide the data into
+#' subgroups (See 'Details' for more information).
 #'
-#' @section Methods (by class):
-#' \describe{
-#'   \item{\code{\link[=mixmod_regression.cdf_estimation]{cdf_estimation}}}{
-#'     Preferred. Provide the output of \code{\link{estimate_cdf}} directly.
-#'   }
-#'   \item{\code{\link[=mixmod_regression.default]{default}}}{
-#'     Provide \code{x}, \code{y} and \code{status} manually.
-#'   }
+#' @details
+#' The segmentation process is based on the lifetime characteristics of failed
+#' units and their corresponding estimated failure probabilities for which intact
+#' items are taken into account. It is performed with the support of
+#' \code{\link[segmented:segmented]{segmented.lm}}, which is implemented in
+#' \emph{segmented}.
+#'
+#' Since the attempt to separate the failure data happens in an automated fashion,
+#' the algorithm tends to overestimate the number of breakpoints (see 'Warning'
+#' in \code{\link[segmented:segmented]{segmented}}).
+#'
+#' In the context of reliability analysis it is important that the main types of
+#' failures can be identified. These are
+#' \itemize{
+#'   \item Early failures,
+#'   \item Random failures and
+#'   \item Wear-out failures.
 #' }
+#' In order to reduce the risk of overestimation as well as being able to consider
+#' the main types of failures, a maximum of three subgroups can be obtained.
 #'
-#' @encoding UTF-8
-#' @references Doganaksoy, N.; Hahn, G.; Meeker, W. Q., Reliability Analysis by
-#'   Failure Mode, Quality Progress, 35(6), 47-52, 2002
+#' @inheritParams rank_regression.cdf_estimation
+#' @param control Output of call to \code{\link[segmented]{seg.control}}, which
+#'   is passed to \code{\link[segmented:segmented]{segmented.lm}}.
 #'
-#' @return Returns a list where the length of the list depends on
-#'   the number of identified subgroups. Each list has the same
-#'   information as provided by \link{rank_regression}. Additionally each list
+#' @return Returns a list of class \code{"mixmod_regression"}. The length of the
+#' list depends on the number of identified subgroups. Each list contains the
+#' information provided by \code{\link{rank_regression}}. In addition, the returned
+#' tibble \code{data} of each list has to more columns:
+#' \itemize{
+#'   \item \code{q} :
+#'   \item \code{group} :
+#' }
+#' ,   each list
 #'   has an element that specifies the range regarding the lifetime data for
 #'   every subgroup.
 #'
-#' @export
+#' @encoding UTF-8
 #'
+#' @references Doganaksoy, N.; Hahn, G.; Meeker, W. Q., Reliability Analysis by
+#'   Failure Mode, Quality Progress, 35(6), 47-52, 2002
+#'
+#' @seealso \code{\link{mixmod_regression.default}}
+#'
+#' @examples
+#' # Reliability data preparation:
+#' ## Data for mixture model:
+#' data_mix <- reliability_data(
+#'   data = voltage,
+#'   x = hours,
+#'   status = status
+#' )
+#'
+#' # Probability estimation with one method:
+#' prob_mix <- estimate_cdf(
+#'   data_mix,
+#'   methods = "johnson"
+#' )
+#'
+#' # Probability estimation for multiple methods:
+#' prob_mix_mult <- estimate_cdf(
+#'   data_mix,
+#'   methods = c("johnson", "kaplan", "nelson")
+#' )
+#'
+#' # Example 1 - Mixture identification using weibull models:
+#' mix_mod_weibull <- mixmod_regression(
+#'   x = prob_mix,
+#'   distribution = "weibull",
+#'   conf_level = 0.99
+#' )
+#'
+#' # Example 2 - Mixture identification using lognormals models:
+#' mix_mod_lognorm <- mixmod_regression(
+#'   x = prob_mix,
+#'   distribution = "lognormal"
+#' )
+#'
+#' # Example 3 - Mixture identification for multiple methods specified in estimate_cdf:
+#' mix_mod_mult <- mixmod_regression(
+#'   prob_mix_mult,
+#'   distribution = "weibull"
+#' )
+#'
+#' @export
 mixmod_regression <- function(x, ...) {
   UseMethod("mixmod_regression")
 }
 
 
 
-#' Mixture Model Identification using Segmented Regression
-#'
-#' @inherit mixmod_regression description details return references
-#'
-#' @inheritParams rank_regression.cdf_estimation
-#' @param control Output of call to \code{\link[segmented]{seg.control}}, which
-#'   is passed to \code{\link[segmented:segmented.lm]{segmented.lm}}.
-#'
-#' @examples
-#' # Data is taken from given reference:
-#' hours <- c(2, 28, 67, 119, 179, 236, 282, 317, 348, 387, 3, 31, 69, 135,
-#'           191, 241, 284, 318, 348, 392, 5, 31, 76, 144, 203, 257, 286,
-#'           320, 350, 412, 8, 52, 78, 157, 211, 261, 298, 327, 360, 446,
-#'           13, 53, 104, 160, 221, 264, 303, 328, 369, 21, 64, 113, 168,
-#'           226, 278, 314, 328, 377)
-#'
-#' status <- c(1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1,
-#'           1, 0, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 0, 0,
-#'           1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-#'           0, 1, 1, 1, 1, 1, 1)
-#'
-#' data <- reliability_data(x = hours, status = status)
-#'
-#' tbl_john <- estimate_cdf(data, methods = "johnson")
-#'
-#' mix_mod <- mixmod_regression(tbl_john, distribution = "weibull")
+#' @rdname mixmod_regression
 #'
 #' @export
-#'
 mixmod_regression.cdf_estimation <- function(
-                        x,
-                        distribution = c("weibull", "lognormal", "loglogistic"),
-                        conf_level = .95,
-                        control = segmented::seg.control(),
-                        ...
+                               x,
+                               distribution = c(
+                                 "weibull", "lognormal", "loglogistic"
+                               ),
+                               conf_level = .95,
+                               control = segmented::seg.control(),
+                               ...
 ) {
 
   distribution <- match.arg(distribution)
@@ -117,26 +153,37 @@ mixmod_regression.cdf_estimation <- function(
 #' @inheritParams mixmod_regression.cdf_estimation
 #'
 #' @examples
-#' # Data is taken from given reference:
-#' hours <- c(2, 28, 67, 119, 179, 236, 282, 317, 348, 387, 3, 31, 69, 135,
-#'           191, 241, 284, 318, 348, 392, 5, 31, 76, 144, 203, 257, 286,
-#'           320, 350, 412, 8, 52, 78, 157, 211, 261, 298, 327, 360, 446,
-#'           13, 53, 104, 160, 221, 264, 303, 328, 369, 21, 64, 113, 168,
-#'           226, 278, 314, 328, 377)
+#' # Vectors:
+#' hours <- voltage$hours
+#' status <- voltage$status
 #'
-#' status <- c(1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1,
-#'           1, 0, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 0, 0,
-#'           1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-#'           0, 1, 1, 1, 1, 1, 1)
+#' # Probability estimation:
+#' prob_tbl <- estimate_cdf(
+#'   x = hours,
+#'   status = status,
+#'   methods = "johnson"
+#' )
 #'
-#' data <- reliability_data(x = hours, status = status)
+#' # Example 1 - Mixture identification using weibull models:
+#' mix_mod_weibull <- mixmod_regression(
+#'    x = prob_tbl$x,
+#'    y = prob_tbl$prob,
+#'    status = prob_tbl$status,
+#'    distribution = "weibull",
+#'    conf_level = 0.99
+#' )
 #'
-#' tbl_john <- estimate_cdf(data, methods = "johnson")
-#'
-#' mix_mod <- mixmod_regression(tbl_john, distribution = "weibull")
+#' # Example 2 - Mixture identification using lognormals models:
+#' mix_mod_lognormal <- mixmod_regression(
+#'    x = prob_tbl$x,
+#'    y = prob_tbl$prob,
+#'    status = prob_tbl$status,
+#'    distribution = "lognormal",
+#'    conf_level = 0.99,
+#'    control = list(display = TRUE)
+#' )
 #'
 #' @export
-#'
 mixmod_regression.default <- function(
                         x,
                         y,
