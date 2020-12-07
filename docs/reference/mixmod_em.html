@@ -139,77 +139,8 @@ Weibull distributions. If no mixture of k components can be estimated,
 the function is forced to stop and a message with instructions is given.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>mixmod_em</span><span class='op'>(</span>
-  <span class='va'>x</span>,
-  <span class='va'>event</span>,
-  post <span class='op'>=</span> <span class='cn'>NULL</span>,
-  distribution <span class='op'>=</span> <span class='st'>"weibull"</span>,
-  conf_level <span class='op'>=</span> <span class='fl'>0.95</span>,
-  k <span class='op'>=</span> <span class='fl'>2</span>,
-  method <span class='op'>=</span> <span class='st'>"EM"</span>,
-  n_iter <span class='op'>=</span> <span class='fl'>100L</span>,
-  conv_limit <span class='op'>=</span> <span class='fl'>1e-06</span>,
-  diff_loglik <span class='op'>=</span> <span class='fl'>0.5</span>
-<span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>mixmod_em</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>...</span><span class='op'>)</span></pre>
 
-    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
-    <table class="ref-arguments">
-    <colgroup><col class="name" /><col class="desc" /></colgroup>
-    <tr>
-      <th>x</th>
-      <td><p>A numeric vector which consists of lifetime data. Lifetime
-data could be every characteristic influencing the reliability of a product,
-e.g. operating time (days/months in service), mileage (km, miles), load
-cycles.</p></td>
-    </tr>
-    <tr>
-      <th>event</th>
-      <td><p>A vector of binary data (0 or 1) indicating whether unit <em>i</em>
-is a right censored observation (= 0) or a failure (= 1).</p></td>
-    </tr>
-    <tr>
-      <th>post</th>
-      <td><p>A numeric matrix specifiying initial a-posteriori probabilities.
-If post is <code>NULL</code> (default) a-posteriori probabilities are assigned
-randomly using the Dirichlet distribution (<code>rdirichlet</code> from
-<em>LearnBayes</em> Package), which is the conjugate prior of a Multinomial
-distribution. This idea was taken from the blog post of Mr. Gelissen
-(linked under <em>references</em>).</p></td>
-    </tr>
-    <tr>
-      <th>distribution</th>
-      <td><p>Supposed mixture model. Only <code>"weibull"</code> can be used.
-Other distributions have not been implemented yet.</p></td>
-    </tr>
-    <tr>
-      <th>conf_level</th>
-      <td><p>Confidence level for the confidence intervals of the parameters
-of every component <code>k</code>. The default value is <code>conf_level = 0.95</code>.</p></td>
-    </tr>
-    <tr>
-      <th>k</th>
-      <td><p>Integer of mixture components, default is 2.</p></td>
-    </tr>
-    <tr>
-      <th>method</th>
-      <td><p>Default method is <code>"EM"</code>. Other methods have not been implemented
-yet.</p></td>
-    </tr>
-    <tr>
-      <th>n_iter</th>
-      <td><p>Integer defining the maximum number of iterations.</p></td>
-    </tr>
-    <tr>
-      <th>conv_limit</th>
-      <td><p>Numeric value defining the convergence limit.</p></td>
-    </tr>
-    <tr>
-      <th>diff_loglik</th>
-      <td><p>Numeric value defining the maximum difference between
-log-likelihood values, which seems permissible. The default value is <code>0.5</code>.
-See <strong>Details</strong> for the usage of this argument.</p></td>
-    </tr>
-    </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
@@ -246,6 +177,16 @@ But if the log-likelihood values are close to each other, the presence of the
 mixture is strengthened and a reasonable fit is provided.
 Thus, a check of the absolute differences in the log-likelihood values is made
 and the critical difference has to be specified in argument <code>diff_loglik</code>.</p>
+    <h2 class="hasAnchor" id="methods-by-class-"><a class="anchor" href="#methods-by-class-"></a>Methods (by class)</h2>
+
+    
+
+<dl>
+  <dt><code><a href='mixmod_em.reliability_data.html'>reliability_data</a></code></dt><dd><p>Preferred. Provide the output of <code><a href='reliability_data.html'>reliability_data</a></code> directly.</p></dd>
+  <dt><code><a href='mixmod_em.default.html'>default</a></code></dt><dd><p>Provide <code>x</code> and <code>status</code> manually.</p></dd>
+
+</dl>
+
     <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
 
     
@@ -257,28 +198,6 @@ and the critical difference has to be specified in argument <code>diff_loglik</c
 </ul>
 
 
-    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='co'># Data is taken from given reference of Doganaksoy, Hahn and Meeker:</span>
-<span class='va'>hours</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>2</span>, <span class='fl'>28</span>, <span class='fl'>67</span>, <span class='fl'>119</span>, <span class='fl'>179</span>, <span class='fl'>236</span>, <span class='fl'>282</span>, <span class='fl'>317</span>, <span class='fl'>348</span>, <span class='fl'>387</span>, <span class='fl'>3</span>, <span class='fl'>31</span>, <span class='fl'>69</span>, <span class='fl'>135</span>,
-          <span class='fl'>191</span>, <span class='fl'>241</span>, <span class='fl'>284</span>, <span class='fl'>318</span>, <span class='fl'>348</span>, <span class='fl'>392</span>, <span class='fl'>5</span>, <span class='fl'>31</span>, <span class='fl'>76</span>, <span class='fl'>144</span>, <span class='fl'>203</span>, <span class='fl'>257</span>, <span class='fl'>286</span>,
-          <span class='fl'>320</span>, <span class='fl'>350</span>, <span class='fl'>412</span>, <span class='fl'>8</span>, <span class='fl'>52</span>, <span class='fl'>78</span>, <span class='fl'>157</span>, <span class='fl'>211</span>, <span class='fl'>261</span>, <span class='fl'>298</span>, <span class='fl'>327</span>, <span class='fl'>360</span>, <span class='fl'>446</span>,
-          <span class='fl'>13</span>, <span class='fl'>53</span>, <span class='fl'>104</span>, <span class='fl'>160</span>, <span class='fl'>221</span>, <span class='fl'>264</span>, <span class='fl'>303</span>, <span class='fl'>328</span>, <span class='fl'>369</span>, <span class='fl'>21</span>, <span class='fl'>64</span>, <span class='fl'>113</span>, <span class='fl'>168</span>,
-          <span class='fl'>226</span>, <span class='fl'>278</span>, <span class='fl'>314</span>, <span class='fl'>328</span>, <span class='fl'>377</span><span class='op'>)</span>
-<span class='va'>state</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span>, <span class='fl'>1</span>, <span class='fl'>0</span>, <span class='fl'>1</span>, <span class='fl'>0</span>, <span class='fl'>1</span>, <span class='fl'>1</span>, <span class='fl'>1</span>, <span class='fl'>1</span>, <span class='fl'>1</span>, <span class='fl'>1</span>, <span class='fl'>1</span>, <span class='fl'>1</span>, <span class='fl'>0</span>, <span class='fl'>1</span>, <span class='fl'>0</span>, <span class='fl'>1</span>,
-         <span class='fl'>1</span>, <span class='fl'>0</span>, <span class='fl'>1</span>, <span class='fl'>1</span>, <span class='fl'>0</span>, <span class='fl'>1</span>, <span class='fl'>1</span>, <span class='fl'>1</span>, <span class='fl'>0</span>, <span class='fl'>1</span>, <span class='fl'>1</span>, <span class='fl'>1</span>, <span class='fl'>1</span>, <span class='fl'>1</span>, <span class='fl'>0</span>, <span class='fl'>0</span>, <span class='fl'>0</span>,
-         <span class='fl'>1</span>, <span class='fl'>1</span>, <span class='fl'>1</span>, <span class='fl'>1</span>, <span class='fl'>1</span>, <span class='fl'>1</span>, <span class='fl'>0</span>, <span class='fl'>0</span>, <span class='fl'>1</span>, <span class='fl'>1</span>, <span class='fl'>1</span>, <span class='fl'>1</span>, <span class='fl'>1</span>, <span class='fl'>1</span>, <span class='fl'>1</span>, <span class='fl'>1</span>, <span class='fl'>1</span>,
-         <span class='fl'>0</span>, <span class='fl'>1</span>, <span class='fl'>1</span>, <span class='fl'>1</span>, <span class='fl'>1</span>, <span class='fl'>1</span>, <span class='fl'>1</span><span class='op'>)</span>
-
-<span class='va'>mix_mod_em</span> <span class='op'>&lt;-</span> <span class='fu'>mixmod_em</span><span class='op'>(</span>x <span class='op'>=</span> <span class='va'>hours</span>,
-                        event <span class='op'>=</span> <span class='va'>state</span>,
-                        distribution <span class='op'>=</span> <span class='st'>"weibull"</span>,
-                        conf_level <span class='op'>=</span> <span class='fl'>0.95</span>,
-                        k <span class='op'>=</span> <span class='fl'>2</span>,
-                        method <span class='op'>=</span> <span class='st'>"EM"</span>,
-                        n_iter <span class='op'>=</span> <span class='fl'>150</span><span class='op'>)</span>
-
-
-</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
@@ -290,7 +209,7 @@ and the critical difference has to be specified in argument <code>diff_loglik</c
 
       <footer>
       <div class="copyright">
-  <p>Developed by Hensel Tim-Gunnar, Barkemeyer David.</p>
+  <p>Developed by Tim-Gunnar Hensel, David Barkemeyer.</p>
 </div>
 
 <div class="pkgdown">

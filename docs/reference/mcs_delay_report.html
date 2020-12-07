@@ -40,7 +40,10 @@
 
 
 <meta property="og:title" content="Adjustment of Operating Times by Delays in Report using a Monte Carlo Approach — mcs_delay_report" />
-<meta property="og:description" content="The delay in report describes the time between the occurence of a damage and
+<meta property="og:description" content="
+mcs_delay_report() is no longer under active development, switching
+to mcs_delay is recommended.
+The delay in report describes the time between the occurence of a damage and
 the registration in the warranty database. For a given date where the analysis
 is made there could be units which had a failure but are not registered in the
 database and therefore treated as censored units. To overcome this problem
@@ -137,7 +140,10 @@ calculated from complete data, i.e. failed items (see dist_delay_report)." />
     </div>
 
     <div class="ref-description">
-    <p>The delay in report describes the time between the occurence of a damage and
+    <p><img src='figures/lifecycle-soft-deprecated.svg' alt='Soft-deprecated lifecycle' /></p>
+<p><code>mcs_delay_report()</code> is no longer under active development, switching
+to <code><a href='mcs_delay.html'>mcs_delay</a></code> is recommended.</p>
+<p>The delay in report describes the time between the occurence of a damage and
 the registration in the warranty database. For a given date where the analysis
 is made there could be units which had a failure but are not registered in the
 database and therefore treated as censored units. To overcome this problem
@@ -150,11 +156,10 @@ calculated from complete data, i.e. failed items (see <code><a href='dist_delay_
     <pre class="usage"><span class='fu'>mcs_delay_report</span><span class='op'>(</span>
   <span class='va'>date_repair</span>,
   <span class='va'>date_report</span>,
-  <span class='va'>x</span>,
-  <span class='va'>event</span>,
+  <span class='va'>time</span>,
+  <span class='va'>status</span>,
   distribution <span class='op'>=</span> <span class='st'>"lognormal"</span>,
-  details <span class='op'>=</span> <span class='cn'>FALSE</span>,
-  seed <span class='op'>=</span> <span class='cn'>NULL</span>
+  details <span class='op'>=</span> <span class='cn'>FALSE</span>
 <span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -164,40 +169,35 @@ calculated from complete data, i.e. failed items (see <code><a href='dist_delay_
       <th>date_repair</th>
       <td><p>a vector of class <code>"character"</code> or <code>"Date"</code>, in the
 format "yyyy-mm-dd", indicating the date of repair of a failed unit.
-If no date is available use <code>NA</code>.</p></td>
+Use <code>NA</code> for missing elements.</p></td>
     </tr>
     <tr>
       <th>date_report</th>
       <td><p>a vector of class <code>"character"</code> or <code>"Date"</code>, in the
 format "yyyy-mm-dd", indicating the date of report of a failed unit.
-If no date is available use <code>NA</code>.</p></td>
+Use <code>NA</code> for missing elements.</p></td>
     </tr>
     <tr>
-      <th>x</th>
+      <th>time</th>
       <td><p>A numeric vector of operating times.</p></td>
     </tr>
     <tr>
-      <th>event</th>
+      <th>status</th>
       <td><p>A vector of binary data (0 or 1) indicating whether unit <em>i</em>
 is a right censored observation (= 0) or a failure (= 1).</p></td>
     </tr>
     <tr>
       <th>distribution</th>
-      <td><p>Supposed distribution of the random variable. The default
-value is <code>"lognormal"</code>. So far no other distribution is implemented.</p></td>
+      <td><p>Supposed distribution of the random variable. Only
+<code>"lognormal"</code> is implemented.</p></td>
     </tr>
     <tr>
       <th>details</th>
       <td><p>A logical. If <code>FALSE</code> the output consists of a vector with
 corrected operating times for the censored units and the input operating
 times for the failed units. If <code>TRUE</code> the output consists of a detailed
-list, i.e the same vector as described before, simulated random numbers,
-estimated distribution parameters and a seed for reproducibility.</p></td>
-    </tr>
-    <tr>
-      <th>seed</th>
-      <td><p>If <code>seed = NULL</code> a random seed is used. Otherwise the user
-can specify an integer for the seed.</p></td>
+list, i.e the same vector as described before, simulated random numbers and
+estimated distribution parameters.</p></td>
     </tr>
     </table>
 
@@ -214,7 +214,6 @@ can specify an integer for the seed.</p></td>
     censored observations.</p></li>
 <li><p><code>coefficients</code> : Estimated coefficients of supposed
     distribution.</p></li>
-<li><p><code>int_seed</code> : Integer seed number for reproducibility.</p></li>
 </ul>
 
 
@@ -237,21 +236,23 @@ can specify an integer for the seed.</p></td>
 <span class='co'># Example 1 - Simplified vector output:</span>
 <span class='va'>x_corrected</span> <span class='op'>&lt;-</span> <span class='fu'>mcs_delay_report</span><span class='op'>(</span>date_repair <span class='op'>=</span> <span class='va'>date_of_repair</span>,
                                 date_report <span class='op'>=</span> <span class='va'>date_of_report</span>,
-                                x <span class='op'>=</span> <span class='va'>op_time</span>,
-                                event <span class='op'>=</span> <span class='va'>state</span>,
+                                time <span class='op'>=</span> <span class='va'>op_time</span>,
+                                status <span class='op'>=</span> <span class='va'>state</span>,
                                 distribution <span class='op'>=</span> <span class='st'>"lognormal"</span>,
-                                seed <span class='op'>=</span> <span class='cn'>NULL</span>,
                                 details <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span>
-
+</div><div class='output co'>#&gt; <span class='warning'>Warning: `mcs_delay_report()` is deprecated as of lifecycle 2.0.0.</span>
+#&gt; <span class='warning'>Please use `mcs_delay()` instead.</span>
+#&gt; <span class='warning'><span style='color: #555555;'>This warning is displayed once every 8 hours.</span><span></span>
+#&gt; <span class='warning'></span><span style='color: #555555;'>Call `lifecycle::last_warnings()` to see where this warning was generated.</span><span></span></div><div class='input'>
 <span class='co'># Example 2 - Detailed list output:</span>
 <span class='va'>list_detail</span> <span class='op'>&lt;-</span> <span class='fu'>mcs_delay_report</span><span class='op'>(</span>date_repair <span class='op'>=</span> <span class='va'>date_of_repair</span>,
                                 date_report <span class='op'>=</span> <span class='va'>date_of_report</span>,
-                                x <span class='op'>=</span> <span class='va'>op_time</span>,
-                                event <span class='op'>=</span> <span class='va'>state</span>,
+                                time <span class='op'>=</span> <span class='va'>op_time</span>,
+                                status <span class='op'>=</span> <span class='va'>state</span>,
                                 distribution <span class='op'>=</span> <span class='st'>"lognormal"</span>,
-                                seed <span class='op'>=</span> <span class='cn'>NULL</span>,
                                 details <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
-</div></pre>
+
+</div></span></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
@@ -263,7 +264,7 @@ can specify an integer for the seed.</p></td>
 
       <footer>
       <div class="copyright">
-  <p>Developed by Hensel Tim-Gunnar, Barkemeyer David.</p>
+  <p>Developed by Tim-Gunnar Hensel, David Barkemeyer.</p>
 </div>
 
 <div class="pkgdown">

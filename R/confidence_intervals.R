@@ -508,7 +508,7 @@ confint_betabinom_ <- function(model_estimation,
 #'   status = status
 #' )
 #'
-#' # Parameter estimation using MLE:
+#' # Parameter estimation using maximum likelihood:
 #' mle <- ml_estimation(
 #'   x = data,
 #'   distribution = "weibull",

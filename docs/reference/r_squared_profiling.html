@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>\(R²\)-Profile Function for Log-Location-Scale Distributions with Threshold — r_squared_profiling • weibulltools</title>
+<title>R-Squared-Profile Function for Log-Location-Scale Distributions with Threshold — r_squared_profiling • weibulltools</title>
 
 
 <!-- jquery -->
@@ -39,10 +39,10 @@
 
 
 
-<meta property="og:title" content="\(R²\)-Profile Function for Log-Location-Scale Distributions with Threshold — r_squared_profiling" />
+<meta property="og:title" content="R-Squared-Profile Function for Log-Location-Scale Distributions with Threshold — r_squared_profiling" />
 <meta property="og:description" content="This function evaluates the coefficient of determination with respect to a
 given threshold parameter of a three-parametric lifetime distribution.
-In terms of Median Rank Regression this function can be optimized
+In terms of Rank Regression this function can be optimized
 (optim) to estimate the threshold parameter." />
 
 
@@ -127,7 +127,7 @@ In terms of Median Rank Regression this function can be optimized
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>\(R²\)-Profile Function for Log-Location-Scale Distributions with Threshold</h1>
+    <h1>R-Squared-Profile Function for Log-Location-Scale Distributions with Threshold</h1>
     
     <div class="hidden name"><code>r_squared_profiling.Rd</code></div>
     </div>
@@ -135,15 +135,18 @@ In terms of Median Rank Regression this function can be optimized
     <div class="ref-description">
     <p>This function evaluates the coefficient of determination with respect to a
 given threshold parameter of a three-parametric lifetime distribution.
-In terms of <em>Median Rank Regression</em> this function can be optimized
+In terms of <em>Rank Regression</em> this function can be optimized
 (<code><a href='https://rdrr.io/r/stats/optim.html'>optim</a></code>) to estimate the threshold parameter.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>r_squared_profiling</span><span class='op'>(</span>
+    <pre class="usage"><span class='fu'>r_squared_profiling</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>...</span><span class='op'>)</span>
+
+<span class='co'># S3 method for cdf_estimation</span>
+<span class='fu'>r_squared_profiling</span><span class='op'>(</span>
   <span class='va'>x</span>,
-  <span class='va'>y</span>,
   <span class='va'>thres</span>,
-  distribution <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"weibull3"</span>, <span class='st'>"lognormal3"</span>, <span class='st'>"loglogistic3"</span><span class='op'>)</span>
+  distribution <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"weibull3"</span>, <span class='st'>"lognormal3"</span>, <span class='st'>"loglogistic3"</span><span class='op'>)</span>,
+  <span class='va'>...</span>
 <span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -151,60 +154,92 @@ In terms of <em>Median Rank Regression</em> this function can be optimized
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>x</th>
-      <td><p>A numeric vector which consists of lifetime data. Lifetime
-data could be every characteristic influencing the reliability of a product,
-e.g. operating time (days/months in service), mileage (km, miles), load
-cycles.</p></td>
+      <td><p>An object of class <code>cdf_estimation</code> returned from
+<code><a href='estimate_cdf.html'>estimate_cdf</a></code>.</p></td>
+    </tr>
+    <tr>
+      <th>thres</th>
+      <td><p>A numeric value for the threshold parameter.</p></td>
+    </tr>
+    <tr>
+      <th>distribution</th>
+      <td><p>Supposed three-parametric distribution of the random variable.</p></td>
     </tr>
     <tr>
       <th>y</th>
       <td><p>A numeric vector which consists of estimated failure probabilities
 regarding the lifetime data in <code>x</code>.</p></td>
     </tr>
-    <tr>
-      <th>thres</th>
-      <td><p>A numeric value of the threshold parameter.</p></td>
-    </tr>
-    <tr>
-      <th>distribution</th>
-      <td><p>Supposed distribution of the random variable. The
-value can be <code>"weibull3"</code>, <code>"lognormal3"</code> or <code>"loglogistic3"</code>.</p></td>
-    </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>Returns the coefficient of determination for a specified threshold value.</p>
+    <p>Returns the coefficient of determination with respect to the threshold parameter
+<code>thres</code>.</p>
     <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
 
     <p>Meeker, William Q; Escobar, Luis A., Statistical methods for
   reliability data, New York: Wiley series in probability and statistics, 1998</p>
+    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
+
+    <div class='dont-index'><p><code><a href='r_squared_profiling.default.html'>r_squared_profiling.default</a></code></p></div>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='co'># Alloy T7987 dataset taken from Meeker and Escobar(1998, p. 131)</span>
-<span class='va'>cycles</span>   <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>300</span>, <span class='fl'>300</span>, <span class='fl'>300</span>, <span class='fl'>300</span>, <span class='fl'>300</span>, <span class='fl'>291</span>, <span class='fl'>274</span>, <span class='fl'>271</span>, <span class='fl'>269</span>, <span class='fl'>257</span>, <span class='fl'>256</span>, <span class='fl'>227</span>, <span class='fl'>226</span>,
-              <span class='fl'>224</span>, <span class='fl'>213</span>, <span class='fl'>211</span>, <span class='fl'>205</span>, <span class='fl'>203</span>, <span class='fl'>197</span>, <span class='fl'>196</span>, <span class='fl'>190</span>, <span class='fl'>189</span>, <span class='fl'>188</span>, <span class='fl'>187</span>, <span class='fl'>184</span>, <span class='fl'>180</span>,
-              <span class='fl'>180</span>, <span class='fl'>177</span>, <span class='fl'>176</span>, <span class='fl'>173</span>, <span class='fl'>172</span>, <span class='fl'>171</span>, <span class='fl'>170</span>, <span class='fl'>170</span>, <span class='fl'>169</span>, <span class='fl'>168</span>, <span class='fl'>168</span>, <span class='fl'>162</span>, <span class='fl'>159</span>,
-              <span class='fl'>159</span>, <span class='fl'>159</span>, <span class='fl'>159</span>, <span class='fl'>152</span>, <span class='fl'>152</span>, <span class='fl'>149</span>, <span class='fl'>149</span>, <span class='fl'>144</span>, <span class='fl'>143</span>, <span class='fl'>141</span>, <span class='fl'>141</span>, <span class='fl'>140</span>, <span class='fl'>139</span>,
-              <span class='fl'>139</span>, <span class='fl'>136</span>, <span class='fl'>135</span>, <span class='fl'>133</span>, <span class='fl'>131</span>, <span class='fl'>129</span>, <span class='fl'>123</span>, <span class='fl'>121</span>, <span class='fl'>121</span>, <span class='fl'>118</span>, <span class='fl'>117</span>, <span class='fl'>117</span>, <span class='fl'>114</span>,
-              <span class='fl'>112</span>, <span class='fl'>108</span>, <span class='fl'>104</span>, <span class='fl'>99</span>, <span class='fl'>99</span>, <span class='fl'>96</span>, <span class='fl'>94</span><span class='op'>)</span>
-<span class='va'>state</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/rep.html'>rep</a></span><span class='op'>(</span><span class='fl'>0</span>, <span class='fl'>5</span><span class='op'>)</span>, <span class='fu'><a href='https://rdrr.io/r/base/rep.html'>rep</a></span><span class='op'>(</span><span class='fl'>1</span>, <span class='fl'>67</span><span class='op'>)</span><span class='op'>)</span>
+    <pre class="examples"><div class='input'><span class='co'># Data:</span>
+<span class='va'>data</span> <span class='op'>&lt;-</span> <span class='fu'><a href='reliability_data.html'>reliability_data</a></span><span class='op'>(</span>
+  data <span class='op'>=</span> <span class='va'>alloy</span>,
+  x <span class='op'>=</span> <span class='va'>cycles</span>,
+  status <span class='op'>=</span> <span class='va'>status</span>
+<span class='op'>)</span>
 
-<span class='va'>df_john</span> <span class='op'>&lt;-</span> <span class='fu'><a href='johnson_method.html'>johnson_method</a></span><span class='op'>(</span>x <span class='op'>=</span> <span class='va'>cycles</span>, event <span class='op'>=</span> <span class='va'>state</span><span class='op'>)</span>
+<span class='co'># Probability estimation:</span>
+<span class='va'>prob_tbl</span> <span class='op'>&lt;-</span> <span class='fu'><a href='estimate_cdf.html'>estimate_cdf</a></span><span class='op'>(</span>
+  x <span class='op'>=</span> <span class='va'>data</span>,
+  methods <span class='op'>=</span> <span class='st'>"johnson"</span>
+<span class='op'>)</span>
 
-<span class='co'># Determining threshold parameter for which the coefficient of determination is</span>
-<span class='co'># maximized subject to the condition that the threshold parameter must be smaller</span>
-<span class='co'># as the first failure cycle, i.e 94:</span>
-<span class='va'>threshold</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span><span class='fl'>0</span>, <span class='fu'><a href='https://rdrr.io/r/base/Extremes.html'>min</a></span><span class='op'>(</span><span class='va'>cycles</span><span class='op'>[</span><span class='va'>state</span> <span class='op'>==</span> <span class='fl'>1</span><span class='op'>]</span><span class='op'>)</span> <span class='op'>-</span> <span class='fl'>0.1</span>, length.out <span class='op'>=</span> <span class='fl'>100</span><span class='op'>)</span>
-<span class='va'>profile_r2</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/lapply.html'>sapply</a></span><span class='op'>(</span><span class='va'>threshold</span>, <span class='va'>r_squared_profiling</span>,
-                     x <span class='op'>=</span> <span class='va'>df_john</span><span class='op'>$</span><span class='va'>characteristic</span><span class='op'>[</span><span class='va'>df_john</span><span class='op'>$</span><span class='va'>status</span> <span class='op'>==</span> <span class='fl'>1</span><span class='op'>]</span>,
-                     y <span class='op'>=</span> <span class='va'>df_john</span><span class='op'>$</span><span class='va'>prob</span><span class='op'>[</span><span class='va'>df_john</span><span class='op'>$</span><span class='va'>status</span> <span class='op'>==</span> <span class='fl'>1</span><span class='op'>]</span>,
-                     distribution <span class='op'>=</span> <span class='st'>"weibull3"</span><span class='op'>)</span>
+<span class='co'># Determining the optimal coefficient of determination:</span>
+<span class='co'>## Range of threshold parameter must be smaller than the first failure:</span>
+<span class='va'>threshold</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span>
+  <span class='fl'>0</span>,
+  <span class='fu'><a href='https://rdrr.io/r/base/Extremes.html'>min</a></span><span class='op'>(</span>
+    <span class='fu'>dplyr</span><span class='fu'>::</span><span class='fu'><a href='https://dplyr.tidyverse.org/reference/pull.html'>pull</a></span><span class='op'>(</span>
+      <span class='fu'>dplyr</span><span class='fu'>::</span><span class='fu'><a href='https://dplyr.tidyverse.org/reference/filter.html'>filter</a></span><span class='op'>(</span>
+        <span class='va'>prob_tbl</span>,
+        <span class='va'>status</span> <span class='op'>==</span> <span class='fl'>1</span>,
+        <span class='va'>x</span> <span class='op'>==</span> <span class='fu'><a href='https://rdrr.io/r/base/Extremes.html'>min</a></span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span>
+      <span class='op'>)</span>,
+      <span class='va'>x</span>
+    <span class='op'>)</span> <span class='op'>-</span> <span class='fl'>0.1</span>
+  <span class='op'>)</span>,
+  length.out <span class='op'>=</span> <span class='fl'>100</span>
+<span class='op'>)</span>
+
+<span class='co'>## Coefficient of determination with respect to threshold values:</span>
+<span class='va'>profile_r2</span> <span class='op'>&lt;-</span> <span class='fu'>r_squared_profiling</span><span class='op'>(</span>
+  x <span class='op'>=</span> <span class='fu'>dplyr</span><span class='fu'>::</span><span class='fu'><a href='https://dplyr.tidyverse.org/reference/filter.html'>filter</a></span><span class='op'>(</span>
+    <span class='va'>prob_tbl</span>,
+    <span class='va'>status</span> <span class='op'>==</span> <span class='fl'>1</span>
+  <span class='op'>)</span>,
+  thres <span class='op'>=</span> <span class='va'>threshold</span>,
+  distribution <span class='op'>=</span> <span class='st'>"weibull3"</span>
+<span class='op'>)</span>
+
+<span class='co'>## Threshold value (among the candidates) that maximizes the coefficient of determination:</span>
 <span class='va'>threshold</span><span class='op'>[</span><span class='fu'><a href='https://rdrr.io/r/base/which.min.html'>which.max</a></span><span class='op'>(</span><span class='va'>profile_r2</span><span class='op'>)</span><span class='op'>]</span>
 </div><div class='output co'>#&gt; [1] 88.20909</div><div class='input'>
-<span class='co'># plot:</span>
-<span class='co'># plot(threshold, profile_r2, type = "l")</span>
-<span class='co'># abline(v = threshold[which.max(profile_r2)], h = max(profile_r2), col = "red")</span>
+<span class='co'>## plot:</span>
+<span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span><span class='op'>(</span>
+  <span class='va'>threshold</span>,
+  <span class='va'>profile_r2</span>,
+  type <span class='op'>=</span> <span class='st'>"l"</span>
+<span class='op'>)</span>
+</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/graphics/abline.html'>abline</a></span><span class='op'>(</span>
+  v <span class='op'>=</span> <span class='va'>threshold</span><span class='op'>[</span><span class='fu'><a href='https://rdrr.io/r/base/which.min.html'>which.max</a></span><span class='op'>(</span><span class='va'>profile_r2</span><span class='op'>)</span><span class='op'>]</span>,
+  h <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/Extremes.html'>max</a></span><span class='op'>(</span><span class='va'>profile_r2</span><span class='op'>)</span>,
+  col <span class='op'>=</span> <span class='st'>"red"</span>
+<span class='op'>)</span>
+</div><div class='img'><img src='r_squared_profiling-1.png' alt='' width='700' height='433' /></div><div class='input'>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
@@ -217,7 +252,7 @@ value can be <code>"weibull3"</code>, <code>"lognormal3"</code> or <code>"loglog
 
       <footer>
       <div class="copyright">
-  <p>Developed by Hensel Tim-Gunnar, Barkemeyer David.</p>
+  <p>Developed by Tim-Gunnar Hensel, David Barkemeyer.</p>
 </div>
 
 <div class="pkgdown">

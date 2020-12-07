@@ -1,6 +1,9 @@
 #' @export
 print.model_estimation <- function(x,
-                                   digits = max(3L, getOption("digits") - 3L),
+                                   digits = max(
+                                     3L,
+                                     getOption("digits") - 3L
+                                   ),
                                    ...
 ) {
   cat("Coefficients:\n")
@@ -13,7 +16,8 @@ print.model_estimation <- function(x,
 #' @export
 print.model_estimation_list <- function(x,
                                         digits = max(
-                                          3L, getOption("digits") - 3L
+                                          3L,
+                                          getOption("digits") - 3L
                                         ),
                                         ...
 ) {

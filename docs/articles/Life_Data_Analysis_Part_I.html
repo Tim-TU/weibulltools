@@ -86,7 +86,7 @@
             <h3 class="subtitle">A Non-parametric Approach</h3>
                         <h4 class="author">Tim-Gunnar Hensel</h4>
             
-            <h4 class="date">2020-11-12</h4>
+            <h4 class="date">2020-12-07</h4>
       
       
       <div class="hidden name"><code>Life_Data_Analysis_Part_I.Rmd</code></div>
@@ -105,7 +105,6 @@
 <p>But rank distributions are systematically skewed distributions and thus the median value instead of the expected value <span class="math inline">\(E\left[F\left(t_i\right)\right] = \frac{i}{n + 1}\)</span> is used for estimation <a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a>. This skewness is visualized in <em>Figure 1</em>.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="http://tidyverse.tidyverse.org">tidyverse</a></span><span class="op">)</span> <span class="co"># using dplyr manipulation functions and ggplot2</span>
-<span class="co">#&gt; Warning: Paket 'tibble' wurde unter R Version 4.0.2 erstellt</span>
 
 <span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span>, length.out <span class="op">=</span> <span class="fl">100</span><span class="op">)</span> <span class="co"># CDF</span>
 <span class="va">n</span> <span class="op">&lt;-</span> <span class="fl">10</span> <span class="co"># sample size</span>
@@ -178,7 +177,6 @@ Figure 1: Densities for different ranks i in samples of size n = 10.
 <p>To apply the introduced methods of non-parametric failure probability estimation and probability plotting the <code>shock</code> data taken from <code>SPREDA</code> package is used. In this dataset kilometer-dependent problems that have occurred on shock absorbers are reported. In addition to failed items the dataset also contains non-defectives, so called <em>censored</em> observations. The data can be found in <em>Statistical Methods for Reliability Data</em> <a href="#fn3" class="footnote-ref" id="fnref3"><sup>3</sup></a>.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">SPREDA</span><span class="op">)</span> <span class="co"># for dataset shock</span>
-<span class="co">#&gt; Warning: Paket 'SPREDA' wurde unter R Version 4.0.3 erstellt</span>
 <span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="va">shock</span><span class="op">)</span>
 <span class="co"># generate random ids for units: </span>
 <span class="va">shock</span><span class="op">$</span><span class="va">id</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html">sample</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">letters</span>, <span class="va">LETTERS</span><span class="op">)</span>, size <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">shock</span><span class="op">)</span>, replace <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
@@ -240,7 +238,7 @@ Figure 2: Boxplots for different modes.
 <code class="sourceCode R">
 <span class="co"># Estimate CDF</span>
 <span class="va">tbl_cdf</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/estimate_cdf.html">estimate_cdf</a></span><span class="op">(</span><span class="va">failure_tbl</span>, methods <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"mr"</span>, <span class="st">"johnson"</span><span class="op">)</span><span class="op">)</span>
-<span class="co">#&gt; The mr method only considers failed units (event == 1).</span>
+<span class="co">#&gt; The 'mr' method only considers failed units (status == 1) and does not retain intact units (status == 0).</span>
 
 <span class="co"># First case where only failed units are taken into account:</span>
 <span class="va">tbl_cdf_mr</span> <span class="op">&lt;-</span> <span class="va">tbl_cdf</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://rdrr.io/r/stats/filter.html">filter</a></span><span class="op">(</span><span class="va">method</span> <span class="op">==</span> <span class="st">"mr"</span><span class="op">)</span>
@@ -256,7 +254,7 @@ Table 1: Failure probabilities using failed items.
 id
 </th>
 <th style="text-align:center;">
-characteristic
+x
 </th>
 <th style="text-align:center;">
 status
@@ -294,66 +292,6 @@ mr
 </tr>
 <tr>
 <td style="text-align:center;">
-N
-</td>
-<td style="text-align:center;">
-6950
-</td>
-<td style="text-align:center;">
-0
-</td>
-<td style="text-align:center;">
-NA
-</td>
-<td style="text-align:center;">
-NA
-</td>
-<td style="text-align:center;">
-mr
-</td>
-</tr>
-<tr>
-<td style="text-align:center;">
-D
-</td>
-<td style="text-align:center;">
-7820
-</td>
-<td style="text-align:center;">
-0
-</td>
-<td style="text-align:center;">
-NA
-</td>
-<td style="text-align:center;">
-NA
-</td>
-<td style="text-align:center;">
-mr
-</td>
-</tr>
-<tr>
-<td style="text-align:center;">
-X
-</td>
-<td style="text-align:center;">
-8790
-</td>
-<td style="text-align:center;">
-0
-</td>
-<td style="text-align:center;">
-NA
-</td>
-<td style="text-align:center;">
-NA
-</td>
-<td style="text-align:center;">
-mr
-</td>
-</tr>
-<tr>
-<td style="text-align:center;">
 y
 </td>
 <td style="text-align:center;">
@@ -367,146 +305,6 @@ y
 </td>
 <td style="text-align:center;">
 0.1491228
-</td>
-<td style="text-align:center;">
-mr
-</td>
-</tr>
-<tr>
-<td style="text-align:center;">
-p
-</td>
-<td style="text-align:center;">
-9660
-</td>
-<td style="text-align:center;">
-0
-</td>
-<td style="text-align:center;">
-NA
-</td>
-<td style="text-align:center;">
-NA
-</td>
-<td style="text-align:center;">
-mr
-</td>
-</tr>
-<tr>
-<td style="text-align:center;">
-f
-</td>
-<td style="text-align:center;">
-9820
-</td>
-<td style="text-align:center;">
-0
-</td>
-<td style="text-align:center;">
-NA
-</td>
-<td style="text-align:center;">
-NA
-</td>
-<td style="text-align:center;">
-mr
-</td>
-</tr>
-<tr>
-<td style="text-align:center;">
-o
-</td>
-<td style="text-align:center;">
-11310
-</td>
-<td style="text-align:center;">
-0
-</td>
-<td style="text-align:center;">
-NA
-</td>
-<td style="text-align:center;">
-NA
-</td>
-<td style="text-align:center;">
-mr
-</td>
-</tr>
-<tr>
-<td style="text-align:center;">
-l
-</td>
-<td style="text-align:center;">
-11690
-</td>
-<td style="text-align:center;">
-0
-</td>
-<td style="text-align:center;">
-NA
-</td>
-<td style="text-align:center;">
-NA
-</td>
-<td style="text-align:center;">
-mr
-</td>
-</tr>
-<tr>
-<td style="text-align:center;">
-L
-</td>
-<td style="text-align:center;">
-11850
-</td>
-<td style="text-align:center;">
-0
-</td>
-<td style="text-align:center;">
-NA
-</td>
-<td style="text-align:center;">
-NA
-</td>
-<td style="text-align:center;">
-mr
-</td>
-</tr>
-<tr>
-<td style="text-align:center;">
-I
-</td>
-<td style="text-align:center;">
-11880
-</td>
-<td style="text-align:center;">
-0
-</td>
-<td style="text-align:center;">
-NA
-</td>
-<td style="text-align:center;">
-NA
-</td>
-<td style="text-align:center;">
-mr
-</td>
-</tr>
-<tr>
-<td style="text-align:center;">
-i
-</td>
-<td style="text-align:center;">
-12140
-</td>
-<td style="text-align:center;">
-0
-</td>
-<td style="text-align:center;">
-NA
-</td>
-<td style="text-align:center;">
-NA
 </td>
 <td style="text-align:center;">
 mr
@@ -534,26 +332,6 @@ mr
 </tr>
 <tr>
 <td style="text-align:center;">
-O
-</td>
-<td style="text-align:center;">
-12870
-</td>
-<td style="text-align:center;">
-0
-</td>
-<td style="text-align:center;">
-NA
-</td>
-<td style="text-align:center;">
-NA
-</td>
-<td style="text-align:center;">
-mr
-</td>
-</tr>
-<tr>
-<td style="text-align:center;">
 R
 </td>
 <td style="text-align:center;">
@@ -567,66 +345,6 @@ R
 </td>
 <td style="text-align:center;">
 0.3245614
-</td>
-<td style="text-align:center;">
-mr
-</td>
-</tr>
-<tr>
-<td style="text-align:center;">
-u
-</td>
-<td style="text-align:center;">
-13330
-</td>
-<td style="text-align:center;">
-0
-</td>
-<td style="text-align:center;">
-NA
-</td>
-<td style="text-align:center;">
-NA
-</td>
-<td style="text-align:center;">
-mr
-</td>
-</tr>
-<tr>
-<td style="text-align:center;">
-g
-</td>
-<td style="text-align:center;">
-13470
-</td>
-<td style="text-align:center;">
-0
-</td>
-<td style="text-align:center;">
-NA
-</td>
-<td style="text-align:center;">
-NA
-</td>
-<td style="text-align:center;">
-mr
-</td>
-</tr>
-<tr>
-<td style="text-align:center;">
-z
-</td>
-<td style="text-align:center;">
-14040
-</td>
-<td style="text-align:center;">
-0
-</td>
-<td style="text-align:center;">
-NA
-</td>
-<td style="text-align:center;">
-NA
 </td>
 <td style="text-align:center;">
 mr
@@ -674,126 +392,6 @@ mr
 </tr>
 <tr>
 <td style="text-align:center;">
-s
-</td>
-<td style="text-align:center;">
-17540
-</td>
-<td style="text-align:center;">
-0
-</td>
-<td style="text-align:center;">
-NA
-</td>
-<td style="text-align:center;">
-NA
-</td>
-<td style="text-align:center;">
-mr
-</td>
-</tr>
-<tr>
-<td style="text-align:center;">
-J
-</td>
-<td style="text-align:center;">
-17890
-</td>
-<td style="text-align:center;">
-0
-</td>
-<td style="text-align:center;">
-NA
-</td>
-<td style="text-align:center;">
-NA
-</td>
-<td style="text-align:center;">
-mr
-</td>
-</tr>
-<tr>
-<td style="text-align:center;">
-F
-</td>
-<td style="text-align:center;">
-18450
-</td>
-<td style="text-align:center;">
-0
-</td>
-<td style="text-align:center;">
-NA
-</td>
-<td style="text-align:center;">
-NA
-</td>
-<td style="text-align:center;">
-mr
-</td>
-</tr>
-<tr>
-<td style="text-align:center;">
-b
-</td>
-<td style="text-align:center;">
-18960
-</td>
-<td style="text-align:center;">
-0
-</td>
-<td style="text-align:center;">
-NA
-</td>
-<td style="text-align:center;">
-NA
-</td>
-<td style="text-align:center;">
-mr
-</td>
-</tr>
-<tr>
-<td style="text-align:center;">
-K
-</td>
-<td style="text-align:center;">
-18980
-</td>
-<td style="text-align:center;">
-0
-</td>
-<td style="text-align:center;">
-NA
-</td>
-<td style="text-align:center;">
-NA
-</td>
-<td style="text-align:center;">
-mr
-</td>
-</tr>
-<tr>
-<td style="text-align:center;">
-w
-</td>
-<td style="text-align:center;">
-19410
-</td>
-<td style="text-align:center;">
-0
-</td>
-<td style="text-align:center;">
-NA
-</td>
-<td style="text-align:center;">
-NA
-</td>
-<td style="text-align:center;">
-mr
-</td>
-</tr>
-<tr>
-<td style="text-align:center;">
 k
 </td>
 <td style="text-align:center;">
@@ -807,66 +405,6 @@ k
 </td>
 <td style="text-align:center;">
 0.5877193
-</td>
-<td style="text-align:center;">
-mr
-</td>
-</tr>
-<tr>
-<td style="text-align:center;">
-W
-</td>
-<td style="text-align:center;">
-20100
-</td>
-<td style="text-align:center;">
-0
-</td>
-<td style="text-align:center;">
-NA
-</td>
-<td style="text-align:center;">
-NA
-</td>
-<td style="text-align:center;">
-mr
-</td>
-</tr>
-<tr>
-<td style="text-align:center;">
-C
-</td>
-<td style="text-align:center;">
-20150
-</td>
-<td style="text-align:center;">
-0
-</td>
-<td style="text-align:center;">
-NA
-</td>
-<td style="text-align:center;">
-NA
-</td>
-<td style="text-align:center;">
-mr
-</td>
-</tr>
-<tr>
-<td style="text-align:center;">
-V
-</td>
-<td style="text-align:center;">
-20320
-</td>
-<td style="text-align:center;">
-0
-</td>
-<td style="text-align:center;">
-NA
-</td>
-<td style="text-align:center;">
-NA
 </td>
 <td style="text-align:center;">
 mr
@@ -914,26 +452,6 @@ mr
 </tr>
 <tr>
 <td style="text-align:center;">
-x
-</td>
-<td style="text-align:center;">
-23490
-</td>
-<td style="text-align:center;">
-0
-</td>
-<td style="text-align:center;">
-NA
-</td>
-<td style="text-align:center;">
-NA
-</td>
-<td style="text-align:center;">
-mr
-</td>
-</tr>
-<tr>
-<td style="text-align:center;">
 q
 </td>
 <td style="text-align:center;">
@@ -947,26 +465,6 @@ q
 </td>
 <td style="text-align:center;">
 0.8508772
-</td>
-<td style="text-align:center;">
-mr
-</td>
-</tr>
-<tr>
-<td style="text-align:center;">
-v
-</td>
-<td style="text-align:center;">
-27410
-</td>
-<td style="text-align:center;">
-0
-</td>
-<td style="text-align:center;">
-NA
-</td>
-<td style="text-align:center;">
-NA
 </td>
 <td style="text-align:center;">
 mr
@@ -992,46 +490,6 @@ d
 mr
 </td>
 </tr>
-<tr>
-<td style="text-align:center;">
-A
-</td>
-<td style="text-align:center;">
-27890
-</td>
-<td style="text-align:center;">
-0
-</td>
-<td style="text-align:center;">
-NA
-</td>
-<td style="text-align:center;">
-NA
-</td>
-<td style="text-align:center;">
-mr
-</td>
-</tr>
-<tr>
-<td style="text-align:center;">
-T
-</td>
-<td style="text-align:center;">
-28100
-</td>
-<td style="text-align:center;">
-0
-</td>
-<td style="text-align:center;">
-NA
-</td>
-<td style="text-align:center;">
-NA
-</td>
-<td style="text-align:center;">
-mr
-</td>
-</tr>
 </tbody>
 </table>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
@@ -1050,7 +508,7 @@ Table 2: Failure probabilities using all items.
 id
 </th>
 <th style="text-align:center;">
-characteristic
+x
 </th>
 <th style="text-align:center;">
 status
@@ -1900,7 +1358,7 @@ Figure 4: Plotting positions in log-normal grid.
 
 
       <footer><div class="copyright">
-  <p>Developed by Hensel Tim-Gunnar, Barkemeyer David.</p>
+  <p>Developed by Tim-Gunnar Hensel, David Barkemeyer.</p>
 </div>
 
 <div class="pkgdown">

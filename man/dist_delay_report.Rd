@@ -31,7 +31,7 @@ to \code{\link{dist_delay}} is recommended.
 This function introduces a delay random variable by calculating the time
 difference between the report and repair date for the sample units
 and afterwards estimates the parameter(s) of a supposed distribution,
-using MLE.
+using maximum likelihood.
 }
 \examples{
 date_of_repair <- c(NA, "2014-09-15", "2015-07-04", "2015-04-10", NA,

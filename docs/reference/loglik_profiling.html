@@ -141,7 +141,7 @@ to estimate the threshold parameter.</p>
 
     <pre class="usage"><span class='fu'>loglik_profiling</span><span class='op'>(</span>
   <span class='va'>x</span>,
-  <span class='va'>event</span>,
+  <span class='va'>status</span>,
   <span class='va'>thres</span>,
   distribution <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"weibull3"</span>, <span class='st'>"lognormal3"</span>, <span class='st'>"loglogistic3"</span><span class='op'>)</span>
 <span class='op'>)</span></pre>
@@ -151,58 +151,72 @@ to estimate the threshold parameter.</p>
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>x</th>
-      <td><p>A numeric vector which consists of lifetime data. Lifetime
-data could be every characteristic influencing the reliability of a product,
+      <td><p>A numeric vector which consists of lifetime data. Lifetime data
+could be every characteristic influencing the reliability of a product,
 e.g. operating time (days/months in service), mileage (km, miles), load
 cycles.</p></td>
     </tr>
     <tr>
-      <th>event</th>
+      <th>status</th>
       <td><p>A vector of binary data (0 or 1) indicating whether unit <em>i</em>
 is a right censored observation (= 0) or a failure (= 1).</p></td>
     </tr>
     <tr>
       <th>thres</th>
-      <td><p>A numeric value of the threshold parameter.</p></td>
+      <td><p>A numeric value for the threshold parameter.</p></td>
     </tr>
     <tr>
       <th>distribution</th>
-      <td><p>Supposed distribution of the random variable. The
-value can be <code>"weibull3"</code>, <code>"lognormal3"</code> or <code>"loglogistic3"</code>.</p></td>
+      <td><p>Supposed three-parametric distribution of the random variable.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>Returns the log-likelihood value for a specified threshold value.</p>
+    <p>Returns the log-likelihood value for the data with respect to the threshold
+parameter <code>thres</code>.</p>
     <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
 
     <p>Meeker, William Q; Escobar, Luis A., Statistical methods for
   reliability data, New York: Wiley series in probability and statistics, 1998</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='co'># Alloy T7987 dataset taken from Meeker and Escobar(1998, p. 131)</span>
-<span class='va'>cycles</span>   <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>300</span>, <span class='fl'>300</span>, <span class='fl'>300</span>, <span class='fl'>300</span>, <span class='fl'>300</span>, <span class='fl'>291</span>, <span class='fl'>274</span>, <span class='fl'>271</span>, <span class='fl'>269</span>, <span class='fl'>257</span>, <span class='fl'>256</span>, <span class='fl'>227</span>, <span class='fl'>226</span>,
-              <span class='fl'>224</span>, <span class='fl'>213</span>, <span class='fl'>211</span>, <span class='fl'>205</span>, <span class='fl'>203</span>, <span class='fl'>197</span>, <span class='fl'>196</span>, <span class='fl'>190</span>, <span class='fl'>189</span>, <span class='fl'>188</span>, <span class='fl'>187</span>, <span class='fl'>184</span>, <span class='fl'>180</span>,
-              <span class='fl'>180</span>, <span class='fl'>177</span>, <span class='fl'>176</span>, <span class='fl'>173</span>, <span class='fl'>172</span>, <span class='fl'>171</span>, <span class='fl'>170</span>, <span class='fl'>170</span>, <span class='fl'>169</span>, <span class='fl'>168</span>, <span class='fl'>168</span>, <span class='fl'>162</span>, <span class='fl'>159</span>,
-              <span class='fl'>159</span>, <span class='fl'>159</span>, <span class='fl'>159</span>, <span class='fl'>152</span>, <span class='fl'>152</span>, <span class='fl'>149</span>, <span class='fl'>149</span>, <span class='fl'>144</span>, <span class='fl'>143</span>, <span class='fl'>141</span>, <span class='fl'>141</span>, <span class='fl'>140</span>, <span class='fl'>139</span>,
-              <span class='fl'>139</span>, <span class='fl'>136</span>, <span class='fl'>135</span>, <span class='fl'>133</span>, <span class='fl'>131</span>, <span class='fl'>129</span>, <span class='fl'>123</span>, <span class='fl'>121</span>, <span class='fl'>121</span>, <span class='fl'>118</span>, <span class='fl'>117</span>, <span class='fl'>117</span>, <span class='fl'>114</span>,
-              <span class='fl'>112</span>, <span class='fl'>108</span>, <span class='fl'>104</span>, <span class='fl'>99</span>, <span class='fl'>99</span>, <span class='fl'>96</span>, <span class='fl'>94</span><span class='op'>)</span>
-<span class='va'>state</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/rep.html'>rep</a></span><span class='op'>(</span><span class='fl'>0</span>, <span class='fl'>5</span><span class='op'>)</span>, <span class='fu'><a href='https://rdrr.io/r/base/rep.html'>rep</a></span><span class='op'>(</span><span class='fl'>1</span>, <span class='fl'>67</span><span class='op'>)</span><span class='op'>)</span>
+    <pre class="examples"><div class='input'><span class='co'># Vectors:</span>
+<span class='va'>cycles</span> <span class='op'>&lt;-</span> <span class='va'>alloy</span><span class='op'>$</span><span class='va'>cycles</span>
+<span class='va'>status</span> <span class='op'>&lt;-</span> <span class='va'>alloy</span><span class='op'>$</span><span class='va'>status</span>
 
-<span class='co'># Determining threshold parameter for which the log-likelihood is maximized</span>
-<span class='co'># subject to the condition that the threshold parameter must be smaller</span>
-<span class='co'># as the first failure cycle, i.e 94:</span>
-<span class='va'>threshold</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span><span class='fl'>0</span>, <span class='fu'><a href='https://rdrr.io/r/base/Extremes.html'>min</a></span><span class='op'>(</span><span class='va'>cycles</span><span class='op'>[</span><span class='va'>state</span> <span class='op'>==</span> <span class='fl'>1</span><span class='op'>]</span><span class='op'>)</span> <span class='op'>-</span> <span class='fl'>0.1</span>, length.out <span class='op'>=</span> <span class='fl'>100</span><span class='op'>)</span>
-<span class='va'>profile_logL</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/lapply.html'>sapply</a></span><span class='op'>(</span><span class='va'>threshold</span>, <span class='va'>loglik_profiling</span>,
-                     x <span class='op'>=</span> <span class='va'>cycles</span>,
-                     event <span class='op'>=</span> <span class='va'>state</span>,
-                     distribution <span class='op'>=</span> <span class='st'>"weibull3"</span><span class='op'>)</span>
+<span class='co'># Determining the optimal loglikelihood value:</span>
+<span class='co'>## Range of threshold parameter must be smaller than the first failure:</span>
+<span class='va'>threshold</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span>
+  <span class='fl'>0</span>,
+  <span class='fu'><a href='https://rdrr.io/r/base/Extremes.html'>min</a></span><span class='op'>(</span><span class='va'>cycles</span><span class='op'>[</span><span class='va'>status</span> <span class='op'>==</span> <span class='fl'>1</span><span class='op'>]</span><span class='op'>)</span> <span class='op'>-</span> <span class='fl'>0.1</span>,
+  length.out <span class='op'>=</span> <span class='fl'>100</span>
+<span class='op'>)</span>
+
+<span class='co'>## loglikelihood value with respect to threshold values:</span>
+<span class='va'>profile_logL</span> <span class='op'>&lt;-</span> <span class='fu'>loglik_profiling</span><span class='op'>(</span>
+  x <span class='op'>=</span> <span class='va'>cycles</span>,
+  status <span class='op'>=</span> <span class='va'>status</span>,
+  thres <span class='op'>=</span> <span class='va'>threshold</span>,
+  distribution <span class='op'>=</span> <span class='st'>"weibull3"</span>
+<span class='op'>)</span>
+
+<span class='co'>## Threshold value (among the candidates) that maximizes the</span>
+<span class='co'>## loglikelihood:</span>
 <span class='va'>threshold</span><span class='op'>[</span><span class='fu'><a href='https://rdrr.io/r/base/which.min.html'>which.max</a></span><span class='op'>(</span><span class='va'>profile_logL</span><span class='op'>)</span><span class='op'>]</span>
 </div><div class='output co'>#&gt; [1] 92.95152</div><div class='input'>
-<span class='co'># plot:</span>
-<span class='co'># plot(threshold, profile_logL, type = "l")</span>
-<span class='co'># abline(v = threshold[which.max(profile_logL)], h = max(profile_logL), col = "red")</span>
+<span class='co'>## plot:</span>
+<span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span><span class='op'>(</span>
+  <span class='va'>threshold</span>,
+  <span class='va'>profile_logL</span>,
+  type <span class='op'>=</span> <span class='st'>"l"</span>
+<span class='op'>)</span>
+</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/graphics/abline.html'>abline</a></span><span class='op'>(</span>
+  v <span class='op'>=</span> <span class='va'>threshold</span><span class='op'>[</span><span class='fu'><a href='https://rdrr.io/r/base/which.min.html'>which.max</a></span><span class='op'>(</span><span class='va'>profile_logL</span><span class='op'>)</span><span class='op'>]</span>,
+  h <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/Extremes.html'>max</a></span><span class='op'>(</span><span class='va'>profile_logL</span><span class='op'>)</span>,
+  col <span class='op'>=</span> <span class='st'>"red"</span>
+<span class='op'>)</span>
+</div><div class='img'><img src='loglik_profiling-1.png' alt='' width='700' height='433' /></div><div class='input'>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
@@ -215,7 +229,7 @@ value can be <code>"weibull3"</code>, <code>"lognormal3"</code> or <code>"loglog
 
       <footer>
       <div class="copyright">
-  <p>Developed by Hensel Tim-Gunnar, Barkemeyer David.</p>
+  <p>Developed by Tim-Gunnar Hensel, David Barkemeyer.</p>
 </div>
 
 <div class="pkgdown">

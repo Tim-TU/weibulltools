@@ -24,7 +24,7 @@
 #' covariance matrix. Here it should be said that there is no statistical foundation
 #' to determine the standard errors of the parameters using \emph{Least Squares}
 #' in context of \emph{Rank Regression}. For an accepted statistical method use
-#' \link[=ml_estimation]{MLE}.
+#' \link[=ml_estimation]{maximum likelihood}.
 #'
 #' @param x An object of class \code{cdf_estimation} returned from
 #'  \code{\link{estimate_cdf}}.

@@ -135,90 +135,8 @@ plotting." />
 plotting.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>plot_prob</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>...</span><span class='op'>)</span>
+    <pre class="usage"><span class='fu'>plot_prob</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>...</span><span class='op'>)</span></pre>
 
-<span class='co'># S3 method for default</span>
-<span class='fu'>plot_prob</span><span class='op'>(</span>
-  <span class='va'>x</span>,
-  <span class='va'>y</span>,
-  <span class='va'>event</span>,
-  id <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/rep.html'>rep</a></span><span class='op'>(</span><span class='st'>"XXXXXX"</span>, <span class='fu'><a href='https://rdrr.io/r/base/length.html'>length</a></span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span><span class='op'>)</span>,
-  distribution <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"weibull"</span>, <span class='st'>"lognormal"</span>, <span class='st'>"loglogistic"</span>, <span class='st'>"normal"</span>, <span class='st'>"logistic"</span>, <span class='st'>"sev"</span><span class='op'>)</span>,
-  title_main <span class='op'>=</span> <span class='st'>"Probability Plot"</span>,
-  title_x <span class='op'>=</span> <span class='st'>"Characteristic"</span>,
-  title_y <span class='op'>=</span> <span class='st'>"Unreliability"</span>,
-  title_trace <span class='op'>=</span> <span class='st'>"Sample"</span>,
-  plot_method <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"plotly"</span>, <span class='st'>"ggplot2"</span><span class='op'>)</span>
-<span class='op'>)</span>
-
-<span class='co'># S3 method for cdf_estimation</span>
-<span class='fu'>plot_prob</span><span class='op'>(</span>
-  <span class='va'>cdf_estimation</span>,
-  distribution <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"weibull"</span>, <span class='st'>"lognormal"</span>, <span class='st'>"loglogistic"</span>, <span class='st'>"normal"</span>, <span class='st'>"logistic"</span>, <span class='st'>"sev"</span><span class='op'>)</span>,
-  title_main <span class='op'>=</span> <span class='st'>"Probability Plot"</span>,
-  title_x <span class='op'>=</span> <span class='st'>"Characteristic"</span>,
-  title_y <span class='op'>=</span> <span class='st'>"Unreliability"</span>,
-  title_trace <span class='op'>=</span> <span class='st'>"Sample"</span>,
-  plot_method <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"plotly"</span>, <span class='st'>"ggplot2"</span><span class='op'>)</span>
-<span class='op'>)</span></pre>
-
-    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
-    <table class="ref-arguments">
-    <colgroup><col class="name" /><col class="desc" /></colgroup>
-    <tr>
-      <th>x</th>
-      <td><p>A numeric vector which consists of lifetime data. Lifetime
-data could be every characteristic influencing the reliability of a product,
-e.g. operating time (days/months in service), mileage (km, miles), load
-cycles.</p></td>
-    </tr>
-    <tr>
-      <th>y</th>
-      <td><p>A numeric vector which consists of estimated failure probabilities
-regarding the lifetime data in <code>x</code>.</p></td>
-    </tr>
-    <tr>
-      <th>event</th>
-      <td><p>A vector of binary data (0 or 1) indicating whether unit <em>i</em>
-is a right censored observation (= 0) or a failure (= 1).</p></td>
-    </tr>
-    <tr>
-      <th>id</th>
-      <td><p>A character vector for the identification of every unit.</p></td>
-    </tr>
-    <tr>
-      <th>distribution</th>
-      <td><p>Supposed distribution of the random variable.</p></td>
-    </tr>
-    <tr>
-      <th>title_main</th>
-      <td><p>A character string which is assigned to the main title
-of the plot.</p></td>
-    </tr>
-    <tr>
-      <th>title_x</th>
-      <td><p>A character string which is assigned to the title of the
-x axis.</p></td>
-    </tr>
-    <tr>
-      <th>title_y</th>
-      <td><p>A character string which is assigned to the title of the
-y axis.</p></td>
-    </tr>
-    <tr>
-      <th>title_trace</th>
-      <td><p>A character string whis is assigned to the trace shown in
-the legend.</p></td>
-    </tr>
-    <tr>
-      <th>plot_method</th>
-      <td><p>Package, which is used for generating the plot output.</p></td>
-    </tr>
-    <tr>
-      <th>cdf_estimation</th>
-      <td><p>CDF estimation returned by <code><a href='estimate_cdf.html'>estimate_cdf</a></code>.</p></td>
-    </tr>
-    </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
@@ -226,59 +144,24 @@ the legend.</p></td>
   provided by <code><a href='plot_layout.html'>plot_layout</a></code> and the plotting positions.</p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>The marker label for x is determined by the first word provided in the
-argument <code>title_x</code>, i.e. if <code>title_x = "Mileage in km"</code> the x label
-of the marker is "Mileage".</p>
-<p>The marker label for y is determined by the string provided in the
-argument <code>title_y</code>, i.e. if <code>title_y = "Probability in percent"</code> the y
-label of the marker is "Probability".</p>
+    <p>The marker label for x and y are determined by the first word provided in the
+argument <code>title_x</code> respective <code>title_y</code>, i.e. if
+<code>title_x = "Mileage in km"</code> the x label of the marker is "Mileage".</p>
     <h2 class="hasAnchor" id="methods-by-class-"><a class="anchor" href="#methods-by-class-"></a>Methods (by class)</h2>
 
     
-<ul>
-<li><p><code>default</code>: Provide x, y, event and id manually</p></li>
-<li><p><code>cdf_estimation</code>: Create a probability plot based on a CDF estimation
-returned by <code><a href='estimate_cdf.html'>estimate_cdf</a></code>.</p></li>
-</ul>
+
+<dl>
+  <dt><code><a href='plot_prob.cdf_estimation.html'>cdf_estimation</a></code></dt><dd><p>Preferred. Provide the output of <code><a href='estimate_cdf.html'>estimate_cdf</a></code> directly.</p></dd>
+  <dt><code><a href='plot_prob.default.html'>default</a></code></dt><dd><p>Provide <code>x</code>, <code>y</code>, <code>status</code> and <code>id</code> manually.</p></dd>
+
+</dl>
+
     <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
 
     <p>Meeker, William Q; Escobar, Luis A., Statistical methods for
   reliability data, New York: Wiley series in probability and statistics, 1998</p>
 
-    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='co'># Alloy T7987 dataset taken from Meeker and Escobar(1998, p. 131)</span>
-<span class='va'>cycles</span>   <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>300</span>, <span class='fl'>300</span>, <span class='fl'>300</span>, <span class='fl'>300</span>, <span class='fl'>300</span>, <span class='fl'>291</span>, <span class='fl'>274</span>, <span class='fl'>271</span>, <span class='fl'>269</span>, <span class='fl'>257</span>, <span class='fl'>256</span>, <span class='fl'>227</span>, <span class='fl'>226</span>,
-              <span class='fl'>224</span>, <span class='fl'>213</span>, <span class='fl'>211</span>, <span class='fl'>205</span>, <span class='fl'>203</span>, <span class='fl'>197</span>, <span class='fl'>196</span>, <span class='fl'>190</span>, <span class='fl'>189</span>, <span class='fl'>188</span>, <span class='fl'>187</span>, <span class='fl'>184</span>, <span class='fl'>180</span>,
-              <span class='fl'>180</span>, <span class='fl'>177</span>, <span class='fl'>176</span>, <span class='fl'>173</span>, <span class='fl'>172</span>, <span class='fl'>171</span>, <span class='fl'>170</span>, <span class='fl'>170</span>, <span class='fl'>169</span>, <span class='fl'>168</span>, <span class='fl'>168</span>, <span class='fl'>162</span>, <span class='fl'>159</span>,
-              <span class='fl'>159</span>, <span class='fl'>159</span>, <span class='fl'>159</span>, <span class='fl'>152</span>, <span class='fl'>152</span>, <span class='fl'>149</span>, <span class='fl'>149</span>, <span class='fl'>144</span>, <span class='fl'>143</span>, <span class='fl'>141</span>, <span class='fl'>141</span>, <span class='fl'>140</span>, <span class='fl'>139</span>,
-              <span class='fl'>139</span>, <span class='fl'>136</span>, <span class='fl'>135</span>, <span class='fl'>133</span>, <span class='fl'>131</span>, <span class='fl'>129</span>, <span class='fl'>123</span>, <span class='fl'>121</span>, <span class='fl'>121</span>, <span class='fl'>118</span>, <span class='fl'>117</span>, <span class='fl'>117</span>, <span class='fl'>114</span>,
-              <span class='fl'>112</span>, <span class='fl'>108</span>, <span class='fl'>104</span>, <span class='fl'>99</span>, <span class='fl'>99</span>, <span class='fl'>96</span>, <span class='fl'>94</span><span class='op'>)</span>
-<span class='va'>state</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/rep.html'>rep</a></span><span class='op'>(</span><span class='fl'>0</span>, <span class='fl'>5</span><span class='op'>)</span>, <span class='fu'><a href='https://rdrr.io/r/base/rep.html'>rep</a></span><span class='op'>(</span><span class='fl'>1</span>, <span class='fl'>67</span><span class='op'>)</span><span class='op'>)</span>
-
-<span class='va'>df_john</span> <span class='op'>&lt;-</span> <span class='fu'><a href='johnson_method.html'>johnson_method</a></span><span class='op'>(</span>x <span class='op'>=</span> <span class='va'>cycles</span>, event <span class='op'>=</span> <span class='va'>state</span><span class='op'>)</span>
-
-<span class='co'># Example 1: Probability Plot Weibull:</span>
-<span class='va'>plot_weibull</span> <span class='op'>&lt;-</span> <span class='fu'>plot_prob</span><span class='op'>(</span>x <span class='op'>=</span> <span class='va'>df_john</span><span class='op'>$</span><span class='va'>characteristic</span>,
-                          y <span class='op'>=</span> <span class='va'>df_john</span><span class='op'>$</span><span class='va'>prob</span>,
-                          event <span class='op'>=</span> <span class='va'>df_john</span><span class='op'>$</span><span class='va'>status</span>,
-                          id <span class='op'>=</span> <span class='va'>df_john</span><span class='op'>$</span><span class='va'>id</span>,
-                          distribution <span class='op'>=</span> <span class='st'>"weibull"</span>,
-                          title_main <span class='op'>=</span> <span class='st'>"Weibull Analysis"</span>,
-                          title_x <span class='op'>=</span> <span class='st'>"Cycles"</span>,
-                          title_y <span class='op'>=</span> <span class='st'>"Probability of Failure in %"</span>,
-                          title_trace <span class='op'>=</span> <span class='st'>"Failed Items"</span><span class='op'>)</span>
-
-<span class='co'># Example 2: Probability Plot Lognormal:</span>
-<span class='va'>plot_lognormal</span> <span class='op'>&lt;-</span> <span class='fu'>plot_prob</span><span class='op'>(</span>x <span class='op'>=</span> <span class='va'>df_john</span><span class='op'>$</span><span class='va'>characteristic</span>,
-                          y <span class='op'>=</span> <span class='va'>df_john</span><span class='op'>$</span><span class='va'>prob</span>,
-                          event <span class='op'>=</span> <span class='va'>df_john</span><span class='op'>$</span><span class='va'>status</span>,
-                          id <span class='op'>=</span> <span class='va'>df_john</span><span class='op'>$</span><span class='va'>id</span>,
-                          distribution <span class='op'>=</span> <span class='st'>"lognormal"</span>,
-                          title_main <span class='op'>=</span> <span class='st'>"Lognormal Analysis"</span>,
-                          title_x <span class='op'>=</span> <span class='st'>"Cycles"</span>,
-                          title_y <span class='op'>=</span> <span class='st'>"Probability of Failure in %"</span>,
-                          title_trace <span class='op'>=</span> <span class='st'>"Failed Items"</span><span class='op'>)</span>
-</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
@@ -290,7 +173,7 @@ returned by <code><a href='estimate_cdf.html'>estimate_cdf</a></code>.</p></li>
 
       <footer>
       <div class="copyright">
-  <p>Developed by Hensel Tim-Gunnar, Barkemeyer David.</p>
+  <p>Developed by Tim-Gunnar Hensel, David Barkemeyer.</p>
 </div>
 
 <div class="pkgdown">

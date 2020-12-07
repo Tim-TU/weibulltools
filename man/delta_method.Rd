@@ -62,7 +62,7 @@ data <- reliability_data(
   status = status
 )
 
-# Parameter estimation using MLE:
+# Parameter estimation using maximum likelihood:
 mle <- ml_estimation(
   x = data,
   distribution = "weibull",

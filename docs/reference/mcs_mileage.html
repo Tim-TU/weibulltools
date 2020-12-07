@@ -6,8 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Estimation of Driving Distances for Censored Observations using a Monte Carlo
-Approach — mcs_mileage • weibulltools</title>
+<title>Simulation of Unknown Covered Distances using a Monte Carlo Approach — mcs_mileage • weibulltools</title>
 
 
 <!-- jquery -->
@@ -40,17 +39,13 @@ Approach — mcs_mileage • weibulltools</title>
 
 
 
-<meta property="og:title" content="Estimation of Driving Distances for Censored Observations using a Monte Carlo
-Approach — mcs_mileage" />
-<meta property="og:description" content="This function simulates driving distances for censored observations under the
-condition that the operating time of these items is known up to a certain date
-where analysis is made. Operating times for these units can be estimated with
-functions like mcs_delay_register, mcs_delay_report
-and mcs_delays.
-The failed observations (where the driving distances are known) are used to
-estimate an annual mileage distribution. If the mileage distribution is fully
-specified annual random driving distances are drawn from this distribution and
-afterwards adjusted to the operating times of the censored observations." />
+<meta property="og:title" content="Simulation of Unknown Covered Distances using a Monte Carlo Approach — mcs_mileage" />
+<meta property="og:description" content="This function simulates distances for units where these are unknown, i.e.
+mileage = NA.
+First, random numbers of the annual mileage distribution, estimated by
+dist_mileage, are drawn. Second, the drawn annual distances are
+converted with respect to the actual operating times (in days) using a linear
+relationship. See 'Details'." />
 
 
 
@@ -134,90 +129,95 @@ afterwards adjusted to the operating times of the censored observations." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Estimation of Driving Distances for Censored Observations using a Monte Carlo
-Approach</h1>
+    <h1>Simulation of Unknown Covered Distances using a Monte Carlo Approach</h1>
     
     <div class="hidden name"><code>mcs_mileage.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>This function simulates driving distances for censored observations under the
-condition that the operating time of these items is known up to a certain date
-where analysis is made. Operating times for these units can be estimated with
-functions like <code><a href='mcs_delay_register.html'>mcs_delay_register</a></code>, <code><a href='mcs_delay_report.html'>mcs_delay_report</a></code>
-and <code><a href='mcs_delays.html'>mcs_delays</a></code>.
-The failed observations (where the driving distances are known) are used to
-estimate an annual mileage distribution. If the mileage distribution is fully
-specified annual random driving distances are drawn from this distribution and
-afterwards adjusted to the operating times of the censored observations.</p>
+    <p>This function simulates distances for units where these are unknown, i.e.
+<code>mileage = NA</code>.</p>
+<p>First, random numbers of the annual mileage distribution, estimated by
+<code><a href='dist_mileage.html'>dist_mileage</a></code>, are drawn. Second, the drawn annual distances are
+converted with respect to the actual operating times (in days) using a linear
+relationship. See 'Details'.</p>
     </div>
 
     <pre class="usage"><span class='fu'>mcs_mileage</span><span class='op'>(</span>
-  <span class='va'>x</span>,
-  <span class='va'>event</span>,
   <span class='va'>mileage</span>,
-  distribution <span class='op'>=</span> <span class='st'>"lognormal"</span>,
-  seed <span class='op'>=</span> <span class='cn'>NULL</span>,
-  details <span class='op'>=</span> <span class='cn'>FALSE</span>
+  <span class='va'>time</span>,
+  status <span class='op'>=</span> <span class='cn'>NULL</span>,
+  id <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/paste.html'>paste0</a></span><span class='op'>(</span><span class='st'>"ID"</span>, <span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq_len</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/length.html'>length</a></span><span class='op'>(</span><span class='va'>time</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span>,
+  distribution <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"lognormal"</span>, <span class='st'>"exponential"</span><span class='op'>)</span>
 <span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>x</th>
-      <td><p>A numeric vector of operating times. If not available use <code>NA</code>.</p></td>
-    </tr>
-    <tr>
-      <th>event</th>
-      <td><p>A vector of binary data (0 or 1) indicating whether unit <em>i</em>
-is a right censored observation (= 0) or a failure (= 1).</p></td>
-    </tr>
-    <tr>
       <th>mileage</th>
-      <td><p>A numeric vector of driven distances. If not available use <code>NA</code>.</p></td>
+      <td><p>A numeric vector of distances covered. Use <code>NA</code> for missing
+elements.</p></td>
+    </tr>
+    <tr>
+      <th>time</th>
+      <td><p>A numeric vector of operating times. Use <code>NA</code> for missing
+elements.</p></td>
+    </tr>
+    <tr>
+      <th>status</th>
+      <td><p>Optional argument. If used it has to be a vector of binary data
+(0 or 1) indicating whether unit i is a right censored observation (= 0) or
+a failure (= 1). The effect of status on the return is described in 'Value'.</p></td>
+    </tr>
+    <tr>
+      <th>id</th>
+      <td><p>A vector for the identification of every unit.</p></td>
     </tr>
     <tr>
       <th>distribution</th>
-      <td><p>Supposed distribution of the random variable. The default
-value is <code>"lognormal"</code>. So far no other distribution is implemented.</p></td>
-    </tr>
-    <tr>
-      <th>seed</th>
-      <td><p>If <code>seed = NULL</code> a random seed is used. Otherwise the user
-can specify an integer for the seed.</p></td>
-    </tr>
-    <tr>
-      <th>details</th>
-      <td><p>A logical variable, where the default value is <code>FALSE</code>.
-If <code>FALSE</code> the output consists of a vector with simulated driving
-distances for the censored units regarding to their current operating time
-and the input driving distances for the failed units. If <code>TRUE</code> the
-output consists of a detailed list, i.e the same vector as described before,
-simulated annual driving distances, estimated distribution parameters and a
-seed for reproducibility.</p></td>
+      <td><p>Supposed distribution of the random variable.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A numerical vector of simulated driving distances for the censored
-  units and the input driving distances for the failed units if
-  <code>details = FALSE</code>. If <code>details = TRUE</code> the output is a list which
-  consists of the following elements:</p><ul>
-<li><p><code>mileage</code> : Simulated driving distances for the censored
-    units and the input driving distances for the failed units.</p></li>
-<li><p><code>mileage_sim_annual</code> : Simulated annual driving distances of
-    specified distribution with estimated parameters. The length of
-    <code>x_sim</code> is equal to the number of censored observations.</p></li>
-<li><p><code>coefficients</code> : Estimated coefficients of supposed
-    distribution.</p></li>
-<li><p><code>int_seed</code> : Integer seed number for reproducibility.</p></li>
+    <p>A list containing the following elements:</p><ul>
+<li><p><code>data</code> : A tibble with classes <code>"mcs_data"</code> and
+      <code>"reliability_data"</code> if <code>status</code> is provided. Since the
+      attribute <code>"reliability_data"</code> enables the direct usage of <code>data</code>
+      inside <code>estimate_cdf</code> (<code><a href='estimate_cdf.html'>estimate_cdf.reliability_data</a></code>),
+      the required lifetime characteristic is automatically set to the distance
+      <code>mileage</code>.</p>
+<p>If <code>status = NULL</code> class is <code>"mcs_data"</code>, which is not
+      supported by <code>estimate_cdf</code> due to missing <code>status</code>.</p>
+<p>The tibble contains the following columns:</p><ul>
+<li><p><code>mileage</code> : Simulated distances for unknown <code>mileage</code> and
+          input distances for known <code>mileage</code>.</p></li>
+<li><p><code>time</code> : Input operating times.</p></li>
+<li><p><code>status</code> (<strong>optional</strong>) :</p><ul>
+<li><p>If argument <code>status = NULL</code> column <code>status</code> does
+              not exist.</p></li>
+<li><p>If argument <code>status</code> is provided the column contains
+              the entered binary data (0 or 1).</p></li>
+</ul></li>
+<li><p><code>id</code> : Identification of every unit.</p></li>
+</ul></li>
+<li><p><code>sim_data</code> : A tibble with column <code>sim_mileage</code> that holds the
+      simulated distances for unknown <code>mileage</code> and <code>0</code> otherwise.</p></li>
+<li><p><code>model_estimation</code> : A list containing a named list
+      (<code>"mileage_distribution"</code>) with output of <code><a href='dist_mileage.html'>dist_mileage</a></code>.</p></li>
 </ul>
 
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+
+    <p><strong>Assumption of linear relationship</strong>: Imagine the distance of the vehicle
+is unknown. A distance of 3500.25 kilometers (km) was drawn from the annual
+distribution and the known operating time is 200 days (d). So the resulting
+distance of this vehicle is $$3500.25 km \cdot (\frac{200 d} {365 d}) = 1917.945 km$$</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='co'># Example 1 - Simplified vector output (complete data):</span>
+    <pre class="examples"><div class='input'><span class='co'># Data for examples:</span>
 <span class='va'>date_of_registration</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"2014-08-17"</span>, <span class='st'>"2014-03-29"</span>, <span class='st'>"2014-12-06"</span>,
                           <span class='st'>"2014-09-09"</span>, <span class='st'>"2014-05-14"</span>, <span class='st'>"2014-07-01"</span>,
                           <span class='st'>"2014-06-16"</span>, <span class='st'>"2014-04-03"</span>, <span class='st'>"2014-05-23"</span>,
@@ -226,43 +226,66 @@ seed for reproducibility.</p></td>
                           <span class='st'>"2014-03-12"</span>, <span class='st'>"2014-05-27"</span>, <span class='st'>"2014-06-02"</span>,
                           <span class='st'>"2014-05-20"</span>, <span class='st'>"2014-03-21"</span>, <span class='st'>"2014-06-19"</span>,
                           <span class='st'>"2014-02-12"</span>, <span class='st'>"2014-03-27"</span><span class='op'>)</span>
-<span class='va'>date_of_repair</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"2014-10-21"</span>, <span class='st'>"2014-09-15"</span>, <span class='st'>"2015-07-04"</span>, <span class='st'>"2015-04-10"</span>,
-                    <span class='st'>"2015-02-15"</span>, <span class='st'>"2015-04-14"</span>, <span class='st'>"2015-04-24"</span>, <span class='st'>"2015-02-27"</span>,
-                    <span class='st'>"2015-04-25"</span>, <span class='st'>"2015-04-24"</span>, <span class='st'>"2015-06-12"</span>, <span class='st'>"2015-08-26"</span>,
-                    <span class='st'>"2015-05-04"</span>, <span class='st'>"2015-04-04"</span>, <span class='st'>"2015-09-06"</span>, <span class='st'>"2015-05-22"</span>,
-                    <span class='st'>"2015-08-21"</span>, <span class='st'>"2015-09-17"</span>, <span class='st'>"2015-09-15"</span>, <span class='st'>"2015-08-15"</span>,
-                    <span class='st'>"2015-11-26"</span>, <span class='st'>"2015-08-22"</span>, <span class='st'>"2015-10-05"</span><span class='op'>)</span>
+<span class='va'>date_of_repair</span>       <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='cn'>NA</span>, <span class='st'>"2014-09-15"</span>, <span class='st'>"2015-07-04"</span>, <span class='st'>"2015-04-10"</span>, <span class='cn'>NA</span>,
+                          <span class='cn'>NA</span>, <span class='st'>"2015-04-24"</span>, <span class='cn'>NA</span>, <span class='st'>"2015-04-25"</span>, <span class='st'>"2015-04-24"</span>,
+                          <span class='st'>"2015-06-12"</span>, <span class='cn'>NA</span>, <span class='st'>"2015-05-04"</span>, <span class='cn'>NA</span>, <span class='cn'>NA</span>, <span class='st'>"2015-05-22"</span>,
+                          <span class='cn'>NA</span>, <span class='st'>"2015-09-17"</span>, <span class='cn'>NA</span>, <span class='st'>"2015-08-15"</span>, <span class='st'>"2015-11-26"</span>,
+                          <span class='cn'>NA</span>, <span class='cn'>NA</span><span class='op'>)</span>
+<span class='va'>date_of_analysis</span>     <span class='op'>&lt;-</span> <span class='st'>"2015-12-31"</span>
 
-<span class='va'>op_time</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/numeric.html'>as.numeric</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/difftime.html'>difftime</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/as.Date.html'>as.Date</a></span><span class='op'>(</span><span class='va'>date_of_repair</span><span class='op'>)</span>,
-                               <span class='fu'><a href='https://rdrr.io/r/base/as.Date.html'>as.Date</a></span><span class='op'>(</span><span class='va'>date_of_registration</span><span class='op'>)</span>,
-                               units <span class='op'>=</span> <span class='st'>"days"</span><span class='op'>)</span><span class='op'>)</span>
-<span class='va'>mileage</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>5227</span>, <span class='fl'>15655</span>, <span class='fl'>13629</span>, <span class='fl'>18292</span>, <span class='fl'>24291</span>, <span class='fl'>34455</span>, <span class='fl'>33555</span>, <span class='fl'>21659</span>, <span class='fl'>21737</span>,
-             <span class='fl'>29870</span>, <span class='fl'>21068</span>, <span class='fl'>22986</span>, <span class='fl'>122283</span>, <span class='fl'>31592</span>, <span class='fl'>49050</span>, <span class='fl'>36088</span>, <span class='fl'>10918</span>, <span class='fl'>11153</span>,
-             <span class='fl'>122437</span>, <span class='fl'>122842</span>, <span class='fl'>20349</span>, <span class='fl'>65656</span>, <span class='fl'>40777</span><span class='op'>)</span>
-<span class='va'>state</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/sample.html'>sample</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0</span>, <span class='fl'>1</span><span class='op'>)</span>, size <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/length.html'>length</a></span><span class='op'>(</span><span class='va'>op_time</span><span class='op'>)</span>, replace <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
+<span class='co'>## Assume that mileage is only known for units that have failed (date_of_repair != NA).</span>
+<span class='va'>mileage</span>              <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='cn'>NA</span>, <span class='fl'>15655</span>, <span class='fl'>13629</span>, <span class='fl'>18292</span>, <span class='cn'>NA</span>, <span class='cn'>NA</span>, <span class='fl'>33555</span>, <span class='cn'>NA</span>, <span class='fl'>21737</span>,
+                          <span class='fl'>29870</span>, <span class='fl'>21068</span>, <span class='cn'>NA</span>, <span class='fl'>122283</span>, <span class='cn'>NA</span>, <span class='cn'>NA</span>, <span class='fl'>36088</span>, <span class='cn'>NA</span>, <span class='fl'>11153</span>,
+                          <span class='cn'>NA</span>, <span class='fl'>122842</span>, <span class='fl'>20349</span>, <span class='cn'>NA</span>, <span class='cn'>NA</span><span class='op'>)</span>
 
-<span class='va'>mileage_corrected</span> <span class='op'>&lt;-</span> <span class='fu'>mcs_mileage</span><span class='op'>(</span>x <span class='op'>=</span> <span class='va'>op_time</span>, event <span class='op'>=</span> <span class='va'>state</span>,
-                                 mileage <span class='op'>=</span> <span class='va'>mileage</span>,
-                                 distribution <span class='op'>=</span> <span class='st'>"lognormal"</span>, seed <span class='op'>=</span> <span class='cn'>NULL</span>,
-                                 details <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span>
+<span class='co'>## time in service is the difference between repair and registration for failed</span>
+<span class='co'>## items and the difference between date of analysis and date of registration</span>
+<span class='co'>## for intact units.</span>
+<span class='va'>time_in_service</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/difftime.html'>difftime</a></span><span class='op'>(</span>
+  <span class='fu'><a href='https://rdrr.io/r/base/as.Date.html'>as.Date</a></span><span class='op'>(</span><span class='va'>date_of_repair</span>, format <span class='op'>=</span> <span class='st'>"%Y-%m-%d"</span><span class='op'>)</span>,
+  <span class='fu'><a href='https://rdrr.io/r/base/as.Date.html'>as.Date</a></span><span class='op'>(</span><span class='va'>date_of_registration</span>, format <span class='op'>=</span> <span class='st'>"%Y-%m-%d"</span><span class='op'>)</span>,
+  units <span class='op'>=</span> <span class='st'>"days"</span>
+<span class='op'>)</span>
+<span class='va'>time_in_service</span><span class='op'>[</span><span class='fu'><a href='https://rdrr.io/r/base/NA.html'>is.na</a></span><span class='op'>(</span><span class='va'>time_in_service</span><span class='op'>)</span><span class='op'>]</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/difftime.html'>difftime</a></span><span class='op'>(</span>
+  <span class='fu'><a href='https://rdrr.io/r/base/as.Date.html'>as.Date</a></span><span class='op'>(</span><span class='va'>date_of_analysis</span>, format <span class='op'>=</span> <span class='st'>"%Y-%m-%d"</span><span class='op'>)</span>,
+  <span class='fu'><a href='https://rdrr.io/r/base/as.Date.html'>as.Date</a></span><span class='op'>(</span><span class='va'>date_of_registration</span><span class='op'>[</span><span class='fu'><a href='https://rdrr.io/r/base/NA.html'>is.na</a></span><span class='op'>(</span><span class='va'>time_in_service</span><span class='op'>)</span><span class='op'>]</span>, format <span class='op'>=</span> <span class='st'>"%Y-%m-%d"</span><span class='op'>)</span>,
+  units <span class='op'>=</span> <span class='st'>"days"</span>
+<span class='op'>)</span>
+<span class='va'>time_in_service</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/numeric.html'>as.numeric</a></span><span class='op'>(</span><span class='va'>time_in_service</span><span class='op'>)</span>
 
-<span class='co'># Example 2 - Detailed list output (complete data):</span>
-<span class='va'>list_detail</span> <span class='op'>&lt;-</span> <span class='fu'>mcs_mileage</span><span class='op'>(</span>x <span class='op'>=</span> <span class='va'>op_time</span>, event <span class='op'>=</span> <span class='va'>state</span>, mileage <span class='op'>=</span> <span class='va'>mileage</span>,
-                               distribution <span class='op'>=</span> <span class='st'>"lognormal"</span>, seed <span class='op'>=</span> <span class='cn'>NULL</span>,
-                               details <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
+<span class='co'># Example 1 - Reproducibility of drawn random numbers:</span>
+<span class='fu'><a href='https://rdrr.io/r/base/Random.html'>set.seed</a></span><span class='op'>(</span><span class='fl'>1234</span><span class='op'>)</span>
+<span class='va'>mcs_distances</span> <span class='op'>&lt;-</span> <span class='fu'>mcs_mileage</span><span class='op'>(</span>
+  mileage <span class='op'>=</span> <span class='va'>mileage</span>,
+  time <span class='op'>=</span> <span class='va'>time_in_service</span>,
+  distribution <span class='op'>=</span> <span class='st'>"lognormal"</span>
+<span class='op'>)</span>
 
-<span class='co'># Example 3 - Detailed list output (realistic example):</span>
-<span class='va'>op_time</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>65</span>, <span class='fl'>170</span>, <span class='fl'>210</span>, <span class='fl'>213</span>, <span class='fl'>277</span>, <span class='fl'>287</span>, <span class='fl'>312</span>, <span class='fl'>330</span>, <span class='fl'>337</span>, <span class='fl'>350</span>, <span class='fl'>377</span>, <span class='fl'>379</span>, <span class='fl'>386</span>,
-             <span class='fl'>413</span>, <span class='fl'>426</span>, <span class='fl'>436</span>, <span class='fl'>451</span>, <span class='fl'>472</span>, <span class='fl'>483</span>, <span class='fl'>512</span>, <span class='fl'>525</span>, <span class='fl'>556</span>, <span class='fl'>557</span><span class='op'>)</span>
-<span class='va'>mileage</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='cn'>NA</span>, <span class='fl'>15655</span>, <span class='fl'>13629</span>, <span class='cn'>NA</span>, <span class='fl'>24291</span>, <span class='fl'>34455</span>, <span class='cn'>NA</span>, <span class='fl'>21659</span>, <span class='fl'>21737</span>,
-             <span class='cn'>NA</span>, <span class='fl'>21068</span>, <span class='fl'>22986</span>, <span class='cn'>NA</span>, <span class='fl'>31592</span>, <span class='fl'>49050</span>, <span class='cn'>NA</span>, <span class='fl'>10918</span>, <span class='fl'>11153</span>,
-             <span class='cn'>NA</span>, <span class='fl'>122842</span>, <span class='fl'>20349</span>, <span class='cn'>NA</span>, <span class='fl'>40777</span><span class='op'>)</span>
-<span class='va'>state</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0</span>, <span class='fl'>1</span>, <span class='fl'>1</span>, <span class='fl'>0</span>, <span class='fl'>1</span>, <span class='fl'>1</span>, <span class='fl'>0</span>, <span class='fl'>1</span>, <span class='fl'>1</span>, <span class='fl'>0</span>, <span class='fl'>1</span>, <span class='fl'>1</span>, <span class='fl'>0</span>, <span class='fl'>1</span>, <span class='fl'>1</span>, <span class='fl'>0</span>, <span class='fl'>1</span>, <span class='fl'>1</span>, <span class='fl'>0</span>,
-           <span class='fl'>1</span>, <span class='fl'>1</span>, <span class='fl'>0</span>, <span class='fl'>1</span><span class='op'>)</span>
+<span class='co'># Example 2 - MCS for distances assuming a exponential annual mileage distribution:</span>
+<span class='va'>mcs_distances_2</span> <span class='op'>&lt;-</span> <span class='fu'>mcs_mileage</span><span class='op'>(</span>
+  mileage <span class='op'>=</span> <span class='va'>mileage</span>,
+  time <span class='op'>=</span> <span class='va'>time_in_service</span>,
+  distribution <span class='op'>=</span> <span class='st'>"exponential"</span>
+<span class='op'>)</span>
 
-<span class='va'>list_detail</span> <span class='op'>&lt;-</span> <span class='fu'>mcs_mileage</span><span class='op'>(</span>x <span class='op'>=</span> <span class='va'>op_time</span>, event <span class='op'>=</span> <span class='va'>state</span>, mileage <span class='op'>=</span> <span class='va'>mileage</span>,
-                               distribution <span class='op'>=</span> <span class='st'>"lognormal"</span>, seed <span class='op'>=</span> <span class='cn'>NULL</span>,
-                               details <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
+<span class='va'>status</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/ifelse.html'>ifelse</a></span><span class='op'>(</span><span class='op'>!</span><span class='fu'><a href='https://rdrr.io/r/base/NA.html'>is.na</a></span><span class='op'>(</span><span class='va'>date_of_repair</span><span class='op'>)</span>, <span class='fl'>1</span>, <span class='fl'>0</span><span class='op'>)</span>
+
+<span class='co'># Example 3 - MCS for distances using status:</span>
+<span class='va'>mcs_distances_3</span> <span class='op'>&lt;-</span> <span class='fu'>mcs_mileage</span><span class='op'>(</span>
+  mileage <span class='op'>=</span> <span class='va'>mileage</span>,
+  time <span class='op'>=</span> <span class='va'>time_in_service</span>,
+  status <span class='op'>=</span> <span class='va'>status</span>,
+  distribution <span class='op'>=</span> <span class='st'>"lognormal"</span>
+<span class='op'>)</span>
+
+<span class='co'>## Using result of *$data in estimate_cdf() -&gt; not working at the moment!</span>
+<span class='co'>#prob_estimation &lt;- estimate_cdf(</span>
+<span class='co'>#  x = mcs_distances_3$data,</span>
+<span class='co'># methods = "kaplan"</span>
+<span class='co'>#)</span>
+
+<span class='co'># plot_prob_estimation &lt;- plot_prob(prob_estimation)</span>
+
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
@@ -275,7 +298,7 @@ seed for reproducibility.</p></td>
 
       <footer>
       <div class="copyright">
-  <p>Developed by Hensel Tim-Gunnar, Barkemeyer David.</p>
+  <p>Developed by Tim-Gunnar Hensel, David Barkemeyer.</p>
 </div>
 
 <div class="pkgdown">
