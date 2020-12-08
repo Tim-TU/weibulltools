@@ -24,7 +24,7 @@
 #' covariance matrix. Here it should be said that there is no statistical foundation
 #' to determine the standard errors of the parameters using \emph{Least Squares}
 #' in context of \emph{Rank Regression}. For an accepted statistical method use
-#' \link[=ml_estimation]{MLE}.
+#' \link[=ml_estimation]{maximum likelihood}.
 #'
 #' @param x An object of class \code{cdf_estimation} returned from
 #'  \code{\link{estimate_cdf}}.
@@ -92,17 +92,17 @@
 #' # Probability estimation:
 #' prob_tbl_2p <- estimate_cdf(
 #'   x = data_2p,
-#'   method = "johnson"
+#'   methods = "johnson"
 #' )
 #'
 #' prob_tbl_3p <- estimate_cdf(
 #'   x = data_3p,
-#'   method = "johnson"
+#'   methods = "johnson"
 #' )
 #'
 #' prob_tbl_mult <- estimate_cdf(
 #'   x = data_3p,
-#'   method = c("johnson", "kaplan")
+#'   methods = c("johnson", "kaplan")
 #' )
 #'
 #' # Example 1 - Fitting a two-parametric weibull distribution:
@@ -182,7 +182,6 @@ rank_regression <- function(x, ...) {
 #'
 #' cycles <- alloy$cycles
 #' status_2 <- alloy$status
-
 #'
 #' # Example 1 - Fitting a two-parametric weibull distribution:
 #' tbl_john <- estimate_cdf(

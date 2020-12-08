@@ -40,7 +40,8 @@
 
 
 <meta property="og:title" content="Reliability data — reliability_data" />
-<meta property="og:description" content="This function" />
+<meta property="og:description" content="Create consistent reliability data based on an existing data.frame
+(preferred) or on multiple equal length vectors." />
 
 
 
@@ -130,19 +131,21 @@
     </div>
 
     <div class="ref-description">
-    <p>This function</p>
+    <p>Create consistent reliability data based on an existing <code>data.frame</code>
+(preferred) or on multiple equal length vectors.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>reliability_data</span><span class='op'>(</span>data <span class='op'>=</span> <span class='cn'>NULL</span>, <span class='va'>x</span>, <span class='va'>status</span>, <span class='va'>id</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>reliability_data</span><span class='op'>(</span>data <span class='op'>=</span> <span class='cn'>NULL</span>, <span class='va'>x</span>, <span class='va'>status</span>, id <span class='op'>=</span> <span class='cn'>NULL</span>, .keep_all <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>data</th>
-      <td><p>Either NULL or a data frame/tibble. If data is NULL, x, status and
-id must be vectors containing the data. Otherwise x, status and id can be either
-column names or column positions.</p></td>
+      <td><p>Either <code>NULL</code> or a <code>data.frame</code>. If data is <code>NULL</code>,
+<code>x</code>, <code>status</code> and <code>id</code> must be vectors containing
+the data. Otherwise <code>x</code>, <code>status</code> and <code>id</code> can be either column
+names or column positions.</p></td>
     </tr>
     <tr>
       <th>x</th>
@@ -152,40 +155,68 @@ load cycles.</p></td>
     </tr>
     <tr>
       <th>status</th>
-      <td><p>Binary data (0 or 1) indicating whether unit <em>i</em> is a right
+      <td><p>Binary data (0 or 1) indicating whether a unit is a right
 censored observation (= 0) or a failure (= 1).</p></td>
     </tr>
     <tr>
       <th>id</th>
-      <td><p>Identification for every unit.</p></td>
+      <td><p>Identification of every unit.</p></td>
+    </tr>
+    <tr>
+      <th>.keep_all</th>
+      <td><p>If <code>TRUE</code>, keep all variables in <code>data</code>.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>A tibble with class <code>"reliability_data"</code> containing the following
-columns:</p><ul>
-<li><p><code>x</code></p></li>
-<li><p><code>status</code></p></li>
-<li><p><code>id</code></p></li>
-</ul>
-
+columns (if <code>.keep_all = FALSE</code>):</p><ul>
+<li><p><code>x</code> : Lifetime characteristic.</p></li>
+<li><p><code>status</code> : Binary data (0 or 1) indicating whether a unit is a right
+    censored observation (= 0) or a failure (= 1).</p></li>
+<li><p><code>id</code> : Identification for every unit.</p></li>
+</ul><p>If <code>.keep_all = TRUE</code> the remaining columns of <code>data</code> are also preserved.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='co'># Alloy T7987 dataset taken from Meeker and Escobar (1998, p. 131)</span>
+    <pre class="examples"><div class='input'><span class='co'># Example 1 -  Based on an existing data.frame/tibble and column names:</span>
+<span class='va'>data</span> <span class='op'>&lt;-</span> <span class='fu'>reliability_data</span><span class='op'>(</span>
+  data <span class='op'>=</span> <span class='va'>shock</span>,
+  x <span class='op'>=</span> <span class='va'>distance</span>,
+  status <span class='op'>=</span> <span class='va'>status</span>
+<span class='op'>)</span>
+
+<span class='co'># Example 2 - Based on an existing data.frame/tibble and column positions:</span>
+<span class='va'>data_2</span> <span class='op'>&lt;-</span> <span class='fu'>reliability_data</span><span class='op'>(</span>
+  data <span class='op'>=</span> <span class='va'>shock</span>,
+  x <span class='op'>=</span> <span class='fl'>1</span>,
+  status <span class='op'>=</span> <span class='fl'>3</span>
+<span class='op'>)</span>
+
+<span class='co'># Example 3 - Keep all variables of the tibble/data.frame entered to argument data:</span>
+<span class='va'>data_3</span> <span class='op'>&lt;-</span> <span class='fu'>reliability_data</span><span class='op'>(</span>
+  data <span class='op'>=</span> <span class='va'>shock</span>,
+  x <span class='op'>=</span> <span class='va'>distance</span>,
+  status <span class='op'>=</span> <span class='va'>status</span>,
+  .keep_all <span class='op'>=</span> <span class='cn'>TRUE</span>
+<span class='op'>)</span>
+
+<span class='co'># Example 4 - Based on vectors:</span>
 <span class='va'>cycles</span>   <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>300</span>, <span class='fl'>300</span>, <span class='fl'>300</span>, <span class='fl'>300</span>, <span class='fl'>300</span>, <span class='fl'>291</span>, <span class='fl'>274</span>, <span class='fl'>271</span>, <span class='fl'>269</span>, <span class='fl'>257</span>, <span class='fl'>256</span>, <span class='fl'>227</span>, <span class='fl'>226</span>,
               <span class='fl'>224</span>, <span class='fl'>213</span>, <span class='fl'>211</span>, <span class='fl'>205</span>, <span class='fl'>203</span>, <span class='fl'>197</span>, <span class='fl'>196</span>, <span class='fl'>190</span>, <span class='fl'>189</span>, <span class='fl'>188</span>, <span class='fl'>187</span>, <span class='fl'>184</span>, <span class='fl'>180</span>,
               <span class='fl'>180</span>, <span class='fl'>177</span>, <span class='fl'>176</span>, <span class='fl'>173</span>, <span class='fl'>172</span>, <span class='fl'>171</span>, <span class='fl'>170</span>, <span class='fl'>170</span>, <span class='fl'>169</span>, <span class='fl'>168</span>, <span class='fl'>168</span>, <span class='fl'>162</span>, <span class='fl'>159</span>,
               <span class='fl'>159</span>, <span class='fl'>159</span>, <span class='fl'>159</span>, <span class='fl'>152</span>, <span class='fl'>152</span>, <span class='fl'>149</span>, <span class='fl'>149</span>, <span class='fl'>144</span>, <span class='fl'>143</span>, <span class='fl'>141</span>, <span class='fl'>141</span>, <span class='fl'>140</span>, <span class='fl'>139</span>,
               <span class='fl'>139</span>, <span class='fl'>136</span>, <span class='fl'>135</span>, <span class='fl'>133</span>, <span class='fl'>131</span>, <span class='fl'>129</span>, <span class='fl'>123</span>, <span class='fl'>121</span>, <span class='fl'>121</span>, <span class='fl'>118</span>, <span class='fl'>117</span>, <span class='fl'>117</span>, <span class='fl'>114</span>,
               <span class='fl'>112</span>, <span class='fl'>108</span>, <span class='fl'>104</span>, <span class='fl'>99</span>, <span class='fl'>99</span>, <span class='fl'>96</span>, <span class='fl'>94</span><span class='op'>)</span>
-<span class='va'>status</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/rep.html'>rep</a></span><span class='op'>(</span><span class='fl'>0</span>, <span class='fl'>5</span><span class='op'>)</span>, <span class='fu'><a href='https://rdrr.io/r/base/rep.html'>rep</a></span><span class='op'>(</span><span class='fl'>1</span>, <span class='fl'>67</span><span class='op'>)</span><span class='op'>)</span>
+<span class='va'>state</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/rep.html'>rep</a></span><span class='op'>(</span><span class='fl'>0</span>, <span class='fl'>5</span><span class='op'>)</span>, <span class='fu'><a href='https://rdrr.io/r/base/rep.html'>rep</a></span><span class='op'>(</span><span class='fl'>1</span>, <span class='fl'>67</span><span class='op'>)</span><span class='op'>)</span>
 <span class='va'>id</span> <span class='op'>&lt;-</span> <span class='st'>"XXXXXX"</span>
 
-<span class='va'>tbl</span> <span class='op'>&lt;-</span> <span class='fu'>tibble</span><span class='fu'>::</span><span class='fu'><a href='https://tibble.tidyverse.org/reference/tibble.html'>tibble</a></span><span class='op'>(</span>cycles <span class='op'>=</span> <span class='va'>cycles</span>, status <span class='op'>=</span> <span class='va'>status</span>, id <span class='op'>=</span> <span class='va'>id</span><span class='op'>)</span>
+<span class='va'>data_4</span> <span class='op'>&lt;-</span> <span class='fu'>reliability_data</span><span class='op'>(</span>
+  x <span class='op'>=</span> <span class='va'>cycles</span>,
+  status <span class='op'>=</span> <span class='va'>state</span>,
+  id <span class='op'>=</span> <span class='va'>id</span>
+<span class='op'>)</span>
 
-<span class='va'>rel_tbl</span> <span class='op'>&lt;-</span> <span class='fu'>reliability_data</span><span class='op'>(</span><span class='va'>tbl</span>, x <span class='op'>=</span> <span class='va'>cycles</span>, status <span class='op'>=</span> <span class='va'>status</span>, id <span class='op'>=</span> <span class='va'>id</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='error'>Error in reliability_data(tbl, x = cycles, status = status, id = id): konnte Funktion "reliability_data" nicht finden</span></div><div class='input'>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
@@ -198,7 +229,7 @@ columns:</p><ul>
 
       <footer>
       <div class="copyright">
-  <p>Developed by Hensel Tim-Gunnar, Barkemeyer David.</p>
+  <p>Developed by Tim-Gunnar Hensel, David Barkemeyer.</p>
 </div>
 
 <div class="pkgdown">

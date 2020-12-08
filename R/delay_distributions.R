@@ -5,7 +5,8 @@
 #' registration, report) using a supposed continuous distribution. First, the
 #' element-wise differences in days of both vectors \code{date_1} and
 #' \code{date_2} are calculated and then the parameter(s) of the assumed
-#' distribution are estimated using MLE. See 'Details' for more information.
+#' distribution are estimated with maximum likelihood. See 'Details' for more
+#' information.
 #'
 #' @details
 #' The distribution parameter(s) are determined on the basis of complete cases,
@@ -481,7 +482,7 @@ mcs_helper <- function(x, par_list) {
 #' This function introduces a delay random variable by calculating the time
 #' difference between the registration and production date for the sample units
 #' and afterwards estimates the parameter(s) of a supposed distribution,
-#' using MLE.
+#' using maximum likelihood.
 #'
 #' @param date_prod A vector of class \code{"character"} or \code{"Date"}, in the
 #'   format "yyyy-mm-dd", indicating the date of production of a unit.
@@ -697,7 +698,7 @@ mcs_delay_register <- function(date_prod,
 #' This function introduces a delay random variable by calculating the time
 #' difference between the report and repair date for the sample units
 #' and afterwards estimates the parameter(s) of a supposed distribution,
-#' using MLE.
+#' using maximum likelihood.
 #'
 #' @inheritParams dist_delay_register
 #'
