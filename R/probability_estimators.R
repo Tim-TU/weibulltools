@@ -245,6 +245,24 @@ estimate_cdf.reliability_data <- function(x,
 
 
 
+#' @export
+print.cdf_estimation <- function(x, ...) {
+  n_methods <- length(unique(x$method))
+  if (n_methods == 1) {
+    cat("CDF estimation for method '", x$method[1], "':\n", sep = "")
+  } else {
+    cat(
+      "CDF estimation for methods ",
+      paste0("'", unique(x$method), "'", collapse = ", "),
+      ":\n",
+      sep = ""
+    )
+  }
+  NextMethod()
+}
+
+
+
 #' Estimation of Failure Probabilities using Median Ranks
 #'
 #' @description
@@ -339,7 +357,10 @@ mr_method_ <- function(data,
             " not retain intact units (status == 0).")
   }
 
-  tbl_in <- data
+  tbl_in <- data %>%
+    dplyr::rename(x = attr(data, "characteristic")) %>%
+    # Remove additional classes
+    tibble::as_tibble()
 
   tbl_calc <- tbl_in %>%
     dplyr::filter(status == 1) %>%
@@ -438,7 +459,10 @@ johnson_method <- function(x,
 
 johnson_method_ <- function(data) {
 
-  tbl_in <- data
+  tbl_in <- data %>%
+    dplyr::rename(x = attr(data, "characteristic")) %>%
+    # Remove additional classes
+    tibble::as_tibble()
 
   tbl_calc <- tbl_in %>%
     dplyr::group_by(x) %>%
@@ -570,7 +594,10 @@ kaplan_method_ <- function(data) {
     warning('Use methods = "mr" since there is no censored data problem!')
   }
 
-  tbl_in <- data
+  tbl_in <- data %>%
+    dplyr::rename(x = attr(data, "characteristic")) %>%
+    # Remove additional classes
+    tibble::as_tibble()
 
   tbl_calc <- tbl_in %>%
     dplyr::group_by(x) %>%
@@ -693,7 +720,10 @@ nelson_method_ <- function(data) {
     warning('Use methods = "mr" since there is no censored data problem!')
   }
 
-  tbl_in <- data
+  tbl_in <- data %>%
+    dplyr::rename(x = attr(data, "characteristic")) %>%
+    # Remove additional classes
+    tibble::as_tibble()
 
   tbl_calc <- tbl_in %>%
     dplyr::group_by(x) %>%

@@ -419,12 +419,16 @@ mcs_delay <- function(date_1,
     class_assign <- "mcs_data"
   } else {
     names(data_list) <- c(data_list_names, "time", "status", "id")
-    class_assign <- c("mcs_data", "reliability_data") # is not working since 'time' != x
+    class_assign <- c("mcs_data", "reliability_data")
   }
 
   # Defining data_tbl with class "mcs_data" and/or "reliability_data":
   data_tbl <- tibble::as_tibble(data_list)
   class(data_tbl) <- c(class_assign, class(data_tbl))
+
+  if (!purrr::is_null(status)) {
+    attr(data_tbl, "characteristic") <- "time"
+  }
 
   mcs_output <- list(
      data = data_tbl,

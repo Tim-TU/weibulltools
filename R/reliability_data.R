@@ -117,14 +117,44 @@ reliability_data <- function(data = NULL,
   }
 
   class(tbl) <- c("reliability_data", class(tbl))
+  # Mark column x as characteristic
+  attr(tbl, "characteristic") <- "x"
 
   tbl
 }
+
+
+
+#' @export
+print.reliability_data <- function(x, ...) {
+  if (attr(x, "characteristic") == "x") {
+    cat("Reliability Data:\n")
+  } else {
+    cat(
+      "Reliability data with characteristic '",
+      attr(x, "characteristic"),
+      "':\n",
+      sep = ""
+    )
+  }
+  NextMethod()
+}
+
+
 
 is_characteristic <- function(x) {
   is.numeric(x)
 }
 
+
+
 is_status <- function(x) {
   is.numeric(x) && all(x %in% c(0, 1))
+}
+
+
+
+get_characteristic <- function(x) {
+  # x is reliability_data
+  x[[attr(x, "characteristic")]]
 }
