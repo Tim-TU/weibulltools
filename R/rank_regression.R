@@ -1,7 +1,7 @@
 #' Rank Regression for Parametric Lifetime Distributions
 #'
 #' @description
-#' This method fits an \strong{x on y} regression to a linearized two- or
+#' This function fits an \strong{x on y} regression to a linearized two- or
 #' three-parameter lifetime distribution for complete and (multiple) right
 #' censored data. The parameters are determined in the frequently used
 #' (log-)location-scale parameterization.
@@ -144,7 +144,7 @@ rank_regression <- function(x, ...) {
 #'   e.g. operating time (days/months in service), mileage (km, miles), load
 #'   cycles.
 #' @param y A numeric vector which consists of estimated failure probabilities
-#'   regarding the lifetime data in x.
+#'   regarding the lifetime data in \code{x}.
 #' @param status A vector of binary data (0 or 1) indicating whether a unit is
 #'   a right censored observation (= 0) or a failure (= 1).
 #'

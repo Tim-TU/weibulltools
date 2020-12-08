@@ -1,7 +1,7 @@
 #' ML Estimation for Parametric Lifetime Distributions
 #'
 #' @description
-#' This method estimates the parameters of a two- or three-parametric lifetime
+#' This function estimates the parameters of a two- or three-parametric lifetime
 #' distribution for complete and (multiple) right censored data. The parameters
 #' are determined in the frequently used (log-)location-scale parameterization.
 #'

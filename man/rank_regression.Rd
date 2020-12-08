@@ -17,7 +17,7 @@ rank_regression(x, ...)
 )
 }
 \arguments{
-\item{x}{An object of class \code{cdf_estimation} returned from
+\item{x}{Object of class \code{cdf_estimation} returned from
 \code{\link{estimate_cdf}}.}
 
 \item{distribution}{Supposed distribution of the random variable.}
@@ -57,7 +57,7 @@ Returns a list with the classes \code{"rank_regression"} and
   \code{"model_estimation"} and the items listed above, are included.
 }
 \description{
-This method fits an \strong{x on y} regression to a linearized two- or
+This function fits an \strong{x on y} regression to a linearized two- or
 three-parameter lifetime distribution for complete and (multiple) right
 censored data. The parameters are determined in the frequently used
 (log-)location-scale parameterization.

@@ -667,7 +667,7 @@ delta_method_ <- function(p,
 #' Fisher's Confidence Bounds for Quantiles and Probabilities
 #'
 #' @description
-#' This method computes normal-approximation confidence intervals for quantiles
+#' This function computes normal-approximation confidence intervals for quantiles
 #' and failure probabilities.
 #'
 #' @details
