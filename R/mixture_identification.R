@@ -342,9 +342,6 @@ mixmod_regression_ <- function(cdf_estimation,
     conf_level = conf_level
   )
 
-  # r_squared for reference model:
-  r_sq0 <- mrr_0$r_squared
-
   # Test for successful segmentation of all failed units:
   if (purrr::is_null(group_seg)) {
     # Not succeeded:
@@ -368,9 +365,6 @@ mixmod_regression_ <- function(cdf_estimation,
       distribution = distribution,
       conf_level = conf_level
     )
-
-    # r_squared of first segment:
-    r_sq1 <- mrr_1$r_squared
 
     # Rest with group 2 that can potentially be segmented:
     cdf_failed_rest <- cdf_failed %>% dplyr::filter(group == max(group, na.rm = TRUE))
@@ -445,65 +439,108 @@ mixmod_regression_ <- function(cdf_estimation,
 
 
 
-#' Mixture Model Estimation using EM-Algorithm
+#' Weibull Mixture Model Estimation using EM-Algorithm
 #'
-#' This method uses the EM-Algorithm to estimate the parameters of a univariate
-#' mixture model. Until now, the mixture model can consist of k two-parametric
-#' Weibull distributions. If no mixture of k components can be estimated,
-#' the function is forced to stop and a message with instructions is given.
+#' @description
+#' This method applies the expectation-maximization (EM) algorithm to estimate the
+#' parameters of a univariate weibull mixture model. See 'Details'.
 #'
-#' In \code{mixmod_em} the function \code{\link{mixture_em_cpp}} is called. The
-#' computed posterior probabilities are then used as weights inside function
-#' \code{\link{ml_estimation}} to model a weighted log-likelihood. This strategy
-#' enables the computation of confidence intervals for the parameters of the
-#' separated sub-distributions, since \code{ml_estimation} provides a variance-covariance
-#' matrix. Using this strategy, a potential problem that can occur is,
-#' that the value of the complete log-likelihood, computed by \code{mixture_em_cpp},
-#' differs considerably from the complete log-likelihood after re-estimating
-#' parameters with \code{ml_estimation}. If so, the estimated quantities like
-#' prior and posterior probabilities, as well as the model parameters are not
-#' reliable anymore and the function is forced to stop with the message:
-#' "Parameter estimation was not successful!"
-#' But if the log-likelihood values are close to each other, the presence of the
-#' mixture is strengthened and a reasonable fit is provided.
-#' Thus, a check of the absolute differences in the log-likelihood values is made
-#' and the critical difference has to be specified in argument \code{diff_loglik}.
+#' @details
+#' The EM algorithm is an iterative algorithm for which initial values must be
+#' defined at the beginning. Initial values can be provided for the unknown parameter
+#' vector as well as for the posterior probabilities. This implementation employs
+#' initial values for the posterior probabilities. These can be assigned either
+#' by the user or randomly. The latter is done by the dirichlet distribution, the
+#' conjugate prior of a multinomial distribution (see Mr. Gelissen's blog post
+#' listed under \emph{references}).
 #'
-#' @section Methods (by class):
-#' \describe{
-#'   \item{\code{\link[=mixmod_em.reliability_data]{reliability_data}}}{
-#'     Preferred. Provide the output of \code{\link{reliability_data}} directly.
+#' \strong{M-Step} : On the basis of the initial posterior probabilities, the
+#' parameter vector is estimated with \emph{Newton-Raphson}.
+#'
+#' \strong{E-Step} : The actual estimated parameter vector is used to perform an
+#' update of the posterior probabilities.
+#'
+#' This procedure is repeated until the complete log-likelihood has converged.
+#'
+#' @param x An object of class \code{reliability_data} returned from
+#'   \code{\link{reliability_data}}.
+#' @param post A numeric matrix specifiying initial posterior probabilities.
+#'   If post is \code{NULL} posterior probabilities are assigned randomly.
+#' @param distribution \code{"weibull"} until further distributions are implemented.
+#' @param conf_level Confidence level for the intervals of the weibull parameters
+#' of every component \code{k}.
+#' @param k Integer of mixture components.
+#' @param method \code{"EM"} until other methods are implemented.
+#' @param n_iter Integer defining the maximum number of iterations.
+#' @param conv_limit Numeric value defining the convergence limit.
+#' @param diff_loglik Numeric value defining the maximum difference between
+#'   log-likelihood values, which seems permissible.
+#'
+#' @return Returns a list with class \code{"mixmod_em"}. The length of the list
+#' depends on the number of specified subgroups \emph{k}. The first \code{k} lists
+#' contain information provided by \link{ml_estimation}. The values of \code{logL},
+#' \code{aic} and \code{bic} are the results of a weighted log-likelihood, where
+#' the weights are the posterior probabilities determined by the algorithm.
+#' The last list summarizes further results of the EM algorithm and is therefore
+#' called \code{em_results}. It contains the following elements:
+#'   \itemize{
+#'     \item \code{a_priori} : A vector with estimated prior probabilities.
+#'     \item \code{a_posteriori} : A matrix with estimated posterior probabilities.
+#'     \item \code{groups} : Numeric vector specifying the group membership of
+#'       every observation.
+#'     \item \code{logL} : The value of the complete log-likelihood.
+#'     \item \code{aic} : Akaike Information Criterion.
+#'     \item \code{bic} : Bayesian Information Criterion.
 #'   }
-#'   \item{\code{\link[=mixmod_em.default]{default}}}{
-#'     Provide \code{x} and \code{status} manually.
-#'   }
-#' }
 #'
 #' @encoding UTF-8
+#'
 #' @references
 #'   \itemize{
 #'     \item Doganaksoy, N.; Hahn, G.; Meeker, W. Q., Reliability Analysis by
 #'       Failure Mode, Quality Progress, 35(6), 47-52, 2002
 #'     \item Blog posts by Stefan Gelissen: \url{http://blogs2.datall-analyse.nl/2016/02/18/rcode_mixture_distribution_censored};
-#'       last access on 19th January 2019}
+#'       last accessed on 8th December 2020}
 #'
-#' @return Returns a list where the length of the list depends on the number of
-#'    k subgroups. The first \code{k} lists have the same information as provided by
-#'    \link{ml_estimation}, but the values \code{logL}, \code{aic} and \code{bic} are
-#'    the results of a log-likelihood function, which is weighted by a-posteriori
-#'    probabilities. The last list summarizes further results of the EM-Algorithm and
-#'    is therefore called \code{em_results}. It contains the following elements:
-#'   \itemize{
-#'   \item \code{a_priori} : A vector with estimated a-priori probabilities.
-#'   \item \code{a_posteriori} : A matrix with estimated a-posteriori probabilities.
-#'   \item \code{groups} : Numeric vector specifying the group membership of every
-#'     observation.
-#'   \item \code{logL} : The value of the complete log-likelihood.
-#'   \item \code{aic} : Akaike Information Criterion.
-#'   \item \code{bic} : Bayesian Information Criterion.}
+#' @seealso \code{\link{mixmod_em.default}}
+#'
+#' @examples
+#' # Reliability data preparation:
+#' ## Data for mixture model:
+#' data_mix <- reliability_data(
+#'   data = voltage,
+#'   x = hours,
+#'   status = status
+#' )
+#'
+#' # Example 1 - EM algorithm with randomly assigned posterior probabilities:
+#' mix_mod_em <- mixmod_em(
+#'   x = data_mix,
+#'   conf_level = 0.95,
+#'   k = 2,
+#'   n_iter = 150
+#' )
+#'
+#' # Example 2 - EM algorithm with user-defined posterior probabilities:
+#' mix_mod_em_2 <- mixmod_em(
+#'   x = data_mix,
+#'   post = matrix(rep(c(0.001, 0.999), each =  nrow(data_mix)), ncol = 2),
+#'   conf_level = 0.95,
+#'   k = 2,
+#'   n_iter = 2000L,
+#'   conv_limit = 1e-3,
+#'   diff_loglik = 0.001
+#' )
+#'
+#' # Example 3 - Maximum likelihood is applied when k = 1:
+#' mix_mod_em_3 <- mixmod_em(
+#'   x = data_mix,
+#'   conf_level = 0.95,
+#'   k = 1,
+#'   n_iter = 150
+#' )
 #'
 #' @export
-#'
 mixmod_em <- function(x, ...) {
   UseMethod("mixmod_em")
 }
@@ -514,129 +551,53 @@ mixmod_em <- function(x, ...) {
 #'
 #' @inherit mixmod_em description details return references
 #'
-#' @param x An object of class \code{reliability_data} returned from
-#'   \code{\link{reliability_data}}.
-#' @param post A numeric matrix specifiying initial a-posteriori probabilities.
-#'   If post is \code{NULL} (default) a-posteriori probabilities are assigned
-#'   randomly using the Dirichlet distribution, which is the conjugate prior of a
-#'   multinomial distribution. This idea was taken from the blog post of Mr. Gelissen
-#'   (linked under \emph{references}).
-#' @param distribution Supposed mixture model. Only \code{"weibull"} can be used.
-#'   Other distributions have not been implemented yet.
-#' @param conf_level Confidence level for the confidence intervals of the parameters
-#'   of every component \code{k}. The default value is \code{conf_level = 0.95}.
-#' @param k Integer of mixture components, default is 2.
-#' @param method Default method is \code{"EM"}. Other methods have not been implemented
-#'   yet.
-#' @param n_iter Integer defining the maximum number of iterations.
-#' @param conv_limit Numeric value defining the convergence limit.
-#' @param diff_loglik Numeric value defining the maximum difference between
-#'   log-likelihood values, which seems permissible. The default value is \code{0.5}.
-#'   See \strong{Details} for the usage of this argument.
-#'
-#' @examples
-#' # Data is taken from given reference of Doganaksoy, Hahn and Meeker:
-#' hours <- c(2, 28, 67, 119, 179, 236, 282, 317, 348, 387, 3, 31, 69, 135,
-#'           191, 241, 284, 318, 348, 392, 5, 31, 76, 144, 203, 257, 286,
-#'           320, 350, 412, 8, 52, 78, 157, 211, 261, 298, 327, 360, 446,
-#'           13, 53, 104, 160, 221, 264, 303, 328, 369, 21, 64, 113, 168,
-#'           226, 278, 314, 328, 377)
-#' state <- c(1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1,
-#'          1, 0, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 0, 0,
-#'          1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-#'          0, 1, 1, 1, 1, 1, 1)
-#'
-#' mix_mod_em <- mixmod_em(x = hours,
-#'                         status = state,
-#'                         distribution = "weibull",
-#'                         conf_level = 0.95,
-#'                         k = 2,
-#'                         method = "EM",
-#'                         n_iter = 150)
-#'
-#' @export
-#'
-mixmod_em.reliability_data <- function(x,
-                                       post = NULL,
-                                       distribution = "weibull",
-                                       conf_level = .95,
-                                       k = 2,
-                                       method = "EM",
-                                       n_iter = 100L,
-                                       conv_limit = 1e-6,
-                                       diff_loglik = 0.5,
-                                       ...
-) {
-
-  distribution <- match.arg(distribution)
-  method <- match.arg(method)
-
-  mixmod_em.default(
-    x = get_characteristic(x),
-    status = x$status,
-    post = post,
-    distribution = distribution,
-    conf_level = conf_level,
-    k = k,
-    method = method,
-    n_iter = n_iter,
-    conv_limit = conv_limit,
-    diff_loglik = diff_loglik
-  )
-}
-
-
-
-#' Mixture Model Estimation using EM-Algorithm
-#'
-#' @inherit mixmod_em description details return references
+#' @inheritParams mixmod_em
 #'
 #' @param x A numeric vector which consists of lifetime data. Lifetime
-#'  data could be every characteristic influencing the reliability of a product,
-#'  e.g. operating time (days/months in service), mileage (km, miles), load
-#'  cycles.
+#'   data could be every characteristic influencing the reliability of a product,
+#'   e.g. operating time (days/months in service), mileage (km, miles), load
+#'   cycles.
 #' @param status A vector of binary data (0 or 1) indicating whether unit \emph{i}
 #'   is a right censored observation (= 0) or a failure (= 1).
-#' @param post A numeric matrix specifiying initial a-posteriori probabilities.
-#'   If post is \code{NULL} (default) a-posteriori probabilities are assigned
-#'   randomly using the Dirichlet distribution, which is the conjugate prior of a
-#'   multinomial distribution. This idea was taken from the blog post of Mr. Gelissen
-#'   (linked under \emph{references}).
-#' @param distribution Supposed mixture model. Only \code{"weibull"} can be used.
-#'   Other distributions have not been implemented yet.
-#' @param conf_level Confidence level for the confidence intervals of the parameters
-#'   of every component \code{k}. The default value is \code{conf_level = 0.95}.
-#' @param k Integer of mixture components, default is 2.
-#' @param method Default method is \code{"EM"}. Other methods have not been implemented
-#'   yet.
-#' @param n_iter Integer defining the maximum number of iterations.
-#' @param conv_limit Numeric value defining the convergence limit.
-#' @param diff_loglik Numeric value defining the maximum difference between
-#'   log-likelihood values, which seems permissible. The default value is \code{0.5}.
-#'   See \strong{Details} for the usage of this argument.
+#'
+#' @seealso \code{\link{mixmod_em}}
 #'
 #' @examples
-#' # Data is taken from given reference of Doganaksoy, Hahn and Meeker:
-#' hours <- c(2, 28, 67, 119, 179, 236, 282, 317, 348, 387, 3, 31, 69, 135,
-#'           191, 241, 284, 318, 348, 392, 5, 31, 76, 144, 203, 257, 286,
-#'           320, 350, 412, 8, 52, 78, 157, 211, 261, 298, 327, 360, 446,
-#'           13, 53, 104, 160, 221, 264, 303, 328, 369, 21, 64, 113, 168,
-#'           226, 278, 314, 328, 377)
-#' state <- c(1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1,
-#'          1, 0, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 0, 0,
-#'          1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-#'          0, 1, 1, 1, 1, 1, 1)
+#' # Vectors:
+#' hours <- voltage$hours
+#' status <- voltage$status
 #'
-#' mix_mod_em <- mixmod_em(x = hours,
-#'                         status = state,
-#'                         distribution = "weibull",
-#'                         conf_level = 0.95,
-#'                         k = 2,
-#'                         method = "EM",
-#'                         n_iter = 150)
+#' # Example 1 - EM algorithm with randomly assigned posterior probabilities:
+#' mix_mod_em <- mixmod_em(
+#'   x = hours,
+#'   status = status,
+#'   conf_level = 0.95,
+#'   k = 2,
+#'   n_iter = 150
+#' )
+#'
+#' # Example 2 - EM algorithm with user-defined posterior probabilities:
+#' mix_mod_em_2 <- mixmod_em(
+#'   x = hours,
+#'   status = status,
+#'   distribution = "weibull",
+#'   conf_level = 0.95,
+#'   k = 2,
+#'   method = "EM",
+#'   n_iter = 150
+#' )
+#'
+#'#' # Example 3 - Maximum likelihood is applied when k = 1:
+#' mix_mod_em_3 <- mixmod_em(
+#'   x = data_mix,
+#'   distribution = "weibull",
+#'   conf_level = 0.95,
+#'   k = 1,
+#'   method = "EM",
+#'   n_iter = 150
+#' )
 #'
 #' @export
-#'
 mixmod_em.default <- function(x,
                               status,
                               post = NULL,
@@ -646,7 +607,7 @@ mixmod_em.default <- function(x,
                               method = "EM",
                               n_iter = 100L,
                               conv_limit = 1e-6,
-                              diff_loglik = 0.5,
+                              diff_loglik = 0.01,
                               ...
 ) {
 
@@ -671,11 +632,11 @@ mixmod_em.default <- function(x,
   ############## New Approach ##############
   # Try to apply ml_estimation where observations are weighted with a-posterioris:
   ml <- try(apply(mix_est$posteriori, MARGIN = 2, FUN = ml_estimation, x = x, status = status,
-    distribution = distribution, conf_level = conf_level), silent = TRUE)
+                  distribution = distribution, conf_level = conf_level), silent = TRUE)
   if (class(ml) == "try-error") {
-        stop(paste(ml[1], sprintf("\n For k = %s subcomponents the above problem occured!", k),
-                   paste("\n Hint: Reduce k in function call and try again. If not",
-                         "succeed a mixture model seems not to be appropriate. \n Instead use k = 1 to perform ml_estimation().")))
+    stop(paste(ml[1], sprintf("\n For k = %s subcomponents the above problem occured!", k),
+               paste("\n Hint: Reduce k in function call and try again. If not",
+                     "succeed a mixture model seems not to be appropriate. \n Instead use k = 1 to perform ml_estimation().")))
   }
 
   # calculate complete log-likelihood and information criteria for EM.
@@ -690,7 +651,7 @@ mixmod_em.default <- function(x,
   # Otherwise, stop() function should be called, since posterioris and prioris are
   # not valid anymore!!!!
 
-   if (abs(logL_complete - mix_est$logL) > diff_loglik) {
+  if (abs(logL_complete - mix_est$logL) > diff_loglik) {
     stop("Parameter estimation was not successful!")
   }
 
@@ -705,7 +666,7 @@ mixmod_em.default <- function(x,
   names(ml) <- sprintf("mod_%i", 1:k)
 
   ml$em_results <- list(a_priori = mix_est$priori, a_posteriori = mix_est$posteriori,
-    groups = split_obs, logL = logL_complete, aic = aic_complete, bic = bic_complete)
+                        groups = split_obs, logL = logL_complete, aic = aic_complete, bic = bic_complete)
 
   class(ml) <- c("mixmod_em", class(ml))
 
@@ -714,8 +675,41 @@ mixmod_em.default <- function(x,
 
 
 
+#' @rdname mixmod_em
+#'
+#' @export
+mixmod_em.reliability_data <- function(x,
+                                       post = NULL,
+                                       distribution = "weibull",
+                                       conf_level = .95,
+                                       k = 2,
+                                       method = "EM",
+                                       n_iter = 100L,
+                                       conv_limit = 1e-6,
+                                       diff_loglik = 0.01,
+                                       ...
+) {
 
-# Function that simulates a sample from a Dirichlet distribution:
+  distribution <- match.arg(distribution)
+  method <- match.arg(method)
+
+  mixmod_em.default(
+    x = get_characteristic(x),
+    status = x$status,
+    post = post,
+    distribution = distribution,
+    conf_level = conf_level,
+    k = k,
+    method = method,
+    n_iter = n_iter,
+    conv_limit = conv_limit,
+    diff_loglik = diff_loglik
+  )
+}
+
+
+
+#Function that simulates a sample from a Dirichlet distribution:
 rdirichlet <- function(n, par) {
   k <- length(par)
   z <- matrix(0, nrow = n, ncol = k)

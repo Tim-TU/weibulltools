@@ -1,5 +1,6 @@
 # snapshots: examples
 
+    CDF estimation for method 'mr':
     # A tibble: 10 x 6
        id         x status  rank   prob method
        <chr>  <dbl>  <dbl> <int>  <dbl> <chr> 
@@ -16,6 +17,7 @@
 
 ---
 
+    CDF estimation for method 'mr':
     # A tibble: 10 x 6
        id         x status  rank   prob method
        <chr>  <dbl>  <dbl> <int>  <dbl> <chr> 
@@ -32,6 +34,7 @@
 
 ---
 
+    CDF estimation for method 'johnson':
     # A tibble: 10 x 6
        id         x status  rank    prob method 
        <chr>  <dbl>  <dbl> <dbl>   <dbl> <chr>  
@@ -48,6 +51,7 @@
 
 ---
 
+    CDF estimation for method 'nelson':
     # A tibble: 10 x 6
        id         x status  rank   prob method
        <chr>  <dbl>  <dbl> <dbl>  <dbl> <chr> 
@@ -64,6 +68,7 @@
 
 ---
 
+    CDF estimation for method 'kaplan':
     # A tibble: 10 x 6
        id         x status  rank   prob method
        <chr>  <dbl>  <dbl> <dbl>  <dbl> <chr> 
@@ -80,6 +85,7 @@
 
 ---
 
+    CDF estimation for method 'kaplan':
     # A tibble: 23 x 6
        id        x status  rank  prob method
        <chr> <dbl>  <dbl> <dbl> <dbl> <chr> 
@@ -97,6 +103,7 @@
 
 # snapshots: input with repeating characteristics
 
+    CDF estimation for method 'mr':
     # A tibble: 2 x 6
       id        x status  rank  prob method
       <chr> <dbl>  <dbl> <int> <dbl> <chr> 
@@ -105,6 +112,7 @@
 
 ---
 
+    CDF estimation for method 'johnson':
     # A tibble: 4 x 6
       id        x status  rank   prob method 
       <chr> <dbl>  <dbl> <dbl>  <dbl> <chr>  
@@ -115,6 +123,7 @@
 
 ---
 
+    CDF estimation for method 'kaplan':
     # A tibble: 4 x 6
       id        x status  rank  prob method
       <chr> <dbl>  <dbl> <dbl> <dbl> <chr> 
@@ -125,6 +134,7 @@
 
 ---
 
+    CDF estimation for method 'nelson':
     # A tibble: 4 x 6
       id        x status  rank  prob method
       <chr> <dbl>  <dbl> <dbl> <dbl> <chr> 

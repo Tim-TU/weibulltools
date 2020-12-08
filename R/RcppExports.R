@@ -75,19 +75,26 @@ normalize <- function(M) {
 #'   \item \code{logL} : The value of the complete log-likelihood.}
 #' @export
 #' @examples
-#' # Data is taken from given reference:
-#' hours <- c(2, 28, 67, 119, 179, 236, 282, 317, 348, 387, 3, 31, 69, 135,
-#'           191, 241, 284, 318, 348, 392, 5, 31, 76, 144, 203, 257, 286,
-#'           320, 350, 412, 8, 52, 78, 157, 211, 261, 298, 327, 360, 446,
-#'           13, 53, 104, 160, 221, 264, 303, 328, 369, 21, 64, 113, 168,
-#'           226, 278, 314, 328, 377)
-#' state <- c(1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1,
-#'          1, 0, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 0, 0,
-#'          1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-#'          0, 1, 1, 1, 1, 1, 1)
+#' # Vectors:
+#' hours <- voltage$hours
+#' status <- voltage$status
+#'
+#' # Example 1 - EM algorithm with randomly assgined posterior probabilities:
+#' mix_mod_em_1 <- mixture_em_cpp(
+#'   x = hours,
+#'   status = status,
+#'   post = NULL,
+#'   k = 2,
+#'   n_iter = 150
+#' )
+#'
+#' # Example 2 - EM algorithm with user-specific posterior probabilities:
+#' set.seed(1)
+#'
 #' x_vec <- runif(n = length(hours))
 #' post <- matrix(c(x_vec, 1 - x_vec), ncol = 2)
-#' mix_mod_em <- mixture_em_cpp(x = hours,
+#'
+#' mix_mod_em_2 <- mixture_em_cpp(x = hours,
 #'                              status = state,
 #'                              post = post,
 #'                              distribution = "weibull",

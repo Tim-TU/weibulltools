@@ -3,66 +3,130 @@
 \encoding{UTF-8}
 \name{mixmod_em}
 \alias{mixmod_em}
-\title{Mixture Model Estimation using EM-Algorithm}
+\alias{mixmod_em.reliability_data}
+\title{Weibull Mixture Model Estimation using EM-Algorithm}
 \usage{
 mixmod_em(x, ...)
+
+\method{mixmod_em}{reliability_data}(
+  x,
+  post = NULL,
+  distribution = "weibull",
+  conf_level = 0.95,
+  k = 2,
+  method = "EM",
+  n_iter = 100L,
+  conv_limit = 1e-06,
+  diff_loglik = 0.01,
+  ...
+)
+}
+\arguments{
+\item{x}{An object of class \code{reliability_data} returned from
+\code{\link{reliability_data}}.}
+
+\item{post}{A numeric matrix specifiying initial posterior probabilities.
+If post is \code{NULL} posterior probabilities are assigned randomly.}
+
+\item{distribution}{\code{"weibull"} until further distributions are implemented.}
+
+\item{conf_level}{Confidence level for the intervals of the weibull parameters
+of every component \code{k}.}
+
+\item{k}{Integer of mixture components.}
+
+\item{method}{\code{"EM"} until other methods are implemented.}
+
+\item{n_iter}{Integer defining the maximum number of iterations.}
+
+\item{conv_limit}{Numeric value defining the convergence limit.}
+
+\item{diff_loglik}{Numeric value defining the maximum difference between
+log-likelihood values, which seems permissible.}
 }
 \value{
-Returns a list where the length of the list depends on the number of
-   k subgroups. The first \code{k} lists have the same information as provided by
-   \link{ml_estimation}, but the values \code{logL}, \code{aic} and \code{bic} are
-   the results of a log-likelihood function, which is weighted by a-posteriori
-   probabilities. The last list summarizes further results of the EM-Algorithm and
-   is therefore called \code{em_results}. It contains the following elements:
+Returns a list with class \code{"mixmod_em"}. The length of the list
+depends on the number of specified subgroups \emph{k}. The first \code{k} lists
+contain information provided by \link{ml_estimation}. The values of \code{logL},
+\code{aic} and \code{bic} are the results of a weighted log-likelihood, where
+the weights are the posterior probabilities determined by the algorithm.
+The last list summarizes further results of the EM algorithm and is therefore
+called \code{em_results}. It contains the following elements:
   \itemize{
-  \item \code{a_priori} : A vector with estimated a-priori probabilities.
-  \item \code{a_posteriori} : A matrix with estimated a-posteriori probabilities.
-  \item \code{groups} : Numeric vector specifying the group membership of every
-    observation.
-  \item \code{logL} : The value of the complete log-likelihood.
-  \item \code{aic} : Akaike Information Criterion.
-  \item \code{bic} : Bayesian Information Criterion.}
+    \item \code{a_priori} : A vector with estimated prior probabilities.
+    \item \code{a_posteriori} : A matrix with estimated posterior probabilities.
+    \item \code{groups} : Numeric vector specifying the group membership of
+      every observation.
+    \item \code{logL} : The value of the complete log-likelihood.
+    \item \code{aic} : Akaike Information Criterion.
+    \item \code{bic} : Bayesian Information Criterion.
+  }
 }
 \description{
-This method uses the EM-Algorithm to estimate the parameters of a univariate
-mixture model. Until now, the mixture model can consist of k two-parametric
-Weibull distributions. If no mixture of k components can be estimated,
-the function is forced to stop and a message with instructions is given.
+This method applies the expectation-maximization (EM) algorithm to estimate the
+parameters of a univariate weibull mixture model. See 'Details'.
 }
 \details{
-In \code{mixmod_em} the function \code{\link{mixture_em_cpp}} is called. The
-computed posterior probabilities are then used as weights inside function
-\code{\link{ml_estimation}} to model a weighted log-likelihood. This strategy
-enables the computation of confidence intervals for the parameters of the
-separated sub-distributions, since \code{ml_estimation} provides a variance-covariance
-matrix. Using this strategy, a potential problem that can occur is,
-that the value of the complete log-likelihood, computed by \code{mixture_em_cpp},
-differs considerably from the complete log-likelihood after re-estimating
-parameters with \code{ml_estimation}. If so, the estimated quantities like
-prior and posterior probabilities, as well as the model parameters are not
-reliable anymore and the function is forced to stop with the message:
-"Parameter estimation was not successful!"
-But if the log-likelihood values are close to each other, the presence of the
-mixture is strengthened and a reasonable fit is provided.
-Thus, a check of the absolute differences in the log-likelihood values is made
-and the critical difference has to be specified in argument \code{diff_loglik}.
-}
-\section{Methods (by class)}{
+The EM algorithm is an iterative algorithm for which initial values must be
+defined at the beginning. Initial values can be provided for the unknown parameter
+vector as well as for the posterior probabilities. This implementation employs
+initial values for the posterior probabilities. These can be assigned either
+by the user or randomly. The latter is done by the dirichlet distribution, the
+conjugate prior of a multinomial distribution (see Mr. Gelissen's blog post
+listed under \emph{references}).
 
-\describe{
-  \item{\code{\link[=mixmod_em.reliability_data]{reliability_data}}}{
-    Preferred. Provide the output of \code{\link{reliability_data}} directly.
-  }
-  \item{\code{\link[=mixmod_em.default]{default}}}{
-    Provide \code{x} and \code{status} manually.
-  }
-}
-}
+\strong{M-Step} : On the basis of the initial posterior probabilities, the
+parameter vector is estimated with \emph{Newton-Raphson}.
 
+\strong{E-Step} : The actual estimated parameter vector is used to perform an
+update of the posterior probabilities.
+
+This procedure is repeated until the complete log-likelihood has converged.
+}
+\examples{
+# Reliability data preparation:
+## Data for mixture model:
+data_mix <- reliability_data(
+  data = voltage,
+  x = hours,
+  status = status
+)
+
+# Example 1 - EM algorithm with randomly assigned posterior probabilities:
+mix_mod_em <- mixmod_em(
+  x = data_mix,
+  conf_level = 0.95,
+  k = 2,
+  n_iter = 150
+)
+
+# Example 2 - EM algorithm with user-defined posterior probabilities:
+mix_mod_em_2 <- mixmod_em(
+  x = data_mix,
+  post = matrix(rep(c(0.001, 0.999), each =  nrow(data_mix)), ncol = 2),
+  conf_level = 0.95,
+  k = 2,
+  n_iter = 2000L,
+  conv_limit = 1e-3,
+  diff_loglik = 0.001
+)
+
+# Example 3 - Maximum likelihood is applied when k = 1:
+mix_mod_em_3 <- mixmod_em(
+  x = data_mix,
+  conf_level = 0.95,
+  k = 1,
+  n_iter = 150
+)
+
+}
 \references{
 \itemize{
     \item Doganaksoy, N.; Hahn, G.; Meeker, W. Q., Reliability Analysis by
       Failure Mode, Quality Progress, 35(6), 47-52, 2002
     \item Blog posts by Stefan Gelissen: \url{http://blogs2.datall-analyse.nl/2016/02/18/rcode_mixture_distribution_censored};
-      last access on 19th January 2019}
+      last accessed on 8th December 2020}
+}
+\seealso{
+\code{\link{mixmod_em.default}}
 }

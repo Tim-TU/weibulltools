@@ -64,6 +64,7 @@
 
 # plot_prob_helper remains stable
 
+    CDF estimation for methods 'johnson', 'kaplan':
     # A tibble: 134 x 8
        id        x status  rank    prob method      q group
        <chr> <dbl>  <dbl> <dbl>   <dbl> <chr>   <dbl> <chr>
@@ -81,6 +82,7 @@
 
 ---
 
+    CDF estimation for methods 'johnson', 'kaplan':
     # A tibble: 134 x 8
        id        x status  rank    prob method      q group
        <chr> <dbl>  <dbl> <dbl>   <dbl> <chr>   <dbl> <chr>
