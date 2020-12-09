@@ -1,5 +1,6 @@
 # weibulltools v2.0.0
 ## Breaking Changes
+* Package now depends on R(>= 3.5.0)
 * Renamed argument `event` with `status`.
 * Output of probability estimators: Renamed column `characteristic` with `x`.
 * `plot_conf()`: Switched arguments distribution and direction.

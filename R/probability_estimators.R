@@ -614,7 +614,7 @@ kaplan_method_ <- function(data) {
       n_in = sum(n_i) - n_out
     )
 
-  if (data$status[which.max(data$x)] == 0) {
+  if (tbl_in$status[which.max(tbl_in$x)] == 0) {
     tbl_calc <- tbl_calc %>%
       dplyr::mutate(
         prob = 1 - cumprod((n_in - failure) / n_in)

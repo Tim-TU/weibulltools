@@ -14,7 +14,7 @@
   method = "EM",
   n_iter = 100L,
   conv_limit = 1e-06,
-  diff_loglik = 0.5,
+  diff_loglik = 0.01,
   ...
 )
 }
@@ -27,90 +27,98 @@ cycles.}
 \item{status}{A vector of binary data (0 or 1) indicating whether unit \emph{i}
 is a right censored observation (= 0) or a failure (= 1).}
 
-\item{post}{A numeric matrix specifiying initial a-posteriori probabilities.
-If post is \code{NULL} (default) a-posteriori probabilities are assigned
-randomly using the Dirichlet distribution, which is the conjugate prior of a
-multinomial distribution. This idea was taken from the blog post of Mr. Gelissen
-(linked under \emph{references}).}
+\item{post}{A numeric matrix specifiying initial posterior probabilities.
+If post is \code{NULL} posterior probabilities are assigned randomly.}
 
-\item{distribution}{Supposed mixture model. Only \code{"weibull"} can be used.
-Other distributions have not been implemented yet.}
+\item{distribution}{\code{"weibull"} until further distributions are implemented.}
 
-\item{conf_level}{Confidence level for the confidence intervals of the parameters
-of every component \code{k}. The default value is \code{conf_level = 0.95}.}
+\item{conf_level}{Confidence level for the intervals of the weibull parameters
+of every component \code{k}.}
 
-\item{k}{Integer of mixture components, default is 2.}
+\item{k}{Integer of mixture components.}
 
-\item{method}{Default method is \code{"EM"}. Other methods have not been implemented
-yet.}
+\item{method}{\code{"EM"} until other methods are implemented.}
 
 \item{n_iter}{Integer defining the maximum number of iterations.}
 
 \item{conv_limit}{Numeric value defining the convergence limit.}
 
 \item{diff_loglik}{Numeric value defining the maximum difference between
-log-likelihood values, which seems permissible. The default value is \code{0.5}.
-See \strong{Details} for the usage of this argument.}
+log-likelihood values, which seems permissible.}
 }
 \value{
-Returns a list where the length of the list depends on the number of
-   k subgroups. The first \code{k} lists have the same information as provided by
-   \link{ml_estimation}, but the values \code{logL}, \code{aic} and \code{bic} are
-   the results of a log-likelihood function, which is weighted by a-posteriori
-   probabilities. The last list summarizes further results of the EM-Algorithm and
-   is therefore called \code{em_results}. It contains the following elements:
+Returns a list with class \code{"mixmod_em"}. The length of the list
+depends on the number of specified subgroups \emph{k}. The first \code{k} lists
+contain information provided by \link{ml_estimation}. The values of \code{logL},
+\code{aic} and \code{bic} are the results of a weighted log-likelihood, where
+the weights are the posterior probabilities determined by the algorithm.
+The last list summarizes further results of the EM algorithm and is therefore
+called \code{em_results}. It contains the following elements:
   \itemize{
-  \item \code{a_priori} : A vector with estimated a-priori probabilities.
-  \item \code{a_posteriori} : A matrix with estimated a-posteriori probabilities.
-  \item \code{groups} : Numeric vector specifying the group membership of every
-    observation.
-  \item \code{logL} : The value of the complete log-likelihood.
-  \item \code{aic} : Akaike Information Criterion.
-  \item \code{bic} : Bayesian Information Criterion.}
+    \item \code{a_priori} : A vector with estimated prior probabilities.
+    \item \code{a_posteriori} : A matrix with estimated posterior probabilities.
+    \item \code{groups} : Numeric vector specifying the group membership of
+      every observation.
+    \item \code{logL} : The value of the complete log-likelihood.
+    \item \code{aic} : Akaike Information Criterion.
+    \item \code{bic} : Bayesian Information Criterion.
+  }
 }
 \description{
-This method uses the EM-Algorithm to estimate the parameters of a univariate
-mixture model. Until now, the mixture model can consist of k two-parametric
-Weibull distributions. If no mixture of k components can be estimated,
-the function is forced to stop and a message with instructions is given.
+This method applies the expectation-maximization (EM) algorithm to estimate the
+parameters of a univariate weibull mixture model. See 'Details'.
 }
 \details{
-In \code{mixmod_em} the function \code{\link{mixture_em_cpp}} is called. The
-computed posterior probabilities are then used as weights inside function
-\code{\link{ml_estimation}} to model a weighted log-likelihood. This strategy
-enables the computation of confidence intervals for the parameters of the
-separated sub-distributions, since \code{ml_estimation} provides a variance-covariance
-matrix. Using this strategy, a potential problem that can occur is,
-that the value of the complete log-likelihood, computed by \code{mixture_em_cpp},
-differs considerably from the complete log-likelihood after re-estimating
-parameters with \code{ml_estimation}. If so, the estimated quantities like
-prior and posterior probabilities, as well as the model parameters are not
-reliable anymore and the function is forced to stop with the message:
-"Parameter estimation was not successful!"
-But if the log-likelihood values are close to each other, the presence of the
-mixture is strengthened and a reasonable fit is provided.
-Thus, a check of the absolute differences in the log-likelihood values is made
-and the critical difference has to be specified in argument \code{diff_loglik}.
+The EM algorithm is an iterative algorithm for which initial values must be
+defined at the beginning. Initial values can be provided for the unknown parameter
+vector as well as for the posterior probabilities. This implementation employs
+initial values for the posterior probabilities. These can be assigned either
+by the user or randomly. The latter is done by the dirichlet distribution, the
+conjugate prior of a multinomial distribution (see Mr. Gelissen's blog post
+listed under \emph{references}).
+
+\strong{M-Step} : On the basis of the initial posterior probabilities, the
+parameter vector is estimated with \emph{Newton-Raphson}.
+
+\strong{E-Step} : The actual estimated parameter vector is used to perform an
+update of the posterior probabilities.
+
+This procedure is repeated until the complete log-likelihood has converged.
 }
 \examples{
-# Data is taken from given reference of Doganaksoy, Hahn and Meeker:
-hours <- c(2, 28, 67, 119, 179, 236, 282, 317, 348, 387, 3, 31, 69, 135,
-          191, 241, 284, 318, 348, 392, 5, 31, 76, 144, 203, 257, 286,
-          320, 350, 412, 8, 52, 78, 157, 211, 261, 298, 327, 360, 446,
-          13, 53, 104, 160, 221, 264, 303, 328, 369, 21, 64, 113, 168,
-          226, 278, 314, 328, 377)
-state <- c(1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1,
-         1, 0, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 0, 0,
-         1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-         0, 1, 1, 1, 1, 1, 1)
+# Vectors:
+hours <- voltage$hours
+status <- voltage$status
 
-mix_mod_em <- mixmod_em(x = hours,
-                        status = state,
-                        distribution = "weibull",
-                        conf_level = 0.95,
-                        k = 2,
-                        method = "EM",
-                        n_iter = 150)
+# Example 1 - EM algorithm with randomly assigned posterior probabilities:
+mix_mod_em <- mixmod_em(
+  x = hours,
+  status = status,
+  conf_level = 0.95,
+  k = 2,
+  n_iter = 150
+)
+
+# Example 2 - EM algorithm with user-defined posterior probabilities:
+mix_mod_em_2 <- mixmod_em(
+  x = hours,
+  status = status,
+  distribution = "weibull",
+  conf_level = 0.95,
+  k = 2,
+  method = "EM",
+  n_iter = 150
+)
+
+#' # Example 3 - Maximum likelihood is applied when k = 1:
+mix_mod_em_3 <- mixmod_em(
+  x = data_mix,
+  distribution = "weibull",
+  conf_level = 0.95,
+  k = 1,
+  method = "EM",
+  n_iter = 150
+)
 
 }
 \references{
@@ -118,5 +126,8 @@ mix_mod_em <- mixmod_em(x = hours,
     \item Doganaksoy, N.; Hahn, G.; Meeker, W. Q., Reliability Analysis by
       Failure Mode, Quality Progress, 35(6), 47-52, 2002
     \item Blog posts by Stefan Gelissen: \url{http://blogs2.datall-analyse.nl/2016/02/18/rcode_mixture_distribution_censored};
-      last access on 19th January 2019}
+      last accessed on 8th December 2020}
+}
+\seealso{
+\code{\link{mixmod_em}}
 }

@@ -60,7 +60,7 @@ A tibble with class \code{"confint"} containing the following columns:
   }
 }
 \description{
-This method computes normal-approximation confidence intervals for quantiles
+This function computes normal-approximation confidence intervals for quantiles
 and failure probabilities.
 }
 \details{

@@ -18,7 +18,7 @@ ml_estimation(x, ...)
 )
 }
 \arguments{
-\item{x}{An object of class \code{reliability_data} returned by
+\item{x}{Object of class \code{reliability_data} returned by
 \code{\link{reliability_data}}.}
 
 \item{distribution}{Supposed distribution of the random variable.}
@@ -56,7 +56,7 @@ Returns a list with the classes \code{"ml_estimation"} and
   }
 }
 \description{
-This method estimates the parameters of a two- or three-parametric lifetime
+This function estimates the parameters of a two- or three-parametric lifetime
 distribution for complete and (multiple) right censored data. The parameters
 are determined in the frequently used (log-)location-scale parameterization.
 

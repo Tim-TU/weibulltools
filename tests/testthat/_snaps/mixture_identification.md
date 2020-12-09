@@ -3,10 +3,16 @@
     $mod_1
     Rank Regression
     Coefficients:
-         eta      beta  
-    776.9755    0.6804  
+          eta       beta  
+    1002.5182     0.6384  
     
     $mod_2
+    Rank Regression
+    Coefficients:
+        eta     beta  
+    370.746    1.545  
+    
+    $mod_3
     Rank Regression
     Coefficients:
         eta     beta  

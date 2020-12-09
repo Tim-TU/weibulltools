@@ -3,38 +3,148 @@
 \encoding{UTF-8}
 \name{mixmod_regression}
 \alias{mixmod_regression}
+\alias{mixmod_regression.cdf_estimation}
 \title{Mixture Model Identification using Segmented Regression}
 \usage{
 mixmod_regression(x, ...)
+
+\method{mixmod_regression}{cdf_estimation}(
+  x,
+  distribution = c("weibull", "lognormal", "loglogistic"),
+  conf_level = 0.95,
+  control = segmented::seg.control(),
+  ...
+)
+}
+\arguments{
+\item{x}{Object of class \code{cdf_estimation} returned from
+\code{\link{estimate_cdf}}.}
+
+\item{distribution}{Supposed distribution of the random variable.}
+
+\item{conf_level}{Confidence level of the interval. If \code{distribution} is
+\code{"weibull"} this must be one of \code{0.9}, \code{0.95} or \code{0.99}.}
+
+\item{control}{Output of the call to \code{\link[segmented]{seg.control}}, which
+is passed to \code{\link[segmented:segmented]{segmented.lm}}. See 'Examples'
+for usage.}
 }
 \value{
-Returns a list where the length of the list depends on
-  the number of identified subgroups. Each list has the same
-  information as provided by \link{rank_regression}. Additionally each list
-  has an element that specifies the range regarding the lifetime data for
-  every subgroup.
+Returns a list of class \code{"rank_regression"} if no breakpoint was
+detected. See \code{\link{rank_regression}}.
+
+Returns a list of class \code{"mixmod_regression"} if at least one breakpoint
+was determined. The length of the list depends on the number of identified
+subgroups. Each list contains the information provided by
+\code{\link{rank_regression}}. In addition, the returned tibble \code{data} of
+each list element only retains information on the failed units and has two more
+columns:
+\itemize{
+  \item \code{q} : Quantiles of the standard distribution calculated from
+    column \code{prob}.
+  \item \code{group} : Membership to the respective segment.
+}
+
+If more than one method was specified in \code{\link{estimate_cdf}}, the
+resulting output is a list with class \code{"mixmod_regression_list"} where
+each list element has class \code{"mixmod_regression"}.
 }
 \description{
-This method uses piecewise linear regression to separate the data in
-subgroups, if appropriate. Since this happens in an automated fashion
-the function tends to overestimate the number of breakpoints and
-therefore returns too many subgroups. This problem is already stated in
-the documentation of the function \link{segmented.lm}, which is part of
-the \emph{segmented} package. A maximum of three subgroups can be obtained.
+This function uses piecewise linear regression to divide the data into
+subgroups. See 'Details'.
 }
-\section{Methods (by class)}{
+\details{
+The segmentation process is based on the lifetime realizations of failed
+units and their corresponding estimated failure probabilities for which intact
+items are taken into account. It is performed with the support of
+\code{\link[segmented:segmented]{segmented.lm}}, which is implemented in
+\emph{segmented}.
 
-\describe{
-  \item{\code{\link[=mixmod_regression.cdf_estimation]{cdf_estimation}}}{
-    Preferred. Provide the output of \code{\link{estimate_cdf}} directly.
-  }
-  \item{\code{\link[=mixmod_regression.default]{default}}}{
-    Provide \code{x}, \code{y} and \code{status} manually.
-  }
-}
-}
+Since the attempt to separate the failure data happens in an automated fashion,
+the algorithm tends to overestimate the number of breakpoints (see 'Warning'
+in \code{\link[segmented:segmented]{segmented}}).
 
+In the context of reliability analysis it is important that the main types of
+faults can be identified and analyzed separately. These are
+\itemize{
+  \item early failures,
+  \item random failures and
+  \item wear-out failures.
+}
+In order to reduce the risk of overestimation as well as being able to consider
+the main types of faults, a maximum of three subgroups can be obtained.
+}
+\examples{
+# Reliability data preparation:
+## Data for mixture model:
+data_mix <- reliability_data(
+  data = voltage,
+  x = hours,
+  status = status
+)
+
+## Data for simple unimodal distribution:
+data <- reliability_data(
+  data = shock,
+  x = distance,
+  status = status
+)
+
+# Probability estimation with one method:
+prob_mix <- estimate_cdf(
+  data_mix,
+  methods = "johnson"
+)
+
+prob <- estimate_cdf(
+  data,
+  methods = "johnson"
+)
+
+# Probability estimation for multiple methods:
+prob_mix_mult <- estimate_cdf(
+  data_mix,
+  methods = c("johnson", "kaplan", "nelson")
+)
+
+# Example 1 - Mixture identification using two-parametric weibull models:
+mix_mod_weibull <- mixmod_regression(
+  x = prob_mix,
+  distribution = "weibull",
+  conf_level = 0.99
+)
+
+# Example 2 - Mixture identification using two-parametric lognormal models:
+mix_mod_lognorm <- mixmod_regression(
+  x = prob_mix,
+  distribution = "lognormal"
+)
+
+# Example 3 - Mixture identification for multiple methods specified in estimate_cdf:
+mix_mod_mult <- mixmod_regression(
+  prob_mix_mult,
+  distribution = "loglogistic"
+)
+
+# Example 4 - Mixture identification using control argument:
+mix_mod_control <- mixmod_regression(
+  x = prob_mix,
+  distribution = "weibull",
+  control = segmented::seg.control(display = TRUE)
+)
+
+# Example 5 - Mixture identification returns one model if breakpoint detection
+# has not succeeded:
+mod <- mixmod_regression(
+  x = prob,
+  distribution = "weibull"
+)
+
+}
 \references{
 Doganaksoy, N.; Hahn, G.; Meeker, W. Q., Reliability Analysis by
   Failure Mode, Quality Progress, 35(6), 47-52, 2002
+}
+\seealso{
+\code{\link{mixmod_regression.default}}
 }

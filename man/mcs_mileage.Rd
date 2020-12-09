@@ -139,11 +139,11 @@ mcs_distances_3 <- mcs_mileage(
 )
 
 ## Using result of *$data in estimate_cdf() -> not working at the moment!
-#prob_estimation <- estimate_cdf(
-#  x = mcs_distances_3$data,
-# methods = "kaplan"
-#)
+prob_estimation <- estimate_cdf(
+  x = mcs_distances_3$data,
+ methods = "kaplan"
+)
 
-# plot_prob_estimation <- plot_prob(prob_estimation)
+plot_prob_estimation <- plot_prob(prob_estimation)
 
 }

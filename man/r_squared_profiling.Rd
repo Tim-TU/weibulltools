@@ -16,7 +16,7 @@ r_squared_profiling(x, ...)
 )
 }
 \arguments{
-\item{x}{An object of class \code{cdf_estimation} returned from
+\item{x}{Object of class \code{cdf_estimation} returned from
 \code{\link{estimate_cdf}}.}
 
 \item{thres}{A numeric value for the threshold parameter.}

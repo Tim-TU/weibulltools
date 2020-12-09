@@ -1,7 +1,7 @@
 #' ML Estimation for Parametric Lifetime Distributions
 #'
 #' @description
-#' This method estimates the parameters of a two- or three-parametric lifetime
+#' This function estimates the parameters of a two- or three-parametric lifetime
 #' distribution for complete and (multiple) right censored data. The parameters
 #' are determined in the frequently used (log-)location-scale parameterization.
 #'
@@ -13,7 +13,7 @@
 #' which is implemented in \emph{SPREDA}, to obtain the estimates. Normal
 #' approximation confidence intervals for the parameters are computed as well.
 #'
-#' @param x An object of class \code{reliability_data} returned by
+#' @param x Object of class \code{reliability_data} returned by
 #'   \code{\link{reliability_data}}.
 #' @param distribution Supposed distribution of the random variable.
 #' @param wts Optional vector of case weights. The length of \code{wts} must be the
@@ -207,7 +207,7 @@ ml_estimation_ <- function(data,
                            conf_level
 ) {
 
-  x <- if (inherits(data, "reliability_data")) get_characteristic(x) else data$x
+  x <- if (inherits(data, "reliability_data")) get_characteristic(data) else data$x
   status <- data$status
   id <- data$id
 

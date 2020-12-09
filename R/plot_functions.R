@@ -434,8 +434,10 @@ plot_prob.mixmod_regression <- function(x,
       dplyr::mutate(group = as.character(i))
   })
 
+  distribution <- x[[1]]$distribution
   plot_prob.cdf_estimation(
     x = cdf_estimation,
+    distribution = distribution,
     title_main = title_main,
     title_x = title_x,
     title_y = title_y,
@@ -514,8 +516,10 @@ plot_prob.mixmod_regression_list <- function(x,
     )
   })
 
+  distribution <- x[[1]][[1]]$distribution
   plot_prob.cdf_estimation(
     x = cdf_estimation,
+    distribution = distribution,
     title_main = title_main,
     title_x = title_x,
     title_y = title_y,

@@ -1,7 +1,7 @@
 #' Rank Regression for Parametric Lifetime Distributions
 #'
 #' @description
-#' This method fits an \strong{x on y} regression to a linearized two- or
+#' This function fits an \strong{x on y} regression to a linearized two- or
 #' three-parameter lifetime distribution for complete and (multiple) right
 #' censored data. The parameters are determined in the frequently used
 #' (log-)location-scale parameterization.
@@ -26,7 +26,7 @@
 #' in context of \emph{Rank Regression}. For an accepted statistical method use
 #' \link[=ml_estimation]{maximum likelihood}.
 #'
-#' @param x An object of class \code{cdf_estimation} returned from
+#' @param x Object of class \code{cdf_estimation} returned from
 #'  \code{\link{estimate_cdf}}.
 #' @param distribution Supposed distribution of the random variable.
 #' @param conf_level Confidence level of the interval. If \code{distribution} is
@@ -144,7 +144,7 @@ rank_regression <- function(x, ...) {
 #'   e.g. operating time (days/months in service), mileage (km, miles), load
 #'   cycles.
 #' @param y A numeric vector which consists of estimated failure probabilities
-#'   regarding the lifetime data in x.
+#'   regarding the lifetime data in \code{x}.
 #' @param status A vector of binary data (0 or 1) indicating whether a unit is
 #'   a right censored observation (= 0) or a failure (= 1).
 #'
@@ -559,7 +559,7 @@ print.rank_regression <- function(x,
 #' In terms of \emph{Rank Regression} this function can be optimized
 #' (\code{\link{optim}}) to estimate the threshold parameter.
 #'
-#' @param x An object of class \code{cdf_estimation} returned from
+#' @param x Object of class \code{cdf_estimation} returned from
 #'   \code{\link{estimate_cdf}}.
 #' @param y A numeric vector which consists of estimated failure probabilities
 #'   regarding the lifetime data in \code{x}.
