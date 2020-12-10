@@ -191,6 +191,11 @@ estimate_cdf.default <- function(x,
                                  options,
                                  ...
 ) {
+  # Fail early, if user tries to call estimate_cdf.reliability_data with a tibble
+  # which is not of class reliability data. Otherwise failure would occur in
+  # reliability_data, which is counterintuitive
+  status
+
   data <- reliability_data(x = x, status = status, id = id)
 
   methods <- if (missing(methods)) {
