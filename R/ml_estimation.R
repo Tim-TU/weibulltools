@@ -51,8 +51,6 @@
 #' @references Meeker, William Q; Escobar, Luis A., Statistical methods for
 #'   reliability data, New York: Wiley series in probability and statistics, 1998
 #'
-#' @seealso \code{\link{ml_estimation.default}}
-#'
 #' @examples
 #' # Reliability data preparation:
 #' ## Data for two-parametric model:

@@ -75,8 +75,6 @@
 #' \href{https://www.itl.nist.gov/div898/handbook/apr/section2/apr215.htm}{NIST SEMATECH},
 #' December 3, 2020
 #'
-#' @seealso \code{\link{estimate_cdf.default}}
-#'
 #' @examples
 #' # Reliability data:
 #' data <- reliability_data(

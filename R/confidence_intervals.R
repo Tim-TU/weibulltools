@@ -45,8 +45,6 @@
 #'       probabilities (determined when calling \code{\link{estimate_cdf}}).
 #'   }
 #'
-#' @seealso \code{\link{confint_betabinom.default}}
-#'
 #' @examples
 #' # Reliability data preparation:
 #' ## Data for two-parametric model:
@@ -712,8 +710,6 @@ delta_method_ <- function(p,
 #'
 #' @references Meeker, William Q; Escobar, Luis A., Statistical methods for
 #'   reliability data, New York: Wiley series in probability and statistics, 1998
-#'
-#' @seealso \code{\link{confint_fisher.default}}
 #'
 #' @examples
 #' # Reliability data preparation:

@@ -54,8 +54,6 @@
 #' @references Doganaksoy, N.; Hahn, G.; Meeker, W. Q., Reliability Analysis by
 #'   Failure Mode, Quality Progress, 35(6), 47-52, 2002
 #'
-#' @seealso \code{\link{mixmod_regression.default}}
-#'
 #' @examples
 #' # Reliability data preparation:
 #' ## Data for mixture model:
@@ -499,8 +497,6 @@ mixmod_regression_ <- function(cdf_estimation,
 #'       Failure Mode, Quality Progress, 35(6), 47-52, 2002
 #'     \item Blog posts by Stefan Gelissen: \url{http://blogs2.datall-analyse.nl/2016/02/18/rcode_mixture_distribution_censored};
 #'       last accessed on 8th December 2020}
-#'
-#' @seealso \code{\link{mixmod_em.default}}
 #'
 #' @examples
 #' # Reliability data preparation:
