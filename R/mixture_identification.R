@@ -129,6 +129,48 @@ mixmod_regression <- function(x, ...) {
 
 
 
+#' @rdname mixmod_regression
+#'
+#' @export
+mixmod_regression.cdf_estimation <- function(
+                               x,
+                               distribution = c(
+                                 "weibull", "lognormal", "loglogistic"
+                               ),
+                               conf_level = .95,
+                               control = segmented::seg.control(),
+                               ...
+) {
+
+  distribution <- match.arg(distribution)
+
+  x_split <- split(x, x$method)
+
+  if (length(unique(x$method)) == 1) {
+    out <- mixmod_regression_(
+      cdf_estimation = x,
+      distribution = distribution,
+      conf_level = conf_level,
+      control = control
+    )
+  } else {
+    out <- purrr::map(x_split, function(cdf_estimation) {
+      mixmod_regression_(
+        cdf_estimation = cdf_estimation,
+        distribution = distribution,
+        conf_level = conf_level,
+        control = control
+      )
+    })
+
+    class(out) <- c("mixmod_regression_list", class(out))
+  }
+
+  out
+}
+
+
+
 #' Mixture Model Identification using Segmented Regression
 #'
 #' @inherit mixmod_regression description details references
@@ -224,16 +266,15 @@ mixmod_regression <- function(x, ...) {
 #' )
 #'
 #' @export
-mixmod_regression.default <- function(
-                        x,
-                        y,
-                        status,
-                        distribution = c(
-                          "weibull", "lognormal", "loglogistic"
-                        ),
-                        conf_level = .95,
-                        control = segmented::seg.control(),
-                        ...
+mixmod_regression.default <- function(x,
+                                      y,
+                                      status,
+                                      distribution = c(
+                                        "weibull", "lognormal", "loglogistic"
+                                      ),
+                                      conf_level = .95,
+                                      control = segmented::seg.control(),
+                                      ...
 ) {
 
   distribution <- match.arg(distribution)
@@ -255,48 +296,6 @@ mixmod_regression.default <- function(
     conf_level = conf_level,
     control = control
   )
-}
-
-
-
-#' @rdname mixmod_regression
-#'
-#' @export
-mixmod_regression.cdf_estimation <- function(
-                               x,
-                               distribution = c(
-                                 "weibull", "lognormal", "loglogistic"
-                               ),
-                               conf_level = .95,
-                               control = segmented::seg.control(),
-                               ...
-) {
-
-  distribution <- match.arg(distribution)
-
-  x_split <- split(x, x$method)
-
-  if (length(unique(x$method)) == 1) {
-    out <- mixmod_regression_(
-      cdf_estimation = x,
-      distribution = distribution,
-      conf_level = conf_level,
-      control = control
-    )
-  } else {
-    out <- purrr::map(x_split, function(cdf_estimation) {
-      mixmod_regression_(
-        cdf_estimation = cdf_estimation,
-        distribution = distribution,
-        conf_level = conf_level,
-        control = control
-      )
-    })
-
-    class(out) <- c("mixmod_regression_list", class(out))
-  }
-
-  out
 }
 
 
@@ -546,6 +545,40 @@ mixmod_em <- function(x, ...) {
 
 
 
+#' @rdname mixmod_em
+#'
+#' @export
+mixmod_em.reliability_data <- function(x,
+                                       post = NULL,
+                                       distribution = "weibull",
+                                       conf_level = .95,
+                                       k = 2,
+                                       method = "EM",
+                                       n_iter = 100L,
+                                       conv_limit = 1e-6,
+                                       diff_loglik = 0.01,
+                                       ...
+) {
+
+  distribution <- match.arg(distribution)
+  method <- match.arg(method)
+
+  mixmod_em.default(
+    x = get_characteristic(x),
+    status = x$status,
+    post = post,
+    distribution = distribution,
+    conf_level = conf_level,
+    k = k,
+    method = method,
+    n_iter = n_iter,
+    conv_limit = conv_limit,
+    diff_loglik = diff_loglik
+  )
+}
+
+
+
 #' Mixture Model Estimation using EM-Algorithm
 #'
 #' @inherit mixmod_em description details return references
@@ -670,40 +703,6 @@ mixmod_em.default <- function(x,
   class(ml) <- c("mixmod_em", class(ml))
 
   ml
-}
-
-
-
-#' @rdname mixmod_em
-#'
-#' @export
-mixmod_em.reliability_data <- function(x,
-                                       post = NULL,
-                                       distribution = "weibull",
-                                       conf_level = .95,
-                                       k = 2,
-                                       method = "EM",
-                                       n_iter = 100L,
-                                       conv_limit = 1e-6,
-                                       diff_loglik = 0.01,
-                                       ...
-) {
-
-  distribution <- match.arg(distribution)
-  method <- match.arg(method)
-
-  mixmod_em.default(
-    x = get_characteristic(x),
-    status = x$status,
-    post = post,
-    distribution = distribution,
-    conf_level = conf_level,
-    k = k,
-    method = method,
-    n_iter = n_iter,
-    conv_limit = conv_limit,
-    diff_loglik = diff_loglik
-  )
 }
 
 

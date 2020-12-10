@@ -125,6 +125,43 @@ estimate_cdf <- function(x,
 
 
 
+#' @rdname estimate_cdf
+#'
+#' @export
+estimate_cdf.reliability_data <- function(x,
+                                          methods = c("mr", "johnson", "kaplan", "nelson"),
+                                          options = list(),
+                                          ...
+) {
+
+  methods <- if (missing(methods)) {
+    "mr"
+  } else {
+    unique(match.arg(methods, several.ok = TRUE))
+  }
+
+  method_funs <- list(
+    mr = mr_method_,
+    johnson = johnson_method_,
+    kaplan = kaplan_method_,
+    nelson = nelson_method_
+  )
+
+  purrr::map_dfr(methods, function(method) {
+    if (method == "mr") {
+      method_funs[[method]](
+        data = x,
+        method = if (is.null(options$mr_method)) "benard" else options$mr_method,
+        ties.method = if (is.null(options$mr_ties.method)) "max" else options$mr_ties.method
+      )
+    } else {
+      method_funs[[method]](data = x)
+    }
+  })
+}
+
+
+
 #' Estimation of Failure Probabilities
 #'
 #' @inherit estimate_cdf description details return
@@ -188,7 +225,7 @@ estimate_cdf.default <- function(x,
                                  status,
                                  id = NULL,
                                  methods = c("mr", "johnson", "kaplan", "nelson"),
-                                 options,
+                                 options = list(),
                                  ...
 ) {
   # Fail early, if user tries to call estimate_cdf.reliability_data with a tibble
@@ -209,43 +246,6 @@ estimate_cdf.default <- function(x,
     methods = methods,
     options = options
   )
-}
-
-
-
-#' @rdname estimate_cdf
-#'
-#' @export
-estimate_cdf.reliability_data <- function(x,
-                                          methods = c("mr", "johnson", "kaplan", "nelson"),
-                                          options = list(),
-                                          ...
-) {
-
-  methods <- if (missing(methods)) {
-    "mr"
-  } else {
-    unique(match.arg(methods, several.ok = TRUE))
-  }
-
-  method_funs <- list(
-    mr = mr_method_,
-    johnson = johnson_method_,
-    kaplan = kaplan_method_,
-    nelson = nelson_method_
-  )
-
-  purrr::map_dfr(methods, function(method) {
-    if (method == "mr") {
-      method_funs[[method]](
-        data = x,
-        method = if (is.null(options$mr_method)) "benard" else options$mr_method,
-        ties.method = if (is.null(options$mr_ties.method)) "max" else options$mr_ties.method
-      )
-    } else {
-      method_funs[[method]](data = x)
-    }
-  })
 }
 
 

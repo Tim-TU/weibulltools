@@ -133,6 +133,49 @@ rank_regression <- function(x, ...) {
 
 
 
+#' @rdname rank_regression
+#'
+#' @export
+rank_regression.cdf_estimation <- function(x,
+                                           distribution = c("weibull", "lognormal",
+                                                            "loglogistic", "normal",
+                                                            "logistic", "sev",
+                                                            "weibull3", "lognormal3",
+                                                            "loglogistic3"),
+                                           conf_level = 0.95,
+                                           ...
+) {
+
+  distribution <- match.arg(distribution)
+
+  if (length(unique(x$method)) == 1) {
+    rank_regression_(
+      cdf_estimation = x,
+      distribution = distribution,
+      conf_level = conf_level
+    )
+  } else {
+    # Apply rank_regression to each method separately
+    x_split <- split(x, x$method)
+
+    model_estimation_list <- purrr::map(x_split, function(cdf_estimation) {
+      rank_regression_(
+        cdf_estimation = cdf_estimation,
+        distribution = distribution,
+        conf_level = conf_level
+      )
+    })
+
+    class(model_estimation_list) <- c(
+      "model_estimation_list", class(model_estimation_list)
+    )
+
+    model_estimation_list
+  }
+}
+
+
+
 #' Rank Regression for Parametric Lifetime Distributions
 #'
 #' @inherit rank_regression description details references
@@ -230,49 +273,6 @@ rank_regression.default <- function(x,
   cdf_estimation <- tibble::tibble(x = x, status = status, prob = y)
 
   rank_regression_(cdf_estimation, distribution, conf_level)
-}
-
-
-
-#' @rdname rank_regression
-#'
-#' @export
-rank_regression.cdf_estimation <- function(x,
-                                           distribution = c("weibull", "lognormal",
-                                                            "loglogistic", "normal",
-                                                            "logistic", "sev",
-                                                            "weibull3", "lognormal3",
-                                                            "loglogistic3"),
-                                           conf_level = 0.95,
-                                           ...
-) {
-
-  distribution <- match.arg(distribution)
-
-  if (length(unique(x$method)) == 1) {
-    rank_regression_(
-      cdf_estimation = x,
-      distribution = distribution,
-      conf_level = conf_level
-    )
-  } else {
-    # Apply rank_regression to each method separately
-    x_split <- split(x, x$method)
-
-    model_estimation_list <- purrr::map(x_split, function(cdf_estimation) {
-      rank_regression_(
-        cdf_estimation = cdf_estimation,
-        distribution = distribution,
-        conf_level = conf_level
-      )
-    })
-
-    class(model_estimation_list) <- c(
-      "model_estimation_list", class(model_estimation_list)
-    )
-
-    model_estimation_list
-  }
 }
 
 
@@ -642,6 +642,28 @@ r_squared_profiling <- function(x,
 
 
 
+#' @rdname r_squared_profiling
+#'
+#' @export
+r_squared_profiling.cdf_estimation <- function(x,
+                                               thres,
+                                               distribution = c("weibull3",
+                                                                "lognormal3",
+                                                                "loglogistic3"),
+                                               ...
+) {
+  distribution <- match.arg(distribution)
+
+  r_squared_profiling.default(
+    x = x$x,
+    y = x$prob,
+    thres = thres,
+    distribution = distribution
+  )
+}
+
+
+
 #' R-Squared-Profile Function for Log-Location-Scale Distributions with Threshold
 #'
 #' @inherit r_squared_profiling description details return references
@@ -725,28 +747,6 @@ r_squared_profiling.default <- function(x,
   r_sq_prof_vectorized(
     x = x,
     y = y,
-    thres = thres,
-    distribution = distribution
-  )
-}
-
-
-
-#' @rdname r_squared_profiling
-#'
-#' @export
-r_squared_profiling.cdf_estimation <- function(x,
-                                               thres,
-                                               distribution = c("weibull3",
-                                                                "lognormal3",
-                                                                "loglogistic3"),
-                                               ...
-) {
-  distribution <- match.arg(distribution)
-
-  r_squared_profiling.default(
-    x = x$x,
-    y = x$prob,
     thres = thres,
     distribution = distribution
   )

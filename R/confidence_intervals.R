@@ -154,6 +154,55 @@ confint_betabinom <- function(x, ...) {
 
 
 
+#' @rdname confint_betabinom
+#'
+#' @export
+confint_betabinom.model_estimation <- function(
+                                 x,
+                                 b_lives = c(0.01, 0.1, 0.50),
+                                 bounds = c("two_sided", "lower", "upper"),
+                                 conf_level = 0.95,
+                                 direction = c("y", "x"),
+                                 ...
+) {
+  confint_betabinom_(
+    model_estimation = x,
+    b_lives = b_lives,
+    bounds = bounds,
+    conf_level = conf_level,
+    direction = direction
+  )
+}
+
+
+
+#' @rdname confint_betabinom
+#'
+#' @export
+confint_betabinom.model_estimation_list <- function(
+                                      x,
+                                      b_lives = c(0.01, 0.1, 0.50),
+                                      bounds = c("two_sided", "lower", "upper"),
+                                      conf_level = 0.95,
+                                      direction = c("y", "x"),
+                                      ...
+) {
+  bounds <- match.arg(bounds)
+  direction <- match.arg(direction)
+
+  purrr::map_dfr(x, function(model_estimation) {
+    confint <- confint_betabinom_(
+      model_estimation = model_estimation,
+      b_lives = b_lives,
+      bounds = bounds,
+      conf_level = conf_level,
+      direction = direction
+    )
+  })
+}
+
+
+
 #' Beta Binomial Confidence Bounds for Quantiles and Probabilities
 #'
 #' @inherit confint_betabinom description details
@@ -285,20 +334,19 @@ confint_betabinom <- function(x, ...) {
 #' )
 #'
 #' @export
-confint_betabinom.default <- function(
-                        x,
-                        status,
-                        loc_sc_params,
-                        distribution = c(
-                          "weibull", "lognormal", "loglogistic",
-                          "normal", "logistic", "sev",
-                          "weibull3", "lognormal3", "loglogistic3"
-                        ),
-                        b_lives = c(0.01, 0.1, 0.50),
-                        bounds = c("two_sided", "lower", "upper"),
-                        conf_level = 0.95,
-                        direction = c("y", "x"),
-                        ...
+confint_betabinom.default <- function(x,
+                                      status,
+                                      loc_sc_params,
+                                      distribution = c(
+                                        "weibull", "lognormal", "loglogistic",
+                                        "normal", "logistic", "sev",
+                                        "weibull3", "lognormal3", "loglogistic3"
+                                      ),
+                                      b_lives = c(0.01, 0.1, 0.50),
+                                      bounds = c("two_sided", "lower", "upper"),
+                                      conf_level = 0.95,
+                                      direction = c("y", "x"),
+                                      ...
 ) {
 
   bounds <- match.arg(bounds)
@@ -319,55 +367,6 @@ confint_betabinom.default <- function(
     conf_level = conf_level,
     direction = direction
   )
-}
-
-
-
-#' @rdname confint_betabinom
-#'
-#' @export
-confint_betabinom.model_estimation <- function(
-                                 x,
-                                 b_lives = c(0.01, 0.1, 0.50),
-                                 bounds = c("two_sided", "lower", "upper"),
-                                 conf_level = 0.95,
-                                 direction = c("y", "x"),
-                                 ...
-) {
-  confint_betabinom_(
-    model_estimation = x,
-    b_lives = b_lives,
-    bounds = bounds,
-    conf_level = conf_level,
-    direction = direction
-  )
-}
-
-
-
-#' @rdname confint_betabinom
-#'
-#' @export
-confint_betabinom.model_estimation_list <- function(
-                                      x,
-                                      b_lives = c(0.01, 0.1, 0.50),
-                                      bounds = c("two_sided", "lower", "upper"),
-                                      conf_level = 0.95,
-                                      direction = c("y", "x"),
-                                      ...
-) {
-  bounds <- match.arg(bounds)
-  direction <- match.arg(direction)
-
-  purrr::map_dfr(x, function(model_estimation) {
-    confint <- confint_betabinom_(
-      model_estimation = model_estimation,
-      b_lives = b_lives,
-      bounds = bounds,
-      conf_level = conf_level,
-      direction = direction
-    )
-  })
 }
 
 
@@ -792,6 +791,38 @@ confint_fisher <- function(x, ...) {
 
 
 
+#' @rdname confint_fisher
+#'
+#' @export
+confint_fisher.model_estimation <- function(
+                              x,
+                              b_lives = c(0.01, 0.1, 0.50),
+                              bounds = c(
+                                "two_sided", "lower", "upper"
+                              ),
+                              conf_level = 0.95,
+                              direction = c("y", "x"),
+                              ...
+) {
+
+  data <- x$data
+  distribution <- x$distribution
+
+  confint_fisher.default(
+    x = data$x,
+    status = data$status,
+    loc_sc_params = x$loc_sc_params,
+    loc_sc_varcov = x$loc_sc_varcov,
+    distribution = distribution,
+    b_lives = b_lives,
+    bounds = bounds,
+    conf_level = conf_level,
+    direction = direction
+  )
+}
+
+
+
 #' Fisher Confidence Bounds for Quantiles and Probabilities
 #'
 #' @inherit confint_fisher description details references
@@ -914,21 +945,20 @@ confint_fisher <- function(x, ...) {
 #' )
 #'
 #' @export
-confint_fisher.default <- function(
-                     x,
-                     status,
-                     loc_sc_params,
-                     loc_sc_varcov,
-                     distribution = c(
-                       "weibull", "lognormal", "loglogistic",
-                       "normal", "logistic", "sev",
-                       "weibull3", "lognormal3", "loglogistic3"
-                     ),
-                     b_lives = c(0.01, 0.1, 0.50),
-                     bounds = c("two_sided", "lower", "upper"),
-                     conf_level = 0.95,
-                     direction = c("y", "x"),
-                     ...
+confint_fisher.default <- function(x,
+                                   status,
+                                   loc_sc_params,
+                                   loc_sc_varcov,
+                                   distribution = c(
+                                     "weibull", "lognormal", "loglogistic",
+                                     "normal", "logistic", "sev",
+                                     "weibull3", "lognormal3", "loglogistic3"
+                                   ),
+                                   b_lives = c(0.01, 0.1, 0.50),
+                                   bounds = c("two_sided", "lower", "upper"),
+                                   conf_level = 0.95,
+                                   direction = c("y", "x"),
+                                   s...
 ) {
 
   bounds <- match.arg(bounds)
@@ -1056,38 +1086,6 @@ confint_fisher.default <- function(
   class(tbl_out) <- c("confint", class(tbl_out))
 
   return(tbl_out)
-}
-
-
-
-#' @rdname confint_fisher
-#'
-#' @export
-confint_fisher.model_estimation <- function(
-                              x,
-                              b_lives = c(0.01, 0.1, 0.50),
-                              bounds = c(
-                                "two_sided", "lower", "upper"
-                              ),
-                              conf_level = 0.95,
-                              direction = c("y", "x"),
-                              ...
-) {
-
-  data <- x$data
-  distribution <- x$distribution
-
-  confint_fisher.default(
-    x = data$x,
-    status = data$status,
-    loc_sc_params = x$loc_sc_params,
-    loc_sc_varcov = x$loc_sc_varcov,
-    distribution = distribution,
-    b_lives = b_lives,
-    bounds = bounds,
-    conf_level = conf_level,
-    direction = direction
-  )
 }
 
 
