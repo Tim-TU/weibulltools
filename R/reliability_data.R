@@ -83,10 +83,6 @@ reliability_data <- function(data = NULL,
       stop("'status' must be numeric with elements 0 or 1!")
     }
 
-    if (length(x) < length(status) || length(x) < length(id)) {
-      stop("Length of 'x' must be equal or greater than length of 'status' and 'id'!")
-    }
-
     if (purrr::is_null(id)) {
       id <- paste0("ID", seq_along(x))
     }

@@ -9,7 +9,7 @@
   status,
   id = NULL,
   methods = c("mr", "johnson", "kaplan", "nelson"),
-  options,
+  options = list(),
   ...
 )
 }

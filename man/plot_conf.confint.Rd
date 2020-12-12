@@ -20,7 +20,7 @@
 or \code{\link{confint_fisher}}.}
 }
 \value{
-Returns a plotly object containing the probability plot with
+Returns a plot object containing the probability plot with
   plotting positions, the estimated regression line and the estimated
   confidence region(s).
 }

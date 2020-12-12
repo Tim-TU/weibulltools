@@ -15,7 +15,7 @@
   bounds = c("two_sided", "lower", "upper"),
   conf_level = 0.95,
   direction = c("y", "x"),
-  ...
+  s...
 )
 }
 \arguments{

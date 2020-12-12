@@ -127,6 +127,3 @@ mix_mod_em_3 <- mixmod_em(
     \item Blog posts by Stefan Gelissen: \url{http://blogs2.datall-analyse.nl/2016/02/18/rcode_mixture_distribution_censored};
       last accessed on 8th December 2020}
 }
-\seealso{
-\code{\link{mixmod_em.default}}
-}

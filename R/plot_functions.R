@@ -1,6 +1,7 @@
 #' Layout of the Probability Plot
 #'
-#' This function is used to create the layout of a probability plot.
+#' This function is used to create the layout of a probability plot. It is called
+#' by \code{\link{plot_prob}} internally.
 #'
 #' @param x A numeric vector which consists of lifetime data. \code{x} is used to
 #'   specify the grid of the plot.
@@ -15,9 +16,6 @@
 #'
 #' @return Returns a plotly object which contains the layout
 #'   that is used for probability plotting.
-#' @importFrom magrittr "%>%"
-#'
-#' @export
 #'
 #' @examples
 #' # Example 1: Weibull-Grid:
@@ -46,8 +44,6 @@ plot_layout <- function(
   plot_method = c("plotly", "ggplot2")
 ) {
 
-  deprecate_soft("1.1.0", "plot_layout()")
-
   distribution <- match.arg(distribution)
   plot_method <- match.arg(plot_method)
 
@@ -71,27 +67,138 @@ plot_layout <- function(
 #' plotting.
 #'
 #' @details
+#'
+#' If data was splitted by \code{\link{mixmod_em}} \code{\link{estimate_cdf}} with
+#' method \code{"johnson"} is applied to subgroup-specific data. The
+#' calculated plotting positions are shaped according to the determined split in
+#' \code{\link{mixmod_em}}.
+#'
+#' In \code{\link{mixmod_regression}} a maximum of three subgroups can be determined
+#' and thus being plotted. The intention of this function is to give the
+#' user a hint for the existence of a mixture model. An in-depth analysis should
+#' be done afterwards.
+#'
 #' The marker label for x and y are determined by the first word provided in the
-#' argument \code{title_x} respective \code{title_y}, i.e. if
+#' argument \code{title_x} and \code{title_y} respectively, i.e. if
 #' \code{title_x = "Mileage in km"} the x label of the marker is "Mileage".
 #'
-#' @section Methods (by class):
-#' \describe{
-#'   \item{\code{\link[=plot_prob.cdf_estimation]{cdf_estimation}}}{
-#'     Preferred. Provide the output of \code{\link{estimate_cdf}} directly.
-#'   }
-#'   \item{\code{\link[=plot_prob.default]{default}}}{
-#'     Provide \code{x}, \code{y}, \code{status} and \code{id} manually.
-#'   }
-#' }
+#' The name of the legend entry is a combination of the \code{title_trace} and
+#' the number of determined subgroups (if any). If \code{title_trace = "Group"}
+#' and the data is split in two groups, the legend entries are "Group: 1"
+#' and "Group: 2".
+#'
+#' @section S3 methods:
+#'
+#' | **Class** | **Returned from** | **Condition** |
+#' | --- | --- | --- |
+#' | \code{cdf_estimation} | \code{\link{estimate_cdf}} | - |
+#' | \code{model_estimation} | \code{\link{mixmod_regression}} | One method in \code{\link{estimate_cdf}}. No subgroups determined. |
+#' | \code{mixmod_regression} | \code{\link{mixmod_regression}} | One method in \code{\link{estimate_cdf}}. |
+#' | \code{mixmod_regression_list} | \code{mixmod_regression} | Multiple methods in \code{\link{estimate_cdf}}.
+#' | \code{mixmod_em} | \code{\link{mixmod_em}} | - |
+#'
+#' @usage
+#' ## S3 method for classes 'cdf_estimation', 'model_estimation',
+#' ## 'mixmod_regression', 'mixmod_em', 'mixmod_regression_list'
+#' plot_prob(
+#'   x,
+#'   title_main = "Probability Plot",
+#'   title_x = "Characteristic",
+#'   title_y = "Unreliability",
+#'   title_trace = "Sample",
+#'   plot_method = c("plotly", "ggplot2"),
+#'   ...
+#' )
+#'
+#' @param x An object of aforementioned classes. See 'Details'.
+#' @param distribution Supposed distribution of the random variable.
+#' @param title_main A character string which is assigned to the main title
+#'   of the plot.
+#' @param title_x A character string which is assigned to the title of the
+#'   x axis.
+#' @param title_y A character string which is assigned to the title of the
+#'   y axis.
+#' @param title_trace A character string whis is assigned to the trace shown in
+#'   the legend.
+#' @param plot_method Package, which is used for generating the plot output.
 #'
 #' @encoding UTF-8
 #' @references Meeker, William Q; Escobar, Luis A., Statistical methods for
 #'   reliability data, New York: Wiley series in probability and statistics, 1998
 #'
-#' @return Returns a plotly object containing the layout of the probability plot
-#'   provided by \code{\link{plot_layout}} and the plotting positions.
+#' @return Returns a plot object containing the probability plot.
 #'
+#' @examples
+#' # Reliability data:
+#' data <- reliability_data(
+#'   data = alloy,
+#'   x = cycles,
+#'   status = status
+#' )
+#'
+#' prob_tbl <- estimate_cdf(data, methods = c("johnson", "kaplan"))
+#'
+#' # Example 1 - Probability Plot Weibull:
+#' plot_weibull <- plot_prob(
+#'   prob_tbl,
+#'   distribution = "weibull",
+#'   title_main = "Weibull Analysis",
+#'   title_x = "Cycles",
+#'   title_y = "Probability of Failure in %",
+#'   title_trace = "Failed Items"
+#' )
+#'
+#' # Example 2 - Probability Plot Lognormal:
+#' plot_lognormal <- plot_prob(
+#'   prob_tbl,
+#'   distribution = "lognormal",
+#'   title_main = "Lognormal Analysis",
+#'   title_x = "Cycles",
+#'   title_y = "Probability of Failure in %",
+#'   title_trace = "Failed Items"
+#' )
+#'
+#' ## Mixture identification
+#' # Reliability data:
+#' data_mix <- reliability_data(
+#'   data = voltage,
+#'   x = hours,
+#'   status = status
+#' )
+#'
+#' prob_mix <- estimate_cdf(data_mix, methods = c("johnson", "kaplan"))
+#'
+#' # Example 3 - Mixture identification using mixmod_regression:
+#' mix_mod_rr <- mixmod_regression(
+#'   x = prob_mix,
+#'   distribution = "weibull",
+#'   conf_level = 0.99
+#' )
+#'
+#' plot_mix_rr <- plot_prob(
+#'   mix_mod_rr,
+#'   title_main = "Weibull Mixture Regression",
+#'   title_x = "Time in Hours",
+#'   title_y = "Probability of Failure",
+#'   title_trace = "Subgroup"
+#' )
+#'
+#' # Example 4 - Mixture identification using mixmod_em:
+#' mix_mod_em <- mixmod_em(
+#'   data_mix,
+#'   distribution = "weibull",
+#'   conf_level = 0.99
+#' )
+#'
+#' plot_mix_em <- plot_prob(
+#'   mix_mod_em,
+#'   title_main = "Weibull Mixture EM",
+#'   title_x = "Time in Hours",
+#'   title_y = "Probability of Failure",
+#'   title_trace = "Subgroup"
+#' )
+#'
+#' @md
 #' @export
 #'
 plot_prob <- function(
@@ -99,6 +206,194 @@ plot_prob <- function(
 ) {
   UseMethod("plot_prob")
 }
+
+
+
+#' @rdname plot_prob
+#'
+#' @usage NULL
+#'
+#' @export
+plot_prob.cdf_estimation <- function(
+  x,
+  distribution = c(
+    "weibull", "lognormal", "loglogistic", "normal", "logistic", "sev"
+  ),
+  title_main = "Probability Plot",
+  title_x = "Characteristic",
+  title_y = "Unreliability",
+  title_trace = "Sample",
+  plot_method = c("plotly", "ggplot2"),
+  ...
+) {
+  distribution <- match.arg(distribution)
+  plot_method <- match.arg(plot_method)
+
+  plot_prob_(
+    cdf_estimation = x,
+    distribution = distribution,
+    title_main = title_main,
+    title_x = title_x,
+    title_y = title_y,
+    title_trace = title_trace,
+    plot_method = plot_method
+  )
+}
+
+
+
+#' @rdname plot_prob
+#'
+#' @usage NULL
+#'
+#' @export
+plot_prob.model_estimation <- function(x,
+                                       title_main = "Probability Plot",
+                                       title_x = "Characteristic",
+                                       title_y = "Unreliability",
+                                       title_trace = "Sample",
+                                       plot_method = c("plotly", "ggplot2"),
+                                       ...
+) {
+  plot_method <- match.arg(plot_method)
+
+  cdf_estimation <- x$data
+
+  plot_prob.cdf_estimation(
+    x = cdf_estimation,
+    distribution = x$distribution,
+    title_main = title_main,
+    title_x = title_x,
+    title_y = title_y,
+    title_trace = title_trace,
+    plot_method = plot_method
+  )
+}
+
+
+
+#' @rdname plot_prob
+#'
+#' @usage NULL
+#'
+#' @export
+plot_prob.mixmod_regression <- function(x,
+                                        title_main = "Probability Plot",
+                                        title_x = "Characteristic",
+                                        title_y = "Unreliability",
+                                        title_trace = "Sample",
+                                        plot_method = c("plotly", "ggplot2"),
+                                        ...
+) {
+
+  plot_method <- match.arg(plot_method)
+
+  # Take all data
+  cdf_estimation <- purrr::map2_dfr(x, seq_along(x), function(model_estimation, i) {
+    model_estimation$data %>%
+      # Mark group
+      dplyr::mutate(group = as.character(i))
+  })
+
+  distribution <- x[[1]]$distribution
+  plot_prob.cdf_estimation(
+    x = cdf_estimation,
+    distribution = distribution,
+    title_main = title_main,
+    title_x = title_x,
+    title_y = title_y,
+    title_trace = title_trace,
+    plot_method = plot_method
+  )
+}
+
+
+
+#' @rdname plot_prob
+#'
+#' @usage NULL
+#'
+#' @export
+plot_prob.mixmod_em <- function(x,
+                                title_main = "Probability Plot",
+                                title_x = "Characteristic",
+                                title_y = "Unreliability",
+                                title_trace = "Sample",
+                                plot_method = c("plotly", "ggplot2"),
+                                ...
+) {
+
+  plot_method <- match.arg(plot_method)
+
+  model_estimation_list <- x[-length(x)]
+
+  john <- purrr::map2_dfr(
+    model_estimation_list, seq_along(model_estimation_list),
+    function(model_estimation, index) {
+      data <- reliability_data(
+        model_estimation$data, x = x, status = status
+      )
+
+      john <- estimate_cdf(data, "johnson")
+
+      john$method <- as.character(index)
+
+      john
+    }
+  )
+
+  plot_prob.cdf_estimation(
+    x = john,
+    title_main = title_main,
+    title_x = title_x,
+    title_y = title_y,
+    title_trace = title_trace,
+    plot_method = plot_method
+  )
+}
+
+
+
+#' @rdname plot_prob
+#'
+#' @usage NULL
+#'
+#' @export
+plot_prob.mixmod_regression_list <- function(x,
+                                             title_main = "Probability Plot",
+                                             title_x = "Characteristic",
+                                             title_y = "Unreliability",
+                                             title_trace = "Sample",
+                                             plot_method = c("plotly", "ggplot2"),
+                                             ...
+) {
+
+  plot_method <- match.arg(plot_method)
+
+  # Take all data
+  cdf_estimation <- purrr::map_dfr(x, function(mixmod_regression) {
+    purrr::map2_dfr(
+      mixmod_regression,
+      seq_along(mixmod_regression),
+      function(model_estimation, index) {
+        model_estimation$data %>% dplyr::mutate(group = as.character(index))
+      }
+    )
+  })
+
+  distribution <- x[[1]][[1]]$distribution
+  plot_prob.cdf_estimation(
+    x = cdf_estimation,
+    distribution = distribution,
+    title_main = title_main,
+    title_x = title_x,
+    title_y = title_y,
+    title_trace = title_trace,
+    plot_method = plot_method
+  )
+}
+
+
 
 #' Probability Plotting Method for Univariate Lifetime Distributions
 #'
@@ -124,6 +419,10 @@ plot_prob <- function(
 #'   the legend.
 #' @param plot_method Package, which is used for generating the plot output.
 #'
+#' @return Returns a plot object containing the probability plot.
+#'
+#' @seealso \code{\link{plot_prob}}
+#'
 #' @examples
 #' # Alloy T7987 dataset taken from Meeker and Escobar(1998, p. 131)
 #' cycles   <- c(300, 300, 300, 300, 300, 291, 274, 271, 269, 257, 256, 227, 226,
@@ -133,13 +432,19 @@ plot_prob <- function(
 #'               139, 136, 135, 133, 131, 129, 123, 121, 121, 118, 117, 117, 114,
 #'               112, 108, 104, 99, 99, 96, 94)
 #' status <- c(rep(0, 5), rep(1, 67))
-#' data <- reliability_data(x = cycles, status = status)
 #'
-#' tbl_john <- estimate_cdf(data, methods = c("johnson", "kaplan"))
+#' john <- estimate_cdf(
+#'   x = cycles,
+#'   status = status,
+#'   methods = "johnson"
+#' )
 #'
 #' # Example 1: Probability Plot Weibull:
 #' plot_weibull <- plot_prob(
-#'   tbl_john,
+#'   x = john$x,
+#'   y = john$prob,
+#'   status = john$status,
+#'   id = john$id,
 #'   distribution = "weibull",
 #'   title_main = "Weibull Analysis",
 #'   title_x = "Cycles",
@@ -149,7 +454,10 @@ plot_prob <- function(
 #'
 #' # Example 2: Probability Plot Lognormal:
 #' plot_lognormal <- plot_prob(
-#'   tbl_john,
+#'   x = john$x,
+#'   y = john$prob,
+#'   status = john$status,
+#'   id = john$id,
 #'   distribution = "lognormal",
 #'   title_main = "Lognormal Analysis",
 #'   title_x = "Cycles",
@@ -190,81 +498,7 @@ plot_prob.default <- function(
   )
 }
 
-#' Probability Plotting Method for Univariate Lifetime Distributions
-#'
-#' @inherit plot_prob description details return references
-#'
-#' @param x CDF estimation returned from \code{\link{estimate_cdf}}.
-#' @param distribution Supposed distribution of the random variable.
-#' @param title_main A character string which is assigned to the main title
-#'   of the plot.
-#' @param title_x A character string which is assigned to the title of the
-#'   x axis.
-#' @param title_y A character string which is assigned to the title of the
-#'   y axis.
-#' @param title_trace A character string whis is assigned to the trace shown in
-#'   the legend.
-#' @param plot_method Package, which is used for generating the plot output.
-#'
-#' @examples
-#' # Alloy T7987 dataset taken from Meeker and Escobar(1998, p. 131)
-#' cycles   <- c(300, 300, 300, 300, 300, 291, 274, 271, 269, 257, 256, 227, 226,
-#'               224, 213, 211, 205, 203, 197, 196, 190, 189, 188, 187, 184, 180,
-#'               180, 177, 176, 173, 172, 171, 170, 170, 169, 168, 168, 162, 159,
-#'               159, 159, 159, 152, 152, 149, 149, 144, 143, 141, 141, 140, 139,
-#'               139, 136, 135, 133, 131, 129, 123, 121, 121, 118, 117, 117, 114,
-#'               112, 108, 104, 99, 99, 96, 94)
-#' status <- c(rep(0, 5), rep(1, 67))
-#' data <- reliability_data(x = cycles, status = status)
-#'
-#' tbl_john <- estimate_cdf(data, methods = c("johnson", "kaplan"))
-#'
-#' # Example 1: Probability Plot Weibull:
-#' plot_weibull <- plot_prob(
-#'   tbl_john,
-#'   distribution = "weibull",
-#'   title_main = "Weibull Analysis",
-#'   title_x = "Cycles",
-#'   title_y = "Probability of Failure in %",
-#'   title_trace = "Failed Items"
-#' )
-#'
-#' # Example 2: Probability Plot Lognormal:
-#' plot_lognormal <- plot_prob(
-#'   tbl_john,
-#'   distribution = "lognormal",
-#'   title_main = "Lognormal Analysis",
-#'   title_x = "Cycles",
-#'   title_y = "Probability of Failure in %",
-#'   title_trace = "Failed Items"
-#' )
-#'
-#' @export
-plot_prob.cdf_estimation <- function(
-  x,
-  distribution = c(
-    "weibull", "lognormal", "loglogistic", "normal", "logistic", "sev"
-  ),
-  title_main = "Probability Plot",
-  title_x = "Characteristic",
-  title_y = "Unreliability",
-  title_trace = "Sample",
-  plot_method = c("plotly", "ggplot2"),
-  ...
-) {
-  distribution <- match.arg(distribution)
-  plot_method <- match.arg(plot_method)
 
-  plot_prob_(
-    cdf_estimation = x,
-    distribution = distribution,
-    title_main = title_main,
-    title_x = title_x,
-    title_y = title_y,
-    title_trace = title_trace,
-    plot_method = plot_method
-  )
-}
 
 plot_prob_ <- function(
   cdf_estimation, distribution, title_main, title_x, title_y, title_trace,
@@ -295,236 +529,6 @@ plot_prob_ <- function(
     title_x = title_x,
     title_y = title_y,
     title_trace = title_trace
-  )
-}
-
-
-
-#' Probability Plot for Separated Mixture Models
-#'
-#' This function is used to apply the graphical technique of probability
-#' plotting to univariate mixture models that were separated with functions
-#' \code{\link{mixmod_regression}} or \code{\link{mixmod_em}}.
-#'
-#' If data was splitted by \code{mixmod_em} the function \code{johnson_method}
-#' is applied to subgroup-specific data. The calculated plotting positions are
-#' shaped regarding the obtained split of the used splitting function.
-#'
-#' In \code{\link{mixmod_regression}} a maximum of three subgroups can be determined
-#' and thus being plotted. The intention of this function is to give the
-#' user a hint for the existence of a mixture model. An in-depth analysis should
-#' be done afterwards.
-#'
-#' The marker label for x and y are determined by the first word provided in the
-#' argument \code{title_x} respective \code{title_y}, i.e. if
-#' \code{title_x = "Mileage in km"} the x label of the marker is "Mileage".
-#'
-#' The name of the legend entry is a combination of the \code{title_trace} and
-#' the number of determined subgroups. If \code{title_trace = "Group"} and the
-#' data could be splitted in two groups, the legend entries would be "Group: 1"
-#' and "Group: 2".
-#'
-#' @inherit plot_prob return references
-#'
-#' @inheritParams plot_prob.default
-#'
-#' @examples
-#' # Data is taken from given reference:
-#' hours <- c(2, 28, 67, 119, 179, 236, 282, 317, 348, 387, 3, 31, 69, 135,
-#'           191, 241, 284, 318, 348, 392, 5, 31, 76, 144, 203, 257, 286,
-#'           320, 350, 412, 8, 52, 78, 157, 211, 261, 298, 327, 360, 446,
-#'           13, 53, 104, 160, 221, 264, 303, 328, 369, 21, 64, 113, 168,
-#'           226, 278, 314, 328, 377)
-#' state <- c(1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1,
-#'           1, 0, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 0, 0,
-#'           1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-#'           0, 1, 1, 1, 1, 1, 1)
-#' id <- 1:length(hours)
-#'
-#' # Example 1 - mix_output = NULL:
-#' plot_weibull <- plot_prob(x = hours,
-#'                               status = state,
-#'                               id = id,
-#'                               distribution = "weibull",
-#'                               mix_output = NULL,
-#'                               title_main = "Weibull Probability Plot",
-#'                               title_x = "Time in Hours",
-#'                               title_y = "Probability of Failure",
-#'                               title_trace = "Failed Items")
-#'
-#' # Example 2 - Using result of mixmod_em in mix_output:
-#' mix_mod_em <- mixmod_em(x = hours, status = state, distribution = "weibull",
-#'                         conf_level = 0.95, k = 2, method = "EM", n_iter = 150)
-#'
-#' plot_weibull_em <- plot_prob(x = hours,
-#'                                  status = state,
-#'                                  id = id,
-#'                                  distribution = "weibull",
-#'                                  mix_output = mix_mod_em,
-#'                                  title_main = "Weibull Mixture EM",
-#'                                  title_x = "Time in Hours",
-#'                                  title_y = "Probability of Failure",
-#'                                  title_trace = "Subgroup")
-#'
-#' # Example 3 - Using result of mixmod_regression in mix_output:
-#' john <- johnson_method(x = hours, status = state)
-#' mix_mod_reg <- mixmod_regression(
-#'   x = john$x,
-#'   y = john$prob,
-#'   status = john$status,
-#'   distribution = "weibull"
-#' )
-#'
-#' plot_weibull_reg <- plot_prob(
-#'   x = hours,
-#'   status = state,
-#'   id = id,
-#'   distribution = "weibull",
-#'   mix_output = mix_mod_reg,
-#'   title_main = "Weibull Mixture Regression",
-#'   title_x = "Time in Hours",
-#'   title_y = "Probability of Failure",
-#'   title_trace = "Subgroup"
-#' )
-#'
-#' @export
-plot_prob.model_estimation <- function(x,
-                                           title_main = "Probability Plot",
-                                           title_x = "Characteristic",
-                                           title_y = "Unreliability",
-                                           title_trace = "Sample",
-                                           plot_method = c("plotly", "ggplot2"),
-                                           ...
-) {
-  plot_method <- match.arg(plot_method)
-
-  cdf_estimation <- x$data
-
-  plot_prob.cdf_estimation(
-    x = cdf_estimation,
-    distribution = x$distribution,
-    title_main = title_main,
-    title_x = title_x,
-    title_y = title_y,
-    title_trace = title_trace,
-    plot_method = plot_method
-  )
-}
-
-
-
-#' @rdname plot_prob.model_estimation
-#'
-#' @export
-plot_prob.mixmod_regression <- function(x,
-                                           title_main = "Probability Plot",
-                                           title_x = "Characteristic",
-                                           title_y = "Unreliability",
-                                           title_trace = "Sample",
-                                           plot_method = c("plotly", "ggplot2"),
-                                           ...
-) {
-
-  plot_method <- match.arg(plot_method)
-
-  # Take all data
-  cdf_estimation <- purrr::map2_dfr(x, seq_along(x), function(model_estimation, i) {
-    model_estimation$data %>%
-      # Mark group
-      dplyr::mutate(group = as.character(i))
-  })
-
-  distribution <- x[[1]]$distribution
-  plot_prob.cdf_estimation(
-    x = cdf_estimation,
-    distribution = distribution,
-    title_main = title_main,
-    title_x = title_x,
-    title_y = title_y,
-    title_trace = title_trace,
-    plot_method = plot_method
-  )
-}
-
-
-
-#' @rdname plot_prob.model_estimation
-#'
-#' @export
-plot_prob.mixmod_em <- function(x,
-                                    title_main = "Probability Plot",
-                                    title_x = "Characteristic",
-                                    title_y = "Unreliability",
-                                    title_trace = "Sample",
-                                    plot_method = c("plotly", "ggplot2"),
-                                    ...
-) {
-
-  plot_method <- match.arg(plot_method)
-
-  model_estimation_list <- x[-length(x)]
-
-  john <- purrr::map2_dfr(
-    model_estimation_list, seq_along(model_estimation_list),
-    function(model_estimation, index) {
-      data <- reliability_data(
-        model_estimation$data, x = x, status = status
-      )
-
-      john <- estimate_cdf(data, "johnson")
-
-      john$method <- as.character(index)
-
-      john
-    }
-  )
-
-  plot_prob.cdf_estimation(
-    x = john,
-    title_main = title_main,
-    title_x = title_x,
-    title_y = title_y,
-    title_trace = title_trace,
-    plot_method = plot_method
-  )
-}
-
-
-
-#' @rdname plot_prob.model_estimation
-#'
-#' @export
-plot_prob.mixmod_regression_list <- function(x,
-                                                 title_main = "Probability Plot",
-                                                 title_x = "Characteristic",
-                                                 title_y = "Unreliability",
-                                                 title_trace = "Sample",
-                                                 plot_method = c("plotly", "ggplot2"),
-                                                 ...
-) {
-
-  plot_method <- match.arg(plot_method)
-
-  # Take all data
-  cdf_estimation <- purrr::map_dfr(x, function(mixmod_regression) {
-    purrr::map2_dfr(
-      mixmod_regression,
-      seq_along(mixmod_regression),
-      function(model_estimation, index) {
-        model_estimation$data %>% dplyr::mutate(group = as.character(index))
-      }
-    )
-  })
-
-  distribution <- x[[1]][[1]]$distribution
-  plot_prob.cdf_estimation(
-    x = cdf_estimation,
-    distribution = distribution,
-    title_main = title_main,
-    title_x = title_x,
-    title_y = title_y,
-    title_trace = title_trace,
-    plot_method = plot_method
   )
 }
 
@@ -566,6 +570,7 @@ plot_prob.mixmod_regression_list <- function(x,
 #'   \code{\link{mixmod_em}}, which consists of values necessary to visualize the
 #'   subgroups.The default value of \code{mix_output} is \code{NULL}.
 #'
+#' @seealso \code{\link{plot_prob}}
 #'
 #' @examples
 #' # Data is taken from given reference:
@@ -574,28 +579,40 @@ plot_prob.mixmod_regression_list <- function(x,
 #'           320, 350, 412, 8, 52, 78, 157, 211, 261, 298, 327, 360, 446,
 #'           13, 53, 104, 160, 221, 264, 303, 328, 369, 21, 64, 113, 168,
 #'           226, 278, 314, 328, 377)
-#' state <- c(1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1,
+#' status <- c(1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1,
 #'           1, 0, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 0, 0,
 #'           1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1,
 #'           0, 1, 1, 1, 1, 1, 1)
 #' id <- 1:length(hours)
 #'
-#' # Example 1 - Using result of mixmod_em in mix_output:
-#' mix_mod_em <- mixmod_em(x = hours, status = state, distribution = "weibull",
-#'                         conf_level = 0.95, k = 2, method = "EM", n_iter = 150)
+#' # Example 1 - Using result of mixmod_em:
+#' mix_mod_em <- mixmod_em(
+#'   x = hours,
+#'   status = status,
+#'   distribution = "weibull",
+#'   conf_level = 0.95
+#' )
 #'
-#' plot_weibull_em <- plot_prob_mix(x = hours,
-#'                                  status = state,
-#'                                  id = id,
-#'                                  distribution = "weibull",
-#'                                  mix_output = mix_mod_em,
-#'                                  title_main = "Weibull Mixture EM",
-#'                                  title_x = "Time in Hours",
-#'                                  title_y = "Probability of Failure",
-#'                                  title_trace = "Subgroup")
+#' plot_weibull_em <- plot_prob_mix(
+#'   x = hours,
+#'   status = status,
+#'   id = id,
+#'   distribution = "weibull",
+#'   mix_output = mix_mod_em,
+#'   title_main = "Weibull Mixture EM",
+#'   title_x = "Time in Hours",
+#'   title_y = "Probability of Failure",
+#'   title_trace = "Subgroup"
+#' )
 #'
-#' # Example 2 - Using result of mixmod_regression in mix_output:
-#' john <- johnson_method(x = hours, status = state)
+#' # Example 2 - Using result of mixmod_regression:
+#' john <- estimate_cdf(
+#'   x = hours,
+#'   status = status,
+#'   id = id,
+#'   methods = "johnson"
+#' )
+#'
 #' mix_mod_reg <- mixmod_regression(
 #'   x = john$x,
 #'   y = john$prob,
@@ -605,7 +622,7 @@ plot_prob.mixmod_regression_list <- function(x,
 #'
 #' plot_weibull_reg <- plot_prob_mix(
 #'   x = hours,
-#'   status = state,
+#'   status = status,
 #'   id = id,
 #'   distribution = "weibull",
 #'   mix_output = mix_mod_reg,
@@ -660,24 +677,90 @@ plot_prob_mix <- function(
 #' data could be splitted in two groups, the legend entries would be "Line: 1"
 #' and "Line: 2".
 #'
-#' @section Methods (by class):
-#' \describe{
-#'   \item{\code{\link[=plot_mod.model_estimation]{model_estimation(_list)}}}{
-#'     Preferred. Provide the output of either \code{\link{ml_estimation}} or
-#'     \code{\link{rank_regression}} directly.
-#'   }
-#'   \item{\code{\link[=plot_mod.default]{default}}}{
-#'     Provide \code{x}, \code{loc_sc_params} and \code{distribution} manually.
-#'   }
-#' }
+#' @usage
+#' ## S3 method for classes 'model_estimation', 'model_estimation_list',
+#' ## 'mixmod_regression', 'mixmod_regression_list', 'mixmod_em'
+#' plot_mod(p_obj, x, title_trace = "Fit")
+#'
+#' @section S3 methods:
+#'
+#' | **Class** | **Returned from** | **Condition** |
+#' | --- | --- | --- |
+#' | \code{model_estimation} | \code{\link{rank_regression}} | One method in \code{\link{estimate_cdf}} |
+#' | \code{model_estimation} | \code{\link{mixmod_regression}} | One method in \code{\link{estimate_cdf}}. No subgroups determined. |
+#' | \code{model_estimation} | \code{\link{ml_estimation}} | - |
+#' | \code{model_estimation_list} | \code{\link{rank_regression}} | Multiple methods in \code{\link{estimate_cdf}} |
+#' | \code{mixmod_regression} | \code{\link{mixmod_regression}} | One method in \code{\link{estimate_cdf}} |
+#' | \code{mixmod_regression_list} | \code{\link{mixmod_regression}} | Multiple methods in \code{\link{estimate_cdf}} |
+#' | \code{mixmod_em} | \code{\link{mixmod_em}} | - |
+#'
+#'
+#' @param p_obj A plot object returned from \code{\link{plot_prob}}.
+#' @param x An object of aforementioned classes. See 'S3 methods'.
+#' @inheritParams plot_prob.cdf_estimation
 #'
 #' @encoding UTF-8
 #' @references Meeker, William Q; Escobar, Luis A., Statistical methods for
 #'   reliability data, New York: Wiley series in probability and statistics, 1998
 #'
-#' @return Returns a plotly object containing the probability plot with
-#'   plotting positions and the estimated regression line.
+#' @return Returns a plot object containing the probability plot with
+#'   plotting positions and the estimated regression line(s).
 #'
+#' @examples
+#'
+#' data <- reliability_data(
+#'   data = alloy,
+#'   x = cycles,
+#'   status = status
+#' )
+#'
+#' prob_tbl <- estimate_cdf(data, methods = c("johnson", "kaplan"))
+#'
+#' # Example 1 - Probability Plot and Regression Line Three-Parameter-Weibull:
+#' plot_weibull <- plot_prob(
+#'   prob_tbl,
+#'   distribution = "weibull",
+#'   title_main = "Three-Parametric Weibull",
+#'   title_x = "Cycles",
+#'   title_y = "Probability of Failure in %",
+#'   title_trace = "Failed Items"
+#' )
+#'
+#' rr_weibull <- rank_regression(
+#'   prob_tbl,
+#'   distribution = "weibull3",
+#'   conf_level = 0.9
+#' )
+#'
+#' plot_reg_weibull <- plot_mod(
+#'   p_obj = plot_weibull,
+#'   x = rr_weibull,
+#'   title_trace = "Estimated Weibull CDF"
+#' )
+#'
+#' # Example 2 - Probability Plot and Regression Line Three-Parameter-Lognormal:
+#' plot_lognormal <- plot_prob(
+#'   prob_tbl,
+#'   distribution = "lognormal",
+#'   title_main = "Three-Parametric Lognormal",
+#'   title_x = "Cycles",
+#'   title_y = "Probability of Failure in %",
+#'   title_trace = "Failed Items"
+#' )
+#'
+#' rr_lognormal <- rank_regression(
+#'   prob_tbl,
+#'   distribution = "lognormal3",
+#'   conf_level = 0.9
+#' )
+#'
+#' plot_reg_lognormal <- plot_mod(
+#'   p_obj = plot_lognormal,
+#'   x = rr_lognormal,
+#'   title_trace = "Estimated Lognormal CDF"
+#' )
+#'
+#' @md
 #' @export
 #'
 plot_mod <- function(
@@ -686,76 +769,11 @@ plot_mod <- function(
   UseMethod("plot_mod", x)
 }
 
-#' Adding Estimated Population Lines of a Separated Mixture Model to a
-#' Probability Plot
+
+
+#' @rdname plot_mod
 #'
-#' @inherit plot_mod description details return references
-#'
-#' @param p_obj A plot object returned from \code{\link{plot_prob}}.
-#' @param x An object of class \code{model_estimation} or
-#'   \code{model_estimation_list} returned by either
-#'   \code{\link{ml_estimation}} or \code{\link{rank_regression}}.
-#' @inheritParams plot_prob.cdf_estimation
-#'
-#' @examples
-#' # Alloy T7987 dataset taken from Meeker and Escobar(1998, p. 131)
-#' cycles   <- c(300, 300, 300, 300, 300, 291, 274, 271, 269, 257, 256, 227, 226,
-#'               224, 213, 211, 205, 203, 197, 196, 190, 189, 188, 187, 184, 180,
-#'               180, 177, 176, 173, 172, 171, 170, 170, 169, 168, 168, 162, 159,
-#'               159, 159, 159, 152, 152, 149, 149, 144, 143, 141, 141, 140, 139,
-#'               139, 136, 135, 133, 131, 129, 123, 121, 121, 118, 117, 117, 114,
-#'               112, 108, 104, 99, 99, 96, 94)
-#' status <- c(rep(0, 5), rep(1, 67))
-#'
-#' data <- reliability_data(x = cycles, status = status)
-#'
-#' tbl_john <- estimate_cdf(data, methods = c("johnson", "nelson"))
-#'
-#' # Example 1: Probability Plot and Regression Line Three-Parameter-Weibull:
-#' plot_weibull <- plot_prob(
-#'   tbl_john,
-#'   distribution = "weibull",
-#'   title_main = "Three-Parametric Weibull",
-#'   title_x = "Cycles",
-#'   title_y = "Probability of Failure in %",
-#'   title_trace = "Failed Items"
-#' )
-#'
-#' mrr <- rank_regression(
-#'   tbl_john,
-#'   distribution = "weibull3",
-#'   conf_level = .90
-#' )
-#'
-#' plot_reg_weibull <- plot_mod(
-#'   p_obj = plot_weibull,
-#'   x = mrr,
-#'   title_trace = "Estimated Weibull CDF"
-#' )
-#'
-#'
-#'
-#' # Example 2: Probability Plot and Regression Line Three-Parameter-Lognormal:
-#' plot_lognormal <- plot_prob(
-#'   tbl_john,
-#'   distribution = "lognormal",
-#'   title_main = "Three-Parametric Lognormal",
-#'   title_x = "Cycles",
-#'   title_y = "Probability of Failure in %",
-#'   title_trace = "Failed Items"
-#' )
-#'
-#' mrr_ln <- rank_regression(
-#'   tbl_john,
-#'   distribution = "lognormal3",
-#'   conf_level = .90
-#' )
-#'
-#' plot_reg_lognormal <- plot_mod(
-#'   p_obj = plot_lognormal,
-#'   x = mrr_ln,
-#'   title_trace = "Estimated Lognormal CDF"
-#' )
+#' @usage NULL
 #'
 #' @export
 #'
@@ -776,7 +794,9 @@ plot_mod.model_estimation <- function(
 
 
 
-#' @rdname plot_mod.model_estimation
+#' @rdname plot_mod
+#'
+#' @usage NULL
 #'
 #' @export
 #'
@@ -820,7 +840,9 @@ plot_mod.model_estimation_list <- function(
 
 
 
-#' @rdname plot_mod.model_estimation
+#' @rdname plot_mod
+#'
+#' @usage NULL
 #'
 #' @export
 plot_mod.mixmod_regression <- function(p_obj, x, title_trace = "Fit", ...) {
@@ -864,7 +886,9 @@ plot_mod.mixmod_regression <- function(p_obj, x, title_trace = "Fit", ...) {
 
 
 
-#' @rdname plot_mod.model_estimation
+#' @rdname plot_mod
+#'
+#' @usage NULL
 #'
 #' @export
 plot_mod.mixmod_regression_list <- function(p_obj,
@@ -910,7 +934,9 @@ plot_mod.mixmod_regression_list <- function(p_obj,
 
 
 
-#' @rdname plot_mod.model_estimation
+#' @rdname plot_mod
+#'
+#' @usage NULL
 #'
 #' @export
 plot_mod.mixmod_em <- function(p_obj, x, title_trace = "Fit", ...) {
@@ -940,6 +966,11 @@ plot_mod.mixmod_em <- function(p_obj, x, title_trace = "Fit", ...) {
 #'   is the threshold parameter \eqn{\gamma}.
 #' @inheritParams plot_mod.model_estimation
 #' @inheritParams plot_prob.default
+#'
+#' @return Returns a plot object containing the probability plot with
+#' plotting positions and the estimated regression line(s).
+#'
+#' @seealso \code{\link{plot_mod}}
 #'
 #' @examples
 #' # Alloy T7987 dataset taken from Meeker and Escobar(1998, p. 131)
@@ -1061,14 +1092,14 @@ plot_mod.default <- function(p_obj,
 #' @references Doganaksoy, N.; Hahn, G.; Meeker, W. Q., Reliability Analysis by
 #'   Failure Mode, Quality Progress, 35(6), 47-52, 2002
 #'
-#' @param p_obj A plotly object provided by function \code{\link{plot_prob}}.
+#' @param p_obj A plot object provided by function \code{\link{plot_prob}}.
 #' @param mix_output A list provided by \code{\link{mixmod_regression}} or
 #'   \code{\link{mixmod_em}}, which consists of elements necessary to visualize
 #'   the regression lines.
 #' @inheritParams plot_mod.default
 #' @inheritParams plot_prob.default
 #'
-#' @return Returns a plotly object containing the probability plot with
+#' @return Returns a plot object containing the probability plot with
 #'   plotting positions and estimated regression line(s).
 #'
 #' @examples
@@ -1186,7 +1217,7 @@ plot_mod_mix <- function(p_obj,
 #' @references Meeker, William Q; Escobar, Luis A., Statistical methods for
 #'   reliability data, New York: Wiley series in probability and statistics, 1998
 #'
-#' @return Returns a plotly object containing the probability plot with
+#' @return Returns a plot object containing the probability plot with
 #'   plotting positions, the estimated regression line and the estimated
 #'   confidence region(s).
 #'

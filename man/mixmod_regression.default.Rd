@@ -33,14 +33,14 @@ a right censored observation (= 0) or a failure (= 1).}
 \code{"weibull"} this must be one of \code{0.9}, \code{0.95} or \code{0.99}.}
 
 \item{control}{Output of the call to \code{\link[segmented]{seg.control}}, which
-is passed to \code{\link[segmented:segmented]{segmented.lm}}. See 'Examples'
-for usage.}
+is passed to \code{\link[segmented:segmented]{segmented.lm}}.
+See 'Examples' for usage.}
 }
 \value{
 Returns a list of class \code{"rank_regression"} if no breakpoint was
 detected. See \code{\link{rank_regression}}. The tibble \code{data} is returned
 with class \code{"cdf_estimation"} and contains the additional dummy columns
-\code{method} and \code{id}. The first mentioned column is filled with
+\code{method} and \code{id}. The former is filled with
 \code{"_null"}, due to generic visualization functions and the latter is filled
 with \code{"XXXXXX"} to point out that unit identification is not possible when
 using the vector-based approach.
@@ -69,22 +69,21 @@ subgroups. See 'Details'.
 The segmentation process is based on the lifetime realizations of failed
 units and their corresponding estimated failure probabilities for which intact
 items are taken into account. It is performed with the support of
-\code{\link[segmented:segmented]{segmented.lm}}, which is implemented in
-\emph{segmented}.
+\code{\link[segmented:segmented]{segmented.lm}}.
 
 Since the attempt to separate the failure data happens in an automated fashion,
 the algorithm tends to overestimate the number of breakpoints (see 'Warning'
-in \code{\link[segmented:segmented]{segmented}}).
+in \code{\link[segmented:segmented]{segmented.lm}}).
 
 In the context of reliability analysis it is important that the main types of
-faults can be identified and analyzed separately. These are
+failure can be identified and analyzed separately. These are
 \itemize{
   \item early failures,
   \item random failures and
   \item wear-out failures.
 }
 In order to reduce the risk of overestimation as well as being able to consider
-the main types of faults, a maximum of three subgroups can be obtained.
+the main types of failure, a maximum of three subgroups can be obtained.
 }
 \examples{
 # Vectors:

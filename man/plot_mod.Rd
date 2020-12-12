@@ -3,13 +3,28 @@
 \encoding{UTF-8}
 \name{plot_mod}
 \alias{plot_mod}
+\alias{plot_mod.model_estimation}
+\alias{plot_mod.model_estimation_list}
+\alias{plot_mod.mixmod_regression}
+\alias{plot_mod.mixmod_regression_list}
+\alias{plot_mod.mixmod_em}
 \title{Add Estimated Population Line(s) to a Probability Plot}
 \usage{
-plot_mod(p_obj, x, ...)
+## S3 method for classes 'model_estimation', 'model_estimation_list',
+## 'mixmod_regression', 'mixmod_regression_list', 'mixmod_em'
+plot_mod(p_obj, x, title_trace = "Fit")
+}
+\arguments{
+\item{p_obj}{A plot object returned from \code{\link{plot_prob}}.}
+
+\item{x}{An object of aforementioned classes. See 'S3 methods'.}
+
+\item{title_trace}{A character string whis is assigned to the trace shown in
+the legend.}
 }
 \value{
-Returns a plotly object containing the probability plot with
-  plotting positions and the estimated regression line.
+Returns a plot object containing the probability plot with
+plotting positions and the estimated regression line(s).
 }
 \description{
 This function adds one or multiple estimated regression lines to an existing
@@ -25,20 +40,75 @@ the number of determined subgroups from \code{\link{mixmod_regression}} or
 data could be splitted in two groups, the legend entries would be "Line: 1"
 and "Line: 2".
 }
-\section{Methods (by class)}{
-
-\describe{
-  \item{\code{\link[=plot_mod.model_estimation]{model_estimation(_list)}}}{
-    Preferred. Provide the output of either \code{\link{ml_estimation}} or
-    \code{\link{rank_regression}} directly.
-  }
-  \item{\code{\link[=plot_mod.default]{default}}}{
-    Provide \code{x}, \code{loc_sc_params} and \code{distribution} manually.
-  }
+\section{S3 methods}{
+\tabular{lll}{
+   \strong{Class} \tab \strong{Returned from} \tab \strong{Condition} \cr
+   \code{model_estimation} \tab \code{\link{rank_regression}} \tab One method in \code{\link{estimate_cdf}} \cr
+   \code{model_estimation} \tab \code{\link{mixmod_regression}} \tab One method in \code{\link{estimate_cdf}}. No subgroups determined. \cr
+   \code{model_estimation} \tab \code{\link{ml_estimation}} \tab - \cr
+   \code{model_estimation_list} \tab \code{\link{rank_regression}} \tab Multiple methods in \code{\link{estimate_cdf}} \cr
+   \code{mixmod_regression} \tab \code{\link{mixmod_regression}} \tab One method in \code{\link{estimate_cdf}} \cr
+   \code{mixmod_regression_list} \tab \code{\link{mixmod_regression}} \tab Multiple methods in \code{\link{estimate_cdf}} \cr
+   \code{mixmod_em} \tab \code{\link{mixmod_em}} \tab - \cr
 }
 }
 
+\examples{
+
+data <- reliability_data(
+  data = alloy,
+  x = cycles,
+  status = status
+)
+
+prob_tbl <- estimate_cdf(data, methods = c("johnson", "kaplan"))
+
+# Example 1 - Probability Plot and Regression Line Three-Parameter-Weibull:
+plot_weibull <- plot_prob(
+  prob_tbl,
+  distribution = "weibull",
+  title_main = "Three-Parametric Weibull",
+  title_x = "Cycles",
+  title_y = "Probability of Failure in \%",
+  title_trace = "Failed Items"
+)
+
+rr_weibull <- rank_regression(
+  prob_tbl,
+  distribution = "weibull3",
+  conf_level = 0.9
+)
+
+plot_reg_weibull <- plot_mod(
+  p_obj = plot_weibull,
+  x = rr_weibull,
+  title_trace = "Estimated Weibull CDF"
+)
+
+# Example 2 - Probability Plot and Regression Line Three-Parameter-Lognormal:
+plot_lognormal <- plot_prob(
+  prob_tbl,
+  distribution = "lognormal",
+  title_main = "Three-Parametric Lognormal",
+  title_x = "Cycles",
+  title_y = "Probability of Failure in \%",
+  title_trace = "Failed Items"
+)
+
+rr_lognormal <- rank_regression(
+  prob_tbl,
+  distribution = "lognormal3",
+  conf_level = 0.9
+)
+
+plot_reg_lognormal <- plot_mod(
+  p_obj = plot_lognormal,
+  x = rr_lognormal,
+  title_trace = "Estimated Lognormal CDF"
+)
+
+}
 \references{
 Meeker, William Q; Escobar, Luis A., Statistical methods for
-  reliability data, New York: Wiley series in probability and statistics, 1998
+reliability data, New York: Wiley series in probability and statistics, 1998
 }

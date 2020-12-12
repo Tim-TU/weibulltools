@@ -179,6 +179,3 @@ conf_betabin_4 <- confint_betabinom(
 )
 
 }
-\seealso{
-\code{\link{confint_betabinom.default}}
-}

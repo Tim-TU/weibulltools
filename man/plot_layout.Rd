@@ -35,7 +35,8 @@ Returns a plotly object which contains the layout
   that is used for probability plotting.
 }
 \description{
-This function is used to create the layout of a probability plot.
+This function is used to create the layout of a probability plot. It is called
+by \code{\link{plot_prob}} internally.
 }
 \examples{
 # Example 1: Weibull-Grid:

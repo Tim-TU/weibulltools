@@ -26,8 +26,8 @@ mixmod_regression(x, ...)
 \code{"weibull"} this must be one of \code{0.9}, \code{0.95} or \code{0.99}.}
 
 \item{control}{Output of the call to \code{\link[segmented]{seg.control}}, which
-is passed to \code{\link[segmented:segmented]{segmented.lm}}. See 'Examples'
-for usage.}
+is passed to \code{\link[segmented:segmented]{segmented.lm}}.
+See 'Examples' for usage.}
 }
 \value{
 Returns a list of class \code{"rank_regression"} if no breakpoint was
@@ -35,7 +35,7 @@ detected. See \code{\link{rank_regression}}.
 
 Returns a list of class \code{"mixmod_regression"} if at least one breakpoint
 was determined. The length of the list depends on the number of identified
-subgroups. Each list contains the information provided by
+subgroups. Each list element contains the information provided by
 \code{\link{rank_regression}}. In addition, the returned tibble \code{data} of
 each list element only retains information on the failed units and has two more
 columns:
@@ -57,22 +57,21 @@ subgroups. See 'Details'.
 The segmentation process is based on the lifetime realizations of failed
 units and their corresponding estimated failure probabilities for which intact
 items are taken into account. It is performed with the support of
-\code{\link[segmented:segmented]{segmented.lm}}, which is implemented in
-\emph{segmented}.
+\code{\link[segmented:segmented]{segmented.lm}}.
 
 Since the attempt to separate the failure data happens in an automated fashion,
 the algorithm tends to overestimate the number of breakpoints (see 'Warning'
-in \code{\link[segmented:segmented]{segmented}}).
+in \code{\link[segmented:segmented]{segmented.lm}}).
 
 In the context of reliability analysis it is important that the main types of
-faults can be identified and analyzed separately. These are
+failure can be identified and analyzed separately. These are
 \itemize{
   \item early failures,
   \item random failures and
   \item wear-out failures.
 }
 In order to reduce the risk of overestimation as well as being able to consider
-the main types of faults, a maximum of three subgroups can be obtained.
+the main types of failure, a maximum of three subgroups can be obtained.
 }
 \examples{
 # Reliability data preparation:
@@ -144,7 +143,4 @@ mod <- mixmod_regression(
 \references{
 Doganaksoy, N.; Hahn, G.; Meeker, W. Q., Reliability Analysis by
   Failure Mode, Quality Progress, 35(6), 47-52, 2002
-}
-\seealso{
-\code{\link{mixmod_regression.default}}
 }

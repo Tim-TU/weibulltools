@@ -32,8 +32,8 @@ is the threshold parameter \eqn{\gamma}.}
 the legend.}
 }
 \value{
-Returns a plotly object containing the probability plot with
-  plotting positions and the estimated regression line.
+Returns a plot object containing the probability plot with
+plotting positions and the estimated regression line(s).
 }
 \description{
 This function adds one or multiple estimated regression lines to an existing
@@ -105,5 +105,8 @@ plot_reg_lognormal <- plot_mod(
 }
 \references{
 Meeker, William Q; Escobar, Luis A., Statistical methods for
-  reliability data, New York: Wiley series in probability and statistics, 1998
+reliability data, New York: Wiley series in probability and statistics, 1998
+}
+\seealso{
+\code{\link{plot_mod}}
 }

@@ -3,36 +3,154 @@
 \encoding{UTF-8}
 \name{plot_prob}
 \alias{plot_prob}
+\alias{plot_prob.cdf_estimation}
+\alias{plot_prob.model_estimation}
+\alias{plot_prob.mixmod_regression}
+\alias{plot_prob.mixmod_em}
+\alias{plot_prob.mixmod_regression_list}
 \title{Probability Plotting Method for Univariate Lifetime Distributions}
 \usage{
-plot_prob(x, ...)
+## S3 method for classes 'cdf_estimation', 'model_estimation',
+## 'mixmod_regression', 'mixmod_em', 'mixmod_regression_list'
+plot_prob(
+  x,
+  title_main = "Probability Plot",
+  title_x = "Characteristic",
+  title_y = "Unreliability",
+  title_trace = "Sample",
+  plot_method = c("plotly", "ggplot2"),
+  ...
+)
+}
+\arguments{
+\item{x}{An object of aforementioned classes. See 'Details'.}
+
+\item{distribution}{Supposed distribution of the random variable.}
+
+\item{title_main}{A character string which is assigned to the main title
+of the plot.}
+
+\item{title_x}{A character string which is assigned to the title of the
+x axis.}
+
+\item{title_y}{A character string which is assigned to the title of the
+y axis.}
+
+\item{title_trace}{A character string whis is assigned to the trace shown in
+the legend.}
+
+\item{plot_method}{Package, which is used for generating the plot output.}
 }
 \value{
-Returns a plotly object containing the layout of the probability plot
-  provided by \code{\link{plot_layout}} and the plotting positions.
+Returns a plot object containing the probability plot.
 }
 \description{
 This function is used to apply the graphical technique of probability
 plotting.
 }
 \details{
+If data was splitted by \code{\link{mixmod_em}} \code{\link{estimate_cdf}} with
+method \code{"johnson"} is applied to subgroup-specific data. The
+calculated plotting positions are shaped according to the determined split in
+\code{\link{mixmod_em}}.
+
+In \code{\link{mixmod_regression}} a maximum of three subgroups can be determined
+and thus being plotted. The intention of this function is to give the
+user a hint for the existence of a mixture model. An in-depth analysis should
+be done afterwards.
+
 The marker label for x and y are determined by the first word provided in the
-argument \code{title_x} respective \code{title_y}, i.e. if
+argument \code{title_x} and \code{title_y} respectively, i.e. if
 \code{title_x = "Mileage in km"} the x label of the marker is "Mileage".
-}
-\section{Methods (by class)}{
 
-\describe{
-  \item{\code{\link[=plot_prob.cdf_estimation]{cdf_estimation}}}{
-    Preferred. Provide the output of \code{\link{estimate_cdf}} directly.
-  }
-  \item{\code{\link[=plot_prob.default]{default}}}{
-    Provide \code{x}, \code{y}, \code{status} and \code{id} manually.
-  }
+The name of the legend entry is a combination of the \code{title_trace} and
+the number of determined subgroups (if any). If \code{title_trace = "Group"}
+and the data is split in two groups, the legend entries are "Group: 1"
+and "Group: 2".
+}
+\section{S3 methods}{
+\tabular{lll}{
+   \strong{Class} \tab \strong{Returned from} \tab \strong{Condition} \cr
+   \code{cdf_estimation} \tab \code{\link{estimate_cdf}} \tab - \cr
+   \code{model_estimation} \tab \code{\link{mixmod_regression}} \tab One method in \code{\link{estimate_cdf}}. No subgroups determined. \cr
+   \code{mixmod_regression} \tab \code{\link{mixmod_regression}} \tab One method in \code{\link{estimate_cdf}}. \cr
+   \code{mixmod_regression_list} \tab \code{mixmod_regression} \tab Multiple methods in \code{\link{estimate_cdf}}. \cr
+   \code{mixmod_em} \tab \code{\link{mixmod_em}} \tab - \cr
 }
 }
 
+\examples{
+# Reliability data:
+data <- reliability_data(
+  data = alloy,
+  x = cycles,
+  status = status
+)
+
+prob_tbl <- estimate_cdf(data, methods = c("johnson", "kaplan"))
+
+# Example 1 - Probability Plot Weibull:
+plot_weibull <- plot_prob(
+  prob_tbl,
+  distribution = "weibull",
+  title_main = "Weibull Analysis",
+  title_x = "Cycles",
+  title_y = "Probability of Failure in \%",
+  title_trace = "Failed Items"
+)
+
+# Example 2 - Probability Plot Lognormal:
+plot_lognormal <- plot_prob(
+  prob_tbl,
+  distribution = "lognormal",
+  title_main = "Lognormal Analysis",
+  title_x = "Cycles",
+  title_y = "Probability of Failure in \%",
+  title_trace = "Failed Items"
+)
+
+## Mixture identification
+# Reliability data:
+data_mix <- reliability_data(
+  data = voltage,
+  x = hours,
+  status = status
+)
+
+prob_mix <- estimate_cdf(data_mix, methods = c("johnson", "kaplan"))
+
+# Example 3 - Mixture identification using mixmod_regression:
+mix_mod_rr <- mixmod_regression(
+  x = prob_mix,
+  distribution = "weibull",
+  conf_level = 0.99
+)
+
+plot_mix_rr <- plot_prob(
+  mix_mod_rr,
+  title_main = "Weibull Mixture Regression",
+  title_x = "Time in Hours",
+  title_y = "Probability of Failure",
+  title_trace = "Subgroup"
+)
+
+# Example 4 - Mixture identification using mixmod_em:
+mix_mod_em <- mixmod_em(
+  data_mix,
+  distribution = "weibull",
+  conf_level = 0.99
+)
+
+plot_mix_em <- plot_prob(
+  mix_mod_em,
+  title_main = "Weibull Mixture EM",
+  title_x = "Time in Hours",
+  title_y = "Probability of Failure",
+  title_trace = "Subgroup"
+)
+
+}
 \references{
 Meeker, William Q; Escobar, Luis A., Statistical methods for
-  reliability data, New York: Wiley series in probability and statistics, 1998
+reliability data, New York: Wiley series in probability and statistics, 1998
 }
