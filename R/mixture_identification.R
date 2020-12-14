@@ -559,9 +559,8 @@ mixmod_em.reliability_data <- function(x,
   distribution <- match.arg(distribution)
   method <- match.arg(method)
 
-  mixmod_em.default(
-    x = get_characteristic(x),
-    status = x$status,
+  mixmod_em_(
+    data = x,
     post = post,
     distribution = distribution,
     conf_level = conf_level,
@@ -569,7 +568,8 @@ mixmod_em.reliability_data <- function(x,
     method = method,
     n_iter = n_iter,
     conv_limit = conv_limit,
-    diff_loglik = diff_loglik
+    diff_loglik = diff_loglik,
+    drop_id = FALSE
   )
 }
 
@@ -630,7 +630,7 @@ mixmod_em.default <- function(x,
                               status,
                               post = NULL,
                               distribution = "weibull",
-                              conf_level = .95,
+                              conf_level = 0.95,
                               k = 2,
                               method = "EM",
                               n_iter = 100L,
@@ -642,29 +642,77 @@ mixmod_em.default <- function(x,
   distribution <- match.arg(distribution)
   method <- match.arg(method)
 
+  data <- reliability_data(x = x, status = status)
+
+  mixmod_em_(
+    data = data,
+    post = post,
+    distribution = distribution,
+    conf_level = conf_level,
+    k = k,
+    method = method,
+    n_iter = n_iter,
+    conv_limit = conv_limit,
+    diff_loglik = diff_loglik,
+    drop_id = TRUE
+  )
+}
+
+mixmod_em_ <- function(data,
+                       post,
+                       distribution,
+                       conf_level,
+                       k,
+                       method,
+                       n_iter,
+                       conv_limit,
+                       diff_loglik,
+                       drop_id
+) {
+
+  x <- get_characteristic(data)
+  status <- data$status
+
   # Providing initial random a-posteriors (see references, blog post Mr. Gelissen):
   if (is.null(post)) {
     post <- rdirichlet(n = length(x), par = rep(0.1, k))
   }
 
   # mixture_em_cpp() for applying EM-Algorithm:
-  mix_est <- mixture_em_cpp(x = x,
-                            status = status,
-                            post = post,
-                            distribution = distribution,
-                            k = k,
-                            method = method,
-                            n_iter = n_iter,
-                            conv_limit = conv_limit)
+  mix_est <- mixture_em_cpp(
+    x = x,
+    status = status,
+    post = post,
+    distribution = distribution,
+    k = k,
+    method = method,
+    n_iter = n_iter,
+    conv_limit = conv_limit
+  )
 
   ############## New Approach ##############
   # Try to apply ml_estimation where observations are weighted with a-posterioris:
-  ml <- try(apply(mix_est$posteriori, MARGIN = 2, FUN = ml_estimation, x = x, status = status,
-                  distribution = distribution, conf_level = conf_level), silent = TRUE)
+  ml <- try(
+    apply(
+      mix_est$posteriori,
+      MARGIN = 2,
+      FUN = ml_estimation,
+      x = data,
+      distribution = distribution,
+      conf_level = conf_level
+    ),
+    silent = TRUE
+  )
   if (class(ml) == "try-error") {
-    stop(paste(ml[1], sprintf("\n For k = %s subcomponents the above problem occured!", k),
-               paste("\n Hint: Reduce k in function call and try again. If this does",
-                     "not succeed a mixture model seems not to be appropriate. \n Instead use k = 1 to perform ml_estimation().")))
+    stop(
+      paste(
+        ml[1],
+        sprintf("\n For k = %s subcomponents the above problem occured!", k),
+        "\n Hint: Reduce k in function call and try again. If this does",
+        "not succeed a mixture model seems not to be appropriate.",
+        "\n Instead use k = 1 to perform ml_estimation()."
+      )
+    )
   }
 
   # calculate complete log-likelihood and information criteria for EM.
@@ -689,6 +737,12 @@ mixmod_em.default <- function(x,
   # modify data of each model estimation accordingly
   for (i in seq_len(k)) {
     ml[[i]]$data <- ml[[i]]$data[i == split_obs,]
+
+    # Drop id column in default case. The user did not supply id and therefore
+    # does not expect the model data to include it. Data is ensured to have 'x'
+    # as name of lifetime characteristic column
+    data <- data[c("x", "status")]
+    if (drop_id) ml[[i]]$data <- ml[[i]]$data[c("x", "status")]
   }
 
   names(ml) <- sprintf("mod_%i", 1:k)

@@ -76,14 +76,14 @@ the algorithm tends to overestimate the number of breakpoints (see 'Warning'
 in \code{\link[segmented:segmented]{segmented.lm}}).
 
 In the context of reliability analysis it is important that the main types of
-failure can be identified and analyzed separately. These are
+failures can be identified and analyzed separately. These are
 \itemize{
   \item early failures,
   \item random failures and
   \item wear-out failures.
 }
 In order to reduce the risk of overestimation as well as being able to consider
-the main types of failure, a maximum of three subgroups can be obtained.
+the main types of failures, a maximum of three subgroups can be obtained.
 }
 \examples{
 # Vectors:
