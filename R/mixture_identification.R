@@ -553,7 +553,6 @@ mixmod_em <- function(x, ...) {
 #'
 #' @export
 mixmod_em.reliability_data <- function(x,
-                                       post = NULL,
                                        distribution = "weibull",
                                        conf_level = .95,
                                        k = 2,
@@ -569,7 +568,6 @@ mixmod_em.reliability_data <- function(x,
 
   mixmod_em_(
     data = x,
-    post = post,
     distribution = distribution,
     conf_level = conf_level,
     k = k,
@@ -636,7 +634,6 @@ mixmod_em.reliability_data <- function(x,
 #' @export
 mixmod_em.default <- function(x,
                               status,
-                              post = NULL,
                               distribution = "weibull",
                               conf_level = 0.95,
                               k = 2,
@@ -654,7 +651,6 @@ mixmod_em.default <- function(x,
 
   mixmod_em_(
     data = data,
-    post = post,
     distribution = distribution,
     conf_level = conf_level,
     k = k,
@@ -667,7 +663,6 @@ mixmod_em.default <- function(x,
 }
 
 mixmod_em_ <- function(data,
-                       post,
                        distribution,
                        conf_level,
                        k,
@@ -682,9 +677,7 @@ mixmod_em_ <- function(data,
   status <- data$status
 
   # Providing initial random a-posteriors (see references, blog post Mr. Gelissen):
-  if (is.null(post)) {
-    post <- rdirichlet(n = length(x), par = rep(0.1, k))
-  }
+  post <- rdirichlet(n = length(x), par = rep(0.1, k))
 
   # mixture_em_cpp() for applying EM-Algorithm:
   mix_est <- mixture_em_cpp(
