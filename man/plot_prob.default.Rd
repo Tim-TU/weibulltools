@@ -49,17 +49,31 @@ the legend.}
 \item{plot_method}{Package, which is used for generating the plot output.}
 }
 \value{
-Returns a plotly object containing the layout of the probability plot
-  provided by \code{\link{plot_layout}} and the plotting positions.
+Returns a plot object containing the probability plot.
 }
 \description{
 This function is used to apply the graphical technique of probability
 plotting.
 }
 \details{
+If data was splitted by \code{\link{mixmod_em}} \code{\link{estimate_cdf}} with
+method \code{"johnson"} is applied to subgroup-specific data. The
+calculated plotting positions are shaped according to the determined split in
+\code{\link{mixmod_em}}.
+
+In \code{\link{mixmod_regression}} a maximum of three subgroups can be determined
+and thus being plotted. The intention of this function is to give the
+user a hint for the existence of a mixture model. An in-depth analysis should
+be done afterwards.
+
 The marker label for x and y are determined by the first word provided in the
-argument \code{title_x} respective \code{title_y}, i.e. if
+argument \code{title_x} and \code{title_y} respectively, i.e. if
 \code{title_x = "Mileage in km"} the x label of the marker is "Mileage".
+
+The name of the legend entry is a combination of the \code{title_trace} and
+the number of determined subgroups (if any). If \code{title_trace = "Group"}
+and the data is split in two groups, the legend entries are "Group: 1"
+and "Group: 2".
 }
 \examples{
 # Alloy T7987 dataset taken from Meeker and Escobar(1998, p. 131)
@@ -70,13 +84,19 @@ cycles   <- c(300, 300, 300, 300, 300, 291, 274, 271, 269, 257, 256, 227, 226,
               139, 136, 135, 133, 131, 129, 123, 121, 121, 118, 117, 117, 114,
               112, 108, 104, 99, 99, 96, 94)
 status <- c(rep(0, 5), rep(1, 67))
-data <- reliability_data(x = cycles, status = status)
 
-tbl_john <- estimate_cdf(data, methods = c("johnson", "kaplan"))
+john <- estimate_cdf(
+  x = cycles,
+  status = status,
+  methods = "johnson"
+)
 
 # Example 1: Probability Plot Weibull:
 plot_weibull <- plot_prob(
-  tbl_john,
+  x = john$x,
+  y = john$prob,
+  status = john$status,
+  id = john$id,
   distribution = "weibull",
   title_main = "Weibull Analysis",
   title_x = "Cycles",
@@ -86,7 +106,10 @@ plot_weibull <- plot_prob(
 
 # Example 2: Probability Plot Lognormal:
 plot_lognormal <- plot_prob(
-  tbl_john,
+  x = john$x,
+  y = john$prob,
+  status = john$status,
+  id = john$id,
   distribution = "lognormal",
   title_main = "Lognormal Analysis",
   title_x = "Cycles",
@@ -97,5 +120,8 @@ plot_lognormal <- plot_prob(
 }
 \references{
 Meeker, William Q; Escobar, Luis A., Statistical methods for
-  reliability data, New York: Wiley series in probability and statistics, 1998
+reliability data, New York: Wiley series in probability and statistics, 1998
+}
+\seealso{
+\code{\link{plot_prob}}
 }

@@ -30,10 +30,6 @@ test_that("vector-based approach recycles status and id", {
   expect_true(all(reliability_data(x = x, status = stat_2, id = id_1)$id == "XXXXXX"))
 })
 
-test_that("vector-based approach fails if x is shorter than status or id", {
-  expect_error(reliability_data(x = 1, status = stat_2, id = id_2), "Length of 'x'.*")
-})
-
 # ID handling ----
 test_that("ID is sequentiated regardless of approach", {
   expected <- paste0("ID", seq_along(x))

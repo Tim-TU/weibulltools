@@ -100,7 +100,8 @@ plot_layout_plotly <- function(
   # create grid
   p <- plotly::plotly_empty(
     type = "scatter",
-    mode = "markers"
+    mode = "markers",
+    colors = "Set2"
   ) %>%
     plotly::layout(
       title = title,
@@ -135,14 +136,6 @@ plot_prob_plotly <- function(
 
   name <- to_prob_mod_name(tbl_prob, n_method, n_group, title_trace)
 
-  # Prevent warning in RColorBrewer::brewer.pal
-  if (n_method < 3) {
-    tbl_prob$method <- factor(
-      tbl_prob$method,
-      c(unique(tbl_prob$method), "_null1", "_null2")
-    )
-  }
-
   # Construct probability plot:
   p_prob <- p_obj %>%
     plotly::add_trace(
@@ -153,7 +146,8 @@ plot_prob_plotly <- function(
       mode = "markers",
       hoverinfo = "text",
       name = name,
-      color = ~method,
+      color = ~as.factor(method),
+      colors = "Set2",
       symbol = ~group,
       legendgroup = ~method,
       text = paste(
@@ -187,13 +181,6 @@ plot_mod_plotly <- function(
 
   name <- to_prob_mod_name(tbl_pred, n_method, n_group, title_trace)
 
-  if (n_method < 3) {
-    tbl_pred$method <- factor(
-      tbl_pred$method,
-      levels = c(unique(tbl_pred$method), "_null1", "_null2")
-    )
-  }
-
   p_mod <- plotly::add_lines(
     p = p_obj,
     data = tbl_pred,
@@ -204,6 +191,7 @@ plot_mod_plotly <- function(
     hoverinfo = "text",
     name = name,
     color = ~method,
+    colors = "Set2",
     legendgroup = ~method,
     text = ~hovertext
   )
@@ -228,6 +216,7 @@ plot_conf_plotly <- function(p_obj, tbl_p, title_trace) {
     hoverinfo = "text",
     line = list(dash = "dash", width = 1),
     color = color,
+    colors = "Set2",
     name = title_trace,
     legendgroup = ~method,
     text = paste(
@@ -268,6 +257,7 @@ plot_pop_plotly <- function(
     mode = "lines",
     hoverinfo = "text",
     # color = ~group,
+    colors = "Set2",
     name = ~name,
     line = list(width = 1),
     text = ~hovertext

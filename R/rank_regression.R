@@ -71,8 +71,6 @@
 #'     \item Meeker, William Q; Escobar, Luis A., Statistical methods for
 #'   reliability data, New York: Wiley series in probability and statistics, 1998}
 #'
-#' @seealso \code{\link{rank_regression.default}}
-#'
 #' @examples
 #' # Reliability data preparation:
 #' ## Data for two-parametric model:
@@ -129,6 +127,49 @@
 #' @export
 rank_regression <- function(x, ...) {
   UseMethod("rank_regression", x)
+}
+
+
+
+#' @rdname rank_regression
+#'
+#' @export
+rank_regression.cdf_estimation <- function(x,
+                                           distribution = c("weibull", "lognormal",
+                                                            "loglogistic", "normal",
+                                                            "logistic", "sev",
+                                                            "weibull3", "lognormal3",
+                                                            "loglogistic3"),
+                                           conf_level = 0.95,
+                                           ...
+) {
+
+  distribution <- match.arg(distribution)
+
+  if (length(unique(x$method)) == 1) {
+    rank_regression_(
+      cdf_estimation = x,
+      distribution = distribution,
+      conf_level = conf_level
+    )
+  } else {
+    # Apply rank_regression to each method separately
+    x_split <- split(x, x$method)
+
+    model_estimation_list <- purrr::map(x_split, function(cdf_estimation) {
+      rank_regression_(
+        cdf_estimation = cdf_estimation,
+        distribution = distribution,
+        conf_level = conf_level
+      )
+    })
+
+    class(model_estimation_list) <- c(
+      "model_estimation_list", class(model_estimation_list)
+    )
+
+    model_estimation_list
+  }
 }
 
 
@@ -230,49 +271,6 @@ rank_regression.default <- function(x,
   cdf_estimation <- tibble::tibble(x = x, status = status, prob = y)
 
   rank_regression_(cdf_estimation, distribution, conf_level)
-}
-
-
-
-#' @rdname rank_regression
-#'
-#' @export
-rank_regression.cdf_estimation <- function(x,
-                                           distribution = c("weibull", "lognormal",
-                                                            "loglogistic", "normal",
-                                                            "logistic", "sev",
-                                                            "weibull3", "lognormal3",
-                                                            "loglogistic3"),
-                                           conf_level = 0.95,
-                                           ...
-) {
-
-  distribution <- match.arg(distribution)
-
-  if (length(unique(x$method)) == 1) {
-    rank_regression_(
-      cdf_estimation = x,
-      distribution = distribution,
-      conf_level = conf_level
-    )
-  } else {
-    # Apply rank_regression to each method separately
-    x_split <- split(x, x$method)
-
-    model_estimation_list <- purrr::map(x_split, function(cdf_estimation) {
-      rank_regression_(
-        cdf_estimation = cdf_estimation,
-        distribution = distribution,
-        conf_level = conf_level
-      )
-    })
-
-    class(model_estimation_list) <- c(
-      "model_estimation_list", class(model_estimation_list)
-    )
-
-    model_estimation_list
-  }
 }
 
 
@@ -575,8 +573,6 @@ print.rank_regression <- function(x,
 #' @references Meeker, William Q; Escobar, Luis A., Statistical methods for
 #'   reliability data, New York: Wiley series in probability and statistics, 1998
 #'
-#' @seealso \code{\link{r_squared_profiling.default}}
-#'
 #' @examples
 #' # Data:
 #' data <- reliability_data(
@@ -638,6 +634,28 @@ r_squared_profiling <- function(x,
                                 ...
 ) {
   UseMethod("r_squared_profiling")
+}
+
+
+
+#' @rdname r_squared_profiling
+#'
+#' @export
+r_squared_profiling.cdf_estimation <- function(x,
+                                               thres,
+                                               distribution = c("weibull3",
+                                                                "lognormal3",
+                                                                "loglogistic3"),
+                                               ...
+) {
+  distribution <- match.arg(distribution)
+
+  r_squared_profiling.default(
+    x = x$x,
+    y = x$prob,
+    thres = thres,
+    distribution = distribution
+  )
 }
 
 
@@ -725,28 +743,6 @@ r_squared_profiling.default <- function(x,
   r_sq_prof_vectorized(
     x = x,
     y = y,
-    thres = thres,
-    distribution = distribution
-  )
-}
-
-
-
-#' @rdname r_squared_profiling
-#'
-#' @export
-r_squared_profiling.cdf_estimation <- function(x,
-                                               thres,
-                                               distribution = c("weibull3",
-                                                                "lognormal3",
-                                                                "loglogistic3"),
-                                               ...
-) {
-  distribution <- match.arg(distribution)
-
-  r_squared_profiling.default(
-    x = x$x,
-    y = x$prob,
     thres = thres,
     distribution = distribution
   )

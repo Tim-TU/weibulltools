@@ -8,35 +8,34 @@
 #' The segmentation process is based on the lifetime realizations of failed
 #' units and their corresponding estimated failure probabilities for which intact
 #' items are taken into account. It is performed with the support of
-#' \code{\link[segmented:segmented]{segmented.lm}}, which is implemented in
-#' \emph{segmented}.
+#' \code{\link[segmented:segmented]{segmented.lm}}.
 #'
 #' Since the attempt to separate the failure data happens in an automated fashion,
 #' the algorithm tends to overestimate the number of breakpoints (see 'Warning'
-#' in \code{\link[segmented:segmented]{segmented}}).
+#' in \code{\link[segmented:segmented]{segmented.lm}}).
 #'
 #' In the context of reliability analysis it is important that the main types of
-#' faults can be identified and analyzed separately. These are
+#' failures can be identified and analyzed separately. These are
 #' \itemize{
 #'   \item early failures,
 #'   \item random failures and
 #'   \item wear-out failures.
 #' }
 #' In order to reduce the risk of overestimation as well as being able to consider
-#' the main types of faults, a maximum of three subgroups can be obtained.
+#' the main types of failures, a maximum of three subgroups can be obtained.
 #'
 #' @inheritParams rank_regression.cdf_estimation
 #'
 #' @param control Output of the call to \code{\link[segmented]{seg.control}}, which
-#'   is passed to \code{\link[segmented:segmented]{segmented.lm}}. See 'Examples'
-#'   for usage.
+#'   is passed to \code{\link[segmented:segmented]{segmented.lm}}.
+#'   See 'Examples' for usage.
 #'
 #' @return Returns a list of class \code{"rank_regression"} if no breakpoint was
 #' detected. See \code{\link{rank_regression}}.
 #'
 #' Returns a list of class \code{"mixmod_regression"} if at least one breakpoint
 #' was determined. The length of the list depends on the number of identified
-#' subgroups. Each list contains the information provided by
+#' subgroups. Each list element contains the information provided by
 #' \code{\link{rank_regression}}. In addition, the returned tibble \code{data} of
 #' each list element only retains information on the failed units and has two more
 #' columns:
@@ -54,8 +53,6 @@
 #'
 #' @references Doganaksoy, N.; Hahn, G.; Meeker, W. Q., Reliability Analysis by
 #'   Failure Mode, Quality Progress, 35(6), 47-52, 2002
-#'
-#' @seealso \code{\link{mixmod_regression.default}}
 #'
 #' @examples
 #' # Reliability data preparation:
@@ -130,6 +127,48 @@ mixmod_regression <- function(x, ...) {
 
 
 
+#' @rdname mixmod_regression
+#'
+#' @export
+mixmod_regression.cdf_estimation <- function(
+                               x,
+                               distribution = c(
+                                 "weibull", "lognormal", "loglogistic"
+                               ),
+                               conf_level = .95,
+                               control = segmented::seg.control(),
+                               ...
+) {
+
+  distribution <- match.arg(distribution)
+
+  x_split <- split(x, x$method)
+
+  if (length(unique(x$method)) == 1) {
+    out <- mixmod_regression_(
+      cdf_estimation = x,
+      distribution = distribution,
+      conf_level = conf_level,
+      control = control
+    )
+  } else {
+    out <- purrr::map(x_split, function(cdf_estimation) {
+      mixmod_regression_(
+        cdf_estimation = cdf_estimation,
+        distribution = distribution,
+        conf_level = conf_level,
+        control = control
+      )
+    })
+
+    class(out) <- c("mixmod_regression_list", class(out))
+  }
+
+  out
+}
+
+
+
 #' Mixture Model Identification using Segmented Regression
 #'
 #' @inherit mixmod_regression description details references
@@ -141,7 +180,7 @@ mixmod_regression <- function(x, ...) {
 #' @return Returns a list of class \code{"rank_regression"} if no breakpoint was
 #' detected. See \code{\link{rank_regression}}. The tibble \code{data} is returned
 #' with class \code{"cdf_estimation"} and contains the additional dummy columns
-#' \code{method} and \code{id}. The first mentioned column is filled with
+#' \code{method} and \code{id}. The former is filled with
 #' \code{"_null"}, due to generic visualization functions and the latter is filled
 #' with \code{"XXXXXX"} to point out that unit identification is not possible when
 #' using the vector-based approach.
@@ -225,16 +264,15 @@ mixmod_regression <- function(x, ...) {
 #' )
 #'
 #' @export
-mixmod_regression.default <- function(
-                        x,
-                        y,
-                        status,
-                        distribution = c(
-                          "weibull", "lognormal", "loglogistic"
-                        ),
-                        conf_level = .95,
-                        control = segmented::seg.control(),
-                        ...
+mixmod_regression.default <- function(x,
+                                      y,
+                                      status,
+                                      distribution = c(
+                                        "weibull", "lognormal", "loglogistic"
+                                      ),
+                                      conf_level = .95,
+                                      control = segmented::seg.control(),
+                                      ...
 ) {
 
   distribution <- match.arg(distribution)
@@ -256,48 +294,6 @@ mixmod_regression.default <- function(
     conf_level = conf_level,
     control = control
   )
-}
-
-
-
-#' @rdname mixmod_regression
-#'
-#' @export
-mixmod_regression.cdf_estimation <- function(
-                               x,
-                               distribution = c(
-                                 "weibull", "lognormal", "loglogistic"
-                               ),
-                               conf_level = .95,
-                               control = segmented::seg.control(),
-                               ...
-) {
-
-  distribution <- match.arg(distribution)
-
-  x_split <- split(x, x$method)
-
-  if (length(unique(x$method)) == 1) {
-    out <- mixmod_regression_(
-      cdf_estimation = x,
-      distribution = distribution,
-      conf_level = conf_level,
-      control = control
-    )
-  } else {
-    out <- purrr::map(x_split, function(cdf_estimation) {
-      mixmod_regression_(
-        cdf_estimation = cdf_estimation,
-        distribution = distribution,
-        conf_level = conf_level,
-        control = control
-      )
-    })
-
-    class(out) <- c("mixmod_regression_list", class(out))
-  }
-
-  out
 }
 
 
@@ -502,8 +498,6 @@ mixmod_regression_ <- function(cdf_estimation,
 #'     \item Blog posts by Stefan Gelissen: \url{http://blogs2.datall-analyse.nl/2016/02/18/rcode_mixture_distribution_censored};
 #'       last accessed on 8th December 2020}
 #'
-#' @seealso \code{\link{mixmod_em.default}}
-#'
 #' @examples
 #' # Reliability data preparation:
 #' ## Data for mixture model:
@@ -543,6 +537,40 @@ mixmod_regression_ <- function(cdf_estimation,
 #' @export
 mixmod_em <- function(x, ...) {
   UseMethod("mixmod_em")
+}
+
+
+
+#' @rdname mixmod_em
+#'
+#' @export
+mixmod_em.reliability_data <- function(x,
+                                       post = NULL,
+                                       distribution = "weibull",
+                                       conf_level = .95,
+                                       k = 2,
+                                       method = "EM",
+                                       n_iter = 100L,
+                                       conv_limit = 1e-6,
+                                       diff_loglik = 0.01,
+                                       ...
+) {
+
+  distribution <- match.arg(distribution)
+  method <- match.arg(method)
+
+  mixmod_em.default(
+    x = get_characteristic(x),
+    status = x$status,
+    post = post,
+    distribution = distribution,
+    conf_level = conf_level,
+    k = k,
+    method = method,
+    n_iter = n_iter,
+    conv_limit = conv_limit,
+    diff_loglik = diff_loglik
+  )
 }
 
 
@@ -635,8 +663,8 @@ mixmod_em.default <- function(x,
                   distribution = distribution, conf_level = conf_level), silent = TRUE)
   if (class(ml) == "try-error") {
     stop(paste(ml[1], sprintf("\n For k = %s subcomponents the above problem occured!", k),
-               paste("\n Hint: Reduce k in function call and try again. If not",
-                     "succeed a mixture model seems not to be appropriate. \n Instead use k = 1 to perform ml_estimation().")))
+               paste("\n Hint: Reduce k in function call and try again. If this does",
+                     "not succeed a mixture model seems not to be appropriate. \n Instead use k = 1 to perform ml_estimation().")))
   }
 
   # calculate complete log-likelihood and information criteria for EM.
@@ -671,40 +699,6 @@ mixmod_em.default <- function(x,
   class(ml) <- c("mixmod_em", class(ml))
 
   ml
-}
-
-
-
-#' @rdname mixmod_em
-#'
-#' @export
-mixmod_em.reliability_data <- function(x,
-                                       post = NULL,
-                                       distribution = "weibull",
-                                       conf_level = .95,
-                                       k = 2,
-                                       method = "EM",
-                                       n_iter = 100L,
-                                       conv_limit = 1e-6,
-                                       diff_loglik = 0.01,
-                                       ...
-) {
-
-  distribution <- match.arg(distribution)
-  method <- match.arg(method)
-
-  mixmod_em.default(
-    x = get_characteristic(x),
-    status = x$status,
-    post = post,
-    distribution = distribution,
-    conf_level = conf_level,
-    k = k,
-    method = method,
-    n_iter = n_iter,
-    conv_limit = conv_limit,
-    diff_loglik = diff_loglik
-  )
 }
 
 

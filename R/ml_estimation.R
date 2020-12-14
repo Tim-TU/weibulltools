@@ -51,8 +51,6 @@
 #' @references Meeker, William Q; Escobar, Luis A., Statistical methods for
 #'   reliability data, New York: Wiley series in probability and statistics, 1998
 #'
-#' @seealso \code{\link{ml_estimation.default}}
-#'
 #' @examples
 #' # Reliability data preparation:
 #' ## Data for two-parametric model:
@@ -85,6 +83,32 @@
 #' @export
 ml_estimation <- function(x, ...) {
   UseMethod("ml_estimation")
+}
+
+
+
+#' @rdname ml_estimation
+#'
+#' @export
+ml_estimation.reliability_data <- function(x,
+                                           distribution = c(
+                                             "weibull", "lognormal", "loglogistic",
+                                             "normal", "logistic", "sev",
+                                             "weibull3", "lognormal3", "loglogistic3"
+                                           ),
+                                           wts = rep(1, nrow(x)),
+                                           conf_level = 0.95,
+                                           ...
+) {
+
+  distribution <- match.arg(distribution)
+
+  ml_estimation_(
+    x,
+    distribution = distribution,
+    wts = wts,
+    conf_level = conf_level
+  )
 }
 
 
@@ -171,32 +195,6 @@ ml_estimation.default <- function(x,
   data <- reliability_data(x = x, status = status, id = "")
 
   ml_estimation_(data, distribution, wts, conf_level)
-}
-
-
-
-#' @rdname ml_estimation
-#'
-#' @export
-ml_estimation.reliability_data <- function(x,
-                                           distribution = c(
-                                             "weibull", "lognormal", "loglogistic",
-                                             "normal", "logistic", "sev",
-                                             "weibull3", "lognormal3", "loglogistic3"
-                                           ),
-                                           wts = rep(1, nrow(x)),
-                                           conf_level = 0.95,
-                                           ...
-) {
-
-  distribution <- match.arg(distribution)
-
-  ml_estimation_(
-    x,
-    distribution = distribution,
-    wts = wts,
-    conf_level = conf_level
-  )
 }
 
 

@@ -82,28 +82,40 @@ hours <- c(2, 28, 67, 119, 179, 236, 282, 317, 348, 387, 3, 31, 69, 135,
           320, 350, 412, 8, 52, 78, 157, 211, 261, 298, 327, 360, 446,
           13, 53, 104, 160, 221, 264, 303, 328, 369, 21, 64, 113, 168,
           226, 278, 314, 328, 377)
-state <- c(1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1,
+status <- c(1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1,
           1, 0, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 0, 0,
           1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1,
           0, 1, 1, 1, 1, 1, 1)
 id <- 1:length(hours)
 
-# Example 1 - Using result of mixmod_em in mix_output:
-mix_mod_em <- mixmod_em(x = hours, status = state, distribution = "weibull",
-                        conf_level = 0.95, k = 2, method = "EM", n_iter = 150)
+# Example 1 - Using result of mixmod_em:
+mix_mod_em <- mixmod_em(
+  x = hours,
+  status = status,
+  distribution = "weibull",
+  conf_level = 0.95
+)
 
-plot_weibull_em <- plot_prob_mix(x = hours,
-                                 status = state,
-                                 id = id,
-                                 distribution = "weibull",
-                                 mix_output = mix_mod_em,
-                                 title_main = "Weibull Mixture EM",
-                                 title_x = "Time in Hours",
-                                 title_y = "Probability of Failure",
-                                 title_trace = "Subgroup")
+plot_weibull_em <- plot_prob_mix(
+  x = hours,
+  status = status,
+  id = id,
+  distribution = "weibull",
+  mix_output = mix_mod_em,
+  title_main = "Weibull Mixture EM",
+  title_x = "Time in Hours",
+  title_y = "Probability of Failure",
+  title_trace = "Subgroup"
+)
 
-# Example 2 - Using result of mixmod_regression in mix_output:
-john <- johnson_method(x = hours, status = state)
+# Example 2 - Using result of mixmod_regression:
+john <- estimate_cdf(
+  x = hours,
+  status = status,
+  id = id,
+  methods = "johnson"
+)
+
 mix_mod_reg <- mixmod_regression(
   x = john$x,
   y = john$prob,
@@ -113,7 +125,7 @@ mix_mod_reg <- mixmod_regression(
 
 plot_weibull_reg <- plot_prob_mix(
   x = hours,
-  status = state,
+  status = status,
   id = id,
   distribution = "weibull",
   mix_output = mix_mod_reg,
@@ -127,4 +139,7 @@ plot_weibull_reg <- plot_prob_mix(
 \references{
 Doganaksoy, N.; Hahn, G.; Meeker, W. Q., Reliability Analysis by
   Failure Mode, Quality Progress, 35(6), 47-52, 2002
+}
+\seealso{
+\code{\link{plot_prob}}
 }

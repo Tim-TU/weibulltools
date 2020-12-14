@@ -75,8 +75,6 @@
 #' \href{https://www.itl.nist.gov/div898/handbook/apr/section2/apr215.htm}{NIST SEMATECH},
 #' December 3, 2020
 #'
-#' @seealso \code{\link{estimate_cdf.default}}
-#'
 #' @examples
 #' # Reliability data:
 #' data <- reliability_data(
@@ -121,6 +119,43 @@ estimate_cdf <- function(x,
                          ...
 ) {
   UseMethod("estimate_cdf")
+}
+
+
+
+#' @rdname estimate_cdf
+#'
+#' @export
+estimate_cdf.reliability_data <- function(x,
+                                          methods = c("mr", "johnson", "kaplan", "nelson"),
+                                          options = list(),
+                                          ...
+) {
+
+  methods <- if (missing(methods)) {
+    "mr"
+  } else {
+    unique(match.arg(methods, several.ok = TRUE))
+  }
+
+  method_funs <- list(
+    mr = mr_method_,
+    johnson = johnson_method_,
+    kaplan = kaplan_method_,
+    nelson = nelson_method_
+  )
+
+  purrr::map_dfr(methods, function(method) {
+    if (method == "mr") {
+      method_funs[[method]](
+        data = x,
+        method = if (is.null(options$mr_method)) "benard" else options$mr_method,
+        ties.method = if (is.null(options$mr_ties.method)) "max" else options$mr_ties.method
+      )
+    } else {
+      method_funs[[method]](data = x)
+    }
+  })
 }
 
 
@@ -188,9 +223,14 @@ estimate_cdf.default <- function(x,
                                  status,
                                  id = NULL,
                                  methods = c("mr", "johnson", "kaplan", "nelson"),
-                                 options,
+                                 options = list(),
                                  ...
 ) {
+  # Fail early, if user tries to call estimate_cdf.reliability_data with a tibble
+  # which is not of class reliability data. Otherwise failure would occur in
+  # reliability_data, which is counterintuitive
+  status
+
   data <- reliability_data(x = x, status = status, id = id)
 
   methods <- if (missing(methods)) {
@@ -204,43 +244,6 @@ estimate_cdf.default <- function(x,
     methods = methods,
     options = options
   )
-}
-
-
-
-#' @rdname estimate_cdf
-#'
-#' @export
-estimate_cdf.reliability_data <- function(x,
-                                          methods = c("mr", "johnson", "kaplan", "nelson"),
-                                          options = list(),
-                                          ...
-) {
-
-  methods <- if (missing(methods)) {
-    "mr"
-  } else {
-    unique(match.arg(methods, several.ok = TRUE))
-  }
-
-  method_funs <- list(
-    mr = mr_method_,
-    johnson = johnson_method_,
-    kaplan = kaplan_method_,
-    nelson = nelson_method_
-  )
-
-  purrr::map_dfr(methods, function(method) {
-    if (method == "mr") {
-      method_funs[[method]](
-        data = x,
-        method = if (is.null(options$mr_method)) "benard" else options$mr_method,
-        ties.method = if (is.null(options$mr_ties.method)) "max" else options$mr_ties.method
-      )
-    } else {
-      method_funs[[method]](data = x)
-    }
-  })
 }
 
 

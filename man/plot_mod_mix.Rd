@@ -17,7 +17,7 @@ plot_mod_mix(
 )
 }
 \arguments{
-\item{p_obj}{A plotly object provided by function \code{\link{plot_prob}}.}
+\item{p_obj}{A plot object provided by function \code{\link{plot_prob}}.}
 
 \item{x}{A numeric vector containing the x-coordinates of the regression line.}
 
@@ -34,7 +34,7 @@ the regression lines.}
 the legend.}
 }
 \value{
-Returns a plotly object containing the probability plot with
+Returns a plot object containing the probability plot with
   plotting positions and estimated regression line(s).
 }
 \description{

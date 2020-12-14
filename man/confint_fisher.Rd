@@ -146,6 +146,3 @@ conf_fisher_3_2 <- confint_fisher(
 Meeker, William Q; Escobar, Luis A., Statistical methods for
   reliability data, New York: Wiley series in probability and statistics, 1998
 }
-\seealso{
-\code{\link{confint_fisher.default}}
-}
