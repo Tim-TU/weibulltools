@@ -9,7 +9,7 @@ output:
     fig_width: 7
     fig_caption: yes
 vignette: >
-  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEngine{knitr::knitr}
   %\VignetteIndexEntry{Life Data Analysis Part I - Estimation of Failure Probabilities}
   %\VignetteEncoding{UTF-8}
 ---

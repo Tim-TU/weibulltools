@@ -321,9 +321,13 @@ mixmod_regression_ <- function(cdf_estimation,
 
   # Segmented regression:
   seg_mrr <- try(
-    segmented::segmented.lm(
-      mrr,
-      control = control
+    # Ensure x is taken from cdf_failed
+    with(
+      cdf_failed,
+      segmented::segmented.lm(
+        mrr,
+        control = control
+      )
     ),
     silent = TRUE
   )
@@ -379,9 +383,13 @@ mixmod_regression_ <- function(cdf_estimation,
     # and this would be irritating:
     seg_mrr2 <- try(
       suppressWarnings(
-        segmented::segmented.lm(
-          mrr2,
-          control = control
+        # Ensure x is taken from cdf_failed
+        with(
+          cdf_failed,
+          segmented::segmented.lm(
+            mrr2,
+            control = control
+          )
         )
       ),
       silent = TRUE
