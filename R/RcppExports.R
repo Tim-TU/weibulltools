@@ -73,7 +73,7 @@ normalize <- function(M) {
 #'   \item \code{posteriori} : A matrix with estimated a-posteriori probabilities.
 #'   \item \code{priori} : A vector with estimated a-priori probabilities.
 #'   \item \code{logL} : The value of the complete log-likelihood.}
-#' @export
+#'
 #' @examples
 #' # Vectors:
 #' hours <- voltage$hours
@@ -119,7 +119,7 @@ mixture_em_cpp <- function(x, status, post, distribution = "weibull", k = 2L, me
 #' @param n an integer value indicating the sample size.
 #'
 #' @return A numeric vector containing the computed Johnson ranks.
-#' @export
+#'
 #' @examples
 #'   defectives <- c(0, 1, 2, 0, 0, 0, 3, 0, 2, 0)
 #'   n_out <- c(0, 2, 4, 8, 9, 11, 12, 16, 20, 22)

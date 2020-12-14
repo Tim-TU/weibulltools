@@ -173,7 +173,7 @@ double logLikelihood(arma::mat& posterior, arma::mat& logDensity,
 //'   \item \code{posteriori} : A matrix with estimated a-posteriori probabilities.
 //'   \item \code{priori} : A vector with estimated a-priori probabilities.
 //'   \item \code{logL} : The value of the complete log-likelihood.}
-//' @export
+//'
 //' @examples
 //' # Vectors:
 //' hours <- voltage$hours
