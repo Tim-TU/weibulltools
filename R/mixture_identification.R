@@ -385,7 +385,7 @@ mixmod_regression_ <- function(cdf_estimation,
       suppressWarnings(
         # Ensure x is taken from cdf_failed
         with(
-          cdf_failed,
+          cdf_failed_rest,
           segmented::segmented.lm(
             mrr2,
             control = control
@@ -450,10 +450,10 @@ mixmod_regression_ <- function(cdf_estimation,
 #' parameters of a univariate weibull mixture model. See 'Details'.
 #'
 #' @details
-#' The EM algorithm is an iterative algorithm for which initial values must be
-#' defined at the beginning. Initial values can be provided for the unknown parameter
-#' vector as well as for the posterior probabilities. This implementation employs
-#' initial values for the posterior probabilities. These are assigned randomly
+#' The EM algorithm is an iterative algorithm for which starting values must be
+#' defined. Starting values can be provided for the unknown parameter vector as
+#' well as for the posterior probabilities. This implementation employs initial
+#' values for the posterior probabilities. These are assigned randomly
 #' by using the dirichlet distribution, the conjugate prior of a multinomial
 #' distribution (see Mr. Gelissen's blog post listed under \emph{references}).
 #'
@@ -476,6 +476,7 @@ mixmod_regression_ <- function(cdf_estimation,
 #' @param conv_limit Numeric value defining the convergence limit.
 #' @param diff_loglik Numeric value defining the maximum difference between
 #'   log-likelihood values, which seems permissible.
+#' @template dots
 #'
 #' @return Returns a list with class \code{"mixmod_em"}. The length of the list
 #' depends on the number of specified subgroups \emph{k}. The first \code{k} lists

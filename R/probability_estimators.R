@@ -50,6 +50,7 @@
 #'   \code{"kaplan"} or \code{"nelson"} used for the estimation of failure
 #'   probabilities. See 'Details'.
 #' @param options A list of named options. See 'Options'.
+#' @template dots
 #'
 #' @return A tibble containing the following columns:
 #' \itemize{
@@ -115,9 +116,7 @@
 #' )
 #'
 #' @export
-estimate_cdf <- function(x,
-                         ...
-) {
+estimate_cdf <- function(x, ...) {
   UseMethod("estimate_cdf")
 }
 
@@ -127,7 +126,9 @@ estimate_cdf <- function(x,
 #'
 #' @export
 estimate_cdf.reliability_data <- function(x,
-                                          methods = c("mr", "johnson", "kaplan", "nelson"),
+                                          methods = c(
+                                            "mr", "johnson", "kaplan", "nelson"
+                                          ),
                                           options = list(),
                                           ...
 ) {
@@ -149,8 +150,10 @@ estimate_cdf.reliability_data <- function(x,
     if (method == "mr") {
       method_funs[[method]](
         data = x,
-        method = if (is.null(options$mr_method)) "benard" else options$mr_method,
-        ties.method = if (is.null(options$mr_ties.method)) "max" else options$mr_ties.method
+        method = if (is.null(options$mr_method)) "benard" else
+          options$mr_method,
+        ties.method = if (is.null(options$mr_ties.method)) "max" else
+          options$mr_ties.method
       )
     } else {
       method_funs[[method]](data = x)
@@ -165,7 +168,6 @@ estimate_cdf.reliability_data <- function(x,
 #' @inherit estimate_cdf description details return
 #'
 #' @inheritParams estimate_cdf
-#'
 #' @param x A numeric vector which consists of lifetime data. Lifetime
 #'   data could be every characteristic influencing the reliability of a product,
 #'   e.g. operating time (days/months in service), mileage (km, miles), load
@@ -222,7 +224,9 @@ estimate_cdf.reliability_data <- function(x,
 estimate_cdf.default <- function(x,
                                  status,
                                  id = NULL,
-                                 methods = c("mr", "johnson", "kaplan", "nelson"),
+                                 methods = c(
+                                   "mr", "johnson", "kaplan", "nelson"
+                                 ),
                                  options = list(),
                                  ...
 ) {

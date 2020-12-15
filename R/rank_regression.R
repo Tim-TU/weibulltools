@@ -31,6 +31,7 @@
 #' @param distribution Supposed distribution of the random variable.
 #' @param conf_level Confidence level of the interval. If \code{distribution} is
 #'   \code{"weibull"} this must be one of \code{0.9}, \code{0.95} or \code{0.99}.
+#' @template dots
 #'
 #' @return Returns a list with the classes \code{"rank_regression"} and
 #'   \code{"model_estimation"} containing the following elements:
@@ -563,6 +564,7 @@ print.rank_regression <- function(x,
 #'   regarding the lifetime data in \code{x}.
 #' @param thres A numeric value for the threshold parameter.
 #' @param distribution Supposed three-parametric distribution of the random variable.
+#' @template dots
 #'
 #' @return
 #' Returns the coefficient of determination with respect to the threshold parameter
@@ -630,9 +632,7 @@ print.rank_regression <- function(x,
 #' )
 #'
 #' @export
-r_squared_profiling <- function(x,
-                                ...
-) {
+r_squared_profiling <- function(x, ...) {
   UseMethod("r_squared_profiling")
 }
 

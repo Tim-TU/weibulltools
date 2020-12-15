@@ -77,7 +77,7 @@ In field data analysis, however, the sample mainly consists of intact units and 
 
 A commonly used method for correcting probabilities of (multiple) right censored data is Johnson's method (`estimate_cdf(methods = "johnson", ...)`). By this method, all units that fall into the period looked at are sorted in an ascending order of their operating time or mileage. If there are units that have not failed before the _i_-th failure, an adjusted rank for the _i_-th failure is formed. This correction takes the potential candidates into account and increases the rank number. In consequence, a higher rank leads to a higher failure probability. This can be seen in _Figure 1_.
   
-The rank adjustment (`calculate_ranks()`) is calculated as follows: 
+The rank adjustment is calculated as follows: 
 
 $$j_i = j_{i-1} + x_i \cdot I_i, \;\; with \;\; j_0 = 0$$
 
@@ -130,24 +130,16 @@ $$\eta = \exp\left(\mu\right).$$
 
 ## Data: shock
 
-To apply the introduced methods of non-parametric failure probability estimation and probability plotting the `shock` data taken from `SPREDA` package is used. In this dataset kilometer-dependent problems that have occurred on shock absorbers are reported. In addition to failed items the dataset also contains non-defectives, so called *censored* observations. The data can be found in _Statistical Methods for Reliability Data_ [^note3]. 
+To apply the introduced methods of non-parametric failure probability estimation and probability plotting the `shock` data is used. In this dataset kilometer-dependent problems that have occurred on shock absorbers are reported. In addition to failed items the dataset also contains non-defectives, so called *censored* observations. The data can be found in _Statistical Methods for Reliability Data_ [^note3]. 
 
 [^note3]: Meeker, W. Q.; Escobar, L. A.: _Statistical Methods for Reliability Data_, 
           _New York, Wiley series in probability and statistics_, 1998, p. 630
 
 ```{r dataset shock, fig.cap = "Figure 2: Boxplots for different modes.", message = FALSE}
-library(SPREDA) # for dataset shock
 data(shock)
-# generate random ids for units: 
-shock$id <- sample(c(letters, LETTERS), size = nrow(shock), replace = FALSE)
 
-# using tibble for better print: 
-as_tibble(shock)
-
-# Comparison of failure modes: 
-ggplot(data = shock, aes(x = Mode, y = Distance)) + 
-  geom_boxplot() + 
-  theme_bw()
+failure_tbl <- reliability_data(data = shock, x = distance, status = status)
+failure_tbl
 ```
 
 ## Estimation of Failure Probabilities with Package `weibulltools`
@@ -158,10 +150,6 @@ First, we are interested in how censored observations influence the estimation o
 In the latter case we will use the function `estimate_cdf()` with `methods = "mr"`. To deal with survived and failed units we will use `estimate_cdf()` with `methods = "johnson"`. In order to use `estimate_cdf` we must convert the `shock` dataset to an appropriate format using the function `reliability_data()`.  
 
 ```{r failure probabilities, results = 'asis'}
-# Extract failure data from shock
-failure_tbl <- reliability_data(shock, x = Distance, status = Censor, id = id)
-failure_tbl
-
 # Estimate CDF
 tbl_cdf <- estimate_cdf(failure_tbl, methods = c("mr", "johnson"))
 

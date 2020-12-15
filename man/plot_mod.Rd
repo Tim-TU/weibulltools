@@ -10,6 +10,8 @@
 \alias{plot_mod.mixmod_em}
 \title{Add Estimated Population Line(s) to a Probability Plot}
 \usage{
+plot_mod(p_obj, x, ...)
+
 ## S3 method for classes 'model_estimation', 'model_estimation_list',
 ## 'mixmod_regression', 'mixmod_regression_list', 'mixmod_em'
 plot_mod(p_obj, x, title_trace = "Fit")
@@ -19,12 +21,14 @@ plot_mod(p_obj, x, title_trace = "Fit")
 
 \item{x}{An object of aforementioned classes. See 'S3 methods'.}
 
+\item{...}{Further arguments passed to or from other methods. Currently not used.}
+
 \item{title_trace}{A character string whis is assigned to the trace shown in
 the legend.}
 }
 \value{
 Returns a plot object containing the probability plot with
-plotting positions and the estimated regression line(s).
+  plotting positions and the estimated regression line(s).
 }
 \description{
 This function adds one or multiple estimated regression lines to an existing
@@ -110,5 +114,5 @@ plot_reg_lognormal <- plot_mod(
 }
 \references{
 Meeker, William Q; Escobar, Luis A., Statistical methods for
-reliability data, New York: Wiley series in probability and statistics, 1998
+  reliability data, New York: Wiley series in probability and statistics, 1998
 }

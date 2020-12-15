@@ -21,6 +21,8 @@ confint_fisher(x, ...)
 \item{x}{Object of class \code{model_estimation} returned from
 \code{\link{ml_estimation}}.}
 
+\item{...}{Further arguments passed to or from other methods. Currently not used.}
+
 \item{b_lives}{A numeric vector indicating the probabilities \emph{p} of the
 \emph{B_p} lives (quantiles) to be considered.}
 

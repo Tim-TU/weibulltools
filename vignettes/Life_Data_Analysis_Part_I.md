@@ -71,7 +71,7 @@ In field data analysis, however, the sample mainly consists of intact units and 
 
 A commonly used method for correcting probabilities of (multiple) right censored data is Johnson's method (`estimate_cdf(methods = "johnson", ...)`). By this method, all units that fall into the period looked at are sorted in an ascending order of their operating time or mileage. If there are units that have not failed before the _i_-th failure, an adjusted rank for the _i_-th failure is formed. This correction takes the potential candidates into account and increases the rank number. In consequence, a higher rank leads to a higher failure probability. This can be seen in _Figure 1_.
   
-The rank adjustment (`calculate_ranks()`) is calculated as follows: 
+The rank adjustment is calculated as follows: 
 
 $$j_i = j_{i-1} + x_i \cdot I_i, \;\; with \;\; j_0 = 0$$
 
@@ -124,43 +124,33 @@ $$\eta = \exp\left(\mu\right).$$
 
 ## Data: shock
 
-To apply the introduced methods of non-parametric failure probability estimation and probability plotting the `shock` data taken from `SPREDA` package is used. In this dataset kilometer-dependent problems that have occurred on shock absorbers are reported. In addition to failed items the dataset also contains non-defectives, so called *censored* observations. The data can be found in _Statistical Methods for Reliability Data_ [^note3]. 
+To apply the introduced methods of non-parametric failure probability estimation and probability plotting the `shock` data is used. In this dataset kilometer-dependent problems that have occurred on shock absorbers are reported. In addition to failed items the dataset also contains non-defectives, so called *censored* observations. The data can be found in _Statistical Methods for Reliability Data_ [^note3]. 
 
 [^note3]: Meeker, W. Q.; Escobar, L. A.: _Statistical Methods for Reliability Data_, 
           _New York, Wiley series in probability and statistics_, 1998, p. 630
 
 
 ```r
-library(SPREDA) # for dataset shock
-#> Warning: Paket 'SPREDA' wurde unter R Version 4.0.3 erstellt
 data(shock)
-# generate random ids for units: 
-shock$id <- sample(c(letters, LETTERS), size = nrow(shock), replace = FALSE)
 
-# using tibble for better print: 
-as_tibble(shock)
-#> # A tibble: 38 x 4
-#>    Distance Mode     Censor id   
-#>       <int> <fct>     <dbl> <chr>
-#>  1     6700 Mode1         1 j    
-#>  2     6950 Censored      0 N    
-#>  3     7820 Censored      0 D    
-#>  4     8790 Censored      0 X    
-#>  5     9120 Mode2         1 y    
-#>  6     9660 Censored      0 p    
-#>  7     9820 Censored      0 f    
-#>  8    11310 Censored      0 o    
-#>  9    11690 Censored      0 l    
-#> 10    11850 Censored      0 L    
+failure_tbl <- reliability_data(data = shock, x = distance, status = status)
+failure_tbl
+#> Reliability Data:
+#> # A tibble: 38 x 3
+#>        x status id   
+#>    <int>  <dbl> <chr>
+#>  1  6700      1 ID1  
+#>  2  6950      0 ID2  
+#>  3  7820      0 ID3  
+#>  4  8790      0 ID4  
+#>  5  9120      1 ID5  
+#>  6  9660      0 ID6  
+#>  7  9820      0 ID7  
+#>  8 11310      0 ID8  
+#>  9 11690      0 ID9  
+#> 10 11850      0 ID10 
 #> # ... with 28 more rows
-
-# Comparison of failure modes: 
-ggplot(data = shock, aes(x = Mode, y = Distance)) + 
-  geom_boxplot() + 
-  theme_bw()
 ```
-
-![Figure 2: Boxplots for different modes.](figure/dataset shock-1.png)
 
 ## Estimation of Failure Probabilities with Package `weibulltools`
 
@@ -171,29 +161,6 @@ In the latter case we will use the function `estimate_cdf()` with `methods = "mr
 
 
 ```r
-# Extract failure data from shock
-failure_tbl <- reliability_data(shock, x = Distance, status = Censor, id = id)
-failure_tbl
-```
-
-Reliability Data:
-# A tibble: 38 x 3
-       x status id   
-   <int>  <dbl> <chr>
- 1  6700      1 j    
- 2  6950      0 N    
- 3  7820      0 D    
- 4  8790      0 X    
- 5  9120      1 y    
- 6  9660      0 p    
- 7  9820      0 f    
- 8 11310      0 o    
- 9 11690      0 l    
-10 11850      0 L    
-# ... with 28 more rows
-
-```r
-
 # Estimate CDF
 tbl_cdf <- estimate_cdf(failure_tbl, methods = c("mr", "johnson"))
 #> The 'mr' method only considers failed units (status == 1) and does not retain intact units (status == 0).
@@ -219,7 +186,7 @@ knitr::kable(tbl_cdf_mr, format = "html", row.names = FALSE, align = "c",
  </thead>
 <tbody>
   <tr>
-   <td style="text-align:center;"> j </td>
+   <td style="text-align:center;"> ID1 </td>
    <td style="text-align:center;"> 6700 </td>
    <td style="text-align:center;"> 1 </td>
    <td style="text-align:center;"> 1 </td>
@@ -227,7 +194,7 @@ knitr::kable(tbl_cdf_mr, format = "html", row.names = FALSE, align = "c",
    <td style="text-align:center;"> mr </td>
   </tr>
   <tr>
-   <td style="text-align:center;"> y </td>
+   <td style="text-align:center;"> ID5 </td>
    <td style="text-align:center;"> 9120 </td>
    <td style="text-align:center;"> 1 </td>
    <td style="text-align:center;"> 2 </td>
@@ -235,7 +202,7 @@ knitr::kable(tbl_cdf_mr, format = "html", row.names = FALSE, align = "c",
    <td style="text-align:center;"> mr </td>
   </tr>
   <tr>
-   <td style="text-align:center;"> n </td>
+   <td style="text-align:center;"> ID13 </td>
    <td style="text-align:center;"> 12200 </td>
    <td style="text-align:center;"> 1 </td>
    <td style="text-align:center;"> 3 </td>
@@ -243,7 +210,7 @@ knitr::kable(tbl_cdf_mr, format = "html", row.names = FALSE, align = "c",
    <td style="text-align:center;"> mr </td>
   </tr>
   <tr>
-   <td style="text-align:center;"> R </td>
+   <td style="text-align:center;"> ID15 </td>
    <td style="text-align:center;"> 13150 </td>
    <td style="text-align:center;"> 1 </td>
    <td style="text-align:center;"> 4 </td>
@@ -251,7 +218,7 @@ knitr::kable(tbl_cdf_mr, format = "html", row.names = FALSE, align = "c",
    <td style="text-align:center;"> mr </td>
   </tr>
   <tr>
-   <td style="text-align:center;"> M </td>
+   <td style="text-align:center;"> ID19 </td>
    <td style="text-align:center;"> 14300 </td>
    <td style="text-align:center;"> 1 </td>
    <td style="text-align:center;"> 5 </td>
@@ -259,7 +226,7 @@ knitr::kable(tbl_cdf_mr, format = "html", row.names = FALSE, align = "c",
    <td style="text-align:center;"> mr </td>
   </tr>
   <tr>
-   <td style="text-align:center;"> a </td>
+   <td style="text-align:center;"> ID20 </td>
    <td style="text-align:center;"> 17520 </td>
    <td style="text-align:center;"> 1 </td>
    <td style="text-align:center;"> 6 </td>
@@ -267,7 +234,7 @@ knitr::kable(tbl_cdf_mr, format = "html", row.names = FALSE, align = "c",
    <td style="text-align:center;"> mr </td>
   </tr>
   <tr>
-   <td style="text-align:center;"> k </td>
+   <td style="text-align:center;"> ID27 </td>
    <td style="text-align:center;"> 20100 </td>
    <td style="text-align:center;"> 1 </td>
    <td style="text-align:center;"> 7 </td>
@@ -275,7 +242,7 @@ knitr::kable(tbl_cdf_mr, format = "html", row.names = FALSE, align = "c",
    <td style="text-align:center;"> mr </td>
   </tr>
   <tr>
-   <td style="text-align:center;"> S </td>
+   <td style="text-align:center;"> ID31 </td>
    <td style="text-align:center;"> 20900 </td>
    <td style="text-align:center;"> 1 </td>
    <td style="text-align:center;"> 8 </td>
@@ -283,7 +250,7 @@ knitr::kable(tbl_cdf_mr, format = "html", row.names = FALSE, align = "c",
    <td style="text-align:center;"> mr </td>
   </tr>
   <tr>
-   <td style="text-align:center;"> Z </td>
+   <td style="text-align:center;"> ID32 </td>
    <td style="text-align:center;"> 22700 </td>
    <td style="text-align:center;"> 1 </td>
    <td style="text-align:center;"> 9 </td>
@@ -291,7 +258,7 @@ knitr::kable(tbl_cdf_mr, format = "html", row.names = FALSE, align = "c",
    <td style="text-align:center;"> mr </td>
   </tr>
   <tr>
-   <td style="text-align:center;"> q </td>
+   <td style="text-align:center;"> ID34 </td>
    <td style="text-align:center;"> 26510 </td>
    <td style="text-align:center;"> 1 </td>
    <td style="text-align:center;"> 10 </td>
@@ -299,7 +266,7 @@ knitr::kable(tbl_cdf_mr, format = "html", row.names = FALSE, align = "c",
    <td style="text-align:center;"> mr </td>
   </tr>
   <tr>
-   <td style="text-align:center;"> d </td>
+   <td style="text-align:center;"> ID36 </td>
    <td style="text-align:center;"> 27490 </td>
    <td style="text-align:center;"> 1 </td>
    <td style="text-align:center;"> 11 </td>
@@ -332,7 +299,7 @@ knitr::kable(tbl_cdf_john, format = "html", row.names = FALSE, align = "c",
  </thead>
 <tbody>
   <tr>
-   <td style="text-align:center;"> j </td>
+   <td style="text-align:center;"> ID1 </td>
    <td style="text-align:center;"> 6700 </td>
    <td style="text-align:center;"> 1 </td>
    <td style="text-align:center;"> 1.000000 </td>
@@ -340,7 +307,7 @@ knitr::kable(tbl_cdf_john, format = "html", row.names = FALSE, align = "c",
    <td style="text-align:center;"> johnson </td>
   </tr>
   <tr>
-   <td style="text-align:center;"> N </td>
+   <td style="text-align:center;"> ID2 </td>
    <td style="text-align:center;"> 6950 </td>
    <td style="text-align:center;"> 0 </td>
    <td style="text-align:center;"> NA </td>
@@ -348,7 +315,7 @@ knitr::kable(tbl_cdf_john, format = "html", row.names = FALSE, align = "c",
    <td style="text-align:center;"> johnson </td>
   </tr>
   <tr>
-   <td style="text-align:center;"> D </td>
+   <td style="text-align:center;"> ID3 </td>
    <td style="text-align:center;"> 7820 </td>
    <td style="text-align:center;"> 0 </td>
    <td style="text-align:center;"> NA </td>
@@ -356,7 +323,7 @@ knitr::kable(tbl_cdf_john, format = "html", row.names = FALSE, align = "c",
    <td style="text-align:center;"> johnson </td>
   </tr>
   <tr>
-   <td style="text-align:center;"> X </td>
+   <td style="text-align:center;"> ID4 </td>
    <td style="text-align:center;"> 8790 </td>
    <td style="text-align:center;"> 0 </td>
    <td style="text-align:center;"> NA </td>
@@ -364,7 +331,7 @@ knitr::kable(tbl_cdf_john, format = "html", row.names = FALSE, align = "c",
    <td style="text-align:center;"> johnson </td>
   </tr>
   <tr>
-   <td style="text-align:center;"> y </td>
+   <td style="text-align:center;"> ID5 </td>
    <td style="text-align:center;"> 9120 </td>
    <td style="text-align:center;"> 1 </td>
    <td style="text-align:center;"> 2.085714 </td>
@@ -372,7 +339,7 @@ knitr::kable(tbl_cdf_john, format = "html", row.names = FALSE, align = "c",
    <td style="text-align:center;"> johnson </td>
   </tr>
   <tr>
-   <td style="text-align:center;"> p </td>
+   <td style="text-align:center;"> ID6 </td>
    <td style="text-align:center;"> 9660 </td>
    <td style="text-align:center;"> 0 </td>
    <td style="text-align:center;"> NA </td>
@@ -380,7 +347,7 @@ knitr::kable(tbl_cdf_john, format = "html", row.names = FALSE, align = "c",
    <td style="text-align:center;"> johnson </td>
   </tr>
   <tr>
-   <td style="text-align:center;"> f </td>
+   <td style="text-align:center;"> ID7 </td>
    <td style="text-align:center;"> 9820 </td>
    <td style="text-align:center;"> 0 </td>
    <td style="text-align:center;"> NA </td>
@@ -388,7 +355,7 @@ knitr::kable(tbl_cdf_john, format = "html", row.names = FALSE, align = "c",
    <td style="text-align:center;"> johnson </td>
   </tr>
   <tr>
-   <td style="text-align:center;"> o </td>
+   <td style="text-align:center;"> ID8 </td>
    <td style="text-align:center;"> 11310 </td>
    <td style="text-align:center;"> 0 </td>
    <td style="text-align:center;"> NA </td>
@@ -396,7 +363,7 @@ knitr::kable(tbl_cdf_john, format = "html", row.names = FALSE, align = "c",
    <td style="text-align:center;"> johnson </td>
   </tr>
   <tr>
-   <td style="text-align:center;"> l </td>
+   <td style="text-align:center;"> ID9 </td>
    <td style="text-align:center;"> 11690 </td>
    <td style="text-align:center;"> 0 </td>
    <td style="text-align:center;"> NA </td>
@@ -404,7 +371,7 @@ knitr::kable(tbl_cdf_john, format = "html", row.names = FALSE, align = "c",
    <td style="text-align:center;"> johnson </td>
   </tr>
   <tr>
-   <td style="text-align:center;"> L </td>
+   <td style="text-align:center;"> ID10 </td>
    <td style="text-align:center;"> 11850 </td>
    <td style="text-align:center;"> 0 </td>
    <td style="text-align:center;"> NA </td>
@@ -412,7 +379,7 @@ knitr::kable(tbl_cdf_john, format = "html", row.names = FALSE, align = "c",
    <td style="text-align:center;"> johnson </td>
   </tr>
   <tr>
-   <td style="text-align:center;"> I </td>
+   <td style="text-align:center;"> ID11 </td>
    <td style="text-align:center;"> 11880 </td>
    <td style="text-align:center;"> 0 </td>
    <td style="text-align:center;"> NA </td>
@@ -420,7 +387,7 @@ knitr::kable(tbl_cdf_john, format = "html", row.names = FALSE, align = "c",
    <td style="text-align:center;"> johnson </td>
   </tr>
   <tr>
-   <td style="text-align:center;"> i </td>
+   <td style="text-align:center;"> ID12 </td>
    <td style="text-align:center;"> 12140 </td>
    <td style="text-align:center;"> 0 </td>
    <td style="text-align:center;"> NA </td>
@@ -428,7 +395,7 @@ knitr::kable(tbl_cdf_john, format = "html", row.names = FALSE, align = "c",
    <td style="text-align:center;"> johnson </td>
   </tr>
   <tr>
-   <td style="text-align:center;"> n </td>
+   <td style="text-align:center;"> ID13 </td>
    <td style="text-align:center;"> 12200 </td>
    <td style="text-align:center;"> 1 </td>
    <td style="text-align:center;"> 3.452910 </td>
@@ -436,7 +403,7 @@ knitr::kable(tbl_cdf_john, format = "html", row.names = FALSE, align = "c",
    <td style="text-align:center;"> johnson </td>
   </tr>
   <tr>
-   <td style="text-align:center;"> O </td>
+   <td style="text-align:center;"> ID14 </td>
    <td style="text-align:center;"> 12870 </td>
    <td style="text-align:center;"> 0 </td>
    <td style="text-align:center;"> NA </td>
@@ -444,7 +411,7 @@ knitr::kable(tbl_cdf_john, format = "html", row.names = FALSE, align = "c",
    <td style="text-align:center;"> johnson </td>
   </tr>
   <tr>
-   <td style="text-align:center;"> R </td>
+   <td style="text-align:center;"> ID15 </td>
    <td style="text-align:center;"> 13150 </td>
    <td style="text-align:center;"> 1 </td>
    <td style="text-align:center;"> 4.874794 </td>
@@ -452,7 +419,7 @@ knitr::kable(tbl_cdf_john, format = "html", row.names = FALSE, align = "c",
    <td style="text-align:center;"> johnson </td>
   </tr>
   <tr>
-   <td style="text-align:center;"> u </td>
+   <td style="text-align:center;"> ID16 </td>
    <td style="text-align:center;"> 13330 </td>
    <td style="text-align:center;"> 0 </td>
    <td style="text-align:center;"> NA </td>
@@ -460,7 +427,7 @@ knitr::kable(tbl_cdf_john, format = "html", row.names = FALSE, align = "c",
    <td style="text-align:center;"> johnson </td>
   </tr>
   <tr>
-   <td style="text-align:center;"> g </td>
+   <td style="text-align:center;"> ID17 </td>
    <td style="text-align:center;"> 13470 </td>
    <td style="text-align:center;"> 0 </td>
    <td style="text-align:center;"> NA </td>
@@ -468,7 +435,7 @@ knitr::kable(tbl_cdf_john, format = "html", row.names = FALSE, align = "c",
    <td style="text-align:center;"> johnson </td>
   </tr>
   <tr>
-   <td style="text-align:center;"> z </td>
+   <td style="text-align:center;"> ID18 </td>
    <td style="text-align:center;"> 14040 </td>
    <td style="text-align:center;"> 0 </td>
    <td style="text-align:center;"> NA </td>
@@ -476,7 +443,7 @@ knitr::kable(tbl_cdf_john, format = "html", row.names = FALSE, align = "c",
    <td style="text-align:center;"> johnson </td>
   </tr>
   <tr>
-   <td style="text-align:center;"> M </td>
+   <td style="text-align:center;"> ID19 </td>
    <td style="text-align:center;"> 14300 </td>
    <td style="text-align:center;"> 1 </td>
    <td style="text-align:center;"> 6.499803 </td>
@@ -484,7 +451,7 @@ knitr::kable(tbl_cdf_john, format = "html", row.names = FALSE, align = "c",
    <td style="text-align:center;"> johnson </td>
   </tr>
   <tr>
-   <td style="text-align:center;"> a </td>
+   <td style="text-align:center;"> ID20 </td>
    <td style="text-align:center;"> 17520 </td>
    <td style="text-align:center;"> 1 </td>
    <td style="text-align:center;"> 8.124813 </td>
@@ -492,7 +459,7 @@ knitr::kable(tbl_cdf_john, format = "html", row.names = FALSE, align = "c",
    <td style="text-align:center;"> johnson </td>
   </tr>
   <tr>
-   <td style="text-align:center;"> s </td>
+   <td style="text-align:center;"> ID21 </td>
    <td style="text-align:center;"> 17540 </td>
    <td style="text-align:center;"> 0 </td>
    <td style="text-align:center;"> NA </td>
@@ -500,7 +467,7 @@ knitr::kable(tbl_cdf_john, format = "html", row.names = FALSE, align = "c",
    <td style="text-align:center;"> johnson </td>
   </tr>
   <tr>
-   <td style="text-align:center;"> J </td>
+   <td style="text-align:center;"> ID22 </td>
    <td style="text-align:center;"> 17890 </td>
    <td style="text-align:center;"> 0 </td>
    <td style="text-align:center;"> NA </td>
@@ -508,7 +475,7 @@ knitr::kable(tbl_cdf_john, format = "html", row.names = FALSE, align = "c",
    <td style="text-align:center;"> johnson </td>
   </tr>
   <tr>
-   <td style="text-align:center;"> F </td>
+   <td style="text-align:center;"> ID23 </td>
    <td style="text-align:center;"> 18450 </td>
    <td style="text-align:center;"> 0 </td>
    <td style="text-align:center;"> NA </td>
@@ -516,7 +483,7 @@ knitr::kable(tbl_cdf_john, format = "html", row.names = FALSE, align = "c",
    <td style="text-align:center;"> johnson </td>
   </tr>
   <tr>
-   <td style="text-align:center;"> b </td>
+   <td style="text-align:center;"> ID24 </td>
    <td style="text-align:center;"> 18960 </td>
    <td style="text-align:center;"> 0 </td>
    <td style="text-align:center;"> NA </td>
@@ -524,7 +491,7 @@ knitr::kable(tbl_cdf_john, format = "html", row.names = FALSE, align = "c",
    <td style="text-align:center;"> johnson </td>
   </tr>
   <tr>
-   <td style="text-align:center;"> K </td>
+   <td style="text-align:center;"> ID25 </td>
    <td style="text-align:center;"> 18980 </td>
    <td style="text-align:center;"> 0 </td>
    <td style="text-align:center;"> NA </td>
@@ -532,7 +499,7 @@ knitr::kable(tbl_cdf_john, format = "html", row.names = FALSE, align = "c",
    <td style="text-align:center;"> johnson </td>
   </tr>
   <tr>
-   <td style="text-align:center;"> w </td>
+   <td style="text-align:center;"> ID26 </td>
    <td style="text-align:center;"> 19410 </td>
    <td style="text-align:center;"> 0 </td>
    <td style="text-align:center;"> NA </td>
@@ -540,7 +507,7 @@ knitr::kable(tbl_cdf_john, format = "html", row.names = FALSE, align = "c",
    <td style="text-align:center;"> johnson </td>
   </tr>
   <tr>
-   <td style="text-align:center;"> k </td>
+   <td style="text-align:center;"> ID27 </td>
    <td style="text-align:center;"> 20100 </td>
    <td style="text-align:center;"> 1 </td>
    <td style="text-align:center;"> 10.499828 </td>
@@ -548,7 +515,7 @@ knitr::kable(tbl_cdf_john, format = "html", row.names = FALSE, align = "c",
    <td style="text-align:center;"> johnson </td>
   </tr>
   <tr>
-   <td style="text-align:center;"> W </td>
+   <td style="text-align:center;"> ID28 </td>
    <td style="text-align:center;"> 20100 </td>
    <td style="text-align:center;"> 0 </td>
    <td style="text-align:center;"> NA </td>
@@ -556,7 +523,7 @@ knitr::kable(tbl_cdf_john, format = "html", row.names = FALSE, align = "c",
    <td style="text-align:center;"> johnson </td>
   </tr>
   <tr>
-   <td style="text-align:center;"> C </td>
+   <td style="text-align:center;"> ID29 </td>
    <td style="text-align:center;"> 20150 </td>
    <td style="text-align:center;"> 0 </td>
    <td style="text-align:center;"> NA </td>
@@ -564,7 +531,7 @@ knitr::kable(tbl_cdf_john, format = "html", row.names = FALSE, align = "c",
    <td style="text-align:center;"> johnson </td>
   </tr>
   <tr>
-   <td style="text-align:center;"> V </td>
+   <td style="text-align:center;"> ID30 </td>
    <td style="text-align:center;"> 20320 </td>
    <td style="text-align:center;"> 0 </td>
    <td style="text-align:center;"> NA </td>
@@ -572,7 +539,7 @@ knitr::kable(tbl_cdf_john, format = "html", row.names = FALSE, align = "c",
    <td style="text-align:center;"> johnson </td>
   </tr>
   <tr>
-   <td style="text-align:center;"> S </td>
+   <td style="text-align:center;"> ID31 </td>
    <td style="text-align:center;"> 20900 </td>
    <td style="text-align:center;"> 1 </td>
    <td style="text-align:center;"> 13.666514 </td>
@@ -580,7 +547,7 @@ knitr::kable(tbl_cdf_john, format = "html", row.names = FALSE, align = "c",
    <td style="text-align:center;"> johnson </td>
   </tr>
   <tr>
-   <td style="text-align:center;"> Z </td>
+   <td style="text-align:center;"> ID32 </td>
    <td style="text-align:center;"> 22700 </td>
    <td style="text-align:center;"> 1 </td>
    <td style="text-align:center;"> 16.833199 </td>
@@ -588,7 +555,7 @@ knitr::kable(tbl_cdf_john, format = "html", row.names = FALSE, align = "c",
    <td style="text-align:center;"> johnson </td>
   </tr>
   <tr>
-   <td style="text-align:center;"> x </td>
+   <td style="text-align:center;"> ID33 </td>
    <td style="text-align:center;"> 23490 </td>
    <td style="text-align:center;"> 0 </td>
    <td style="text-align:center;"> NA </td>
@@ -596,7 +563,7 @@ knitr::kable(tbl_cdf_john, format = "html", row.names = FALSE, align = "c",
    <td style="text-align:center;"> johnson </td>
   </tr>
   <tr>
-   <td style="text-align:center;"> q </td>
+   <td style="text-align:center;"> ID34 </td>
    <td style="text-align:center;"> 26510 </td>
    <td style="text-align:center;"> 1 </td>
    <td style="text-align:center;"> 20.527666 </td>
@@ -604,7 +571,7 @@ knitr::kable(tbl_cdf_john, format = "html", row.names = FALSE, align = "c",
    <td style="text-align:center;"> johnson </td>
   </tr>
   <tr>
-   <td style="text-align:center;"> v </td>
+   <td style="text-align:center;"> ID35 </td>
    <td style="text-align:center;"> 27410 </td>
    <td style="text-align:center;"> 0 </td>
    <td style="text-align:center;"> NA </td>
@@ -612,7 +579,7 @@ knitr::kable(tbl_cdf_john, format = "html", row.names = FALSE, align = "c",
    <td style="text-align:center;"> johnson </td>
   </tr>
   <tr>
-   <td style="text-align:center;"> d </td>
+   <td style="text-align:center;"> ID36 </td>
    <td style="text-align:center;"> 27490 </td>
    <td style="text-align:center;"> 1 </td>
    <td style="text-align:center;"> 25.145750 </td>
@@ -620,7 +587,7 @@ knitr::kable(tbl_cdf_john, format = "html", row.names = FALSE, align = "c",
    <td style="text-align:center;"> johnson </td>
   </tr>
   <tr>
-   <td style="text-align:center;"> A </td>
+   <td style="text-align:center;"> ID37 </td>
    <td style="text-align:center;"> 27890 </td>
    <td style="text-align:center;"> 0 </td>
    <td style="text-align:center;"> NA </td>
@@ -628,7 +595,7 @@ knitr::kable(tbl_cdf_john, format = "html", row.names = FALSE, align = "c",
    <td style="text-align:center;"> johnson </td>
   </tr>
   <tr>
-   <td style="text-align:center;"> T </td>
+   <td style="text-align:center;"> ID38 </td>
    <td style="text-align:center;"> 28100 </td>
    <td style="text-align:center;"> 0 </td>
    <td style="text-align:center;"> NA </td>

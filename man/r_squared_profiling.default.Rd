@@ -24,6 +24,8 @@ regarding the lifetime data in x.}
 \item{thres}{A numeric value for the threshold parameter.}
 
 \item{distribution}{Supposed three-parametric distribution of the random variable.}
+
+\item{...}{Further arguments passed to or from other methods. Currently not used.}
 }
 \value{
 Returns the coefficient of determination with respect to the threshold parameter

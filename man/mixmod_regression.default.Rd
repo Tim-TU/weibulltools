@@ -35,6 +35,8 @@ a right censored observation (= 0) or a failure (= 1).}
 \item{control}{Output of the call to \code{\link[segmented]{seg.control}}, which
 is passed to \code{\link[segmented:segmented]{segmented.lm}}.
 See 'Examples' for usage.}
+
+\item{...}{Further arguments passed to or from other methods. Currently not used.}
 }
 \value{
 Returns a list of class \code{"rank_regression"} if no breakpoint was

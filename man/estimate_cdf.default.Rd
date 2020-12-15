@@ -29,6 +29,8 @@ is a right censored observation (= 0) or a failure (= 1).}
 probabilities. See 'Details'.}
 
 \item{options}{A list of named options. See 'Options'.}
+
+\item{...}{Further arguments passed to or from other methods. Currently not used.}
 }
 \value{
 A tibble containing the following columns:

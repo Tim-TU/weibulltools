@@ -30,6 +30,8 @@ is the threshold parameter \eqn{\gamma}.}
 
 \item{title_trace}{A character string whis is assigned to the trace shown in
 the legend.}
+
+\item{...}{Further arguments passed to or from other methods. Currently not used.}
 }
 \value{
 Returns a plot object containing the probability plot with
@@ -105,7 +107,7 @@ plot_reg_lognormal <- plot_mod(
 }
 \references{
 Meeker, William Q; Escobar, Luis A., Statistical methods for
-reliability data, New York: Wiley series in probability and statistics, 1998
+  reliability data, New York: Wiley series in probability and statistics, 1998
 }
 \seealso{
 \code{\link{plot_mod}}

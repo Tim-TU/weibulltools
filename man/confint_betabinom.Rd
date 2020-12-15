@@ -30,6 +30,8 @@ confint_betabinom(x, ...)
 \item{x}{Object of class \code{model_estimation} (or \code{model_estimation_list})
 returned from \code{\link{rank_regression}}.}
 
+\item{...}{Further arguments passed to or from other methods. Currently not used.}
+
 \item{b_lives}{A numeric vector indicating the probabilities \emph{p} of the
 \emph{B_p} lives (quantiles) to be considered.}
 

@@ -10,6 +10,8 @@
 \alias{plot_prob.mixmod_regression_list}
 \title{Probability Plotting Method for Univariate Lifetime Distributions}
 \usage{
+plot_prob(x, ...)
+
 ## S3 method for classes 'cdf_estimation', 'model_estimation',
 ## 'mixmod_regression', 'mixmod_em', 'mixmod_regression_list'
 plot_prob(
@@ -23,7 +25,9 @@ plot_prob(
 )
 }
 \arguments{
-\item{x}{An object of aforementioned classes. See 'Details'.}
+\item{x}{An object of aforementioned classes. See 'S3 methods'.}
+
+\item{...}{Further arguments passed to or from other methods. Currently not used.}
 
 \item{distribution}{Supposed distribution of the random variable.}
 
