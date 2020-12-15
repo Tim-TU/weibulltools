@@ -7,7 +7,6 @@
 \method{mixmod_em}{default}(
   x,
   status,
-  post = NULL,
   distribution = "weibull",
   conf_level = 0.95,
   k = 2,
@@ -27,15 +26,12 @@ cycles.}
 \item{status}{A vector of binary data (0 or 1) indicating whether unit \emph{i}
 is a right censored observation (= 0) or a failure (= 1).}
 
-\item{post}{A numeric matrix specifiying initial posterior probabilities.
-If post is \code{NULL} posterior probabilities are assigned randomly.}
-
 \item{distribution}{\code{"weibull"} until further distributions are implemented.}
 
 \item{conf_level}{Confidence level for the intervals of the weibull parameters
 of every component \code{k}.}
 
-\item{k}{Integer of mixture components.}
+\item{k}{Number of mixture components.}
 
 \item{method}{\code{"EM"} until other methods are implemented.}
 
@@ -72,10 +68,9 @@ parameters of a univariate weibull mixture model. See 'Details'.
 The EM algorithm is an iterative algorithm for which initial values must be
 defined at the beginning. Initial values can be provided for the unknown parameter
 vector as well as for the posterior probabilities. This implementation employs
-initial values for the posterior probabilities. These can be assigned either
-by the user or randomly. The latter is done by the dirichlet distribution, the
-conjugate prior of a multinomial distribution (see Mr. Gelissen's blog post
-listed under \emph{references}).
+initial values for the posterior probabilities. These are assigned randomly
+by using the dirichlet distribution, the conjugate prior of a multinomial
+distribution (see Mr. Gelissen's blog post listed under \emph{references}).
 
 \strong{M-Step} : On the basis of the initial posterior probabilities, the
 parameter vector is estimated with \emph{Newton-Raphson}.
@@ -90,29 +85,20 @@ This procedure is repeated until the complete log-likelihood has converged.
 hours <- voltage$hours
 status <- voltage$status
 
-# Example 1 - EM algorithm with randomly assigned posterior probabilities:
+# Example 1 - EM algorithm with k = 2:
 mix_mod_em <- mixmod_em(
-  x = hours,
-  status = status,
-  conf_level = 0.95,
-  k = 2,
-  n_iter = 150
-)
-
-# Example 2 - EM algorithm with user-defined posterior probabilities:
-mix_mod_em_2 <- mixmod_em(
   x = hours,
   status = status,
   distribution = "weibull",
   conf_level = 0.95,
   k = 2,
-  method = "EM",
   n_iter = 150
 )
 
-#' # Example 3 - Maximum likelihood is applied when k = 1:
-mix_mod_em_3 <- mixmod_em(
-  x = data_mix,
+#' # Example 2 - Maximum likelihood is applied when k = 1:
+mix_mod_em_2 <- mixmod_em(
+  x = hours,
+  status = status,
   distribution = "weibull",
   conf_level = 0.95,
   k = 1,

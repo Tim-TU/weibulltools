@@ -453,10 +453,9 @@ mixmod_regression_ <- function(cdf_estimation,
 #' The EM algorithm is an iterative algorithm for which initial values must be
 #' defined at the beginning. Initial values can be provided for the unknown parameter
 #' vector as well as for the posterior probabilities. This implementation employs
-#' initial values for the posterior probabilities. These can be assigned either
-#' by the user or randomly. The latter is done by the dirichlet distribution, the
-#' conjugate prior of a multinomial distribution (see Mr. Gelissen's blog post
-#' listed under \emph{references}).
+#' initial values for the posterior probabilities. These are assigned randomly
+#' by using the dirichlet distribution, the conjugate prior of a multinomial
+#' distribution (see Mr. Gelissen's blog post listed under \emph{references}).
 #'
 #' \strong{M-Step} : On the basis of the initial posterior probabilities, the
 #' parameter vector is estimated with \emph{Newton-Raphson}.
@@ -468,12 +467,10 @@ mixmod_regression_ <- function(cdf_estimation,
 #'
 #' @param x An object of class \code{reliability_data} returned from
 #'   \code{\link{reliability_data}}.
-#' @param post A numeric matrix specifiying initial posterior probabilities.
-#'   If post is \code{NULL} posterior probabilities are assigned randomly.
 #' @param distribution \code{"weibull"} until further distributions are implemented.
 #' @param conf_level Confidence level for the intervals of the weibull parameters
 #' of every component \code{k}.
-#' @param k Integer of mixture components.
+#' @param k Number of mixture components.
 #' @param method \code{"EM"} until other methods are implemented.
 #' @param n_iter Integer defining the maximum number of iterations.
 #' @param conv_limit Numeric value defining the convergence limit.
@@ -515,7 +512,7 @@ mixmod_regression_ <- function(cdf_estimation,
 #'   status = status
 #' )
 #'
-#' # Example 1 - EM algorithm with randomly assigned posterior probabilities:
+#' # Example 1 - EM algorithm with k = 2:
 #' mix_mod_em <- mixmod_em(
 #'   x = data_mix,
 #'   conf_level = 0.95,
@@ -523,19 +520,8 @@ mixmod_regression_ <- function(cdf_estimation,
 #'   n_iter = 150
 #' )
 #'
-#' # Example 2 - EM algorithm with user-defined posterior probabilities:
+#' # Example 2 - Maximum likelihood is applied when k = 1:
 #' mix_mod_em_2 <- mixmod_em(
-#'   x = data_mix,
-#'   post = matrix(rep(c(0.001, 0.999), each =  nrow(data_mix)), ncol = 2),
-#'   conf_level = 0.95,
-#'   k = 2,
-#'   n_iter = 2000L,
-#'   conv_limit = 1e-3,
-#'   diff_loglik = 0.001
-#' )
-#'
-#' # Example 3 - Maximum likelihood is applied when k = 1:
-#' mix_mod_em_3 <- mixmod_em(
 #'   x = data_mix,
 #'   conf_level = 0.95,
 #'   k = 1,
@@ -601,29 +587,20 @@ mixmod_em.reliability_data <- function(x,
 #' hours <- voltage$hours
 #' status <- voltage$status
 #'
-#' # Example 1 - EM algorithm with randomly assigned posterior probabilities:
+#' # Example 1 - EM algorithm with k = 2:
 #' mix_mod_em <- mixmod_em(
-#'   x = hours,
-#'   status = status,
-#'   conf_level = 0.95,
-#'   k = 2,
-#'   n_iter = 150
-#' )
-#'
-#' # Example 2 - EM algorithm with user-defined posterior probabilities:
-#' mix_mod_em_2 <- mixmod_em(
 #'   x = hours,
 #'   status = status,
 #'   distribution = "weibull",
 #'   conf_level = 0.95,
 #'   k = 2,
-#'   method = "EM",
 #'   n_iter = 150
 #' )
 #'
-#'#' # Example 3 - Maximum likelihood is applied when k = 1:
-#' mix_mod_em_3 <- mixmod_em(
-#'   x = data_mix,
+#'#' # Example 2 - Maximum likelihood is applied when k = 1:
+#' mix_mod_em_2 <- mixmod_em(
+#'   x = hours,
+#'   status = status,
 #'   distribution = "weibull",
 #'   conf_level = 0.95,
 #'   k = 1,
