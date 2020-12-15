@@ -41,6 +41,8 @@ of every component \code{k}.}
 
 \item{diff_loglik}{Numeric value defining the maximum difference between
 log-likelihood values, which seems permissible.}
+
+\item{...}{Further arguments passed to or from other methods. Currently not used.}
 }
 \value{
 Returns a list with class \code{"mixmod_em"}. The length of the list

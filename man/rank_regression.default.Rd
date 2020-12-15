@@ -30,6 +30,8 @@ a right censored observation (= 0) or a failure (= 1).}
 
 \item{conf_level}{Confidence level of the interval. If \code{distribution} is
 \code{"weibull"} this must be one of \code{0.9}, \code{0.95} or \code{0.99}.}
+
+\item{...}{Further arguments passed to or from other methods. Currently not used.}
 }
 \value{
 Returns a list with the classes \code{"rank_regression"} and

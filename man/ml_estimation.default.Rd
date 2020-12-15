@@ -29,6 +29,8 @@ is a right censored observation (= 0) or a failure (= 1).}
 same as the number of observations in \code{x}.}
 
 \item{conf_level}{Confidence level of the interval.}
+
+\item{...}{Further arguments passed to or from other methods. Currently not used.}
 }
 \value{
 Returns a list with the classes \code{"ml_estimation"} and

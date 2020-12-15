@@ -18,6 +18,8 @@
 
 \item{x}{Confindence interval as returned by \code{\link{confint_betabinom}}
 or \code{\link{confint_fisher}}.}
+
+\item{...}{Further arguments passed to or from other methods. Currently not used.}
 }
 \value{
 Returns a plot object containing the probability plot with

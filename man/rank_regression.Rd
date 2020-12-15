@@ -20,6 +20,8 @@ rank_regression(x, ...)
 \item{x}{Object of class \code{cdf_estimation} returned from
 \code{\link{estimate_cdf}}.}
 
+\item{...}{Further arguments passed to or from other methods. Currently not used.}
+
 \item{distribution}{Supposed distribution of the random variable.}
 
 \item{conf_level}{Confidence level of the interval. If \code{distribution} is

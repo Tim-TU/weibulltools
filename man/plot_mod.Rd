@@ -19,6 +19,8 @@ plot_mod(p_obj, x, title_trace = "Fit")
 
 \item{x}{An object of aforementioned classes. See 'S3 methods'.}
 
+\item{...}{Further arguments passed to or from other methods. Currently not used.}
+
 \item{title_trace}{A character string whis is assigned to the trace shown in
 the legend.}
 }

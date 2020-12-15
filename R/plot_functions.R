@@ -122,6 +122,7 @@ plot_layout <- function(
 #' @param title_trace A character string whis is assigned to the trace shown in
 #'   the legend.
 #' @param plot_method Package, which is used for generating the plot output.
+#' @template dots
 #'
 #' @encoding UTF-8
 #' @references Meeker, William Q; Escobar, Luis A., Statistical methods for
@@ -202,9 +203,7 @@ plot_layout <- function(
 #' @md
 #' @export
 #'
-plot_prob <- function(
-  x, ...
-) {
+plot_prob <- function(x, ...) {
   UseMethod("plot_prob")
 }
 
@@ -764,9 +763,7 @@ plot_prob_mix <- function(
 #' @md
 #' @export
 #'
-plot_mod <- function(
-  p_obj, x, ...
-) {
+plot_mod <- function(p_obj, x, ...) {
   UseMethod("plot_mod", x)
 }
 
@@ -778,9 +775,7 @@ plot_mod <- function(
 #'
 #' @export
 #'
-plot_mod.model_estimation <- function(
-  p_obj, x, title_trace = "Fit", ...
-) {
+plot_mod.model_estimation <- function(p_obj, x, title_trace = "Fit", ...) {
 
   failed_data <- dplyr::filter(x$data, status == 1)
 
@@ -801,9 +796,7 @@ plot_mod.model_estimation <- function(
 #'
 #' @export
 #'
-plot_mod.model_estimation_list <- function(
-  p_obj, x, title_trace = "Fit", ...
-) {
+plot_mod.model_estimation_list <- function(p_obj, x, title_trace = "Fit", ...) {
   # Plot method is determined by p_obj
   plot_method <- if (inherits(p_obj, "gg")) {
     "ggplot2"

@@ -476,6 +476,7 @@ mixmod_regression_ <- function(cdf_estimation,
 #' @param conv_limit Numeric value defining the convergence limit.
 #' @param diff_loglik Numeric value defining the maximum difference between
 #'   log-likelihood values, which seems permissible.
+#' @template dots
 #'
 #' @return Returns a list with class \code{"mixmod_em"}. The length of the list
 #' depends on the number of specified subgroups \emph{k}. The first \code{k} lists

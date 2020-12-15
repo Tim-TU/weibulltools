@@ -21,6 +21,8 @@ ml_estimation(x, ...)
 \item{x}{Object of class \code{reliability_data} returned by
 \code{\link{reliability_data}}.}
 
+\item{...}{Further arguments passed to or from other methods. Currently not used.}
+
 \item{distribution}{Supposed distribution of the random variable.}
 
 \item{wts}{Optional vector of case weights. The length of \code{wts} must be the

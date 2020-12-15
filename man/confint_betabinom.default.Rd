@@ -43,6 +43,8 @@ One of \code{"two_sided"}, \code{"lower"} or \code{"upper"}.}
 \item{direction}{A character string specifying the direction of the
 confidence interval. One of \code{"y"} (failure probabilities) or \code{"x"}
 (quantiles).}
+
+\item{...}{Further arguments passed to or from other methods. Currently not used.}
 }
 \value{
 A tibble with class \code{"confint"} containing the following columns:

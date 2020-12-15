@@ -19,6 +19,7 @@
 #' @param wts Optional vector of case weights. The length of \code{wts} must be the
 #'   same as the number of observations in \code{x}.
 #' @param conf_level Confidence level of the interval.
+#' @template dots
 #'
 #' @return Returns a list with the classes \code{"ml_estimation"} and
 #'   \code{"model_estimation"} containing the following elements:

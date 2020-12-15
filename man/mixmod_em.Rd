@@ -24,6 +24,8 @@ mixmod_em(x, ...)
 \item{x}{An object of class \code{reliability_data} returned from
 \code{\link{reliability_data}}.}
 
+\item{...}{Further arguments passed to or from other methods. Currently not used.}
+
 \item{distribution}{\code{"weibull"} until further distributions are implemented.}
 
 \item{conf_level}{Confidence level for the intervals of the weibull parameters

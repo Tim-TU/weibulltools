@@ -19,6 +19,7 @@
 #' @param direction A character string specifying the direction of the
 #'   confidence interval. One of \code{"y"} (failure probabilities) or \code{"x"}
 #'   (quantiles).
+#' @template dots
 #'
 #' @return A tibble with class \code{"confint"} containing the following columns:
 #'   \itemize{
