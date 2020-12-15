@@ -1,6 +1,6 @@
 #' Layout of the Probability Plot
 #'
-#' This function is called to create the layout of a probability plot. It is
+#' This function is used to create the layout of a probability plot. It is
 #' called inside of \code{\link{plot_prob}} to determine the appearance of the
 #' grid with respect to the given characteristic \code{x}.
 #'

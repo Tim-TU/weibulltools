@@ -67,10 +67,10 @@ This method applies the expectation-maximization (EM) algorithm to estimate the
 parameters of a univariate weibull mixture model. See 'Details'.
 }
 \details{
-The EM algorithm is an iterative algorithm for which initial values must be
-defined at the beginning. Initial values can be provided for the unknown parameter
-vector as well as for the posterior probabilities. This implementation employs
-initial values for the posterior probabilities. These are assigned randomly
+The EM algorithm is an iterative algorithm for which starting values must be
+defined. Starting values can be provided for the unknown parameter vector as
+well as for the posterior probabilities. This implementation employs initial
+values for the posterior probabilities. These are assigned randomly
 by using the dirichlet distribution, the conjugate prior of a multinomial
 distribution (see Mr. Gelissen's blog post listed under \emph{references}).
 

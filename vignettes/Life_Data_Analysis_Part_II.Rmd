@@ -102,7 +102,7 @@ than ML estimators.
 
 ## Data I: shock
 
-To apply the introduced estimation methods and related visualizations the `shock` data taken from `SPREDA` package is used. In this dataset kilometer-dependent problems that occurred on shock absorbers are reported. In addition to failed items the 
+To apply the introduced estimation methods and related visualizations the `shock` data is used. In this dataset kilometer-dependent problems that occurred on shock absorbers are reported. In addition to failed items the 
 dataset also contains non-defectives. The data can be found in _Statistical Methods for Reliability Data_ [^note4]. 
 
 [^note4]: Meeker, W. Q.; Escobar, L. A.: _Statistical Methods for Reliability Data_, 
@@ -117,12 +117,9 @@ In the following we want to apply both methods to the dataset `shock`. We assume
 ### MRR-Code two-parametric Weibull
 
 ```{r MRR all distributions, message = FALSE}
-library(SPREDA) # for dataset shock
 data(shock)
 # generate random ids for units: 
-shock$id <- sample(c(letters, LETTERS), size = nrow(shock), replace = FALSE)
-
-shock_data <- reliability_data(shock, x = Distance, status = Censor, id = id)
+shock_data <- reliability_data(shock, x = distance, status = status)
 
 # Rank Regression: 
 # for rank_regression(), estimated failure probabilities are required: 
