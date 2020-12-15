@@ -40,7 +40,7 @@
 
 
 <meta property="og:title" content="Rank Regression for Parametric Lifetime Distributions — rank_regression.default" />
-<meta property="og:description" content="This method fits an x on y regression to a linearized two- or
+<meta property="og:description" content="This function fits an x on y regression to a linearized two- or
 three-parameter lifetime distribution for complete and (multiple) right
 censored data. The parameters are determined in the frequently used
 (log-)location-scale parameterization.
@@ -135,7 +135,7 @@ parameterization provided by the stats package (see Weibull)." />
     </div>
 
     <div class="ref-description">
-    <p>This method fits an <strong>x on y</strong> regression to a linearized two- or
+    <p>This function fits an <strong>x on y</strong> regression to a linearized two- or
 three-parameter lifetime distribution for complete and (multiple) right
 censored data. The parameters are determined in the frequently used
 (log-)location-scale parameterization.</p>
@@ -167,7 +167,7 @@ cycles.</p></td>
     <tr>
       <th>y</th>
       <td><p>A numeric vector which consists of estimated failure probabilities
-regarding the lifetime data in x.</p></td>
+regarding the lifetime data in <code>x</code>.</p></td>
     </tr>
     <tr>
       <th>status</th>
@@ -182,6 +182,10 @@ a right censored observation (= 0) or a failure (= 1).</p></td>
       <th>conf_level</th>
       <td><p>Confidence level of the interval. If <code>distribution</code> is
 <code>"weibull"</code> this must be one of <code>0.9</code>, <code>0.95</code> or <code>0.99</code>.</p></td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td><p>Further arguments passed to or from other methods. Currently not used.</p></td>
     </tr>
     </table>
 

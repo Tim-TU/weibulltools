@@ -38,6 +38,9 @@ In order to obtain an estimate of the cumulative failure probability for each ob
 
 But rank distributions are systematically skewed distributions and thus the median value instead of the expected value $E\left[F\left(t_i\right)\right] = \frac{i}{n + 1}$ is used for estimation [^note1]. This skewness is visualized in _Figure 1_. 
 
+[^note1]: Kapur, K. C.; Lamberson, L. R.: _Reliability in Engineering Design_, 
+          _New York: Wiley_, 1977, pp. 297-301  
+
 ```{r rank densities, fig.cap = "Figure 1: Densities for different ranks i in samples of size n = 10.", message = FALSE}
 library(tidyverse) # using dplyr manipulation functions and ggplot2
 
@@ -56,9 +59,6 @@ densplot <- ggplot(data = df_dens, aes(x = cdf, y = pdf, colour = as.factor(i)))
   labs(x = "Failure Probability", y = "Density")
 densplot
 ```
-
-[^note1]: Kapur, K. C.; Lamberson, L. R.: _Reliability in Engineering Design_, 
-          _New York: Wiley_, 1977, pp. 297-301  
 
 ### Failure Probability Estimation  
 

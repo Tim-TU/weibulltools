@@ -79,16 +79,14 @@
       
 
       </header><script src="Life_Data_Analysis_Part_III_files/accessible-code-block-0.0.1/empty-anchor.js"></script><link href="Life_Data_Analysis_Part_III_files/anchor-sections-1.0/anchor-sections.css" rel="stylesheet">
-<script src="Life_Data_Analysis_Part_III_files/anchor-sections-1.0/anchor-sections.js"></script><script src="Life_Data_Analysis_Part_III_files/htmlwidgets-1.5.2/htmlwidgets.js"></script><script src="Life_Data_Analysis_Part_III_files/plotly-binding-4.9.2.1/plotly.js"></script><script src="Life_Data_Analysis_Part_III_files/typedarray-0.1/typedarray.min.js"></script><script src="Life_Data_Analysis_Part_III_files/jquery-1.11.3/jquery.min.js"></script><link href="Life_Data_Analysis_Part_III_files/crosstalk-1.1.0.1/css/crosstalk.css" rel="stylesheet">
-<script src="Life_Data_Analysis_Part_III_files/crosstalk-1.1.0.1/js/crosstalk.min.js"></script><link href="Life_Data_Analysis_Part_III_files/plotly-htmlwidgets-css-1.52.2/plotly-htmlwidgets.css" rel="stylesheet">
-<script src="Life_Data_Analysis_Part_III_files/plotly-main-1.52.2/plotly-latest.min.js"></script><div class="row">
+<script src="Life_Data_Analysis_Part_III_files/anchor-sections-1.0/anchor-sections.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Life Data Analysis Part III - Mixture Models</h1>
             <h3 class="subtitle">Segmented Regression and EM-Algorithm</h3>
                         <h4 class="author">Tim-Gunnar Hensel</h4>
             
-            <h4 class="date">2020-12-07</h4>
+            <h4 class="date">2020-12-15</h4>
       
       
       <div class="hidden name"><code>Life_Data_Analysis_Part_III.Rmd</code></div>
@@ -111,20 +109,7 @@
 <p>To get an intuition whether we can assume the presence of a mixture model, we will construct a Weibull probability plot.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Data: </span>
-<span class="va">hours</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">28</span>, <span class="fl">67</span>, <span class="fl">119</span>, <span class="fl">179</span>, <span class="fl">236</span>, <span class="fl">282</span>, <span class="fl">317</span>, <span class="fl">348</span>, <span class="fl">387</span>, <span class="fl">3</span>, <span class="fl">31</span>, <span class="fl">69</span>, <span class="fl">135</span>,
-           <span class="fl">191</span>, <span class="fl">241</span>, <span class="fl">284</span>, <span class="fl">318</span>, <span class="fl">348</span>, <span class="fl">392</span>, <span class="fl">5</span>, <span class="fl">31</span>, <span class="fl">76</span>, <span class="fl">144</span>, <span class="fl">203</span>, <span class="fl">257</span>, <span class="fl">286</span>,
-           <span class="fl">320</span>, <span class="fl">350</span>, <span class="fl">412</span>, <span class="fl">8</span>, <span class="fl">52</span>, <span class="fl">78</span>, <span class="fl">157</span>, <span class="fl">211</span>, <span class="fl">261</span>, <span class="fl">298</span>, <span class="fl">327</span>, <span class="fl">360</span>, <span class="fl">446</span>,
-           <span class="fl">13</span>, <span class="fl">53</span>, <span class="fl">104</span>, <span class="fl">160</span>, <span class="fl">221</span>, <span class="fl">264</span>, <span class="fl">303</span>, <span class="fl">328</span>, <span class="fl">369</span>, <span class="fl">21</span>, <span class="fl">64</span>, <span class="fl">113</span>, <span class="fl">168</span>,
-           <span class="fl">226</span>, <span class="fl">278</span>, <span class="fl">314</span>, <span class="fl">328</span>, <span class="fl">377</span><span class="op">)</span>
-
-<span class="va">state</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">0</span>, <span class="fl">1</span>, <span class="fl">0</span>, <span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">0</span>, <span class="fl">1</span>, <span class="fl">0</span>, <span class="fl">1</span>,
-           <span class="fl">1</span>, <span class="fl">0</span>, <span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">0</span>, <span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">0</span>, <span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0</span>,
-           <span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">1</span>,
-           <span class="fl">0</span>, <span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">1</span><span class="op">)</span>
-
-<span class="va">id</span> <span class="op">&lt;-</span> <span class="fl">1</span><span class="op">:</span><span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span><span class="op">(</span><span class="va">hours</span><span class="op">)</span>
-
-<span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/reliability_data.html">reliability_data</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">hours</span>, status <span class="op">=</span> <span class="va">state</span>, id <span class="op">=</span> <span class="va">id</span><span class="op">)</span>
+<span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/reliability_data.html">reliability_data</a></span><span class="op">(</span><span class="va">voltage</span>, x <span class="op">=</span> <span class="va">hours</span>, status <span class="op">=</span> <span class="va">status</span><span class="op">)</span>
 
 <span class="co"># Estimating failure probabilities: </span>
 <span class="va">cdf_john_tbl</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/estimate_cdf.html">estimate_cdf</a></span><span class="op">(</span><span class="va">data</span>, <span class="st">"johnson"</span><span class="op">)</span>
@@ -136,18 +121,13 @@
   title_main <span class="op">=</span> <span class="st">"Weibull Probability Plot"</span>, 
   title_x <span class="op">=</span> <span class="st">"Time in Hours"</span>, 
   title_y <span class="op">=</span> <span class="st">"Probability of Failure in %"</span>,
-  title_trace <span class="op">=</span> <span class="st">"Defect Items"</span>
+  title_trace <span class="op">=</span> <span class="st">"Defect Items"</span>,
+  plot_method <span class="op">=</span> <span class="st">"ggplot2"</span>
 <span class="op">)</span>
 
-<span class="va">weibull_plot</span>
-<span class="co">#&gt; Warning: `arrange_()` is deprecated as of dplyr 0.7.0.</span>
-<span class="co">#&gt; Please use `arrange()` instead.</span>
-<span class="co">#&gt; See vignette('programming') for more help</span>
-<span class="co">#&gt; This warning is displayed once every 8 hours.</span>
-<span class="co">#&gt; Call `lifecycle::last_warnings()` to see where this warning was generated.</span></code></pre></div>
+<span class="va">weibull_plot</span></code></pre></div>
 <div class="figure">
-<div id="htmlwidget-f408e15d8885ca62e3c7" style="width:700px;height:432.632880098888px;" class="plotly html-widget"></div>
-<script type="application/json" data-for="htmlwidget-f408e15d8885ca62e3c7">{"x":{"visdat":{"7205fe8564a":["function () ","plotlyVisDat"],"72091f3d18":["function () ","data"]},"cur_data":"72091f3d18","attrs":{"7205fe8564a":{"mode":"markers","alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"type":"scatter"},"72091f3d18":{"mode":"markers","alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"type":"scatter","x":{},"y":{},"hoverinfo":"text","name":"Defect Items","color":{},"symbol":{},"legendgroup":{},"text":["ID: 1 <br> Time:   2 <br> Probability: 0.0119863","ID: 11 <br> Time:   3 <br> Probability: 0.0291096","ID: 21 <br> Time:   5 <br> Probability: 0.0462329","ID: 31 <br> Time:   8 <br> Probability: 0.0633562","ID: 50 <br> Time:  21 <br> Probability: 0.0807965","ID: 2 <br> Time:  28 <br> Probability: 0.0982369","ID: 12 <br> Time:  31 <br> Probability: 0.1156773","ID: 51 <br> Time:  64 <br> Probability: 0.1342077","ID: 13 <br> Time:  69 <br> Probability: 0.1531410","ID: 23 <br> Time:  76 <br> Probability: 0.1720742","ID: 43 <br> Time: 104 <br> Probability: 0.1914478","ID: 4 <br> Time: 119 <br> Probability: 0.2112939","ID: 24 <br> Time: 144 <br> Probability: 0.2316488","ID: 44 <br> Time: 160 <br> Probability: 0.2525539","ID: 53 <br> Time: 168 <br> Probability: 0.2734590","ID: 15 <br> Time: 191 <br> Probability: 0.2949789","ID: 25 <br> Time: 203 <br> Probability: 0.3164989","ID: 35 <br> Time: 211 <br> Probability: 0.3380188","ID: 45 <br> Time: 221 <br> Probability: 0.3595387","ID: 54 <br> Time: 226 <br> Probability: 0.3810587","ID: 6 <br> Time: 236 <br> Probability: 0.4025786","ID: 36 <br> Time: 261 <br> Probability: 0.4257539","ID: 46 <br> Time: 264 <br> Probability: 0.4489293","ID: 55 <br> Time: 278 <br> Probability: 0.4721046","ID: 7 <br> Time: 282 <br> Probability: 0.4952799","ID: 17 <br> Time: 284 <br> Probability: 0.5184552","ID: 27 <br> Time: 286 <br> Probability: 0.5416306","ID: 37 <br> Time: 298 <br> Probability: 0.5648059","ID: 47 <br> Time: 303 <br> Probability: 0.5879812","ID: 56 <br> Time: 314 <br> Probability: 0.6111565","ID: 8 <br> Time: 317 <br> Probability: 0.6343318","ID: 18 <br> Time: 318 <br> Probability: 0.6575072","ID: 28 <br> Time: 320 <br> Probability: 0.6806825","ID: 38 <br> Time: 327 <br> Probability: 0.7038578","ID: 48 <br> Time: 328 <br> Probability: 0.7502084","ID: 57 <br> Time: 328 <br> Probability: 0.7502084","ID: 9 <br> Time: 348 <br> Probability: 0.7733838","ID: 29 <br> Time: 350 <br> Probability: 0.7991341","ID: 39 <br> Time: 360 <br> Probability: 0.8248845","ID: 49 <br> Time: 369 <br> Probability: 0.8506348","ID: 58 <br> Time: 377 <br> Probability: 0.8763852","ID: 10 <br> Time: 387 <br> Probability: 0.9021356","ID: 20 <br> Time: 392 <br> Probability: 0.9278859","ID: 30 <br> Time: 412 <br> Probability: 0.9536363","ID: 40 <br> Time: 446 <br> Probability: 0.9793866"],"inherit":true}},"layout":{"margin":{"b":55,"l":55,"t":25,"r":10,"pad":4},"xaxis":{"domain":[0,1],"automargin":true,"showticklabels":true,"showgrid":true,"zeroline":false,"title":{"text":"Time in Hours"},"type":"log","autorange":true,"rangemode":"nonnegative","ticks":"inside","tickwidth":1,"tickfont":{"family":"Arial","size":10},"tickangle":90,"gridwidth":1,"exponentformat":"none","showline":true,"linecolor":"#a0a0a0","tickvals":[0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1,2,3,4,5,6,7,8,9,10,20,30,40,50,60,70,80,90,100,200,300,400,500,600,700,800,900,1000],"ticktext":["0.1","0.2","0.3"," "," "," "," "," "," ","1","2","3"," "," "," "," "," "," ","10","20","30"," "," "," "," "," "," ","100","200","300"," "," "," "," "," "," ","1000"]},"yaxis":{"domain":[0,1],"automargin":true,"showticklabels":true,"showgrid":true,"zeroline":false,"title":{"text":"Probability of Failure in %"},"autorange":true,"tickvals":[-16.1180956014847,-13.8155100579353,-11.5129204649539,-9.21029036989284,-6.90725507052372,-4.60014922677658,-2.97019524904216,-2.25036732731245,-1.49993998675952,-1.03093043315872,-0.366512920581664,-0.0874215717907552,0.185626758862366,0.475884995327111,0.834032445247956,1.09718870036495,1.5271796258079,1.93264473391607,2.22032680636786,2.44347035768245],"ticktext":[1e-05,0.0001,0.001,0.01,0.1,1,5,10,20,30,50,60,70,80,90,95,99,99.9,99.99,99.999],"ticks":"inside","tickwidth":1,"tickfont":{"family":"Arial","size":10},"gridwidth":1,"exponentformat":"none","showline":true,"linecolor":"#a0a0a0"},"title":{"text":"Weibull Probability Plot","font":{"family":"Arial","size":16,"color":"#000000"}},"separators":".","legend":{"title":{"font":{"family":"Arial","size":10,"color":"#000000"}}},"hovermode":"x","showlegend":true},"source":"A","config":{"showSendToCloud":false},"data":[{"mode":"markers","type":"scatter","marker":{"color":"rgba(31,119,180,1)","line":{"color":"rgba(31,119,180,1)"}},"error_y":{"color":"rgba(31,119,180,1)"},"error_x":{"color":"rgba(31,119,180,1)"},"line":{"color":"rgba(31,119,180,1)"},"xaxis":"x","yaxis":"y","frame":null},{"mode":"markers","type":"scatter","x":[2,3,5,8,21,28,31,64,69,76,104,119,144,160,168,191,203,211,221,226,236,261,264,278,282,284,286,298,303,314,317,318,320,327,328,328,348,350,360,369,377,387,392,412,446],"y":[-4.41796753446548,-3.5219531619075,-3.05048960498672,-2.72643547310556,-2.47399283278132,-2.2691167445876,-2.09611365921609,-1.937176486695,-1.79443681499538,-1.66689878436448,-1.54876621152352,-1.43817114106086,-1.33367017256918,-1.2341122372322,-1.14112217906888,-1.05117283153786,-0.966198269124612,-0.885475141485096,-0.808408445511061,-0.734500954632336,-0.663330949479673,-0.589332702920304,-0.517695656362829,-0.448074479193553,-0.380161049695515,-0.313675558871076,-0.248359095730702,-0.183967208416534,-0.120264030971814,-0.0570166111697817,0.00601092320829553,0.0690637663931908,0.132403914515567,0.19631942195795,0.32723578545169,0.32723578545169,0.39507620309139,0.473197208682521,0.555211495571176,0.642570075944941,0.737443929530673,0.843363843066726,0.966795954017373,1.12208068596901,1.35630291382158],"hoverinfo":["text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text"],"name":"Defect Items","legendgroup":"johnson","text":["ID: 1 <br> Time:   2 <br> Probability: 0.0119863","ID: 11 <br> Time:   3 <br> Probability: 0.0291096","ID: 21 <br> Time:   5 <br> Probability: 0.0462329","ID: 31 <br> Time:   8 <br> Probability: 0.0633562","ID: 50 <br> Time:  21 <br> Probability: 0.0807965","ID: 2 <br> Time:  28 <br> Probability: 0.0982369","ID: 12 <br> Time:  31 <br> Probability: 0.1156773","ID: 51 <br> Time:  64 <br> Probability: 0.1342077","ID: 13 <br> Time:  69 <br> Probability: 0.1531410","ID: 23 <br> Time:  76 <br> Probability: 0.1720742","ID: 43 <br> Time: 104 <br> Probability: 0.1914478","ID: 4 <br> Time: 119 <br> Probability: 0.2112939","ID: 24 <br> Time: 144 <br> Probability: 0.2316488","ID: 44 <br> Time: 160 <br> Probability: 0.2525539","ID: 53 <br> Time: 168 <br> Probability: 0.2734590","ID: 15 <br> Time: 191 <br> Probability: 0.2949789","ID: 25 <br> Time: 203 <br> Probability: 0.3164989","ID: 35 <br> Time: 211 <br> Probability: 0.3380188","ID: 45 <br> Time: 221 <br> Probability: 0.3595387","ID: 54 <br> Time: 226 <br> Probability: 0.3810587","ID: 6 <br> Time: 236 <br> Probability: 0.4025786","ID: 36 <br> Time: 261 <br> Probability: 0.4257539","ID: 46 <br> Time: 264 <br> Probability: 0.4489293","ID: 55 <br> Time: 278 <br> Probability: 0.4721046","ID: 7 <br> Time: 282 <br> Probability: 0.4952799","ID: 17 <br> Time: 284 <br> Probability: 0.5184552","ID: 27 <br> Time: 286 <br> Probability: 0.5416306","ID: 37 <br> Time: 298 <br> Probability: 0.5648059","ID: 47 <br> Time: 303 <br> Probability: 0.5879812","ID: 56 <br> Time: 314 <br> Probability: 0.6111565","ID: 8 <br> Time: 317 <br> Probability: 0.6343318","ID: 18 <br> Time: 318 <br> Probability: 0.6575072","ID: 28 <br> Time: 320 <br> Probability: 0.6806825","ID: 38 <br> Time: 327 <br> Probability: 0.7038578","ID: 48 <br> Time: 328 <br> Probability: 0.7502084","ID: 57 <br> Time: 328 <br> Probability: 0.7502084","ID: 9 <br> Time: 348 <br> Probability: 0.7733838","ID: 29 <br> Time: 350 <br> Probability: 0.7991341","ID: 39 <br> Time: 360 <br> Probability: 0.8248845","ID: 49 <br> Time: 369 <br> Probability: 0.8506348","ID: 58 <br> Time: 377 <br> Probability: 0.8763852","ID: 10 <br> Time: 387 <br> Probability: 0.9021356","ID: 20 <br> Time: 392 <br> Probability: 0.9278859","ID: 30 <br> Time: 412 <br> Probability: 0.9536363","ID: 40 <br> Time: 446 <br> Probability: 0.9793866"],"marker":{"color":"rgba(102,194,165,1)","symbol":"circle","line":{"color":"rgba(102,194,165,1)"}},"textfont":{"color":"rgba(102,194,165,1)"},"error_y":{"color":"rgba(102,194,165,1)"},"error_x":{"color":"rgba(102,194,165,1)"},"line":{"color":"rgba(102,194,165,1)"},"xaxis":"x","yaxis":"y","frame":null}],"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.2,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script><p class="caption">
+<img src="Life_Data_Analysis_Part_III_files/figure-html/probability%20plot%20weibull-1.png" alt="Figure 1: Plotting positions in weibull grid." width="700"><p class="caption">
 Figure 1: Plotting positions in weibull grid.
 </p>
 </div>
@@ -160,26 +140,17 @@ Figure 1: Plotting positions in weibull grid.
 <p>In package <code>weibulltools</code> the method of segmented regression is implemented in function <code><a href="../reference/mixmod_regression.html">mixmod_regression()</a></code>. If a breakpoint was detected, the failure data is separated by that point. After breakpoint detection the function <code><a href="../reference/rank_regression.html">rank_regression()</a></code> is called inside <code><a href="../reference/mixmod_regression.html">mixmod_regression()</a></code> and is used to estimate the distribution parameters of the subgroups. The visualization of the obtained results is done by functions <code><a href="../reference/plot_prob_mix.html">plot_prob_mix()</a></code> and <code><a href="../reference/plot_mod_mix.html">plot_mod_mix()</a></code>. The produced graph of <code><a href="../reference/plot_prob_mix.html">plot_prob_mix()</a></code> is pretty similar to the graph provided by <code><a href="../reference/plot_prob.html">plot_prob()</a></code>, but the difference is, that the detected subgroups are colored differently. <code><a href="../reference/plot_mod_mix.html">plot_mod_mix()</a></code> then is used to add the estimated regression line of every sub-distribution. In the following the described procedure is expressed with code.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Applying mixmod_regression(): </span>
-<span class="va">mixreg_weib</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mixmod_regression.html">mixmod_regression</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">cdf_john_tbl</span><span class="op">$</span><span class="va">x</span>, y <span class="op">=</span> <span class="va">cdf_john_tbl</span><span class="op">$</span><span class="va">prob</span>, 
-  status <span class="op">=</span> <span class="va">cdf_john_tbl</span><span class="op">$</span><span class="va">status</span>, distribution <span class="op">=</span> <span class="st">"weibull"</span><span class="op">)</span>
+<span class="va">mixreg_weib</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mixmod_regression.html">mixmod_regression</a></span><span class="op">(</span><span class="va">cdf_john_tbl</span>, distribution <span class="op">=</span> <span class="st">"weibull"</span><span class="op">)</span>
 
 <span class="co"># Using plot_prob_mix(). </span>
-<span class="va">mix_reg_plot</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plot_prob_mix.html">plot_prob_mix</a></span><span class="op">(</span>
-  x <span class="op">=</span> <span class="va">hours</span>, 
-  status <span class="op">=</span> <span class="va">state</span>, 
-  id <span class="op">=</span> <span class="va">id</span>, 
-  distribution <span class="op">=</span> <span class="st">"weibull"</span>, 
-  mix_output <span class="op">=</span> <span class="va">mixreg_weib</span>, 
+<span class="va">mix_reg_plot</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plot_prob.html">plot_prob</a></span><span class="op">(</span>
+  <span class="va">mixreg_weib</span>, 
   title_main <span class="op">=</span> <span class="st">"Weibull Mixture Regression"</span>, 
   title_x <span class="op">=</span> <span class="st">"Time in Hours"</span>, 
   title_y <span class="op">=</span> <span class="st">"Probability of Failure"</span>, 
   title_trace <span class="op">=</span> <span class="st">"Subgroup"</span>,
   plot_method <span class="op">=</span> <span class="st">"ggplot2"</span>
 <span class="op">)</span>
-<span class="co">#&gt; Warning: `plot_prob_mix()` is deprecated as of lifecycle 2.0.0.</span>
-<span class="co">#&gt; Please use `plot_prob()` instead.</span>
-<span class="co">#&gt; This warning is displayed once every 8 hours.</span>
-<span class="co">#&gt; Call `lifecycle::last_warnings()` to see where this warning was generated.</span>
 
 <span class="va">mix_reg_plot</span></code></pre></div>
 <div class="figure">
@@ -188,13 +159,13 @@ Figure 2: Subgroup-specific plotting positions.
 </p>
 </div>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># Using plot_mod_mix() to visualize regression lines of subgroups: </span>
-<span class="va">mix_reg_lines</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plot_mod_mix.html">plot_mod_mix</a></span><span class="op">(</span><span class="va">mix_reg_plot</span>, x <span class="op">=</span> <span class="va">hours</span>, status <span class="op">=</span> <span class="va">state</span>, 
-  mix_output <span class="op">=</span> <span class="va">mixreg_weib</span>, distribution <span class="op">=</span> <span class="st">"weibull"</span>, title_trace <span class="op">=</span> <span class="st">"Fitted Line"</span><span class="op">)</span>
-<span class="co">#&gt; Warning: `plot_mod_mix()` is deprecated as of lifecycle 2.0.0.</span>
-<span class="co">#&gt; Please use `plot_mod()` instead.</span>
-<span class="co">#&gt; This warning is displayed once every 8 hours.</span>
-<span class="co">#&gt; Call `lifecycle::last_warnings()` to see where this warning was generated.</span>
+<code class="sourceCode R"><span class="co"># Using plot_mod() to visualize regression lines of subgroups: </span>
+<span class="va">mix_reg_lines</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plot_mod.html">plot_mod</a></span><span class="op">(</span>
+  <span class="va">mix_reg_plot</span>, 
+  <span class="va">mixreg_weib</span>, 
+  title_trace <span class="op">=</span> <span class="st">"Fitted Line"</span>
+<span class="op">)</span>
+
 <span class="va">mix_reg_lines</span></code></pre></div>
 <div class="figure">
 <img src="Life_Data_Analysis_Part_III_files/figure-html/segmented%20weibull%20II-1.png" alt="Figure 3: Subgroup-specific regression lines." width="700"><p class="caption">
@@ -210,14 +181,22 @@ Figure 3: Subgroup-specific regression lines.
 <p>The EM-Algorithm can be applied through the usage of the function <code><a href="../reference/mixmod_em.html">mixmod_em()</a></code>. In comparison to <code><a href="../reference/mixmod_regression.html">mixmod_regression()</a></code> one has to specify <em>k</em>, the number of subgroups. The obtained results can be visualized by functions <code><a href="../reference/plot_prob_mix.html">plot_prob_mix()</a></code> and <code><a href="../reference/plot_mod_mix.html">plot_mod_mix()</a></code>, too.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Applying mixmod_regression(): </span>
-<span class="va">mixem_weib</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mixmod_em.html">mixmod_em</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">hours</span>, status <span class="op">=</span> <span class="va">state</span>, distribution <span class="op">=</span> <span class="st">"weibull"</span>,
-                        conf_level <span class="op">=</span> <span class="fl">0.95</span>, k <span class="op">=</span> <span class="fl">2</span>, method <span class="op">=</span> <span class="st">"EM"</span>, n_iter <span class="op">=</span> <span class="fl">150</span><span class="op">)</span>
+<span class="va">mix_em_weib</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mixmod_em.html">mixmod_em</a></span><span class="op">(</span>
+  x <span class="op">=</span> <span class="va">data</span>, 
+  distribution <span class="op">=</span> <span class="st">"weibull"</span>,
+  conf_level <span class="op">=</span> <span class="fl">0.95</span>, 
+  k <span class="op">=</span> <span class="fl">2</span>, 
+  method <span class="op">=</span> <span class="st">"EM"</span>, 
+  n_iter <span class="op">=</span> <span class="fl">150</span>
+<span class="op">)</span>
 
-<span class="co"># Using plot_prob_mix(): </span>
-<span class="va">mix_em_plot</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plot_prob_mix.html">plot_prob_mix</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">hours</span>, status <span class="op">=</span> <span class="va">state</span>, id <span class="op">=</span> <span class="va">id</span>, 
-  distribution <span class="op">=</span> <span class="st">"weibull"</span>, mix_output <span class="op">=</span> <span class="va">mixem_weib</span>, 
-  title_main <span class="op">=</span> <span class="st">"Weibull Mixture EM"</span>, title_x <span class="op">=</span> <span class="st">"Time in Hours"</span>, 
-  title_y <span class="op">=</span> <span class="st">"Probability of Failure"</span>, title_trace <span class="op">=</span> <span class="st">"Subgroup"</span>,
+<span class="co"># Using plot_prob(): </span>
+<span class="va">mix_em_plot</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plot_prob.html">plot_prob</a></span><span class="op">(</span>
+  <span class="va">mix_em_weib</span>,
+  title_main <span class="op">=</span> <span class="st">"Weibull Mixture EM"</span>, 
+  title_x <span class="op">=</span> <span class="st">"Time in Hours"</span>, 
+  title_y <span class="op">=</span> <span class="st">"Probability of Failure"</span>, 
+  title_trace <span class="op">=</span> <span class="st">"Subgroup"</span>,
   plot_method <span class="op">=</span> <span class="st">"ggplot2"</span>
 <span class="op">)</span>
 
@@ -229,9 +208,8 @@ Figure 4: Subgroup-specific plotting positions.
 </div>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R">
-<span class="co"># Using plot_mod_mix() to visualize regression lines of subgroups: </span>
-<span class="va">mix_em_lines</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plot_mod_mix.html">plot_mod_mix</a></span><span class="op">(</span><span class="va">mix_em_plot</span>, x <span class="op">=</span> <span class="va">hours</span>, status <span class="op">=</span> <span class="va">state</span>, 
-  mix_output <span class="op">=</span> <span class="va">mixem_weib</span>, distribution <span class="op">=</span> <span class="st">"weibull"</span>, title_trace <span class="op">=</span> <span class="st">"Fitted Line"</span><span class="op">)</span>
+<span class="co"># Using plot_mod() to visualize regression lines of subgroups: </span>
+<span class="va">mix_em_lines</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plot_mod.html">plot_mod</a></span><span class="op">(</span><span class="va">mix_em_plot</span>, <span class="va">mix_em_weib</span>, title_trace <span class="op">=</span> <span class="st">"Fitted Line"</span><span class="op">)</span>
 <span class="co">#&gt; Warning: Unknown or uninitialised column: `method`.</span>
 
 <span class="co">#&gt; Warning: Unknown or uninitialised column: `method`.</span>

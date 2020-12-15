@@ -93,7 +93,7 @@ rr_list
 
 Model visualization in an existing probability plot:
 
-# ```{r, model_visualization}
+```{r, model_visualization}
 mod_vis <- plot_mod(p_obj = prob_vis, x = rr_list, distribution = "weibull", 
                     title_trace = "RR") 
 mod_vis

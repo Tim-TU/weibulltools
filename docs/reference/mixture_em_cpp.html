@@ -218,26 +218,33 @@ implemented yet.</p></td>
   Failure Mode, Quality Progress, 35(6), 47-52, 2002</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='co'># Data is taken from given reference:</span>
-<span class='va'>hours</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>2</span>, <span class='fl'>28</span>, <span class='fl'>67</span>, <span class='fl'>119</span>, <span class='fl'>179</span>, <span class='fl'>236</span>, <span class='fl'>282</span>, <span class='fl'>317</span>, <span class='fl'>348</span>, <span class='fl'>387</span>, <span class='fl'>3</span>, <span class='fl'>31</span>, <span class='fl'>69</span>, <span class='fl'>135</span>,
-          <span class='fl'>191</span>, <span class='fl'>241</span>, <span class='fl'>284</span>, <span class='fl'>318</span>, <span class='fl'>348</span>, <span class='fl'>392</span>, <span class='fl'>5</span>, <span class='fl'>31</span>, <span class='fl'>76</span>, <span class='fl'>144</span>, <span class='fl'>203</span>, <span class='fl'>257</span>, <span class='fl'>286</span>,
-          <span class='fl'>320</span>, <span class='fl'>350</span>, <span class='fl'>412</span>, <span class='fl'>8</span>, <span class='fl'>52</span>, <span class='fl'>78</span>, <span class='fl'>157</span>, <span class='fl'>211</span>, <span class='fl'>261</span>, <span class='fl'>298</span>, <span class='fl'>327</span>, <span class='fl'>360</span>, <span class='fl'>446</span>,
-          <span class='fl'>13</span>, <span class='fl'>53</span>, <span class='fl'>104</span>, <span class='fl'>160</span>, <span class='fl'>221</span>, <span class='fl'>264</span>, <span class='fl'>303</span>, <span class='fl'>328</span>, <span class='fl'>369</span>, <span class='fl'>21</span>, <span class='fl'>64</span>, <span class='fl'>113</span>, <span class='fl'>168</span>,
-          <span class='fl'>226</span>, <span class='fl'>278</span>, <span class='fl'>314</span>, <span class='fl'>328</span>, <span class='fl'>377</span><span class='op'>)</span>
-<span class='va'>state</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span>, <span class='fl'>1</span>, <span class='fl'>0</span>, <span class='fl'>1</span>, <span class='fl'>0</span>, <span class='fl'>1</span>, <span class='fl'>1</span>, <span class='fl'>1</span>, <span class='fl'>1</span>, <span class='fl'>1</span>, <span class='fl'>1</span>, <span class='fl'>1</span>, <span class='fl'>1</span>, <span class='fl'>0</span>, <span class='fl'>1</span>, <span class='fl'>0</span>, <span class='fl'>1</span>,
-         <span class='fl'>1</span>, <span class='fl'>0</span>, <span class='fl'>1</span>, <span class='fl'>1</span>, <span class='fl'>0</span>, <span class='fl'>1</span>, <span class='fl'>1</span>, <span class='fl'>1</span>, <span class='fl'>0</span>, <span class='fl'>1</span>, <span class='fl'>1</span>, <span class='fl'>1</span>, <span class='fl'>1</span>, <span class='fl'>1</span>, <span class='fl'>0</span>, <span class='fl'>0</span>, <span class='fl'>0</span>,
-         <span class='fl'>1</span>, <span class='fl'>1</span>, <span class='fl'>1</span>, <span class='fl'>1</span>, <span class='fl'>1</span>, <span class='fl'>1</span>, <span class='fl'>0</span>, <span class='fl'>0</span>, <span class='fl'>1</span>, <span class='fl'>1</span>, <span class='fl'>1</span>, <span class='fl'>1</span>, <span class='fl'>1</span>, <span class='fl'>1</span>, <span class='fl'>1</span>, <span class='fl'>1</span>, <span class='fl'>1</span>,
-         <span class='fl'>0</span>, <span class='fl'>1</span>, <span class='fl'>1</span>, <span class='fl'>1</span>, <span class='fl'>1</span>, <span class='fl'>1</span>, <span class='fl'>1</span><span class='op'>)</span>
+    <pre class="examples"><div class='input'><span class='co'># Vectors:</span>
+<span class='va'>hours</span> <span class='op'>&lt;-</span> <span class='va'>voltage</span><span class='op'>$</span><span class='va'>hours</span>
+<span class='va'>status</span> <span class='op'>&lt;-</span> <span class='va'>voltage</span><span class='op'>$</span><span class='va'>status</span>
+
+<span class='co'># Example 1 - EM algorithm with randomly assgined posterior probabilities:</span>
+<span class='va'>mix_mod_em_1</span> <span class='op'>&lt;-</span> <span class='fu'>mixture_em_cpp</span><span class='op'>(</span>
+  x <span class='op'>=</span> <span class='va'>hours</span>,
+  status <span class='op'>=</span> <span class='va'>status</span>,
+  post <span class='op'>=</span> <span class='cn'>NULL</span>,
+  k <span class='op'>=</span> <span class='fl'>2</span>,
+  n_iter <span class='op'>=</span> <span class='fl'>150</span>
+<span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='error'>Error in mixture_em_cpp(x = hours, status = status, post = NULL, k = 2,     n_iter = 150): konnte Funktion "mixture_em_cpp" nicht finden</span></div><div class='input'>
+<span class='co'># Example 2 - EM algorithm with user-specific posterior probabilities:</span>
+<span class='fu'><a href='https://rdrr.io/r/base/Random.html'>set.seed</a></span><span class='op'>(</span><span class='fl'>1</span><span class='op'>)</span>
+
 <span class='va'>x_vec</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/Uniform.html'>runif</a></span><span class='op'>(</span>n <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/length.html'>length</a></span><span class='op'>(</span><span class='va'>hours</span><span class='op'>)</span><span class='op'>)</span>
 <span class='va'>post</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>matrix</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='va'>x_vec</span>, <span class='fl'>1</span> <span class='op'>-</span> <span class='va'>x_vec</span><span class='op'>)</span>, ncol <span class='op'>=</span> <span class='fl'>2</span><span class='op'>)</span>
-<span class='va'>mix_mod_em</span> <span class='op'>&lt;-</span> <span class='fu'>mixture_em_cpp</span><span class='op'>(</span>x <span class='op'>=</span> <span class='va'>hours</span>,
+
+<span class='va'>mix_mod_em_2</span> <span class='op'>&lt;-</span> <span class='fu'>mixture_em_cpp</span><span class='op'>(</span>x <span class='op'>=</span> <span class='va'>hours</span>,
                              status <span class='op'>=</span> <span class='va'>state</span>,
                              post <span class='op'>=</span> <span class='va'>post</span>,
                              distribution <span class='op'>=</span> <span class='st'>"weibull"</span>,
                              k <span class='op'>=</span> <span class='fl'>2</span>,
                              method <span class='op'>=</span> <span class='st'>"EM"</span>,
                              n_iter <span class='op'>=</span> <span class='fl'>150</span><span class='op'>)</span>
-
+</div><div class='output co'>#&gt; <span class='error'>Error in mixture_em_cpp(x = hours, status = state, post = post, distribution = "weibull",     k = 2, method = "EM", n_iter = 150): konnte Funktion "mixture_em_cpp" nicht finden</span></div><div class='input'>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

@@ -157,6 +157,7 @@
 
 <span class="va">rel_tbl</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/reliability_data.html">reliability_data</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">shock</span>, x <span class="op">=</span> <span class="va">distance</span>, status <span class="op">=</span> <span class="va">status</span><span class="op">)</span>
 <span class="va">rel_tbl</span>
+<span class="co">#&gt; Reliability Data:</span>
 <span class="co">#&gt; # A tibble: 38 x 3</span>
 <span class="co">#&gt;       x status id   </span>
 <span class="co">#&gt;   &lt;int&gt;  &lt;dbl&gt; &lt;chr&gt;</span>
@@ -173,8 +174,9 @@
 <p>Estimation of failure probabilities using different non-parametric methods:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">prob_tbl</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/estimate_cdf.html">estimate_cdf</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">rel_tbl</span>, methods <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"mr"</span>, <span class="st">"kaplan"</span>, <span class="st">"johnson"</span>, <span class="st">"nelson"</span><span class="op">)</span><span class="op">)</span>
-<span class="co">#&gt; The method 'mr'only considers failed units (status == 1) and does not retain intact units (status == 0).</span>
+<span class="co">#&gt; The 'mr' method only considers failed units (status == 1) and does not retain intact units (status == 0).</span>
 <span class="va">prob_tbl</span>
+<span class="co">#&gt; CDF estimation for methods 'mr', 'kaplan', 'johnson', 'nelson':</span>
 <span class="co">#&gt; # A tibble: 125 x 6</span>
 <span class="co">#&gt;   id        x status  rank   prob method</span>
 <span class="co">#&gt;   &lt;chr&gt; &lt;int&gt;  &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt; &lt;chr&gt; </span>
@@ -193,7 +195,7 @@
                       title_trace <span class="op">=</span> <span class="st">"Methods"</span>,
                       plot_method <span class="op">=</span> <span class="st">"gg"</span><span class="op">)</span>
 <span class="va">prob_vis</span></code></pre></div>
-<p><img src="reference/figures/README-probability%20visualization-1.png" width="100%"></p>
+<p><img src="reference/figures/README-probability_visualization-1.png" width="100%"></p>
 </div>
 <div id="model-estimation-and-visualization" class="section level3">
 <h3 class="hasAnchor">
@@ -231,7 +233,7 @@
 <code class="sourceCode R"><span class="va">mod_vis</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/plot_mod.html">plot_mod</a></span><span class="op">(</span>p_obj <span class="op">=</span> <span class="va">prob_vis</span>, x <span class="op">=</span> <span class="va">rr_list</span>, distribution <span class="op">=</span> <span class="st">"weibull"</span>, 
                     title_trace <span class="op">=</span> <span class="st">"RR"</span><span class="op">)</span> 
 <span class="va">mod_vis</span></code></pre></div>
-<p><img src="reference/figures/README-model%20visualization-1.png" width="100%"></p>
+<p><img src="reference/figures/README-model_visualization-1.png" width="100%"></p>
 </div>
 </div>
 <div id="getting-help" class="section level2">
