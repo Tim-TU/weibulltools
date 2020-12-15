@@ -91,8 +91,8 @@ plot_mod_helper <- function(
       distribution %in% c("weibull3", "lognormal3", "loglogistic3")
     ) {
       warning(
-        "x has less than 30 values and distribution is three-parametric.
-        Consider using x = range(x) to avoid visual kinks in regression line.
+        "'x' has less than 30 values and distribution is three-parametric.
+        Consider using 'x = range(x)' to avoid visual kinks in regression line.
         "
       )
     }

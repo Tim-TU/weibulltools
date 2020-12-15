@@ -804,7 +804,7 @@ plot_mod.model_estimation_list <- function(p_obj, x, title_trace = "Fit", ...) {
     "plotly"
   }  else {
     stop(
-      "p_obj is not a valid plot object. Provide either a ggplot2 or a plotly
+      "'p_obj' is not a valid plot object. Provide either a ggplot2 or a plotly
       plot object."
     )
   }
@@ -847,7 +847,7 @@ plot_mod.mixmod_regression <- function(p_obj, x, title_trace = "Fit", ...) {
     "plotly"
   }  else {
     stop(
-      "p_obj is not a valid plot object. Provide either a ggplot2 or a plotly
+      "'p_obj' is not a valid plot object. Provide either a ggplot2 or a plotly
       plot object."
     )
   }
@@ -897,7 +897,7 @@ plot_mod.mixmod_regression_list <- function(p_obj,
     "plotly"
   }  else {
     stop(
-      "p_obj is not a valid plot object. Provide either a ggplot2 or a plotly
+      "'p_obj' is not a valid plot object. Provide either a ggplot2 or a plotly
       plot object."
     )
   }
@@ -1049,7 +1049,7 @@ plot_mod.default <- function(p_obj,
     "plotly"
   }  else {
     stop(
-      "p_obj is not a valid plot object. Provide either a ggplot2 or a plotly
+      "'p_obj' is not a valid plot object. Provide either a ggplot2 or a plotly
       plot object."
     )
   }
@@ -1177,7 +1177,7 @@ plot_mod_mix <- function(p_obj,
     "plotly"
   }  else {
     stop(
-      "p_obj is not a valid plot object. Provide either a ggplot2 or a plotly
+      "'p_obj' is not a valid plot object. Provide either a ggplot2 or a plotly
       plot object."
     )
   }
@@ -1366,7 +1366,7 @@ plot_conf.default <- function(
     "plotly"
   }  else {
     stop(
-      "p_obj is not a valid plot object. Provide either a ggplot2 or a plotly
+      "'p_obj' is not a valid plot object. Provide either a ggplot2 or a plotly
       plot object."
     )
   }
@@ -1510,7 +1510,7 @@ plot_conf.confint <- function(p_obj,
     "plotly"
   }  else {
     stop(
-      "p_obj is not a valid plot object. Provide either a ggplot2 or a plotly
+      "'p_obj' is not a valid plot object. Provide either a ggplot2 or a plotly
       plot object."
     )
   }
@@ -1684,7 +1684,7 @@ plot_pop <- function(
       "plotly"
     }  else {
       stop(
-        "p_obj is not a valid plot object. Provide either a ggplot2 or a plotly
+        "'p_obj' is not a valid plot object. Provide either a ggplot2 or a plotly
       plot object."
       )
     }
