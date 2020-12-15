@@ -143,7 +143,7 @@ into account.</p>
   <span class='va'>status</span>,
   id <span class='op'>=</span> <span class='cn'>NULL</span>,
   methods <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"mr"</span>, <span class='st'>"johnson"</span>, <span class='st'>"kaplan"</span>, <span class='st'>"nelson"</span><span class='op'>)</span>,
-  <span class='va'>options</span>,
+  options <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='op'>)</span>,
   <span class='va'>...</span>
 <span class='op'>)</span></pre>
 
@@ -175,6 +175,10 @@ probabilities. See 'Details'.</p></td>
     <tr>
       <th>options</th>
       <td><p>A list of named options. See 'Options'.</p></td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td><p>Further arguments passed to or from other methods. Currently not used.</p></td>
     </tr>
     </table>
 

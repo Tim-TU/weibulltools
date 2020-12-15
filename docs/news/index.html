@@ -135,6 +135,7 @@
 <h2 class="hasAnchor">
 <a href="#breaking-changes" class="anchor"></a>Breaking Changes</h2>
 <ul>
+<li>Package now depends on R(&gt;= 3.5.0)</li>
 <li>Renamed argument <code>event</code> with <code>status</code>.</li>
 <li>Output of probability estimators: Renamed column <code>characteristic</code> with <code>x</code>.</li>
 <li>
@@ -159,6 +160,8 @@
 <code><a href="../reference/confint_betabinom.default.html">confint_betabinom.default()</a></code> and <code><a href="../reference/confint_fisher.default.html">confint_fisher.default()</a></code>: New argument <code>b_lives</code>.</li>
 <li>
 <code><a href="../reference/loglik_function.html">loglik_function()</a></code>: Renamed argument <code>pars</code> with <code>loc_sc_params</code>.</li>
+<li>
+<code><a href="../reference/mixmod_em.html">mixmod_em()</a></code>: Removed argument <code>post</code>.</li>
 </ul>
 </div>
 <div id="new-features" class="section level2">
@@ -188,13 +191,13 @@
 <li>
 <code><a href="../reference/rank_regression.html">rank_regression()</a></code> is now an S3 generic. <code><a href="../reference/rank_regression.html">rank_regression()</a></code> becomes <code><a href="../reference/rank_regression.default.html">rank_regression.default()</a></code>. Added <code><a href="../reference/rank_regression.html">rank_regression.cdf_estimation()</a></code>.</li>
 <li>
-<code><a href="../reference/plot_prob.html">plot_prob()</a></code> is now an S3 generic. <code><a href="../reference/plot_prob.html">plot_prob()</a></code> becomes <code><a href="../reference/plot_prob.default.html">plot_prob.default()</a></code>. Added <code><a href="../reference/plot_prob.cdf_estimation.html">plot_prob.cdf_estimation()</a></code>.</li>
+<code><a href="../reference/plot_prob.html">plot_prob()</a></code> is now an S3 generic. <code><a href="../reference/plot_prob.html">plot_prob()</a></code> becomes <code><a href="../reference/plot_prob.default.html">plot_prob.default()</a></code>. Added <code><a href="../reference/plot_prob.html">plot_prob.cdf_estimation()</a></code>.</li>
 <li>
 <code><a href="../reference/plot_prob_mix.html">plot_prob_mix()</a></code> is now an S3 generic. <code><a href="../reference/plot_prob_mix.html">plot_prob_mix()</a></code> becomes <code><a href="../reference/plot_prob.default.html">plot_prob.default()</a></code>. Added <code>plot_prob_mix.model_estimation()</code>, <code>plot_prob_mix.mixmod_regression()</code> and <code>plot_prob_mix.mixmod_em()</code>.</li>
 <li>
-<code><a href="../reference/plot_mod.html">plot_mod()</a></code> is now an S3 generic. <code><a href="../reference/plot_mod.html">plot_mod()</a></code> becomes <code><a href="../reference/plot_mod.default.html">plot_mod.default()</a></code>. Added <code><a href="../reference/plot_mod.model_estimation.html">plot_mod.model_estimation()</a></code>.</li>
+<code><a href="../reference/plot_mod.html">plot_mod()</a></code> is now an S3 generic. <code><a href="../reference/plot_mod.html">plot_mod()</a></code> becomes <code><a href="../reference/plot_mod.default.html">plot_mod.default()</a></code>. Added <code><a href="../reference/plot_mod.html">plot_mod.model_estimation()</a></code>.</li>
 <li>
-<code><a href="../reference/plot_conf.html">plot_conf()</a></code> is now an S3 generic. <code><a href="../reference/plot_conf.html">plot_conf()</a></code> becomes <code><a href="../reference/plot_conf.default.html">plot_conf.default()</a></code>. Added <code><a href="../reference/plot_conf.confint.html">plot_conf.confint()</a></code>.</li>
+<code><a href="../reference/plot_conf.html">plot_conf()</a></code> is now an S3 generic. <code><a href="../reference/plot_conf.html">plot_conf()</a></code> becomes <code><a href="../reference/plot_conf.default.html">plot_conf.default()</a></code>. Added <code><a href="../reference/plot_conf.html">plot_conf.confint()</a></code>.</li>
 <li>
 <code><a href="../reference/plot_pop.html">plot_pop()</a></code>: Added support for multiple population lines and comparison of two- and three-parametric distributions.</li>
 <li>

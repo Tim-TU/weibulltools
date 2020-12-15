@@ -40,7 +40,7 @@
 
 
 <meta property="og:title" content="ML Estimation for Parametric Lifetime Distributions — ml_estimation" />
-<meta property="og:description" content="This method estimates the parameters of a two- or three-parametric lifetime
+<meta property="og:description" content="This function estimates the parameters of a two- or three-parametric lifetime
 distribution for complete and (multiple) right censored data. The parameters
 are determined in the frequently used (log-)location-scale parameterization.
 For the Weibull, estimates are transformed such that they are in line with the
@@ -134,7 +134,7 @@ parameterization provided by the stats package (see Weibull)." />
     </div>
 
     <div class="ref-description">
-    <p>This method estimates the parameters of a two- or three-parametric lifetime
+    <p>This function estimates the parameters of a two- or three-parametric lifetime
 distribution for complete and (multiple) right censored data. The parameters
 are determined in the frequently used (log-)location-scale parameterization.</p>
 <p>For the Weibull, estimates are transformed such that they are in line with the
@@ -158,8 +158,12 @@ parameterization provided by the <em>stats</em> package (see <a href='https://rd
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>x</th>
-      <td><p>An object of class <code>reliability_data</code> returned by
+      <td><p>Object of class <code>reliability_data</code> returned by
 <code><a href='reliability_data.html'>reliability_data</a></code>.</p></td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td><p>Further arguments passed to or from other methods. Currently not used.</p></td>
     </tr>
     <tr>
       <th>distribution</th>
@@ -212,9 +216,6 @@ approximation confidence intervals for the parameters are computed as well.</p>
 
     <p>Meeker, William Q; Escobar, Luis A., Statistical methods for
   reliability data, New York: Wiley series in probability and statistics, 1998</p>
-    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
-
-    <div class='dont-index'><p><code><a href='ml_estimation.default.html'>ml_estimation.default</a></code></p></div>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='co'># Reliability data preparation:</span>

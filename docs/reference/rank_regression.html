@@ -40,7 +40,7 @@
 
 
 <meta property="og:title" content="Rank Regression for Parametric Lifetime Distributions — rank_regression" />
-<meta property="og:description" content="This method fits an x on y regression to a linearized two- or
+<meta property="og:description" content="This function fits an x on y regression to a linearized two- or
 three-parameter lifetime distribution for complete and (multiple) right
 censored data. The parameters are determined in the frequently used
 (log-)location-scale parameterization.
@@ -135,7 +135,7 @@ parameterization provided by the stats package (see Weibull)." />
     </div>
 
     <div class="ref-description">
-    <p>This method fits an <strong>x on y</strong> regression to a linearized two- or
+    <p>This function fits an <strong>x on y</strong> regression to a linearized two- or
 three-parameter lifetime distribution for complete and (multiple) right
 censored data. The parameters are determined in the frequently used
 (log-)location-scale parameterization.</p>
@@ -159,8 +159,12 @@ parameterization provided by the <em>stats</em> package (see <a href='https://rd
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>x</th>
-      <td><p>An object of class <code>cdf_estimation</code> returned from
+      <td><p>Object of class <code>cdf_estimation</code> returned from
 <code><a href='estimate_cdf.html'>estimate_cdf</a></code>.</p></td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td><p>Further arguments passed to or from other methods. Currently not used.</p></td>
     </tr>
     <tr>
       <th>distribution</th>
@@ -228,9 +232,6 @@ in context of <em>Rank Regression</em>. For an accepted statistical method use
   reliability data, New York: Wiley series in probability and statistics, 1998</p></li>
 </ul>
 
-    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
-
-    <div class='dont-index'><p><code><a href='rank_regression.default.html'>rank_regression.default</a></code></p></div>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='co'># Reliability data preparation:</span>

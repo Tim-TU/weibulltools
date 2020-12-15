@@ -68,8 +68,6 @@ Create consistent reliability data with columns:
 library(weibulltools)
 
 rel_tbl <- reliability_data(data = shock, x = distance, status = status)
-#> Warning: replacing previous import 'vctrs::data_frame' by 'tibble::data_frame'
-#> when loading 'dplyr'
 rel_tbl
 #> Reliability Data:
 #> # A tibble: 38 x 3
@@ -154,7 +152,13 @@ rr_list
 
 Model visualization in an existing probability plot:
 
-# `{r, model_visualization} mod_vis <- plot_mod(p_obj = prob_vis, x = rr_list, distribution = "weibull",                      title_trace = "RR")  mod_vis`
+``` r
+mod_vis <- plot_mod(p_obj = prob_vis, x = rr_list, distribution = "weibull", 
+                    title_trace = "RR") 
+mod_vis
+```
+
+<img src="man/figures/README-model_visualization-1.png" width="100%" />
 
 ## Getting help
 

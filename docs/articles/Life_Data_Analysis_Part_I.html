@@ -86,7 +86,7 @@
             <h3 class="subtitle">A Non-parametric Approach</h3>
                         <h4 class="author">Tim-Gunnar Hensel</h4>
             
-            <h4 class="date">2020-12-07</h4>
+            <h4 class="date">2020-12-15</h4>
       
       
       <div class="hidden name"><code>Life_Data_Analysis_Part_I.Rmd</code></div>
@@ -105,6 +105,8 @@
 <p>But rank distributions are systematically skewed distributions and thus the median value instead of the expected value <span class="math inline">\(E\left[F\left(t_i\right)\right] = \frac{i}{n + 1}\)</span> is used for estimation <a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a>. This skewness is visualized in <em>Figure 1</em>.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="http://tidyverse.tidyverse.org">tidyverse</a></span><span class="op">)</span> <span class="co"># using dplyr manipulation functions and ggplot2</span>
+<span class="co">#&gt; Warning: Paket 'tibble' wurde unter R Version 4.0.3 erstellt</span>
+<span class="co">#&gt; Warning: Paket 'dplyr' wurde unter R Version 4.0.3 erstellt</span>
 
 <span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span>, length.out <span class="op">=</span> <span class="fl">100</span><span class="op">)</span> <span class="co"># CDF</span>
 <span class="va">n</span> <span class="op">&lt;-</span> <span class="fl">10</span> <span class="co"># sample size</span>
@@ -134,7 +136,7 @@ Figure 1: Densities for different ranks i in samples of size n = 10.
 <p>However, this equation only provides valid estimates for failure probabilities if all units in the sample are defectives (<code><a href="../reference/estimate_cdf.html">estimate_cdf(methods = "mr", ...)</a></code>).</p>
 <p>In field data analysis, however, the sample mainly consists of intact units and only a small fraction of units failed. Units that have no damage at the point of analysis and also have not reached the operating time or mileage of units that have already failed, are potential candidates for future failures. As these, for example, still are likely to fail during a specific time span, like the guarantee period, the failure probability must be adjusted upwards by these potential candidates.</p>
 <p>A commonly used method for correcting probabilities of (multiple) right censored data is Johnson’s method (<code><a href="../reference/estimate_cdf.html">estimate_cdf(methods = "johnson", ...)</a></code>). By this method, all units that fall into the period looked at are sorted in an ascending order of their operating time or mileage. If there are units that have not failed before the <em>i</em>-th failure, an adjusted rank for the <em>i</em>-th failure is formed. This correction takes the potential candidates into account and increases the rank number. In consequence, a higher rank leads to a higher failure probability. This can be seen in <em>Figure 1</em>.</p>
-<p>The rank adjustment (<code><a href="../reference/calculate_ranks.html">calculate_ranks()</a></code>) is calculated as follows:</p>
+<p>The rank adjustment is calculated as follows:</p>
 <p><span class="math display">\[j_i = j_{i-1} + x_i \cdot I_i, \;\; with \;\; j_0 = 0\]</span></p>
 <p>Here, <span class="math inline">\(j_ {i-1}\)</span> is the adjusted rank of the previous failure, <span class="math inline">\(x_i\)</span> is the number of defectives at time/distance <span class="math inline">\(t_i\)</span> and <span class="math inline">\(I_i\)</span> is the increment that corrects the rank by the candidates.</p>
 <p><span class="math display">\[I_i=\frac{(n+1)-j_{i-1}}{1+(n-n_i)}\]</span></p>
@@ -174,39 +176,27 @@ Figure 1: Densities for different ranks i in samples of size n = 10.
 <div id="data-shock" class="section level2">
 <h2 class="hasAnchor">
 <a href="#data-shock" class="anchor"></a>Data: shock</h2>
-<p>To apply the introduced methods of non-parametric failure probability estimation and probability plotting the <code>shock</code> data taken from <code>SPREDA</code> package is used. In this dataset kilometer-dependent problems that have occurred on shock absorbers are reported. In addition to failed items the dataset also contains non-defectives, so called <em>censored</em> observations. The data can be found in <em>Statistical Methods for Reliability Data</em> <a href="#fn3" class="footnote-ref" id="fnref3"><sup>3</sup></a>.</p>
+<p>To apply the introduced methods of non-parametric failure probability estimation and probability plotting the <code>shock</code> data is used. In this dataset kilometer-dependent problems that have occurred on shock absorbers are reported. In addition to failed items the dataset also contains non-defectives, so called <em>censored</em> observations. The data can be found in <em>Statistical Methods for Reliability Data</em> <a href="#fn3" class="footnote-ref" id="fnref3"><sup>3</sup></a>.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">SPREDA</span><span class="op">)</span> <span class="co"># for dataset shock</span>
-<span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="va">shock</span><span class="op">)</span>
-<span class="co"># generate random ids for units: </span>
-<span class="va">shock</span><span class="op">$</span><span class="va">id</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html">sample</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">letters</span>, <span class="va">LETTERS</span><span class="op">)</span>, size <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">shock</span><span class="op">)</span>, replace <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="va">shock</span><span class="op">)</span>
 
-<span class="co"># using tibble for better print: </span>
-<span class="fu">as_tibble</span><span class="op">(</span><span class="va">shock</span><span class="op">)</span>
-<span class="co">#&gt; # A tibble: 38 x 4</span>
-<span class="co">#&gt;    Distance Mode     Censor id   </span>
-<span class="co">#&gt;       &lt;int&gt; &lt;fct&gt;     &lt;dbl&gt; &lt;chr&gt;</span>
-<span class="co">#&gt;  1     6700 Mode1         1 j    </span>
-<span class="co">#&gt;  2     6950 Censored      0 N    </span>
-<span class="co">#&gt;  3     7820 Censored      0 D    </span>
-<span class="co">#&gt;  4     8790 Censored      0 X    </span>
-<span class="co">#&gt;  5     9120 Mode2         1 y    </span>
-<span class="co">#&gt;  6     9660 Censored      0 p    </span>
-<span class="co">#&gt;  7     9820 Censored      0 f    </span>
-<span class="co">#&gt;  8    11310 Censored      0 o    </span>
-<span class="co">#&gt;  9    11690 Censored      0 l    </span>
-<span class="co">#&gt; 10    11850 Censored      0 L    </span>
-<span class="co">#&gt; # ... with 28 more rows</span>
-
-<span class="co"># Comparison of failure modes: </span>
-<span class="fu">ggplot</span><span class="op">(</span>data <span class="op">=</span> <span class="va">shock</span>, <span class="fu">aes</span><span class="op">(</span>x <span class="op">=</span> <span class="va">Mode</span>, y <span class="op">=</span> <span class="va">Distance</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> 
-  <span class="fu">geom_boxplot</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> 
-  <span class="fu">theme_bw</span><span class="op">(</span><span class="op">)</span></code></pre></div>
-<div class="figure">
-<img src="Life_Data_Analysis_Part_I_files/figure-html/dataset%20shock-1.png" alt="Figure 2: Boxplots for different modes." width="700"><p class="caption">
-Figure 2: Boxplots for different modes.
-</p>
-</div>
+<span class="va">failure_tbl</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/reliability_data.html">reliability_data</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">shock</span>, x <span class="op">=</span> <span class="va">distance</span>, status <span class="op">=</span> <span class="va">status</span><span class="op">)</span>
+<span class="va">failure_tbl</span>
+<span class="co">#&gt; Reliability Data:</span>
+<span class="co">#&gt; # A tibble: 38 x 3</span>
+<span class="co">#&gt;        x status id   </span>
+<span class="co">#&gt;    &lt;int&gt;  &lt;dbl&gt; &lt;chr&gt;</span>
+<span class="co">#&gt;  1  6700      1 ID1  </span>
+<span class="co">#&gt;  2  6950      0 ID2  </span>
+<span class="co">#&gt;  3  7820      0 ID3  </span>
+<span class="co">#&gt;  4  8790      0 ID4  </span>
+<span class="co">#&gt;  5  9120      1 ID5  </span>
+<span class="co">#&gt;  6  9660      0 ID6  </span>
+<span class="co">#&gt;  7  9820      0 ID7  </span>
+<span class="co">#&gt;  8 11310      0 ID8  </span>
+<span class="co">#&gt;  9 11690      0 ID9  </span>
+<span class="co">#&gt; 10 11850      0 ID10 </span>
+<span class="co">#&gt; # ... with 28 more rows</span></code></pre></div>
 </div>
 <div id="estimation-of-failure-probabilities-with-package-weibulltools" class="section level2">
 <h2 class="hasAnchor">
@@ -215,28 +205,7 @@ Figure 2: Boxplots for different modes.
 <p>For reasons of simplicity we will ignore the differences between the failure modes <em>Mode1</em> and <em>Mode2</em> which are shown in <em>Figure 2</em>. Thus, we will act as there is only one mechanism of damage.</p>
 <p>First, we are interested in how censored observations influence the estimation of failure probabilities in comparison to the case where only failed units are considered. In the latter case we will use the function <code><a href="../reference/estimate_cdf.html">estimate_cdf()</a></code> with <code>methods = "mr"</code>. To deal with survived and failed units we will use <code><a href="../reference/estimate_cdf.html">estimate_cdf()</a></code> with <code>methods = "johnson"</code>. In order to use <code>estimate_cdf</code> we must convert the <code>shock</code> dataset to an appropriate format using the function <code><a href="../reference/reliability_data.html">reliability_data()</a></code>.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># Extract failure data from shock</span>
-<span class="va">failure_tbl</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/reliability_data.html">reliability_data</a></span><span class="op">(</span><span class="va">shock</span>, x <span class="op">=</span> <span class="va">Distance</span>, status <span class="op">=</span> <span class="va">Censor</span>, id <span class="op">=</span> <span class="va">id</span><span class="op">)</span>
-<span class="va">failure_tbl</span></code></pre></div>
-</div>
-<div id="a-tibble-38-x-3" class="section level1">
-<h1 class="hasAnchor">
-<a href="#a-tibble-38-x-3" class="anchor"></a>A tibble: 38 x 3</h1>
-<pre><code>   x status id   </code></pre>
-<p><int><dbl><chr> 1 6700 1 j<br>
-2 6950 0 N<br>
-3 7820 0 D<br>
-4 8790 0 X<br>
-5 9120 1 y<br>
-6 9660 0 p<br>
-7 9820 0 f<br>
-8 11310 0 o<br>
-9 11690 0 l<br>
-10 11850 0 L<br>
-# … with 28 more rows</chr></dbl></int></p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R">
-<span class="co"># Estimate CDF</span>
+<code class="sourceCode R"><span class="co"># Estimate CDF</span>
 <span class="va">tbl_cdf</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/estimate_cdf.html">estimate_cdf</a></span><span class="op">(</span><span class="va">failure_tbl</span>, methods <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"mr"</span>, <span class="st">"johnson"</span><span class="op">)</span><span class="op">)</span>
 <span class="co">#&gt; The 'mr' method only considers failed units (status == 1) and does not retain intact units (status == 0).</span>
 
@@ -272,7 +241,7 @@ method
 <tbody>
 <tr>
 <td style="text-align:center;">
-j
+ID1
 </td>
 <td style="text-align:center;">
 6700
@@ -292,7 +261,7 @@ mr
 </tr>
 <tr>
 <td style="text-align:center;">
-y
+ID5
 </td>
 <td style="text-align:center;">
 9120
@@ -312,7 +281,7 @@ mr
 </tr>
 <tr>
 <td style="text-align:center;">
-n
+ID13
 </td>
 <td style="text-align:center;">
 12200
@@ -332,7 +301,7 @@ mr
 </tr>
 <tr>
 <td style="text-align:center;">
-R
+ID15
 </td>
 <td style="text-align:center;">
 13150
@@ -352,7 +321,7 @@ mr
 </tr>
 <tr>
 <td style="text-align:center;">
-M
+ID19
 </td>
 <td style="text-align:center;">
 14300
@@ -372,7 +341,7 @@ mr
 </tr>
 <tr>
 <td style="text-align:center;">
-a
+ID20
 </td>
 <td style="text-align:center;">
 17520
@@ -392,7 +361,7 @@ mr
 </tr>
 <tr>
 <td style="text-align:center;">
-k
+ID27
 </td>
 <td style="text-align:center;">
 20100
@@ -412,7 +381,7 @@ mr
 </tr>
 <tr>
 <td style="text-align:center;">
-S
+ID31
 </td>
 <td style="text-align:center;">
 20900
@@ -432,7 +401,7 @@ mr
 </tr>
 <tr>
 <td style="text-align:center;">
-Z
+ID32
 </td>
 <td style="text-align:center;">
 22700
@@ -452,7 +421,7 @@ mr
 </tr>
 <tr>
 <td style="text-align:center;">
-q
+ID34
 </td>
 <td style="text-align:center;">
 26510
@@ -472,7 +441,7 @@ mr
 </tr>
 <tr>
 <td style="text-align:center;">
-d
+ID36
 </td>
 <td style="text-align:center;">
 27490
@@ -492,7 +461,7 @@ mr
 </tr>
 </tbody>
 </table>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R">
 <span class="co"># Second case where both, survived and failed units are considered:</span>
 <span class="va">tbl_cdf_john</span> <span class="op">&lt;-</span> <span class="va">tbl_cdf</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://rdrr.io/r/stats/filter.html">filter</a></span><span class="op">(</span><span class="va">method</span> <span class="op">==</span> <span class="st">"johnson"</span><span class="op">)</span> 
@@ -526,7 +495,7 @@ method
 <tbody>
 <tr>
 <td style="text-align:center;">
-j
+ID1
 </td>
 <td style="text-align:center;">
 6700
@@ -546,7 +515,7 @@ johnson
 </tr>
 <tr>
 <td style="text-align:center;">
-N
+ID2
 </td>
 <td style="text-align:center;">
 6950
@@ -566,7 +535,7 @@ johnson
 </tr>
 <tr>
 <td style="text-align:center;">
-D
+ID3
 </td>
 <td style="text-align:center;">
 7820
@@ -586,7 +555,7 @@ johnson
 </tr>
 <tr>
 <td style="text-align:center;">
-X
+ID4
 </td>
 <td style="text-align:center;">
 8790
@@ -606,7 +575,7 @@ johnson
 </tr>
 <tr>
 <td style="text-align:center;">
-y
+ID5
 </td>
 <td style="text-align:center;">
 9120
@@ -626,7 +595,7 @@ johnson
 </tr>
 <tr>
 <td style="text-align:center;">
-p
+ID6
 </td>
 <td style="text-align:center;">
 9660
@@ -646,7 +615,7 @@ johnson
 </tr>
 <tr>
 <td style="text-align:center;">
-f
+ID7
 </td>
 <td style="text-align:center;">
 9820
@@ -666,7 +635,7 @@ johnson
 </tr>
 <tr>
 <td style="text-align:center;">
-o
+ID8
 </td>
 <td style="text-align:center;">
 11310
@@ -686,7 +655,7 @@ johnson
 </tr>
 <tr>
 <td style="text-align:center;">
-l
+ID9
 </td>
 <td style="text-align:center;">
 11690
@@ -706,7 +675,7 @@ johnson
 </tr>
 <tr>
 <td style="text-align:center;">
-L
+ID10
 </td>
 <td style="text-align:center;">
 11850
@@ -726,7 +695,7 @@ johnson
 </tr>
 <tr>
 <td style="text-align:center;">
-I
+ID11
 </td>
 <td style="text-align:center;">
 11880
@@ -746,7 +715,7 @@ johnson
 </tr>
 <tr>
 <td style="text-align:center;">
-i
+ID12
 </td>
 <td style="text-align:center;">
 12140
@@ -766,7 +735,7 @@ johnson
 </tr>
 <tr>
 <td style="text-align:center;">
-n
+ID13
 </td>
 <td style="text-align:center;">
 12200
@@ -786,7 +755,7 @@ johnson
 </tr>
 <tr>
 <td style="text-align:center;">
-O
+ID14
 </td>
 <td style="text-align:center;">
 12870
@@ -806,7 +775,7 @@ johnson
 </tr>
 <tr>
 <td style="text-align:center;">
-R
+ID15
 </td>
 <td style="text-align:center;">
 13150
@@ -826,7 +795,7 @@ johnson
 </tr>
 <tr>
 <td style="text-align:center;">
-u
+ID16
 </td>
 <td style="text-align:center;">
 13330
@@ -846,7 +815,7 @@ johnson
 </tr>
 <tr>
 <td style="text-align:center;">
-g
+ID17
 </td>
 <td style="text-align:center;">
 13470
@@ -866,7 +835,7 @@ johnson
 </tr>
 <tr>
 <td style="text-align:center;">
-z
+ID18
 </td>
 <td style="text-align:center;">
 14040
@@ -886,7 +855,7 @@ johnson
 </tr>
 <tr>
 <td style="text-align:center;">
-M
+ID19
 </td>
 <td style="text-align:center;">
 14300
@@ -906,7 +875,7 @@ johnson
 </tr>
 <tr>
 <td style="text-align:center;">
-a
+ID20
 </td>
 <td style="text-align:center;">
 17520
@@ -926,7 +895,7 @@ johnson
 </tr>
 <tr>
 <td style="text-align:center;">
-s
+ID21
 </td>
 <td style="text-align:center;">
 17540
@@ -946,7 +915,7 @@ johnson
 </tr>
 <tr>
 <td style="text-align:center;">
-J
+ID22
 </td>
 <td style="text-align:center;">
 17890
@@ -966,7 +935,7 @@ johnson
 </tr>
 <tr>
 <td style="text-align:center;">
-F
+ID23
 </td>
 <td style="text-align:center;">
 18450
@@ -986,7 +955,7 @@ johnson
 </tr>
 <tr>
 <td style="text-align:center;">
-b
+ID24
 </td>
 <td style="text-align:center;">
 18960
@@ -1006,7 +975,7 @@ johnson
 </tr>
 <tr>
 <td style="text-align:center;">
-K
+ID25
 </td>
 <td style="text-align:center;">
 18980
@@ -1026,7 +995,7 @@ johnson
 </tr>
 <tr>
 <td style="text-align:center;">
-w
+ID26
 </td>
 <td style="text-align:center;">
 19410
@@ -1046,7 +1015,7 @@ johnson
 </tr>
 <tr>
 <td style="text-align:center;">
-k
+ID27
 </td>
 <td style="text-align:center;">
 20100
@@ -1066,7 +1035,7 @@ johnson
 </tr>
 <tr>
 <td style="text-align:center;">
-W
+ID28
 </td>
 <td style="text-align:center;">
 20100
@@ -1086,7 +1055,7 @@ johnson
 </tr>
 <tr>
 <td style="text-align:center;">
-C
+ID29
 </td>
 <td style="text-align:center;">
 20150
@@ -1106,7 +1075,7 @@ johnson
 </tr>
 <tr>
 <td style="text-align:center;">
-V
+ID30
 </td>
 <td style="text-align:center;">
 20320
@@ -1126,7 +1095,7 @@ johnson
 </tr>
 <tr>
 <td style="text-align:center;">
-S
+ID31
 </td>
 <td style="text-align:center;">
 20900
@@ -1146,7 +1115,7 @@ johnson
 </tr>
 <tr>
 <td style="text-align:center;">
-Z
+ID32
 </td>
 <td style="text-align:center;">
 22700
@@ -1166,7 +1135,7 @@ johnson
 </tr>
 <tr>
 <td style="text-align:center;">
-x
+ID33
 </td>
 <td style="text-align:center;">
 23490
@@ -1186,7 +1155,7 @@ johnson
 </tr>
 <tr>
 <td style="text-align:center;">
-q
+ID34
 </td>
 <td style="text-align:center;">
 26510
@@ -1206,7 +1175,7 @@ johnson
 </tr>
 <tr>
 <td style="text-align:center;">
-v
+ID35
 </td>
 <td style="text-align:center;">
 27410
@@ -1226,7 +1195,7 @@ johnson
 </tr>
 <tr>
 <td style="text-align:center;">
-d
+ID36
 </td>
 <td style="text-align:center;">
 27490
@@ -1246,7 +1215,7 @@ johnson
 </tr>
 <tr>
 <td style="text-align:center;">
-A
+ID37
 </td>
 <td style="text-align:center;">
 27890
@@ -1266,7 +1235,7 @@ johnson
 </tr>
 <tr>
 <td style="text-align:center;">
-T
+ID38
 </td>
 <td style="text-align:center;">
 28100
@@ -1288,13 +1257,14 @@ johnson
 </table>
 <p><br></p>
 <p>If we compare <em>Table 1</em> and <em>Table 2</em> we can see that survivors decrease probabilities. But this is just that what was expected since undamaged units with longer or equal operation times (here mileage) let us gain confidence in the product.</p>
+</div>
 <div id="probability-plotting-with-package-weibulltools" class="section level2">
 <h2 class="hasAnchor">
 <a href="#probability-plotting-with-package-weibulltools" class="anchor"></a>Probability Plotting with Package <code>weibulltools</code>
 </h2>
 <p>The next step is to visualize the estimated probabilities in a probability plot. With function <code><a href="../reference/plot_prob.html">plot_prob()</a></code> we can construct plots for several lifetime distributions.</p>
 <p>Here we want to use a Weibull grid in which the estimates, given in <em>Table 1</em> and <em>Table 2</em>, are plotted. With <code><a href="../reference/plot_prob.html">plot_prob()</a></code> we can visualize the estimates of multiple methods at once.</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Weibull grid for probabilities calculated with Johnson: </span>
 <span class="va">weibull_grid</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plot_prob.html">plot_prob</a></span><span class="op">(</span>
   <span class="va">tbl_cdf</span>,
@@ -1315,7 +1285,7 @@ Figure 3: Plotting positions in weibull grid.
 <p><br></p>
 <p><em>Figure 3</em> shows that the consideration of survivors (blue points, <em>Failures: johnson</em>) decreases the failure probability in comparison to the sole evaluation of failed items (green points, <em>Failures: mr</em>).</p>
 <p>Finally, we want to use a Log-normal probability plot to visualize the estimated failure probabilities.</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Log-Normal grid for estimated probabilities</span>
 <span class="va">lognorm_grid</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plot_prob.html">plot_prob</a></span><span class="op">(</span>
   <span class="va">tbl_cdf</span>,
@@ -1335,7 +1305,6 @@ Figure 4: Plotting positions in log-normal grid.
 </div>
 <p><br></p>
 <p>On the basis of <em>Figure 3</em> and <em>Figure 4</em> we can subjectivly assess the goodness of fit of Weibull and Log-normal. It can be seen that in both grids, the plotted points roughly fall on a straight line. Hence one can say that the Weibull as well as the Log-normal are good model candidates for the <code>shock</code> data.</p>
-</div>
 </div>
 <div class="footnotes">
 <hr>
