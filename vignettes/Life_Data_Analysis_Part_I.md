@@ -130,10 +130,533 @@ To apply the introduced methods of non-parametric failure probability estimation
           _New York, Wiley series in probability and statistics_, 1998, p. 630
 
 
+```r
+data(shock)
+
+failure_tbl <- reliability_data(data = shock, x = distance, status = status)
+failure_tbl
+#> Reliability Data:
+#> # A tibble: 38 x 3
+#>        x status id   
+#>    <int>  <dbl> <chr>
+#>  1  6700      1 ID1  
+#>  2  6950      0 ID2  
+#>  3  7820      0 ID3  
+#>  4  8790      0 ID4  
+#>  5  9120      1 ID5  
+#>  6  9660      0 ID6  
+#>  7  9820      0 ID7  
+#>  8 11310      0 ID8  
+#>  9 11690      0 ID9  
+#> 10 11850      0 ID10 
+#> # ... with 28 more rows
+```
+
+## Estimation of Failure Probabilities with Package `weibulltools`
+
+For reasons of simplicity we will ignore the differences between the failure modes _Mode1_ and _Mode2_ which are shown in _Figure 2_. Thus, we will act as there is only one mechanism of damage.  
+
+First, we are interested in how censored observations influence the estimation of failure probabilities in comparison to the case where only failed units are considered. 
+In the latter case we will use the function `estimate_cdf()` with `methods = "mr"`. To deal with survived and failed units we will use `estimate_cdf()` with `methods = "johnson"`. In order to use `estimate_cdf` we must convert the `shock` dataset to an appropriate format using the function `reliability_data()`.  
 
 
+```r
+# Estimate CDF
+tbl_cdf <- estimate_cdf(failure_tbl, methods = c("mr", "johnson"))
+#> The 'mr' method only considers failed units (status == 1) and does not retain intact units (status == 0).
+
+# First case where only failed units are taken into account:
+tbl_cdf_mr <- tbl_cdf %>% filter(method == "mr")
+
+knitr::kable(tbl_cdf_mr, format = "html", row.names = FALSE, align = "c", 
+             caption = "Table 1: Failure probabilities using failed items.")
+```
+
+<table>
+<caption>Table 1: Failure probabilities using failed items.</caption>
+ <thead>
+  <tr>
+   <th style="text-align:center;"> id </th>
+   <th style="text-align:center;"> x </th>
+   <th style="text-align:center;"> status </th>
+   <th style="text-align:center;"> rank </th>
+   <th style="text-align:center;"> prob </th>
+   <th style="text-align:center;"> method </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:center;"> ID1 </td>
+   <td style="text-align:center;"> 6700 </td>
+   <td style="text-align:center;"> 1 </td>
+   <td style="text-align:center;"> 1 </td>
+   <td style="text-align:center;"> 0.0614035 </td>
+   <td style="text-align:center;"> mr </td>
+  </tr>
+  <tr>
+   <td style="text-align:center;"> ID5 </td>
+   <td style="text-align:center;"> 9120 </td>
+   <td style="text-align:center;"> 1 </td>
+   <td style="text-align:center;"> 2 </td>
+   <td style="text-align:center;"> 0.1491228 </td>
+   <td style="text-align:center;"> mr </td>
+  </tr>
+  <tr>
+   <td style="text-align:center;"> ID13 </td>
+   <td style="text-align:center;"> 12200 </td>
+   <td style="text-align:center;"> 1 </td>
+   <td style="text-align:center;"> 3 </td>
+   <td style="text-align:center;"> 0.2368421 </td>
+   <td style="text-align:center;"> mr </td>
+  </tr>
+  <tr>
+   <td style="text-align:center;"> ID15 </td>
+   <td style="text-align:center;"> 13150 </td>
+   <td style="text-align:center;"> 1 </td>
+   <td style="text-align:center;"> 4 </td>
+   <td style="text-align:center;"> 0.3245614 </td>
+   <td style="text-align:center;"> mr </td>
+  </tr>
+  <tr>
+   <td style="text-align:center;"> ID19 </td>
+   <td style="text-align:center;"> 14300 </td>
+   <td style="text-align:center;"> 1 </td>
+   <td style="text-align:center;"> 5 </td>
+   <td style="text-align:center;"> 0.4122807 </td>
+   <td style="text-align:center;"> mr </td>
+  </tr>
+  <tr>
+   <td style="text-align:center;"> ID20 </td>
+   <td style="text-align:center;"> 17520 </td>
+   <td style="text-align:center;"> 1 </td>
+   <td style="text-align:center;"> 6 </td>
+   <td style="text-align:center;"> 0.5000000 </td>
+   <td style="text-align:center;"> mr </td>
+  </tr>
+  <tr>
+   <td style="text-align:center;"> ID27 </td>
+   <td style="text-align:center;"> 20100 </td>
+   <td style="text-align:center;"> 1 </td>
+   <td style="text-align:center;"> 7 </td>
+   <td style="text-align:center;"> 0.5877193 </td>
+   <td style="text-align:center;"> mr </td>
+  </tr>
+  <tr>
+   <td style="text-align:center;"> ID31 </td>
+   <td style="text-align:center;"> 20900 </td>
+   <td style="text-align:center;"> 1 </td>
+   <td style="text-align:center;"> 8 </td>
+   <td style="text-align:center;"> 0.6754386 </td>
+   <td style="text-align:center;"> mr </td>
+  </tr>
+  <tr>
+   <td style="text-align:center;"> ID32 </td>
+   <td style="text-align:center;"> 22700 </td>
+   <td style="text-align:center;"> 1 </td>
+   <td style="text-align:center;"> 9 </td>
+   <td style="text-align:center;"> 0.7631579 </td>
+   <td style="text-align:center;"> mr </td>
+  </tr>
+  <tr>
+   <td style="text-align:center;"> ID34 </td>
+   <td style="text-align:center;"> 26510 </td>
+   <td style="text-align:center;"> 1 </td>
+   <td style="text-align:center;"> 10 </td>
+   <td style="text-align:center;"> 0.8508772 </td>
+   <td style="text-align:center;"> mr </td>
+  </tr>
+  <tr>
+   <td style="text-align:center;"> ID36 </td>
+   <td style="text-align:center;"> 27490 </td>
+   <td style="text-align:center;"> 1 </td>
+   <td style="text-align:center;"> 11 </td>
+   <td style="text-align:center;"> 0.9385965 </td>
+   <td style="text-align:center;"> mr </td>
+  </tr>
+</tbody>
+</table>
+
+```r
+
+# Second case where both, survived and failed units are considered:
+tbl_cdf_john <- tbl_cdf %>% filter(method == "johnson") 
+
+knitr::kable(tbl_cdf_john, format = "html", row.names = FALSE, align = "c", 
+             caption = "Table 2: Failure probabilities using all items.") 
+```
+
+<table>
+<caption>Table 2: Failure probabilities using all items.</caption>
+ <thead>
+  <tr>
+   <th style="text-align:center;"> id </th>
+   <th style="text-align:center;"> x </th>
+   <th style="text-align:center;"> status </th>
+   <th style="text-align:center;"> rank </th>
+   <th style="text-align:center;"> prob </th>
+   <th style="text-align:center;"> method </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:center;"> ID1 </td>
+   <td style="text-align:center;"> 6700 </td>
+   <td style="text-align:center;"> 1 </td>
+   <td style="text-align:center;"> 1.000000 </td>
+   <td style="text-align:center;"> 0.0182292 </td>
+   <td style="text-align:center;"> johnson </td>
+  </tr>
+  <tr>
+   <td style="text-align:center;"> ID2 </td>
+   <td style="text-align:center;"> 6950 </td>
+   <td style="text-align:center;"> 0 </td>
+   <td style="text-align:center;"> NA </td>
+   <td style="text-align:center;"> NA </td>
+   <td style="text-align:center;"> johnson </td>
+  </tr>
+  <tr>
+   <td style="text-align:center;"> ID3 </td>
+   <td style="text-align:center;"> 7820 </td>
+   <td style="text-align:center;"> 0 </td>
+   <td style="text-align:center;"> NA </td>
+   <td style="text-align:center;"> NA </td>
+   <td style="text-align:center;"> johnson </td>
+  </tr>
+  <tr>
+   <td style="text-align:center;"> ID4 </td>
+   <td style="text-align:center;"> 8790 </td>
+   <td style="text-align:center;"> 0 </td>
+   <td style="text-align:center;"> NA </td>
+   <td style="text-align:center;"> NA </td>
+   <td style="text-align:center;"> johnson </td>
+  </tr>
+  <tr>
+   <td style="text-align:center;"> ID5 </td>
+   <td style="text-align:center;"> 9120 </td>
+   <td style="text-align:center;"> 1 </td>
+   <td style="text-align:center;"> 2.085714 </td>
+   <td style="text-align:center;"> 0.0465030 </td>
+   <td style="text-align:center;"> johnson </td>
+  </tr>
+  <tr>
+   <td style="text-align:center;"> ID6 </td>
+   <td style="text-align:center;"> 9660 </td>
+   <td style="text-align:center;"> 0 </td>
+   <td style="text-align:center;"> NA </td>
+   <td style="text-align:center;"> NA </td>
+   <td style="text-align:center;"> johnson </td>
+  </tr>
+  <tr>
+   <td style="text-align:center;"> ID7 </td>
+   <td style="text-align:center;"> 9820 </td>
+   <td style="text-align:center;"> 0 </td>
+   <td style="text-align:center;"> NA </td>
+   <td style="text-align:center;"> NA </td>
+   <td style="text-align:center;"> johnson </td>
+  </tr>
+  <tr>
+   <td style="text-align:center;"> ID8 </td>
+   <td style="text-align:center;"> 11310 </td>
+   <td style="text-align:center;"> 0 </td>
+   <td style="text-align:center;"> NA </td>
+   <td style="text-align:center;"> NA </td>
+   <td style="text-align:center;"> johnson </td>
+  </tr>
+  <tr>
+   <td style="text-align:center;"> ID9 </td>
+   <td style="text-align:center;"> 11690 </td>
+   <td style="text-align:center;"> 0 </td>
+   <td style="text-align:center;"> NA </td>
+   <td style="text-align:center;"> NA </td>
+   <td style="text-align:center;"> johnson </td>
+  </tr>
+  <tr>
+   <td style="text-align:center;"> ID10 </td>
+   <td style="text-align:center;"> 11850 </td>
+   <td style="text-align:center;"> 0 </td>
+   <td style="text-align:center;"> NA </td>
+   <td style="text-align:center;"> NA </td>
+   <td style="text-align:center;"> johnson </td>
+  </tr>
+  <tr>
+   <td style="text-align:center;"> ID11 </td>
+   <td style="text-align:center;"> 11880 </td>
+   <td style="text-align:center;"> 0 </td>
+   <td style="text-align:center;"> NA </td>
+   <td style="text-align:center;"> NA </td>
+   <td style="text-align:center;"> johnson </td>
+  </tr>
+  <tr>
+   <td style="text-align:center;"> ID12 </td>
+   <td style="text-align:center;"> 12140 </td>
+   <td style="text-align:center;"> 0 </td>
+   <td style="text-align:center;"> NA </td>
+   <td style="text-align:center;"> NA </td>
+   <td style="text-align:center;"> johnson </td>
+  </tr>
+  <tr>
+   <td style="text-align:center;"> ID13 </td>
+   <td style="text-align:center;"> 12200 </td>
+   <td style="text-align:center;"> 1 </td>
+   <td style="text-align:center;"> 3.452910 </td>
+   <td style="text-align:center;"> 0.0821070 </td>
+   <td style="text-align:center;"> johnson </td>
+  </tr>
+  <tr>
+   <td style="text-align:center;"> ID14 </td>
+   <td style="text-align:center;"> 12870 </td>
+   <td style="text-align:center;"> 0 </td>
+   <td style="text-align:center;"> NA </td>
+   <td style="text-align:center;"> NA </td>
+   <td style="text-align:center;"> johnson </td>
+  </tr>
+  <tr>
+   <td style="text-align:center;"> ID15 </td>
+   <td style="text-align:center;"> 13150 </td>
+   <td style="text-align:center;"> 1 </td>
+   <td style="text-align:center;"> 4.874794 </td>
+   <td style="text-align:center;"> 0.1191353 </td>
+   <td style="text-align:center;"> johnson </td>
+  </tr>
+  <tr>
+   <td style="text-align:center;"> ID16 </td>
+   <td style="text-align:center;"> 13330 </td>
+   <td style="text-align:center;"> 0 </td>
+   <td style="text-align:center;"> NA </td>
+   <td style="text-align:center;"> NA </td>
+   <td style="text-align:center;"> johnson </td>
+  </tr>
+  <tr>
+   <td style="text-align:center;"> ID17 </td>
+   <td style="text-align:center;"> 13470 </td>
+   <td style="text-align:center;"> 0 </td>
+   <td style="text-align:center;"> NA </td>
+   <td style="text-align:center;"> NA </td>
+   <td style="text-align:center;"> johnson </td>
+  </tr>
+  <tr>
+   <td style="text-align:center;"> ID18 </td>
+   <td style="text-align:center;"> 14040 </td>
+   <td style="text-align:center;"> 0 </td>
+   <td style="text-align:center;"> NA </td>
+   <td style="text-align:center;"> NA </td>
+   <td style="text-align:center;"> johnson </td>
+  </tr>
+  <tr>
+   <td style="text-align:center;"> ID19 </td>
+   <td style="text-align:center;"> 14300 </td>
+   <td style="text-align:center;"> 1 </td>
+   <td style="text-align:center;"> 6.499803 </td>
+   <td style="text-align:center;"> 0.1614532 </td>
+   <td style="text-align:center;"> johnson </td>
+  </tr>
+  <tr>
+   <td style="text-align:center;"> ID20 </td>
+   <td style="text-align:center;"> 17520 </td>
+   <td style="text-align:center;"> 1 </td>
+   <td style="text-align:center;"> 8.124813 </td>
+   <td style="text-align:center;"> 0.2037712 </td>
+   <td style="text-align:center;"> johnson </td>
+  </tr>
+  <tr>
+   <td style="text-align:center;"> ID21 </td>
+   <td style="text-align:center;"> 17540 </td>
+   <td style="text-align:center;"> 0 </td>
+   <td style="text-align:center;"> NA </td>
+   <td style="text-align:center;"> NA </td>
+   <td style="text-align:center;"> johnson </td>
+  </tr>
+  <tr>
+   <td style="text-align:center;"> ID22 </td>
+   <td style="text-align:center;"> 17890 </td>
+   <td style="text-align:center;"> 0 </td>
+   <td style="text-align:center;"> NA </td>
+   <td style="text-align:center;"> NA </td>
+   <td style="text-align:center;"> johnson </td>
+  </tr>
+  <tr>
+   <td style="text-align:center;"> ID23 </td>
+   <td style="text-align:center;"> 18450 </td>
+   <td style="text-align:center;"> 0 </td>
+   <td style="text-align:center;"> NA </td>
+   <td style="text-align:center;"> NA </td>
+   <td style="text-align:center;"> johnson </td>
+  </tr>
+  <tr>
+   <td style="text-align:center;"> ID24 </td>
+   <td style="text-align:center;"> 18960 </td>
+   <td style="text-align:center;"> 0 </td>
+   <td style="text-align:center;"> NA </td>
+   <td style="text-align:center;"> NA </td>
+   <td style="text-align:center;"> johnson </td>
+  </tr>
+  <tr>
+   <td style="text-align:center;"> ID25 </td>
+   <td style="text-align:center;"> 18980 </td>
+   <td style="text-align:center;"> 0 </td>
+   <td style="text-align:center;"> NA </td>
+   <td style="text-align:center;"> NA </td>
+   <td style="text-align:center;"> johnson </td>
+  </tr>
+  <tr>
+   <td style="text-align:center;"> ID26 </td>
+   <td style="text-align:center;"> 19410 </td>
+   <td style="text-align:center;"> 0 </td>
+   <td style="text-align:center;"> NA </td>
+   <td style="text-align:center;"> NA </td>
+   <td style="text-align:center;"> johnson </td>
+  </tr>
+  <tr>
+   <td style="text-align:center;"> ID27 </td>
+   <td style="text-align:center;"> 20100 </td>
+   <td style="text-align:center;"> 1 </td>
+   <td style="text-align:center;"> 10.499828 </td>
+   <td style="text-align:center;"> 0.2656205 </td>
+   <td style="text-align:center;"> johnson </td>
+  </tr>
+  <tr>
+   <td style="text-align:center;"> ID28 </td>
+   <td style="text-align:center;"> 20100 </td>
+   <td style="text-align:center;"> 0 </td>
+   <td style="text-align:center;"> NA </td>
+   <td style="text-align:center;"> NA </td>
+   <td style="text-align:center;"> johnson </td>
+  </tr>
+  <tr>
+   <td style="text-align:center;"> ID29 </td>
+   <td style="text-align:center;"> 20150 </td>
+   <td style="text-align:center;"> 0 </td>
+   <td style="text-align:center;"> NA </td>
+   <td style="text-align:center;"> NA </td>
+   <td style="text-align:center;"> johnson </td>
+  </tr>
+  <tr>
+   <td style="text-align:center;"> ID30 </td>
+   <td style="text-align:center;"> 20320 </td>
+   <td style="text-align:center;"> 0 </td>
+   <td style="text-align:center;"> NA </td>
+   <td style="text-align:center;"> NA </td>
+   <td style="text-align:center;"> johnson </td>
+  </tr>
+  <tr>
+   <td style="text-align:center;"> ID31 </td>
+   <td style="text-align:center;"> 20900 </td>
+   <td style="text-align:center;"> 1 </td>
+   <td style="text-align:center;"> 13.666514 </td>
+   <td style="text-align:center;"> 0.3480863 </td>
+   <td style="text-align:center;"> johnson </td>
+  </tr>
+  <tr>
+   <td style="text-align:center;"> ID32 </td>
+   <td style="text-align:center;"> 22700 </td>
+   <td style="text-align:center;"> 1 </td>
+   <td style="text-align:center;"> 16.833199 </td>
+   <td style="text-align:center;"> 0.4305521 </td>
+   <td style="text-align:center;"> johnson </td>
+  </tr>
+  <tr>
+   <td style="text-align:center;"> ID33 </td>
+   <td style="text-align:center;"> 23490 </td>
+   <td style="text-align:center;"> 0 </td>
+   <td style="text-align:center;"> NA </td>
+   <td style="text-align:center;"> NA </td>
+   <td style="text-align:center;"> johnson </td>
+  </tr>
+  <tr>
+   <td style="text-align:center;"> ID34 </td>
+   <td style="text-align:center;"> 26510 </td>
+   <td style="text-align:center;"> 1 </td>
+   <td style="text-align:center;"> 20.527666 </td>
+   <td style="text-align:center;"> 0.5267621 </td>
+   <td style="text-align:center;"> johnson </td>
+  </tr>
+  <tr>
+   <td style="text-align:center;"> ID35 </td>
+   <td style="text-align:center;"> 27410 </td>
+   <td style="text-align:center;"> 0 </td>
+   <td style="text-align:center;"> NA </td>
+   <td style="text-align:center;"> NA </td>
+   <td style="text-align:center;"> johnson </td>
+  </tr>
+  <tr>
+   <td style="text-align:center;"> ID36 </td>
+   <td style="text-align:center;"> 27490 </td>
+   <td style="text-align:center;"> 1 </td>
+   <td style="text-align:center;"> 25.145750 </td>
+   <td style="text-align:center;"> 0.6470247 </td>
+   <td style="text-align:center;"> johnson </td>
+  </tr>
+  <tr>
+   <td style="text-align:center;"> ID37 </td>
+   <td style="text-align:center;"> 27890 </td>
+   <td style="text-align:center;"> 0 </td>
+   <td style="text-align:center;"> NA </td>
+   <td style="text-align:center;"> NA </td>
+   <td style="text-align:center;"> johnson </td>
+  </tr>
+  <tr>
+   <td style="text-align:center;"> ID38 </td>
+   <td style="text-align:center;"> 28100 </td>
+   <td style="text-align:center;"> 0 </td>
+   <td style="text-align:center;"> NA </td>
+   <td style="text-align:center;"> NA </td>
+   <td style="text-align:center;"> johnson </td>
+  </tr>
+</tbody>
+</table>
+
+<br>
+
+If we compare _Table 1_ and _Table 2_ we can see that survivors decrease probabilities. But this is just that what was expected since undamaged units with longer or equal operation times (here mileage) let us gain confidence in the product. 
+
+## Probability Plotting with Package `weibulltools` 
+
+The next step is to visualize the estimated probabilities in a probability plot. With function `plot_prob()` we can construct plots for several lifetime distributions. 
+
+Here we want to use a Weibull grid in which the estimates, given in _Table 1_ and _Table 2_, are plotted. With `plot_prob()` we can visualize the estimates of multiple methods at once.
 
 
+```r
+# Weibull grid for probabilities calculated with Johnson: 
+weibull_grid <- plot_prob(
+  tbl_cdf,
+  distribution = "weibull", 
+  title_main = "Weibull Probability Plot", 
+  title_x = "Mileage in km", 
+  title_y = "Probability of Failure in %",
+  title_trace = "Failures",
+  plot_method = "ggplot2"
+)
+
+weibull_grid
+```
+
+![Figure 3: Plotting positions in weibull grid.](figure/probability plot weibull-1.png)
+
+<br>
+
+_Figure 3_ shows that the consideration of survivors (blue points, _Failures: johnson_) decreases the failure probability in comparison to the sole evaluation of failed items (green points, _Failures: mr_).  
+
+Finally, we want to use a Log-normal probability plot to visualize the estimated failure probabilities.
 
 
+```r
+# Log-Normal grid for estimated probabilities
+lognorm_grid <- plot_prob(
+  tbl_cdf,
+  distribution = "lognormal",
+  title_main = "Log-Normal Probability Plot",
+  title_x = "Mileage in km",
+  title_y = "Probability of Failure in %",
+  title_trace = "Defect Shock Absorbers",
+  plot_method = "ggplot2"
+)
 
+lognorm_grid
+```
+
+![Figure 4: Plotting positions in log-normal grid.](figure/probability plot log-normal-1.png)
+
+<br>
+
+On the basis of _Figure 3_ and _Figure 4_ we can subjectivly assess the goodness of fit of Weibull and Log-normal. It can be seen that in both grids, the plotted points roughly fall on a straight line. Hence one can say that the Weibull as well as the Log-normal are good model candidates for the `shock` data.

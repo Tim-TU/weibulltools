@@ -138,15 +138,8 @@ To apply the introduced methods of non-parametric failure probability estimation
 ```{r dataset shock, fig.cap = "Figure 2: Boxplots for different modes.", message = FALSE}
 data(shock)
 
-data <- reliability_data(data = shock, x = distance, status = status)
-
-# Print
-data
-
-# Comparison of failure modes: 
-ggplot(data = shock, aes(x = Mode, y = Distance)) + 
-  geom_boxplot() + 
-  theme_bw()
+failure_tbl <- reliability_data(data = shock, x = distance, status = status)
+failure_tbl
 ```
 
 ## Estimation of Failure Probabilities with Package `weibulltools`
@@ -157,10 +150,6 @@ First, we are interested in how censored observations influence the estimation o
 In the latter case we will use the function `estimate_cdf()` with `methods = "mr"`. To deal with survived and failed units we will use `estimate_cdf()` with `methods = "johnson"`. In order to use `estimate_cdf` we must convert the `shock` dataset to an appropriate format using the function `reliability_data()`.  
 
 ```{r failure probabilities, results = 'asis'}
-# Extract failure data from shock
-failure_tbl <- reliability_data(shock, x = Distance, status = Censor, id = id)
-failure_tbl
-
 # Estimate CDF
 tbl_cdf <- estimate_cdf(failure_tbl, methods = c("mr", "johnson"))
 
