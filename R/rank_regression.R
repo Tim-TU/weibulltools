@@ -564,6 +564,7 @@ print.rank_regression <- function(x,
 #'   regarding the lifetime data in \code{x}.
 #' @param thres A numeric value for the threshold parameter.
 #' @param distribution Supposed three-parametric distribution of the random variable.
+#' @template dots
 #'
 #' @return
 #' Returns the coefficient of determination with respect to the threshold parameter
@@ -631,9 +632,7 @@ print.rank_regression <- function(x,
 #' )
 #'
 #' @export
-r_squared_profiling <- function(x,
-                                ...
-) {
+r_squared_profiling <- function(x, ...) {
   UseMethod("r_squared_profiling")
 }
 

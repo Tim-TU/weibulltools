@@ -99,6 +99,8 @@ plot_layout <- function(
 #' | \code{mixmod_em} | \code{\link{mixmod_em}} | - |
 #'
 #' @usage
+#' plot_prob(x, ...)
+#'
 #' ## S3 method for classes 'cdf_estimation', 'model_estimation',
 #' ## 'mixmod_regression', 'mixmod_em', 'mixmod_regression_list'
 #' plot_prob(
@@ -111,7 +113,7 @@ plot_layout <- function(
 #'   ...
 #' )
 #'
-#' @param x An object of aforementioned classes. See 'Details'.
+#' @param x An object of aforementioned classes. See 'S3 methods'.
 #' @param distribution Supposed distribution of the random variable.
 #' @param title_main A character string which is assigned to the main title
 #'   of the plot.
@@ -418,6 +420,7 @@ plot_prob.mixmod_regression_list <- function(x,
 #' @param title_trace A character string whis is assigned to the trace shown in
 #'   the legend.
 #' @param plot_method Package, which is used for generating the plot output.
+#' @template dots
 #'
 #' @return Returns a plot object containing the probability plot.
 #'
@@ -678,22 +681,13 @@ plot_prob_mix <- function(
 #' and "Line: 2".
 #'
 #' @usage
+#' plot_mod(p_obj, x, ...)
+#'
 #' ## S3 method for classes 'model_estimation', 'model_estimation_list',
 #' ## 'mixmod_regression', 'mixmod_regression_list', 'mixmod_em'
 #' plot_mod(p_obj, x, title_trace = "Fit")
 #'
-#' @section S3 methods:
-#'
-#' | **Class** | **Returned from** | **Condition** |
-#' | --- | --- | --- |
-#' | \code{model_estimation} | \code{\link{rank_regression}} | One method in \code{\link{estimate_cdf}} |
-#' | \code{model_estimation} | \code{\link{mixmod_regression}} | One method in \code{\link{estimate_cdf}}. No subgroups determined. |
-#' | \code{model_estimation} | \code{\link{ml_estimation}} | - |
-#' | \code{model_estimation_list} | \code{\link{rank_regression}} | Multiple methods in \code{\link{estimate_cdf}} |
-#' | \code{mixmod_regression} | \code{\link{mixmod_regression}} | One method in \code{\link{estimate_cdf}} |
-#' | \code{mixmod_regression_list} | \code{\link{mixmod_regression}} | Multiple methods in \code{\link{estimate_cdf}} |
-#' | \code{mixmod_em} | \code{\link{mixmod_em}} | - |
-#'
+#' @template mod_classes
 #'
 #' @param p_obj A plot object returned from \code{\link{plot_prob}}.
 #' @param x An object of aforementioned classes. See 'S3 methods'.
@@ -760,7 +754,6 @@ plot_prob_mix <- function(
 #'   title_trace = "Estimated Lognormal CDF"
 #' )
 #'
-#' @md
 #' @export
 #'
 plot_mod <- function(p_obj, x, ...) {
@@ -1195,17 +1188,13 @@ plot_mod_mix <- function(p_obj,
 #' This function is used to add estimated confidence region(s) to an existing
 #' probability plot which also includes the estimated regression line.
 #'
-#' @section Methods (by class):
-#' \describe{
-#'   \item{\code{\link[=plot_conf.confint]{confint}}}{
-#'     Preferred. Provide the output of either \code{\link{confint_betabinom}}
-#'     or \code{\link{confint_fisher}} directly.
-#'   }
-#'   \item{\code{\link[=plot_conf.default]{default}}}{
-#'     Provide \code{x}, \code{y}, \code{distribution} and \code{direction}
-#'     manually.
-#'   }
-#' }
+#' @param p_obj A plot object returned from \code{\link{plot_prob}}.
+#' @param x Confindence interval as returned by \code{\link{confint_betabinom}}
+#'   or \code{\link{confint_fisher}}.
+#' @param mod A model object. See 'S3 methods' for valid classes.
+#' @template dots
+#'
+#' @template mod_classes
 #'
 #' @encoding UTF-8
 #' @references Meeker, William Q; Escobar, Luis A., Statistical methods for
@@ -1215,16 +1204,194 @@ plot_mod_mix <- function(p_obj,
 #'   plotting positions, the estimated regression line and the estimated
 #'   confidence region(s).
 #'
+#' @examples
+#' # Alloy T7987 dataset taken from Meeker and Escobar(1998, p. 131)
+#' cycles   <- c(300, 300, 300, 300, 300, 291, 274, 271, 269, 257, 256, 227, 226,
+#'               224, 213, 211, 205, 203, 197, 196, 190, 189, 188, 187, 184, 180,
+#'               180, 177, 176, 173, 172, 171, 170, 170, 169, 168, 168, 162, 159,
+#'               159, 159, 159, 152, 152, 149, 149, 144, 143, 141, 141, 140, 139,
+#'               139, 136, 135, 133, 131, 129, 123, 121, 121, 118, 117, 117, 114,
+#'               112, 108, 104, 99, 99, 96, 94)
+#' state <- c(rep(0, 5), rep(1, 67))
+#' id <- 1:length(cycles)
+#'
+#' df_john <- johnson_method(x = cycles, status = state, id = id)
+
+#' # Example 1: Probability Plot, Regression Line and Confidence Bounds for Three-Parameter-Weibull:
+#' mrr <- rank_regression(x = df_john$x,
+#'                        y = df_john$prob,
+#'                        status = df_john$status,
+#'                        distribution = "weibull3",
+#'                        conf_level = .90)
+#'
+#' conf_betabin <- confint_betabinom(x = df_john$x,
+#'                                   status = df_john$status,
+#'                                   loc_sc_params = mrr$loc_sc_params,
+#'                                   distribution = "weibull3",
+#'                                   bounds = "two_sided",
+#'                                   conf_level = 0.95,
+#'                                   direction = "y")
+#'
+#' plot_weibull <- plot_prob(x = df_john$x,
+#'                           y = df_john$prob,
+#'                           status = df_john$status,
+#'                           id = df_john$id,
+#'                           distribution = "weibull",
+#'                           title_main = "Three-Parametric Weibull",
+#'                           title_x = "Cycles",
+#'                           title_y = "Probability of Failure in %",
+#'                           title_trace = "Failed Items")
+#'
+#' plot_reg_weibull <- plot_mod(p_obj = plot_weibull,
+#'                              x = conf_betabin$x,
+#'                              y = conf_betabin$prob,
+#'                              loc_sc_params = mrr$loc_sc_params,
+#'                              distribution = "weibull3",
+#'                              title_trace = "Estimated Weibull CDF")
+#'
+#' plot_conf_beta <- plot_conf(p_obj = plot_reg_weibull,
+#'                             x = list(conf_betabin$x),
+#'                             y = list(conf_betabin$lower_bound,
+#'                                      conf_betabin$upper_bound),
+#'                             direction = "y",
+#'                             distribution = "weibull3",
+#'                             title_trace = "Confidence Region")
+#'
+#' # Example 2: Probability Plot, Regression Line and Confidence Bounds for Three-Parameter-Lognormal:
+#' mrr_ln <- rank_regression(x = df_john$x,
+#'                        y = df_john$prob,
+#'                        status = df_john$status,
+#'                        distribution = "lognormal3",
+#'                        conf_level = .90)
+#'
+#' conf_betabin_ln <- confint_betabinom(x = df_john$x,
+#'                                   status = df_john$status,
+#'                                   loc_sc_params = mrr_ln$loc_sc_params,
+#'                                   distribution = "lognormal3",
+#'                                   bounds = "two_sided",
+#'                                   conf_level = 0.95,
+#'                                   direction = "y")
+#'
+#' plot_lognormal <- plot_prob(x = df_john$x,
+#'                           y = df_john$prob,
+#'                           status = df_john$status,
+#'                           id = df_john$id,
+#'                           distribution = "lognormal",
+#'                           title_main = "Three-Parametric Lognormal",
+#'                           title_x = "Cycles",
+#'                           title_y = "Probability of Failure in %",
+#'                           title_trace = "Failed Items")
+#'
+#' plot_reg_lognormal <- plot_mod(p_obj = plot_lognormal,
+#'                              x = conf_betabin_ln$x,
+#'                              y = conf_betabin_ln$prob,
+#'                              loc_sc_params = mrr_ln$loc_sc_params,
+#'                              distribution = "lognormal3",
+#'                              title_trace = "Estimated Lognormal CDF")
+#'
+#' plot_conf_beta_ln <- plot_conf(p_obj = plot_reg_lognormal,
+#'                             x = list(conf_betabin_ln$x),
+#'                             y = list(conf_betabin_ln$lower_bound,
+#'                                      conf_betabin_ln$upper_bound),
+#'                             direction = "y",
+#'                             distribution = "lognormal3",
+#'                             title_trace = "Confidence Region")
+#'
 #' @export
 #'
 plot_conf <- function(p_obj, x, ...) {
-  # Dispatch on x, dispatch on p_obj is done in plot_conf.default
   UseMethod("plot_conf", x)
 }
+
+
+
+#' @rdname plot_conf
+#'
+#' @export
+plot_conf.confint <- function(p_obj,
+                              x,
+                              mod,
+                              title_trace_mod = "Fit",
+                              title_trace_conf = "Confidence Limit",
+                              ...
+) {
+
+  # Plot method is determined by p_obj
+  plot_method <- if (inherits(p_obj, "gg")) {
+    "ggplot2"
+  } else if (inherits(p_obj, "plotly")) {
+    "plotly"
+  }  else {
+    stop(
+      "'p_obj' is not a valid plot object. Provide either a ggplot2 or a plotly
+      plot object."
+    )
+  }
+
+  p_mod <- if (inherits(mod, "model_estimation")) {
+    failed_data <- dplyr::filter(mod$data, status == 1)
+
+    plot_mod.default(
+      p_obj = p_obj,
+      x = x$x,
+      loc_sc_params = mod$loc_sc_params,
+      distribution = mod$distribution,
+      title_trace = title_trace_mod
+    )
+  } else if (inherits(mod, "model_estimation_list")) {
+    methods <- names(mod)
+
+    tbl_pred <- purrr::map2_dfr(mod, methods, function(model_estimation, method) {
+      plot_mod_helper(
+        x = x$x,
+        loc_sc_params = model_estimation$loc_sc_params,
+        distribution = model_estimation$distribution,
+        method = method
+      )
+    })
+
+    plot_mod_fun <- if (plot_method == "plotly") plot_mod_plotly else
+      plot_mod_ggplot2
+
+    plot_mod_fun(
+      p_obj = p_obj,
+      tbl_pred = tbl_pred,
+      title_trace = title_trace_mod
+    )
+  } else {
+    stop("'mod' must be an object returned from 'ml_estimation()' or
+         'rank_regression()'")
+  }
+
+  distribution <- x$distribution[1]
+
+  tbl_p <- plot_conf_helper_2(
+    x, distribution
+  )
+
+  plot_conf_fun <- if (plot_method == "plotly") plot_conf_plotly else
+    plot_conf_ggplot2
+
+  plot_conf_fun(
+    p_mod, tbl_p, title_trace_conf
+  )
+}
+
+
 
 #' Add Confidence Region(s) for Quantiles or Probabilities
 #'
 #' @inherit plot_conf description return references
+#'
+#' @param p_obj A plot object returned from \code{\link{plot_mod}}.
+#' @param x A list containing the x-coordinates of the confidence region(s).
+#'   The list can be of length 1 or 2. For more information see \strong{Details}.
+#' @param y A list containing the y-coordinates of the Confidence Region(s).
+#'   The list can be of length 1 or 2. For more information see \strong{Details}.
+#' @param direction A character string specifying the direction of the plotted
+#'   interval(s). Must be either "y" (failure probabilities) or "x" (quantiles).
+#' @inheritParams plot_prob.default
+#' @template dots
 #'
 #' @details
 #' It is important that the length of the vectors provided as lists in \code{x}
@@ -1238,15 +1405,6 @@ plot_conf <- function(p_obj, x, ...) {
 #'   \item Inside \code{\link{plot_mod}} use the output \code{df$x}
 #'     for \code{x} and \code{df$prob} for \code{y} of the function(s) named before.
 #'   \item In \strong{Examples} the described approach is shown with code.}
-#'
-#' @param p_obj A plot object returned from \code{\link{plot_mod}}.
-#' @param x A list containing the x-coordinates of the confidence region(s).
-#'   The list can be of length 1 or 2. For more information see \strong{Details}.
-#' @param y A list containing the y-coordinates of the Confidence Region(s).
-#'   The list can be of length 1 or 2. For more information see \strong{Details}.
-#' @param direction A character string specifying the direction of the plotted
-#'   interval(s). Must be either "y" (failure probabilities) or "x" (quantiles).
-#' @inheritParams plot_prob.default
 #'
 #' @examples
 #' # Alloy T7987 dataset taken from Meeker and Escobar(1998, p. 131)
@@ -1390,179 +1548,7 @@ plot_conf.default <- function(
   )
 }
 
-#' Add Confidence Region(s) for Quantiles or Probabilities
-#'
-#' @inherit plot_conf description return references
-#'
-#' @inheritParams plot_conf.default
-#' @inheritParams plot_prob.cdf_estimation
-#' @param p_obj A plot object returned from \code{\link{plot_prob}}.
-#' @param x Confindence interval as returned by \code{\link{confint_betabinom}}
-#'   or \code{\link{confint_fisher}}.
-#'
-#' @examples
-#' # Alloy T7987 dataset taken from Meeker and Escobar(1998, p. 131)
-#' cycles   <- c(300, 300, 300, 300, 300, 291, 274, 271, 269, 257, 256, 227, 226,
-#'               224, 213, 211, 205, 203, 197, 196, 190, 189, 188, 187, 184, 180,
-#'               180, 177, 176, 173, 172, 171, 170, 170, 169, 168, 168, 162, 159,
-#'               159, 159, 159, 152, 152, 149, 149, 144, 143, 141, 141, 140, 139,
-#'               139, 136, 135, 133, 131, 129, 123, 121, 121, 118, 117, 117, 114,
-#'               112, 108, 104, 99, 99, 96, 94)
-#' state <- c(rep(0, 5), rep(1, 67))
-#' id <- 1:length(cycles)
-#'
-#' df_john <- johnson_method(x = cycles, status = state, id = id)
 
-#' # Example 1: Probability Plot, Regression Line and Confidence Bounds for Three-Parameter-Weibull:
-#' mrr <- rank_regression(x = df_john$x,
-#'                        y = df_john$prob,
-#'                        status = df_john$status,
-#'                        distribution = "weibull3",
-#'                        conf_level = .90)
-#'
-#' conf_betabin <- confint_betabinom(x = df_john$x,
-#'                                   status = df_john$status,
-#'                                   loc_sc_params = mrr$loc_sc_params,
-#'                                   distribution = "weibull3",
-#'                                   bounds = "two_sided",
-#'                                   conf_level = 0.95,
-#'                                   direction = "y")
-#'
-#' plot_weibull <- plot_prob(x = df_john$x,
-#'                           y = df_john$prob,
-#'                           status = df_john$status,
-#'                           id = df_john$id,
-#'                           distribution = "weibull",
-#'                           title_main = "Three-Parametric Weibull",
-#'                           title_x = "Cycles",
-#'                           title_y = "Probability of Failure in %",
-#'                           title_trace = "Failed Items")
-#'
-#' plot_reg_weibull <- plot_mod(p_obj = plot_weibull,
-#'                              x = conf_betabin$x,
-#'                              y = conf_betabin$prob,
-#'                              loc_sc_params = mrr$loc_sc_params,
-#'                              distribution = "weibull3",
-#'                              title_trace = "Estimated Weibull CDF")
-#'
-#' plot_conf_beta <- plot_conf(p_obj = plot_reg_weibull,
-#'                             x = list(conf_betabin$x),
-#'                             y = list(conf_betabin$lower_bound,
-#'                                      conf_betabin$upper_bound),
-#'                             direction = "y",
-#'                             distribution = "weibull3",
-#'                             title_trace = "Confidence Region")
-#'
-#' # Example 2: Probability Plot, Regression Line and Confidence Bounds for Three-Parameter-Lognormal:
-#' mrr_ln <- rank_regression(x = df_john$x,
-#'                        y = df_john$prob,
-#'                        status = df_john$status,
-#'                        distribution = "lognormal3",
-#'                        conf_level = .90)
-#'
-#' conf_betabin_ln <- confint_betabinom(x = df_john$x,
-#'                                   status = df_john$status,
-#'                                   loc_sc_params = mrr_ln$loc_sc_params,
-#'                                   distribution = "lognormal3",
-#'                                   bounds = "two_sided",
-#'                                   conf_level = 0.95,
-#'                                   direction = "y")
-#'
-#' plot_lognormal <- plot_prob(x = df_john$x,
-#'                           y = df_john$prob,
-#'                           status = df_john$status,
-#'                           id = df_john$id,
-#'                           distribution = "lognormal",
-#'                           title_main = "Three-Parametric Lognormal",
-#'                           title_x = "Cycles",
-#'                           title_y = "Probability of Failure in %",
-#'                           title_trace = "Failed Items")
-#'
-#' plot_reg_lognormal <- plot_mod(p_obj = plot_lognormal,
-#'                              x = conf_betabin_ln$x,
-#'                              y = conf_betabin_ln$prob,
-#'                              loc_sc_params = mrr_ln$loc_sc_params,
-#'                              distribution = "lognormal3",
-#'                              title_trace = "Estimated Lognormal CDF")
-#'
-#' plot_conf_beta_ln <- plot_conf(p_obj = plot_reg_lognormal,
-#'                             x = list(conf_betabin_ln$x),
-#'                             y = list(conf_betabin_ln$lower_bound,
-#'                                      conf_betabin_ln$upper_bound),
-#'                             direction = "y",
-#'                             distribution = "lognormal3",
-#'                             title_trace = "Confidence Region")
-#'
-#' @export
-#'
-plot_conf.confint <- function(p_obj,
-                              x,
-                              mod,
-                              title_trace_mod = "Fit",
-                              title_trace_conf = "Confidence Limit",
-                              ...
-) {
-
-  # Plot method is determined by p_obj
-  plot_method <- if (inherits(p_obj, "gg")) {
-    "ggplot2"
-  } else if (inherits(p_obj, "plotly")) {
-    "plotly"
-  }  else {
-    stop(
-      "'p_obj' is not a valid plot object. Provide either a ggplot2 or a plotly
-      plot object."
-    )
-  }
-
-  p_mod <- if (inherits(mod, "model_estimation")) {
-    failed_data <- dplyr::filter(mod$data, status == 1)
-
-    plot_mod.default(
-      p_obj = p_obj,
-      x = x$x,
-      loc_sc_params = mod$loc_sc_params,
-      distribution = mod$distribution,
-      title_trace = title_trace_mod
-    )
-  } else if (inherits(mod, "model_estimation_list")) {
-    methods <- names(mod)
-
-    tbl_pred <- purrr::map2_dfr(mod, methods, function(model_estimation, method) {
-      plot_mod_helper(
-        x = x$x,
-        loc_sc_params = model_estimation$loc_sc_params,
-        distribution = model_estimation$distribution,
-        method = method
-      )
-    })
-
-    plot_mod_fun <- if (plot_method == "plotly") plot_mod_plotly else
-      plot_mod_ggplot2
-
-    plot_mod_fun(
-      p_obj = p_obj,
-      tbl_pred = tbl_pred,
-      title_trace = title_trace_mod
-    )
-  } else {
-    stop("'mod' must be an object returned from 'ml_estimation()' or
-         'rank_regression()'")
-  }
-
-  distribution <- x$distribution[1]
-
-  tbl_p <- plot_conf_helper_2(
-    x, distribution
-  )
-
-  plot_conf_fun <- if (plot_method == "plotly") plot_conf_plotly else
-    plot_conf_ggplot2
-
-  plot_conf_fun(
-    p_mod, tbl_p, title_trace_conf
-  )
-}
 
 #' Add Population Line(s) to an Existing Grid
 #'

@@ -17,6 +17,8 @@ estimate_cdf(x, ...)
 \arguments{
 \item{x}{A tibble returned by \link{reliability_data}.}
 
+\item{...}{Further arguments passed to or from other methods. Currently not used.}
+
 \item{methods}{One or multiple methods of \code{"mr"}, \code{"johnson"},
 \code{"kaplan"} or \code{"nelson"} used for the estimation of failure
 probabilities. See 'Details'.}

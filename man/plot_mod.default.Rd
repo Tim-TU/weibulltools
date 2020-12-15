@@ -107,7 +107,7 @@ plot_reg_lognormal <- plot_mod(
 }
 \references{
 Meeker, William Q; Escobar, Luis A., Statistical methods for
-reliability data, New York: Wiley series in probability and statistics, 1998
+  reliability data, New York: Wiley series in probability and statistics, 1998
 }
 \seealso{
 \code{\link{plot_mod}}

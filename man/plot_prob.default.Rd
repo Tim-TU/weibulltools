@@ -47,6 +47,8 @@ y axis.}
 the legend.}
 
 \item{plot_method}{Package, which is used for generating the plot output.}
+
+\item{...}{Further arguments passed to or from other methods. Currently not used.}
 }
 \value{
 Returns a plot object containing the probability plot.

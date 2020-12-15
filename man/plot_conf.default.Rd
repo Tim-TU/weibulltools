@@ -31,6 +31,8 @@ interval(s). Must be either "y" (failure probabilities) or "x" (quantiles).}
 
 \item{title_trace}{A character string whis is assigned to the trace shown in
 the legend.}
+
+\item{...}{Further arguments passed to or from other methods. Currently not used.}
 }
 \value{
 Returns a plot object containing the probability plot with
