@@ -68,7 +68,10 @@ Create consistent reliability data with columns:
 library(weibulltools)
 
 rel_tbl <- reliability_data(data = shock, x = distance, status = status)
+#> Warning: replacing previous import 'vctrs::data_frame' by 'tibble::data_frame'
+#> when loading 'dplyr'
 rel_tbl
+#> Reliability Data:
 #> # A tibble: 38 x 3
 #>       x status id   
 #>   <int>  <dbl> <chr>
@@ -87,8 +90,9 @@ methods:
 
 ``` r
 prob_tbl <- estimate_cdf(x = rel_tbl, methods = c("mr", "kaplan", "johnson", "nelson"))
-#> The method 'mr'only considers failed units (status == 1) and does not retain intact units (status == 0).
+#> The 'mr' method only considers failed units (status == 1) and does not retain intact units (status == 0).
 prob_tbl
+#> CDF estimation for methods 'mr', 'kaplan', 'johnson', 'nelson':
 #> # A tibble: 125 x 6
 #>   id        x status  rank   prob method
 #>   <chr> <int>  <dbl> <dbl>  <dbl> <chr> 
@@ -113,7 +117,7 @@ prob_vis <- plot_prob(x = prob_tbl, distribution = "weibull",
 prob_vis
 ```
 
-<img src="man/figures/README-probability visualization-1.png" width="100%" />
+<img src="man/figures/README-probability_visualization-1.png" width="100%" />
 
 ### Model estimation and visualization
 
@@ -150,13 +154,7 @@ rr_list
 
 Model visualization in an existing probability plot:
 
-``` r
-mod_vis <- plot_mod(p_obj = prob_vis, x = rr_list, distribution = "weibull", 
-                    title_trace = "RR") 
-mod_vis
-```
-
-<img src="man/figures/README-model visualization-1.png" width="100%" />
+# `{r, model_visualization} mod_vis <- plot_mod(p_obj = prob_vis, x = rr_list, distribution = "weibull",                      title_trace = "RR")  mod_vis`
 
 ## Getting help
 

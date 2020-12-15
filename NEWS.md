@@ -13,6 +13,7 @@
 * `mcs_delay_register()`, `mcs_delay_report()`, `mcs_delays()`: Argument `seed` and element `int_seed` of the output list have been removed. For reproducibility use `set.seed()` before calling one of these functions. Argument `x` was renamed to `time`.  
 * `confint_betabinom.default()` and `confint_fisher.default()`: New argument `b_lives`.
 * `loglik_function()`: Renamed argument `pars` with `loc_sc_params`. 
+* `mixmod_em()`: Removed argument `post`.
 
 ## New Features
 * Added support for ggplot2 in all plot functions. Plot method can be selected in `plot_prob()` or `plot_prob_mix()` via argument `plot_method`.

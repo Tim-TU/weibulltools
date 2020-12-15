@@ -2,7 +2,7 @@
 title: "Life Data Analysis Part II - Parameter Estimation of Parametric Lifetime Models"
 subtitle: "Median Rank Regression and Maximum Likelihood Method"
 author: "Tim-Gunnar Hensel"
-date: "`r Sys.Date()`"
+date: "2020-12-15"
 output:
   rmarkdown::html_vignette:
     fig_height: 6
@@ -14,17 +14,7 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-```{r setup, echo = FALSE}
-knitr::opts_chunk$set(
-  collapse = TRUE,
-  screenshot.force = FALSE,
-  comment = "#>"
-)
-library(weibulltools)
 
-# set.seed() for reproducibility of random sampled id's
-set.seed(2905)
-```
 
 This document introduces two methods for the parameter estimation of lifetime models. Where Median Rank Regression _(MRR)_ fits a straight line through transformed plotting positions (transformation is described precisely in `vignette(topic = "Life_Data_Analysis_Part_I", package = "weibulltools")`), Maximum Likelihood _(ML)_ strives to maximize a function of the parameters given the sample data. If the parameters are obtained a cumulative distribution function _(CDF)_ can be computed and added to a probability plot.  
 
@@ -116,7 +106,8 @@ In the following we want to apply both methods to the dataset `shock`. We assume
 
 ### MRR-Code two-parametric Weibull
 
-```{r MRR all distributions, message = FALSE}
+
+```r
 library(SPREDA) # for dataset shock
 data(shock)
 # generate random ids for units: 
@@ -140,6 +131,10 @@ r_sq_vec <- map_dbl(distributions, function(distribution) {
 names(r_sq_vec) <- distributions
 
 r_sq_vec
+#>      weibull    lognormal  loglogistic       normal     logistic          sev 
+#>    0.9901585    0.9641187    0.9820248    0.9846976    0.9720249    0.9563309 
+#>     weibull3   lognormal3 loglogistic3 
+#>    0.9901585    0.9641187    0.9820248
 ```
 <br> 
 
@@ -147,10 +142,15 @@ The use of a two-parametric Weibull (`weibull`) is acceptable since $R^2$ is hig
 
 We will construct a probability plot for the Weibull distribution and add the estimated regression line. 
 
-```{r MRR weibull, fig.cap = "Figure 1: Median Rank Regression using two-parameter Weibull.", message = FALSE}
+
+```r
 # Again estimating weibull: 
 mrr_weibull <- rank_regression(shock_cdf, distribution = "weibull")
 mrr_weibull 
+#> Rank Regression
+#> Coefficients:
+#>       eta       beta  
+#> 28554.796      2.753
 
 # Probability plot: 
 weibull_grid <- plot_prob(
@@ -173,9 +173,12 @@ weibull_plot <- weibull_grid %>%
 weibull_plot
 ```
 
+![Figure 1: Median Rank Regression using two-parameter Weibull.](figure/MRR weibull-1.png)
+
 ### ML-Code two-parametric Weibull
 
-```{r ML all distributions, message = FALSE}
+
+```r
 # Using all models which are provided in ml_estimation: 
 ml_list <- map(distributions, function(distribution) {
   ml_estimation(shock_data, distribution = distribution)
@@ -185,6 +188,10 @@ loglik_vec <- map_dbl(ml_list, function(el) el$logL)
 names(loglik_vec) <- distributions
 
 loglik_vec
+#>      weibull    lognormal  loglogistic       normal     logistic          sev 
+#>    -123.9954    -124.6085    -124.3654    -124.2301    -124.5476    -124.6229 
+#>     weibull3   lognormal3 loglogistic3 
+#>    -123.9954    -124.6085    -124.3654
 ```
 
 <br> 
@@ -193,7 +200,8 @@ We can see that the estimate for threshold parameter of the three-parametric dis
 
 For comparison _Figure 1_ will be extended by a straight line estimated with ML. Thus, we use the `add_lines()` function which is part of package `plotly`. 
 
-```{r ML weibull, fig.cap = "Figure 2: Comparison of Median Rank Regression and Maximum Likelihood.", message = FALSE}
+
+```r
 # Again estimating weibull: 
 ml_weibull <- ml_estimation(
   shock_data, 
@@ -201,6 +209,10 @@ ml_weibull <- ml_estimation(
 )
 
 ml_weibull 
+#> Maximum Likelihood Estimation
+#> Coefficients:
+#>      eta      beta  
+#> 27718.71      3.16
 
 # Add ML estimation to weibull_plot: 
 weibull_both <- weibull_plot %>%
@@ -208,6 +220,8 @@ weibull_both <- weibull_plot %>%
 
 weibull_both
 ```
+
+![Figure 2: Comparison of Median Rank Regression and Maximum Likelihood.](figure/ML weibull-1.png)
 
 ## Data II: Alloy T7989
 
@@ -219,7 +233,8 @@ using method `ml_estimation()`.
 
 ### ML-Code two- and three-parametric Log-normal
 
-```{r ML estimation Log-normal, message = FALSE}
+
+```r
 # Data: 
 cycles <- c(300, 300, 300, 300, 300, 291, 274, 271, 269, 257, 256, 227, 226,
             224, 213, 211, 205, 203, 197, 196, 190, 189, 188, 187, 184, 180,
@@ -239,6 +254,10 @@ ml_lognormal <- ml_estimation(
 )
 
 ml_lognormal
+#> Maximum Likelihood Estimation
+#> Coefficients:
+#>     mu   sigma  
+#> 5.1278  0.3276
 
 # Three-parameter Log-normal:  
 ml_lognormal3 <- ml_estimation(
@@ -247,7 +266,10 @@ ml_lognormal3 <- ml_estimation(
 )
 
 ml_lognormal3
-
+#> Maximum Likelihood Estimation
+#> Coefficients:
+#>      mu    sigma    gamma  
+#>  4.5015   0.6132  72.0727
 ```
 
 <br> 
@@ -255,7 +277,8 @@ ml_lognormal3
 The two model selection criteria `aic` and `bic` are smaller for `lognormal3` meaning
 that this model is preferable.  
 
-```{r ML visualization I, fig.cap = "Figure 3: Three-parametric Log-normal distribution.", message = FALSE}
+
+```r
 # Constructing probability plot: 
 johnson_cdf_tbl <- estimate_cdf(cycles_data, "johnson")
 
@@ -279,13 +302,18 @@ lognormal_plot <- lognormal_grid %>%
 lognormal_plot
 ```
 
-```{r ML visualization II, fig.cap = "Figure 4: Comparison of two- and three-parametric Log-normal distribution.", message = FALSE}
+![Figure 3: Three-parametric Log-normal distribution.](figure/ML visualization I-1.png)
+
+
+```r
 # Add two-parametric model to lognormal_plot: 
 lognormal_both <- lognormal_plot %>%
   plot_mod(ml_lognormal, title_trace = "Two-parametric Log-normal")
 
 lognormal_both
 ```
+
+![Figure 4: Comparison of two- and three-parametric Log-normal distribution.](figure/ML visualization II-1.png)
 
 <br> 
 

@@ -31,12 +31,13 @@ y axis.}
 \item{plot_method}{Package, which is used for generating the plot output.}
 }
 \value{
-Returns a plotly object which contains the layout
+Returns a plot object which contains the layout
   that is used for probability plotting.
 }
 \description{
-This function is used to create the layout of a probability plot. It is called
-by \code{\link{plot_prob}} internally.
+This function is called to create the layout of a probability plot. It is
+called inside of \code{\link{plot_prob}} to determine the appearance of the
+grid with respect to the given characteristic \code{x}.
 }
 \examples{
 # Example 1: Weibull-Grid:

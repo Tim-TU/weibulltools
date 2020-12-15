@@ -66,14 +66,14 @@ rel_tbl
 ### Probability estimation and visualization
 Estimation of failure probabilities using different non-parametric methods: 
 
-```{r, probability estimation}
+```{r, probability_estimation}
 prob_tbl <- estimate_cdf(x = rel_tbl, methods = c("mr", "kaplan", "johnson", "nelson"))
 prob_tbl
 ```
 
 Visualization of the obtained results in a distribution-specific probability plot: 
 
-```{r, probability visualization}
+```{r, probability_visualization}
 prob_vis <- plot_prob(x = prob_tbl, distribution = "weibull", 
                       title_main = "Weibull Probability Plot", 
                       title_x = "Distance", 
@@ -86,14 +86,14 @@ prob_vis
 ### Model estimation and visualization
 Parametric model estimation with respect to the used methods: 
 
-```{r, model estimation}
+```{r, model_estimation}
 rr_list <- rank_regression(x = prob_tbl, distribution = "weibull")
 rr_list
 ```
 
 Model visualization in an existing probability plot:
 
-```{r, model visualization}
+# ```{r, model_visualization}
 mod_vis <- plot_mod(p_obj = prob_vis, x = rr_list, distribution = "weibull", 
                     title_trace = "RR") 
 mod_vis

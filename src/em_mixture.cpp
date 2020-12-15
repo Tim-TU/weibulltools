@@ -173,7 +173,7 @@ double logLikelihood(arma::mat& posterior, arma::mat& logDensity,
 //'   \item \code{posteriori} : A matrix with estimated a-posteriori probabilities.
 //'   \item \code{priori} : A vector with estimated a-priori probabilities.
 //'   \item \code{logL} : The value of the complete log-likelihood.}
-//' @export
+//'
 //' @examples
 //' # Vectors:
 //' hours <- voltage$hours
@@ -245,7 +245,7 @@ List mixture_em_cpp(NumericVector& x,
     NumericVector logPrior = log(prior);
     arma::vec logPrio = as<arma::vec>(logPrior);
 
-    double logLikelihood_new =logLikelihood(posterior_old, logDensity, logPrio);
+    double logLikelihood_new = logLikelihood(posterior_old, logDensity, logPrio);
 
     double convCrit = (std::abs(logLikelihood_new - logLikelihood_old) /
                       (std::abs(logLikelihood_old) + 0.001 * conv_limit));
