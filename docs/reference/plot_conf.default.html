@@ -240,7 +240,7 @@ is recommended:</p><ul>
   conf_level <span class='op'>=</span> <span class='fl'>0.95</span>,
   direction <span class='op'>=</span> <span class='st'>"y"</span>
 <span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='error'>Error in confint_betabinom.default(x = tbl_john$x, status = tbl_john$status,     dist_params = rr$coefficients, distribution = "weibull3",     bounds = "two_sided", conf_level = 0.95, direction = "y"): Argument "loc_sc_params" fehlt (ohne Standardwert)</span></div><div class='input'>
+
 <span class='va'>plot_weibull</span> <span class='op'>&lt;-</span> <span class='fu'><a href='plot_prob.html'>plot_prob</a></span><span class='op'>(</span>
   x <span class='op'>=</span> <span class='va'>tbl_john</span><span class='op'>$</span><span class='va'>x</span>,
   y <span class='op'>=</span> <span class='va'>tbl_john</span><span class='op'>$</span><span class='va'>prob</span>,
@@ -261,7 +261,7 @@ is recommended:</p><ul>
   distribution <span class='op'>=</span> <span class='st'>"weibull3"</span>,
   title_trace <span class='op'>=</span> <span class='st'>"Estimated Weibull CDF"</span>
 <span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='error'>Error in plot_mod(p_obj = plot_weibull, x = conf_betabin$x, y = conf_betabin$prob,     dist_params = rr$coefficients, distribution = "weibull3",     title_trace = "Estimated Weibull CDF"): Objekt 'conf_betabin' nicht gefunden</span></div><div class='input'>
+
 <span class='va'>plot_conf_beta</span> <span class='op'>&lt;-</span> <span class='fu'><a href='plot_conf.html'>plot_conf</a></span><span class='op'>(</span>
   p_obj <span class='op'>=</span> <span class='va'>plot_reg_weibull</span>,
   x <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='va'>conf_betabin</span><span class='op'>$</span><span class='va'>x</span><span class='op'>)</span>,
@@ -270,7 +270,10 @@ is recommended:</p><ul>
   distribution <span class='op'>=</span> <span class='st'>"weibull3"</span>,
   title_trace <span class='op'>=</span> <span class='st'>"Confidence Region"</span>
 <span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='error'>Error in plot_conf(p_obj = plot_reg_weibull, x = list(conf_betabin$x),     y = list(conf_betabin$lower_bound, conf_betabin$upper_bound),     direction = "y", distribution = "weibull3", title_trace = "Confidence Region"): Objekt 'conf_betabin' nicht gefunden</span></div><div class='input'>
+</div><div class='output co'>#&gt; <span class='warning'>Warning: `plot_conf.default()` is deprecated as of lifecycle 2.0.0.</span>
+#&gt; <span class='warning'>Please use `plot_conf.confint()` instead.</span>
+#&gt; <span class='warning'><span style='color: #555555;'>This warning is displayed once every 8 hours.</span><span></span>
+#&gt; <span class='warning'></span><span style='color: #555555;'>Call `lifecycle::last_warnings()` to see where this warning was generated.</span><span></span></div><div class='input'>
 <span class='co'># Example 2: Probability Plot, Regression Line and Confidence Bounds for Three-Parameter-Lognormal:</span>
 <span class='va'>rr_ln</span> <span class='op'>&lt;-</span> <span class='fu'><a href='rank_regression.html'>rank_regression</a></span><span class='op'>(</span>
   x <span class='op'>=</span> <span class='va'>tbl_john</span><span class='op'>$</span><span class='va'>x</span>,
@@ -289,7 +292,7 @@ is recommended:</p><ul>
   conf_level <span class='op'>=</span> <span class='fl'>0.95</span>,
   direction <span class='op'>=</span> <span class='st'>"y"</span>
 <span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='error'>Error in confint_betabinom.default(x = tbl_john$x, status = tbl_john$status,     dist_params = rr_ln$coefficients, distribution = "lognormal3",     bounds = "two_sided", conf_level = 0.95, direction = "y"): Argument "loc_sc_params" fehlt (ohne Standardwert)</span></div><div class='input'>
+
 <span class='va'>plot_lognormal</span> <span class='op'>&lt;-</span> <span class='fu'><a href='plot_prob.html'>plot_prob</a></span><span class='op'>(</span>
   x <span class='op'>=</span> <span class='va'>tbl_john</span><span class='op'>$</span><span class='va'>x</span>,
   y <span class='op'>=</span> <span class='va'>tbl_john</span><span class='op'>$</span><span class='va'>prob</span>,
@@ -310,7 +313,7 @@ is recommended:</p><ul>
   distribution <span class='op'>=</span> <span class='st'>"lognormal3"</span>,
   title_trace <span class='op'>=</span> <span class='st'>"Estimated Lognormal CDF"</span>
 <span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='error'>Error in plot_mod(p_obj = plot_lognormal, x = conf_betabin_ln$x, y = conf_betabin_ln$prob,     dist_params = rr_ln$coefficients, distribution = "lognormal3",     title_trace = "Estimated Lognormal CDF"): Objekt 'conf_betabin_ln' nicht gefunden</span></div><div class='input'>
+
 <span class='va'>plot_conf_beta_ln</span> <span class='op'>&lt;-</span> <span class='fu'><a href='plot_conf.html'>plot_conf</a></span><span class='op'>(</span>
   p_obj <span class='op'>=</span> <span class='va'>plot_reg_lognormal</span>,
   x <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='va'>conf_betabin_ln</span><span class='op'>$</span><span class='va'>x</span><span class='op'>)</span>,
@@ -319,8 +322,8 @@ is recommended:</p><ul>
   distribution <span class='op'>=</span> <span class='st'>"lognormal3"</span>,
   title_trace <span class='op'>=</span> <span class='st'>"Confidence Region"</span>
 <span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='error'>Error in plot_conf(p_obj = plot_reg_lognormal, x = list(conf_betabin_ln$x),     y = list(conf_betabin_ln$lower_bound, conf_betabin_ln$upper_bound),     direction = "y", distribution = "lognormal3", title_trace = "Confidence Region"): Objekt 'conf_betabin_ln' nicht gefunden</span></div><div class='input'>
-</div></pre>
+
+</div></span></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

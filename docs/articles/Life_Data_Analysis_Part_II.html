@@ -86,7 +86,7 @@
             <h3 class="subtitle">Median Rank Regression and Maximum Likelihood Method</h3>
                         <h4 class="author">Tim-Gunnar Hensel</h4>
             
-            <h4 class="date">2020-12-16</h4>
+            <h4 class="date">2020-12-17</h4>
       
       
       <div class="hidden name"><code>Life_Data_Analysis_Part_II.Rmd</code></div>
@@ -182,8 +182,8 @@
 <span class="va">mrr_weibull</span> 
 <span class="co">#&gt; Rank Regression</span>
 <span class="co">#&gt; Coefficients:</span>
-<span class="co">#&gt;       eta       beta  </span>
-<span class="co">#&gt; 28554.796      2.753</span>
+<span class="co">#&gt;      mu    sigma  </span>
+<span class="co">#&gt; 10.2596   0.3632</span>
 
 <span class="co"># Probability plot: </span>
 <span class="va">weibull_grid</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plot_prob.html">plot_prob</a></span><span class="op">(</span>
@@ -240,8 +240,8 @@ Figure 1: Median Rank Regression using two-parameter Weibull.
 <span class="va">ml_weibull</span> 
 <span class="co">#&gt; Maximum Likelihood Estimation</span>
 <span class="co">#&gt; Coefficients:</span>
-<span class="co">#&gt;      eta      beta  </span>
-<span class="co">#&gt; 27718.71      3.16</span>
+<span class="co">#&gt;      mu    sigma  </span>
+<span class="co">#&gt; 10.2299   0.3164</span>
 
 <span class="co"># Add ML estimation to weibull_plot: </span>
 <span class="va">weibull_both</span> <span class="op">&lt;-</span> <span class="va">weibull_plot</span> <span class="op">%&gt;%</span>
