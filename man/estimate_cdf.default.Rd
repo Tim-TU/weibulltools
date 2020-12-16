@@ -8,7 +8,7 @@
   x,
   status,
   id = NULL,
-  methods = c("mr", "johnson", "kaplan", "nelson"),
+  method = c("mr", "johnson", "kaplan", "nelson"),
   options = list(),
   ...
 )
@@ -24,9 +24,8 @@ is a right censored observation (= 0) or a failure (= 1).}
 
 \item{id}{A vector for the identification of every unit. Default is \code{NULL}.}
 
-\item{methods}{One or multiple methods of \code{"mr"}, \code{"johnson"},
-\code{"kaplan"} or \code{"nelson"} used for the estimation of failure
-probabilities. See 'Details'.}
+\item{method}{Method used for the estimation of failure probabilities. See
+'Details'.}
 
 \item{options}{A list of named options. See 'Options'.}
 
@@ -111,31 +110,15 @@ prob_tbl <- estimate_cdf(
   methods = "johnson"
 )
 
-# Example 2 - Multiple methods:
-prob_tbl_2 <- estimate_cdf(
-  x = cycles,
-  status = status,
-  methods = c("johnson", "kaplan", "nelson")
-)
 
-# Example 3 - Method 'mr' with options:
-prob_tbl_3 <- estimate_cdf(
+# Example 2 - Method 'mr' with options:
+prob_tbl_2 <- estimate_cdf(
   x = cycles,
   status = status,
   methods = "mr",
   options = list(
     mr_method = "invbeta",
     mr_ties.method = "average"
-  )
-)
-
-# Example 4 - Multiple methods and option for 'mr':
-prob_tbl_4 <- estimate_cdf(
-  x = cycles,
-  status = status,
-  methods = c("mr", "johnson"),
-  options = list(
-    mr_ties.method = "max"
   )
 )
 

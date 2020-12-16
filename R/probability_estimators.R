@@ -175,6 +175,8 @@ estimate_cdf.reliability_data <- function(x,
 #' @param status A vector of binary data (0 or 1) indicating whether unit \emph{i}
 #'   is a right censored observation (= 0) or a failure (= 1).
 #' @param id A vector for the identification of every unit. Default is \code{NULL}.
+#' @param method Method used for the estimation of failure probabilities. See
+#'   'Details'.
 #'
 #' @inheritSection estimate_cdf Options
 #'
@@ -192,15 +194,9 @@ estimate_cdf.reliability_data <- function(x,
 #'   methods = "johnson"
 #' )
 #'
-#' # Example 2 - Multiple methods:
-#' prob_tbl_2 <- estimate_cdf(
-#'   x = cycles,
-#'   status = status,
-#'   methods = c("johnson", "kaplan", "nelson")
-#' )
 #'
-#' # Example 3 - Method 'mr' with options:
-#' prob_tbl_3 <- estimate_cdf(
+#' # Example 2 - Method 'mr' with options:
+#' prob_tbl_2 <- estimate_cdf(
 #'   x = cycles,
 #'   status = status,
 #'   methods = "mr",
@@ -210,21 +206,11 @@ estimate_cdf.reliability_data <- function(x,
 #'   )
 #' )
 #'
-#' # Example 4 - Multiple methods and option for 'mr':
-#' prob_tbl_4 <- estimate_cdf(
-#'   x = cycles,
-#'   status = status,
-#'   methods = c("mr", "johnson"),
-#'   options = list(
-#'     mr_ties.method = "max"
-#'   )
-#' )
-#'
 #' @export
 estimate_cdf.default <- function(x,
                                  status,
                                  id = NULL,
-                                 methods = c(
+                                 method = c(
                                    "mr", "johnson", "kaplan", "nelson"
                                  ),
                                  options = list(),
@@ -237,15 +223,11 @@ estimate_cdf.default <- function(x,
 
   data <- reliability_data(x = x, status = status, id = id)
 
-  methods <- if (missing(methods)) {
-    "mr"
-  } else {
-    unique(match.arg(methods, several.ok = TRUE))
-  }
+  method = match.arg(method)
 
   estimate_cdf.reliability_data(
     x = data,
-    methods = methods,
+    methods = method,
     options = options
   )
 }

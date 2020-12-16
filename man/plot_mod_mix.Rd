@@ -40,6 +40,8 @@ Returns a plot object containing the probability plot with
   plotting positions and estimated regression line(s).
 }
 \description{
+\lifecycle{soft-deprecated}
+
 This function adds one or multiple estimated regression lines to an existing
 probability plot (\code{\link{plot_prob}}). Depending on the output of the
 function \code{\link{mixmod_regression}} or \code{\link{mixmod_em}} one or

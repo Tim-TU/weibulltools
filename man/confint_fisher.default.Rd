@@ -7,7 +7,7 @@
 \method{confint_fisher}{default}(
   x,
   status,
-  loc_sc_params,
+  dist_params,
   loc_sc_varcov,
   distribution = c("weibull", "lognormal", "loglogistic", "normal", "logistic", "sev",
     "weibull3", "lognormal3", "loglogistic3"),
@@ -27,7 +27,7 @@ cycles.}
 \item{status}{A vector of binary data (0 or 1) indicating whether unit \emph{i}
 is a right censored observation (= 0) or a failure (= 1).}
 
-\item{loc_sc_params}{A (named) numeric vector of (log-)location-scale parameters
+\item{dist_params}{A (named) numeric vector of (log-)location-scale parameters
 returned from \code{\link{ml_estimation}}.}
 
 \item{loc_sc_varcov}{A (named) numeric matrix of estimated variances and
@@ -116,7 +116,7 @@ ml_2 <- ml_estimation(
 conf_fisher_1 <- confint_fisher(
   x = obs,
   status = status_1,
-  loc_sc_params = ml$loc_sc_params,
+  dist_params = ml$coefficients,
   loc_sc_varcov = ml$loc_sc_varcov,
   distribution = "weibull",
   bounds = "two_sided",
@@ -128,7 +128,7 @@ conf_fisher_1 <- confint_fisher(
 conf_fisher_2_1 <- confint_fisher(
   x = obs,
   status = status_1,
-  loc_sc_params = ml$loc_sc_params,
+  dist_params = ml$coefficients,
   loc_sc_varcov = ml$loc_sc_varcov,
   distribution = "weibull",
   bounds = "lower",
@@ -139,7 +139,7 @@ conf_fisher_2_1 <- confint_fisher(
 conf_fisher_2_2 <- confint_fisher(
   x = obs,
   status = status_1,
-  loc_sc_params = ml$loc_sc_params,
+  dist_params = ml$coefficients,
   loc_sc_varcov = ml$loc_sc_varcov,
   distribution = "weibull",
   bounds = "upper",
@@ -153,7 +153,7 @@ conf_fisher_2_2 <- confint_fisher(
 conf_fisher_3_1 <- confint_fisher(
   x = cycles,
   status = status_2,
-  loc_sc_params = ml_2$loc_sc_params,
+  dist_params = ml_2$coefficients,
   loc_sc_varcov = ml_2$loc_sc_varcov,
   distribution = "lognormal3",
   bounds = "two_sided",
@@ -164,7 +164,7 @@ conf_fisher_3_1 <- confint_fisher(
 conf_fisher_3_2 <- confint_fisher(
   x = cycles,
   status = status_2,
-  loc_sc_params = ml_2$loc_sc_params,
+  dist_params = ml_2$coefficients,
   loc_sc_varcov = ml_2$loc_sc_varcov,
   distribution = "lognormal3",
   bounds = "two_sided",

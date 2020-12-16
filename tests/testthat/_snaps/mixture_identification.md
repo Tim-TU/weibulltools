@@ -3,20 +3,20 @@
     $mod_1
     Rank Regression
     Coefficients:
-          eta       beta  
-    1002.5182     0.6384  
+       mu  sigma  
+    6.910  1.566  
     
     $mod_2
     Rank Regression
     Coefficients:
-        eta     beta  
-    370.746    1.545  
+        mu   sigma  
+    5.9155  0.6474  
     
     $mod_3
     Rank Regression
     Coefficients:
-        eta     beta  
-    310.647    3.902  
+        mu   sigma  
+    5.7387  0.2563  
     
     attr(,"class")
     [1] "mixmod_regression" "list"             
@@ -25,13 +25,13 @@
 
     Maximum Likelihood Estimation
     Coefficients:
-        eta     beta  
-    330.342    4.805  
+        mu   sigma  
+    5.8001  0.2081  
 
 ---
 
     Maximum Likelihood Estimation
     Coefficients:
-        eta     beta  
-    69.6665   0.8234  
+       mu  sigma  
+    4.244  1.214  
 

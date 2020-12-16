@@ -29,8 +29,8 @@
 
     Rank Regression
     Coefficients:
-          eta       beta  
-    1.048e+05  1.476e+00  
+         mu    sigma  
+    11.5594   0.6774  
 
 ---
 
@@ -45,6 +45,6 @@
 
     Rank Regression
     Coefficients:
-       eta    beta   gamma  
-    96.749   1.525  88.428  
+         mu    sigma    gamma  
+     4.5721   0.6556  88.4275  
 

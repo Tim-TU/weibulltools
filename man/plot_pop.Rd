@@ -7,7 +7,7 @@
 plot_pop(
   p_obj = NULL,
   x,
-  loc_sc_params_tbl,
+  dist_params_tbl,
   distribution = c("weibull", "lognormal", "loglogistic", "normal", "logistic", "sev"),
   tol = 1e-06,
   title_trace = "Population",
@@ -24,13 +24,13 @@ between \code{x[1]} and \code{x[2]} is created. This sequence is equidistant
 with respect to the scale of the x axis. If \code{length(x) > 2} the elements
 of \code{x} are the x coordinates of the population line.}
 
-\item{loc_sc_params_tbl}{A tibble. See 'Details'.}
+\item{dist_params_tbl}{A tibble. See 'Details'.}
 
 \item{distribution}{Supposed distribution of the random variable. In the
 context of this function \code{"weibull"}, \code{"lognormal"} and
 \code{"loglogistic"} stand for the two- \strong{and} the three-parametric
 version of the respective distribution. The distinction is made via
-\code{loc_sc_params_tbl}.}
+\code{dist_params_tbl}.}
 
 \item{tol}{The failure probability is restricted to the interval
 \eqn{[tol, 1 - tol]}. The default value is in accordance with the decimal
@@ -50,7 +50,7 @@ A plot object which contains the linearized CDF(s).
 This function adds one or multiple linearized CDFs to an existing plot grid.
 }
 \details{
-\code{loc_sc_params_tbl} is a data.frame with two or three columns. For
+\code{dist_params_tbl} is a data.frame with two or three columns. For
 location-scale distributions the first column contains the location parameter
 and the second column contains the scale parameter. For three-parametric
 distributions the third column contains the threshold parameter.
@@ -72,7 +72,7 @@ grid_weibull <- plot_layout(
 pop_weibull <- plot_pop(
   p_obj = grid_weibull,
   x = range(x),
-  loc_sc_params_tbl = c(log(20000), 1),
+  dist_params_tbl = c(log(20000), 1),
   distribution = "weibull",
   title_trace = "Population"
 )
@@ -83,7 +83,7 @@ x2 <- rweibull(n = 100, shape = 1, scale = 20000) + 5000
 pop_weibull_2 <- plot_pop(
   p_obj = NULL,
   x = x2,
-  loc_sc_params_tbl = c(log(20000 - 5000), 1, 5000),
+  dist_params_tbl = c(log(20000 - 5000), 1, 5000),
   distribution = "weibull",
   title_trace = "Population"
 )
@@ -92,7 +92,7 @@ pop_weibull_2 <- plot_pop(
 pop_weibull_3 <- plot_pop(
   p_obj = NULL,
   x = x,
-  loc_sc_params_tbl = tibble(
+  dist_params_tbl = tibble(
     p_1 = c(log(20000), log(20000), log(20000)),
     p_2 = c(1, 1.5, 2)
     ),
@@ -105,7 +105,7 @@ pop_weibull_3 <- plot_pop(
 pop_weibull_4 <- plot_pop(
   p_obj = NULL,
   x = x,
-  loc_sc_params_tbl = tibble(
+  dist_params_tbl = tibble(
     param_1 = c(log(20000), log(20000)),
     param_2 = c(1, 1),
     param_3 = c(NA, 5)

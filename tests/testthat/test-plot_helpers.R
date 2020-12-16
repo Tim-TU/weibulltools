@@ -52,11 +52,11 @@ test_that("plot_mod_helper remains stable", {
 
   cdf <- estimate_cdf(data, "johnson")
 
-  mrr <- rank_regression(cdf)
+  rr <- rank_regression(cdf)
 
   helper <- plot_mod_helper(
-    x = range(mrr$data$x),
-    loc_sc_params = mrr$loc_sc_params,
+    x = range(rr$data$x),
+    dist_params = rr$coefficients,
     distribution = "weibull"
   )
 
@@ -69,10 +69,10 @@ test_that("plot_mod_mix_helper remains stable", {
 
   cdf <- estimate_cdf(data, "johnson")
 
-  mrr <- rank_regression(cdf)
+  rr <- rank_regression(cdf)
 
   helper <- plot_mod_mix_helper(
-    model_estimation = mrr,
+    model_estimation = rr,
     method = "johnson",
     group = "group"
   )
@@ -85,8 +85,8 @@ test_that("plot_pop_helper remains stable", {
   suppressWarnings(library(tibble))
   set.seed(1)
   x <- rweibull(n = 100, shape = 1, scale = 20000)
-  loc_sc_params_tbl <- tibble(loc = log(20000), sc = 1, thres = NA)
+  dist_params_tbl <- tibble(loc = log(20000), sc = 1, thres = NA)
   expect_snapshot_output(
-    plot_pop_helper(x, loc_sc_params_tbl, "weibull")
+    plot_pop_helper(x, dist_params_tbl, "weibull")
   )
 })

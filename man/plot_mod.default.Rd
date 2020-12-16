@@ -7,7 +7,7 @@
 \method{plot_mod}{default}(
   p_obj,
   x,
-  loc_sc_params,
+  dist_params,
   distribution = c("weibull", "lognormal", "loglogistic", "normal", "logistic", "sev",
     "weibull3", "lognormal3", "loglogistic3"),
   title_trace = "Fit",
@@ -19,7 +19,7 @@
 
 \item{x}{A numeric vector containing the x-coordinates of the regression line.}
 
-\item{loc_sc_params}{A (named) numeric vector of estimated location
+\item{dist_params}{A (named) numeric vector of estimated location
 and scale parameters for a specified distribution. The order of
 elements is important. First entry needs to be the location
 parameter \eqn{\mu} and the second element needs to be the scale
@@ -54,13 +54,14 @@ cycles   <- c(300, 300, 300, 300, 300, 291, 274, 271, 269, 257, 256, 227, 226,
               112, 108, 104, 99, 99, 96, 94)
 status <- c(rep(0, 5), rep(1, 67))
 
-data <- reliability_data(x = cycles, status = status)
-
-tbl_john <- estimate_cdf(data, methods = c("johnson", "nelson"))
+tbl_john <- estimate_cdf(x = cycles, status = status, method = "johnson")
 
 # Example 1: Probability Plot and Regression Line Three-Parameter-Weibull:
 plot_weibull <- plot_prob(
-  tbl_john,
+  x = tbl_john$x,
+  y = tbl_john$prob,
+  status = tbl_john$status,
+  id = tbl_john$id,
   distribution = "weibull",
   title_main = "Three-Parametric Weibull",
   title_x = "Cycles",
@@ -68,15 +69,19 @@ plot_weibull <- plot_prob(
   title_trace = "Failed Items"
 )
 
-mrr <- rank_regression(
-  tbl_john,
+rr <- rank_regression(
+  x = tbl_john$x,
+  y = tbl_john$prob,
+  status = tbl_john$status,
   distribution = "weibull3",
-  conf_level = .90
+  conf_level = 0.9
 )
 
 plot_reg_weibull <- plot_mod(
   p_obj = plot_weibull,
-  x = mrr,
+  x = tbl_john$x,
+  dist_params = rr$coefficients,
+  distribution = "weibull3",
   title_trace = "Estimated Weibull CDF"
 )
 
@@ -84,7 +89,10 @@ plot_reg_weibull <- plot_mod(
 
 # Example 2: Probability Plot and Regression Line Three-Parameter-Lognormal:
 plot_lognormal <- plot_prob(
-  tbl_john,
+  x = tbl_john$x,
+  y = tbl_john$prob,
+  status = tbl_john$status,
+  id = tbl_john$id,
   distribution = "lognormal",
   title_main = "Three-Parametric Lognormal",
   title_x = "Cycles",
@@ -92,15 +100,19 @@ plot_lognormal <- plot_prob(
   title_trace = "Failed Items"
 )
 
-mrr_ln <- rank_regression(
-  tbl_john,
+rr_ln <- rank_regression(
+  x = tbl_john$x,
+  y = tbl_john$prob,
+  status = tbl_john$status,
   distribution = "lognormal3",
-  conf_level = .90
+  conf_level = 0.9
 )
 
 plot_reg_lognormal <- plot_mod(
   p_obj = plot_lognormal,
-  x = mrr_ln,
+  x = tbl_john$x,
+  dist_params = rr_ln$coefficients,
+  distribution = "lognormal3",
   title_trace = "Estimated Lognormal CDF"
 )
 

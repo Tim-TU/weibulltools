@@ -7,7 +7,7 @@
 \method{confint_betabinom}{default}(
   x,
   status,
-  loc_sc_params,
+  dist_params,
   distribution = c("weibull", "lognormal", "loglogistic", "normal", "logistic", "sev",
     "weibull3", "lognormal3", "loglogistic3"),
   b_lives = c(0.01, 0.1, 0.5),
@@ -26,7 +26,7 @@ cycles.}
 \item{status}{A vector of binary data (0 or 1) indicating whether unit \emph{i}
 is a right censored observation (= 0) or a failure (= 1).}
 
-\item{loc_sc_params}{A (named) numeric vector of (log-)location-scale parameters
+\item{dist_params}{A (named) numeric vector of (log-)location-scale parameters
 returned from \code{\link{rank_regression}}.}
 
 \item{distribution}{Supposed distribution of the random variable. Has to be in
@@ -67,8 +67,9 @@ A tibble with class \code{"confint"} containing the following columns:
     \item \code{distribution} : Specified distribution.
     \item \code{bounds} : Specified bound(s).
     \item \code{direction} : Specified direction.
-    \item \code{method} : A character that is always \code{"conf_null"}. Due to
-      generic visualization functions column \code{method} has to be provided.
+    \item \code{method} : A character that is always \code{NA_character}. Due
+      to the generic visualization functions column \code{method} has to be
+      provided.
   }
 }
 \description{
@@ -122,7 +123,7 @@ rr_2 <- rank_regression(
 conf_betabin_1 <- confint_betabinom(
   x = obs,
   status = status_1,
-  loc_sc_params = rr$loc_sc_params,
+  dist_params = rr$coefficients,
   distribution = "weibull",
   bounds = "two_sided",
   conf_level = 0.95,
@@ -133,7 +134,7 @@ conf_betabin_1 <- confint_betabinom(
 conf_betabin_2_1 <- confint_betabinom(
   x = obs,
   status = status_1,
-  loc_sc_params = rr$loc_sc_params,
+  dist_params = rr$coefficients,
   distribution = "weibull",
   bounds = "lower",
   conf_level = 0.90,
@@ -143,7 +144,7 @@ conf_betabin_2_1 <- confint_betabinom(
 conf_betabin_2_2 <- confint_betabinom(
   x = obs,
   status = status_1,
-  loc_sc_params = rr$loc_sc_params,
+  dist_params = rr$coefficients,
   distribution = "weibull",
   bounds = "upper",
   conf_level = 0.90,
@@ -156,7 +157,7 @@ conf_betabin_2_2 <- confint_betabinom(
 conf_betabin_3_1 <- confint_betabinom(
   x = cycles,
   status = status_2,
-  loc_sc_params = rr_2$loc_sc_params,
+  dist_params = rr_2$coefficients,
   distribution = "lognormal3",
   bounds = "two_sided",
   conf_level = 0.90,
@@ -166,7 +167,7 @@ conf_betabin_3_1 <- confint_betabinom(
 conf_betabin_3_2 <- confint_betabinom(
   x = cycles,
   status = status_2,
-  loc_sc_params = rr_2$loc_sc_params,
+  dist_params = rr_2$coefficients,
   distribution = "lognormal3",
   bounds = "two_sided",
   conf_level = 0.90,

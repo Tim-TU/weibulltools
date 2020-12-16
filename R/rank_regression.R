@@ -33,34 +33,12 @@
 #'   \code{"weibull"} this must be one of \code{0.9}, \code{0.95} or \code{0.99}.
 #' @template dots
 #'
-#' @return Returns a list with the classes \code{"rank_regression"} and
-#'   \code{"model_estimation"} containing the following elements:
-#'   \itemize{
-#'     \item \code{coefficients} : If \code{distribution} is \code{"weibull"}, the
-#'       estimated scale (\eqn{\eta}) and shape (\eqn{\beta}) parameters are provided
-#'       (and additionally the threshold parameter \eqn{\gamma} if \code{distribution}
-#'       is \code{"weibull3"}). For any other distribution, \code{coefficients} is
-#'       identical to \code{loc_sc_params}.
-#'     \item \code{confint} : Only included if \code{distribution} is \code{"weibull"}
-#'       or \code{"weibull3"}. Approximated confidence intervals for \eqn{\eta} and
-#'       \eqn{\beta} (and \eqn{\gamma} if \code{distribution} is \code{"weibull3"}).
-#'     \item \code{loc_sc_params} : Estimated (log-)location-scale parameters.
-#'       Threshold parameter is included if \code{distribution} is \code{"weibull3"},
-#'       \code{"lognormal3"} or \code{"loglogistic3"}.
-#'     \item \code{loc_sc_confint} : Confidence intervals for (log-)location-scale
-#'       parameters. If distribution is \code{"lognormal3"} or \code{"loglogistic3"}
-#'       a confidence interval for the threshold parameter is not computed.
-#'     \item \code{loc_sc_varcov} : Provided, if \code{distribution} is not
-#'       \code{"weibull"} or \code{"weibull3"}. Estimated heteroscedasticity-consistent
-#'       variance-covariance matrix for the (log-)location-scale parameters.
-#'     \item \code{r_squared} : Coefficient of determination.
-#'     \item \code{data} : A tibble with class \code{"cdf_estimation"} returned by
-#'       \code{\link{estimate_cdf}}.
-#'     \item \code{distribution} : Specified distribution.
-#'   }
-#'   If more than one method was specified in \code{\link{estimate_cdf}}, the
-#'   resulting output is a list with class \code{"model_estimation_list"}. In
-#'   this case each list element has classes \code{"rank_regression"} and
+#' @template return-rank-regression
+#' @templateVar data A tibble with class \code{"cdf_estimation"} returned from \code{\link{estimate_cdf}}.
+#' @return
+#'   If more than one method was specified in \code{\link{estimate_cdf}},
+#'   the resulting output is a list with class \code{"model_estimation_list"}.
+#'   In this case each list element has classes \code{"rank_regression"} and
 #'   \code{"model_estimation"} and the items listed above, are included.
 #'
 #' @encoding UTF-8
@@ -190,30 +168,8 @@ rank_regression.cdf_estimation <- function(x,
 #' @param status A vector of binary data (0 or 1) indicating whether a unit is
 #'   a right censored observation (= 0) or a failure (= 1).
 #'
-#' @return Returns a list with the classes \code{"rank_regression"} and
-#'   \code{"model_estimation"} containing the following elements:
-#'   \itemize{
-#'     \item \code{coefficients} : If \code{distribution} is \code{"weibull"}, the
-#'       estimated scale (\eqn{\eta}) and shape (\eqn{\beta}) parameters are provided
-#'       (and additionally the threshold parameter \eqn{\gamma} if \code{distribution}
-#'       is \code{"weibull3"}). For any other distribution, \code{coefficients} is
-#'       identical to \code{loc_sc_params}.
-#'     \item \code{confint} : Only included if \code{distribution} is \code{"weibull"}
-#'       or \code{"weibull3"}. Approximated confidence intervals for \eqn{\eta} and
-#'       \eqn{\beta} (and \eqn{\gamma} if \code{distribution} is \code{"weibull3"}).
-#'     \item \code{loc_sc_params} : Estimated (log-)location-scale parameters.
-#'       Threshold parameter is included if \code{distribution} is \code{"weibull3"},
-#'       \code{"lognormal3"} or \code{"loglogistic3"}.
-#'     \item \code{loc_sc_confint} : Confidence intervals for (log-)location-scale
-#'       parameters. If distribution is \code{"lognormal3"} or \code{"loglogistic3"}
-#'       a confidence interval for the threshold parameter is not computed.
-#'     \item \code{loc_sc_varcov} : Provided, if \code{distribution} is not
-#'       \code{"weibull"} or \code{"weibull3"}. Estimated heteroscedasticity-consistent
-#'       variance-covariance matrix for the (log-)location-scale parameters.
-#'     \item \code{r_squared} : Coefficient of determination.
-#'     \item \code{data} : A tibble with columns \code{x}, \code{status} and \code{prob}.
-#'     \item \code{distribution} : Specified distribution.
-#'   }
+#' @template return-rank-regression
+#' @templateVar data A tibble with columns \code{x}, \code{status} and \code{prob}.
 #'
 #' @seealso \code{\link{rank_regression}}
 #'
@@ -332,9 +288,9 @@ rank_regression_ <- function(cdf_estimation,
     r_sq <- summary(mrr)$r.squared
 
     mrr_output <- list(
-      coefficients = estimates,
+      coefficients = estimates_loc_sc,
+      shape_scale_coefficients = estimates,
       confint = conf_ints,
-      loc_sc_params = estimates_loc_sc,
       loc_sc_confint = conf_ints_loc_sc,
       r_squared = r_sq
     )
@@ -413,9 +369,9 @@ rank_regression_ <- function(cdf_estimation,
       r_sq <- summary(mrr)$r.squared
 
       mrr_output <- list(
-        coefficients = estimates,
+        coefficients = estimates_loc_sc,
+        shape_scale_coefficients = estimates,
         confint = conf_ints,
-        loc_sc_params = estimates_loc_sc,
         loc_sc_confint = conf_ints_loc_sc,
         r_squared = r_sq
       )
@@ -463,7 +419,6 @@ rank_regression_ <- function(cdf_estimation,
 
       mrr_output <- list(
         coefficients = estimates_loc_sc,
-        loc_sc_params = estimates_loc_sc,
         loc_sc_confint = conf_ints_loc_sc,
         loc_sc_varcov = vcov_loc_sc,
         r_squared = r_sq
@@ -521,7 +476,6 @@ rank_regression_ <- function(cdf_estimation,
 
     mrr_output <- list(
       coefficients = estimates_loc_sc,
-      loc_sc_params = estimates_loc_sc,
       loc_sc_confint = conf_ints_loc_sc,
       loc_sc_varcov = vcov_loc_sc,
       r_squared = r_sq
