@@ -137,16 +137,16 @@
 <ul>
 <li>Package now depends on R(&gt;= 3.5.0)</li>
 <li>Renamed argument <code>event</code> with <code>status</code>.</li>
+<li>Renamed argument <code>loc_sc_params</code> with <code>dist_params</code>.</li>
 <li>Output of probability estimators: Renamed column <code>characteristic</code> with <code>x</code>.</li>
 <li>
-<code><a href="../reference/plot_conf.html">plot_conf()</a></code>: Switched arguments distribution and direction.</li>
+<code><a href="../reference/plot_conf.html">plot_conf()</a></code>: Switched position of arguments distribution and direction.</li>
 <li>
 <code><a href="../reference/rank_regression.html">rank_regression()</a></code>, <code><a href="../reference/ml_estimation.html">ml_estimation()</a></code>: Removed <code>details</code> argument.</li>
 <li>
-<code><a href="../reference/rank_regression.html">rank_regression()</a></code>, <code><a href="../reference/ml_estimation.html">ml_estimation()</a></code>: Renamed output: <code>loc_sc_coefficients</code> -&gt; <code>loc_sc_params</code>, <code>loc_sc_vcov</code> -&gt; <code>loc_sc_varcov</code>
-</li>
+<code><a href="../reference/rank_regression.html">rank_regression()</a></code>, <code><a href="../reference/ml_estimation.html">ml_estimation()</a></code>: Renamed output: <code>loc_sc_vcov</code> -&gt; <code>loc_sc_varcov</code>. Removed <code>loc_sc_params</code> from output. Added <code>shape_scale_coefficients</code> if <code>distribution</code> is <code>"weibull"</code> or <code>"weibull3"</code>.</li>
 <li>
-<code><a href="../reference/plot_pop.html">plot_pop()</a></code>: Added argument <code>tol</code> to restrict the range of failure probabilities. Removed argument <code>color</code>. Renamed argument <code>params</code> to <code>loc_sc_params_tbl</code>, which only supports location and scale parameters (also for <code>distribution = "weibull"</code>). Changed behaviour of <code>loc_sc_params_tbl</code>: A tibble is now recommended instead of a vector.</li>
+<code><a href="../reference/plot_pop.html">plot_pop()</a></code>: Added argument <code>tol</code> to restrict the range of failure probabilities. Removed argument <code>color</code>. Renamed argument <code>params</code> to <code>dist_params_tbl</code>, which only supports location and scale parameters (also for <code>distribution = "weibull"</code>). Changed behaviour of <code>dist_params_tbl</code>: A tibble is now recommended instead of a vector.</li>
 <li>
 <code>plot_prob_mix</code>: Removed default value <code>NULL</code> for argument <code>mix_output</code>.</li>
 <li>
@@ -159,7 +159,7 @@
 <li>
 <code><a href="../reference/confint_betabinom.default.html">confint_betabinom.default()</a></code> and <code><a href="../reference/confint_fisher.default.html">confint_fisher.default()</a></code>: New argument <code>b_lives</code>.</li>
 <li>
-<code><a href="../reference/loglik_function.html">loglik_function()</a></code>: Renamed argument <code>pars</code> with <code>loc_sc_params</code>.</li>
+<code><a href="../reference/loglik_function.html">loglik_function()</a></code>: Renamed argument <code>pars</code> with <code>dist_params</code>.</li>
 <li>
 <code><a href="../reference/mixmod_em.html">mixmod_em()</a></code>: Removed argument <code>post</code>.</li>
 </ul>

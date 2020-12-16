@@ -136,7 +136,7 @@
     <pre class="usage"><span class='fu'>plot_pop</span><span class='op'>(</span>
   p_obj <span class='op'>=</span> <span class='cn'>NULL</span>,
   <span class='va'>x</span>,
-  <span class='va'>loc_sc_params_tbl</span>,
+  <span class='va'>dist_params_tbl</span>,
   distribution <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"weibull"</span>, <span class='st'>"lognormal"</span>, <span class='st'>"loglogistic"</span>, <span class='st'>"normal"</span>, <span class='st'>"logistic"</span>, <span class='st'>"sev"</span><span class='op'>)</span>,
   tol <span class='op'>=</span> <span class='fl'>1e-06</span>,
   title_trace <span class='op'>=</span> <span class='st'>"Population"</span>,
@@ -160,7 +160,7 @@ with respect to the scale of the x axis. If <code>length(x) &gt; 2</code> the el
 of <code>x</code> are the x coordinates of the population line.</p></td>
     </tr>
     <tr>
-      <th>loc_sc_params_tbl</th>
+      <th>dist_params_tbl</th>
       <td><p>A tibble. See 'Details'.</p></td>
     </tr>
     <tr>
@@ -169,7 +169,7 @@ of <code>x</code> are the x coordinates of the population line.</p></td>
 context of this function <code>"weibull"</code>, <code>"lognormal"</code> and
 <code>"loglogistic"</code> stand for the two- <strong>and</strong> the three-parametric
 version of the respective distribution. The distinction is made via
-<code>loc_sc_params_tbl</code>.</p></td>
+<code>dist_params_tbl</code>.</p></td>
     </tr>
     <tr>
       <th>tol</th>
@@ -195,7 +195,7 @@ the plot method.</p></td>
     <p>A plot object which contains the linearized CDF(s).</p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p><code>loc_sc_params_tbl</code> is a data.frame with two or three columns. For
+    <p><code>dist_params_tbl</code> is a data.frame with two or three columns. For
 location-scale distributions the first column contains the location parameter
 and the second column contains the scale parameter. For three-parametric
 distributions the third column contains the threshold parameter.</p>
@@ -216,27 +216,27 @@ two or three is also supported (<code><a href='https://rdrr.io/r/base/c.html'>c(
 <span class='va'>pop_weibull</span> <span class='op'>&lt;-</span> <span class='fu'>plot_pop</span><span class='op'>(</span>
   p_obj <span class='op'>=</span> <span class='va'>grid_weibull</span>,
   x <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/range.html'>range</a></span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span>,
-  loc_sc_params_tbl <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/Log.html'>log</a></span><span class='op'>(</span><span class='fl'>20000</span><span class='op'>)</span>, <span class='fl'>1</span><span class='op'>)</span>,
+  dist_params_tbl <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/Log.html'>log</a></span><span class='op'>(</span><span class='fl'>20000</span><span class='op'>)</span>, <span class='fl'>1</span><span class='op'>)</span>,
   distribution <span class='op'>=</span> <span class='st'>"weibull"</span>,
   title_trace <span class='op'>=</span> <span class='st'>"Population"</span>
 <span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='error'>Error in plot_pop(p_obj = grid_weibull, x = range(x), loc_sc_params_tbl = c(log(20000),     1), distribution = "weibull", title_trace = "Population"): Objekt 'grid_weibull' nicht gefunden</span></div><div class='input'>
+</div><div class='output co'>#&gt; <span class='error'>Error in plot_pop(p_obj = grid_weibull, x = range(x), dist_params_tbl = c(log(20000),     1), distribution = "weibull", title_trace = "Population"): unbenutztes Argument (dist_params_tbl = c(log(20000), 1))</span></div><div class='input'>
 <span class='co'># Example 2: Three-parametric curved line</span>
 <span class='va'>x2</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/Weibull.html'>rweibull</a></span><span class='op'>(</span>n <span class='op'>=</span> <span class='fl'>100</span>, shape <span class='op'>=</span> <span class='fl'>1</span>, scale <span class='op'>=</span> <span class='fl'>20000</span><span class='op'>)</span> <span class='op'>+</span> <span class='fl'>5000</span>
 
 <span class='va'>pop_weibull_2</span> <span class='op'>&lt;-</span> <span class='fu'>plot_pop</span><span class='op'>(</span>
   p_obj <span class='op'>=</span> <span class='cn'>NULL</span>,
   x <span class='op'>=</span> <span class='va'>x2</span>,
-  loc_sc_params_tbl <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/Log.html'>log</a></span><span class='op'>(</span><span class='fl'>20000</span> <span class='op'>-</span> <span class='fl'>5000</span><span class='op'>)</span>, <span class='fl'>1</span>, <span class='fl'>5000</span><span class='op'>)</span>,
+  dist_params_tbl <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/Log.html'>log</a></span><span class='op'>(</span><span class='fl'>20000</span> <span class='op'>-</span> <span class='fl'>5000</span><span class='op'>)</span>, <span class='fl'>1</span>, <span class='fl'>5000</span><span class='op'>)</span>,
   distribution <span class='op'>=</span> <span class='st'>"weibull"</span>,
   title_trace <span class='op'>=</span> <span class='st'>"Population"</span>
 <span class='op'>)</span>
-
+</div><div class='output co'>#&gt; <span class='error'>Error in plot_pop(p_obj = NULL, x = x2, dist_params_tbl = c(log(20000 -     5000), 1, 5000), distribution = "weibull", title_trace = "Population"): unbenutztes Argument (dist_params_tbl = c(log(20000 - 5000), 1, 5000))</span></div><div class='input'>
 <span class='co'># Example 3: Multiple lines</span>
 <span class='va'>pop_weibull_3</span> <span class='op'>&lt;-</span> <span class='fu'>plot_pop</span><span class='op'>(</span>
   p_obj <span class='op'>=</span> <span class='cn'>NULL</span>,
   x <span class='op'>=</span> <span class='va'>x</span>,
-  loc_sc_params_tbl <span class='op'>=</span> <span class='fu'>tibble</span><span class='op'>(</span>
+  dist_params_tbl <span class='op'>=</span> <span class='fu'>tibble</span><span class='op'>(</span>
     p_1 <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/Log.html'>log</a></span><span class='op'>(</span><span class='fl'>20000</span><span class='op'>)</span>, <span class='fu'><a href='https://rdrr.io/r/base/Log.html'>log</a></span><span class='op'>(</span><span class='fl'>20000</span><span class='op'>)</span>, <span class='fu'><a href='https://rdrr.io/r/base/Log.html'>log</a></span><span class='op'>(</span><span class='fl'>20000</span><span class='op'>)</span><span class='op'>)</span>,
     p_2 <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span>, <span class='fl'>1.5</span>, <span class='fl'>2</span><span class='op'>)</span>
     <span class='op'>)</span>,
@@ -244,18 +244,18 @@ two or three is also supported (<code><a href='https://rdrr.io/r/base/c.html'>c(
   title_trace <span class='op'>=</span> <span class='st'>"Population"</span>,
   plot_method <span class='op'>=</span> <span class='st'>"ggplot2"</span>
 <span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='error'>Error in tibble(p_1 = c(log(20000), log(20000), log(20000)), p_2 = c(1,     1.5, 2)): konnte Funktion "tibble" nicht finden</span></div><div class='input'>
+</div><div class='output co'>#&gt; <span class='error'>Error in plot_pop(p_obj = NULL, x = x, dist_params_tbl = tibble(p_1 = c(log(20000),     log(20000), log(20000)), p_2 = c(1, 1.5, 2)), distribution = "weibull",     title_trace = "Population", plot_method = "ggplot2"): unbenutztes Argument (dist_params_tbl = tibble(p_1 = c(log(20000), log(20000), log(20000)), p_2 = c(1, 1.5, 2)))</span></div><div class='input'>
 <span class='co'># Example 4: Compare two- and three-parametric distributions</span>
 <span class='va'>pop_weibull_4</span> <span class='op'>&lt;-</span> <span class='fu'>plot_pop</span><span class='op'>(</span>
   p_obj <span class='op'>=</span> <span class='cn'>NULL</span>,
   x <span class='op'>=</span> <span class='va'>x</span>,
-  loc_sc_params_tbl <span class='op'>=</span> <span class='fu'>tibble</span><span class='op'>(</span>
+  dist_params_tbl <span class='op'>=</span> <span class='fu'>tibble</span><span class='op'>(</span>
     param_1 <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/Log.html'>log</a></span><span class='op'>(</span><span class='fl'>20000</span><span class='op'>)</span>, <span class='fu'><a href='https://rdrr.io/r/base/Log.html'>log</a></span><span class='op'>(</span><span class='fl'>20000</span><span class='op'>)</span><span class='op'>)</span>,
     param_2 <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span>, <span class='fl'>1</span><span class='op'>)</span>,
     param_3 <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='cn'>NA</span>, <span class='fl'>5</span><span class='op'>)</span>
   <span class='op'>)</span>
 <span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='error'>Error in tibble(param_1 = c(log(20000), log(20000)), param_2 = c(1, 1),     param_3 = c(NA, 5)): konnte Funktion "tibble" nicht finden</span></div><div class='input'>
+</div><div class='output co'>#&gt; <span class='error'>Error in plot_pop(p_obj = NULL, x = x, dist_params_tbl = tibble(param_1 = c(log(20000),     log(20000)), param_2 = c(1, 1), param_3 = c(NA, 5))): unbenutztes Argument (dist_params_tbl = tibble(param_1 = c(log(20000), log(20000)), param_2 = c(1, 1), param_3 = c(NA, 5)))</span></div><div class='input'>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
