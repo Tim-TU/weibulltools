@@ -486,8 +486,11 @@ plot_prob.default <- function(
   plot_method <- match.arg(plot_method)
 
   cdf_estimation <- tibble::tibble(
-    x = x, prob = y, status = status, id = id,
-    method = title_trace
+    x = x,
+    prob = y,
+    status = status,
+    id = id,
+    method = NA_character_
   )
 
   plot_prob_(
@@ -969,13 +972,14 @@ plot_mod.mixmod_em <- function(p_obj, x, title_trace = "Fit", ...) {
 #'               112, 108, 104, 99, 99, 96, 94)
 #' status <- c(rep(0, 5), rep(1, 67))
 #'
-#' data <- reliability_data(x = cycles, status = status)
-#'
-#' tbl_john <- estimate_cdf(data, methods = c("johnson", "nelson"))
+#' tbl_john <- estimate_cdf(x = cycles, status = status, method = "johnson")
 #'
 #' # Example 1: Probability Plot and Regression Line Three-Parameter-Weibull:
 #' plot_weibull <- plot_prob(
-#'   tbl_john,
+#'   x = tbl_john$x,
+#'   y = tbl_john$prob,
+#'   status = tbl_john$status,
+#'   id = tbl_john$id,
 #'   distribution = "weibull",
 #'   title_main = "Three-Parametric Weibull",
 #'   title_x = "Cycles",
@@ -983,15 +987,19 @@ plot_mod.mixmod_em <- function(p_obj, x, title_trace = "Fit", ...) {
 #'   title_trace = "Failed Items"
 #' )
 #'
-#' mrr <- rank_regression(
-#'   tbl_john,
+#' rr <- rank_regression(
+#'   x = tbl_john$x,
+#'   y = tbl_john$prob,
+#'   status = tbl_john$status,
 #'   distribution = "weibull3",
-#'   conf_level = .90
+#'   conf_level = 0.9
 #' )
 #'
 #' plot_reg_weibull <- plot_mod(
 #'   p_obj = plot_weibull,
-#'   x = mrr,
+#'   x = tbl_john$x,
+#'   loc_sc_params = rr$loc_sc_params,
+#'   distribution = "weibull3",
 #'   title_trace = "Estimated Weibull CDF"
 #' )
 #'
@@ -999,7 +1007,10 @@ plot_mod.mixmod_em <- function(p_obj, x, title_trace = "Fit", ...) {
 #'
 #' # Example 2: Probability Plot and Regression Line Three-Parameter-Lognormal:
 #' plot_lognormal <- plot_prob(
-#'   tbl_john,
+#'   x = tbl_john$x,
+#'   y = tbl_john$prob,
+#'   status = tbl_john$status,
+#'   id = tbl_john$id,
 #'   distribution = "lognormal",
 #'   title_main = "Three-Parametric Lognormal",
 #'   title_x = "Cycles",
@@ -1007,15 +1018,19 @@ plot_mod.mixmod_em <- function(p_obj, x, title_trace = "Fit", ...) {
 #'   title_trace = "Failed Items"
 #' )
 #'
-#' mrr_ln <- rank_regression(
-#'   tbl_john,
+#' rr_ln <- rank_regression(
+#'   x = tbl_john$x,
+#'   y = tbl_john$prob,
+#'   status = tbl_john$status,
 #'   distribution = "lognormal3",
-#'   conf_level = .90
+#'   conf_level = 0.9
 #' )
 #'
 #' plot_reg_lognormal <- plot_mod(
 #'   p_obj = plot_lognormal,
-#'   x = mrr_ln,
+#'   x = tbl_john$x,
+#'   loc_sc_params = rr_ln$loc_sc_params,
+#'   distribution = "lognormal3",
 #'   title_trace = "Estimated Lognormal CDF"
 #' )
 #'
@@ -1065,11 +1080,15 @@ plot_mod.default <- function(p_obj,
 #' Adding Estimated Population Lines of a Separated Mixture Model to a
 #' Probability Plot
 #'
+#' @description
+#' \lifecycle{soft-deprecated}
+#'
 #' This function adds one or multiple estimated regression lines to an existing
 #' probability plot (\code{\link{plot_prob}}). Depending on the output of the
 #' function \code{\link{mixmod_regression}} or \code{\link{mixmod_em}} one or
 #' multiple lines are plotted.
 #'
+#' @details
 #' The name of the legend entry is a combination of the \code{title_trace} and
 #' the number of determined subgroups. If \code{title_trace = "Line"} and the
 #' data could be splitted in two groups, the legend entries would be "Line: 1"
@@ -1205,97 +1224,71 @@ plot_mod_mix <- function(p_obj,
 #'   confidence region(s).
 #'
 #' @examples
-#' # Alloy T7987 dataset taken from Meeker and Escobar(1998, p. 131)
-#' cycles   <- c(300, 300, 300, 300, 300, 291, 274, 271, 269, 257, 256, 227, 226,
-#'               224, 213, 211, 205, 203, 197, 196, 190, 189, 188, 187, 184, 180,
-#'               180, 177, 176, 173, 172, 171, 170, 170, 169, 168, 168, 162, 159,
-#'               159, 159, 159, 152, 152, 149, 149, 144, 143, 141, 141, 140, 139,
-#'               139, 136, 135, 133, 131, 129, 123, 121, 121, 118, 117, 117, 114,
-#'               112, 108, 104, 99, 99, 96, 94)
-#' state <- c(rep(0, 5), rep(1, 67))
-#' id <- 1:length(cycles)
+#' data <- reliability_data(data = alloy, x = cycles, status = status)
 #'
-#' df_john <- johnson_method(x = cycles, status = state, id = id)
-
-#' # Example 1: Probability Plot, Regression Line and Confidence Bounds for Three-Parameter-Weibull:
-#' mrr <- rank_regression(x = df_john$x,
-#'                        y = df_john$prob,
-#'                        status = df_john$status,
-#'                        distribution = "weibull3",
-#'                        conf_level = .90)
+#' prob_tbl <- estimate_cdf(data, methods = "johnson")
 #'
-#' conf_betabin <- confint_betabinom(x = df_john$x,
-#'                                   status = df_john$status,
-#'                                   loc_sc_params = mrr$loc_sc_params,
-#'                                   distribution = "weibull3",
-#'                                   bounds = "two_sided",
-#'                                   conf_level = 0.95,
-#'                                   direction = "y")
+#' # Example 1 - Probability Plot, Regression Line and Confidence Bounds for Three-Parameter-Weibull:
+#' rr <- rank_regression(
+#'   x = prob_tbl,
+#'   distribution = "weibull3",
+#'   conf_level = 0.9
+#' )
 #'
-#' plot_weibull <- plot_prob(x = df_john$x,
-#'                           y = df_john$prob,
-#'                           status = df_john$status,
-#'                           id = df_john$id,
-#'                           distribution = "weibull",
-#'                           title_main = "Three-Parametric Weibull",
-#'                           title_x = "Cycles",
-#'                           title_y = "Probability of Failure in %",
-#'                           title_trace = "Failed Items")
+#' conf_betabin <- confint_betabinom(
+#'   x = rr,
+#'   bounds = "two_sided",
+#'   conf_level = 0.95,
+#'   direction = "y"
+#' )
 #'
-#' plot_reg_weibull <- plot_mod(p_obj = plot_weibull,
-#'                              x = conf_betabin$x,
-#'                              y = conf_betabin$prob,
-#'                              loc_sc_params = mrr$loc_sc_params,
-#'                              distribution = "weibull3",
-#'                              title_trace = "Estimated Weibull CDF")
+#' plot_weibull <- plot_prob(
+#'   x = prob_tbl,
+#'   distribution = "weibull",
+#'   title_main = "Three-Parametric Weibull",
+#'   title_x = "Cycles",
+#'   title_y = "Probability of Failure in %",
+#'   title_trace = "Failed Items"
+#' )
 #'
-#' plot_conf_beta <- plot_conf(p_obj = plot_reg_weibull,
-#'                             x = list(conf_betabin$x),
-#'                             y = list(conf_betabin$lower_bound,
-#'                                      conf_betabin$upper_bound),
-#'                             direction = "y",
-#'                             distribution = "weibull3",
-#'                             title_trace = "Confidence Region")
+#' plot_conf_beta <- plot_conf(
+#'   p_obj = plot_weibull,
+#'   x = conf_betabin,
+#'   mod = rr,
+#'   title_trace_mod = "Estimated Weibull CDF",
+#'   title_trace_conf = "Confidence Region"
+#' )
 #'
-#' # Example 2: Probability Plot, Regression Line and Confidence Bounds for Three-Parameter-Lognormal:
-#' mrr_ln <- rank_regression(x = df_john$x,
-#'                        y = df_john$prob,
-#'                        status = df_john$status,
-#'                        distribution = "lognormal3",
-#'                        conf_level = .90)
+#' # Example 2 - Probability Plot, Regression Line and Confidence Bounds for Three-Parameter-Lognormal:
+#' rr_ln <- rank_regression(
+#'   x = prob_tbl,
+#'   distribution = "lognormal3",
+#'   conf_level = 0.9
+#' )
 #'
-#' conf_betabin_ln <- confint_betabinom(x = df_john$x,
-#'                                   status = df_john$status,
-#'                                   loc_sc_params = mrr_ln$loc_sc_params,
-#'                                   distribution = "lognormal3",
-#'                                   bounds = "two_sided",
-#'                                   conf_level = 0.95,
-#'                                   direction = "y")
+#' conf_betabin_ln <- confint_betabinom(
+#'   x = rr_ln,
+#'   bounds = "two_sided",
+#'   conf_level = 0.9,
+#'   direction = "y"
+#' )
 #'
-#' plot_lognormal <- plot_prob(x = df_john$x,
-#'                           y = df_john$prob,
-#'                           status = df_john$status,
-#'                           id = df_john$id,
-#'                           distribution = "lognormal",
-#'                           title_main = "Three-Parametric Lognormal",
-#'                           title_x = "Cycles",
-#'                           title_y = "Probability of Failure in %",
-#'                           title_trace = "Failed Items")
+#' plot_lognormal <- plot_prob(
+#'   x = prob_tbl,
+#'   distribution = "lognormal",
+#'   title_main = "Three-Parametric Lognormal",
+#'   title_x = "Cycles",
+#'   title_y = "Probability of Failure in %",
+#'   title_trace = "Failed Items"
+#' )
 #'
-#' plot_reg_lognormal <- plot_mod(p_obj = plot_lognormal,
-#'                              x = conf_betabin_ln$x,
-#'                              y = conf_betabin_ln$prob,
-#'                              loc_sc_params = mrr_ln$loc_sc_params,
-#'                              distribution = "lognormal3",
-#'                              title_trace = "Estimated Lognormal CDF")
-#'
-#' plot_conf_beta_ln <- plot_conf(p_obj = plot_reg_lognormal,
-#'                             x = list(conf_betabin_ln$x),
-#'                             y = list(conf_betabin_ln$lower_bound,
-#'                                      conf_betabin_ln$upper_bound),
-#'                             direction = "y",
-#'                             distribution = "lognormal3",
-#'                             title_trace = "Confidence Region")
+#' plot_conf_beta_ln <- plot_conf(
+#'   p_obj = plot_lognormal,
+#'   x = conf_betabin_ln,
+#'   mod = rr_ln,
+#'   title_trace_fit = "Estimated Lognormal CDF",
+#'   title_trace_conf = "Confidence Region"
+#' )
 #'
 #' @export
 #'
@@ -1328,43 +1321,36 @@ plot_conf.confint <- function(p_obj,
     )
   }
 
-  p_mod <- if (inherits(mod, "model_estimation")) {
-    failed_data <- dplyr::filter(mod$data, status == 1)
-
-    plot_mod.default(
-      p_obj = p_obj,
-      x = x$x,
-      loc_sc_params = mod$loc_sc_params,
-      distribution = mod$distribution,
-      title_trace = title_trace_mod
-    )
-  } else if (inherits(mod, "model_estimation_list")) {
-    methods <- names(mod)
-
-    tbl_pred <- purrr::map2_dfr(mod, methods, function(model_estimation, method) {
-      plot_mod_helper(
-        x = x$x,
-        loc_sc_params = model_estimation$loc_sc_params,
-        distribution = model_estimation$distribution,
-        method = method
-      )
-    })
-
-    plot_mod_fun <- if (plot_method == "plotly") plot_mod_plotly else
-      plot_mod_ggplot2
-
-    plot_mod_fun(
-      p_obj = p_obj,
-      tbl_pred = tbl_pred,
-      title_trace = title_trace_mod
-    )
-  } else {
-    stop("'mod' must be an object returned from 'ml_estimation()' or
-         'rank_regression()'")
+  if (inherits(mod, "model_estimation")) {
+    # Fake model_estimation_list
+    method <- mod$data$method[1]
+    mod <- list(mod)
+    names(mod) <- method
   }
 
-  distribution <- x$distribution[1]
+  # Perform plot_mod
+  methods <- names(mod)
+  tbl_pred <- purrr::map2_dfr(mod, methods, function(model_estimation, method) {
+    plot_mod_helper(
+      # Take x coordinates from confint. This guarantees considering of b lives
+      x = x$x,
+      loc_sc_params = model_estimation$loc_sc_params,
+      distribution = model_estimation$distribution,
+      method = method
+    )
+  })
 
+  plot_mod_fun <- if (plot_method == "plotly") plot_mod_plotly else
+    plot_mod_ggplot2
+
+  p_mod <- plot_mod_fun(
+    p_obj = p_obj,
+    tbl_pred = tbl_pred,
+    title_trace = title_trace_mod
+  )
+
+  # Perform plot_conf
+  distribution <- x$distribution[1]
   tbl_p <- plot_conf_helper_2(
     x, distribution
   )
@@ -1381,7 +1367,13 @@ plot_conf.confint <- function(p_obj,
 
 #' Add Confidence Region(s) for Quantiles or Probabilities
 #'
-#' @inherit plot_conf description return references
+#' @description
+#' \lifecycle{soft-deprecated}
+#'
+#' This function is used to add estimated confidence region(s) to an existing
+#' probability plot which also includes the estimated regression line.
+#'
+#' @inherit plot_conf return references
 #'
 #' @param p_obj A plot object returned from \code{\link{plot_mod}}.
 #' @param x A list containing the x-coordinates of the confidence region(s).
@@ -1414,90 +1406,107 @@ plot_conf.confint <- function(p_obj,
 #'               159, 159, 159, 152, 152, 149, 149, 144, 143, 141, 141, 140, 139,
 #'               139, 136, 135, 133, 131, 129, 123, 121, 121, 118, 117, 117, 114,
 #'               112, 108, 104, 99, 99, 96, 94)
-#' state <- c(rep(0, 5), rep(1, 67))
-#' id <- 1:length(cycles)
+#' status <- c(rep(0, 5), rep(1, 67))
 #'
-#' df_john <- johnson_method(x = cycles, status = state, id = id)
-
+#' tbl_john <- estimate_cdf(x = cycles, status = status, method = "johnson")
+#'
 #' # Example 1: Probability Plot, Regression Line and Confidence Bounds for Three-Parameter-Weibull:
-#' mrr <- rank_regression(x = df_john$x,
-#'                        y = df_john$prob,
-#'                        status = df_john$status,
-#'                        distribution = "weibull3",
-#'                        conf_level = .90)
+#' rr <- rank_regression(
+#'   x = tbl_john$x,
+#'   y = tbl_john$prob,
+#'   status = tbl_john$status,
+#'   distribution = "weibull3",
+#'   conf_level = .90
+#' )
 #'
-#' conf_betabin <- confint_betabinom(x = df_john$x,
-#'                                   status = df_john$status,
-#'                                   loc_sc_params = mrr$loc_sc_params,
-#'                                   distribution = "weibull3",
-#'                                   bounds = "two_sided",
-#'                                   conf_level = 0.95,
-#'                                   direction = "y")
+#' conf_betabin <- confint_betabinom(
+#'   x = tbl_john$x,
+#'   status = tbl_john$status,
+#'   loc_sc_params = rr$loc_sc_params,
+#'   distribution = "weibull3",
+#'   bounds = "two_sided",
+#'   conf_level = 0.95,
+#'   direction = "y"
+#' )
 #'
-#' plot_weibull <- plot_prob(x = df_john$x,
-#'                           y = df_john$prob,
-#'                           status = df_john$status,
-#'                           id = df_john$id,
-#'                           distribution = "weibull",
-#'                           title_main = "Three-Parametric Weibull",
-#'                           title_x = "Cycles",
-#'                           title_y = "Probability of Failure in %",
-#'                           title_trace = "Failed Items")
+#' plot_weibull <- plot_prob(
+#'   x = tbl_john$x,
+#'   y = tbl_john$prob,
+#'   status = tbl_john$status,
+#'   id = tbl_john$id,
+#'   distribution = "weibull",
+#'   title_main = "Three-Parametric Weibull",
+#'   title_x = "Cycles",
+#'   title_y = "Probability of Failure in %",
+#'   title_trace = "Failed Items"
+#' )
 #'
-#' plot_reg_weibull <- plot_mod(p_obj = plot_weibull,
-#'                              x = conf_betabin$x,
-#'                              y = conf_betabin$prob,
-#'                              loc_sc_params = mrr$loc_sc_params,
-#'                              distribution = "weibull3",
-#'                              title_trace = "Estimated Weibull CDF")
+#' plot_reg_weibull <- plot_mod(
+#'   p_obj = plot_weibull,
+#'   x = conf_betabin$x,
+#'   y = conf_betabin$prob,
+#'   loc_sc_params = rr$loc_sc_params,
+#'   distribution = "weibull3",
+#'   title_trace = "Estimated Weibull CDF"
+#' )
 #'
-#' plot_conf_beta <- plot_conf(p_obj = plot_reg_weibull,
-#'                             x = list(conf_betabin$x),
-#'                             y = list(conf_betabin$lower_bound,
-#'                                      conf_betabin$upper_bound),
-#'                             direction = "y",
-#'                             distribution = "weibull3",
-#'                             title_trace = "Confidence Region")
+#' plot_conf_beta <- plot_conf(
+#'   p_obj = plot_reg_weibull,
+#'   x = list(conf_betabin$x),
+#'   y = list(conf_betabin$lower_bound, conf_betabin$upper_bound),
+#'   direction = "y",
+#'   distribution = "weibull3",
+#'   title_trace = "Confidence Region"
+#' )
 #'
 #' # Example 2: Probability Plot, Regression Line and Confidence Bounds for Three-Parameter-Lognormal:
-#' mrr_ln <- rank_regression(x = df_john$x,
-#'                        y = df_john$prob,
-#'                        status = df_john$status,
-#'                        distribution = "lognormal3",
-#'                        conf_level = .90)
+#' rr_ln <- rank_regression(
+#'   x = tbl_john$x,
+#'   y = tbl_john$prob,
+#'   status = tbl_john$status,
+#'   distribution = "lognormal3",
+#'   conf_level = 0.9
+#' )
 #'
-#' conf_betabin_ln <- confint_betabinom(x = df_john$x,
-#'                                   status = df_john$status,
-#'                                   loc_sc_params = mrr_ln$loc_sc_params,
-#'                                   distribution = "lognormal3",
-#'                                   bounds = "two_sided",
-#'                                   conf_level = 0.95,
-#'                                   direction = "y")
+#' conf_betabin_ln <- confint_betabinom(
+#'   x = tbl_john$x,
+#'   status = tbl_john$status,
+#'   loc_sc_params = rr_ln$loc_sc_params,
+#'   distribution = "lognormal3",
+#'   bounds = "two_sided",
+#'   conf_level = 0.95,
+#'   direction = "y"
+#' )
 #'
-#' plot_lognormal <- plot_prob(x = df_john$x,
-#'                           y = df_john$prob,
-#'                           status = df_john$status,
-#'                           id = df_john$id,
-#'                           distribution = "lognormal",
-#'                           title_main = "Three-Parametric Lognormal",
-#'                           title_x = "Cycles",
-#'                           title_y = "Probability of Failure in %",
-#'                           title_trace = "Failed Items")
+#' plot_lognormal <- plot_prob(
+#'   x = tbl_john$x,
+#'   y = tbl_john$prob,
+#'   status = tbl_john$status,
+#'   id = tbl_john$id,
+#'   distribution = "lognormal",
+#'   title_main = "Three-Parametric Lognormal",
+#'   title_x = "Cycles",
+#'   title_y = "Probability of Failure in %",
+#'   title_trace = "Failed Items"
+#' )
 #'
-#' plot_reg_lognormal <- plot_mod(p_obj = plot_lognormal,
-#'                              x = conf_betabin_ln$x,
-#'                              y = conf_betabin_ln$prob,
-#'                              loc_sc_params = mrr_ln$loc_sc_params,
-#'                              distribution = "lognormal3",
-#'                              title_trace = "Estimated Lognormal CDF")
+#' plot_reg_lognormal <- plot_mod(
+#'   p_obj = plot_lognormal,
+#'   x = conf_betabin_ln$x,
+#'   y = conf_betabin_ln$prob,
+#'   loc_sc_params = rr_ln$loc_sc_params,
+#'   distribution = "lognormal3",
+#'   title_trace = "Estimated Lognormal CDF"
+#' )
 #'
-#' plot_conf_beta_ln <- plot_conf(p_obj = plot_reg_lognormal,
-#'                             x = list(conf_betabin_ln$x),
-#'                             y = list(conf_betabin_ln$lower_bound,
-#'                                      conf_betabin_ln$upper_bound),
-#'                             direction = "y",
-#'                             distribution = "lognormal3",
-#'                             title_trace = "Confidence Region")
+#' plot_conf_beta_ln <- plot_conf(
+#'   p_obj = plot_reg_lognormal,
+#'   x = list(conf_betabin_ln$x),
+#'   y = list(conf_betabin_ln$lower_bound, conf_betabin_ln$upper_bound),
+#'   direction = "y",
+#'   distribution = "lognormal3",
+#'   title_trace = "Confidence Region"
+#' )
 #'
 #' @export
 #'

@@ -3,7 +3,7 @@
 * Package now depends on R(>= 3.5.0)
 * Renamed argument `event` with `status`.
 * Output of probability estimators: Renamed column `characteristic` with `x`.
-* `plot_conf()`: Switched arguments distribution and direction.
+* `plot_conf()`: Switched position of arguments distribution and direction.
 * `rank_regression()`, `ml_estimation()`: Removed `details` argument.
 * `rank_regression()`, `ml_estimation()`: Renamed output: `loc_sc_coefficients` -> `loc_sc_params`, `loc_sc_vcov` -> `loc_sc_varcov`
 * `plot_pop()`: Added argument `tol` to restrict the range of failure probabilities. Removed argument `color`. Renamed argument `params` to `loc_sc_params_tbl`, which only supports location and scale parameters (also for `distribution = "weibull"`). Changed behaviour of `loc_sc_params_tbl`: A tibble is now recommended instead of a vector.

@@ -164,6 +164,9 @@ confint_betabinom.model_estimation <- function(
                                  direction = c("y", "x"),
                                  ...
 ) {
+  bounds <- match.arg(bounds)
+  direction <- match.arg(direction)
+
   confint_betabinom_(
     model_estimation = x,
     b_lives = b_lives,

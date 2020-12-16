@@ -69,13 +69,11 @@ plot_prob_helper <- function(
   }
   tbl$q <- q
 
-  if (!hasName(tbl, "group")) tbl$group <- "null"
-
   tbl
 }
 
 plot_mod_helper <- function(
-  x, loc_sc_params, distribution, method = "mod_null"
+  x, loc_sc_params, distribution, method = NA_character_
 ) {
   if (length(x) == 2) {
     if (distribution %in% c("weibull", "lognormal", "loglogistic")) {
@@ -139,7 +137,7 @@ plot_mod_helper <- function(
       param_val = list(param_val),
       param_label = list(param_label),
       method = method,
-      group = "_null",
+      group = NA_character_,
       q = q
     )
 }
@@ -244,7 +242,7 @@ plot_conf_helper <- function(tbl_mod, x, y, direction, distribution) {
   }
 
   tbl_p <- dplyr::group_by(tbl_p, bound)
-  tbl_p$method <- "conf_null"
+  tbl_p$method <- NA_character_
 
   return(tbl_p)
 }

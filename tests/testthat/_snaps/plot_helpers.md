@@ -65,37 +65,37 @@
 # plot_prob_helper remains stable
 
     CDF estimation for methods 'johnson', 'kaplan':
-    # A tibble: 134 x 8
-       id        x status  rank    prob method      q group
-       <chr> <dbl>  <dbl> <dbl>   <dbl> <chr>   <dbl> <chr>
-     1 ID72     94      1     1 0.00967 johnson -4.63 null 
-     2 ID72     94      1    NA 0.0139  kaplan  -4.27 null 
-     3 ID71     96      1     2 0.0235  johnson -3.74 null 
-     4 ID71     96      1    NA 0.0278  kaplan  -3.57 null 
-     5 ID69     99      1     4 0.0511  johnson -2.95 null 
-     6 ID70     99      1     4 0.0511  johnson -2.95 null 
-     7 ID69     99      1    NA 0.0556  kaplan  -2.86 null 
-     8 ID70     99      1    NA 0.0556  kaplan  -2.86 null 
-     9 ID68    104      1     5 0.0649  johnson -2.70 null 
-    10 ID68    104      1    NA 0.0694  kaplan  -2.63 null 
+    # A tibble: 134 x 7
+       id        x status  rank    prob method      q
+       <chr> <dbl>  <dbl> <dbl>   <dbl> <chr>   <dbl>
+     1 ID72     94      1     1 0.00967 johnson -4.63
+     2 ID72     94      1    NA 0.0139  kaplan  -4.27
+     3 ID71     96      1     2 0.0235  johnson -3.74
+     4 ID71     96      1    NA 0.0278  kaplan  -3.57
+     5 ID69     99      1     4 0.0511  johnson -2.95
+     6 ID70     99      1     4 0.0511  johnson -2.95
+     7 ID69     99      1    NA 0.0556  kaplan  -2.86
+     8 ID70     99      1    NA 0.0556  kaplan  -2.86
+     9 ID68    104      1     5 0.0649  johnson -2.70
+    10 ID68    104      1    NA 0.0694  kaplan  -2.63
     # ... with 124 more rows
 
 ---
 
     CDF estimation for methods 'johnson', 'kaplan':
-    # A tibble: 134 x 8
-       id        x status  rank    prob method      q group
-       <chr> <dbl>  <dbl> <dbl>   <dbl> <chr>   <dbl> <chr>
-     1 ID72     94      1     1 0.00967 johnson -2.34 null 
-     2 ID72     94      1    NA 0.0139  kaplan  -2.20 null 
-     3 ID71     96      1     2 0.0235  johnson -1.99 null 
-     4 ID71     96      1    NA 0.0278  kaplan  -1.91 null 
-     5 ID69     99      1     4 0.0511  johnson -1.63 null 
-     6 ID70     99      1     4 0.0511  johnson -1.63 null 
-     7 ID69     99      1    NA 0.0556  kaplan  -1.59 null 
-     8 ID70     99      1    NA 0.0556  kaplan  -1.59 null 
-     9 ID68    104      1     5 0.0649  johnson -1.51 null 
-    10 ID68    104      1    NA 0.0694  kaplan  -1.48 null 
+    # A tibble: 134 x 7
+       id        x status  rank    prob method      q
+       <chr> <dbl>  <dbl> <dbl>   <dbl> <chr>   <dbl>
+     1 ID72     94      1     1 0.00967 johnson -2.34
+     2 ID72     94      1    NA 0.0139  kaplan  -2.20
+     3 ID71     96      1     2 0.0235  johnson -1.99
+     4 ID71     96      1    NA 0.0278  kaplan  -1.91
+     5 ID69     99      1     4 0.0511  johnson -1.63
+     6 ID70     99      1     4 0.0511  johnson -1.63
+     7 ID69     99      1    NA 0.0556  kaplan  -1.59
+     8 ID70     99      1    NA 0.0556  kaplan  -1.59
+     9 ID68    104      1     5 0.0649  johnson -1.51
+    10 ID68    104      1    NA 0.0694  kaplan  -1.48
     # ... with 124 more rows
 
 # plot_mod_helper remains stable

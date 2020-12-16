@@ -2,7 +2,7 @@
 title: "Life Data Analysis Part I - Estimation of Failure Probabilities"
 subtitle: "A Non-parametric Approach"
 author: "Tim-Gunnar Hensel"
-date: "2020-12-15"
+date: "2020-12-16"
 output:
   rmarkdown::html_vignette:
     fig_height: 6
@@ -28,10 +28,14 @@ In order to obtain an estimate of the cumulative failure probability for each ob
 
 But rank distributions are systematically skewed distributions and thus the median value instead of the expected value $E\left[F\left(t_i\right)\right] = \frac{i}{n + 1}$ is used for estimation [^note1]. This skewness is visualized in _Figure 1_. 
 
+[^note1]: Kapur, K. C.; Lamberson, L. R.: _Reliability in Engineering Design_, 
+          _New York: Wiley_, 1977, pp. 297-301  
+
 
 ```r
 library(tidyverse) # using dplyr manipulation functions and ggplot2
 #> Warning: Paket 'tibble' wurde unter R Version 4.0.3 erstellt
+#> Warning: Paket 'dplyr' wurde unter R Version 4.0.3 erstellt
 
 x <- seq(0, 1, length.out = 100) # CDF
 n <- 10 # sample size
@@ -50,9 +54,6 @@ densplot
 ```
 
 ![Figure 1: Densities for different ranks i in samples of size n = 10.](figure/rank densities-1.png)
-
-[^note1]: Kapur, K. C.; Lamberson, L. R.: _Reliability in Engineering Design_, 
-          _New York: Wiley_, 1977, pp. 297-301  
 
 ### Failure Probability Estimation  
 

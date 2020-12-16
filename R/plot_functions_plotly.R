@@ -109,8 +109,7 @@ plot_layout_plotly <- function(
       legend = l,
       xaxis = x_config,
       yaxis = y_config,
-      margin = m,
-      hovermode = "x"
+      margin = m
     )
   return(p)
 }
@@ -131,10 +130,14 @@ plot_prob_plotly <- function(
   mark_x <- unlist(strsplit(title_x, " "))[1]
   mark_y <- unlist(strsplit(title_y, " "))[1]
 
-  n_group <- length(unique(tbl_prob$group))
+  # Suppress warning by subsetting with character
+  n_group <- length(unique(tbl_prob[["group"]]))
   n_method <- length(unique(tbl_prob$method))
 
-  name <- to_prob_mod_name(tbl_prob, n_method, n_group, title_trace)
+  color <- if (n_method == 1) I("#3C8DBC") else ~method
+  symbol <- if (n_group == 0) NULL else ~group
+
+  name <- to_name(tbl_prob, n_method, n_group, title_trace)
 
   # Construct probability plot:
   p_prob <- p_obj %>%
@@ -146,9 +149,9 @@ plot_prob_plotly <- function(
       mode = "markers",
       hoverinfo = "text",
       name = name,
-      color = ~as.factor(method),
+      color = color,
       colors = "Set2",
-      symbol = ~group,
+      symbol = symbol,
       legendgroup = ~method,
       text = paste(
         "ID:", tbl_prob$id,
@@ -179,7 +182,10 @@ plot_mod_plotly <- function(
   n_method <- length(unique(tbl_pred$method))
   n_group <- length(unique(tbl_pred$group))
 
-  name <- to_prob_mod_name(tbl_pred, n_method, n_group, title_trace)
+  color <- if (n_method == 1) I("#CC2222") else ~method
+
+  # Reminder: Splitting the line by group happens by using the name
+  name <- to_name(tbl_pred, n_method, n_group, title_trace)
 
   p_mod <- plotly::add_lines(
     p = p_obj,
@@ -190,7 +196,7 @@ plot_mod_plotly <- function(
     mode = "lines",
     hoverinfo = "text",
     name = name,
-    color = ~method,
+    color = color,
     colors = "Set2",
     legendgroup = ~method,
     text = ~hovertext
@@ -204,7 +210,11 @@ plot_conf_plotly <- function(p_obj, tbl_p, title_trace) {
   x_mark <- unlist(strsplit(p_obj$x$layoutAttrs[[2]]$xaxis$title$text,  " "))[1]
   y_mark <- unlist(strsplit(p_obj$x$layoutAttrs[[2]]$yaxis$title$text,  " "))[1]
 
-  color <- if (all(tbl_p$method == "conf_null")) I("#CC2222") else ~method
+  n_method <- length(unique(tbl_p$method))
+
+  color <- if (n_method == 1) I("#CC2222") else ~method
+
+  name <- to_name(tbl_p, n_method, n_group = 0, title_trace)
 
   p_conf <- plotly::add_lines(
     p = p_obj,
@@ -217,7 +227,7 @@ plot_conf_plotly <- function(p_obj, tbl_p, title_trace) {
     line = list(dash = "dash", width = 1),
     color = color,
     colors = "Set2",
-    name = title_trace,
+    name = name,
     legendgroup = ~method,
     text = paste(
       paste0(x_mark, ":"),
@@ -244,7 +254,7 @@ plot_pop_plotly <- function(
       hovertext = to_hovertext(
         x_s, y_s, param_val, param_label, x_mark, y_mark
       ),
-      name = to_name(
+      name = to_name_pop(
         param_val, param_label
       )
     ) %>%
@@ -294,7 +304,7 @@ to_hovertext <- function(x, y, param_val, param_label, x_mark, y_mark) {
   text
 }
 
-to_name <- function(param_val, param_label) {
+to_name_pop <- function(param_val, param_label) {
   param_val <- unlist(param_val)
   param_label <- unlist(param_label)
 
@@ -316,15 +326,15 @@ to_name <- function(param_val, param_label) {
   text
 }
 
-to_prob_mod_name <- function(tbl, n_method, n_group, title_trace) {
-  if (n_method == 1) {
-    if (n_group == 1) {
+to_name <- function(tbl, n_method, n_group, title_trace) {
+  if (n_method <= 1) {
+    if (n_group <= 1) {
       title_trace
     } else {
       paste0(title_trace, ": ", tbl$group)
     }
   } else {
-    if (n_group == 1) {
+    if (n_group <= 1) {
       paste0(title_trace, ": ", tbl$method)
     } else {
       paste0(title_trace, ": ", tbl$method, ", ", tbl$group)
