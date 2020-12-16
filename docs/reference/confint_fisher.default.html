@@ -139,7 +139,7 @@ and failure probabilities.</p>
 <span class='fu'><a href='confint_fisher.html'>confint_fisher</a></span><span class='op'>(</span>
   <span class='va'>x</span>,
   <span class='va'>status</span>,
-  <span class='va'>loc_sc_params</span>,
+  <span class='va'>dist_params</span>,
   <span class='va'>loc_sc_varcov</span>,
   distribution <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"weibull"</span>, <span class='st'>"lognormal"</span>, <span class='st'>"loglogistic"</span>, <span class='st'>"normal"</span>, <span class='st'>"logistic"</span>, <span class='st'>"sev"</span>,
     <span class='st'>"weibull3"</span>, <span class='st'>"lognormal3"</span>, <span class='st'>"loglogistic3"</span><span class='op'>)</span>,
@@ -166,7 +166,7 @@ cycles.</p></td>
 is a right censored observation (= 0) or a failure (= 1).</p></td>
     </tr>
     <tr>
-      <th>loc_sc_params</th>
+      <th>dist_params</th>
       <td><p>A (named) numeric vector of (log-)location-scale parameters
 returned from <code><a href='ml_estimation.html'>ml_estimation</a></code>.</p></td>
     </tr>
@@ -275,62 +275,62 @@ these have to be estimated with <a href='ml_estimation.html'>maximum likelihood<
 <span class='va'>conf_fisher_1</span> <span class='op'>&lt;-</span> <span class='fu'><a href='confint_fisher.html'>confint_fisher</a></span><span class='op'>(</span>
   x <span class='op'>=</span> <span class='va'>obs</span>,
   status <span class='op'>=</span> <span class='va'>status_1</span>,
-  loc_sc_params <span class='op'>=</span> <span class='va'>ml</span><span class='op'>$</span><span class='va'>loc_sc_params</span>,
+  dist_params <span class='op'>=</span> <span class='va'>ml</span><span class='op'>$</span><span class='va'>coefficients</span>,
   loc_sc_varcov <span class='op'>=</span> <span class='va'>ml</span><span class='op'>$</span><span class='va'>loc_sc_varcov</span>,
   distribution <span class='op'>=</span> <span class='st'>"weibull"</span>,
   bounds <span class='op'>=</span> <span class='st'>"two_sided"</span>,
   conf_level <span class='op'>=</span> <span class='fl'>0.95</span>,
   direction <span class='op'>=</span> <span class='st'>"y"</span>
 <span class='op'>)</span>
-
+</div><div class='output co'>#&gt; <span class='error'>Error in add_b_lives(x_ob, loc_sc_params, distribution, b_lives): Argument "loc_sc_params" fehlt (ohne Standardwert)</span></div><div class='input'>
 <span class='co'># Example 2 - One-sided lower/upper 90% confidence interval for quantiles ('x'):</span>
 <span class='va'>conf_fisher_2_1</span> <span class='op'>&lt;-</span> <span class='fu'><a href='confint_fisher.html'>confint_fisher</a></span><span class='op'>(</span>
   x <span class='op'>=</span> <span class='va'>obs</span>,
   status <span class='op'>=</span> <span class='va'>status_1</span>,
-  loc_sc_params <span class='op'>=</span> <span class='va'>ml</span><span class='op'>$</span><span class='va'>loc_sc_params</span>,
+  dist_params <span class='op'>=</span> <span class='va'>ml</span><span class='op'>$</span><span class='va'>coefficients</span>,
   loc_sc_varcov <span class='op'>=</span> <span class='va'>ml</span><span class='op'>$</span><span class='va'>loc_sc_varcov</span>,
   distribution <span class='op'>=</span> <span class='st'>"weibull"</span>,
   bounds <span class='op'>=</span> <span class='st'>"lower"</span>,
   conf_level <span class='op'>=</span> <span class='fl'>0.90</span>,
   direction <span class='op'>=</span> <span class='st'>"x"</span>
 <span class='op'>)</span>
-
+</div><div class='output co'>#&gt; <span class='error'>Error in add_b_lives(x_ob, loc_sc_params, distribution, b_lives): Argument "loc_sc_params" fehlt (ohne Standardwert)</span></div><div class='input'>
 <span class='va'>conf_fisher_2_2</span> <span class='op'>&lt;-</span> <span class='fu'><a href='confint_fisher.html'>confint_fisher</a></span><span class='op'>(</span>
   x <span class='op'>=</span> <span class='va'>obs</span>,
   status <span class='op'>=</span> <span class='va'>status_1</span>,
-  loc_sc_params <span class='op'>=</span> <span class='va'>ml</span><span class='op'>$</span><span class='va'>loc_sc_params</span>,
+  dist_params <span class='op'>=</span> <span class='va'>ml</span><span class='op'>$</span><span class='va'>coefficients</span>,
   loc_sc_varcov <span class='op'>=</span> <span class='va'>ml</span><span class='op'>$</span><span class='va'>loc_sc_varcov</span>,
   distribution <span class='op'>=</span> <span class='st'>"weibull"</span>,
   bounds <span class='op'>=</span> <span class='st'>"upper"</span>,
   conf_level <span class='op'>=</span> <span class='fl'>0.90</span>,
   direction <span class='op'>=</span> <span class='st'>"x"</span>
 <span class='op'>)</span>
-
+</div><div class='output co'>#&gt; <span class='error'>Error in add_b_lives(x_ob, loc_sc_params, distribution, b_lives): Argument "loc_sc_params" fehlt (ohne Standardwert)</span></div><div class='input'>
 <span class='co'># Example 3 - Two-sided 90% confidence intervals for both directions using</span>
 <span class='co'># a three-parametric model:</span>
 
 <span class='va'>conf_fisher_3_1</span> <span class='op'>&lt;-</span> <span class='fu'><a href='confint_fisher.html'>confint_fisher</a></span><span class='op'>(</span>
   x <span class='op'>=</span> <span class='va'>cycles</span>,
   status <span class='op'>=</span> <span class='va'>status_2</span>,
-  loc_sc_params <span class='op'>=</span> <span class='va'>ml_2</span><span class='op'>$</span><span class='va'>loc_sc_params</span>,
+  dist_params <span class='op'>=</span> <span class='va'>ml_2</span><span class='op'>$</span><span class='va'>coefficients</span>,
   loc_sc_varcov <span class='op'>=</span> <span class='va'>ml_2</span><span class='op'>$</span><span class='va'>loc_sc_varcov</span>,
   distribution <span class='op'>=</span> <span class='st'>"lognormal3"</span>,
   bounds <span class='op'>=</span> <span class='st'>"two_sided"</span>,
   conf_level <span class='op'>=</span> <span class='fl'>0.90</span>,
   direction <span class='op'>=</span> <span class='st'>"y"</span>
 <span class='op'>)</span>
-
+</div><div class='output co'>#&gt; <span class='error'>Error in add_b_lives(x_ob, loc_sc_params, distribution, b_lives): Argument "loc_sc_params" fehlt (ohne Standardwert)</span></div><div class='input'>
 <span class='va'>conf_fisher_3_2</span> <span class='op'>&lt;-</span> <span class='fu'><a href='confint_fisher.html'>confint_fisher</a></span><span class='op'>(</span>
   x <span class='op'>=</span> <span class='va'>cycles</span>,
   status <span class='op'>=</span> <span class='va'>status_2</span>,
-  loc_sc_params <span class='op'>=</span> <span class='va'>ml_2</span><span class='op'>$</span><span class='va'>loc_sc_params</span>,
+  dist_params <span class='op'>=</span> <span class='va'>ml_2</span><span class='op'>$</span><span class='va'>coefficients</span>,
   loc_sc_varcov <span class='op'>=</span> <span class='va'>ml_2</span><span class='op'>$</span><span class='va'>loc_sc_varcov</span>,
   distribution <span class='op'>=</span> <span class='st'>"lognormal3"</span>,
   bounds <span class='op'>=</span> <span class='st'>"two_sided"</span>,
   conf_level <span class='op'>=</span> <span class='fl'>0.90</span>,
   direction <span class='op'>=</span> <span class='st'>"x"</span>
 <span class='op'>)</span>
-
+</div><div class='output co'>#&gt; <span class='error'>Error in add_b_lives(x_ob, loc_sc_params, distribution, b_lives): Argument "loc_sc_params" fehlt (ohne Standardwert)</span></div><div class='input'>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

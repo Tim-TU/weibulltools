@@ -141,7 +141,7 @@ of probabilities in terms of (<em>Median Ranks</em>).</p>
 <span class='fu'><a href='confint_betabinom.html'>confint_betabinom</a></span><span class='op'>(</span>
   <span class='va'>x</span>,
   <span class='va'>status</span>,
-  <span class='va'>loc_sc_params</span>,
+  <span class='va'>dist_params</span>,
   distribution <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"weibull"</span>, <span class='st'>"lognormal"</span>, <span class='st'>"loglogistic"</span>, <span class='st'>"normal"</span>, <span class='st'>"logistic"</span>, <span class='st'>"sev"</span>,
     <span class='st'>"weibull3"</span>, <span class='st'>"lognormal3"</span>, <span class='st'>"loglogistic3"</span><span class='op'>)</span>,
   b_lives <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.01</span>, <span class='fl'>0.1</span>, <span class='fl'>0.5</span><span class='op'>)</span>,
@@ -167,7 +167,7 @@ cycles.</p></td>
 is a right censored observation (= 0) or a failure (= 1).</p></td>
     </tr>
     <tr>
-      <th>loc_sc_params</th>
+      <th>dist_params</th>
       <td><p>A (named) numeric vector of (log-)location-scale parameters
 returned from <code><a href='rank_regression.html'>rank_regression</a></code>.</p></td>
     </tr>
@@ -223,8 +223,9 @@ confidence interval. One of <code>"y"</code> (failure probabilities) or <code>"x
 <li><p><code>distribution</code> : Specified distribution.</p></li>
 <li><p><code>bounds</code> : Specified bound(s).</p></li>
 <li><p><code>direction</code> : Specified direction.</p></li>
-<li><p><code>method</code> : A character that is always <code>"conf_null"</code>. Due to
-      generic visualization functions column <code>method</code> has to be provided.</p></li>
+<li><p><code>method</code> : A character that is always <code>NA_character</code>. Due
+      to the generic visualization functions column <code>method</code> has to be
+      provided.</p></li>
 </ul>
 
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
@@ -277,57 +278,57 @@ on another level, the specified confidence level.</p>
 <span class='va'>conf_betabin_1</span> <span class='op'>&lt;-</span> <span class='fu'><a href='confint_betabinom.html'>confint_betabinom</a></span><span class='op'>(</span>
   x <span class='op'>=</span> <span class='va'>obs</span>,
   status <span class='op'>=</span> <span class='va'>status_1</span>,
-  loc_sc_params <span class='op'>=</span> <span class='va'>rr</span><span class='op'>$</span><span class='va'>loc_sc_params</span>,
+  dist_params <span class='op'>=</span> <span class='va'>rr</span><span class='op'>$</span><span class='va'>coefficients</span>,
   distribution <span class='op'>=</span> <span class='st'>"weibull"</span>,
   bounds <span class='op'>=</span> <span class='st'>"two_sided"</span>,
   conf_level <span class='op'>=</span> <span class='fl'>0.95</span>,
   direction <span class='op'>=</span> <span class='st'>"y"</span>
 <span class='op'>)</span>
-
+</div><div class='output co'>#&gt; <span class='error'>Error in confint_betabinom.default(x = obs, status = status_1, dist_params = rr$coefficients,     distribution = "weibull", bounds = "two_sided", conf_level = 0.95,     direction = "y"): Argument "loc_sc_params" fehlt (ohne Standardwert)</span></div><div class='input'>
 <span class='co'># Example 2 - One-sided lower/upper 90% confidence interval for quantiles ('x'):</span>
 <span class='va'>conf_betabin_2_1</span> <span class='op'>&lt;-</span> <span class='fu'><a href='confint_betabinom.html'>confint_betabinom</a></span><span class='op'>(</span>
   x <span class='op'>=</span> <span class='va'>obs</span>,
   status <span class='op'>=</span> <span class='va'>status_1</span>,
-  loc_sc_params <span class='op'>=</span> <span class='va'>rr</span><span class='op'>$</span><span class='va'>loc_sc_params</span>,
+  dist_params <span class='op'>=</span> <span class='va'>rr</span><span class='op'>$</span><span class='va'>coefficients</span>,
   distribution <span class='op'>=</span> <span class='st'>"weibull"</span>,
   bounds <span class='op'>=</span> <span class='st'>"lower"</span>,
   conf_level <span class='op'>=</span> <span class='fl'>0.90</span>,
   direction <span class='op'>=</span> <span class='st'>"x"</span>
 <span class='op'>)</span>
-
+</div><div class='output co'>#&gt; <span class='error'>Error in confint_betabinom.default(x = obs, status = status_1, dist_params = rr$coefficients,     distribution = "weibull", bounds = "lower", conf_level = 0.9,     direction = "x"): Argument "loc_sc_params" fehlt (ohne Standardwert)</span></div><div class='input'>
 <span class='va'>conf_betabin_2_2</span> <span class='op'>&lt;-</span> <span class='fu'><a href='confint_betabinom.html'>confint_betabinom</a></span><span class='op'>(</span>
   x <span class='op'>=</span> <span class='va'>obs</span>,
   status <span class='op'>=</span> <span class='va'>status_1</span>,
-  loc_sc_params <span class='op'>=</span> <span class='va'>rr</span><span class='op'>$</span><span class='va'>loc_sc_params</span>,
+  dist_params <span class='op'>=</span> <span class='va'>rr</span><span class='op'>$</span><span class='va'>coefficients</span>,
   distribution <span class='op'>=</span> <span class='st'>"weibull"</span>,
   bounds <span class='op'>=</span> <span class='st'>"upper"</span>,
   conf_level <span class='op'>=</span> <span class='fl'>0.90</span>,
   direction <span class='op'>=</span> <span class='st'>"x"</span>
 <span class='op'>)</span>
-
+</div><div class='output co'>#&gt; <span class='error'>Error in confint_betabinom.default(x = obs, status = status_1, dist_params = rr$coefficients,     distribution = "weibull", bounds = "upper", conf_level = 0.9,     direction = "x"): Argument "loc_sc_params" fehlt (ohne Standardwert)</span></div><div class='input'>
 <span class='co'># Example 3 - Two-sided 90% confidence intervals for both directions using</span>
 <span class='co'># a three-parametric model:</span>
 
 <span class='va'>conf_betabin_3_1</span> <span class='op'>&lt;-</span> <span class='fu'><a href='confint_betabinom.html'>confint_betabinom</a></span><span class='op'>(</span>
   x <span class='op'>=</span> <span class='va'>cycles</span>,
   status <span class='op'>=</span> <span class='va'>status_2</span>,
-  loc_sc_params <span class='op'>=</span> <span class='va'>rr_2</span><span class='op'>$</span><span class='va'>loc_sc_params</span>,
+  dist_params <span class='op'>=</span> <span class='va'>rr_2</span><span class='op'>$</span><span class='va'>coefficients</span>,
   distribution <span class='op'>=</span> <span class='st'>"lognormal3"</span>,
   bounds <span class='op'>=</span> <span class='st'>"two_sided"</span>,
   conf_level <span class='op'>=</span> <span class='fl'>0.90</span>,
   direction <span class='op'>=</span> <span class='st'>"y"</span>
 <span class='op'>)</span>
-
+</div><div class='output co'>#&gt; <span class='error'>Error in confint_betabinom.default(x = cycles, status = status_2, dist_params = rr_2$coefficients,     distribution = "lognormal3", bounds = "two_sided", conf_level = 0.9,     direction = "y"): Argument "loc_sc_params" fehlt (ohne Standardwert)</span></div><div class='input'>
 <span class='va'>conf_betabin_3_2</span> <span class='op'>&lt;-</span> <span class='fu'><a href='confint_betabinom.html'>confint_betabinom</a></span><span class='op'>(</span>
   x <span class='op'>=</span> <span class='va'>cycles</span>,
   status <span class='op'>=</span> <span class='va'>status_2</span>,
-  loc_sc_params <span class='op'>=</span> <span class='va'>rr_2</span><span class='op'>$</span><span class='va'>loc_sc_params</span>,
+  dist_params <span class='op'>=</span> <span class='va'>rr_2</span><span class='op'>$</span><span class='va'>coefficients</span>,
   distribution <span class='op'>=</span> <span class='st'>"lognormal3"</span>,
   bounds <span class='op'>=</span> <span class='st'>"two_sided"</span>,
   conf_level <span class='op'>=</span> <span class='fl'>0.90</span>,
   direction <span class='op'>=</span> <span class='st'>"x"</span>
 <span class='op'>)</span>
-
+</div><div class='output co'>#&gt; <span class='error'>Error in confint_betabinom.default(x = cycles, status = status_2, dist_params = rr_2$coefficients,     distribution = "lognormal3", bounds = "two_sided", conf_level = 0.9,     direction = "x"): Argument "loc_sc_params" fehlt (ohne Standardwert)</span></div><div class='input'>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
