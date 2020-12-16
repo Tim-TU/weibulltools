@@ -849,7 +849,7 @@ plot_mod.mixmod_regression <- function(p_obj, x, title_trace = "Fit", ...) {
   }
 
   tbl_pred <- purrr::map2_dfr(x, seq_along(x), function(model_estimation, index) {
-    method <- if (purrr::is_null(model_estimation$data$method)) {
+    method <- if (!tibble::has_name(model_estimation$data, "method")) {
       # Case mixmod_em (plot_mod.mixmod_em calls this method internally)
       as.character(index)
     } else {
