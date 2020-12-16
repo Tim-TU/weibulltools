@@ -62,10 +62,10 @@ plot_prob_ggplot2 <- function(
   distribution <- match.arg(distribution)
 
   n_method <- length(unique(tbl_prob$method))
-  n_group <- length(unique(tbl_prob$group))
+  n_group <- length(unique(tbl_prob[["group"]]))
 
   if (n_method == 1) tbl_prob$method <- ""
-  if (n_group == 1) tbl_prob$group <- ""
+  if (n_group <= 1) tbl_prob$group <- ""
 
   mapping <- if (n_group == 1) {
     ggplot2::aes(x = x, y = q, color = method)
@@ -96,7 +96,6 @@ plot_mod_ggplot2 <- function(
   n_group <- length(unique(tbl_pred$group))
 
   if (n_method == 1) tbl_pred$method <- ""
-  if (n_group == 1) tbl_pred$group <- ""
 
   mapping <- if (n_group == 1) {
     ggplot2::aes(x = x_p, y = q, color = method)

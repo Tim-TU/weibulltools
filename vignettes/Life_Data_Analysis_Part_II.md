@@ -2,7 +2,7 @@
 title: "Life Data Analysis Part II - Parameter Estimation of Parametric Lifetime Models"
 subtitle: "Median Rank Regression and Maximum Likelihood Method"
 author: "Tim-Gunnar Hensel"
-date: "2020-12-15"
+date: "2020-12-17"
 output:
   rmarkdown::html_vignette:
     fig_height: 6
@@ -146,8 +146,8 @@ mrr_weibull <- rank_regression(shock_cdf, distribution = "weibull")
 mrr_weibull 
 #> Rank Regression
 #> Coefficients:
-#>       eta       beta  
-#> 28554.796      2.753
+#>      mu    sigma  
+#> 10.2596   0.3632
 
 # Probability plot: 
 weibull_grid <- plot_prob(
@@ -208,8 +208,8 @@ ml_weibull <- ml_estimation(
 ml_weibull 
 #> Maximum Likelihood Estimation
 #> Coefficients:
-#>      eta      beta  
-#> 27718.71      3.16
+#>      mu    sigma  
+#> 10.2299   0.3164
 
 # Add ML estimation to weibull_plot: 
 weibull_both <- weibull_plot %>%

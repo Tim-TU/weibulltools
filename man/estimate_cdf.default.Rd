@@ -107,7 +107,7 @@ status <- alloy$status
 prob_tbl <- estimate_cdf(
   x = cycles,
   status = status,
-  methods = "johnson"
+  method = "johnson"
 )
 
 
@@ -115,7 +115,7 @@ prob_tbl <- estimate_cdf(
 prob_tbl_2 <- estimate_cdf(
   x = cycles,
   status = status,
-  methods = "mr",
+  method = "mr",
   options = list(
     mr_method = "invbeta",
     mr_ties.method = "average"

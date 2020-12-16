@@ -2,7 +2,7 @@
 title: "Life Data Analysis Part I - Estimation of Failure Probabilities"
 subtitle: "A Non-parametric Approach"
 author: "Tim-Gunnar Hensel"
-date: "2020-12-16"
+date: "2020-12-17"
 output:
   rmarkdown::html_vignette:
     fig_height: 6

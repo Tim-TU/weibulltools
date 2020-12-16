@@ -2,7 +2,7 @@
 title: "Life Data Analysis Part III - Mixture Models"
 subtitle: "Segmented Regression and EM-Algorithm"
 author: "Tim-Gunnar Hensel"
-date: "2020-12-15"
+date: "2020-12-17"
 output:
   rmarkdown::html_vignette:
     fig_height: 6
@@ -139,9 +139,6 @@ mix_em_plot
 
 # Using plot_mod() to visualize regression lines of subgroups: 
 mix_em_lines <- plot_mod(mix_em_plot, mix_em_weib, title_trace = "Fitted Line")
-#> Warning: Unknown or uninitialised column: `method`.
-
-#> Warning: Unknown or uninitialised column: `method`.
 mix_em_lines
 ```
 

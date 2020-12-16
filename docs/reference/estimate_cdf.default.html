@@ -251,7 +251,7 @@ is a right censored observation (= 0) or a failure (= 1).</p></td>
 <span class='va'>prob_tbl</span> <span class='op'>&lt;-</span> <span class='fu'><a href='estimate_cdf.html'>estimate_cdf</a></span><span class='op'>(</span>
   x <span class='op'>=</span> <span class='va'>cycles</span>,
   status <span class='op'>=</span> <span class='va'>status</span>,
-  methods <span class='op'>=</span> <span class='st'>"johnson"</span>
+  method <span class='op'>=</span> <span class='st'>"johnson"</span>
 <span class='op'>)</span>
 
 
@@ -259,7 +259,7 @@ is a right censored observation (= 0) or a failure (= 1).</p></td>
 <span class='va'>prob_tbl_2</span> <span class='op'>&lt;-</span> <span class='fu'><a href='estimate_cdf.html'>estimate_cdf</a></span><span class='op'>(</span>
   x <span class='op'>=</span> <span class='va'>cycles</span>,
   status <span class='op'>=</span> <span class='va'>status</span>,
-  methods <span class='op'>=</span> <span class='st'>"mr"</span>,
+  method <span class='op'>=</span> <span class='st'>"mr"</span>,
   options <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>
     mr_method <span class='op'>=</span> <span class='st'>"invbeta"</span>,
     mr_ties.method <span class='op'>=</span> <span class='st'>"average"</span>
