@@ -82,7 +82,7 @@ rr <- rank_regression(
 conf_betabin <- confint_betabinom(
   x = tbl_john$x,
   status = tbl_john$status,
-  loc_sc_params = rr$loc_sc_params,
+  dist_params = rr$coefficients,
   distribution = "weibull3",
   bounds = "two_sided",
   conf_level = 0.95,
@@ -105,7 +105,7 @@ plot_reg_weibull <- plot_mod(
   p_obj = plot_weibull,
   x = conf_betabin$x,
   y = conf_betabin$prob,
-  loc_sc_params = rr$loc_sc_params,
+  dist_params = rr$coefficients,
   distribution = "weibull3",
   title_trace = "Estimated Weibull CDF"
 )
@@ -131,7 +131,7 @@ rr_ln <- rank_regression(
 conf_betabin_ln <- confint_betabinom(
   x = tbl_john$x,
   status = tbl_john$status,
-  loc_sc_params = rr_ln$loc_sc_params,
+  dist_params = rr_ln$coefficients,
   distribution = "lognormal3",
   bounds = "two_sided",
   conf_level = 0.95,
@@ -154,7 +154,7 @@ plot_reg_lognormal <- plot_mod(
   p_obj = plot_lognormal,
   x = conf_betabin_ln$x,
   y = conf_betabin_ln$prob,
-  loc_sc_params = rr_ln$loc_sc_params,
+  dist_params = rr_ln$coefficients,
   distribution = "lognormal3",
   title_trace = "Estimated Lognormal CDF"
 )

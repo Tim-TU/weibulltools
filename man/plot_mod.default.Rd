@@ -7,7 +7,7 @@
 \method{plot_mod}{default}(
   p_obj,
   x,
-  loc_sc_params,
+  dist_params,
   distribution = c("weibull", "lognormal", "loglogistic", "normal", "logistic", "sev",
     "weibull3", "lognormal3", "loglogistic3"),
   title_trace = "Fit",
@@ -19,7 +19,7 @@
 
 \item{x}{A numeric vector containing the x-coordinates of the regression line.}
 
-\item{loc_sc_params}{A (named) numeric vector of estimated location
+\item{dist_params}{A (named) numeric vector of estimated location
 and scale parameters for a specified distribution. The order of
 elements is important. First entry needs to be the location
 parameter \eqn{\mu} and the second element needs to be the scale
@@ -80,7 +80,7 @@ rr <- rank_regression(
 plot_reg_weibull <- plot_mod(
   p_obj = plot_weibull,
   x = tbl_john$x,
-  loc_sc_params = rr$loc_sc_params,
+  dist_params = rr$coefficients,
   distribution = "weibull3",
   title_trace = "Estimated Weibull CDF"
 )
@@ -111,7 +111,7 @@ rr_ln <- rank_regression(
 plot_reg_lognormal <- plot_mod(
   p_obj = plot_lognormal,
   x = tbl_john$x,
-  loc_sc_params = rr_ln$loc_sc_params,
+  dist_params = rr_ln$coefficients,
   distribution = "lognormal3",
   title_trace = "Estimated Lognormal CDF"
 )

@@ -31,8 +31,8 @@
 
     Maximum Likelihood Estimation
     Coefficients:
-          eta       beta  
-    99325.410      1.913  
+         mu    sigma  
+    11.5062   0.5227  
 
 ---
 
@@ -50,6 +50,6 @@
 
     Maximum Likelihood Estimation
     Coefficients:
-          eta       beta      gamma  
-    9.933e+04  1.913e+00  1.205e-05  
+           mu      sigma      gamma  
+    1.151e+01  5.227e-01  1.205e-05  
 

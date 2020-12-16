@@ -6,7 +6,7 @@
 \usage{
 predict_quantile(
   p,
-  loc_sc_params,
+  dist_params,
   distribution = c("weibull", "lognormal", "loglogistic", "normal", "logistic", "sev",
     "weibull3", "lognormal3", "loglogistic3")
 )
@@ -14,7 +14,7 @@ predict_quantile(
 \arguments{
 \item{p}{A numeric vector of probabilities.}
 
-\item{loc_sc_params}{A (named) numeric vector of (log-)location-scale parameters
+\item{dist_params}{A (named) numeric vector of (log-)location-scale parameters
 in the order of location (\eqn{\mu}) and scale (\eqn{\sigma}). If a
 three-parametric model is selected, the threshold parameter (\eqn{\gamma})
 has to be the third element.}
@@ -36,14 +36,14 @@ of the chosen model are determined.
 # Example 1 - Predicted quantiles for a two-parameter weibull distribution:
 quants_weib2 <- predict_quantile(
   p = c(0.01, 0.1, 0.5),
-  loc_sc_params = c(5, 0.5),
+  dist_params = c(5, 0.5),
   distribution = "weibull"
 )
 
 # Example 2 - Predicted quantiles for a three-parameter weibull distribution:
 quants_weib3 <- predict_quantile(
   p = c(0.01, 0.1, 0.5),
-  loc_sc_params = c(5, 0.5, 10),
+  dist_params = c(5, 0.5, 10),
   distribution = "weibull3"
 )
 

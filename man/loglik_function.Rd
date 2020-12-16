@@ -9,7 +9,7 @@ loglik_function(
   x,
   status,
   wts = rep(1, length(x)),
-  loc_sc_params,
+  dist_params,
   distribution = c("weibull", "lognormal", "loglogistic", "normal", "logistic", "sev",
     "weibull3", "lognormal3", "loglogistic3")
 )
@@ -26,7 +26,7 @@ is a right censored observation (= 0) or a failure (= 1).}
 \item{wts}{Optional vector of case weights. The length of \code{wts} must be the
 same as the number of observations in \code{x}.}
 
-\item{loc_sc_params}{A (named) numeric vector of (log-)location-scale parameters
+\item{dist_params}{A (named) numeric vector of (log-)location-scale parameters
 in the order of location (\eqn{\mu}) and scale (\eqn{\sigma}). If a
 three-parametric model is selected, the threshold parameter (\eqn{\gamma})
 has to be the third element.}
@@ -35,7 +35,7 @@ has to be the third element.}
 }
 \value{
 Returns the log-likelihood value for the data with respect to the parameters
-given in \code{loc_sc_params}.
+given in \code{dist_params}.
 }
 \description{
 This function computes the log-likelihood value with respect to a given set
@@ -54,7 +54,7 @@ status <- alloy$status
 loglik_weib <- loglik_function(
   x = cycles,
   status = status,
-  loc_sc_params = c(5.29, 0.33),
+  dist_params = c(5.29, 0.33),
   distribution = "weibull"
 )
 
@@ -62,7 +62,7 @@ loglik_weib <- loglik_function(
 loglik_weib3 <- loglik_function(
   x = cycles,
   status = status,
-  loc_sc_params = c(4.54, 0.76, 92.99),
+  dist_params = c(4.54, 0.76, 92.99),
   distribution = "weibull3"
 )
 

@@ -73,7 +73,7 @@ plot_prob_helper <- function(
 }
 
 plot_mod_helper <- function(
-  x, loc_sc_params, distribution, method = NA_character_
+  x, dist_params, distribution, method = NA_character_
 ) {
   if (length(x) == 2) {
     if (distribution %in% c("weibull", "lognormal", "loglogistic")) {
@@ -100,7 +100,7 @@ plot_mod_helper <- function(
 
   y_p <- predict_prob(
     q = x_p,
-    loc_sc_params = loc_sc_params,
+    dist_params = dist_params,
     distribution = distribution
   )
 
@@ -123,10 +123,10 @@ plot_mod_helper <- function(
 
   # preparation of plotly hovers:
   ## raises problems if one-parameter distributions like exponential will be implemented!
-  param_val <- format(loc_sc_params, digits = 3)
+  param_val <- format(dist_params, digits = 3)
   # Enforce length 3
-  if (length(loc_sc_params) == 2) param_val <- c(param_val, NA)
-  param_label <- if (length(loc_sc_params) == 2) {
+  if (length(dist_params) == 2) param_val <- c(param_val, NA)
+  param_label <- if (length(dist_params) == 2) {
     c("\u03BC:", "\u03C3:", NA)
   } else {
     c("\u03BC:", "\u03C3:", "\u03B3:")
@@ -153,12 +153,12 @@ plot_mod_mix_helper <- function(model_estimation, method, group) {
   x_p <- seq(x_min, x_max, length.out = 200)
   y_p <- predict_prob(
     q = x_p,
-    loc_sc_params = model_estimation$loc_sc_params,
+    dist_params = model_estimation$coefficients,
     distribution = distribution
   )
 
-  param_1 <- format(model_estimation$loc_sc_params[[1]], digits = 3)
-  param_2 <- format(model_estimation$loc_sc_params[[2]], digits = 3)
+  param_1 <- format(model_estimation$coefficients[[1]], digits = 3)
+  param_2 <- format(model_estimation$coefficients[[2]], digits = 3)
   label_1 <- "\u03BC:"
   label_2 <- "\u03C3:"
 
@@ -247,27 +247,27 @@ plot_conf_helper <- function(tbl_mod, x, y, direction, distribution) {
   return(tbl_p)
 }
 
-plot_pop_helper <- function(x, loc_sc_params_tbl, distribution, tol = 1e-6) {
+plot_pop_helper <- function(x, dist_params_tbl, distribution, tol = 1e-6) {
   x_s <- if (length(x) == 2) {
     10 ^ seq(log10(x[1]), log10(x[2]), length.out = 200)
   } else {
     x
   }
 
-  tbl_pop <- loc_sc_params_tbl %>%
+  tbl_pop <- dist_params_tbl %>%
     dplyr::mutate(group = as.character(dplyr::row_number()))
   # column x_y is list column that contains a tibble each
   tbl_pop$x_y <- purrr::pmap(
-    loc_sc_params_tbl,
+    dist_params_tbl,
     x_s = x_s,
     distribution = distribution,
     function(loc, sc, thres = NA, x_s, distribution) {
       # Replace NA with NULL, so that thres is ignored in c()
       if (is.na(thres)) thres <- NULL
 
-      loc_sc_params <- c(loc, sc, thres)
+      dist_params <- c(loc, sc, thres)
 
-      if (length(loc_sc_params) == 3) {
+      if (length(dist_params) == 3) {
         # Case three-parametric distribution
         distribution <- paste0(distribution, "3")
       }
@@ -276,7 +276,7 @@ plot_pop_helper <- function(x, loc_sc_params_tbl, distribution, tol = 1e-6) {
         x_s = x_s,
         y_s = predict_prob(
           q = x_s,
-          loc_sc_params = loc_sc_params,
+          dist_params = dist_params,
           distribution = distribution
         )
       )

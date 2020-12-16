@@ -2,17 +2,18 @@
 ## Breaking Changes
 * Package now depends on R(>= 3.5.0)
 * Renamed argument `event` with `status`.
+* Renamed argument `loc_sc_params` with `dist_params`.
 * Output of probability estimators: Renamed column `characteristic` with `x`.
 * `plot_conf()`: Switched position of arguments distribution and direction.
 * `rank_regression()`, `ml_estimation()`: Removed `details` argument.
-* `rank_regression()`, `ml_estimation()`: Renamed output: `loc_sc_coefficients` -> `loc_sc_params`, `loc_sc_vcov` -> `loc_sc_varcov`
-* `plot_pop()`: Added argument `tol` to restrict the range of failure probabilities. Removed argument `color`. Renamed argument `params` to `loc_sc_params_tbl`, which only supports location and scale parameters (also for `distribution = "weibull"`). Changed behaviour of `loc_sc_params_tbl`: A tibble is now recommended instead of a vector.
+* `rank_regression()`, `ml_estimation()`: Renamed output: `loc_sc_vcov` -> `loc_sc_varcov`. Removed `loc_sc_params` from output. Added `shape_scale_coefficients` if `distribution` is `"weibull"` or `"weibull3"`.
+* `plot_pop()`: Added argument `tol` to restrict the range of failure probabilities. Removed argument `color`. Renamed argument `params` to `dist_params_tbl`, which only supports location and scale parameters (also for `distribution = "weibull"`). Changed behaviour of `dist_params_tbl`: A tibble is now recommended instead of a vector.
 * `plot_prob_mix`: Removed default value `NULL` for argument `mix_output`.
 * `dist_mileage()`: Removed `status` argument and switched argument positions of `x` and `mileage`  -> (`mileage`, `x`, `distribution`). Argument `x` was renamed to `time`.
 * `mcs_mileage()`: Removed arguments `seed` and `details`, incorporated new default argument `id`. For now, the argument `status` is optional. Argument positions of `x` and `mileage` are switched -> (`mileage`, `x`). Argument `x` was renamed to `time`. 
 * `mcs_delay_register()`, `mcs_delay_report()`, `mcs_delays()`: Argument `seed` and element `int_seed` of the output list have been removed. For reproducibility use `set.seed()` before calling one of these functions. Argument `x` was renamed to `time`.  
 * `confint_betabinom.default()` and `confint_fisher.default()`: New argument `b_lives`.
-* `loglik_function()`: Renamed argument `pars` with `loc_sc_params`. 
+* `loglik_function()`: Renamed argument `pars` with `dist_params`. 
 * `mixmod_em()`: Removed argument `post`.
 
 ## New Features

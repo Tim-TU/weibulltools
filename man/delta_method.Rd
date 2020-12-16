@@ -7,7 +7,7 @@
 \usage{
 delta_method(
   p,
-  loc_sc_params,
+  dist_params,
   loc_sc_varcov,
   distribution = c("weibull", "lognormal", "loglogistic", "normal", "logistic", "sev",
     "weibull3", "lognormal3", "loglogistic3"),
@@ -20,7 +20,7 @@ of quantiles should be determined the corresponding probabilities have to be
 specified, and if the standard errors of standardized quantiles (z-values)
 should be computed corresponding quantiles are required.}
 
-\item{loc_sc_params}{A (named) numeric vector of (log-)location-scale parameters
+\item{dist_params}{A (named) numeric vector of (log-)location-scale parameters
 returned from \code{\link{ml_estimation}}.}
 
 \item{loc_sc_varcov}{A (named) numeric matrix of estimated variances and
@@ -72,7 +72,7 @@ mle <- ml_estimation(
 # Example 1 - Standard errors of standardized quantiles:
 delta_y <- delta_method(
   p = shock$distance,
-  loc_sc_params = mle$loc_sc_params,
+  dist_params = mle$coefficients,
   loc_sc_varcov = mle$loc_sc_varcov,
   distribution = "weibull",
   direction = "y"
@@ -81,7 +81,7 @@ delta_y <- delta_method(
 # Example 2 - Standard errors of quantiles:
 delta_x <- delta_method(
   p = seq(0.01, 0.99, 0.01),
-  loc_sc_params = mle$loc_sc_params,
+  dist_params = mle$coefficients,
   loc_sc_varcov = mle$loc_sc_varcov,
   distribution = "weibull",
   direction = "x"

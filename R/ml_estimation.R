@@ -21,31 +21,8 @@
 #' @param conf_level Confidence level of the interval.
 #' @template dots
 #'
-#' @return Returns a list with the classes \code{"ml_estimation"} and
-#'   \code{"model_estimation"} containing the following elements:
-#'   \itemize{
-#'     \item \code{coefficients} : If \code{distribution} is \code{"weibull"}, the
-#'       estimated scale (\eqn{\eta}) and shape (\eqn{\beta}) parameters are provided
-#'       (and additionally the threshold parameter \eqn{\gamma} if \code{distribution}
-#'       is \code{"weibull3"}). For any other distribution, \code{coefficients} is
-#'       identical to \code{loc_sc_params}.
-#'     \item \code{confint} : Only included if \code{distribution} is \code{"weibull"}
-#'       or \code{"weibull3"}. Confidence intervals for \eqn{\eta} and \eqn{\beta}
-#'       (and \eqn{\gamma} if \code{distribution} is \code{"weibull3"}).
-#'     \item \code{loc_sc_params} : Estimated (log-)location-scale parameters.
-#'       Threshold parameter is included if \code{distribution} is \code{"weibull3"},
-#'       \code{"lognormal3"} or \code{"loglogistic3"}.
-#'     \item \code{loc_sc_confint} : Confidence intervals the (log-)location-scale
-#'       parameters.
-#'     \item \code{loc_sc_varcov} : Estimated variance-covariance matrix for the
-#'       (log-)location-scale parameters.
-#'     \item \code{logL} : The log-likelihood value.
-#'     \item \code{aic} : Akaike Information Criterion.
-#'     \item \code{bic} : Bayesian Information Criterion.
-#'     \item \code{data} : A tibble with class \code{"reliability_data"} returned
-#'       by \code{\link{reliability_data}}.
-#'     \item \code{distribution} : Specified distribution.
-#'   }
+#' @template return-ml-estimation
+#' @templateVar data A tibble with class \code{"reliability_data"} returned from \code{\link{reliability_data}}.
 #'
 #' @encoding UTF-8
 #'
@@ -127,30 +104,7 @@ ml_estimation.reliability_data <- function(x,
 #' @param status A vector of binary data (0 or 1) indicating whether unit \emph{i}
 #'   is a right censored observation (= 0) or a failure (= 1).
 #'
-#' @return Returns a list with the classes \code{"ml_estimation"} and
-#'   \code{"model_estimation"} containing the following elements:
-#'   \itemize{
-#'     \item \code{coefficients} : If \code{distribution} is \code{"weibull"}, the
-#'       estimated scale (\eqn{\eta}) and shape (\eqn{\beta}) parameters are provided
-#'       (and additionally the threshold parameter \eqn{\gamma} if \code{distribution}
-#'       is \code{"weibull3"}). For any other distribution, \code{coefficients} is
-#'       identical to \code{loc_sc_params}.
-#'     \item \code{confint} : Only included if \code{distribution} is \code{"weibull"}
-#'       or \code{"weibull3"}. Confidence intervals for \eqn{\eta} and \eqn{\beta}
-#'       (and \eqn{\gamma} if \code{distribution} is \code{"weibull3"}).
-#'     \item \code{loc_sc_params} : Estimated (log-)location-scale parameters.
-#'       Threshold parameter is included if \code{distribution} is \code{"weibull3"},
-#'       \code{"lognormal3"} or \code{"loglogistic3"}.
-#'     \item \code{loc_sc_confint} : Confidence intervals the (log-)location-scale
-#'       parameters.
-#'     \item \code{loc_sc_varcov} : Estimated variance-covariance matrix for the
-#'       (log-)location-scale parameters.
-#'     \item \code{logL} : The log-likelihood value.
-#'     \item \code{aic} : Akaike Information Criterion.
-#'     \item \code{bic} : Bayesian Information Criterion.
-#'     \item \code{data} : A tibble with columns \code{x} and \code{status}.
-#'     \item \code{distribution} : Specified distribution.
-#'   }
+#'
 #'
 #' @seealso \code{\link{ml_estimation}}
 #'
@@ -252,9 +206,9 @@ ml_estimation_ <- function(data,
       rownames(conf_ints) <- names(estimates)
 
       ml_output <- list(
-        coefficients = estimates,
+        coefficients = estimates_loc_sc,
+        shape_scale_coefficients = estimates,
         confint = conf_ints,
-        loc_sc_params = estimates_loc_sc,
         loc_sc_confint = conf_ints_loc_sc,
         loc_sc_varcov = vcov_loc_sc, logL = -ml$min,
         aic = -2 * (-ml$min) + 2 * length(estimates_loc_sc),
@@ -263,7 +217,6 @@ ml_estimation_ <- function(data,
     } else {
       ml_output <- list(
         coefficients = estimates_loc_sc,
-        loc_sc_params = estimates_loc_sc,
         loc_sc_confint = conf_ints_loc_sc,
         loc_sc_varcov = vcov_loc_sc, logL = -ml$min,
         aic = -2 * (-ml$min) + 2 * length(estimates_loc_sc),
@@ -355,9 +308,9 @@ ml_estimation_ <- function(data,
       rownames(conf_ints) <- names(estimates)
 
       ml_output <- list(
-        coefficients = estimates,
+        coefficients = estimates_loc_sc,
+        shape_scale_coefficients = estimates,
         confint = conf_ints,
-        loc_sc_params = estimates_loc_sc,
         loc_sc_confint = conf_ints_loc_sc,
         loc_sc_varcov = vcov_loc_sc, logL = ml$value,
         aic = -2 * (ml$value) + 2 * length(estimates_loc_sc),
@@ -367,7 +320,6 @@ ml_estimation_ <- function(data,
     } else {
       ml_output <- list(
         coefficients = estimates_loc_sc,
-        loc_sc_params = estimates_loc_sc,
         loc_sc_confint = conf_ints_loc_sc,
         loc_sc_varcov = vcov_loc_sc, logL = ml$value,
         aic = -2 * (ml$value) + 2 * length(estimates_loc_sc),
@@ -435,7 +387,6 @@ ml_estimation_ <- function(data,
 
     ml_output <- list(
       coefficients = estimates_loc_sc,
-      loc_sc_params = estimates_loc_sc,
       loc_sc_confint = conf_ints_loc_sc,
       loc_sc_varcov = vcov_loc_sc, logL = ml$value,
       aic = -2 * (ml$value) + 2 * length(estimates_loc_sc),
@@ -592,7 +543,7 @@ loglik_profiling_ <- function(x,
 #'
 #' @return
 #' Returns the log-likelihood value for the data with respect to the parameters
-#' given in \code{loc_sc_params}.
+#' given in \code{dist_params}.
 #'
 #' @encoding UTF-8
 #'
@@ -608,7 +559,7 @@ loglik_profiling_ <- function(x,
 #' loglik_weib <- loglik_function(
 #'   x = cycles,
 #'   status = status,
-#'   loc_sc_params = c(5.29, 0.33),
+#'   dist_params = c(5.29, 0.33),
 #'   distribution = "weibull"
 #' )
 #'
@@ -616,7 +567,7 @@ loglik_profiling_ <- function(x,
 #' loglik_weib3 <- loglik_function(
 #'   x = cycles,
 #'   status = status,
-#'   loc_sc_params = c(4.54, 0.76, 92.99),
+#'   dist_params = c(4.54, 0.76, 92.99),
 #'   distribution = "weibull3"
 #' )
 #'
@@ -624,7 +575,7 @@ loglik_profiling_ <- function(x,
 loglik_function <- function(x,
                             status,
                             wts = rep(1, length(x)),
-                            loc_sc_params,
+                            dist_params,
                             distribution = c(
                               "weibull", "lognormal", "loglogistic",
                               "normal", "logistic", "sev",
@@ -635,9 +586,9 @@ loglik_function <- function(x,
   distribution <- match.arg(distribution)
 
   d <- status
-  mu <- loc_sc_params[1]
-  sig <- loc_sc_params[2]
-  thres <- loc_sc_params[3]
+  mu <- dist_params[1]
+  sig <- dist_params[2]
+  thres <- dist_params[3]
 
   if (is.na(thres)) {
     # Log- and Location-Scale Models:

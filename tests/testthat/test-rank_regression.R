@@ -24,15 +24,15 @@ test_that("rank_regression remains stable", {
 
   tbl_john <- estimate_cdf(data, "johnson")
 
-  mrr <- rank_regression(
+  rr <- rank_regression(
     tbl_john,
     distribution = "weibull",
     conf_level = .90
   )
 
-  expect_snapshot_output(mrr$loc_sc_params)
-  expect_snapshot_output(mrr$r_squared)
-  expect_snapshot_output(mrr)
+  expect_snapshot_output(rr$coefficients)
+  expect_snapshot_output(rr$r_squared)
+  expect_snapshot_output(rr)
 
   cycles   <- c(300, 300, 300, 300, 300, 291, 274, 271, 269, 257, 256, 227, 226,
                 224, 213, 211, 205, 203, 197, 196, 190, 189, 188, 187, 184, 180,
@@ -45,15 +45,15 @@ test_that("rank_regression remains stable", {
   data <- reliability_data(x = cycles, status = status)
 
   tbl_john <- estimate_cdf(data, "johnson")
-  mrr <- rank_regression(
+  rr <- rank_regression(
     tbl_john,
     distribution = "weibull3",
     conf_level = .90
   )
 
-  expect_snapshot_output(mrr$loc_sc_params)
-  expect_snapshot_output(mrr$r_squared)
-  expect_snapshot_output(mrr)
+  expect_snapshot_output(rr$coefficients)
+  expect_snapshot_output(rr$r_squared)
+  expect_snapshot_output(rr)
 })
 
 test_that("rank_regression supports multiple methods", {
@@ -63,11 +63,11 @@ test_that("rank_regression supports multiple methods", {
 
   cdf_tbl <- estimate_cdf(data, methods)
 
-  mrr <- rank_regression.cdf_estimation(
+  rr <- rank_regression.cdf_estimation(
     x = cdf_tbl,
     distribution = "weibull"
   )
 
-  expect_equal(length(mrr), 3)
-  expect_true(all(methods %in% names(mrr)))
+  expect_equal(length(rr), 3)
+  expect_true(all(methods %in% names(rr)))
 })

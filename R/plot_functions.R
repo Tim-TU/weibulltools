@@ -778,7 +778,7 @@ plot_mod.model_estimation <- function(p_obj, x, title_trace = "Fit", ...) {
   plot_mod.default(
     p_obj = p_obj,
     x = range(failed_data$x),
-    loc_sc_params = x$loc_sc_params,
+    dist_params = x$coefficients,
     distribution = x$distribution,
     title_trace = title_trace
   )
@@ -812,7 +812,7 @@ plot_mod.model_estimation_list <- function(p_obj, x, title_trace = "Fit", ...) {
 
     plot_mod_helper(
       x = range(failed_data$x),
-      loc_sc_params = model_estimation$loc_sc_params,
+      dist_params = model_estimation$coefficients,
       distribution = model_estimation$distribution,
       method = method
     )
@@ -948,7 +948,7 @@ plot_mod.mixmod_em <- function(p_obj, x, title_trace = "Fit", ...) {
 #' @inherit plot_mod description return references
 #'
 #' @param x A numeric vector containing the x-coordinates of the regression line.
-#' @param loc_sc_params A (named) numeric vector of estimated location
+#' @param dist_params A (named) numeric vector of estimated location
 #'   and scale parameters for a specified distribution. The order of
 #'   elements is important. First entry needs to be the location
 #'   parameter \eqn{\mu} and the second element needs to be the scale
@@ -998,7 +998,7 @@ plot_mod.mixmod_em <- function(p_obj, x, title_trace = "Fit", ...) {
 #' plot_reg_weibull <- plot_mod(
 #'   p_obj = plot_weibull,
 #'   x = tbl_john$x,
-#'   loc_sc_params = rr$loc_sc_params,
+#'   dist_params = rr$coefficients,
 #'   distribution = "weibull3",
 #'   title_trace = "Estimated Weibull CDF"
 #' )
@@ -1029,7 +1029,7 @@ plot_mod.mixmod_em <- function(p_obj, x, title_trace = "Fit", ...) {
 #' plot_reg_lognormal <- plot_mod(
 #'   p_obj = plot_lognormal,
 #'   x = tbl_john$x,
-#'   loc_sc_params = rr_ln$loc_sc_params,
+#'   dist_params = rr_ln$coefficients,
 #'   distribution = "lognormal3",
 #'   title_trace = "Estimated Lognormal CDF"
 #' )
@@ -1038,7 +1038,7 @@ plot_mod.mixmod_em <- function(p_obj, x, title_trace = "Fit", ...) {
 #'
 plot_mod.default <- function(p_obj,
                              x,
-                             loc_sc_params,
+                             dist_params,
                              distribution = c(
                               "weibull", "lognormal", "loglogistic", "normal",
                               "logistic", "sev", "weibull3", "lognormal3",
@@ -1063,7 +1063,7 @@ plot_mod.default <- function(p_obj,
   }
 
   tbl_pred <- plot_mod_helper(
-    x, loc_sc_params, distribution
+    x, dist_params, distribution
   )
 
   plot_mod_fun <- if (plot_method == "plotly") plot_mod_plotly else
@@ -1334,7 +1334,7 @@ plot_conf.confint <- function(p_obj,
     plot_mod_helper(
       # Take x coordinates from confint. This guarantees considering of b lives
       x = x$x,
-      loc_sc_params = model_estimation$loc_sc_params,
+      dist_params = model_estimation$coefficients,
       distribution = model_estimation$distribution,
       method = method
     )
@@ -1422,7 +1422,7 @@ plot_conf.confint <- function(p_obj,
 #' conf_betabin <- confint_betabinom(
 #'   x = tbl_john$x,
 #'   status = tbl_john$status,
-#'   loc_sc_params = rr$loc_sc_params,
+#'   dist_params = rr$coefficients,
 #'   distribution = "weibull3",
 #'   bounds = "two_sided",
 #'   conf_level = 0.95,
@@ -1445,7 +1445,7 @@ plot_conf.confint <- function(p_obj,
 #'   p_obj = plot_weibull,
 #'   x = conf_betabin$x,
 #'   y = conf_betabin$prob,
-#'   loc_sc_params = rr$loc_sc_params,
+#'   dist_params = rr$coefficients,
 #'   distribution = "weibull3",
 #'   title_trace = "Estimated Weibull CDF"
 #' )
@@ -1471,7 +1471,7 @@ plot_conf.confint <- function(p_obj,
 #' conf_betabin_ln <- confint_betabinom(
 #'   x = tbl_john$x,
 #'   status = tbl_john$status,
-#'   loc_sc_params = rr_ln$loc_sc_params,
+#'   dist_params = rr_ln$coefficients,
 #'   distribution = "lognormal3",
 #'   bounds = "two_sided",
 #'   conf_level = 0.95,
@@ -1494,7 +1494,7 @@ plot_conf.confint <- function(p_obj,
 #'   p_obj = plot_lognormal,
 #'   x = conf_betabin_ln$x,
 #'   y = conf_betabin_ln$prob,
-#'   loc_sc_params = rr_ln$loc_sc_params,
+#'   dist_params = rr_ln$coefficients,
 #'   distribution = "lognormal3",
 #'   title_trace = "Estimated Lognormal CDF"
 #' )
@@ -1565,7 +1565,7 @@ plot_conf.default <- function(
 #' This function adds one or multiple linearized CDFs to an existing plot grid.
 #'
 #' @details
-#' \code{loc_sc_params_tbl} is a data.frame with two or three columns. For
+#' \code{dist_params_tbl} is a data.frame with two or three columns. For
 #' location-scale distributions the first column contains the location parameter
 #' and the second column contains the scale parameter. For three-parametric
 #' distributions the third column contains the threshold parameter.
@@ -1580,12 +1580,12 @@ plot_conf.default <- function(
 #'   between \code{x[1]} and \code{x[2]} is created. This sequence is equidistant
 #'   with respect to the scale of the x axis. If \code{length(x) > 2} the elements
 #'   of \code{x} are the x coordinates of the population line.
-#' @param loc_sc_params_tbl A tibble. See 'Details'.
+#' @param dist_params_tbl A tibble. See 'Details'.
 #' @param distribution Supposed distribution of the random variable. In the
 #'   context of this function \code{"weibull"}, \code{"lognormal"} and
 #'   \code{"loglogistic"} stand for the two- \strong{and} the three-parametric
 #'   version of the respective distribution. The distinction is made via
-#'   \code{loc_sc_params_tbl}.
+#'   \code{dist_params_tbl}.
 #' @param tol The failure probability is restricted to the interval
 #'   \eqn{[tol, 1 - tol]}. The default value is in accordance with the decimal
 #'   places shown in the hover for \code{plot_method = "plotly"}.
@@ -1610,7 +1610,7 @@ plot_conf.default <- function(
 #' pop_weibull <- plot_pop(
 #'   p_obj = grid_weibull,
 #'   x = range(x),
-#'   loc_sc_params_tbl = c(log(20000), 1),
+#'   dist_params_tbl = c(log(20000), 1),
 #'   distribution = "weibull",
 #'   title_trace = "Population"
 #' )
@@ -1621,7 +1621,7 @@ plot_conf.default <- function(
 #' pop_weibull_2 <- plot_pop(
 #'   p_obj = NULL,
 #'   x = x2,
-#'   loc_sc_params_tbl = c(log(20000 - 5000), 1, 5000),
+#'   dist_params_tbl = c(log(20000 - 5000), 1, 5000),
 #'   distribution = "weibull",
 #'   title_trace = "Population"
 #' )
@@ -1630,7 +1630,7 @@ plot_conf.default <- function(
 #' pop_weibull_3 <- plot_pop(
 #'   p_obj = NULL,
 #'   x = x,
-#'   loc_sc_params_tbl = tibble(
+#'   dist_params_tbl = tibble(
 #'     p_1 = c(log(20000), log(20000), log(20000)),
 #'     p_2 = c(1, 1.5, 2)
 #'     ),
@@ -1643,7 +1643,7 @@ plot_conf.default <- function(
 #' pop_weibull_4 <- plot_pop(
 #'   p_obj = NULL,
 #'   x = x,
-#'   loc_sc_params_tbl = tibble(
+#'   dist_params_tbl = tibble(
 #'     param_1 = c(log(20000), log(20000)),
 #'     param_2 = c(1, 1),
 #'     param_3 = c(NA, 5)
@@ -1652,7 +1652,7 @@ plot_conf.default <- function(
 #'
 #' @export
 plot_pop <- function(
-  p_obj = NULL, x, loc_sc_params_tbl,
+  p_obj = NULL, x, dist_params_tbl,
   distribution = c(
     "weibull", "lognormal", "loglogistic", "normal", "logistic", "sev"
   ),
@@ -1685,25 +1685,25 @@ plot_pop <- function(
     }
   }
 
-  # Support vector instead of tibble for ease of use in loc_sc_params_tbl
-  if (!inherits(loc_sc_params_tbl, "data.frame")) {
-    loc_sc_params_tbl <- tibble::tibble(
-      loc = loc_sc_params_tbl[1],
-      sc = loc_sc_params_tbl[2],
+  # Support vector instead of tibble for ease of use in dist_params_tbl
+  if (!inherits(dist_params_tbl, "data.frame")) {
+    dist_params_tbl <- tibble::tibble(
+      loc = dist_params_tbl[1],
+      sc = dist_params_tbl[2],
       # NA if length 2
-      thres = loc_sc_params_tbl[3]
+      thres = dist_params_tbl[3]
     )
   }
 
   # Add thres column if not present
-  if (ncol(loc_sc_params_tbl) == 2) {
-    loc_sc_params_tbl$thres <- NA_real_
+  if (ncol(dist_params_tbl) == 2) {
+    dist_params_tbl$thres <- NA_real_
   }
 
   # Ensure correct naming
-  names(loc_sc_params_tbl) <- c("loc", "sc", "thres")
+  names(dist_params_tbl) <- c("loc", "sc", "thres")
 
-  tbl_pop <- plot_pop_helper(x, loc_sc_params_tbl, distribution, tol)
+  tbl_pop <- plot_pop_helper(x, dist_params_tbl, distribution, tol)
 
   plot_pop_fun <- if (plot_method == "plotly") plot_pop_plotly else
     plot_pop_ggplot2

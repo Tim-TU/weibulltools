@@ -16,7 +16,7 @@ test_that("confint_betabinom remains stable", {
 
   tbl_john <- estimate_cdf(tbl, "johnson")
 
-  mrr <- rank_regression(
+  rr <- rank_regression(
     tbl_john,
     distribution = "weibull",
     conf_level = .95
@@ -25,7 +25,7 @@ test_that("confint_betabinom remains stable", {
   conf_betabin <- confint_betabinom(
     x = tbl_john$x,
     status = tbl_john$status,
-    loc_sc_params = mrr$loc_sc_params,
+    dist_params = rr$coefficients,
     distribution = "weibull",
     bounds = "two_sided",
     conf_level = 0.95,
@@ -46,7 +46,7 @@ test_that("confint_betabinom remains stable", {
 
   tbl_john_2 <- estimate_cdf(tbl_2, "johnson")
 
-  mrr_weib3 <- rank_regression(
+  rr_weib3 <- rank_regression(
     x = tbl_john_2$x,
     y = tbl_john_2$prob,
     status = tbl_john_2$status,
@@ -57,7 +57,7 @@ test_that("confint_betabinom remains stable", {
   conf_betabin_weib3 <- confint_betabinom(
     x = tbl_john_2$x,
     status = tbl_john_2$status,
-    loc_sc_params = mrr_weib3$loc_sc_params,
+    dist_params = rr_weib3$coefficients,
     distribution = "weibull3",
     bounds = "two_sided",
     conf_level = 0.95,
@@ -69,7 +69,7 @@ test_that("confint_betabinom remains stable", {
   conf_betabin_x <- confint_betabinom(
     x = tbl_john$x,
     status = tbl_john$status,
-    loc_sc_params = mrr$loc_sc_params,
+    dist_params = rr$coefficients,
     distribution = "weibull",
     bounds = "two_sided",
     conf_level = 0.95,
@@ -91,7 +91,7 @@ test_that("confint_fisher remains stable", {
   conf_fish <- confint_fisher(
     x = tbl_john$x,
     status = tbl_john$status,
-    loc_sc_params = mle$loc_sc_params,
+    dist_params = mle$coefficients,
     loc_sc_varcov = mle$loc_sc_varcov,
     distribution = "weibull",
     bounds = "two_sided",
@@ -104,7 +104,7 @@ test_that("confint_fisher remains stable", {
   conf_fish_x <- confint_fisher(
     x = tbl_john$x,
     status = tbl_john$status,
-    loc_sc_params = mle$loc_sc_params,
+    dist_params = mle$coefficients,
     loc_sc_varcov = mle$loc_sc_varcov,
     distribution = "weibull",
     bounds = "two_sided",
@@ -127,7 +127,7 @@ test_that("delta_method remains stable", {
   )
 
   delta_prob <- sapply(obs, delta_method,
-                       loc_sc_params = mle$loc_sc_params,
+                       dist_params = mle$coefficients,
                        loc_sc_varcov = mle$loc_sc_varcov,
                        distribution = "weibull",
                        direction = "y"
@@ -139,7 +139,7 @@ test_that("delta_method remains stable", {
 test_that("predict_quantile remains stable", {
   quants <- predict_quantile(
     p = c(0.01, 0.1, 0.5),
-    loc_sc_params = c(5, 0.5),
+    dist_params = c(5, 0.5),
     distribution = "weibull"
   )
 
@@ -147,7 +147,7 @@ test_that("predict_quantile remains stable", {
 
   quants_weib3 <- predict_quantile(
     p = c(0.01, 0.1, 0.5),
-    loc_sc_params = c(5, 0.5, 10),
+    dist_params = c(5, 0.5, 10),
     distribution = "weibull3"
   )
 
@@ -157,7 +157,7 @@ test_that("predict_quantile remains stable", {
 test_that("predict_prob remains stable", {
   probs <- predict_prob(
     q = c(15, 48, 124),
-    loc_sc_params = c(5, 0.5),
+    dist_params = c(5, 0.5),
     distribution = "weibull"
   )
 
@@ -165,7 +165,7 @@ test_that("predict_prob remains stable", {
 
   probs_weib3 <- predict_prob(
     q = c(25, 58, 134),
-    loc_sc_params = c(5, 0.5, 10),
+    dist_params = c(5, 0.5, 10),
     distribution = "weibull3"
   )
 

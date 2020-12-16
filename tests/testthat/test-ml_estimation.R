@@ -25,7 +25,7 @@ test_that("ml_estimation remains stable", {
     conf_level = 0.90
   )
 
-  expect_snapshot_output(mle$loc_sc_params)
+  expect_snapshot_output(mle$coefficients)
   expect_snapshot_output(mle$loc_sc_varcov)
   expect_snapshot_output(mle)
 
@@ -41,7 +41,7 @@ test_that("ml_estimation remains stable", {
     conf_level = 0.95
   )
 
-  expect_snapshot_output(mle_weib3$loc_sc_params)
+  expect_snapshot_output(mle_weib3$coefficients)
   expect_snapshot_output(mle_weib3$loc_sc_varcov)
   expect_snapshot_output(mle_weib3)
 })

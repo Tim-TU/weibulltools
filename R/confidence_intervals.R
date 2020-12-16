@@ -212,7 +212,7 @@ confint_betabinom.model_estimation_list <- function(
 #' @inheritParams ml_estimation.default
 #' @inheritParams confint_betabinom.model_estimation
 #'
-#' @param loc_sc_params A (named) numeric vector of (log-)location-scale parameters
+#' @param dist_params A (named) numeric vector of (log-)location-scale parameters
 #'   returned from \code{\link{rank_regression}}.
 #' @param distribution Supposed distribution of the random variable. Has to be in
 #'   line with the specification made in \code{\link{rank_regression}}.
@@ -237,8 +237,9 @@ confint_betabinom.model_estimation_list <- function(
 #'     \item \code{distribution} : Specified distribution.
 #'     \item \code{bounds} : Specified bound(s).
 #'     \item \code{direction} : Specified direction.
-#'     \item \code{method} : A character that is always \code{"conf_null"}. Due to
-#'       generic visualization functions column \code{method} has to be provided.
+#'     \item \code{method} : A character that is always \code{NA_character}. Due
+#'       to the generic visualization functions column \code{method} has to be
+#'       provided.
 #'   }
 #'
 #' @seealso \code{\link{confint_betabinom}}
@@ -284,7 +285,7 @@ confint_betabinom.model_estimation_list <- function(
 #' conf_betabin_1 <- confint_betabinom(
 #'   x = obs,
 #'   status = status_1,
-#'   loc_sc_params = rr$loc_sc_params,
+#'   dist_params = rr$coefficients,
 #'   distribution = "weibull",
 #'   bounds = "two_sided",
 #'   conf_level = 0.95,
@@ -295,7 +296,7 @@ confint_betabinom.model_estimation_list <- function(
 #' conf_betabin_2_1 <- confint_betabinom(
 #'   x = obs,
 #'   status = status_1,
-#'   loc_sc_params = rr$loc_sc_params,
+#'   dist_params = rr$coefficients,
 #'   distribution = "weibull",
 #'   bounds = "lower",
 #'   conf_level = 0.90,
@@ -305,7 +306,7 @@ confint_betabinom.model_estimation_list <- function(
 #' conf_betabin_2_2 <- confint_betabinom(
 #'   x = obs,
 #'   status = status_1,
-#'   loc_sc_params = rr$loc_sc_params,
+#'   dist_params = rr$coefficients,
 #'   distribution = "weibull",
 #'   bounds = "upper",
 #'   conf_level = 0.90,
@@ -318,7 +319,7 @@ confint_betabinom.model_estimation_list <- function(
 #' conf_betabin_3_1 <- confint_betabinom(
 #'   x = cycles,
 #'   status = status_2,
-#'   loc_sc_params = rr_2$loc_sc_params,
+#'   dist_params = rr_2$coefficients,
 #'   distribution = "lognormal3",
 #'   bounds = "two_sided",
 #'   conf_level = 0.90,
@@ -328,7 +329,7 @@ confint_betabinom.model_estimation_list <- function(
 #' conf_betabin_3_2 <- confint_betabinom(
 #'   x = cycles,
 #'   status = status_2,
-#'   loc_sc_params = rr_2$loc_sc_params,
+#'   dist_params = rr_2$coefficients,
 #'   distribution = "lognormal3",
 #'   bounds = "two_sided",
 #'   conf_level = 0.90,
@@ -338,7 +339,7 @@ confint_betabinom.model_estimation_list <- function(
 #' @export
 confint_betabinom.default <- function(x,
                                       status,
-                                      loc_sc_params,
+                                      dist_params,
                                       distribution = c(
                                         "weibull", "lognormal", "loglogistic",
                                         "normal", "logistic", "sev",
@@ -358,7 +359,7 @@ confint_betabinom.default <- function(x,
   # Fake model_estimation
   model_estimation <- list(
     data = tibble::tibble(x = x, status = status, method = "conf_null"),
-    loc_sc_params = loc_sc_params,
+    coefficients = dist_params,
     distribution = distribution
   )
 
@@ -393,12 +394,12 @@ confint_betabinom_ <- function(model_estimation,
   status <- model_estimation$data$status
 
   distribution <- model_estimation$distribution
-  loc_sc_params <- model_estimation$loc_sc_params
+  dist_params <- model_estimation$coefficients
 
   n <- length(x)
   x_ob <- x[status == 1]
 
-  x_y_b_lives <- add_b_lives(x_ob, loc_sc_params, distribution, b_lives)
+  x_y_b_lives <- add_b_lives(x_ob, dist_params, distribution, b_lives)
 
   x_seq <- x_y_b_lives$x_seq
   y_seq <- x_y_b_lives$y_seq
@@ -433,7 +434,7 @@ confint_betabinom_ <- function(model_estimation,
     x_confint <- purrr::map(
       list_confint,
       predict_quantile,
-      loc_sc_params = loc_sc_params,
+      dist_params = dist_params,
       distribution = distribution
     )
 
@@ -483,7 +484,7 @@ confint_betabinom_ <- function(model_estimation,
 #'   of quantiles should be determined the corresponding probabilities have to be
 #'   specified, and if the standard errors of standardized quantiles (z-values)
 #'   should be computed corresponding quantiles are required.
-#' @param loc_sc_params A (named) numeric vector of (log-)location-scale parameters
+#' @param dist_params A (named) numeric vector of (log-)location-scale parameters
 #'   returned from \code{\link{ml_estimation}}.
 #' @param distribution Supposed distribution of the random variable. Has to be in
 #'   line with the specification made in \code{\link{ml_estimation}}.
@@ -519,7 +520,7 @@ confint_betabinom_ <- function(model_estimation,
 #' # Example 1 - Standard errors of standardized quantiles:
 #' delta_y <- delta_method(
 #'   p = shock$distance,
-#'   loc_sc_params = mle$loc_sc_params,
+#'   dist_params = mle$coefficients,
 #'   loc_sc_varcov = mle$loc_sc_varcov,
 #'   distribution = "weibull",
 #'   direction = "y"
@@ -528,7 +529,7 @@ confint_betabinom_ <- function(model_estimation,
 #' # Example 2 - Standard errors of quantiles:
 #' delta_x <- delta_method(
 #'   p = seq(0.01, 0.99, 0.01),
-#'   loc_sc_params = mle$loc_sc_params,
+#'   dist_params = mle$coefficients,
 #'   loc_sc_varcov = mle$loc_sc_varcov,
 #'   distribution = "weibull",
 #'   direction = "x"
@@ -536,7 +537,7 @@ confint_betabinom_ <- function(model_estimation,
 #'
 #' @export
 delta_method <- function(p,
-                         loc_sc_params,
+                         dist_params,
                          loc_sc_varcov,
                          distribution = c(
                            "weibull", "lognormal", "loglogistic",
@@ -553,7 +554,7 @@ delta_method <- function(p,
 
   dm_vectorized(
     p = p,
-    loc_sc_params = loc_sc_params,
+    dist_params = dist_params,
     loc_sc_varcov = loc_sc_varcov,
     distribution = distribution,
     direction = direction
@@ -563,7 +564,7 @@ delta_method <- function(p,
 
 
 delta_method_ <- function(p,
-                          loc_sc_params,
+                          dist_params,
                           loc_sc_varcov,
                           distribution = c(
                             "weibull", "lognormal", "loglogistic",
@@ -592,7 +593,7 @@ delta_method_ <- function(p,
       ## Quantile for specified distribution:
       q <- predict_quantile(
         p = p,
-        loc_sc_params = loc_sc_params,
+        dist_params = dist_params,
         distribution = distribution
       )
 
@@ -604,7 +605,7 @@ delta_method_ <- function(p,
       # Quantile for specified two-parameter distribution (gamma is irrelevant; see derivatives):
       q <- predict_quantile(
         p = p,
-        loc_sc_params = loc_sc_params[-3],
+        dist_params = dist_params[-3],
         distribution = substr(
           distribution,
           start = 1,
@@ -632,27 +633,27 @@ delta_method_ <- function(p,
   } else {
     # Standardized Random Variable:
     if (distribution %in% c("weibull", "lognormal", "loglogistic")) {
-      z <- (log(p) - loc_sc_params[[1]]) / loc_sc_params[[2]]
+      z <- (log(p) - dist_params[[1]]) / dist_params[[2]]
     }
     if (distribution %in% c("weibull3", "lognormal3", "loglogistic3")) {
-      z <- (log(p - loc_sc_params[[3]]) - loc_sc_params[[1]]) / loc_sc_params[[2]]
+      z <- (log(p - dist_params[[3]]) - dist_params[[1]]) / dist_params[[2]]
     }
     if (distribution %in% c("sev", "normal", "logistic")) {
-      z <- (p - loc_sc_params[[1]]) / loc_sc_params[[2]]
+      z <- (p - dist_params[[1]]) / dist_params[[2]]
     }
 
     # First derivatives of z regarding parameters:
     if (distribution %in% c("weibull", "lognormal", "loglogistic", "sev",
                             "normal", "logistic")) {
-      dz_dmu <- (-1 / loc_sc_params[[2]])
-      dz_dsc <- (-1 / loc_sc_params[[2]]) * z
+      dz_dmu <- (-1 / dist_params[[2]])
+      dz_dsc <- (-1 / dist_params[[2]]) * z
       dz_dpar <- c(dz_dmu, dz_dsc)
     }
 
     if (distribution %in% c("weibull3", "lognormal3", "loglogistic3")) {
-      dz_dmu <- (-1 / loc_sc_params[[2]])
-      dz_dsc <- (-1 / loc_sc_params[[2]]) * z
-      dz_dgam <- (1 / loc_sc_params[[2]]) * (1 / (loc_sc_params[[3]] - p))
+      dz_dmu <- (-1 / dist_params[[2]])
+      dz_dsc <- (-1 / dist_params[[2]]) * z
+      dz_dgam <- (1 / dist_params[[2]]) * (1 / (dist_params[[3]] - p))
       dz_dpar <- c(dz_dmu, dz_dsc, dz_dgam)
     }
 
@@ -811,7 +812,7 @@ confint_fisher.model_estimation <- function(
   confint_fisher.default(
     x = data$x,
     status = data$status,
-    loc_sc_params = x$loc_sc_params,
+    dist_params = x$coefficients,
     loc_sc_varcov = x$loc_sc_varcov,
     distribution = distribution,
     b_lives = b_lives,
@@ -888,7 +889,7 @@ confint_fisher.model_estimation <- function(
 #' conf_fisher_1 <- confint_fisher(
 #'   x = obs,
 #'   status = status_1,
-#'   loc_sc_params = ml$loc_sc_params,
+#'   dist_params = ml$coefficients,
 #'   loc_sc_varcov = ml$loc_sc_varcov,
 #'   distribution = "weibull",
 #'   bounds = "two_sided",
@@ -900,7 +901,7 @@ confint_fisher.model_estimation <- function(
 #' conf_fisher_2_1 <- confint_fisher(
 #'   x = obs,
 #'   status = status_1,
-#'   loc_sc_params = ml$loc_sc_params,
+#'   dist_params = ml$coefficients,
 #'   loc_sc_varcov = ml$loc_sc_varcov,
 #'   distribution = "weibull",
 #'   bounds = "lower",
@@ -911,7 +912,7 @@ confint_fisher.model_estimation <- function(
 #' conf_fisher_2_2 <- confint_fisher(
 #'   x = obs,
 #'   status = status_1,
-#'   loc_sc_params = ml$loc_sc_params,
+#'   dist_params = ml$coefficients,
 #'   loc_sc_varcov = ml$loc_sc_varcov,
 #'   distribution = "weibull",
 #'   bounds = "upper",
@@ -925,7 +926,7 @@ confint_fisher.model_estimation <- function(
 #' conf_fisher_3_1 <- confint_fisher(
 #'   x = cycles,
 #'   status = status_2,
-#'   loc_sc_params = ml_2$loc_sc_params,
+#'   dist_params = ml_2$coefficients,
 #'   loc_sc_varcov = ml_2$loc_sc_varcov,
 #'   distribution = "lognormal3",
 #'   bounds = "two_sided",
@@ -936,7 +937,7 @@ confint_fisher.model_estimation <- function(
 #' conf_fisher_3_2 <- confint_fisher(
 #'   x = cycles,
 #'   status = status_2,
-#'   loc_sc_params = ml_2$loc_sc_params,
+#'   dist_params = ml_2$coefficients,
 #'   loc_sc_varcov = ml_2$loc_sc_varcov,
 #'   distribution = "lognormal3",
 #'   bounds = "two_sided",
@@ -947,7 +948,7 @@ confint_fisher.model_estimation <- function(
 #' @export
 confint_fisher.default <- function(x,
                                    status,
-                                   loc_sc_params,
+                                   dist_params,
                                    loc_sc_varcov,
                                    distribution = c(
                                      "weibull", "lognormal", "loglogistic",
@@ -968,7 +969,7 @@ confint_fisher.default <- function(x,
   n <- length(x)
   x_ob <- x[status == 1]
 
-  x_y_b_lives <- add_b_lives(x_ob, loc_sc_params, distribution, b_lives)
+  x_y_b_lives <- add_b_lives(x_ob, dist_params, distribution, b_lives)
 
   x_seq <- x_y_b_lives$x_seq
   y_seq <- x_y_b_lives$y_seq
@@ -976,7 +977,7 @@ confint_fisher.default <- function(x,
   if (direction == "x") {
     se_delta <- delta_method(
       p = y_seq,
-      loc_sc_params = loc_sc_params,
+      dist_params = dist_params,
       loc_sc_varcov = loc_sc_varcov,
       distribution = distribution,
       direction = direction
@@ -1005,7 +1006,7 @@ confint_fisher.default <- function(x,
     # Standard errors for z:
     se_delta <- delta_method(
       p = x_seq,
-      loc_sc_params = loc_sc_params,
+      dist_params = dist_params,
       loc_sc_varcov = loc_sc_varcov,
       distribution = distribution,
       direction = direction
@@ -1013,13 +1014,13 @@ confint_fisher.default <- function(x,
 
     # Standardized Random Variable:
     if (distribution %in% c("weibull", "lognormal", "loglogistic")) {
-      z <- (log(x_seq) - loc_sc_params[[1]]) / loc_sc_params[[2]]
+      z <- (log(x_seq) - dist_params[[1]]) / dist_params[[2]]
     }
     if (distribution %in% c("weibull3", "lognormal3", "loglogistic3")) {
-      z <- (log(x_seq - loc_sc_params[[3]]) - loc_sc_params[[1]]) / loc_sc_params[[2]]
+      z <- (log(x_seq - dist_params[[3]]) - dist_params[[1]]) / dist_params[[2]]
     }
     if (distribution %in% c("sev", "normal", "logistic")) {
-      z <- (x_seq - loc_sc_params[[1]]) / loc_sc_params[[2]]
+      z <- (x_seq - dist_params[[1]]) / dist_params[[2]]
     }
 
     # Calculating confidence intervals:
@@ -1091,7 +1092,7 @@ confint_fisher.default <- function(x,
 
 
 add_b_lives <- function(x,
-                        loc_sc_params,
+                        dist_params,
                         distribution,
                         b_lives
 ) {
@@ -1102,7 +1103,7 @@ add_b_lives <- function(x,
   x_seq <- seq(x_min, x_max, length.out = 100)
 
   # Range of probabilities calculated with estimated regression line:
-  y_seq <- predict_prob(q = x_seq, loc_sc_params = loc_sc_params,
+  y_seq <- predict_prob(q = x_seq, dist_params = dist_params,
                         distribution = distribution)
 
   # Looking for B lives in range of estimated ones:
@@ -1112,7 +1113,7 @@ add_b_lives <- function(x,
   y_seq <- sort(unique(c(y_seq, b_lives_present)))
   x_seq <- predict_quantile(
     p = y_seq,
-    loc_sc_params = loc_sc_params,
+    dist_params = dist_params,
     distribution = distribution
   )
 
