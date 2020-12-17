@@ -92,7 +92,7 @@ pop_weibull_2 <- plot_pop(
 pop_weibull_3 <- plot_pop(
   p_obj = NULL,
   x = x,
-  dist_params_tbl = tibble(
+  dist_params_tbl = data.frame(
     p_1 = c(log(20000), log(20000), log(20000)),
     p_2 = c(1, 1.5, 2)
     ),
@@ -105,10 +105,10 @@ pop_weibull_3 <- plot_pop(
 pop_weibull_4 <- plot_pop(
   p_obj = NULL,
   x = x,
-  dist_params_tbl = tibble(
+  dist_params_tbl = data.frame(
     param_1 = c(log(20000), log(20000)),
     param_2 = c(1, 1),
-    param_3 = c(NA, 5)
+    param_3 = c(NA, 2)
   )
 )
 

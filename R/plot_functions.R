@@ -48,10 +48,14 @@ plot_layout <- function(
   distribution <- match.arg(distribution)
   plot_method <- match.arg(plot_method)
 
-  plot_layout_fun <- if (plot_method == "plotly") plot_layout_plotly else
-    plot_layout_ggplot2
+  p_obj <- if (plot_method == "plotly") plotly::plotly_empty(
+    type = "scatter",
+    mode = "markers",
+    colors = "Set2"
+  ) else ggplot2::ggplot()
 
-  plot_layout_fun(
+  plot_layout_vis(
+    p_obj = p_obj,
     x = x,
     distribution = distribution,
     title_main = title_main,
@@ -524,10 +528,7 @@ plot_prob_ <- function(
     plot_method = plot_method
   )
 
-  plot_prob_fun <- if (plot_method == "plotly") plot_prob_plotly else
-    plot_prob_ggplot2
-
-  plot_prob_fun(
+  plot_prob_vis(
     p_obj = p_obj,
     tbl_prob = tbl_prob,
     distribution = distribution,
@@ -793,18 +794,6 @@ plot_mod.model_estimation <- function(p_obj, x, title_trace = "Fit", ...) {
 #' @export
 #'
 plot_mod.model_estimation_list <- function(p_obj, x, title_trace = "Fit", ...) {
-  # Plot method is determined by p_obj
-  plot_method <- if (inherits(p_obj, "gg")) {
-    "ggplot2"
-  } else if (inherits(p_obj, "plotly")) {
-    "plotly"
-  }  else {
-    stop(
-      "'p_obj' is not a valid plot object. Provide either a ggplot2 or a plotly
-      plot object."
-    )
-  }
-
   methods <- names(x)
 
   tbl_pred <- purrr::map2_dfr(x, methods, function(model_estimation, method) {
@@ -818,10 +807,7 @@ plot_mod.model_estimation_list <- function(p_obj, x, title_trace = "Fit", ...) {
     )
   })
 
-  plot_mod_fun <- if (plot_method == "plotly") plot_mod_plotly else
-    plot_mod_ggplot2
-
-  plot_mod_fun(
+  plot_mod_vis(
     p_obj = p_obj,
     tbl_pred = tbl_pred,
     title_trace = title_trace
@@ -836,18 +822,6 @@ plot_mod.model_estimation_list <- function(p_obj, x, title_trace = "Fit", ...) {
 #'
 #' @export
 plot_mod.mixmod_regression <- function(p_obj, x, title_trace = "Fit", ...) {
-  # Plot method is determined by p_obj
-  plot_method <- if (inherits(p_obj, "gg")) {
-    "ggplot2"
-  } else if (inherits(p_obj, "plotly")) {
-    "plotly"
-  }  else {
-    stop(
-      "'p_obj' is not a valid plot object. Provide either a ggplot2 or a plotly
-      plot object."
-    )
-  }
-
   tbl_pred <- purrr::map2_dfr(x, seq_along(x), function(model_estimation, index) {
     method <- if (!tibble::has_name(model_estimation$data, "method")) {
       # Case mixmod_em (plot_mod.mixmod_em calls this method internally)
@@ -864,10 +838,7 @@ plot_mod.mixmod_regression <- function(p_obj, x, title_trace = "Fit", ...) {
     )
   })
 
-  plot_mod_fun <- if (plot_method == "plotly") plot_mod_plotly else
-    plot_mod_ggplot2
-
-  plot_mod_fun(
+  plot_mod_vis(
     p_obj = p_obj,
     tbl_pred = tbl_pred,
     title_trace = title_trace
@@ -886,18 +857,6 @@ plot_mod.mixmod_regression_list <- function(p_obj,
                                             title_trace = "Fit",
                                             ...
 ) {
-  # Plot method is determined by p_obj
-  plot_method <- if (inherits(p_obj, "gg")) {
-    "ggplot2"
-  } else if (inherits(p_obj, "plotly")) {
-    "plotly"
-  }  else {
-    stop(
-      "'p_obj' is not a valid plot object. Provide either a ggplot2 or a plotly
-      plot object."
-    )
-  }
-
   tbl_pred <- purrr::map2_dfr(x, names(x), function(mixmod_regression, method) {
     purrr::map2_dfr(
       mixmod_regression,
@@ -912,10 +871,7 @@ plot_mod.mixmod_regression_list <- function(p_obj,
     )
   })
 
-  plot_mod_fun <- if (plot_method == "plotly") plot_mod_plotly else
-    plot_mod_ggplot2
-
-  plot_mod_fun(
+  plot_mod_vis(
     p_obj = p_obj,
     tbl_pred = tbl_pred,
     title_trace = title_trace
@@ -1050,26 +1006,11 @@ plot_mod.default <- function(p_obj,
 
   distribution <- match.arg(distribution)
 
-  # Plot method is determined by p_obj
-  plot_method <- if (inherits(p_obj, "gg")) {
-    "ggplot2"
-  } else if (inherits(p_obj, "plotly")) {
-    "plotly"
-  }  else {
-    stop(
-      "'p_obj' is not a valid plot object. Provide either a ggplot2 or a plotly
-      plot object."
-    )
-  }
-
   tbl_pred <- plot_mod_helper(
     x, dist_params, distribution
   )
 
-  plot_mod_fun <- if (plot_method == "plotly") plot_mod_plotly else
-    plot_mod_ggplot2
-
-  plot_mod_fun(
+  plot_mod_vis(
     p_obj = p_obj,
     tbl_pred = tbl_pred,
     title_trace = title_trace
@@ -1181,18 +1122,6 @@ plot_mod_mix <- function(p_obj,
   deprecate_soft(
     "2.0.0", "plot_mod_mix()", "plot_mod()"
   )
-
-  # Plot method is determined by p_obj
-  plot_method <- if (inherits(p_obj, "gg")) {
-    "ggplot2"
-  } else if (inherits(p_obj, "plotly")) {
-    "plotly"
-  }  else {
-    stop(
-      "'p_obj' is not a valid plot object. Provide either a ggplot2 or a plotly
-      plot object."
-    )
-  }
 
   plot_mod(
     p_obj = p_obj,
@@ -1309,18 +1238,6 @@ plot_conf.confint <- function(p_obj,
                               ...
 ) {
 
-  # Plot method is determined by p_obj
-  plot_method <- if (inherits(p_obj, "gg")) {
-    "ggplot2"
-  } else if (inherits(p_obj, "plotly")) {
-    "plotly"
-  }  else {
-    stop(
-      "'p_obj' is not a valid plot object. Provide either a ggplot2 or a plotly
-      plot object."
-    )
-  }
-
   if (inherits(mod, "model_estimation")) {
     # Fake model_estimation_list
     method <- mod$data$method[1]
@@ -1340,10 +1257,7 @@ plot_conf.confint <- function(p_obj,
     )
   })
 
-  plot_mod_fun <- if (plot_method == "plotly") plot_mod_plotly else
-    plot_mod_ggplot2
-
-  p_mod <- plot_mod_fun(
+  p_mod <- plot_mod_vis(
     p_obj = p_obj,
     tbl_pred = tbl_pred,
     title_trace = title_trace_mod
@@ -1355,10 +1269,7 @@ plot_conf.confint <- function(p_obj,
     x, distribution
   )
 
-  plot_conf_fun <- if (plot_method == "plotly") plot_conf_plotly else
-    plot_conf_ggplot2
-
-  plot_conf_fun(
+  plot_conf_vis(
     p_mod, tbl_p, title_trace_conf
   )
 }
@@ -1526,18 +1437,6 @@ plot_conf.default <- function(
   direction <- match.arg(direction)
   distribution <- match.arg(distribution)
 
-  # Plot method is determined by p_obj
-  plot_method <- if (inherits(p_obj, "gg")) {
-    "ggplot2"
-  } else if (inherits(p_obj, "plotly")) {
-    "plotly"
-  }  else {
-    stop(
-      "'p_obj' is not a valid plot object. Provide either a ggplot2 or a plotly
-      plot object."
-    )
-  }
-
   # Extracting tbl_mod
   tbl_mod <- if (plot_method == "plotly") {
     plotly::plotly_data(p_obj)
@@ -1549,10 +1448,7 @@ plot_conf.default <- function(
     tbl_mod, x, y, direction, distribution
   )
 
-  plot_conf_fun <- if (plot_method == "plotly") plot_conf_plotly else
-    plot_conf_ggplot2
-
-  plot_conf_fun(
+  plot_conf_vis(
     p_obj, tbl_p, title_trace
   )
 }
@@ -1630,7 +1526,7 @@ plot_conf.default <- function(
 #' pop_weibull_3 <- plot_pop(
 #'   p_obj = NULL,
 #'   x = x,
-#'   dist_params_tbl = tibble(
+#'   dist_params_tbl = data.frame(
 #'     p_1 = c(log(20000), log(20000), log(20000)),
 #'     p_2 = c(1, 1.5, 2)
 #'     ),
@@ -1643,10 +1539,10 @@ plot_conf.default <- function(
 #' pop_weibull_4 <- plot_pop(
 #'   p_obj = NULL,
 #'   x = x,
-#'   dist_params_tbl = tibble(
+#'   dist_params_tbl = data.frame(
 #'     param_1 = c(log(20000), log(20000)),
 #'     param_2 = c(1, 1),
-#'     param_3 = c(NA, 5)
+#'     param_3 = c(NA, 2)
 #'   )
 #' )
 #'
@@ -1671,18 +1567,6 @@ plot_pop <- function(
       distribution = distribution,
       plot_method = plot_method
     )
-  } else {
-    # Plot method is determined by p_obj
-    plot_method <- if (inherits(p_obj, "gg")) {
-      "ggplot2"
-    } else if (inherits(p_obj, "plotly")) {
-      "plotly"
-    }  else {
-      stop(
-        "'p_obj' is not a valid plot object. Provide either a ggplot2 or a plotly
-      plot object."
-      )
-    }
   }
 
   # Support vector instead of tibble for ease of use in dist_params_tbl
@@ -1705,10 +1589,7 @@ plot_pop <- function(
 
   tbl_pop <- plot_pop_helper(x, dist_params_tbl, distribution, tol)
 
-  plot_pop_fun <- if (plot_method == "plotly") plot_pop_plotly else
-    plot_pop_ggplot2
-
-  plot_pop_fun(
+  plot_pop_vis(
     p_obj, tbl_pop, title_trace
   )
 }

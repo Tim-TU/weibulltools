@@ -1,4 +1,6 @@
-plot_layout_plotly <- function(
+#' @export
+plot_layout_vis.plotly <- function(
+  p_obj,
   x,
   distribution = c(
     "weibull", "lognormal", "loglogistic", "normal", "logistic", "sev"
@@ -98,11 +100,7 @@ plot_layout_plotly <- function(
 
 
   # create grid
-  p <- plotly::plotly_empty(
-    type = "scatter",
-    mode = "markers",
-    colors = "Set2"
-  ) %>%
+  p_obj <- p_obj %>%
     plotly::layout(
       title = title,
       separators = ".",
@@ -111,10 +109,11 @@ plot_layout_plotly <- function(
       yaxis = y_config,
       margin = m
     )
-  return(p)
+  return(p_obj)
 }
 
-plot_prob_plotly <- function(
+#' @export
+plot_prob_vis.plotly <- function(
   p_obj, tbl_prob,
   distribution = c(
     "weibull", "lognormal", "loglogistic", "normal", "logistic", "sev"
@@ -164,7 +163,8 @@ plot_prob_plotly <- function(
   return(p_prob)
 }
 
-plot_mod_plotly <- function(
+#' @export
+plot_mod_vis.plotly <- function(
   p_obj, tbl_pred, title_trace = "Fit"
 ) {
 
@@ -205,7 +205,8 @@ plot_mod_plotly <- function(
   return(p_mod)
 }
 
-plot_conf_plotly <- function(p_obj, tbl_p, title_trace) {
+#' @export
+plot_conf_vis.plotly <- function(p_obj, tbl_p, title_trace) {
   # Get axis labels in hover:
   x_mark <- unlist(strsplit(p_obj$x$layoutAttrs[[2]]$xaxis$title$text,  " "))[1]
   y_mark <- unlist(strsplit(p_obj$x$layoutAttrs[[2]]$yaxis$title$text,  " "))[1]
@@ -240,7 +241,8 @@ plot_conf_plotly <- function(p_obj, tbl_p, title_trace) {
   return(p_conf)
 }
 
-plot_pop_plotly <- function(
+#' @export
+plot_pop_vis.plotly <- function(
   p_obj, tbl_pop, title_trace
 ) {
   # Get axis labels in hover
