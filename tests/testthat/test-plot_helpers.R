@@ -80,6 +80,23 @@ test_that("plot_mod_mix_helper remains stable", {
   expect_snapshot_output(helper)
 })
 
+# plot_conf_helper ----
+test_that("plot_conf_helper_2 remains stable", {
+  data <- reliability_data(shock, x = distance, status = status)
+
+  cdf <- estimate_cdf(data, "johnson")
+
+  rr <- rank_regression(cdf)
+
+  confint <- confint_betabinom(rr)
+
+  helper <- plot_conf_helper_2(
+    confint, "weibull"
+  )
+
+  expect_snapshot_output(helper)
+})
+
 # plot_pop_helper ----
 test_that("plot_pop_helper remains stable", {
   suppressWarnings(library(tibble))
