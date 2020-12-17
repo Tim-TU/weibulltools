@@ -185,7 +185,7 @@ rank_regression.cdf_estimation <- function(x,
 #' tbl_john <- estimate_cdf(
 #'   x = obs,
 #'   status = status_1,
-#'   methods = "johnson"
+#'   method = "johnson"
 #' )
 #'
 #' rr <- rank_regression(
@@ -200,7 +200,7 @@ rank_regression.cdf_estimation <- function(x,
 #' tbl_kaplan <- estimate_cdf(
 #'   x = cycles,
 #'   status = status_2,
-#'   methods = "kaplan"
+#'   method = "kaplan"
 #' )
 #'
 #' rr_2 <- rank_regression(
@@ -638,7 +638,7 @@ r_squared_profiling.cdf_estimation <- function(x,
 #' prob_tbl <- estimate_cdf(
 #'   x = cycles,
 #'   status = status,
-#'   methods = "johnson"
+#'   method = "johnson"
 #' )
 #'
 #' # Determining the optimal coefficient of determination:

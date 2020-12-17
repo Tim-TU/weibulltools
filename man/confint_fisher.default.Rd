@@ -2,7 +2,7 @@
 % Please edit documentation in R/confidence_intervals.R
 \name{confint_fisher.default}
 \alias{confint_fisher.default}
-\title{Fisher Confidence Bounds for Quantiles and Probabilities}
+\title{Fisher's Confidence Bounds for Quantiles and Probabilities}
 \usage{
 \method{confint_fisher}{default}(
   x,
@@ -19,10 +19,8 @@
 )
 }
 \arguments{
-\item{x}{A numeric vector which consists of lifetime data. Lifetime
-data could be every characteristic influencing the reliability of a product,
-e.g. operating time (days/months in service), mileage (km, miles), load
-cycles.}
+\item{x}{Object of class \code{model_estimation} (or \code{model_estimation_list})
+returned from \code{\link{rank_regression}}.}
 
 \item{status}{A vector of binary data (0 or 1) indicating whether unit \emph{i}
 is a right censored observation (= 0) or a failure (= 1).}
@@ -37,7 +35,7 @@ covariances returned from \code{\link{ml_estimation}}.}
 line with the specification made in \code{\link{ml_estimation}}.}
 
 \item{b_lives}{A numeric vector indicating the probabilities \emph{p} of the
-\emph{B_p} lives (quantiles) to be considered.}
+\eqn{B_p}-lives (quantiles) to be considered.}
 
 \item{bounds}{A character string specifying of which bounds have to be computed.
 One of \code{"two_sided"}, \code{"lower"} or \code{"upper"}.}

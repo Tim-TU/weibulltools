@@ -94,23 +94,12 @@ data <- reliability_data(
 prob_tbl <- estimate_cdf(data, methods = c("johnson", "kaplan"))
 
 # Example 1 - Probability Plot Weibull:
-plot_weibull <- plot_prob(
-  prob_tbl,
-  distribution = "weibull",
-  title_main = "Weibull Analysis",
-  title_x = "Cycles",
-  title_y = "Probability of Failure in \%",
-  title_trace = "Failed Items"
-)
+plot_weibull <- plot_prob(prob_tbl)
 
 # Example 2 - Probability Plot Lognormal:
 plot_lognormal <- plot_prob(
   prob_tbl,
-  distribution = "lognormal",
-  title_main = "Lognormal Analysis",
-  title_x = "Cycles",
-  title_y = "Probability of Failure in \%",
-  title_trace = "Failed Items"
+  distribution = "lognormal"
 )
 
 ## Mixture identification
@@ -124,34 +113,14 @@ data_mix <- reliability_data(
 prob_mix <- estimate_cdf(data_mix, methods = c("johnson", "kaplan"))
 
 # Example 3 - Mixture identification using mixmod_regression:
-mix_mod_rr <- mixmod_regression(
-  x = prob_mix,
-  distribution = "weibull",
-  conf_level = 0.99
-)
+mix_mod_rr <- mixmod_regression(prob_mix)
 
-plot_mix_rr <- plot_prob(
-  mix_mod_rr,
-  title_main = "Weibull Mixture Regression",
-  title_x = "Time in Hours",
-  title_y = "Probability of Failure",
-  title_trace = "Subgroup"
-)
+plot_mix_rr <- plot_prob(mix_mod_rr)
 
 # Example 4 - Mixture identification using mixmod_em:
-mix_mod_em <- mixmod_em(
-  data_mix,
-  distribution = "weibull",
-  conf_level = 0.99
-)
+mix_mod_em <- mixmod_em(data_mix)
 
-plot_mix_em <- plot_prob(
-  mix_mod_em,
-  title_main = "Weibull Mixture EM",
-  title_x = "Time in Hours",
-  title_y = "Probability of Failure",
-  title_trace = "Subgroup"
-)
+plot_mix_em <- plot_prob(mix_mod_em)
 
 }
 \references{

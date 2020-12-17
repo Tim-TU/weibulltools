@@ -3,7 +3,7 @@
 \encoding{UTF-8}
 \name{loglik_profiling}
 \alias{loglik_profiling}
-\title{Log-Likelihood Profile Function for Log-Location-Scale Distributions with Threshold}
+\title{Log-Likelihood Profile Function for Parametric Lifetime Distributions}
 \usage{
 loglik_profiling(
   x,

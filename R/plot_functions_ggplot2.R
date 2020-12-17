@@ -1,4 +1,7 @@
-plot_layout_ggplot2 <- function(
+#' @export
+plot_layout_vis.ggplot <- function(
+  # An empty ggplot object
+  p_obj,
   x,
   distribution = c(
     "weibull", "lognormal", "loglogistic", "normal", "logistic", "sev"
@@ -12,17 +15,15 @@ plot_layout_ggplot2 <- function(
 
   layout_helper <- plot_layout_helper(x, distribution, "ggplot2")
 
-  p <- ggplot2::ggplot()
-
-  p <- if (distribution %in% c("sev", "normal", "logistic")) {
-    p +
+  p_obj <- if (distribution %in% c("sev", "normal", "logistic")) {
+    p_obj +
       ggplot2::scale_x_continuous(
         breaks = layout_helper$x_ticks,
         minor_breaks = NULL,
         labels = layout_helper$x_labels
       )
   } else {
-    p +
+    p_obj +
       ggplot2::scale_x_log10(
         breaks = layout_helper$x_ticks,
         minor_breaks = NULL,
@@ -30,7 +31,7 @@ plot_layout_ggplot2 <- function(
       )
   }
 
-  p <- p +
+  p_obj <- p_obj +
     ggplot2::scale_y_continuous(
       breaks = layout_helper$y_ticks,
       minor_breaks = NULL,
@@ -45,10 +46,11 @@ plot_layout_ggplot2 <- function(
     ) +
     ggplot2::labs(title = title_main, x = title_x, y = title_y)
 
-  return(p)
+  return(p_obj)
 }
 
-plot_prob_ggplot2 <- function(
+#' @export
+plot_prob_vis.ggplot <- function(
   p_obj, tbl_prob,
   distribution = c(
     "weibull", "lognormal", "loglogistic", "normal", "logistic", "sev"
@@ -88,7 +90,8 @@ plot_prob_ggplot2 <- function(
   return(p_prob)
 }
 
-plot_mod_ggplot2 <- function(
+#' @export
+plot_mod_vis.ggplot <- function(
   p_obj, tbl_pred, title_trace = "Fit"
 ) {
 
@@ -116,7 +119,8 @@ plot_mod_ggplot2 <- function(
   return(p_mod)
 }
 
-plot_conf_ggplot2 <- function(p_obj, tbl_p, title_trace) {
+#' @export
+plot_conf_vis.ggplot <- function(p_obj, tbl_p, title_trace) {
   mapping <- if (all(tbl_p$method == "conf_null")) {
     ggplot2::aes(
       x = x, y = q, group = bound, color = I("#CC2222")
@@ -137,7 +141,8 @@ plot_conf_ggplot2 <- function(p_obj, tbl_p, title_trace) {
   return(p_conf)
 }
 
-plot_pop_ggplot2 <- function(
+#' @export
+plot_pop_vis.ggplot <- function(
   p_obj, tbl_pop, title_trace
 ) {
   p_pop <- p_obj +

@@ -132,6 +132,24 @@
     10 7640. 0.0262 <chr [2]> <chr [2]>   johnson group -3.63
     # ... with 190 more rows
 
+# plot_conf_helper remains stable
+
+    # A tibble: 204 x 5
+    # Groups:   bound [2]
+           x      y bound method      q
+       <dbl>  <dbl> <chr> <chr>   <dbl>
+     1 6700. 0.0927 Upper johnson -2.33
+     2 6910. 0.0958 Upper johnson -2.30
+     3 7120. 0.0990 Upper johnson -2.26
+     4 7330. 0.102  Upper johnson -2.23
+     5 7540. 0.106  Upper johnson -2.19
+     6 7750. 0.109  Upper johnson -2.16
+     7 7960. 0.113  Upper johnson -2.12
+     8 8170. 0.117  Upper johnson -2.09
+     9 8380  0.121  Upper johnson -2.05
+    10 8590. 0.124  Upper johnson -2.02
+    # ... with 194 more rows
+
 # plot_pop_helper remains stable
 
     # A tibble: 100 x 6

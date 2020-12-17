@@ -42,17 +42,17 @@ grid with respect to the given characteristic \code{x}.
 \examples{
 # Example 1: Weibull-Grid:
 x_layout <- seq(1e-5, 1e+07, length.out = 10)
-grid_weibull <- plot_layout(x = x_layout,
-                            distribution = "weibull",
-                            title_main = "Weibull Analysis",
-                            title_x = "Time to Failure",
-                            title_y = "Failure Probability in \%")
+grid_weibull <- plot_layout(x = x_layout)
 
 # Example 2: Grid of Normal Distribution:
 x_layout <- seq(1, 10, length.out = 10)
-grid_normal <- plot_layout(x = x_layout,
-                            distribution = "normal",
-                            title_main = "Normal Grid",
-                            title_x = "Time to Event",
-                            title_y = "Failure Probability in \%")
+grid_normal <- plot_layout(
+  x = x_layout,
+  distribution = "normal",
+  title_main = "Normal Grid",
+  title_x = "Time to Event",
+  title_y = "Failure Probability in \%"
+)
+
 }
+\keyword{internal}

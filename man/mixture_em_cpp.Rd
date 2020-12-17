@@ -94,3 +94,4 @@ mix_mod_em_2 <- mixture_em_cpp(x = hours,
 Doganaksoy, N.; Hahn, G.; Meeker, W. Q., Reliability Analysis by
   Failure Mode, Quality Progress, 35(6), 47-52, 2002
 }
+\keyword{internal}

@@ -93,9 +93,7 @@ id <- 1:length(hours)
 # Example 1 - Using result of mixmod_em:
 mix_mod_em <- mixmod_em(
   x = hours,
-  status = status,
-  distribution = "weibull",
-  conf_level = 0.95
+  status = status
 )
 
 plot_weibull_em <- plot_prob_mix(
@@ -103,11 +101,7 @@ plot_weibull_em <- plot_prob_mix(
   status = status,
   id = id,
   distribution = "weibull",
-  mix_output = mix_mod_em,
-  title_main = "Weibull Mixture EM",
-  title_x = "Time in Hours",
-  title_y = "Probability of Failure",
-  title_trace = "Subgroup"
+  mix_output = mix_mod_em
 )
 
 # Example 2 - Using result of mixmod_regression:
@@ -115,7 +109,7 @@ john <- estimate_cdf(
   x = hours,
   status = status,
   id = id,
-  methods = "johnson"
+  method = "johnson"
 )
 
 mix_mod_reg <- mixmod_regression(
@@ -130,11 +124,7 @@ plot_weibull_reg <- plot_prob_mix(
   status = status,
   id = id,
   distribution = "weibull",
-  mix_output = mix_mod_reg,
-  title_main = "Weibull Mixture Regression",
-  title_x = "Time in Hours",
-  title_y = "Probability of Failure",
-  title_trace = "Subgroup"
+  mix_output = mix_mod_reg
 )
 
 }

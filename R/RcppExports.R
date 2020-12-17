@@ -102,6 +102,7 @@ normalize <- function(M) {
 #'                              method = "EM",
 #'                              n_iter = 150)
 #'
+#' @keywords internal
 mixture_em_cpp <- function(x, status, post, distribution = "weibull", k = 2L, method = "EM", n_iter = 100L, conv_limit = 1e-6) {
     .Call(`_weibulltools_mixture_em_cpp`, x, status, post, distribution, k, method, n_iter, conv_limit)
 }
@@ -125,6 +126,8 @@ mixture_em_cpp <- function(x, status, post, distribution = "weibull", k = 2L, me
 #'   n_out <- c(0, 2, 4, 8, 9, 11, 12, 16, 20, 22)
 #'   n <- 23
 #'   johnson_ranks <- calculate_ranks(f = defectives, n_out = n_out, n = n)
+#'
+#' @keywords internal
 calculate_ranks <- function(f, n_out, n) {
     .Call(`_weibulltools_calculate_ranks`, f, n_out, n)
 }

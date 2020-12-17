@@ -18,10 +18,8 @@
 )
 }
 \arguments{
-\item{x}{A numeric vector which consists of lifetime data. Lifetime
-data could be every characteristic influencing the reliability of a product,
-e.g. operating time (days/months in service), mileage (km, miles), load
-cycles.}
+\item{x}{Object of class \code{model_estimation} (or \code{model_estimation_list})
+returned from \code{\link{rank_regression}}.}
 
 \item{status}{A vector of binary data (0 or 1) indicating whether unit \emph{i}
 is a right censored observation (= 0) or a failure (= 1).}
@@ -33,7 +31,7 @@ returned from \code{\link{rank_regression}}.}
 line with the specification made in \code{\link{rank_regression}}.}
 
 \item{b_lives}{A numeric vector indicating the probabilities \emph{p} of the
-\emph{B_p} lives (quantiles) to be considered.}
+\eqn{B_p}-lives (quantiles) to be considered.}
 
 \item{bounds}{A character string specifying of which bounds have to be computed.
 One of \code{"two_sided"}, \code{"lower"} or \code{"upper"}.}
@@ -94,13 +92,13 @@ status_2 <- alloy$status
 tbl_john <- estimate_cdf(
   x = obs,
   status = status_1,
-  methods = "johnson"
+  method = "johnson"
 )
 
 tbl_john_2 <- estimate_cdf(
   x = cycles,
   status = status_2,
-  methods = "johnson"
+  method = "johnson"
 )
 
 # Model estimation with rank_regression():

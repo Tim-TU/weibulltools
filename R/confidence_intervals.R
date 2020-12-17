@@ -12,7 +12,7 @@
 #' @param x Object of class \code{model_estimation} (or \code{model_estimation_list})
 #'   returned from \code{\link{rank_regression}}.
 #' @param b_lives A numeric vector indicating the probabilities \emph{p} of the
-#'   \emph{B_p} lives (quantiles) to be considered.
+#'   \eqn{B_p}-lives (quantiles) to be considered.
 #' @param bounds A character string specifying of which bounds have to be computed.
 #'   One of \code{"two_sided"}, \code{"lower"} or \code{"upper"}.
 #' @param conf_level Confidence level of the interval.
@@ -121,7 +121,6 @@
 #'
 #' # Example 3 - Two-sided 90% confidence intervals for both directions using
 #' # a three-parametric model:
-#'
 #' conf_betabin_3_1 <- confint_betabinom(
 #'   x = rr_3p,
 #'   bounds = "two_sided",
@@ -192,7 +191,7 @@ confint_betabinom.model_estimation_list <- function(
   bounds <- match.arg(bounds)
   direction <- match.arg(direction)
 
-  purrr::map_dfr(x, function(model_estimation) {
+  confint <- purrr::map_dfr(x, function(model_estimation) {
     confint <- confint_betabinom_(
       model_estimation = model_estimation,
       b_lives = b_lives,
@@ -201,6 +200,9 @@ confint_betabinom.model_estimation_list <- function(
       direction = direction
     )
   })
+
+  attr(confint, "model_estimation") <- x
+  confint
 }
 
 
@@ -210,8 +212,11 @@ confint_betabinom.model_estimation_list <- function(
 #' @inherit confint_betabinom description details
 #'
 #' @inheritParams ml_estimation.default
-#' @inheritParams confint_betabinom.model_estimation
-#'
+#' @inheritParams confint_betabinom
+#' @param x A numeric vector which consists of lifetime data. Lifetime data
+#'   could be every characteristic influencing the reliability of a product,
+#'   e.g. operating time (days/months in service), mileage (km, miles), load
+#'   cycles.
 #' @param dist_params A (named) numeric vector of (log-)location-scale parameters
 #'   returned from \code{\link{rank_regression}}.
 #' @param distribution Supposed distribution of the random variable. Has to be in
@@ -256,13 +261,13 @@ confint_betabinom.model_estimation_list <- function(
 #' tbl_john <- estimate_cdf(
 #'   x = obs,
 #'   status = status_1,
-#'   methods = "johnson"
+#'   method = "johnson"
 #' )
 #'
 #' tbl_john_2 <- estimate_cdf(
 #'   x = cycles,
 #'   status = status_2,
-#'   methods = "johnson"
+#'   method = "johnson"
 #' )
 #'
 #' # Model estimation with rank_regression():
@@ -358,7 +363,7 @@ confint_betabinom.default <- function(x,
 
   # Fake model_estimation
   model_estimation <- list(
-    data = tibble::tibble(x = x, status = status, method = "conf_null"),
+    data = tibble::tibble(x = x, status = status, method = NA_character_),
     coefficients = dist_params,
     distribution = distribution
   )
@@ -453,6 +458,11 @@ confint_betabinom_ <- function(model_estimation,
       direction = direction,
       method = method
     )
+
+  if ("model_estimation" %in% class(model_estimation)) {
+    # Only add model_estimation if not faked by .default
+    attr(tbl_out, "model_estimation") <- model_estimation
+  }
 
   class(tbl_out) <- c("confint", class(tbl_out))
 
@@ -806,15 +816,11 @@ confint_fisher.model_estimation <- function(
                               ...
 ) {
 
-  data <- x$data
-  distribution <- x$distribution
+  bounds <- match.arg(bounds)
+  direction <- match.arg(direction)
 
-  confint_fisher.default(
-    x = data$x,
-    status = data$status,
-    dist_params = x$coefficients,
-    loc_sc_varcov = x$loc_sc_varcov,
-    distribution = distribution,
+  confint_fisher_(
+    model_estimation = x,
     b_lives = b_lives,
     bounds = bounds,
     conf_level = conf_level,
@@ -824,7 +830,7 @@ confint_fisher.model_estimation <- function(
 
 
 
-#' Fisher Confidence Bounds for Quantiles and Probabilities
+#' Fisher's Confidence Bounds for Quantiles and Probabilities
 #'
 #' @inherit confint_fisher description details references
 #'
@@ -966,6 +972,38 @@ confint_fisher.default <- function(x,
   direction <- match.arg(direction)
   distribution <- match.arg(distribution)
 
+  # Fake model_estimation
+  model_estimation <- list(
+    data = tibble::tibble(x = x, status = status, method = NA_character_),
+    coefficients = dist_params,
+    loc_sc_varcov = loc_sc_varcov,
+    distribution = distribution
+  )
+
+  confint_fisher_(
+    model_estimation = model_estimation,
+    b_lives = b_lives,
+    bounds = bounds,
+    conf_level = conf_level,
+    direction = direction
+  )
+}
+
+
+
+confint_fisher_ <- function(model_estimation,
+                            b_lives,
+                            bounds,
+                            conf_level,
+                            direction
+) {
+
+  x <- model_estimation$data$x
+  status <- model_estimation$data$status
+  dist_params <- model_estimation$coefficients
+  loc_sc_varcov <- model_estimation$loc_sc_varcov
+  distribution <- model_estimation$distribution
+
   n <- length(x)
   x_ob <- x[status == 1]
 
@@ -1082,6 +1120,11 @@ confint_fisher.default <- function(x,
       direction = direction,
       method = "conf_null"
     )
+
+  if ("model_estimation" %in% class(model_estimation)) {
+    # Only add model_estimation if not faked by .default
+    attr(tbl_out, "model_estimation") <- model_estimation
+  }
 
   # Make output usable for generics
   class(tbl_out) <- c("confint", class(tbl_out))

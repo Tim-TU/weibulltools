@@ -70,45 +70,33 @@ prob_tbl <- estimate_cdf(data, methods = c("johnson", "kaplan"))
 # Example 1 - Probability Plot and Regression Line Three-Parameter-Weibull:
 plot_weibull <- plot_prob(
   prob_tbl,
-  distribution = "weibull",
-  title_main = "Three-Parametric Weibull",
-  title_x = "Cycles",
-  title_y = "Probability of Failure in \%",
-  title_trace = "Failed Items"
+  distribution = "weibull"
 )
 
 rr_weibull <- rank_regression(
   prob_tbl,
-  distribution = "weibull3",
-  conf_level = 0.9
+  distribution = "weibull3"
 )
 
 plot_reg_weibull <- plot_mod(
   p_obj = plot_weibull,
-  x = rr_weibull,
-  title_trace = "Estimated Weibull CDF"
+  x = rr_weibull
 )
 
 # Example 2 - Probability Plot and Regression Line Three-Parameter-Lognormal:
 plot_lognormal <- plot_prob(
   prob_tbl,
-  distribution = "lognormal",
-  title_main = "Three-Parametric Lognormal",
-  title_x = "Cycles",
-  title_y = "Probability of Failure in \%",
-  title_trace = "Failed Items"
+  distribution = "lognormal"
 )
 
 rr_lognormal <- rank_regression(
   prob_tbl,
-  distribution = "lognormal3",
-  conf_level = 0.9
+  distribution = "lognormal3"
 )
 
 plot_reg_lognormal <- plot_mod(
   p_obj = plot_lognormal,
-  x = rr_lognormal,
-  title_trace = "Estimated Lognormal CDF"
+  x = rr_lognormal
 )
 
 }

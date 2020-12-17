@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Fisher Confidence Bounds for Quantiles and Probabilities — confint_fisher.default • weibulltools</title>
+<title>Fisher's Confidence Bounds for Quantiles and Probabilities — confint_fisher.default • weibulltools</title>
 
 
 <!-- jquery -->
@@ -39,7 +39,7 @@
 
 
 
-<meta property="og:title" content="Fisher Confidence Bounds for Quantiles and Probabilities — confint_fisher.default" />
+<meta property="og:title" content="Fisher's Confidence Bounds for Quantiles and Probabilities — confint_fisher.default" />
 <meta property="og:description" content="This function computes normal-approximation confidence intervals for quantiles
 and failure probabilities." />
 
@@ -125,7 +125,7 @@ and failure probabilities." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Fisher Confidence Bounds for Quantiles and Probabilities</h1>
+    <h1>Fisher's Confidence Bounds for Quantiles and Probabilities</h1>
     
     <div class="hidden name"><code>confint_fisher.default.Rd</code></div>
     </div>
@@ -155,10 +155,8 @@ and failure probabilities.</p>
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>x</th>
-      <td><p>A numeric vector which consists of lifetime data. Lifetime
-data could be every characteristic influencing the reliability of a product,
-e.g. operating time (days/months in service), mileage (km, miles), load
-cycles.</p></td>
+      <td><p>Object of class <code>model_estimation</code> (or <code>model_estimation_list</code>)
+returned from <code><a href='rank_regression.html'>rank_regression</a></code>.</p></td>
     </tr>
     <tr>
       <th>status</th>
@@ -183,7 +181,7 @@ line with the specification made in <code><a href='ml_estimation.html'>ml_estima
     <tr>
       <th>b_lives</th>
       <td><p>A numeric vector indicating the probabilities <em>p</em> of the
-<em>B_p</em> lives (quantiles) to be considered.</p></td>
+\(B_p\)-lives (quantiles) to be considered.</p></td>
     </tr>
     <tr>
       <th>bounds</th>

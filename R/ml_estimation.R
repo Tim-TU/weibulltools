@@ -423,7 +423,7 @@ print.ml_estimation <- function(x,
 
 
 
-#' Log-Likelihood Profile Function for Log-Location-Scale Distributions with Threshold
+#' Log-Likelihood Profile Function for Parametric Lifetime Distributions with Threshold
 #'
 #' @description
 #' This function evaluates the log-likelihood with respect to a given threshold
@@ -528,7 +528,7 @@ loglik_profiling_ <- function(x,
 
 
 
-#' Log-Likelihood Function for (Log-) Location-Scale Distributions (with Threshold)
+#' Log-Likelihood Function for Parametric Lifetime Distributions
 #'
 #' @description
 #' This function computes the log-likelihood value with respect to a given set
@@ -584,6 +584,8 @@ loglik_function <- function(x,
 ) {
 
   distribution <- match.arg(distribution)
+
+  check_dist_params(dist_params, distribution)
 
   d <- status
   mu <- dist_params[1]

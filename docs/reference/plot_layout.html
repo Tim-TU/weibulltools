@@ -187,20 +187,19 @@ y axis.</p></td>
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='co'># Example 1: Weibull-Grid:</span>
 <span class='va'>x_layout</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span><span class='fl'>1e-5</span>, <span class='fl'>1e+07</span>, length.out <span class='op'>=</span> <span class='fl'>10</span><span class='op'>)</span>
-<span class='va'>grid_weibull</span> <span class='op'>&lt;-</span> <span class='fu'>plot_layout</span><span class='op'>(</span>x <span class='op'>=</span> <span class='va'>x_layout</span>,
-                            distribution <span class='op'>=</span> <span class='st'>"weibull"</span>,
-                            title_main <span class='op'>=</span> <span class='st'>"Weibull Analysis"</span>,
-                            title_x <span class='op'>=</span> <span class='st'>"Time to Failure"</span>,
-                            title_y <span class='op'>=</span> <span class='st'>"Failure Probability in %"</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='error'>Error in plot_layout(x = x_layout, distribution = "weibull", title_main = "Weibull Analysis",     title_x = "Time to Failure", title_y = "Failure Probability in %"): konnte Funktion "plot_layout" nicht finden</span></div><div class='input'>
+<span class='va'>grid_weibull</span> <span class='op'>&lt;-</span> <span class='fu'>plot_layout</span><span class='op'>(</span>x <span class='op'>=</span> <span class='va'>x_layout</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='error'>Error in plot_layout(x = x_layout): konnte Funktion "plot_layout" nicht finden</span></div><div class='input'>
 <span class='co'># Example 2: Grid of Normal Distribution:</span>
 <span class='va'>x_layout</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span><span class='fl'>1</span>, <span class='fl'>10</span>, length.out <span class='op'>=</span> <span class='fl'>10</span><span class='op'>)</span>
-<span class='va'>grid_normal</span> <span class='op'>&lt;-</span> <span class='fu'>plot_layout</span><span class='op'>(</span>x <span class='op'>=</span> <span class='va'>x_layout</span>,
-                            distribution <span class='op'>=</span> <span class='st'>"normal"</span>,
-                            title_main <span class='op'>=</span> <span class='st'>"Normal Grid"</span>,
-                            title_x <span class='op'>=</span> <span class='st'>"Time to Event"</span>,
-                            title_y <span class='op'>=</span> <span class='st'>"Failure Probability in %"</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='error'>Error in plot_layout(x = x_layout, distribution = "normal", title_main = "Normal Grid",     title_x = "Time to Event", title_y = "Failure Probability in %"): konnte Funktion "plot_layout" nicht finden</span></div></pre>
+<span class='va'>grid_normal</span> <span class='op'>&lt;-</span> <span class='fu'>plot_layout</span><span class='op'>(</span>
+  x <span class='op'>=</span> <span class='va'>x_layout</span>,
+  distribution <span class='op'>=</span> <span class='st'>"normal"</span>,
+  title_main <span class='op'>=</span> <span class='st'>"Normal Grid"</span>,
+  title_x <span class='op'>=</span> <span class='st'>"Time to Event"</span>,
+  title_y <span class='op'>=</span> <span class='st'>"Failure Probability in %"</span>
+<span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='error'>Error in plot_layout(x = x_layout, distribution = "normal", title_main = "Normal Grid",     title_x = "Time to Event", title_y = "Failure Probability in %"): konnte Funktion "plot_layout" nicht finden</span></div><div class='input'>
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

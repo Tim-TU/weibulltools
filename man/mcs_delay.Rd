@@ -95,7 +95,7 @@ A list containing the following elements:
 \description{
 In general, the amount of available information about units in the field is very
 different. During the warranty period, there are only a few cases with complete
-data (mainly \emph{failured units}) but lots of cases with incomplete data (usually
+data (mainly \emph{failed units}) but lots of cases with incomplete data (usually
 \emph{censored units}). As a result, the operating time of units with incomplete
 information is often inaccurate and must be adjusted by delays.
 
@@ -223,4 +223,7 @@ Verband der Automobilindustrie e.V. (VDA); Qualitätsmanagement in
   der Automobilindustrie. Zuverlässigkeitssicherung bei Automobilherstellern
   und Lieferanten. Zuverlässigkeits-Methoden und -Hilfsmittel.; 4th Edition, 2016,
   <ISSN:0943-9412>
+}
+\seealso{
+\code{\link{estimate_cdf}}
 }

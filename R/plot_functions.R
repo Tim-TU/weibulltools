@@ -21,19 +21,19 @@
 #' @examples
 #' # Example 1: Weibull-Grid:
 #' x_layout <- seq(1e-5, 1e+07, length.out = 10)
-#' grid_weibull <- plot_layout(x = x_layout,
-#'                             distribution = "weibull",
-#'                             title_main = "Weibull Analysis",
-#'                             title_x = "Time to Failure",
-#'                             title_y = "Failure Probability in %")
+#' grid_weibull <- plot_layout(x = x_layout)
 #'
 #' # Example 2: Grid of Normal Distribution:
 #' x_layout <- seq(1, 10, length.out = 10)
-#' grid_normal <- plot_layout(x = x_layout,
-#'                             distribution = "normal",
-#'                             title_main = "Normal Grid",
-#'                             title_x = "Time to Event",
-#'                             title_y = "Failure Probability in %")
+#' grid_normal <- plot_layout(
+#'   x = x_layout,
+#'   distribution = "normal",
+#'   title_main = "Normal Grid",
+#'   title_x = "Time to Event",
+#'   title_y = "Failure Probability in %"
+#' )
+#'
+#' @keywords internal
 plot_layout <- function(
   x,
   distribution = c(
@@ -48,10 +48,14 @@ plot_layout <- function(
   distribution <- match.arg(distribution)
   plot_method <- match.arg(plot_method)
 
-  plot_layout_fun <- if (plot_method == "plotly") plot_layout_plotly else
-    plot_layout_ggplot2
+  p_obj <- if (plot_method == "plotly") plotly::plotly_empty(
+    type = "scatter",
+    mode = "markers",
+    colors = "Set2"
+  ) else ggplot2::ggplot()
 
-  plot_layout_fun(
+  plot_layout_vis(
+    p_obj = p_obj,
     x = x,
     distribution = distribution,
     title_main = title_main,
@@ -143,23 +147,12 @@ plot_layout <- function(
 #' prob_tbl <- estimate_cdf(data, methods = c("johnson", "kaplan"))
 #'
 #' # Example 1 - Probability Plot Weibull:
-#' plot_weibull <- plot_prob(
-#'   prob_tbl,
-#'   distribution = "weibull",
-#'   title_main = "Weibull Analysis",
-#'   title_x = "Cycles",
-#'   title_y = "Probability of Failure in %",
-#'   title_trace = "Failed Items"
-#' )
+#' plot_weibull <- plot_prob(prob_tbl)
 #'
 #' # Example 2 - Probability Plot Lognormal:
 #' plot_lognormal <- plot_prob(
 #'   prob_tbl,
-#'   distribution = "lognormal",
-#'   title_main = "Lognormal Analysis",
-#'   title_x = "Cycles",
-#'   title_y = "Probability of Failure in %",
-#'   title_trace = "Failed Items"
+#'   distribution = "lognormal"
 #' )
 #'
 #' ## Mixture identification
@@ -173,34 +166,14 @@ plot_layout <- function(
 #' prob_mix <- estimate_cdf(data_mix, methods = c("johnson", "kaplan"))
 #'
 #' # Example 3 - Mixture identification using mixmod_regression:
-#' mix_mod_rr <- mixmod_regression(
-#'   x = prob_mix,
-#'   distribution = "weibull",
-#'   conf_level = 0.99
-#' )
+#' mix_mod_rr <- mixmod_regression(prob_mix)
 #'
-#' plot_mix_rr <- plot_prob(
-#'   mix_mod_rr,
-#'   title_main = "Weibull Mixture Regression",
-#'   title_x = "Time in Hours",
-#'   title_y = "Probability of Failure",
-#'   title_trace = "Subgroup"
-#' )
+#' plot_mix_rr <- plot_prob(mix_mod_rr)
 #'
 #' # Example 4 - Mixture identification using mixmod_em:
-#' mix_mod_em <- mixmod_em(
-#'   data_mix,
-#'   distribution = "weibull",
-#'   conf_level = 0.99
-#' )
+#' mix_mod_em <- mixmod_em(data_mix)
 #'
-#' plot_mix_em <- plot_prob(
-#'   mix_mod_em,
-#'   title_main = "Weibull Mixture EM",
-#'   title_x = "Time in Hours",
-#'   title_y = "Probability of Failure",
-#'   title_trace = "Subgroup"
-#' )
+#' plot_mix_em <- plot_prob(mix_mod_em)
 #'
 #' @md
 #' @export
@@ -439,7 +412,7 @@ plot_prob.mixmod_regression_list <- function(x,
 #' john <- estimate_cdf(
 #'   x = cycles,
 #'   status = status,
-#'   methods = "johnson"
+#'   method = "johnson"
 #' )
 #'
 #' # Example 1: Probability Plot Weibull:
@@ -447,12 +420,7 @@ plot_prob.mixmod_regression_list <- function(x,
 #'   x = john$x,
 #'   y = john$prob,
 #'   status = john$status,
-#'   id = john$id,
-#'   distribution = "weibull",
-#'   title_main = "Weibull Analysis",
-#'   title_x = "Cycles",
-#'   title_y = "Probability of Failure in %",
-#'   title_trace = "Failed Items"
+#'   id = john$id
 #' )
 #'
 #' # Example 2: Probability Plot Lognormal:
@@ -461,11 +429,7 @@ plot_prob.mixmod_regression_list <- function(x,
 #'   y = john$prob,
 #'   status = john$status,
 #'   id = john$id,
-#'   distribution = "lognormal",
-#'   title_main = "Lognormal Analysis",
-#'   title_x = "Cycles",
-#'   title_y = "Probability of Failure in %",
-#'   title_trace = "Failed Items"
+#'   distribution = "lognormal"
 #' )
 #'
 #' @export
@@ -524,10 +488,7 @@ plot_prob_ <- function(
     plot_method = plot_method
   )
 
-  plot_prob_fun <- if (plot_method == "plotly") plot_prob_plotly else
-    plot_prob_ggplot2
-
-  plot_prob_fun(
+  plot_prob_vis(
     p_obj = p_obj,
     tbl_prob = tbl_prob,
     distribution = distribution,
@@ -594,9 +555,7 @@ plot_prob_ <- function(
 #' # Example 1 - Using result of mixmod_em:
 #' mix_mod_em <- mixmod_em(
 #'   x = hours,
-#'   status = status,
-#'   distribution = "weibull",
-#'   conf_level = 0.95
+#'   status = status
 #' )
 #'
 #' plot_weibull_em <- plot_prob_mix(
@@ -604,11 +563,7 @@ plot_prob_ <- function(
 #'   status = status,
 #'   id = id,
 #'   distribution = "weibull",
-#'   mix_output = mix_mod_em,
-#'   title_main = "Weibull Mixture EM",
-#'   title_x = "Time in Hours",
-#'   title_y = "Probability of Failure",
-#'   title_trace = "Subgroup"
+#'   mix_output = mix_mod_em
 #' )
 #'
 #' # Example 2 - Using result of mixmod_regression:
@@ -616,7 +571,7 @@ plot_prob_ <- function(
 #'   x = hours,
 #'   status = status,
 #'   id = id,
-#'   methods = "johnson"
+#'   method = "johnson"
 #' )
 #'
 #' mix_mod_reg <- mixmod_regression(
@@ -631,11 +586,7 @@ plot_prob_ <- function(
 #'   status = status,
 #'   id = id,
 #'   distribution = "weibull",
-#'   mix_output = mix_mod_reg,
-#'   title_main = "Weibull Mixture Regression",
-#'   title_x = "Time in Hours",
-#'   title_y = "Probability of Failure",
-#'   title_trace = "Subgroup"
+#'   mix_output = mix_mod_reg
 #' )
 #'
 #' @export
@@ -668,6 +619,8 @@ plot_prob_mix <- function(
     plot_method = plot_method
   )
 }
+
+
 
 #' Add Estimated Population Line(s) to a Probability Plot
 #'
@@ -716,45 +669,33 @@ plot_prob_mix <- function(
 #' # Example 1 - Probability Plot and Regression Line Three-Parameter-Weibull:
 #' plot_weibull <- plot_prob(
 #'   prob_tbl,
-#'   distribution = "weibull",
-#'   title_main = "Three-Parametric Weibull",
-#'   title_x = "Cycles",
-#'   title_y = "Probability of Failure in %",
-#'   title_trace = "Failed Items"
+#'   distribution = "weibull"
 #' )
 #'
 #' rr_weibull <- rank_regression(
 #'   prob_tbl,
-#'   distribution = "weibull3",
-#'   conf_level = 0.9
+#'   distribution = "weibull3"
 #' )
 #'
 #' plot_reg_weibull <- plot_mod(
 #'   p_obj = plot_weibull,
-#'   x = rr_weibull,
-#'   title_trace = "Estimated Weibull CDF"
+#'   x = rr_weibull
 #' )
 #'
 #' # Example 2 - Probability Plot and Regression Line Three-Parameter-Lognormal:
 #' plot_lognormal <- plot_prob(
 #'   prob_tbl,
-#'   distribution = "lognormal",
-#'   title_main = "Three-Parametric Lognormal",
-#'   title_x = "Cycles",
-#'   title_y = "Probability of Failure in %",
-#'   title_trace = "Failed Items"
+#'   distribution = "lognormal"
 #' )
 #'
 #' rr_lognormal <- rank_regression(
 #'   prob_tbl,
-#'   distribution = "lognormal3",
-#'   conf_level = 0.9
+#'   distribution = "lognormal3"
 #' )
 #'
 #' plot_reg_lognormal <- plot_mod(
 #'   p_obj = plot_lognormal,
-#'   x = rr_lognormal,
-#'   title_trace = "Estimated Lognormal CDF"
+#'   x = rr_lognormal
 #' )
 #'
 #' @export
@@ -793,18 +734,6 @@ plot_mod.model_estimation <- function(p_obj, x, title_trace = "Fit", ...) {
 #' @export
 #'
 plot_mod.model_estimation_list <- function(p_obj, x, title_trace = "Fit", ...) {
-  # Plot method is determined by p_obj
-  plot_method <- if (inherits(p_obj, "gg")) {
-    "ggplot2"
-  } else if (inherits(p_obj, "plotly")) {
-    "plotly"
-  }  else {
-    stop(
-      "'p_obj' is not a valid plot object. Provide either a ggplot2 or a plotly
-      plot object."
-    )
-  }
-
   methods <- names(x)
 
   tbl_pred <- purrr::map2_dfr(x, methods, function(model_estimation, method) {
@@ -818,10 +747,7 @@ plot_mod.model_estimation_list <- function(p_obj, x, title_trace = "Fit", ...) {
     )
   })
 
-  plot_mod_fun <- if (plot_method == "plotly") plot_mod_plotly else
-    plot_mod_ggplot2
-
-  plot_mod_fun(
+  plot_mod_vis(
     p_obj = p_obj,
     tbl_pred = tbl_pred,
     title_trace = title_trace
@@ -836,18 +762,6 @@ plot_mod.model_estimation_list <- function(p_obj, x, title_trace = "Fit", ...) {
 #'
 #' @export
 plot_mod.mixmod_regression <- function(p_obj, x, title_trace = "Fit", ...) {
-  # Plot method is determined by p_obj
-  plot_method <- if (inherits(p_obj, "gg")) {
-    "ggplot2"
-  } else if (inherits(p_obj, "plotly")) {
-    "plotly"
-  }  else {
-    stop(
-      "'p_obj' is not a valid plot object. Provide either a ggplot2 or a plotly
-      plot object."
-    )
-  }
-
   tbl_pred <- purrr::map2_dfr(x, seq_along(x), function(model_estimation, index) {
     method <- if (!tibble::has_name(model_estimation$data, "method")) {
       # Case mixmod_em (plot_mod.mixmod_em calls this method internally)
@@ -864,10 +778,7 @@ plot_mod.mixmod_regression <- function(p_obj, x, title_trace = "Fit", ...) {
     )
   })
 
-  plot_mod_fun <- if (plot_method == "plotly") plot_mod_plotly else
-    plot_mod_ggplot2
-
-  plot_mod_fun(
+  plot_mod_vis(
     p_obj = p_obj,
     tbl_pred = tbl_pred,
     title_trace = title_trace
@@ -886,18 +797,6 @@ plot_mod.mixmod_regression_list <- function(p_obj,
                                             title_trace = "Fit",
                                             ...
 ) {
-  # Plot method is determined by p_obj
-  plot_method <- if (inherits(p_obj, "gg")) {
-    "ggplot2"
-  } else if (inherits(p_obj, "plotly")) {
-    "plotly"
-  }  else {
-    stop(
-      "'p_obj' is not a valid plot object. Provide either a ggplot2 or a plotly
-      plot object."
-    )
-  }
-
   tbl_pred <- purrr::map2_dfr(x, names(x), function(mixmod_regression, method) {
     purrr::map2_dfr(
       mixmod_regression,
@@ -912,10 +811,7 @@ plot_mod.mixmod_regression_list <- function(p_obj,
     )
   })
 
-  plot_mod_fun <- if (plot_method == "plotly") plot_mod_plotly else
-    plot_mod_ggplot2
-
-  plot_mod_fun(
+  plot_mod_vis(
     p_obj = p_obj,
     tbl_pred = tbl_pred,
     title_trace = title_trace
@@ -980,27 +876,21 @@ plot_mod.mixmod_em <- function(p_obj, x, title_trace = "Fit", ...) {
 #'   y = tbl_john$prob,
 #'   status = tbl_john$status,
 #'   id = tbl_john$id,
-#'   distribution = "weibull",
-#'   title_main = "Three-Parametric Weibull",
-#'   title_x = "Cycles",
-#'   title_y = "Probability of Failure in %",
-#'   title_trace = "Failed Items"
+#'   distribution = "weibull"
 #' )
 #'
 #' rr <- rank_regression(
 #'   x = tbl_john$x,
 #'   y = tbl_john$prob,
 #'   status = tbl_john$status,
-#'   distribution = "weibull3",
-#'   conf_level = 0.9
+#'   distribution = "weibull3"
 #' )
 #'
 #' plot_reg_weibull <- plot_mod(
 #'   p_obj = plot_weibull,
 #'   x = tbl_john$x,
 #'   dist_params = rr$coefficients,
-#'   distribution = "weibull3",
-#'   title_trace = "Estimated Weibull CDF"
+#'   distribution = "weibull3"
 #' )
 #'
 #'
@@ -1011,27 +901,21 @@ plot_mod.mixmod_em <- function(p_obj, x, title_trace = "Fit", ...) {
 #'   y = tbl_john$prob,
 #'   status = tbl_john$status,
 #'   id = tbl_john$id,
-#'   distribution = "lognormal",
-#'   title_main = "Three-Parametric Lognormal",
-#'   title_x = "Cycles",
-#'   title_y = "Probability of Failure in %",
-#'   title_trace = "Failed Items"
+#'   distribution = "lognormal"
 #' )
 #'
 #' rr_ln <- rank_regression(
 #'   x = tbl_john$x,
 #'   y = tbl_john$prob,
 #'   status = tbl_john$status,
-#'   distribution = "lognormal3",
-#'   conf_level = 0.9
+#'   distribution = "lognormal3"
 #' )
 #'
 #' plot_reg_lognormal <- plot_mod(
 #'   p_obj = plot_lognormal,
 #'   x = tbl_john$x,
 #'   dist_params = rr_ln$coefficients,
-#'   distribution = "lognormal3",
-#'   title_trace = "Estimated Lognormal CDF"
+#'   distribution = "lognormal3"
 #' )
 #'
 #' @export
@@ -1050,26 +934,11 @@ plot_mod.default <- function(p_obj,
 
   distribution <- match.arg(distribution)
 
-  # Plot method is determined by p_obj
-  plot_method <- if (inherits(p_obj, "gg")) {
-    "ggplot2"
-  } else if (inherits(p_obj, "plotly")) {
-    "plotly"
-  }  else {
-    stop(
-      "'p_obj' is not a valid plot object. Provide either a ggplot2 or a plotly
-      plot object."
-    )
-  }
-
   tbl_pred <- plot_mod_helper(
     x, dist_params, distribution
   )
 
-  plot_mod_fun <- if (plot_method == "plotly") plot_mod_plotly else
-    plot_mod_ggplot2
-
-  plot_mod_fun(
+  plot_mod_vis(
     p_obj = p_obj,
     tbl_pred = tbl_pred,
     title_trace = title_trace
@@ -1115,7 +984,7 @@ plot_mod.default <- function(p_obj,
 #'           320, 350, 412, 8, 52, 78, 157, 211, 261, 298, 327, 360, 446,
 #'           13, 53, 104, 160, 221, 264, 303, 328, 369, 21, 64, 113, 168,
 #'           226, 278, 314, 328, 377)
-#' state <- c(1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1,
+#' status <- c(1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1,
 #'           1, 0, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 0, 0,
 #'           1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1,
 #'           0, 1, 1, 1, 1, 1, 1)
@@ -1125,46 +994,46 @@ plot_mod.default <- function(p_obj,
 #' mix_mod_em <- mixmod_em(x = hours, status = state, distribution = "weibull",
 #'                         conf_level = 0.95, k = 2, method = "EM", n_iter = 150)
 #'
-#' plot_weibull_em <- plot_prob(x = hours,
-#'                                  status = state,
-#'                                  id = id,
-#'                                  distribution = "weibull",
-#'                                  mix_output = mix_mod_em,
-#'                                  title_main = "Weibull Mixture EM",
-#'                                  title_x = "Time in Hours",
-#'                                  title_y = "Probability of Failure",
-#'                                  title_trace = "Subgroup")
+#' plot_weibull_em <- plot_prob_mix(
+#'   x = hours,
+#'   status = status,
+#'   id = id,
+#'   distribution = "weibull",
+#'   mix_output = mix_mod_em
+#' )
 #'
-#' plot_weibull_emlines <- plot_mod_mix(p_obj = plot_weibull_em,
-#'                                    x = hours,
-#'                                    status = state,
-#'                                    mix_output = mix_mod_em,
-#'                                    distribution = "weibull",
-#'                                    title_trace = "Fitted Line")
+#' plot_weibull_emlines <- plot_mod_mix(
+#'   p_obj = plot_weibull_em,
+#'   x = hours,
+#'   status = status,
+#'   mix_output = mix_mod_em,
+#'   distribution = "weibull"
+#' )
 #'
 #' # Example 2 - Using result of mixmod_regression in mix_output:
 #' john <- johnson_method(x = hours, status = state)
-#' mix_mod_reg <- mixmod_regression(x = john$x,
-#'                                  y = john$prob,
-#'                                  status = john$status,
-#'                                  distribution = "weibull")
+#' mix_mod_reg <- mixmod_regression(
+#'   x = john$x,
+#'   y = john$prob,
+#'   status = john$status,
+#'   distribution = "weibull"
+#' )
 #'
-#' plot_weibull_reg <- plot_prob(x = hours,
-#'                                   status = state,
-#'                                   id = id,
-#'                                   distribution = "weibull",
-#'                                   mix_output = mix_mod_reg,
-#'                                   title_main = "Weibull Mixture Regression",
-#'                                   title_x = "Time in Hours",
-#'                                   title_y = "Probability of Failure",
-#'                                   title_trace = "Subgroup")
+#' plot_weibull_reg <- plot_prob_mix(
+#'   x = john$x,
+#'   status = john$status,
+#'   id = john$id,
+#'   distribution = "weibull",
+#'   mix_output = mix_mod_reg,
+#' )
 #'
-#' plot_weibull_reglines <- plot_mod_mix(p_obj = plot_weibull_reg,
-#'                                    x = hours,
-#'                                    status = state,
-#'                                    mix_output = mix_mod_reg,
-#'                                    distribution = "weibull",
-#'                                    title_trace = "Fitted Line")
+#' plot_weibull_reglines <- plot_mod_mix(
+#'   p_obj = plot_weibull_reg,
+#'   x = john$x,
+#'   status = john$status,
+#'   mix_output = mix_mod_reg,
+#'   distribution = "weibull"
+#' )
 #'
 #' @export
 plot_mod_mix <- function(p_obj,
@@ -1182,18 +1051,6 @@ plot_mod_mix <- function(p_obj,
     "2.0.0", "plot_mod_mix()", "plot_mod()"
   )
 
-  # Plot method is determined by p_obj
-  plot_method <- if (inherits(p_obj, "gg")) {
-    "ggplot2"
-  } else if (inherits(p_obj, "plotly")) {
-    "plotly"
-  }  else {
-    stop(
-      "'p_obj' is not a valid plot object. Provide either a ggplot2 or a plotly
-      plot object."
-    )
-  }
-
   plot_mod(
     p_obj = p_obj,
     x = mix_output,
@@ -1205,15 +1062,18 @@ plot_mod_mix <- function(p_obj,
 #' Add Confidence Region(s) for Quantiles or Probabilities
 #'
 #' This function is used to add estimated confidence region(s) to an existing
-#' probability plot which also includes the estimated regression line.
+#' probability plot. This includes also the estimated regression line as it is
+#' not meaningful to plot the confidence regions without it.
 #'
 #' @param p_obj A plot object returned from \code{\link{plot_prob}}.
 #' @param x Confindence interval as returned by \code{\link{confint_betabinom}}
 #'   or \code{\link{confint_fisher}}.
-#' @param mod A model object. See 'S3 methods' for valid classes.
-#' @template dots
+#' @param title_trace_mod A character string which is assigned to the mod trace
+#'   in the legend.
+#' @param title_trace_conf A character string which is assignet to the conf trace
+#'   in the legend.
 #'
-#' @template mod_classes
+#' @template dots
 #'
 #' @encoding UTF-8
 #' @references Meeker, William Q; Escobar, Luis A., Statistical methods for
@@ -1231,32 +1091,19 @@ plot_mod_mix <- function(p_obj,
 #' # Example 1 - Probability Plot, Regression Line and Confidence Bounds for Three-Parameter-Weibull:
 #' rr <- rank_regression(
 #'   x = prob_tbl,
-#'   distribution = "weibull3",
-#'   conf_level = 0.9
+#'   distribution = "weibull3"
 #' )
 #'
-#' conf_betabin <- confint_betabinom(
-#'   x = rr,
-#'   bounds = "two_sided",
-#'   conf_level = 0.95,
-#'   direction = "y"
-#' )
+#' conf_betabin <- confint_betabinom(x = rr)
 #'
 #' plot_weibull <- plot_prob(
 #'   x = prob_tbl,
-#'   distribution = "weibull",
-#'   title_main = "Three-Parametric Weibull",
-#'   title_x = "Cycles",
-#'   title_y = "Probability of Failure in %",
-#'   title_trace = "Failed Items"
+#'   distribution = "weibull"
 #' )
 #'
 #' plot_conf_beta <- plot_conf(
 #'   p_obj = plot_weibull,
-#'   x = conf_betabin,
-#'   mod = rr,
-#'   title_trace_mod = "Estimated Weibull CDF",
-#'   title_trace_conf = "Confidence Region"
+#'   x = conf_betabin
 #' )
 #'
 #' # Example 2 - Probability Plot, Regression Line and Confidence Bounds for Three-Parameter-Lognormal:
@@ -1275,19 +1122,30 @@ plot_mod_mix <- function(p_obj,
 #'
 #' plot_lognormal <- plot_prob(
 #'   x = prob_tbl,
-#'   distribution = "lognormal",
-#'   title_main = "Three-Parametric Lognormal",
-#'   title_x = "Cycles",
-#'   title_y = "Probability of Failure in %",
-#'   title_trace = "Failed Items"
+#'   distribution = "lognormal"
 #' )
 #'
 #' plot_conf_beta_ln <- plot_conf(
 #'   p_obj = plot_lognormal,
-#'   x = conf_betabin_ln,
-#'   mod = rr_ln,
-#'   title_trace_fit = "Estimated Lognormal CDF",
-#'   title_trace_conf = "Confidence Region"
+#'   x = conf_betabin_ln
+#' )
+#'
+#' # Example 3 - Probability Plot, Regression Line and Confidence Bounds for MLE
+#' ml <- ml_estimation(
+#'   x = data,
+#'   distribution = "weibull"
+#' )
+#'
+#' conf_fisher <- confint_fisher(ml)
+#'
+#' plot_weibull <- plot_prob(
+#'   x = prob_tbl,
+#'   distribution = "weibull"
+#' )
+#'
+#' plot_conf_fisher_weibull <- plot_conf(
+#'   p_obj = plot_weibull,
+#'   x = conf_fisher
 #' )
 #'
 #' @export
@@ -1303,23 +1161,12 @@ plot_conf <- function(p_obj, x, ...) {
 #' @export
 plot_conf.confint <- function(p_obj,
                               x,
-                              mod,
                               title_trace_mod = "Fit",
                               title_trace_conf = "Confidence Limit",
                               ...
 ) {
 
-  # Plot method is determined by p_obj
-  plot_method <- if (inherits(p_obj, "gg")) {
-    "ggplot2"
-  } else if (inherits(p_obj, "plotly")) {
-    "plotly"
-  }  else {
-    stop(
-      "'p_obj' is not a valid plot object. Provide either a ggplot2 or a plotly
-      plot object."
-    )
-  }
+  mod <- attr(x, "model_estimation")
 
   if (inherits(mod, "model_estimation")) {
     # Fake model_estimation_list
@@ -1328,7 +1175,7 @@ plot_conf.confint <- function(p_obj,
     names(mod) <- method
   }
 
-  # Perform plot_mod
+  # Perform customised plot_mod on model_estimation_list
   methods <- names(mod)
   tbl_pred <- purrr::map2_dfr(mod, methods, function(model_estimation, method) {
     plot_mod_helper(
@@ -1340,10 +1187,7 @@ plot_conf.confint <- function(p_obj,
     )
   })
 
-  plot_mod_fun <- if (plot_method == "plotly") plot_mod_plotly else
-    plot_mod_ggplot2
-
-  p_mod <- plot_mod_fun(
+  p_mod <- plot_mod_vis(
     p_obj = p_obj,
     tbl_pred = tbl_pred,
     title_trace = title_trace_mod
@@ -1355,10 +1199,7 @@ plot_conf.confint <- function(p_obj,
     x, distribution
   )
 
-  plot_conf_fun <- if (plot_method == "plotly") plot_conf_plotly else
-    plot_conf_ggplot2
-
-  plot_conf_fun(
+  plot_conf_vis(
     p_mod, tbl_p, title_trace_conf
   )
 }
@@ -1415,18 +1256,14 @@ plot_conf.confint <- function(p_obj,
 #'   x = tbl_john$x,
 #'   y = tbl_john$prob,
 #'   status = tbl_john$status,
-#'   distribution = "weibull3",
-#'   conf_level = .90
+#'   distribution = "weibull3"
 #' )
 #'
 #' conf_betabin <- confint_betabinom(
 #'   x = tbl_john$x,
 #'   status = tbl_john$status,
 #'   dist_params = rr$coefficients,
-#'   distribution = "weibull3",
-#'   bounds = "two_sided",
-#'   conf_level = 0.95,
-#'   direction = "y"
+#'   distribution = "weibull3"
 #' )
 #'
 #' plot_weibull <- plot_prob(
@@ -1434,11 +1271,7 @@ plot_conf.confint <- function(p_obj,
 #'   y = tbl_john$prob,
 #'   status = tbl_john$status,
 #'   id = tbl_john$id,
-#'   distribution = "weibull",
-#'   title_main = "Three-Parametric Weibull",
-#'   title_x = "Cycles",
-#'   title_y = "Probability of Failure in %",
-#'   title_trace = "Failed Items"
+#'   distribution = "weibull"
 #' )
 #'
 #' plot_reg_weibull <- plot_mod(
@@ -1446,8 +1279,7 @@ plot_conf.confint <- function(p_obj,
 #'   x = conf_betabin$x,
 #'   y = conf_betabin$prob,
 #'   dist_params = rr$coefficients,
-#'   distribution = "weibull3",
-#'   title_trace = "Estimated Weibull CDF"
+#'   distribution = "weibull3"
 #' )
 #'
 #' plot_conf_beta <- plot_conf(
@@ -1455,8 +1287,7 @@ plot_conf.confint <- function(p_obj,
 #'   x = list(conf_betabin$x),
 #'   y = list(conf_betabin$lower_bound, conf_betabin$upper_bound),
 #'   direction = "y",
-#'   distribution = "weibull3",
-#'   title_trace = "Confidence Region"
+#'   distribution = "weibull3"
 #' )
 #'
 #' # Example 2: Probability Plot, Regression Line and Confidence Bounds for Three-Parameter-Lognormal:
@@ -1464,18 +1295,14 @@ plot_conf.confint <- function(p_obj,
 #'   x = tbl_john$x,
 #'   y = tbl_john$prob,
 #'   status = tbl_john$status,
-#'   distribution = "lognormal3",
-#'   conf_level = 0.9
+#'   distribution = "lognormal3"
 #' )
 #'
 #' conf_betabin_ln <- confint_betabinom(
 #'   x = tbl_john$x,
 #'   status = tbl_john$status,
 #'   dist_params = rr_ln$coefficients,
-#'   distribution = "lognormal3",
-#'   bounds = "two_sided",
-#'   conf_level = 0.95,
-#'   direction = "y"
+#'   distribution = "lognormal3"
 #' )
 #'
 #' plot_lognormal <- plot_prob(
@@ -1483,11 +1310,7 @@ plot_conf.confint <- function(p_obj,
 #'   y = tbl_john$prob,
 #'   status = tbl_john$status,
 #'   id = tbl_john$id,
-#'   distribution = "lognormal",
-#'   title_main = "Three-Parametric Lognormal",
-#'   title_x = "Cycles",
-#'   title_y = "Probability of Failure in %",
-#'   title_trace = "Failed Items"
+#'   distribution = "lognormal"
 #' )
 #'
 #' plot_reg_lognormal <- plot_mod(
@@ -1495,8 +1318,7 @@ plot_conf.confint <- function(p_obj,
 #'   x = conf_betabin_ln$x,
 #'   y = conf_betabin_ln$prob,
 #'   dist_params = rr_ln$coefficients,
-#'   distribution = "lognormal3",
-#'   title_trace = "Estimated Lognormal CDF"
+#'   distribution = "lognormal3"
 #' )
 #'
 #' plot_conf_beta_ln <- plot_conf(
@@ -1504,8 +1326,7 @@ plot_conf.confint <- function(p_obj,
 #'   x = list(conf_betabin_ln$x),
 #'   y = list(conf_betabin_ln$lower_bound, conf_betabin_ln$upper_bound),
 #'   direction = "y",
-#'   distribution = "lognormal3",
-#'   title_trace = "Confidence Region"
+#'   distribution = "lognormal3"
 #' )
 #'
 #' @export
@@ -1526,19 +1347,15 @@ plot_conf.default <- function(
   direction <- match.arg(direction)
   distribution <- match.arg(distribution)
 
-  # Plot method is determined by p_obj
-  plot_method <- if (inherits(p_obj, "gg")) {
-    "ggplot2"
-  } else if (inherits(p_obj, "plotly")) {
+  # Extracting tbl_mod
+  plot_method <- if (inherits(p_obj, "plotly")) {
     "plotly"
-  }  else {
-    stop(
-      "'p_obj' is not a valid plot object. Provide either a ggplot2 or a plotly
-      plot object."
-    )
+  } else if (inherits(p_obj, "ggplot")) {
+    "ggplot2"
+  } else {
+    stop("'p_obj' must be either a plotly or ggplot2 object!")
   }
 
-  # Extracting tbl_mod
   tbl_mod <- if (plot_method == "plotly") {
     plotly::plotly_data(p_obj)
   } else {
@@ -1549,10 +1366,7 @@ plot_conf.default <- function(
     tbl_mod, x, y, direction, distribution
   )
 
-  plot_conf_fun <- if (plot_method == "plotly") plot_conf_plotly else
-    plot_conf_ggplot2
-
-  plot_conf_fun(
+  plot_conf_vis(
     p_obj, tbl_p, title_trace
   )
 }
@@ -1599,20 +1413,12 @@ plot_conf.default <- function(
 #' @examples
 #' x <- rweibull(n = 100, shape = 1, scale = 20000)
 #'
-#' grid_weibull <- plot_layout(
-#'   x = x,
-#'   distribution = "weibull",
-#'   title_main = "Weibull Analysis",
-#'   title_x = "Time to Failure",
-#'   title_y = "Failure Probability"
-#' )
 #' # Example 1: Two-parametric straight line
 #' pop_weibull <- plot_pop(
-#'   p_obj = grid_weibull,
+#'   p_obj = NULL,
 #'   x = range(x),
 #'   dist_params_tbl = c(log(20000), 1),
-#'   distribution = "weibull",
-#'   title_trace = "Population"
+#'   distribution = "weibull"
 #' )
 #'
 #' # Example 2: Three-parametric curved line
@@ -1622,20 +1428,18 @@ plot_conf.default <- function(
 #'   p_obj = NULL,
 #'   x = x2,
 #'   dist_params_tbl = c(log(20000 - 5000), 1, 5000),
-#'   distribution = "weibull",
-#'   title_trace = "Population"
+#'   distribution = "weibull"
 #' )
 #'
 #' # Example 3: Multiple lines
 #' pop_weibull_3 <- plot_pop(
 #'   p_obj = NULL,
 #'   x = x,
-#'   dist_params_tbl = tibble(
+#'   dist_params_tbl = data.frame(
 #'     p_1 = c(log(20000), log(20000), log(20000)),
 #'     p_2 = c(1, 1.5, 2)
 #'     ),
 #'   distribution = "weibull",
-#'   title_trace = "Population",
 #'   plot_method = "ggplot2"
 #' )
 #'
@@ -1643,11 +1447,12 @@ plot_conf.default <- function(
 #' pop_weibull_4 <- plot_pop(
 #'   p_obj = NULL,
 #'   x = x,
-#'   dist_params_tbl = tibble(
+#'   dist_params_tbl = data.frame(
 #'     param_1 = c(log(20000), log(20000)),
 #'     param_2 = c(1, 1),
-#'     param_3 = c(NA, 5)
-#'   )
+#'     param_3 = c(NA, 2)
+#'   ),
+#'   distribution = "weibull"
 #' )
 #'
 #' @export
@@ -1671,18 +1476,6 @@ plot_pop <- function(
       distribution = distribution,
       plot_method = plot_method
     )
-  } else {
-    # Plot method is determined by p_obj
-    plot_method <- if (inherits(p_obj, "gg")) {
-      "ggplot2"
-    } else if (inherits(p_obj, "plotly")) {
-      "plotly"
-    }  else {
-      stop(
-        "'p_obj' is not a valid plot object. Provide either a ggplot2 or a plotly
-      plot object."
-      )
-    }
   }
 
   # Support vector instead of tibble for ease of use in dist_params_tbl
@@ -1705,10 +1498,7 @@ plot_pop <- function(
 
   tbl_pop <- plot_pop_helper(x, dist_params_tbl, distribution, tol)
 
-  plot_pop_fun <- if (plot_method == "plotly") plot_pop_plotly else
-    plot_pop_ggplot2
-
-  plot_pop_fun(
+  plot_pop_vis(
     p_obj, tbl_pop, title_trace
   )
 }

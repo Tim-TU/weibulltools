@@ -24,7 +24,7 @@ confint_fisher(x, ...)
 \item{...}{Further arguments passed to or from other methods. Currently not used.}
 
 \item{b_lives}{A numeric vector indicating the probabilities \emph{p} of the
-\emph{B_p} lives (quantiles) to be considered.}
+\eqn{B_p}-lives (quantiles) to be considered.}
 
 \item{bounds}{A character string specifying of which bounds have to be computed.
 One of \code{"two_sided"}, \code{"lower"} or \code{"upper"}.}

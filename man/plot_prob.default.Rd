@@ -90,7 +90,7 @@ status <- c(rep(0, 5), rep(1, 67))
 john <- estimate_cdf(
   x = cycles,
   status = status,
-  methods = "johnson"
+  method = "johnson"
 )
 
 # Example 1: Probability Plot Weibull:
@@ -98,12 +98,7 @@ plot_weibull <- plot_prob(
   x = john$x,
   y = john$prob,
   status = john$status,
-  id = john$id,
-  distribution = "weibull",
-  title_main = "Weibull Analysis",
-  title_x = "Cycles",
-  title_y = "Probability of Failure in \%",
-  title_trace = "Failed Items"
+  id = john$id
 )
 
 # Example 2: Probability Plot Lognormal:
@@ -112,11 +107,7 @@ plot_lognormal <- plot_prob(
   y = john$prob,
   status = john$status,
   id = john$id,
-  distribution = "lognormal",
-  title_main = "Lognormal Analysis",
-  title_x = "Cycles",
-  title_y = "Probability of Failure in \%",
-  title_trace = "Failed Items"
+  distribution = "lognormal"
 )
 
 }

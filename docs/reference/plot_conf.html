@@ -41,7 +41,8 @@
 
 <meta property="og:title" content="Add Confidence Region(s) for Quantiles or Probabilities — plot_conf" />
 <meta property="og:description" content="This function is used to add estimated confidence region(s) to an existing
-probability plot which also includes the estimated regression line." />
+probability plot. This includes also the estimated regression line as it is
+not meaningful to plot the confidence regions without it." />
 
 
 
@@ -132,7 +133,8 @@ probability plot which also includes the estimated regression line." />
 
     <div class="ref-description">
     <p>This function is used to add estimated confidence region(s) to an existing
-probability plot which also includes the estimated regression line.</p>
+probability plot. This includes also the estimated regression line as it is
+not meaningful to plot the confidence regions without it.</p>
     </div>
 
     <pre class="usage"><span class='fu'>plot_conf</span><span class='op'>(</span><span class='va'>p_obj</span>, <span class='va'>x</span>, <span class='va'>...</span><span class='op'>)</span>
@@ -141,7 +143,6 @@ probability plot which also includes the estimated regression line.</p>
 <span class='fu'>plot_conf</span><span class='op'>(</span>
   <span class='va'>p_obj</span>,
   <span class='va'>x</span>,
-  <span class='va'>mod</span>,
   title_trace_mod <span class='op'>=</span> <span class='st'>"Fit"</span>,
   title_trace_conf <span class='op'>=</span> <span class='st'>"Confidence Limit"</span>,
   <span class='va'>...</span>
@@ -164,8 +165,14 @@ or <code><a href='confint_fisher.html'>confint_fisher</a></code>.</p></td>
       <td><p>Further arguments passed to or from other methods. Currently not used.</p></td>
     </tr>
     <tr>
-      <th>mod</th>
-      <td><p>A model object. See 'S3 methods' for valid classes.</p></td>
+      <th>title_trace_mod</th>
+      <td><p>A character string which is assigned to the mod trace
+in the legend.</p></td>
+    </tr>
+    <tr>
+      <th>title_trace_conf</th>
+      <td><p>A character string which is assignet to the conf trace
+in the legend.</p></td>
     </tr>
     </table>
 
@@ -174,21 +181,6 @@ or <code><a href='confint_fisher.html'>confint_fisher</a></code>.</p></td>
     <p>Returns a plot object containing the probability plot with
   plotting positions, the estimated regression line and the estimated
   confidence region(s).</p>
-    <h2 class="hasAnchor" id="s-methods"><a class="anchor" href="#s-methods"></a>S3 methods</h2>
-
-    
-<table class='table'>
-<tr><td><strong>Class</strong></td><td><strong>Returned from</strong></td><td><strong>Condition</strong></td></tr>
-<tr><td><code>model_estimation</code></td><td><code><a href='rank_regression.html'>rank_regression</a></code></td><td>One method in <code><a href='estimate_cdf.html'>estimate_cdf</a></code></td></tr>
-<tr><td><code>model_estimation</code></td><td><code><a href='mixmod_regression.html'>mixmod_regression</a></code></td><td>One method in <code><a href='estimate_cdf.html'>estimate_cdf</a></code>. No subgroups determined.</td></tr>
-<tr><td><code>model_estimation</code></td><td><code><a href='ml_estimation.html'>ml_estimation</a></code></td><td>-</td></tr>
-<tr><td><code>model_estimation_list</code></td><td><code><a href='rank_regression.html'>rank_regression</a></code></td><td>Multiple methods in <code><a href='estimate_cdf.html'>estimate_cdf</a></code></td></tr>
-<tr><td><code>mixmod_regression</code></td><td><code><a href='mixmod_regression.html'>mixmod_regression</a></code></td><td>One method in <code><a href='estimate_cdf.html'>estimate_cdf</a></code></td></tr>
-<tr><td><code>mixmod_regression_list</code></td><td><code><a href='mixmod_regression.html'>mixmod_regression</a></code></td><td>Multiple methods in <code><a href='estimate_cdf.html'>estimate_cdf</a></code></td></tr>
-<tr><td><code>mixmod_em</code></td><td><code><a href='mixmod_em.html'>mixmod_em</a></code></td><td>-</td></tr>
-</table>
-
-
     <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
 
     <p>Meeker, William Q; Escobar, Luis A., Statistical methods for
@@ -202,32 +194,19 @@ or <code><a href='confint_fisher.html'>confint_fisher</a></code>.</p></td>
 <span class='co'># Example 1 - Probability Plot, Regression Line and Confidence Bounds for Three-Parameter-Weibull:</span>
 <span class='va'>rr</span> <span class='op'>&lt;-</span> <span class='fu'><a href='rank_regression.html'>rank_regression</a></span><span class='op'>(</span>
   x <span class='op'>=</span> <span class='va'>prob_tbl</span>,
-  distribution <span class='op'>=</span> <span class='st'>"weibull3"</span>,
-  conf_level <span class='op'>=</span> <span class='fl'>0.9</span>
+  distribution <span class='op'>=</span> <span class='st'>"weibull3"</span>
 <span class='op'>)</span>
 
-<span class='va'>conf_betabin</span> <span class='op'>&lt;-</span> <span class='fu'><a href='confint_betabinom.html'>confint_betabinom</a></span><span class='op'>(</span>
-  x <span class='op'>=</span> <span class='va'>rr</span>,
-  bounds <span class='op'>=</span> <span class='st'>"two_sided"</span>,
-  conf_level <span class='op'>=</span> <span class='fl'>0.95</span>,
-  direction <span class='op'>=</span> <span class='st'>"y"</span>
-<span class='op'>)</span>
+<span class='va'>conf_betabin</span> <span class='op'>&lt;-</span> <span class='fu'><a href='confint_betabinom.html'>confint_betabinom</a></span><span class='op'>(</span>x <span class='op'>=</span> <span class='va'>rr</span><span class='op'>)</span>
 
 <span class='va'>plot_weibull</span> <span class='op'>&lt;-</span> <span class='fu'><a href='plot_prob.html'>plot_prob</a></span><span class='op'>(</span>
   x <span class='op'>=</span> <span class='va'>prob_tbl</span>,
-  distribution <span class='op'>=</span> <span class='st'>"weibull"</span>,
-  title_main <span class='op'>=</span> <span class='st'>"Three-Parametric Weibull"</span>,
-  title_x <span class='op'>=</span> <span class='st'>"Cycles"</span>,
-  title_y <span class='op'>=</span> <span class='st'>"Probability of Failure in %"</span>,
-  title_trace <span class='op'>=</span> <span class='st'>"Failed Items"</span>
+  distribution <span class='op'>=</span> <span class='st'>"weibull"</span>
 <span class='op'>)</span>
 
 <span class='va'>plot_conf_beta</span> <span class='op'>&lt;-</span> <span class='fu'>plot_conf</span><span class='op'>(</span>
   p_obj <span class='op'>=</span> <span class='va'>plot_weibull</span>,
-  x <span class='op'>=</span> <span class='va'>conf_betabin</span>,
-  mod <span class='op'>=</span> <span class='va'>rr</span>,
-  title_trace_mod <span class='op'>=</span> <span class='st'>"Estimated Weibull CDF"</span>,
-  title_trace_conf <span class='op'>=</span> <span class='st'>"Confidence Region"</span>
+  x <span class='op'>=</span> <span class='va'>conf_betabin</span>
 <span class='op'>)</span>
 
 <span class='co'># Example 2 - Probability Plot, Regression Line and Confidence Bounds for Three-Parameter-Lognormal:</span>
@@ -246,22 +225,36 @@ or <code><a href='confint_fisher.html'>confint_fisher</a></code>.</p></td>
 
 <span class='va'>plot_lognormal</span> <span class='op'>&lt;-</span> <span class='fu'><a href='plot_prob.html'>plot_prob</a></span><span class='op'>(</span>
   x <span class='op'>=</span> <span class='va'>prob_tbl</span>,
-  distribution <span class='op'>=</span> <span class='st'>"lognormal"</span>,
-  title_main <span class='op'>=</span> <span class='st'>"Three-Parametric Lognormal"</span>,
-  title_x <span class='op'>=</span> <span class='st'>"Cycles"</span>,
-  title_y <span class='op'>=</span> <span class='st'>"Probability of Failure in %"</span>,
-  title_trace <span class='op'>=</span> <span class='st'>"Failed Items"</span>
+  distribution <span class='op'>=</span> <span class='st'>"lognormal"</span>
 <span class='op'>)</span>
 
 <span class='va'>plot_conf_beta_ln</span> <span class='op'>&lt;-</span> <span class='fu'>plot_conf</span><span class='op'>(</span>
   p_obj <span class='op'>=</span> <span class='va'>plot_lognormal</span>,
-  x <span class='op'>=</span> <span class='va'>conf_betabin_ln</span>,
-  mod <span class='op'>=</span> <span class='va'>rr_ln</span>,
-  title_trace_fit <span class='op'>=</span> <span class='st'>"Estimated Lognormal CDF"</span>,
-  title_trace_conf <span class='op'>=</span> <span class='st'>"Confidence Region"</span>
+  x <span class='op'>=</span> <span class='va'>conf_betabin_ln</span>
 <span class='op'>)</span>
 
-</div></pre>
+<span class='co'># Example 3 - Probability Plot, Regression Line and Confidence Bounds for MLE</span>
+<span class='va'>ml</span> <span class='op'>&lt;-</span> <span class='fu'><a href='ml_estimation.html'>ml_estimation</a></span><span class='op'>(</span>
+  x <span class='op'>=</span> <span class='va'>data</span>,
+  distribution <span class='op'>=</span> <span class='st'>"weibull"</span>
+<span class='op'>)</span>
+
+<span class='va'>conf_fisher</span> <span class='op'>&lt;-</span> <span class='fu'><a href='confint_fisher.html'>confint_fisher</a></span><span class='op'>(</span><span class='va'>ml</span><span class='op'>)</span>
+
+<span class='va'>plot_weibull</span> <span class='op'>&lt;-</span> <span class='fu'><a href='plot_prob.html'>plot_prob</a></span><span class='op'>(</span>
+  x <span class='op'>=</span> <span class='va'>prob_tbl</span>,
+  distribution <span class='op'>=</span> <span class='st'>"weibull"</span>
+<span class='op'>)</span>
+
+<span class='va'>plot_conf_fisher_weibull</span> <span class='op'>&lt;-</span> <span class='fu'>plot_conf</span><span class='op'>(</span>
+  p_obj <span class='op'>=</span> <span class='va'>plot_weibull</span>,
+  x <span class='op'>=</span> <span class='va'>conf_fisher</span>
+<span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='warning'>Warning: Unknown or uninitialised column: `method`.</span></div><div class='output co'>#&gt; <span class='error'>Error: Problem with `mutate()` input `hovertext`.</span>
+#&gt; <span class='error'><span style='color: #BB0000;'>x</span><span> Objekt 'param_val' nicht gefunden</span>
+#&gt; <span class='error'></span><span style='color: #0000BB;'>i</span><span> Input `hovertext` is `to_hovertext(x_p, y_p, param_val, param_label, x_mark, y_mark)`.</span>
+#&gt; <span class='error'></span><span style='color: #0000BB;'>i</span><span> The error occurred in row 1.</span></div><div class='input'>
+</div></span></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
