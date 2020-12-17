@@ -192,7 +192,7 @@ confint_betabinom.model_estimation_list <- function(
   bounds <- match.arg(bounds)
   direction <- match.arg(direction)
 
-  purrr::map_dfr(x, function(model_estimation) {
+  confint <- purrr::map_dfr(x, function(model_estimation) {
     confint <- confint_betabinom_(
       model_estimation = model_estimation,
       b_lives = b_lives,
@@ -201,6 +201,9 @@ confint_betabinom.model_estimation_list <- function(
       direction = direction
     )
   })
+
+  attr(confint, "model_estimation") <- x
+  confint
 }
 
 
@@ -358,7 +361,7 @@ confint_betabinom.default <- function(x,
 
   # Fake model_estimation
   model_estimation <- list(
-    data = tibble::tibble(x = x, status = status, method = "conf_null"),
+    data = tibble::tibble(x = x, status = status, method = NA_character_),
     coefficients = dist_params,
     distribution = distribution
   )
@@ -453,6 +456,11 @@ confint_betabinom_ <- function(model_estimation,
       direction = direction,
       method = method
     )
+
+  if ("model_estimation" %in% class(model_estimation)) {
+    # Only add model_estimation if not faked by .default
+    attr(tbl_out, "model_estimation") <- model_estimation
+  }
 
   class(tbl_out) <- c("confint", class(tbl_out))
 
@@ -806,15 +814,11 @@ confint_fisher.model_estimation <- function(
                               ...
 ) {
 
-  data <- x$data
-  distribution <- x$distribution
+  bounds <- match.arg(bounds)
+  direction <- match.arg(direction)
 
-  confint_fisher.default(
-    x = data$x,
-    status = data$status,
-    dist_params = x$coefficients,
-    loc_sc_varcov = x$loc_sc_varcov,
-    distribution = distribution,
+  confint_fisher_(
+    model_estimation = model_estimation,
     b_lives = b_lives,
     bounds = bounds,
     conf_level = conf_level,
@@ -966,6 +970,38 @@ confint_fisher.default <- function(x,
   direction <- match.arg(direction)
   distribution <- match.arg(distribution)
 
+  # Fake model_estimation
+  model_estimation <- list(
+    data = tibble::tibble(x = x, status = status, method = NA_character_),
+    coefficients = dist_params,
+    loc_sc_varcov = loc_sc_varcov,
+    distribution = distribution
+  )
+
+  confint_fisher_(
+    model_estimation = model_estimation,
+    b_lives = b_lives,
+    bounds = bounds,
+    conf_level = conf_level,
+    direction = direction
+  )
+}
+
+
+
+confint_fisher_ <- function(model_estimation,
+                            b_lives,
+                            bounds,
+                            conf_level,
+                            direction
+) {
+
+  x <- model_estimation$data$x
+  status <- model_estimation$data$status
+  dist_params <- model_estimation$coefficients
+  loc_sc_varcov <- model_estimation$loc_sc_varcov
+  distribution <- model_estimation$distribution
+
   n <- length(x)
   x_ob <- x[status == 1]
 
@@ -1082,6 +1118,11 @@ confint_fisher.default <- function(x,
       direction = direction,
       method = "conf_null"
     )
+
+  if ("model_estimation" %in% class(model_estimation)) {
+    # Only add model_estimation if not faked by .default
+    attr(tbl_out, "model_estimation") <- model_estimation
+  }
 
   # Make output usable for generics
   class(tbl_out) <- c("confint", class(tbl_out))

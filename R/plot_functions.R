@@ -1183,7 +1183,6 @@ plot_mod_mix <- function(p_obj,
 #' plot_conf_beta <- plot_conf(
 #'   p_obj = plot_weibull,
 #'   x = conf_betabin,
-#'   mod = rr,
 #'   title_trace_mod = "Estimated Weibull CDF",
 #'   title_trace_conf = "Confidence Region"
 #' )
@@ -1214,7 +1213,6 @@ plot_mod_mix <- function(p_obj,
 #' plot_conf_beta_ln <- plot_conf(
 #'   p_obj = plot_lognormal,
 #'   x = conf_betabin_ln,
-#'   mod = rr_ln,
 #'   title_trace_fit = "Estimated Lognormal CDF",
 #'   title_trace_conf = "Confidence Region"
 #' )
@@ -1232,11 +1230,12 @@ plot_conf <- function(p_obj, x, ...) {
 #' @export
 plot_conf.confint <- function(p_obj,
                               x,
-                              mod,
                               title_trace_mod = "Fit",
                               title_trace_conf = "Confidence Limit",
                               ...
 ) {
+
+  mod <- attr(x, "model_estimation")
 
   if (inherits(mod, "model_estimation")) {
     # Fake model_estimation_list
@@ -1245,7 +1244,7 @@ plot_conf.confint <- function(p_obj,
     names(mod) <- method
   }
 
-  # Perform plot_mod
+  # Perform customised plot_mod on model_estimation_list
   methods <- names(mod)
   tbl_pred <- purrr::map2_dfr(mod, methods, function(model_estimation, method) {
     plot_mod_helper(
