@@ -423,7 +423,7 @@ print.ml_estimation <- function(x,
 
 
 
-#' Log-Likelihood Profile Function for Parametric Lifetime Distributions
+#' Log-Likelihood Profile Function for Parametric Lifetime Distributions with Threshold
 #'
 #' @description
 #' This function evaluates the log-likelihood with respect to a given threshold

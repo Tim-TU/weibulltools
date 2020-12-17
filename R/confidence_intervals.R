@@ -213,7 +213,10 @@ confint_betabinom.model_estimation_list <- function(
 #'
 #' @inheritParams ml_estimation.default
 #' @inheritParams confint_betabinom
-#'
+#' @param x A numeric vector which consists of lifetime data. Lifetime data
+#'   could be every characteristic influencing the reliability of a product,
+#'   e.g. operating time (days/months in service), mileage (km, miles), load
+#'   cycles.
 #' @param dist_params A (named) numeric vector of (log-)location-scale parameters
 #'   returned from \code{\link{rank_regression}}.
 #' @param distribution Supposed distribution of the random variable. Has to be in
