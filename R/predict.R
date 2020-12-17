@@ -44,6 +44,8 @@ predict_quantile <- function(p,
 
   distribution <- match.arg(distribution)
 
+  check_dist_params(dist_params, distribution)
+
   # Log-Location-Scale Distributions:
   if (distribution == "weibull") {
     quantiles <- exp(SPREDA::qsev(p) * dist_params[[2]] + dist_params[[1]])
@@ -126,6 +128,8 @@ predict_prob <- function(q,
 
   distribution <- match.arg(distribution)
 
+  check_dist_params(dist_params, distribution)
+
   # Log-Location-Scale Distributions:
   if (distribution == "weibull") {
     # Standardize:
@@ -176,4 +180,25 @@ predict_prob <- function(q,
   }
 
   return(cdf)
+}
+
+
+
+check_dist_params <- function(dist_params, distribution) {
+  three_parametric <- distribution %in%
+    c("weibull3", "lognormal3", "loglogistic3")
+
+  if (three_parametric && length(dist_params) != 3) {
+    stop(
+      "A three-parametric distribution needs three parameters but",
+      " 'dist_params' has length ", length(dist_params), "."
+    )
+  }
+
+  if (!three_parametric && length(dist_params) != 2) {
+    stop(
+      "A two-parametric distribution needs two parameters but",
+      " 'dist_params' has length ", length(dist_params), "."
+    )
+  }
 }

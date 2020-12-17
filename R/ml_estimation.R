@@ -585,6 +585,8 @@ loglik_function <- function(x,
 
   distribution <- match.arg(distribution)
 
+  check_dist_params(dist_params, distribution)
+
   d <- status
   mu <- dist_params[1]
   sig <- dist_params[2]
