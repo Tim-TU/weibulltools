@@ -274,9 +274,9 @@ in context of <em>Rank Regression</em>. For an accepted statistical method use
 <span class='va'>tbl_kaplan</span> <span class='op'>&lt;-</span> <span class='fu'><a href='estimate_cdf.html'>estimate_cdf</a></span><span class='op'>(</span>
   x <span class='op'>=</span> <span class='va'>cycles</span>,
   status <span class='op'>=</span> <span class='va'>status_2</span>,
-  methods <span class='op'>=</span> <span class='st'>"kaplan"</span>
+  method <span class='op'>=</span> <span class='st'>"kaplan"</span>
 <span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='message'>The 'mr' method only considers failed units (status == 1) and does not retain intact units (status == 0).</span></div><div class='input'>
+
 <span class='va'>rr_2</span> <span class='op'>&lt;-</span> <span class='fu'><a href='rank_regression.html'>rank_regression</a></span><span class='op'>(</span>
   x <span class='op'>=</span> <span class='va'>tbl_kaplan</span><span class='op'>$</span><span class='va'>x</span>,
   y <span class='op'>=</span> <span class='va'>tbl_kaplan</span><span class='op'>$</span><span class='va'>prob</span>,

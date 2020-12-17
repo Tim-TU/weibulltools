@@ -61,20 +61,12 @@ two or three is also supported (\code{c(loc, sc)} or \code{c(loc, sc, thres)}).
 \examples{
 x <- rweibull(n = 100, shape = 1, scale = 20000)
 
-grid_weibull <- plot_layout(
-  x = x,
-  distribution = "weibull",
-  title_main = "Weibull Analysis",
-  title_x = "Time to Failure",
-  title_y = "Failure Probability"
-)
 # Example 1: Two-parametric straight line
 pop_weibull <- plot_pop(
-  p_obj = grid_weibull,
+  p_obj = NULL,
   x = range(x),
   dist_params_tbl = c(log(20000), 1),
-  distribution = "weibull",
-  title_trace = "Population"
+  distribution = "weibull"
 )
 
 # Example 2: Three-parametric curved line
@@ -84,8 +76,7 @@ pop_weibull_2 <- plot_pop(
   p_obj = NULL,
   x = x2,
   dist_params_tbl = c(log(20000 - 5000), 1, 5000),
-  distribution = "weibull",
-  title_trace = "Population"
+  distribution = "weibull"
 )
 
 # Example 3: Multiple lines
@@ -97,7 +88,6 @@ pop_weibull_3 <- plot_pop(
     p_2 = c(1, 1.5, 2)
     ),
   distribution = "weibull",
-  title_trace = "Population",
   plot_method = "ggplot2"
 )
 
@@ -109,7 +99,8 @@ pop_weibull_4 <- plot_pop(
     param_1 = c(log(20000), log(20000)),
     param_2 = c(1, 1),
     param_3 = c(NA, 2)
-  )
+  ),
+  distribution = "weibull"
 )
 
 }

@@ -60,7 +60,7 @@ hours <- c(2, 28, 67, 119, 179, 236, 282, 317, 348, 387, 3, 31, 69, 135,
           320, 350, 412, 8, 52, 78, 157, 211, 261, 298, 327, 360, 446,
           13, 53, 104, 160, 221, 264, 303, 328, 369, 21, 64, 113, 168,
           226, 278, 314, 328, 377)
-state <- c(1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1,
+status <- c(1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1,
           1, 0, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 0, 0,
           1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1,
           0, 1, 1, 1, 1, 1, 1)
@@ -70,46 +70,46 @@ id <- 1:length(hours)
 mix_mod_em <- mixmod_em(x = hours, status = state, distribution = "weibull",
                         conf_level = 0.95, k = 2, method = "EM", n_iter = 150)
 
-plot_weibull_em <- plot_prob(x = hours,
-                                 status = state,
-                                 id = id,
-                                 distribution = "weibull",
-                                 mix_output = mix_mod_em,
-                                 title_main = "Weibull Mixture EM",
-                                 title_x = "Time in Hours",
-                                 title_y = "Probability of Failure",
-                                 title_trace = "Subgroup")
+plot_weibull_em <- plot_prob_mix(
+  x = hours,
+  status = status,
+  id = id,
+  distribution = "weibull",
+  mix_output = mix_mod_em
+)
 
-plot_weibull_emlines <- plot_mod_mix(p_obj = plot_weibull_em,
-                                   x = hours,
-                                   status = state,
-                                   mix_output = mix_mod_em,
-                                   distribution = "weibull",
-                                   title_trace = "Fitted Line")
+plot_weibull_emlines <- plot_mod_mix(
+  p_obj = plot_weibull_em,
+  x = hours,
+  status = status,
+  mix_output = mix_mod_em,
+  distribution = "weibull"
+)
 
 # Example 2 - Using result of mixmod_regression in mix_output:
 john <- johnson_method(x = hours, status = state)
-mix_mod_reg <- mixmod_regression(x = john$x,
-                                 y = john$prob,
-                                 status = john$status,
-                                 distribution = "weibull")
+mix_mod_reg <- mixmod_regression(
+  x = john$x,
+  y = john$prob,
+  status = john$status,
+  distribution = "weibull"
+)
 
-plot_weibull_reg <- plot_prob(x = hours,
-                                  status = state,
-                                  id = id,
-                                  distribution = "weibull",
-                                  mix_output = mix_mod_reg,
-                                  title_main = "Weibull Mixture Regression",
-                                  title_x = "Time in Hours",
-                                  title_y = "Probability of Failure",
-                                  title_trace = "Subgroup")
+plot_weibull_reg <- plot_prob_mix(
+  x = john$x,
+  status = john$status,
+  id = john$id,
+  distribution = "weibull",
+  mix_output = mix_mod_reg,
+)
 
-plot_weibull_reglines <- plot_mod_mix(p_obj = plot_weibull_reg,
-                                   x = hours,
-                                   status = state,
-                                   mix_output = mix_mod_reg,
-                                   distribution = "weibull",
-                                   title_trace = "Fitted Line")
+plot_weibull_reglines <- plot_mod_mix(
+  p_obj = plot_weibull_reg,
+  x = john$x,
+  status = john$status,
+  mix_output = mix_mod_reg,
+  distribution = "weibull"
+)
 
 }
 \references{

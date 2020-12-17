@@ -227,18 +227,14 @@ is recommended:</p><ul>
   x <span class='op'>=</span> <span class='va'>tbl_john</span><span class='op'>$</span><span class='va'>x</span>,
   y <span class='op'>=</span> <span class='va'>tbl_john</span><span class='op'>$</span><span class='va'>prob</span>,
   status <span class='op'>=</span> <span class='va'>tbl_john</span><span class='op'>$</span><span class='va'>status</span>,
-  distribution <span class='op'>=</span> <span class='st'>"weibull3"</span>,
-  conf_level <span class='op'>=</span> <span class='fl'>.90</span>
+  distribution <span class='op'>=</span> <span class='st'>"weibull3"</span>
 <span class='op'>)</span>
 
 <span class='va'>conf_betabin</span> <span class='op'>&lt;-</span> <span class='fu'><a href='confint_betabinom.html'>confint_betabinom</a></span><span class='op'>(</span>
   x <span class='op'>=</span> <span class='va'>tbl_john</span><span class='op'>$</span><span class='va'>x</span>,
   status <span class='op'>=</span> <span class='va'>tbl_john</span><span class='op'>$</span><span class='va'>status</span>,
   dist_params <span class='op'>=</span> <span class='va'>rr</span><span class='op'>$</span><span class='va'>coefficients</span>,
-  distribution <span class='op'>=</span> <span class='st'>"weibull3"</span>,
-  bounds <span class='op'>=</span> <span class='st'>"two_sided"</span>,
-  conf_level <span class='op'>=</span> <span class='fl'>0.95</span>,
-  direction <span class='op'>=</span> <span class='st'>"y"</span>
+  distribution <span class='op'>=</span> <span class='st'>"weibull3"</span>
 <span class='op'>)</span>
 
 <span class='va'>plot_weibull</span> <span class='op'>&lt;-</span> <span class='fu'><a href='plot_prob.html'>plot_prob</a></span><span class='op'>(</span>
@@ -246,11 +242,7 @@ is recommended:</p><ul>
   y <span class='op'>=</span> <span class='va'>tbl_john</span><span class='op'>$</span><span class='va'>prob</span>,
   status <span class='op'>=</span> <span class='va'>tbl_john</span><span class='op'>$</span><span class='va'>status</span>,
   id <span class='op'>=</span> <span class='va'>tbl_john</span><span class='op'>$</span><span class='va'>id</span>,
-  distribution <span class='op'>=</span> <span class='st'>"weibull"</span>,
-  title_main <span class='op'>=</span> <span class='st'>"Three-Parametric Weibull"</span>,
-  title_x <span class='op'>=</span> <span class='st'>"Cycles"</span>,
-  title_y <span class='op'>=</span> <span class='st'>"Probability of Failure in %"</span>,
-  title_trace <span class='op'>=</span> <span class='st'>"Failed Items"</span>
+  distribution <span class='op'>=</span> <span class='st'>"weibull"</span>
 <span class='op'>)</span>
 
 <span class='va'>plot_reg_weibull</span> <span class='op'>&lt;-</span> <span class='fu'><a href='plot_mod.html'>plot_mod</a></span><span class='op'>(</span>
@@ -258,8 +250,7 @@ is recommended:</p><ul>
   x <span class='op'>=</span> <span class='va'>conf_betabin</span><span class='op'>$</span><span class='va'>x</span>,
   y <span class='op'>=</span> <span class='va'>conf_betabin</span><span class='op'>$</span><span class='va'>prob</span>,
   dist_params <span class='op'>=</span> <span class='va'>rr</span><span class='op'>$</span><span class='va'>coefficients</span>,
-  distribution <span class='op'>=</span> <span class='st'>"weibull3"</span>,
-  title_trace <span class='op'>=</span> <span class='st'>"Estimated Weibull CDF"</span>
+  distribution <span class='op'>=</span> <span class='st'>"weibull3"</span>
 <span class='op'>)</span>
 
 <span class='va'>plot_conf_beta</span> <span class='op'>&lt;-</span> <span class='fu'><a href='plot_conf.html'>plot_conf</a></span><span class='op'>(</span>
@@ -267,30 +258,25 @@ is recommended:</p><ul>
   x <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='va'>conf_betabin</span><span class='op'>$</span><span class='va'>x</span><span class='op'>)</span>,
   y <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='va'>conf_betabin</span><span class='op'>$</span><span class='va'>lower_bound</span>, <span class='va'>conf_betabin</span><span class='op'>$</span><span class='va'>upper_bound</span><span class='op'>)</span>,
   direction <span class='op'>=</span> <span class='st'>"y"</span>,
-  distribution <span class='op'>=</span> <span class='st'>"weibull3"</span>,
-  title_trace <span class='op'>=</span> <span class='st'>"Confidence Region"</span>
+  distribution <span class='op'>=</span> <span class='st'>"weibull3"</span>
 <span class='op'>)</span>
 </div><div class='output co'>#&gt; <span class='warning'>Warning: `plot_conf.default()` is deprecated as of lifecycle 2.0.0.</span>
 #&gt; <span class='warning'>Please use `plot_conf.confint()` instead.</span>
 #&gt; <span class='warning'><span style='color: #555555;'>This warning is displayed once every 8 hours.</span><span></span>
-#&gt; <span class='warning'></span><span style='color: #555555;'>Call `lifecycle::last_warnings()` to see where this warning was generated.</span><span></span></div><div class='output co'>#&gt; <span class='error'>Error in plot_conf.default(p_obj = plot_reg_weibull, x = list(conf_betabin$x),     y = list(conf_betabin$lower_bound, conf_betabin$upper_bound),     direction = "y", distribution = "weibull3", title_trace = "Confidence Region"): Objekt 'plot_method' nicht gefunden</span></div><div class='input'>
+#&gt; <span class='warning'></span><span style='color: #555555;'>Call `lifecycle::last_warnings()` to see where this warning was generated.</span><span></span></div><div class='input'>
 <span class='co'># Example 2: Probability Plot, Regression Line and Confidence Bounds for Three-Parameter-Lognormal:</span>
 <span class='va'>rr_ln</span> <span class='op'>&lt;-</span> <span class='fu'><a href='rank_regression.html'>rank_regression</a></span><span class='op'>(</span>
   x <span class='op'>=</span> <span class='va'>tbl_john</span><span class='op'>$</span><span class='va'>x</span>,
   y <span class='op'>=</span> <span class='va'>tbl_john</span><span class='op'>$</span><span class='va'>prob</span>,
   status <span class='op'>=</span> <span class='va'>tbl_john</span><span class='op'>$</span><span class='va'>status</span>,
-  distribution <span class='op'>=</span> <span class='st'>"lognormal3"</span>,
-  conf_level <span class='op'>=</span> <span class='fl'>0.9</span>
+  distribution <span class='op'>=</span> <span class='st'>"lognormal3"</span>
 <span class='op'>)</span>
 
 <span class='va'>conf_betabin_ln</span> <span class='op'>&lt;-</span> <span class='fu'><a href='confint_betabinom.html'>confint_betabinom</a></span><span class='op'>(</span>
   x <span class='op'>=</span> <span class='va'>tbl_john</span><span class='op'>$</span><span class='va'>x</span>,
   status <span class='op'>=</span> <span class='va'>tbl_john</span><span class='op'>$</span><span class='va'>status</span>,
   dist_params <span class='op'>=</span> <span class='va'>rr_ln</span><span class='op'>$</span><span class='va'>coefficients</span>,
-  distribution <span class='op'>=</span> <span class='st'>"lognormal3"</span>,
-  bounds <span class='op'>=</span> <span class='st'>"two_sided"</span>,
-  conf_level <span class='op'>=</span> <span class='fl'>0.95</span>,
-  direction <span class='op'>=</span> <span class='st'>"y"</span>
+  distribution <span class='op'>=</span> <span class='st'>"lognormal3"</span>
 <span class='op'>)</span>
 
 <span class='va'>plot_lognormal</span> <span class='op'>&lt;-</span> <span class='fu'><a href='plot_prob.html'>plot_prob</a></span><span class='op'>(</span>
@@ -298,11 +284,7 @@ is recommended:</p><ul>
   y <span class='op'>=</span> <span class='va'>tbl_john</span><span class='op'>$</span><span class='va'>prob</span>,
   status <span class='op'>=</span> <span class='va'>tbl_john</span><span class='op'>$</span><span class='va'>status</span>,
   id <span class='op'>=</span> <span class='va'>tbl_john</span><span class='op'>$</span><span class='va'>id</span>,
-  distribution <span class='op'>=</span> <span class='st'>"lognormal"</span>,
-  title_main <span class='op'>=</span> <span class='st'>"Three-Parametric Lognormal"</span>,
-  title_x <span class='op'>=</span> <span class='st'>"Cycles"</span>,
-  title_y <span class='op'>=</span> <span class='st'>"Probability of Failure in %"</span>,
-  title_trace <span class='op'>=</span> <span class='st'>"Failed Items"</span>
+  distribution <span class='op'>=</span> <span class='st'>"lognormal"</span>
 <span class='op'>)</span>
 
 <span class='va'>plot_reg_lognormal</span> <span class='op'>&lt;-</span> <span class='fu'><a href='plot_mod.html'>plot_mod</a></span><span class='op'>(</span>
@@ -310,8 +292,7 @@ is recommended:</p><ul>
   x <span class='op'>=</span> <span class='va'>conf_betabin_ln</span><span class='op'>$</span><span class='va'>x</span>,
   y <span class='op'>=</span> <span class='va'>conf_betabin_ln</span><span class='op'>$</span><span class='va'>prob</span>,
   dist_params <span class='op'>=</span> <span class='va'>rr_ln</span><span class='op'>$</span><span class='va'>coefficients</span>,
-  distribution <span class='op'>=</span> <span class='st'>"lognormal3"</span>,
-  title_trace <span class='op'>=</span> <span class='st'>"Estimated Lognormal CDF"</span>
+  distribution <span class='op'>=</span> <span class='st'>"lognormal3"</span>
 <span class='op'>)</span>
 
 <span class='va'>plot_conf_beta_ln</span> <span class='op'>&lt;-</span> <span class='fu'><a href='plot_conf.html'>plot_conf</a></span><span class='op'>(</span>
@@ -319,10 +300,9 @@ is recommended:</p><ul>
   x <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='va'>conf_betabin_ln</span><span class='op'>$</span><span class='va'>x</span><span class='op'>)</span>,
   y <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='va'>conf_betabin_ln</span><span class='op'>$</span><span class='va'>lower_bound</span>, <span class='va'>conf_betabin_ln</span><span class='op'>$</span><span class='va'>upper_bound</span><span class='op'>)</span>,
   direction <span class='op'>=</span> <span class='st'>"y"</span>,
-  distribution <span class='op'>=</span> <span class='st'>"lognormal3"</span>,
-  title_trace <span class='op'>=</span> <span class='st'>"Confidence Region"</span>
+  distribution <span class='op'>=</span> <span class='st'>"lognormal3"</span>
 <span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='error'>Error in plot_conf.default(p_obj = plot_reg_lognormal, x = list(conf_betabin_ln$x),     y = list(conf_betabin_ln$lower_bound, conf_betabin_ln$upper_bound),     direction = "y", distribution = "lognormal3", title_trace = "Confidence Region"): Objekt 'plot_method' nicht gefunden</span></div><div class='input'>
+
 </div></span></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

@@ -205,22 +205,14 @@ two or three is also supported (<code><a href='https://rdrr.io/r/base/c.html'>c(
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='va'>x</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/Weibull.html'>rweibull</a></span><span class='op'>(</span>n <span class='op'>=</span> <span class='fl'>100</span>, shape <span class='op'>=</span> <span class='fl'>1</span>, scale <span class='op'>=</span> <span class='fl'>20000</span><span class='op'>)</span>
 
-<span class='va'>grid_weibull</span> <span class='op'>&lt;-</span> <span class='fu'><a href='plot_layout.html'>plot_layout</a></span><span class='op'>(</span>
-  x <span class='op'>=</span> <span class='va'>x</span>,
-  distribution <span class='op'>=</span> <span class='st'>"weibull"</span>,
-  title_main <span class='op'>=</span> <span class='st'>"Weibull Analysis"</span>,
-  title_x <span class='op'>=</span> <span class='st'>"Time to Failure"</span>,
-  title_y <span class='op'>=</span> <span class='st'>"Failure Probability"</span>
-<span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='error'>Error in plot_layout(x = x, distribution = "weibull", title_main = "Weibull Analysis",     title_x = "Time to Failure", title_y = "Failure Probability"): konnte Funktion "plot_layout" nicht finden</span></div><div class='input'><span class='co'># Example 1: Two-parametric straight line</span>
+<span class='co'># Example 1: Two-parametric straight line</span>
 <span class='va'>pop_weibull</span> <span class='op'>&lt;-</span> <span class='fu'>plot_pop</span><span class='op'>(</span>
-  p_obj <span class='op'>=</span> <span class='va'>grid_weibull</span>,
+  p_obj <span class='op'>=</span> <span class='cn'>NULL</span>,
   x <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/range.html'>range</a></span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span>,
   dist_params_tbl <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/Log.html'>log</a></span><span class='op'>(</span><span class='fl'>20000</span><span class='op'>)</span>, <span class='fl'>1</span><span class='op'>)</span>,
-  distribution <span class='op'>=</span> <span class='st'>"weibull"</span>,
-  title_trace <span class='op'>=</span> <span class='st'>"Population"</span>
+  distribution <span class='op'>=</span> <span class='st'>"weibull"</span>
 <span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='error'>Error in plot_pop(p_obj = grid_weibull, x = range(x), dist_params_tbl = c(log(20000),     1), distribution = "weibull", title_trace = "Population"): Objekt 'grid_weibull' nicht gefunden</span></div><div class='input'>
+
 <span class='co'># Example 2: Three-parametric curved line</span>
 <span class='va'>x2</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/Weibull.html'>rweibull</a></span><span class='op'>(</span>n <span class='op'>=</span> <span class='fl'>100</span>, shape <span class='op'>=</span> <span class='fl'>1</span>, scale <span class='op'>=</span> <span class='fl'>20000</span><span class='op'>)</span> <span class='op'>+</span> <span class='fl'>5000</span>
 
@@ -228,8 +220,7 @@ two or three is also supported (<code><a href='https://rdrr.io/r/base/c.html'>c(
   p_obj <span class='op'>=</span> <span class='cn'>NULL</span>,
   x <span class='op'>=</span> <span class='va'>x2</span>,
   dist_params_tbl <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/Log.html'>log</a></span><span class='op'>(</span><span class='fl'>20000</span> <span class='op'>-</span> <span class='fl'>5000</span><span class='op'>)</span>, <span class='fl'>1</span>, <span class='fl'>5000</span><span class='op'>)</span>,
-  distribution <span class='op'>=</span> <span class='st'>"weibull"</span>,
-  title_trace <span class='op'>=</span> <span class='st'>"Population"</span>
+  distribution <span class='op'>=</span> <span class='st'>"weibull"</span>
 <span class='op'>)</span>
 
 <span class='co'># Example 3: Multiple lines</span>
@@ -241,7 +232,6 @@ two or three is also supported (<code><a href='https://rdrr.io/r/base/c.html'>c(
     p_2 <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span>, <span class='fl'>1.5</span>, <span class='fl'>2</span><span class='op'>)</span>
     <span class='op'>)</span>,
   distribution <span class='op'>=</span> <span class='st'>"weibull"</span>,
-  title_trace <span class='op'>=</span> <span class='st'>"Population"</span>,
   plot_method <span class='op'>=</span> <span class='st'>"ggplot2"</span>
 <span class='op'>)</span>
 
@@ -253,7 +243,8 @@ two or three is also supported (<code><a href='https://rdrr.io/r/base/c.html'>c(
     param_1 <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/Log.html'>log</a></span><span class='op'>(</span><span class='fl'>20000</span><span class='op'>)</span>, <span class='fu'><a href='https://rdrr.io/r/base/Log.html'>log</a></span><span class='op'>(</span><span class='fl'>20000</span><span class='op'>)</span><span class='op'>)</span>,
     param_2 <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span>, <span class='fl'>1</span><span class='op'>)</span>,
     param_3 <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='cn'>NA</span>, <span class='fl'>2</span><span class='op'>)</span>
-  <span class='op'>)</span>
+  <span class='op'>)</span>,
+  distribution <span class='op'>=</span> <span class='st'>"weibull"</span>
 <span class='op'>)</span>
 
 </div></pre>

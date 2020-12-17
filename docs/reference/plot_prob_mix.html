@@ -251,9 +251,7 @@ could be splitted in two groups, the legend entries would be "Group 1" and "Grou
 <span class='co'># Example 1 - Using result of mixmod_em:</span>
 <span class='va'>mix_mod_em</span> <span class='op'>&lt;-</span> <span class='fu'><a href='mixmod_em.html'>mixmod_em</a></span><span class='op'>(</span>
   x <span class='op'>=</span> <span class='va'>hours</span>,
-  status <span class='op'>=</span> <span class='va'>status</span>,
-  distribution <span class='op'>=</span> <span class='st'>"weibull"</span>,
-  conf_level <span class='op'>=</span> <span class='fl'>0.95</span>
+  status <span class='op'>=</span> <span class='va'>status</span>
 <span class='op'>)</span>
 
 <span class='va'>plot_weibull_em</span> <span class='op'>&lt;-</span> <span class='fu'>plot_prob_mix</span><span class='op'>(</span>
@@ -261,16 +259,9 @@ could be splitted in two groups, the legend entries would be "Group 1" and "Grou
   status <span class='op'>=</span> <span class='va'>status</span>,
   id <span class='op'>=</span> <span class='va'>id</span>,
   distribution <span class='op'>=</span> <span class='st'>"weibull"</span>,
-  mix_output <span class='op'>=</span> <span class='va'>mix_mod_em</span>,
-  title_main <span class='op'>=</span> <span class='st'>"Weibull Mixture EM"</span>,
-  title_x <span class='op'>=</span> <span class='st'>"Time in Hours"</span>,
-  title_y <span class='op'>=</span> <span class='st'>"Probability of Failure"</span>,
-  title_trace <span class='op'>=</span> <span class='st'>"Subgroup"</span>
+  mix_output <span class='op'>=</span> <span class='va'>mix_mod_em</span>
 <span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='warning'>Warning: `plot_prob_mix()` is deprecated as of lifecycle 2.0.0.</span>
-#&gt; <span class='warning'>Please use `plot_prob()` instead.</span>
-#&gt; <span class='warning'><span style='color: #555555;'>This warning is displayed once every 8 hours.</span><span></span>
-#&gt; <span class='warning'></span><span style='color: #555555;'>Call `lifecycle::last_warnings()` to see where this warning was generated.</span><span></span></div><div class='input'>
+
 <span class='co'># Example 2 - Using result of mixmod_regression:</span>
 <span class='va'>john</span> <span class='op'>&lt;-</span> <span class='fu'><a href='estimate_cdf.html'>estimate_cdf</a></span><span class='op'>(</span>
   x <span class='op'>=</span> <span class='va'>hours</span>,
@@ -291,14 +282,10 @@ could be splitted in two groups, the legend entries would be "Group 1" and "Grou
   status <span class='op'>=</span> <span class='va'>status</span>,
   id <span class='op'>=</span> <span class='va'>id</span>,
   distribution <span class='op'>=</span> <span class='st'>"weibull"</span>,
-  mix_output <span class='op'>=</span> <span class='va'>mix_mod_reg</span>,
-  title_main <span class='op'>=</span> <span class='st'>"Weibull Mixture Regression"</span>,
-  title_x <span class='op'>=</span> <span class='st'>"Time in Hours"</span>,
-  title_y <span class='op'>=</span> <span class='st'>"Probability of Failure"</span>,
-  title_trace <span class='op'>=</span> <span class='st'>"Subgroup"</span>
+  mix_output <span class='op'>=</span> <span class='va'>mix_mod_reg</span>
 <span class='op'>)</span>
 
-</div></span></pre>
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

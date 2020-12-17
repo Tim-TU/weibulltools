@@ -817,7 +817,7 @@ confint_fisher.model_estimation <- function(
   direction <- match.arg(direction)
 
   confint_fisher_(
-    model_estimation = model_estimation,
+    model_estimation = x,
     b_lives = b_lives,
     bounds = bounds,
     conf_level = conf_level,

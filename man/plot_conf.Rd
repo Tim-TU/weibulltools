@@ -24,7 +24,11 @@ or \code{\link{confint_fisher}}.}
 
 \item{...}{Further arguments passed to or from other methods. Currently not used.}
 
-\item{mod}{A model object. See 'S3 methods' for valid classes.}
+\item{title_trace_mod}{A character string which is assigned to the mod trace
+in the legend.}
+
+\item{title_trace_conf}{A character string which is assignet to the conf trace
+in the legend.}
 }
 \value{
 Returns a plot object containing the probability plot with
@@ -33,21 +37,9 @@ Returns a plot object containing the probability plot with
 }
 \description{
 This function is used to add estimated confidence region(s) to an existing
-probability plot which also includes the estimated regression line.
+probability plot. This includes also the estimated regression line as it is
+not meaningful to plot the confidence regions without it.
 }
-\section{S3 methods}{
-\tabular{lll}{
-   \strong{Class} \tab \strong{Returned from} \tab \strong{Condition} \cr
-   \code{model_estimation} \tab \code{\link{rank_regression}} \tab One method in \code{\link{estimate_cdf}} \cr
-   \code{model_estimation} \tab \code{\link{mixmod_regression}} \tab One method in \code{\link{estimate_cdf}}. No subgroups determined. \cr
-   \code{model_estimation} \tab \code{\link{ml_estimation}} \tab - \cr
-   \code{model_estimation_list} \tab \code{\link{rank_regression}} \tab Multiple methods in \code{\link{estimate_cdf}} \cr
-   \code{mixmod_regression} \tab \code{\link{mixmod_regression}} \tab One method in \code{\link{estimate_cdf}} \cr
-   \code{mixmod_regression_list} \tab \code{\link{mixmod_regression}} \tab Multiple methods in \code{\link{estimate_cdf}} \cr
-   \code{mixmod_em} \tab \code{\link{mixmod_em}} \tab - \cr
-}
-}
-
 \examples{
 data <- reliability_data(data = alloy, x = cycles, status = status)
 
@@ -56,31 +48,19 @@ prob_tbl <- estimate_cdf(data, methods = "johnson")
 # Example 1 - Probability Plot, Regression Line and Confidence Bounds for Three-Parameter-Weibull:
 rr <- rank_regression(
   x = prob_tbl,
-  distribution = "weibull3",
-  conf_level = 0.9
+  distribution = "weibull3"
 )
 
-conf_betabin <- confint_betabinom(
-  x = rr,
-  bounds = "two_sided",
-  conf_level = 0.95,
-  direction = "y"
-)
+conf_betabin <- confint_betabinom(x = rr)
 
 plot_weibull <- plot_prob(
   x = prob_tbl,
-  distribution = "weibull",
-  title_main = "Three-Parametric Weibull",
-  title_x = "Cycles",
-  title_y = "Probability of Failure in \%",
-  title_trace = "Failed Items"
+  distribution = "weibull"
 )
 
 plot_conf_beta <- plot_conf(
   p_obj = plot_weibull,
-  x = conf_betabin,
-  title_trace_mod = "Estimated Weibull CDF",
-  title_trace_conf = "Confidence Region"
+  x = conf_betabin
 )
 
 # Example 2 - Probability Plot, Regression Line and Confidence Bounds for Three-Parameter-Lognormal:
@@ -99,18 +79,30 @@ conf_betabin_ln <- confint_betabinom(
 
 plot_lognormal <- plot_prob(
   x = prob_tbl,
-  distribution = "lognormal",
-  title_main = "Three-Parametric Lognormal",
-  title_x = "Cycles",
-  title_y = "Probability of Failure in \%",
-  title_trace = "Failed Items"
+  distribution = "lognormal"
 )
 
 plot_conf_beta_ln <- plot_conf(
   p_obj = plot_lognormal,
-  x = conf_betabin_ln,
-  title_trace_fit = "Estimated Lognormal CDF",
-  title_trace_conf = "Confidence Region"
+  x = conf_betabin_ln
+)
+
+# Example 3 - Probability Plot, Regression Line and Confidence Bounds for MLE
+ml <- ml_estimation(
+  x = data,
+  distribution = "weibull"
+)
+
+conf_fisher <- confint_fisher(ml)
+
+plot_weibull <- plot_prob(
+  x = prob_tbl,
+  distribution = "weibull"
+)
+
+plot_conf_fisher_weibull <- plot_conf(
+  p_obj = plot_weibull,
+  x = conf_fisher
 )
 
 }

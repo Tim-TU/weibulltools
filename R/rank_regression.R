@@ -200,7 +200,7 @@ rank_regression.cdf_estimation <- function(x,
 #' tbl_kaplan <- estimate_cdf(
 #'   x = cycles,
 #'   status = status_2,
-#'   methods = "kaplan"
+#'   method = "kaplan"
 #' )
 #'
 #' rr_2 <- rank_regression(

@@ -62,27 +62,21 @@ plot_weibull <- plot_prob(
   y = tbl_john$prob,
   status = tbl_john$status,
   id = tbl_john$id,
-  distribution = "weibull",
-  title_main = "Three-Parametric Weibull",
-  title_x = "Cycles",
-  title_y = "Probability of Failure in \%",
-  title_trace = "Failed Items"
+  distribution = "weibull"
 )
 
 rr <- rank_regression(
   x = tbl_john$x,
   y = tbl_john$prob,
   status = tbl_john$status,
-  distribution = "weibull3",
-  conf_level = 0.9
+  distribution = "weibull3"
 )
 
 plot_reg_weibull <- plot_mod(
   p_obj = plot_weibull,
   x = tbl_john$x,
   dist_params = rr$coefficients,
-  distribution = "weibull3",
-  title_trace = "Estimated Weibull CDF"
+  distribution = "weibull3"
 )
 
 
@@ -93,27 +87,21 @@ plot_lognormal <- plot_prob(
   y = tbl_john$prob,
   status = tbl_john$status,
   id = tbl_john$id,
-  distribution = "lognormal",
-  title_main = "Three-Parametric Lognormal",
-  title_x = "Cycles",
-  title_y = "Probability of Failure in \%",
-  title_trace = "Failed Items"
+  distribution = "lognormal"
 )
 
 rr_ln <- rank_regression(
   x = tbl_john$x,
   y = tbl_john$prob,
   status = tbl_john$status,
-  distribution = "lognormal3",
-  conf_level = 0.9
+  distribution = "lognormal3"
 )
 
 plot_reg_lognormal <- plot_mod(
   p_obj = plot_lognormal,
   x = tbl_john$x,
   dist_params = rr_ln$coefficients,
-  distribution = "lognormal3",
-  title_trace = "Estimated Lognormal CDF"
+  distribution = "lognormal3"
 )
 
 }

@@ -75,18 +75,14 @@ rr <- rank_regression(
   x = tbl_john$x,
   y = tbl_john$prob,
   status = tbl_john$status,
-  distribution = "weibull3",
-  conf_level = .90
+  distribution = "weibull3"
 )
 
 conf_betabin <- confint_betabinom(
   x = tbl_john$x,
   status = tbl_john$status,
   dist_params = rr$coefficients,
-  distribution = "weibull3",
-  bounds = "two_sided",
-  conf_level = 0.95,
-  direction = "y"
+  distribution = "weibull3"
 )
 
 plot_weibull <- plot_prob(
@@ -94,11 +90,7 @@ plot_weibull <- plot_prob(
   y = tbl_john$prob,
   status = tbl_john$status,
   id = tbl_john$id,
-  distribution = "weibull",
-  title_main = "Three-Parametric Weibull",
-  title_x = "Cycles",
-  title_y = "Probability of Failure in \%",
-  title_trace = "Failed Items"
+  distribution = "weibull"
 )
 
 plot_reg_weibull <- plot_mod(
@@ -106,8 +98,7 @@ plot_reg_weibull <- plot_mod(
   x = conf_betabin$x,
   y = conf_betabin$prob,
   dist_params = rr$coefficients,
-  distribution = "weibull3",
-  title_trace = "Estimated Weibull CDF"
+  distribution = "weibull3"
 )
 
 plot_conf_beta <- plot_conf(
@@ -115,8 +106,7 @@ plot_conf_beta <- plot_conf(
   x = list(conf_betabin$x),
   y = list(conf_betabin$lower_bound, conf_betabin$upper_bound),
   direction = "y",
-  distribution = "weibull3",
-  title_trace = "Confidence Region"
+  distribution = "weibull3"
 )
 
 # Example 2: Probability Plot, Regression Line and Confidence Bounds for Three-Parameter-Lognormal:
@@ -124,18 +114,14 @@ rr_ln <- rank_regression(
   x = tbl_john$x,
   y = tbl_john$prob,
   status = tbl_john$status,
-  distribution = "lognormal3",
-  conf_level = 0.9
+  distribution = "lognormal3"
 )
 
 conf_betabin_ln <- confint_betabinom(
   x = tbl_john$x,
   status = tbl_john$status,
   dist_params = rr_ln$coefficients,
-  distribution = "lognormal3",
-  bounds = "two_sided",
-  conf_level = 0.95,
-  direction = "y"
+  distribution = "lognormal3"
 )
 
 plot_lognormal <- plot_prob(
@@ -143,11 +129,7 @@ plot_lognormal <- plot_prob(
   y = tbl_john$prob,
   status = tbl_john$status,
   id = tbl_john$id,
-  distribution = "lognormal",
-  title_main = "Three-Parametric Lognormal",
-  title_x = "Cycles",
-  title_y = "Probability of Failure in \%",
-  title_trace = "Failed Items"
+  distribution = "lognormal"
 )
 
 plot_reg_lognormal <- plot_mod(
@@ -155,8 +137,7 @@ plot_reg_lognormal <- plot_mod(
   x = conf_betabin_ln$x,
   y = conf_betabin_ln$prob,
   dist_params = rr_ln$coefficients,
-  distribution = "lognormal3",
-  title_trace = "Estimated Lognormal CDF"
+  distribution = "lognormal3"
 )
 
 plot_conf_beta_ln <- plot_conf(
@@ -164,8 +145,7 @@ plot_conf_beta_ln <- plot_conf(
   x = list(conf_betabin_ln$x),
   y = list(conf_betabin_ln$lower_bound, conf_betabin_ln$upper_bound),
   direction = "y",
-  distribution = "lognormal3",
-  title_trace = "Confidence Region"
+  distribution = "lognormal3"
 )
 
 }
