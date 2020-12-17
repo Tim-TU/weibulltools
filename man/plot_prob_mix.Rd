@@ -115,7 +115,7 @@ john <- estimate_cdf(
   x = hours,
   status = status,
   id = id,
-  methods = "johnson"
+  method = "johnson"
 )
 
 mix_mod_reg <- mixmod_regression(

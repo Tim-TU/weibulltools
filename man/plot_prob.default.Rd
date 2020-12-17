@@ -90,7 +90,7 @@ status <- c(rep(0, 5), rep(1, 67))
 john <- estimate_cdf(
   x = cycles,
   status = status,
-  methods = "johnson"
+  method = "johnson"
 )
 
 # Example 1: Probability Plot Weibull:

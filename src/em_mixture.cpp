@@ -202,6 +202,7 @@ double logLikelihood(arma::mat& posterior, arma::mat& logDensity,
 //'                              method = "EM",
 //'                              n_iter = 150)
 //'
+//' @keywords internal
 // [[Rcpp::export]]
 List mixture_em_cpp(NumericVector& x,
                     NumericVector& status,

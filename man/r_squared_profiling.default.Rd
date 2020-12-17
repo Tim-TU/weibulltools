@@ -46,7 +46,7 @@ status <- alloy$status
 prob_tbl <- estimate_cdf(
   x = cycles,
   status = status,
-  methods = "johnson"
+  method = "johnson"
 )
 
 # Determining the optimal coefficient of determination:

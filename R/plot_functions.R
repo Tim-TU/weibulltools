@@ -34,6 +34,8 @@
 #'                             title_main = "Normal Grid",
 #'                             title_x = "Time to Event",
 #'                             title_y = "Failure Probability in %")
+#'
+#' @keywords internal
 plot_layout <- function(
   x,
   distribution = c(
@@ -443,7 +445,7 @@ plot_prob.mixmod_regression_list <- function(x,
 #' john <- estimate_cdf(
 #'   x = cycles,
 #'   status = status,
-#'   methods = "johnson"
+#'   method = "johnson"
 #' )
 #'
 #' # Example 1: Probability Plot Weibull:
@@ -617,7 +619,7 @@ plot_prob_ <- function(
 #'   x = hours,
 #'   status = status,
 #'   id = id,
-#'   methods = "johnson"
+#'   method = "johnson"
 #' )
 #'
 #' mix_mod_reg <- mixmod_regression(

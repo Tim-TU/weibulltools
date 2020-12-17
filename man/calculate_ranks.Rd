@@ -28,4 +28,6 @@ failure probabilities in case of (multiple) right censored data.
   n_out <- c(0, 2, 4, 8, 9, 11, 12, 16, 20, 22)
   n <- 23
   johnson_ranks <- calculate_ranks(f = defectives, n_out = n_out, n = n)
+
 }
+\keyword{internal}

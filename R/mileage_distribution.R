@@ -211,6 +211,8 @@ dist_mileage <- function(mileage,
 #'       (\code{"mileage_distribution"}) with output of \code{\link{dist_mileage}}.
 #'   }
 #'
+#' @seealso \code{\link{estimate_cdf}}
+#'
 #' @examples
 #' # Data for examples:
 #' date_of_registration <- c("2014-08-17", "2014-03-29", "2014-12-06",
@@ -276,7 +278,7 @@ dist_mileage <- function(mileage,
 #' ## Using result of *$data in estimate_cdf() -> not working at the moment!
 #' prob_estimation <- estimate_cdf(
 #'   x = mcs_distances_3$data,
-#'  methods = "kaplan"
+#'   methods = "kaplan"
 #' )
 #'
 #' plot_prob_estimation <- plot_prob(prob_estimation)

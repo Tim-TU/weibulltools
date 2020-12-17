@@ -174,7 +174,7 @@ returned from <code><a href='rank_regression.html'>rank_regression</a></code>.</
     <tr>
       <th>b_lives</th>
       <td><p>A numeric vector indicating the probabilities <em>p</em> of the
-<em>B_p</em> lives (quantiles) to be considered.</p></td>
+\(B_p\)-lives (quantiles) to be considered.</p></td>
     </tr>
     <tr>
       <th>bounds</th>
@@ -300,7 +300,6 @@ on another level, the specified confidence level.</p>
 
 <span class='co'># Example 3 - Two-sided 90% confidence intervals for both directions using</span>
 <span class='co'># a three-parametric model:</span>
-
 <span class='va'>conf_betabin_3_1</span> <span class='op'>&lt;-</span> <span class='fu'>confint_betabinom</span><span class='op'>(</span>
   x <span class='op'>=</span> <span class='va'>rr_3p</span>,
   bounds <span class='op'>=</span> <span class='st'>"two_sided"</span>,

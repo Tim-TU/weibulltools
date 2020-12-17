@@ -99,7 +99,7 @@ status_2 <- alloy$status
 tbl_john <- estimate_cdf(
   x = obs,
   status = status_1,
-  methods = "johnson"
+  method = "johnson"
 )
 
 rr <- rank_regression(

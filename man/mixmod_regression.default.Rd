@@ -101,13 +101,13 @@ status_2 <- shock$status
 prob_mix <- estimate_cdf(
   x = hours,
   status = status,
-  methods = "johnson"
+  method = "johnson"
 )
 
 prob <- estimate_cdf(
   x = distance,
   status = status_2,
-  methods = "johnson"
+  method = "johnson"
 )
 
 # Example 1 - Mixture identification using weibull models:

@@ -11,7 +11,6 @@ plot_conf(p_obj, x, ...)
 \method{plot_conf}{confint}(
   p_obj,
   x,
-  mod,
   title_trace_mod = "Fit",
   title_trace_conf = "Confidence Limit",
   ...
@@ -80,7 +79,6 @@ plot_weibull <- plot_prob(
 plot_conf_beta <- plot_conf(
   p_obj = plot_weibull,
   x = conf_betabin,
-  mod = rr,
   title_trace_mod = "Estimated Weibull CDF",
   title_trace_conf = "Confidence Region"
 )
@@ -111,7 +109,6 @@ plot_lognormal <- plot_prob(
 plot_conf_beta_ln <- plot_conf(
   p_obj = plot_lognormal,
   x = conf_betabin_ln,
-  mod = rr_ln,
   title_trace_fit = "Estimated Lognormal CDF",
   title_trace_conf = "Confidence Region"
 )

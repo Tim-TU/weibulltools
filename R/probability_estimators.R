@@ -165,7 +165,7 @@ estimate_cdf.reliability_data <- function(x,
 
 #' Estimation of Failure Probabilities
 #'
-#' @inherit estimate_cdf description details return
+#' @inherit estimate_cdf description details return references
 #'
 #' @inheritParams estimate_cdf
 #' @param x A numeric vector which consists of lifetime data. Lifetime

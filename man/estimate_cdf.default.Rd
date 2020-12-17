@@ -123,6 +123,12 @@ prob_tbl_2 <- estimate_cdf(
 )
 
 }
+\references{
+\emph{NIST/SEMATECH e-Handbook of Statistical Methods},
+\emph{8.2.1.5. Empirical model fitting - distribution free (Kaplan-Meier) approach},
+\href{https://www.itl.nist.gov/div898/handbook/apr/section2/apr215.htm}{NIST SEMATECH},
+December 3, 2020
+}
 \seealso{
 \code{\link{estimate_cdf}}
 }

@@ -55,4 +55,6 @@ grid_normal <- plot_layout(x = x_layout,
                             title_main = "Normal Grid",
                             title_x = "Time to Event",
                             title_y = "Failure Probability in \%")
+
 }
+\keyword{internal}

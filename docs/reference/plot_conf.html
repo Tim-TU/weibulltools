@@ -141,7 +141,6 @@ probability plot which also includes the estimated regression line.</p>
 <span class='fu'>plot_conf</span><span class='op'>(</span>
   <span class='va'>p_obj</span>,
   <span class='va'>x</span>,
-  <span class='va'>mod</span>,
   title_trace_mod <span class='op'>=</span> <span class='st'>"Fit"</span>,
   title_trace_conf <span class='op'>=</span> <span class='st'>"Confidence Limit"</span>,
   <span class='va'>...</span>
@@ -225,7 +224,6 @@ or <code><a href='confint_fisher.html'>confint_fisher</a></code>.</p></td>
 <span class='va'>plot_conf_beta</span> <span class='op'>&lt;-</span> <span class='fu'>plot_conf</span><span class='op'>(</span>
   p_obj <span class='op'>=</span> <span class='va'>plot_weibull</span>,
   x <span class='op'>=</span> <span class='va'>conf_betabin</span>,
-  mod <span class='op'>=</span> <span class='va'>rr</span>,
   title_trace_mod <span class='op'>=</span> <span class='st'>"Estimated Weibull CDF"</span>,
   title_trace_conf <span class='op'>=</span> <span class='st'>"Confidence Region"</span>
 <span class='op'>)</span>
@@ -256,7 +254,6 @@ or <code><a href='confint_fisher.html'>confint_fisher</a></code>.</p></td>
 <span class='va'>plot_conf_beta_ln</span> <span class='op'>&lt;-</span> <span class='fu'>plot_conf</span><span class='op'>(</span>
   p_obj <span class='op'>=</span> <span class='va'>plot_lognormal</span>,
   x <span class='op'>=</span> <span class='va'>conf_betabin_ln</span>,
-  mod <span class='op'>=</span> <span class='va'>rr_ln</span>,
   title_trace_fit <span class='op'>=</span> <span class='st'>"Estimated Lognormal CDF"</span>,
   title_trace_conf <span class='op'>=</span> <span class='st'>"Confidence Region"</span>
 <span class='op'>)</span>
