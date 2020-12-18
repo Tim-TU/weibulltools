@@ -20,6 +20,7 @@ plot_prob(
   title_x = "Characteristic",
   title_y = "Unreliability",
   title_trace = "Sample",
+  distribution = c("weibull", "lognormal", "loglogistic", "normal", "logistic", "sev"),
   plot_method = c("plotly", "ggplot2"),
   ...
 )

@@ -305,7 +305,7 @@ mixmod_regression_ <- function(cdf_estimation,
 ) {
 
   # Preparation for segmented regression:
-  cdf_failed <- dplyr::filter(cdf_estimation, status == 1)
+  cdf_failed <- dplyr::filter(cdf_estimation, .data$status == 1)
 
   if (distribution == "weibull") {
     cdf_failed$q <- SPREDA::qsev(cdf_failed$prob)
@@ -358,7 +358,8 @@ mixmod_regression_ <- function(cdf_estimation,
     cdf_failed$group <- group_seg + 1
 
     # already determined segment 1 with group 1:
-    cdf_failed_1 <- cdf_failed %>% dplyr::filter(group == min(group, na.rm = TRUE))
+    cdf_failed_1 <- cdf_failed %>%
+      dplyr::filter(group == min(.data$group, na.rm = TRUE))
 
     mrr_1 <- rank_regression(
       cdf_failed_1,
@@ -367,7 +368,8 @@ mixmod_regression_ <- function(cdf_estimation,
     )
 
     # Rest with group 2 that can potentially be segmented:
-    cdf_failed_rest <- cdf_failed %>% dplyr::filter(group == max(group, na.rm = TRUE))
+    cdf_failed_rest <- cdf_failed %>%
+      dplyr::filter(group == max(.data$group, na.rm = TRUE))
 
     # Initial regression for the part that can potentially be segmented:
     mrr_23 <- rank_regression(
@@ -411,7 +413,10 @@ mixmod_regression_ <- function(cdf_estimation,
       cdf_failed_rest$group <- group_seg2 + 2 # 2 and 3, three segments case!
 
       # Determine second segment:
-      cdf_failed_2 <- dplyr::filter(cdf_failed_rest, group == min(group, na.rm = TRUE))
+      cdf_failed_2 <- dplyr::filter(
+        cdf_failed_rest,
+        group == min(.data$group, na.rm = TRUE)
+      )
 
       mrr_2 <- rank_regression(
         cdf_failed_2,
@@ -420,7 +425,10 @@ mixmod_regression_ <- function(cdf_estimation,
       )
 
       # Determine third segment:
-      cdf_failed_3 <- dplyr::filter(cdf_failed_rest, group == max(group, na.rm = TRUE))
+      cdf_failed_3 <- dplyr::filter(
+        cdf_failed_rest,
+        group == max(.data$group, na.rm = TRUE)
+      )
 
       mrr_3 <- rank_regression(
         cdf_failed_3,

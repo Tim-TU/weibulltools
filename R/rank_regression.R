@@ -239,7 +239,7 @@ rank_regression_ <- function(cdf_estimation,
 ) {
 
   # In terms of MRR only failed items can be used:
-  cdf_failed <- cdf_estimation %>% dplyr::filter(status == 1)
+  cdf_failed <- cdf_estimation %>% dplyr::filter(.data$status == 1)
 
   x_f <- cdf_failed$x
   y_f <- cdf_failed$prob

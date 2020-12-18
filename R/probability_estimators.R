@@ -266,8 +266,8 @@ print.cdf_estimation <- function(x, ...) {
 #' failure probabilities in terms of complete data. Two methods are available to
 #' estimate the cumulative distribution function \emph{F(t)}:
 #' \itemize{
-#'   \item "benard" : Benard's approximation for Median Ranks
-#'   \item "invbeta" : Exact Median Ranks using the inverse beta distribution
+#'   \item "benard" : Benard's approximation for Median Ranks.
+#'   \item "invbeta" : Exact Median Ranks using the inverse beta distribution.
 #' }
 #'
 #' @inheritParams estimate_cdf.default
@@ -353,19 +353,27 @@ mr_method_ <- function(data,
     tibble::as_tibble()
 
   tbl_calc <- tbl_in %>%
-    dplyr::filter(status == 1) %>%
-    dplyr::arrange(x) %>%
-    dplyr::mutate(rank = rank(x, ties.method = ties.method))
+    dplyr::filter(.data$status == 1) %>%
+    dplyr::arrange(.data$x) %>%
+    dplyr::mutate(rank = rank(.data$x, ties.method = ties.method))
 
   if (method == "benard") {
-    tbl_calc <- dplyr::mutate(tbl_calc, prob = (rank - .3) / (length(x) + .4))
+    tbl_calc <- dplyr::mutate(
+      tbl_calc,
+      prob = (.data$rank - .3) / (length(.data$x) + .4)
+    )
   } else {
-    tbl_calc <- dplyr::mutate(tbl_calc, prob = stats::qbeta(.5, rank, length(x) - rank + 1))
+    tbl_calc <- dplyr::mutate(
+      tbl_calc,
+      prob = stats::qbeta(.5, .data$rank, length(.data$x) - .data$rank + 1)
+    )
   }
 
   tbl_out <- tbl_calc %>%
     dplyr::mutate(method = "mr") %>%
-    dplyr::select(id, x, status, rank, prob, method)
+    dplyr::select(
+      .data$id, .data$x, .data$status, .data$rank, .data$prob, .data$method
+    )
 
   class(tbl_out) <- c("cdf_estimation", class(tbl_out))
 
@@ -419,7 +427,7 @@ mr_method_ <- function(data,
 #'   id = uic
 #' )
 #'
-#' # Example 2 - Johnson's method works for defectives only:
+#' # Example 2 - Johnson's method works also if only defective units are considered:
 #' tbl_john_2 <- johnson_method(
 #'   x = obs,
 #'   status = rep(1, length(obs))
@@ -455,40 +463,45 @@ johnson_method_ <- function(data) {
     tibble::as_tibble()
 
   tbl_calc <- tbl_in %>%
-    dplyr::group_by(x) %>%
-    dplyr::mutate(failure = sum(status == 1), survivor = sum(status == 0)) %>%
-    dplyr::distinct(x, .keep_all = TRUE) %>%
-    dplyr::arrange(x) %>%
+    dplyr::group_by(.data$x) %>%
+    dplyr::mutate(
+      failure = sum(.data$status == 1),
+      survivor = sum(.data$status == 0)
+    ) %>%
+    dplyr::distinct(.data$x, .keep_all = TRUE) %>%
+    dplyr::arrange(.data$x) %>%
     dplyr::ungroup() %>%
     dplyr::mutate(
-      n_i = failure + survivor,
-      n_out = dplyr::lag(cumsum(n_i), n = 1L, default = 0)
+      n_i = .data$failure + .data$survivor,
+      n_out = dplyr::lag(cumsum(.data$n_i), n = 1L, default = 0)
     ) %>%
     dplyr::mutate(
       rank = calculate_ranks(
-        f = failure,
-        n_out = n_out,
-        n = sum(n_i)
+        f = .data$failure,
+        n_out = .data$n_out,
+        n = sum(.data$n_i)
       )
     ) %>%
-    dplyr::mutate(prob = (rank - .3) / (sum(n_i) + .4))
+    dplyr::mutate(prob = (.data$rank - .3) / (sum(.data$n_i) + .4))
 
   tbl_out <- tbl_in %>%
-    dplyr::arrange(x) %>%
+    dplyr::arrange(.data$x) %>%
     dplyr::mutate(
       rank = ifelse(
-        status == 1,
-        tbl_calc$rank[match(x[order(x)], tbl_calc$x)],
+        .data$status == 1,
+        tbl_calc$rank[match(.data$x[order(.data$x)], tbl_calc$x)],
         NA_real_
       ),
       prob = ifelse(
-        status == 1,
-        tbl_calc$prob[match(x[order(x)], tbl_calc$x)],
+        .data$status == 1,
+        tbl_calc$prob[match(.data$x[order(.data$x)], tbl_calc$x)],
         NA_real_
       )
     ) %>%
     dplyr::mutate(method = "johnson") %>%
-    dplyr::select(id, x, status, rank, prob, method)
+    dplyr::select(
+      .data$id, .data$x, .data$status, .data$rank, .data$prob, .data$method
+    )
 
   class(tbl_out) <- c("cdf_estimation", class(tbl_out))
 
@@ -497,7 +510,7 @@ johnson_method_ <- function(data) {
 
 
 
-#' Estimation of Failure Probabilities using Kaplan-Meier
+#' Estimation of Failure Probabilities using the Kaplan-Meier Estimator
 #'
 #' @description
 #' \lifecycle{soft-deprecated}
@@ -590,45 +603,50 @@ kaplan_method_ <- function(data) {
     tibble::as_tibble()
 
   tbl_calc <- tbl_in %>%
-    dplyr::group_by(x) %>%
+    dplyr::group_by(.data$x) %>%
     dplyr::mutate(
-      failure = sum(status == 1),
-      survivor = sum(status == 0)
+      failure = sum(.data$status == 1),
+      survivor = sum(.data$status == 0)
     ) %>%
-    dplyr::distinct(x, .keep_all = TRUE) %>%
-    dplyr::arrange(x) %>%
+    dplyr::distinct(.data$x, .keep_all = TRUE) %>%
+    dplyr::arrange(.data$x) %>%
     dplyr::ungroup() %>%
     dplyr::mutate(
-      n_i = failure + survivor,
-      n_out = dplyr::lag(cumsum(n_i), n = 1L, default = 0),
-      n_in = sum(n_i) - n_out
+      n_i = .data$failure + .data$survivor,
+      n_out = dplyr::lag(cumsum(.data$n_i), n = 1L, default = 0),
+      n_in = sum(.data$n_i) - .data$n_out
     )
 
   if (tbl_in$status[which.max(tbl_in$x)] == 0) {
     tbl_calc <- tbl_calc %>%
       dplyr::mutate(
-        prob = 1 - cumprod((n_in - failure) / n_in)
+        prob = 1 - cumprod((.data$n_in - .data$failure) / .data$n_in)
       )
   } else {
     tbl_calc <- tbl_calc %>%
       dplyr::mutate(
-        prob = 1 - (((n_in + .7) / (n_in + .4)) *
-                      cumprod(((n_in + .7) - failure) / (n_in + 1.7)))
+        prob = 1 - (((.data$n_in + .7) / (.data$n_in + .4)) *
+                      cumprod(
+                        ((.data$n_in + .7) - .data$failure) / (.data$n_in + 1.7)
+                      )
+                    )
       )
   }
 
   tbl_out <- tbl_in %>%
-    dplyr::arrange(x) %>%
+    dplyr::arrange(.data$x) %>%
     dplyr::mutate(
       rank = NA_real_,
       prob = ifelse(
-        status == 1,
-        tbl_calc$prob[match(x[order(x)], tbl_calc$x)],
+        .data$status == 1,
+        tbl_calc$prob[match(.data$x[order(.data$x)], tbl_calc$x)],
         NA_real_
       ),
       method = "kaplan"
     ) %>%
-    dplyr::select(id, x, status, rank, prob, method)
+    dplyr::select(
+      .data$id, .data$x, .data$status, .data$rank, .data$prob, .data$method
+    )
 
   class(tbl_out) <- c("cdf_estimation", class(tbl_out))
 
@@ -716,34 +734,36 @@ nelson_method_ <- function(data) {
     tibble::as_tibble()
 
   tbl_calc <- tbl_in %>%
-    dplyr::group_by(x) %>%
+    dplyr::group_by(.data$x) %>%
     dplyr::mutate(
-      failure = sum(status == 1),
-      survivor = sum(status == 0)
+      failure = sum(.data$status == 1),
+      survivor = sum(.data$status == 0)
     ) %>%
-  dplyr::distinct(x, .keep_all = TRUE) %>%
-  dplyr::arrange(x) %>%
-  dplyr::ungroup(x) %>%
+  dplyr::distinct(.data$x, .keep_all = TRUE) %>%
+  dplyr::arrange(.data$x) %>%
+  dplyr::ungroup() %>%
   dplyr::mutate(
-    n_out = failure + survivor,
-    n_in = nrow(data) - dplyr::lag(cumsum(n_out), n = 1L, default = 0),
-    lam_nel = ifelse(status == 1, failure / n_in, 0),
-    H_nel = cumsum(lam_nel),
-    prob = 1 - exp(-H_nel)
+    n_out = .data$failure + .data$survivor,
+    n_in = nrow(data) - dplyr::lag(cumsum(.data$n_out), n = 1L, default = 0),
+    lam_nel = ifelse(.data$status == 1, .data$failure / .data$n_in, 0),
+    H_nel = cumsum(.data$lam_nel),
+    prob = 1 - exp(-.data$H_nel)
   )
 
   tbl_out <- tbl_in %>%
-    dplyr::arrange(x) %>%
+    dplyr::arrange(.data$x) %>%
     dplyr::mutate(
       rank = NA_real_,
       prob = ifelse(
-        status == 1,
-        tbl_calc$prob[match(x[order(x)], tbl_calc$x)],
+        .data$status == 1,
+        tbl_calc$prob[match(.data$x[order(.data$x)], tbl_calc$x)],
         NA_real_
       ),
       method = "nelson"
     ) %>%
-    dplyr::select(id, x, status, rank, prob, method)
+    dplyr::select(
+      .data$id, .data$x, .data$status, .data$rank, .data$prob, .data$method
+    )
 
   class(tbl_out) <- c("cdf_estimation", class(tbl_out))
 
