@@ -26,7 +26,7 @@ test_that("ml_estimation remains stable", {
   )
 
   expect_snapshot_output(mle$coefficients)
-  expect_snapshot_output(mle$loc_sc_varcov)
+  expect_snapshot_output(mle$varcov)
   expect_snapshot_output(mle)
 
   # Example 2: Fitting a three-parameter Weibull:
@@ -42,6 +42,6 @@ test_that("ml_estimation remains stable", {
   )
 
   expect_snapshot_output(mle_weib3$coefficients)
-  expect_snapshot_output(mle_weib3$loc_sc_varcov)
+  expect_snapshot_output(mle_weib3$varcov)
   expect_snapshot_output(mle_weib3)
 })

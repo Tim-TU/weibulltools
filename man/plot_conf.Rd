@@ -4,7 +4,7 @@
 \name{plot_conf}
 \alias{plot_conf}
 \alias{plot_conf.confint}
-\title{Add Confidence Region(s) for Quantiles or Probabilities}
+\title{Add Confidence Region(s) for Quantiles and Probabilities}
 \usage{
 plot_conf(p_obj, x, ...)
 
@@ -27,7 +27,7 @@ or \code{\link{confint_fisher}}.}
 \item{title_trace_mod}{A character string which is assigned to the mod trace
 in the legend.}
 
-\item{title_trace_conf}{A character string which is assignet to the conf trace
+\item{title_trace_conf}{A character string which is assigned to the conf trace
 in the legend.}
 }
 \value{
@@ -37,12 +37,14 @@ Returns a plot object containing the probability plot with
 }
 \description{
 This function is used to add estimated confidence region(s) to an existing
-probability plot. This includes also the estimated regression line as it is
-not meaningful to plot the confidence regions without it.
+probability plot. Since confidence regions are related to the estimated
+regression line, the latter is provided as well.
 }
 \examples{
+# Reliability data:
 data <- reliability_data(data = alloy, x = cycles, status = status)
 
+# Probability estimation:
 prob_tbl <- estimate_cdf(data, methods = "johnson")
 
 # Example 1 - Probability Plot, Regression Line and Confidence Bounds for Three-Parameter-Weibull:

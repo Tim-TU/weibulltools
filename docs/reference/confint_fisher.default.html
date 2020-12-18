@@ -140,7 +140,7 @@ and failure probabilities.</p>
   <span class='va'>x</span>,
   <span class='va'>status</span>,
   <span class='va'>dist_params</span>,
-  <span class='va'>loc_sc_varcov</span>,
+  <span class='va'>dist_varcov</span>,
   distribution <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"weibull"</span>, <span class='st'>"lognormal"</span>, <span class='st'>"loglogistic"</span>, <span class='st'>"normal"</span>, <span class='st'>"logistic"</span>, <span class='st'>"sev"</span>,
     <span class='st'>"weibull3"</span>, <span class='st'>"lognormal3"</span>, <span class='st'>"loglogistic3"</span><span class='op'>)</span>,
   b_lives <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.01</span>, <span class='fl'>0.1</span>, <span class='fl'>0.5</span><span class='op'>)</span>,
@@ -171,7 +171,7 @@ is a right censored observation (= 0) or a failure (= 1).</p></td>
 returned from <code><a href='ml_estimation.html'>ml_estimation</a></code>.</p></td>
     </tr>
     <tr>
-      <th>loc_sc_varcov</th>
+      <th>dist_varcov</th>
       <td><p>A (named) numeric matrix of estimated variances and
 covariances returned from <code><a href='ml_estimation.html'>ml_estimation</a></code>.</p></td>
     </tr>
@@ -276,36 +276,36 @@ these have to be estimated with <a href='ml_estimation.html'>maximum likelihood<
   x <span class='op'>=</span> <span class='va'>obs</span>,
   status <span class='op'>=</span> <span class='va'>status_1</span>,
   dist_params <span class='op'>=</span> <span class='va'>ml</span><span class='op'>$</span><span class='va'>coefficients</span>,
-  loc_sc_varcov <span class='op'>=</span> <span class='va'>ml</span><span class='op'>$</span><span class='va'>loc_sc_varcov</span>,
+  dist_varcov <span class='op'>=</span> <span class='va'>ml</span><span class='op'>$</span><span class='va'>varcov</span>,
   distribution <span class='op'>=</span> <span class='st'>"weibull"</span>,
   bounds <span class='op'>=</span> <span class='st'>"two_sided"</span>,
   conf_level <span class='op'>=</span> <span class='fl'>0.95</span>,
   direction <span class='op'>=</span> <span class='st'>"y"</span>
 <span class='op'>)</span>
-
+</div><div class='output co'>#&gt; <span class='error'>Error in t(dz_dpar) %*% dist_varcov: verlangt numerische/komplexe Matrix/Vektor-Argumente</span></div><div class='input'>
 <span class='co'># Example 2 - One-sided lower/upper 90% confidence interval for quantiles ('x'):</span>
 <span class='va'>conf_fisher_2_1</span> <span class='op'>&lt;-</span> <span class='fu'><a href='confint_fisher.html'>confint_fisher</a></span><span class='op'>(</span>
   x <span class='op'>=</span> <span class='va'>obs</span>,
   status <span class='op'>=</span> <span class='va'>status_1</span>,
   dist_params <span class='op'>=</span> <span class='va'>ml</span><span class='op'>$</span><span class='va'>coefficients</span>,
-  loc_sc_varcov <span class='op'>=</span> <span class='va'>ml</span><span class='op'>$</span><span class='va'>loc_sc_varcov</span>,
+  dist_varcov <span class='op'>=</span> <span class='va'>ml</span><span class='op'>$</span><span class='va'>varcov</span>,
   distribution <span class='op'>=</span> <span class='st'>"weibull"</span>,
   bounds <span class='op'>=</span> <span class='st'>"lower"</span>,
   conf_level <span class='op'>=</span> <span class='fl'>0.90</span>,
   direction <span class='op'>=</span> <span class='st'>"x"</span>
 <span class='op'>)</span>
-
+</div><div class='output co'>#&gt; <span class='error'>Error in t(dq_dpar) %*% dist_varcov: verlangt numerische/komplexe Matrix/Vektor-Argumente</span></div><div class='input'>
 <span class='va'>conf_fisher_2_2</span> <span class='op'>&lt;-</span> <span class='fu'><a href='confint_fisher.html'>confint_fisher</a></span><span class='op'>(</span>
   x <span class='op'>=</span> <span class='va'>obs</span>,
   status <span class='op'>=</span> <span class='va'>status_1</span>,
   dist_params <span class='op'>=</span> <span class='va'>ml</span><span class='op'>$</span><span class='va'>coefficients</span>,
-  loc_sc_varcov <span class='op'>=</span> <span class='va'>ml</span><span class='op'>$</span><span class='va'>loc_sc_varcov</span>,
+  dist_varcov <span class='op'>=</span> <span class='va'>ml</span><span class='op'>$</span><span class='va'>varcov</span>,
   distribution <span class='op'>=</span> <span class='st'>"weibull"</span>,
   bounds <span class='op'>=</span> <span class='st'>"upper"</span>,
   conf_level <span class='op'>=</span> <span class='fl'>0.90</span>,
   direction <span class='op'>=</span> <span class='st'>"x"</span>
 <span class='op'>)</span>
-
+</div><div class='output co'>#&gt; <span class='error'>Error in t(dq_dpar) %*% dist_varcov: verlangt numerische/komplexe Matrix/Vektor-Argumente</span></div><div class='input'>
 <span class='co'># Example 3 - Two-sided 90% confidence intervals for both directions using</span>
 <span class='co'># a three-parametric model:</span>
 
@@ -313,24 +313,24 @@ these have to be estimated with <a href='ml_estimation.html'>maximum likelihood<
   x <span class='op'>=</span> <span class='va'>cycles</span>,
   status <span class='op'>=</span> <span class='va'>status_2</span>,
   dist_params <span class='op'>=</span> <span class='va'>ml_2</span><span class='op'>$</span><span class='va'>coefficients</span>,
-  loc_sc_varcov <span class='op'>=</span> <span class='va'>ml_2</span><span class='op'>$</span><span class='va'>loc_sc_varcov</span>,
+  dist_varcov <span class='op'>=</span> <span class='va'>ml_2</span><span class='op'>$</span><span class='va'>varcov</span>,
   distribution <span class='op'>=</span> <span class='st'>"lognormal3"</span>,
   bounds <span class='op'>=</span> <span class='st'>"two_sided"</span>,
   conf_level <span class='op'>=</span> <span class='fl'>0.90</span>,
   direction <span class='op'>=</span> <span class='st'>"y"</span>
 <span class='op'>)</span>
-
+</div><div class='output co'>#&gt; <span class='error'>Error in t(dz_dpar) %*% dist_varcov: verlangt numerische/komplexe Matrix/Vektor-Argumente</span></div><div class='input'>
 <span class='va'>conf_fisher_3_2</span> <span class='op'>&lt;-</span> <span class='fu'><a href='confint_fisher.html'>confint_fisher</a></span><span class='op'>(</span>
   x <span class='op'>=</span> <span class='va'>cycles</span>,
   status <span class='op'>=</span> <span class='va'>status_2</span>,
   dist_params <span class='op'>=</span> <span class='va'>ml_2</span><span class='op'>$</span><span class='va'>coefficients</span>,
-  loc_sc_varcov <span class='op'>=</span> <span class='va'>ml_2</span><span class='op'>$</span><span class='va'>loc_sc_varcov</span>,
+  dist_varcov <span class='op'>=</span> <span class='va'>ml_2</span><span class='op'>$</span><span class='va'>varcov</span>,
   distribution <span class='op'>=</span> <span class='st'>"lognormal3"</span>,
   bounds <span class='op'>=</span> <span class='st'>"two_sided"</span>,
   conf_level <span class='op'>=</span> <span class='fl'>0.90</span>,
   direction <span class='op'>=</span> <span class='st'>"x"</span>
 <span class='op'>)</span>
-
+</div><div class='output co'>#&gt; <span class='error'>Error in t(dq_dpar) %*% dist_varcov: verlangt numerische/komplexe Matrix/Vektor-Argumente</span></div><div class='input'>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

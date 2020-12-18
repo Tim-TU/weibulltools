@@ -189,7 +189,8 @@ is a right censored observation (= 0) or a failure (= 1).</p></td>
 <li><p><code>status</code> : Binary data (0 or 1) indicating whether a unit is a
     right censored observation (= 0) or a failure (= 1).</p></li>
 <li><p><code>rank</code> : The (computed) ranks. Determined for methods <code>"mr"</code>
-    and <code>"johnson"</code>, filled with <code>NA</code> for other methods.</p></li>
+    and <code>"johnson"</code>, filled with <code>NA</code> for other methods or if
+    <code>status = 0</code>.</p></li>
 <li><p><code>prob</code> : Estimated failure probabilities, <code>NA</code> if <code>status = 0</code>.</p></li>
 <li><p><code>method</code> : Specified method for the estimation of failure probabilities.</p></li>
 </ul>

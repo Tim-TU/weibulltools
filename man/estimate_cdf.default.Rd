@@ -39,7 +39,8 @@ A tibble containing the following columns:
   \item \code{status} : Binary data (0 or 1) indicating whether a unit is a
     right censored observation (= 0) or a failure (= 1).
   \item \code{rank} : The (computed) ranks. Determined for methods \code{"mr"}
-    and \code{"johnson"}, filled with \code{NA} for other methods.
+    and \code{"johnson"}, filled with \code{NA} for other methods or if
+    \code{status = 0}.
   \item \code{prob} : Estimated failure probabilities, \code{NA} if \code{status = 0}.
   \item \code{method} : Specified method for the estimation of failure probabilities.
 }

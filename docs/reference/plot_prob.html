@@ -181,7 +181,7 @@ y axis.</p></td>
     </tr>
     <tr>
       <th>title_trace</th>
-      <td><p>A character string whis is assigned to the trace shown in
+      <td><p>A character string which is assigned to the trace shown in
 the legend.</p></td>
     </tr>
     <tr>
@@ -195,7 +195,7 @@ the legend.</p></td>
     <p>Returns a plot object containing the probability plot.</p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>If data was splitted by <code><a href='mixmod_em.html'>mixmod_em</a></code> <code><a href='estimate_cdf.html'>estimate_cdf</a></code> with
+    <p>If data was split by <code><a href='mixmod_em.html'>mixmod_em</a></code> <code><a href='estimate_cdf.html'>estimate_cdf</a></code> with
 method <code>"johnson"</code> is applied to subgroup-specific data. The
 calculated plotting positions are shaped according to the determined split in
 <code><a href='mixmod_em.html'>mixmod_em</a></code>.</p>
@@ -208,7 +208,7 @@ argument <code>title_x</code> and <code>title_y</code> respectively, i.e. if
 <code>title_x = "Mileage in km"</code> the x label of the marker is "Mileage".</p>
 <p>The name of the legend entry is a combination of the <code>title_trace</code> and
 the number of determined subgroups (if any). If <code>title_trace = "Group"</code>
-and the data is split in two groups, the legend entries are "Group: 1"
+and the data has been split in two groups, the legend entries are "Group: 1"
 and "Group: 2".</p>
     <h2 class="hasAnchor" id="s-methods"><a class="anchor" href="#s-methods"></a>S3 methods</h2>
 
@@ -218,7 +218,7 @@ and "Group: 2".</p>
 <tr><td><code>cdf_estimation</code></td><td><code><a href='estimate_cdf.html'>estimate_cdf</a></code></td><td>-</td></tr>
 <tr><td><code>model_estimation</code></td><td><code><a href='mixmod_regression.html'>mixmod_regression</a></code></td><td>One method in <code><a href='estimate_cdf.html'>estimate_cdf</a></code>. No subgroups determined.</td></tr>
 <tr><td><code>mixmod_regression</code></td><td><code><a href='mixmod_regression.html'>mixmod_regression</a></code></td><td>One method in <code><a href='estimate_cdf.html'>estimate_cdf</a></code>.</td></tr>
-<tr><td><code>mixmod_regression_list</code></td><td><code>mixmod_regression</code></td><td>Multiple methods in <code><a href='estimate_cdf.html'>estimate_cdf</a></code>.</td></tr>
+<tr><td><code>mixmod_regression_list</code></td><td><code><a href='mixmod_regression.html'>mixmod_regression</a></code></td><td>Multiple methods in <code><a href='estimate_cdf.html'>estimate_cdf</a></code>.</td></tr>
 <tr><td><code>mixmod_em</code></td><td><code><a href='mixmod_em.html'>mixmod_em</a></code></td><td>-</td></tr>
 </table>
 
@@ -236,6 +236,7 @@ reliability data, New York: Wiley series in probability and statistics, 1998</p>
   status <span class='op'>=</span> <span class='va'>status</span>
 <span class='op'>)</span>
 
+<span class='co'># Probability estimation:</span>
 <span class='va'>prob_tbl</span> <span class='op'>&lt;-</span> <span class='fu'><a href='estimate_cdf.html'>estimate_cdf</a></span><span class='op'>(</span><span class='va'>data</span>, methods <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"johnson"</span>, <span class='st'>"kaplan"</span><span class='op'>)</span><span class='op'>)</span>
 
 <span class='co'># Example 1 - Probability Plot Weibull:</span>

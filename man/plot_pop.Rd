@@ -36,7 +36,7 @@ version of the respective distribution. The distinction is made via
 \eqn{[tol, 1 - tol]}. The default value is in accordance with the decimal
 places shown in the hover for \code{plot_method = "plotly"}.}
 
-\item{title_trace}{A character string whis is assigned to the trace shown in
+\item{title_trace}{A character string which is assigned to the trace shown in
 the legend.}
 
 \item{plot_method}{Plot package, which produces the visual output. Only
@@ -61,7 +61,7 @@ two or three is also supported (\code{c(loc, sc)} or \code{c(loc, sc, thres)}).
 \examples{
 x <- rweibull(n = 100, shape = 1, scale = 20000)
 
-# Example 1: Two-parametric straight line
+# Example 1 - Two-parametric straight line:
 pop_weibull <- plot_pop(
   p_obj = NULL,
   x = range(x),
@@ -69,7 +69,7 @@ pop_weibull <- plot_pop(
   distribution = "weibull"
 )
 
-# Example 2: Three-parametric curved line
+# Example 2 - Three-parametric curved line:
 x2 <- rweibull(n = 100, shape = 1, scale = 20000) + 5000
 
 pop_weibull_2 <- plot_pop(
@@ -79,7 +79,7 @@ pop_weibull_2 <- plot_pop(
   distribution = "weibull"
 )
 
-# Example 3: Multiple lines
+# Example 3 - Multiple lines:
 pop_weibull_3 <- plot_pop(
   p_obj = NULL,
   x = x,
@@ -91,7 +91,7 @@ pop_weibull_3 <- plot_pop(
   plot_method = "ggplot2"
 )
 
-# Example 4: Compare two- and three-parametric distributions
+# Example 4 - Compare two- and three-parametric distributions:
 pop_weibull_4 <- plot_pop(
   p_obj = NULL,
   x = x,

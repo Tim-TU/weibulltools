@@ -1,37 +1,39 @@
 reference:
 - title: "Reliability data"
-  desc: "Functions for converting data into reliability data"
+  desc: "Function for converting data into reliability data"
 - contents:
   - reliability_data
-- title: "Probability Estimation"
+- title: "Non-Parametric Failure Probabilities"
   desc: "Functions for estimation and visualization of failure probabilities"
 - contents:
   - estimate_cdf
   - estimate_cdf.default
-  - predict_prob
-  - predict_quantile
   - plot_prob
   - plot_prob.default
-- title: "Parameter Estimation"
-  desc: "Functions for estimation and visualization of distribution parameters"
+- title: "Parametric Models"
+  desc: >
+    Functions for the estimation and visualization of parametric lifetime
+    distributions
 - contents:
   - rank_regression
   - rank_regression.default
-  - r_squared_profiling
-  - r_squared_profiling.default
   - ml_estimation
   - ml_estimation.default
-  - loglik_function
-  - loglik_profiling
-  - mixmod_regression
-  - mixmod_regression.default
   - mixmod_em
   - mixmod_em.default
+  - mixmod_regression
+  - mixmod_regression.default
+  - loglik_function
+  - loglik_profiling
+  - predict_prob
+  - predict_quantile
+  - r_squared_profiling
+  - r_squared_profiling.default
   - plot_mod
   - plot_mod.default
   - plot_pop
 - title: "Confidence Intervals"
-  desc: "Functions for estimation and visualization of confidence intervals"
+  desc: "Functions for the estimation and visualization of confidence intervals"
 - contents:
   - confint_betabinom
   - confint_betabinom.default
@@ -41,8 +43,8 @@ reference:
   - plot_conf
 - title: "Monte Carlo Simulation"
   desc: >
-    Functions for simulating delays and mileages and adjustment of operating times
-    using Monte Carlo
+    Functions for the simulation of delays and mileages as well as the
+    adjustment of operating time
 - contents:
   - dist_delay
   - mcs_delay

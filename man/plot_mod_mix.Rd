@@ -30,7 +30,7 @@ the regression lines.}
 
 \item{distribution}{Supposed distribution of the random variable.}
 
-\item{title_trace}{A character string whis is assigned to the trace shown in
+\item{title_trace}{A character string which is assigned to the trace shown in
 the legend.}
 
 \item{...}{Further arguments passed to or from other methods. Currently not used.}

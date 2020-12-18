@@ -43,8 +43,9 @@
 <meta property="og:description" content="This function estimates the parameters of a two- or three-parametric lifetime
 distribution for complete and (multiple) right censored data. The parameters
 are determined in the frequently used (log-)location-scale parameterization.
-For the Weibull, estimates are transformed such that they are in line with the
-parameterization provided by the stats package (see Weibull)." />
+For the Weibull, estimates are additionally transformed such that they are in
+line with the parameterization provided by the stats package
+(see Weibull)." />
 
 
 
@@ -137,8 +138,9 @@ parameterization provided by the stats package (see Weibull)." />
     <p>This function estimates the parameters of a two- or three-parametric lifetime
 distribution for complete and (multiple) right censored data. The parameters
 are determined in the frequently used (log-)location-scale parameterization.</p>
-<p>For the Weibull, estimates are transformed such that they are in line with the
-parameterization provided by the <em>stats</em> package (see <a href='https://rdrr.io/r/stats/Weibull.html'>Weibull</a>).</p>
+<p>For the Weibull, estimates are additionally transformed such that they are in
+line with the parameterization provided by the <em>stats</em> package
+(see <a href='https://rdrr.io/r/stats/Weibull.html'>Weibull</a>).</p>
     </div>
 
     <pre class="usage"><span class='fu'>ml_estimation</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>...</span><span class='op'>)</span>
@@ -186,21 +188,17 @@ same as the number of observations in <code>x</code>.</p></td>
 <code>"model_estimation"</code> containing the following elements:</p><ul>
 <li><p><code>coefficients</code> : A named vector of estimated coefficients
     (parameters of the assumed distribution). <strong>Note</strong>: The parameters
-    are given in location-scale-parameterization. If <code>distribution</code> is
-    <code>"weibull"</code> this is not the parameterization used in
-    <code><a href='https://rdrr.io/r/stats/Weibull.html'>stats::Weibull</a></code>. The parameters of the
-    shape-scale-parameterization are given under
-    <code>shape_scale_coefficients</code>.</p></li>
-<li><p><code>shape_scale_coefficients</code> : Only included if
-    <code>distribution</code> is <code>"weibull"</code> or <code>"weibull3"</code>. See
-    <code>coefficients</code>.</p></li>
-<li><p><code>confint</code> : Only included if <code>distribution</code> is <code>"weibull"</code>
-    or <code>"weibull3"</code>. Confidence intervals for \(\eta\) and \(\beta\)
-    (and \(\gamma\) if <code>distribution</code> is <code>"weibull3"</code>).</p></li>
-<li><p><code>loc_sc_confint</code> : Confidence intervals the (log-)location-scale
+    are given in location-scale-parameterization.</p></li>
+<li><p><code>confint</code> : Confidence intervals for parameters.</p></li>
+<li><p><code>varcov</code> : Estimated variance-covariance matrix for the
     parameters.</p></li>
-<li><p><code>loc_sc_varcov</code> : Estimated variance-covariance matrix for the
-    (log-)location-scale parameters.</p></li>
+<li><p><code>shape_scale_coefficients</code> : Only included if
+    <code>distribution</code> is <code>"weibull"</code> or <code>"weibull3"</code>
+    (parameterization used in <code><a href='https://rdrr.io/r/stats/Weibull.html'>stats::Weibull</a></code>).</p></li>
+<li><p><code>shape_scale_confint</code> : Only included if <code>distribution</code> is
+    <code>"weibull"</code> or <code>"weibull3"</code>. Confidence intervals
+    for scale \(\eta\) and shape \(\beta\) (and threshold \(\gamma\))
+    if <code>distribution</code> is <code>"weibull3"</code>.</p></li>
 <li><p><code>logL</code> : The log-likelihood value.</p></li>
 <li><p><code>aic</code> : Akaike Information Criterion.</p></li>
 <li><p><code>bic</code> : Bayesian Information Criterion.</p></li>

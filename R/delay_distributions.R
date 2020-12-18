@@ -481,6 +481,7 @@ mcs_helper <- function(x, par_list) {
 #' \code{dist_delay_register()} is no longer under active development, switching
 #' to \code{\link{dist_delay}} is recommended.
 #'
+#' @details
 #' This function introduces a delay random variable by calculating the time
 #' difference between the registration and production date for the sample units
 #' and afterwards estimates the parameter(s) of a supposed distribution,
@@ -575,6 +576,7 @@ dist_delay_register <- function(date_prod,
 #' \code{mcs_delay_register()} is no longer under active development, switching
 #' to \code{\link{mcs_delay}} is recommended.
 #'
+#' @details
 #' In general the amount of information about units in the field, that have not
 #' failed yet, are rare. For example it is common that a supplier, who provides
 #' parts to the automotive industry does not know when a vehicle was put in
@@ -585,7 +587,6 @@ dist_delay_register <- function(date_prod,
 #' calculated from complete data (see \code{\link{dist_delay_register}}).
 #'
 #' @inheritParams dist_delay_register
-#'
 #' @param time A numeric vector of operating times.
 #' @param status A vector of binary data (0 or 1) indicating whether unit \emph{i}
 #'   is a right censored observation (= 0) or a failure (= 1).
@@ -697,6 +698,7 @@ mcs_delay_register <- function(date_prod,
 #' \code{dist_delay_report()} is no longer under active development, switching
 #' to \code{\link{dist_delay}} is recommended.
 #'
+#' @details
 #' This function introduces a delay random variable by calculating the time
 #' difference between the report and repair date for the sample units
 #' and afterwards estimates the parameter(s) of a supposed distribution,
@@ -788,6 +790,7 @@ dist_delay_report <- function(date_repair,
 #' \code{mcs_delay_report()} is no longer under active development, switching
 #' to \code{\link{mcs_delay}} is recommended.
 #'
+#' @details
 #' The delay in report describes the time between the occurence of a damage and
 #' the registration in the warranty database. For a given date where the analysis
 #' is made there could be units which had a failure but are not registered in the
@@ -899,6 +902,7 @@ mcs_delay_report <- function(date_repair,
 #' \code{mcs_delays()} is no longer under active development, switching
 #' to \code{\link{mcs_delay}} is recommended.
 #'
+#' @details
 #' This function is a wrapper that combines both, the
 #' \code{\link{mcs_delay_register}} and \code{\link{mcs_delay_report}} function
 #' for adjusting the operation times of censored units.

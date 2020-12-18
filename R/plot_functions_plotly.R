@@ -175,7 +175,7 @@ plot_mod_vis.plotly <- function(
   tbl_pred <- tbl_pred %>%
     dplyr::rowwise() %>%
     dplyr::mutate(hovertext = to_hovertext(
-      x_p, y_p, param_val, param_label, x_mark, y_mark
+      .data$x_p, .data$y_p, .data$param_val, .data$param_label, x_mark, y_mark
     )) %>%
     dplyr::ungroup()
 
@@ -254,10 +254,10 @@ plot_pop_vis.plotly <- function(
     dplyr::rowwise() %>%
     dplyr::mutate(
       hovertext = to_hovertext(
-        x_s, y_s, param_val, param_label, x_mark, y_mark
+        .data$x_s, .data$y_s, .data$param_val, .data$param_label, x_mark, y_mark
       ),
       name = to_name_pop(
-        param_val, param_label
+        .data$param_val, .data$param_label
       )
     ) %>%
     dplyr::ungroup()

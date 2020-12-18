@@ -89,11 +89,7 @@ test_that("confint_fisher remains stable", {
   mle <- ml_estimation(tbl, distribution = "weibull", conf_level = 0.95)
 
   conf_fish <- confint_fisher(
-    x = tbl_john$x,
-    status = tbl_john$status,
-    dist_params = mle$coefficients,
-    loc_sc_varcov = mle$loc_sc_varcov,
-    distribution = "weibull",
+    x = mle,
     bounds = "two_sided",
     conf_level = 0.95,
     direction = "y"
@@ -102,11 +98,7 @@ test_that("confint_fisher remains stable", {
   expect_snapshot_output(conf_fish)
 
   conf_fish_x <- confint_fisher(
-    x = tbl_john$x,
-    status = tbl_john$status,
-    dist_params = mle$coefficients,
-    loc_sc_varcov = mle$loc_sc_varcov,
-    distribution = "weibull",
+    x = mle,
     bounds = "two_sided",
     conf_level = 0.95,
     direction = "x"
@@ -128,7 +120,7 @@ test_that("delta_method remains stable", {
 
   delta_prob <- sapply(obs, delta_method,
                        dist_params = mle$coefficients,
-                       loc_sc_varcov = mle$loc_sc_varcov,
+                       dist_varcov = mle$varcov,
                        distribution = "weibull",
                        direction = "y"
   )

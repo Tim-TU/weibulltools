@@ -73,7 +73,7 @@ plot_layout <- function(
 #'
 #' @details
 #'
-#' If data was splitted by \code{\link{mixmod_em}} \code{\link{estimate_cdf}} with
+#' If data was split by \code{\link{mixmod_em}} \code{\link{estimate_cdf}} with
 #' method \code{"johnson"} is applied to subgroup-specific data. The
 #' calculated plotting positions are shaped according to the determined split in
 #' \code{\link{mixmod_em}}.
@@ -89,7 +89,7 @@ plot_layout <- function(
 #'
 #' The name of the legend entry is a combination of the \code{title_trace} and
 #' the number of determined subgroups (if any). If \code{title_trace = "Group"}
-#' and the data is split in two groups, the legend entries are "Group: 1"
+#' and the data has been split in two groups, the legend entries are "Group: 1"
 #' and "Group: 2".
 #'
 #' @section S3 methods:
@@ -99,7 +99,7 @@ plot_layout <- function(
 #' | \code{cdf_estimation} | \code{\link{estimate_cdf}} | - |
 #' | \code{model_estimation} | \code{\link{mixmod_regression}} | One method in \code{\link{estimate_cdf}}. No subgroups determined. |
 #' | \code{mixmod_regression} | \code{\link{mixmod_regression}} | One method in \code{\link{estimate_cdf}}. |
-#' | \code{mixmod_regression_list} | \code{mixmod_regression} | Multiple methods in \code{\link{estimate_cdf}}.
+#' | \code{mixmod_regression_list} | \code{\link{mixmod_regression}} | Multiple methods in \code{\link{estimate_cdf}}.
 #' | \code{mixmod_em} | \code{\link{mixmod_em}} | - |
 #'
 #' @usage
@@ -113,6 +113,7 @@ plot_layout <- function(
 #'   title_x = "Characteristic",
 #'   title_y = "Unreliability",
 #'   title_trace = "Sample",
+#'   distribution = c("weibull", "lognormal", "loglogistic", "normal", "logistic", "sev"),
 #'   plot_method = c("plotly", "ggplot2"),
 #'   ...
 #' )
@@ -125,7 +126,7 @@ plot_layout <- function(
 #'   x axis.
 #' @param title_y A character string which is assigned to the title of the
 #'   y axis.
-#' @param title_trace A character string whis is assigned to the trace shown in
+#' @param title_trace A character string which is assigned to the trace shown in
 #'   the legend.
 #' @param plot_method Package, which is used for generating the plot output.
 #' @template dots
@@ -144,6 +145,7 @@ plot_layout <- function(
 #'   status = status
 #' )
 #'
+#' # Probability estimation:
 #' prob_tbl <- estimate_cdf(data, methods = c("johnson", "kaplan"))
 #'
 #' # Example 1 - Probability Plot Weibull:
@@ -306,7 +308,7 @@ plot_prob.mixmod_em <- function(x,
     model_estimation_list, seq_along(model_estimation_list),
     function(model_estimation, index) {
       data <- reliability_data(
-        model_estimation$data, x = x, status = status
+        model_estimation$data, x = "x", status = "status"
       )
 
       john <- estimate_cdf(data, "johnson")
@@ -400,16 +402,12 @@ plot_prob.mixmod_regression_list <- function(x,
 #' @seealso \code{\link{plot_prob}}
 #'
 #' @examples
-#' # Alloy T7987 dataset taken from Meeker and Escobar(1998, p. 131)
-#' cycles   <- c(300, 300, 300, 300, 300, 291, 274, 271, 269, 257, 256, 227, 226,
-#'               224, 213, 211, 205, 203, 197, 196, 190, 189, 188, 187, 184, 180,
-#'               180, 177, 176, 173, 172, 171, 170, 170, 169, 168, 168, 162, 159,
-#'               159, 159, 159, 152, 152, 149, 149, 144, 143, 141, 141, 140, 139,
-#'               139, 136, 135, 133, 131, 129, 123, 121, 121, 118, 117, 117, 114,
-#'               112, 108, 104, 99, 99, 96, 94)
-#' status <- c(rep(0, 5), rep(1, 67))
+#' # Vectors:
+#' cycles   <- alloy$cycles
+#' status <- alloy$status
 #'
-#' john <- estimate_cdf(
+#' # Probability estimation:
+#' prob_tbl <- estimate_cdf(
 #'   x = cycles,
 #'   status = status,
 #'   method = "johnson"
@@ -417,18 +415,18 @@ plot_prob.mixmod_regression_list <- function(x,
 #'
 #' # Example 1: Probability Plot Weibull:
 #' plot_weibull <- plot_prob(
-#'   x = john$x,
-#'   y = john$prob,
-#'   status = john$status,
-#'   id = john$id
+#'   x = prob_tbl$x,
+#'   y = prob_tbl$prob,
+#'   status = prob_tbl$status,
+#'   id = prob_tbl$id
 #' )
 #'
 #' # Example 2: Probability Plot Lognormal:
 #' plot_lognormal <- plot_prob(
-#'   x = john$x,
-#'   y = john$prob,
-#'   status = john$status,
-#'   id = john$id,
+#'   x = prob_tbl$x,
+#'   y = prob_tbl$prob,
+#'   status = prob_tbl$status,
+#'   id = prob_tbl$id,
 #'   distribution = "lognormal"
 #' )
 #'
@@ -506,12 +504,15 @@ plot_prob_ <- function(
 #' @description
 #' \lifecycle{soft-deprecated}
 #'
-#' This function is used to apply the graphical technique of probability
-#' plotting to univariate mixture models that were separated with functions
-#' \code{\link{mixmod_regression}} or \code{\link{mixmod_em}}.
+#' \code{plot_prob_mix()} is no longer under active development, switching to
+#' \code{\link{plot_prob}} is recommended.
 #'
 #' @details
-#' If data was splitted by \code{mixmod_em} the function \code{johnson_method}
+#' This function is used to apply the graphical technique of probability
+#' plotting to univariate mixture models that have been separated with functions
+#' \code{\link{mixmod_regression}} or \code{\link{mixmod_em}}.
+#'
+#' If data has been split by \code{mixmod_em} the function \code{johnson_method}
 #' is applied to subgroup-specific data. The calculated plotting positions are
 #' shaped regarding the obtained split of the used splitting function.
 #'
@@ -540,17 +541,9 @@ plot_prob_ <- function(
 #' @seealso \code{\link{plot_prob}}
 #'
 #' @examples
-#' # Data is taken from given reference:
-#' hours <- c(2, 28, 67, 119, 179, 236, 282, 317, 348, 387, 3, 31, 69, 135,
-#'           191, 241, 284, 318, 348, 392, 5, 31, 76, 144, 203, 257, 286,
-#'           320, 350, 412, 8, 52, 78, 157, 211, 261, 298, 327, 360, 446,
-#'           13, 53, 104, 160, 221, 264, 303, 328, 369, 21, 64, 113, 168,
-#'           226, 278, 314, 328, 377)
-#' status <- c(1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1,
-#'           1, 0, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 0, 0,
-#'           1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-#'           0, 1, 1, 1, 1, 1, 1)
-#' id <- 1:length(hours)
+#' # Vectors
+#' hours <- voltage$hours
+#' status <- voltage$status
 #'
 #' # Example 1 - Using result of mixmod_em:
 #' mix_mod_em <- mixmod_em(
@@ -657,13 +650,14 @@ plot_prob_mix <- function(
 #'   plotting positions and the estimated regression line(s).
 #'
 #' @examples
-#'
+#' # Reliability data:
 #' data <- reliability_data(
 #'   data = alloy,
 #'   x = cycles,
 #'   status = status
 #' )
 #'
+#' # Probability estimation:
 #' prob_tbl <- estimate_cdf(data, methods = c("johnson", "kaplan"))
 #'
 #' # Example 1 - Probability Plot and Regression Line Three-Parameter-Weibull:
@@ -714,7 +708,7 @@ plot_mod <- function(p_obj, x, ...) {
 #'
 plot_mod.model_estimation <- function(p_obj, x, title_trace = "Fit", ...) {
 
-  failed_data <- dplyr::filter(x$data, status == 1)
+  failed_data <- dplyr::filter(x$data, .data$status == 1)
 
   plot_mod.default(
     p_obj = p_obj,
@@ -841,9 +835,13 @@ plot_mod.mixmod_em <- function(p_obj, x, title_trace = "Fit", ...) {
 
 #' Add Estimated Population Line to a Probability Plot
 #'
-#' @inherit plot_mod description return references
+#' This function adds an estimated regression lines to an existing
+#' probability plot (\code{\link{plot_prob}}).
 #'
-#' @param x A numeric vector containing the x-coordinates of the regression line.
+#' @inherit plot_mod return references
+#'
+#' @param x A numeric vector containing the x-coordinates of the respective
+#'   regression line.
 #' @param dist_params A (named) numeric vector of estimated location
 #'   and scale parameters for a specified distribution. The order of
 #'   elements is important. First entry needs to be the location
@@ -946,28 +944,31 @@ plot_mod.default <- function(p_obj,
 }
 
 
-#' Adding Estimated Population Lines of a Separated Mixture Model to a
+#' Add Estimated Population Lines of a Separated Mixture Model to a
 #' Probability Plot
 #'
 #' @description
 #' \lifecycle{soft-deprecated}
 #'
+#' \code{plot_mod_mix()} is no longer under active development, switching to
+#' \code{\link{plot_mod}} is recommended.
+#'
+#' @details
 #' This function adds one or multiple estimated regression lines to an existing
 #' probability plot (\code{\link{plot_prob}}). Depending on the output of the
 #' function \code{\link{mixmod_regression}} or \code{\link{mixmod_em}} one or
 #' multiple lines are plotted.
 #'
-#' @details
 #' The name of the legend entry is a combination of the \code{title_trace} and
 #' the number of determined subgroups. If \code{title_trace = "Line"} and the
-#' data could be splitted in two groups, the legend entries would be "Line: 1"
-#' and "Line: 2".
+#' data has been split in two groups, the legend entries would be
+#' \code{"Line: 1"} and \code{"Line: 2"}.
 #'
 #' @encoding UTF-8
 #' @references Doganaksoy, N.; Hahn, G.; Meeker, W. Q., Reliability Analysis by
 #'   Failure Mode, Quality Progress, 35(6), 47-52, 2002
 #'
-#' @param p_obj A plot object provided by function \code{\link{plot_prob}}.
+#' @param p_obj A plot object provided by function \code{\link{plot_prob_mix}}.
 #' @param mix_output A list provided by \code{\link{mixmod_regression}} or
 #'   \code{\link{mixmod_em}}, which consists of elements necessary to visualize
 #'   the regression lines.
@@ -978,17 +979,9 @@ plot_mod.default <- function(p_obj,
 #'   plotting positions and estimated regression line(s).
 #'
 #' @examples
-#' # Data is taken from given reference:
-#' hours <- c(2, 28, 67, 119, 179, 236, 282, 317, 348, 387, 3, 31, 69, 135,
-#'           191, 241, 284, 318, 348, 392, 5, 31, 76, 144, 203, 257, 286,
-#'           320, 350, 412, 8, 52, 78, 157, 211, 261, 298, 327, 360, 446,
-#'           13, 53, 104, 160, 221, 264, 303, 328, 369, 21, 64, 113, 168,
-#'           226, 278, 314, 328, 377)
-#' status <- c(1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1,
-#'           1, 0, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 0, 0,
-#'           1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-#'           0, 1, 1, 1, 1, 1, 1)
-#' id <- 1:length(hours)
+#' # Vectors:
+#' hours <- voltage$hours
+#' status <- voltage$status
 #'
 #' # Example 1 - Using result of mixmod_em in mix_output:
 #' mix_mod_em <- mixmod_em(x = hours, status = state, distribution = "weibull",
@@ -1011,7 +1004,7 @@ plot_mod.default <- function(p_obj,
 #' )
 #'
 #' # Example 2 - Using result of mixmod_regression in mix_output:
-#' john <- johnson_method(x = hours, status = state)
+#' john <- johnson_method(x = hours, status = status)
 #' mix_mod_reg <- mixmod_regression(
 #'   x = john$x,
 #'   y = john$prob,
@@ -1059,18 +1052,18 @@ plot_mod_mix <- function(p_obj,
 }
 
 
-#' Add Confidence Region(s) for Quantiles or Probabilities
+#' Add Confidence Region(s) for Quantiles and Probabilities
 #'
 #' This function is used to add estimated confidence region(s) to an existing
-#' probability plot. This includes also the estimated regression line as it is
-#' not meaningful to plot the confidence regions without it.
+#' probability plot. Since confidence regions are related to the estimated
+#' regression line, the latter is provided as well.
 #'
 #' @param p_obj A plot object returned from \code{\link{plot_prob}}.
 #' @param x Confindence interval as returned by \code{\link{confint_betabinom}}
 #'   or \code{\link{confint_fisher}}.
 #' @param title_trace_mod A character string which is assigned to the mod trace
 #'   in the legend.
-#' @param title_trace_conf A character string which is assignet to the conf trace
+#' @param title_trace_conf A character string which is assigned to the conf trace
 #'   in the legend.
 #'
 #' @template dots
@@ -1084,8 +1077,10 @@ plot_mod_mix <- function(p_obj,
 #'   confidence region(s).
 #'
 #' @examples
+#' # Reliability data:
 #' data <- reliability_data(data = alloy, x = cycles, status = status)
 #'
+#' # Probability estimation:
 #' prob_tbl <- estimate_cdf(data, methods = "johnson")
 #'
 #' # Example 1 - Probability Plot, Regression Line and Confidence Bounds for Three-Parameter-Weibull:
@@ -1169,8 +1164,10 @@ plot_conf.confint <- function(p_obj,
   mod <- attr(x, "model_estimation")
 
   if (inherits(mod, "model_estimation")) {
-    # Fake model_estimation_list
-    method <- mod$data$method[1]
+    ## Fake model_estimation_list
+    # ml_estimation$data has no method column
+    method <- if (hasName(mod$data, "method")) mod$data$method[1] else
+      NA_character_
     mod <- list(mod)
     names(mod) <- method
   }
@@ -1206,13 +1203,30 @@ plot_conf.confint <- function(p_obj,
 
 
 
-#' Add Confidence Region(s) for Quantiles or Probabilities
+#' Add Confidence Region(s) for Quantiles and Probabilities
 #'
 #' @description
 #' \lifecycle{soft-deprecated}
 #'
+#' \code{plot_conf.default()} is no longer under active development, switching
+#' to \code{\link[plot_conf]{plot_conf.confint} is recommended.
+#'
+#' @details
+#'
 #' This function is used to add estimated confidence region(s) to an existing
 #' probability plot which also includes the estimated regression line.
+#'
+#' It is important that the length of the vectors provided as lists in \code{x}
+#' and \code{y} match with the length of the vectors \code{x} and \code{y} in
+#' the function \code{\link{plot_mod}}. For this reason the following procedure
+#' is recommended:
+#' \itemize{
+#'   \item Calculate confidence intervals with the function
+#'     \code{\link{confint_betabinom}} or \code{\link{confint_fisher}} and store
+#'     it in a \code{data.frame}. For instance call it df.
+#'   \item Inside \code{\link{plot_mod}} use the output \code{df$x}
+#'     for \code{x} and \code{df$prob} for \code{y} of the function(s) named before.
+#'   \item In \strong{Examples} the described approach is shown with code.}
 #'
 #' @inherit plot_conf return references
 #'
@@ -1226,32 +1240,14 @@ plot_conf.confint <- function(p_obj,
 #' @inheritParams plot_prob.default
 #' @template dots
 #'
-#' @details
-#' It is important that the length of the vectors provided as lists in \code{x}
-#' and \code{y} match with the length of the vectors \code{x} and \code{y} in
-#' the function \code{\link{plot_mod}}. For this reason the following procedure
-#' is recommended:
-#' \itemize{
-#'   \item Calculate confidence intervals with the function
-#'     \code{\link{confint_betabinom}} or \code{\link{confint_fisher}} and store
-#'     it in a \code{data.frame}. For instance call it df.
-#'   \item Inside \code{\link{plot_mod}} use the output \code{df$x}
-#'     for \code{x} and \code{df$prob} for \code{y} of the function(s) named before.
-#'   \item In \strong{Examples} the described approach is shown with code.}
-#'
 #' @examples
-#' # Alloy T7987 dataset taken from Meeker and Escobar(1998, p. 131)
-#' cycles   <- c(300, 300, 300, 300, 300, 291, 274, 271, 269, 257, 256, 227, 226,
-#'               224, 213, 211, 205, 203, 197, 196, 190, 189, 188, 187, 184, 180,
-#'               180, 177, 176, 173, 172, 171, 170, 170, 169, 168, 168, 162, 159,
-#'               159, 159, 159, 152, 152, 149, 149, 144, 143, 141, 141, 140, 139,
-#'               139, 136, 135, 133, 131, 129, 123, 121, 121, 118, 117, 117, 114,
-#'               112, 108, 104, 99, 99, 96, 94)
-#' status <- c(rep(0, 5), rep(1, 67))
+#' # Vectors:
+#' cycles   <- alloy$cycles
+#' status <- alloy$status
 #'
 #' tbl_john <- estimate_cdf(x = cycles, status = status, method = "johnson")
 #'
-#' # Example 1: Probability Plot, Regression Line and Confidence Bounds for Three-Parameter-Weibull:
+#' # Example 1 - Probability Plot, Regression Line and Confidence Bounds for Three-Parameter-Weibull:
 #' rr <- rank_regression(
 #'   x = tbl_john$x,
 #'   y = tbl_john$prob,
@@ -1290,7 +1286,7 @@ plot_conf.confint <- function(p_obj,
 #'   distribution = "weibull3"
 #' )
 #'
-#' # Example 2: Probability Plot, Regression Line and Confidence Bounds for Three-Parameter-Lognormal:
+#' # Example 2 - Probability Plot, Regression Line and Confidence Bounds for Three-Parameter-Lognormal:
 #' rr_ln <- rank_regression(
 #'   x = tbl_john$x,
 #'   y = tbl_john$prob,
@@ -1406,14 +1402,14 @@ plot_conf.default <- function(
 #' @param plot_method Plot package, which produces the visual output. Only
 #'   used with \code{p_obj = NULL}, otherwise \code{p_obj} is used to determine
 #'   the plot method.
-#' @inheritParams plot_prob.default
+#' @inheritParams plot_prob
 #'
 #' @return A plot object which contains the linearized CDF(s).
 #'
 #' @examples
 #' x <- rweibull(n = 100, shape = 1, scale = 20000)
 #'
-#' # Example 1: Two-parametric straight line
+#' # Example 1 - Two-parametric straight line:
 #' pop_weibull <- plot_pop(
 #'   p_obj = NULL,
 #'   x = range(x),
@@ -1421,7 +1417,7 @@ plot_conf.default <- function(
 #'   distribution = "weibull"
 #' )
 #'
-#' # Example 2: Three-parametric curved line
+#' # Example 2 - Three-parametric curved line:
 #' x2 <- rweibull(n = 100, shape = 1, scale = 20000) + 5000
 #'
 #' pop_weibull_2 <- plot_pop(
@@ -1431,7 +1427,7 @@ plot_conf.default <- function(
 #'   distribution = "weibull"
 #' )
 #'
-#' # Example 3: Multiple lines
+#' # Example 3 - Multiple lines:
 #' pop_weibull_3 <- plot_pop(
 #'   p_obj = NULL,
 #'   x = x,
@@ -1443,7 +1439,7 @@ plot_conf.default <- function(
 #'   plot_method = "ggplot2"
 #' )
 #'
-#' # Example 4: Compare two- and three-parametric distributions
+#' # Example 4 - Compare two- and three-parametric distributions:
 #' pop_weibull_4 <- plot_pop(
 #'   p_obj = NULL,
 #'   x = x,

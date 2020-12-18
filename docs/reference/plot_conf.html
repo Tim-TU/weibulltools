@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Add Confidence Region(s) for Quantiles or Probabilities — plot_conf • weibulltools</title>
+<title>Add Confidence Region(s) for Quantiles and Probabilities — plot_conf • weibulltools</title>
 
 
 <!-- jquery -->
@@ -39,10 +39,10 @@
 
 
 
-<meta property="og:title" content="Add Confidence Region(s) for Quantiles or Probabilities — plot_conf" />
+<meta property="og:title" content="Add Confidence Region(s) for Quantiles and Probabilities — plot_conf" />
 <meta property="og:description" content="This function is used to add estimated confidence region(s) to an existing
-probability plot. This includes also the estimated regression line as it is
-not meaningful to plot the confidence regions without it." />
+probability plot. Since confidence regions are related to the estimated
+regression line, the latter is provided as well." />
 
 
 
@@ -126,15 +126,15 @@ not meaningful to plot the confidence regions without it." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Add Confidence Region(s) for Quantiles or Probabilities</h1>
+    <h1>Add Confidence Region(s) for Quantiles and Probabilities</h1>
     
     <div class="hidden name"><code>plot_conf.Rd</code></div>
     </div>
 
     <div class="ref-description">
     <p>This function is used to add estimated confidence region(s) to an existing
-probability plot. This includes also the estimated regression line as it is
-not meaningful to plot the confidence regions without it.</p>
+probability plot. Since confidence regions are related to the estimated
+regression line, the latter is provided as well.</p>
     </div>
 
     <pre class="usage"><span class='fu'>plot_conf</span><span class='op'>(</span><span class='va'>p_obj</span>, <span class='va'>x</span>, <span class='va'>...</span><span class='op'>)</span>
@@ -171,7 +171,7 @@ in the legend.</p></td>
     </tr>
     <tr>
       <th>title_trace_conf</th>
-      <td><p>A character string which is assignet to the conf trace
+      <td><p>A character string which is assigned to the conf trace
 in the legend.</p></td>
     </tr>
     </table>
@@ -187,8 +187,10 @@ in the legend.</p></td>
   reliability data, New York: Wiley series in probability and statistics, 1998</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='va'>data</span> <span class='op'>&lt;-</span> <span class='fu'><a href='reliability_data.html'>reliability_data</a></span><span class='op'>(</span>data <span class='op'>=</span> <span class='va'>alloy</span>, x <span class='op'>=</span> <span class='va'>cycles</span>, status <span class='op'>=</span> <span class='va'>status</span><span class='op'>)</span>
+    <pre class="examples"><div class='input'><span class='co'># Reliability data:</span>
+<span class='va'>data</span> <span class='op'>&lt;-</span> <span class='fu'><a href='reliability_data.html'>reliability_data</a></span><span class='op'>(</span>data <span class='op'>=</span> <span class='va'>alloy</span>, x <span class='op'>=</span> <span class='va'>cycles</span>, status <span class='op'>=</span> <span class='va'>status</span><span class='op'>)</span>
 
+<span class='co'># Probability estimation:</span>
 <span class='va'>prob_tbl</span> <span class='op'>&lt;-</span> <span class='fu'><a href='estimate_cdf.html'>estimate_cdf</a></span><span class='op'>(</span><span class='va'>data</span>, methods <span class='op'>=</span> <span class='st'>"johnson"</span><span class='op'>)</span>
 
 <span class='co'># Example 1 - Probability Plot, Regression Line and Confidence Bounds for Three-Parameter-Weibull:</span>
@@ -208,7 +210,7 @@ in the legend.</p></td>
   p_obj <span class='op'>=</span> <span class='va'>plot_weibull</span>,
   x <span class='op'>=</span> <span class='va'>conf_betabin</span>
 <span class='op'>)</span>
-
+</div><div class='output co'>#&gt; <span class='error'>Error in names(mod) &lt;- method: Attribut 'names' [72] muss dieselbe Länge haben wie der Vektor [1]</span></div><div class='input'>
 <span class='co'># Example 2 - Probability Plot, Regression Line and Confidence Bounds for Three-Parameter-Lognormal:</span>
 <span class='va'>rr_ln</span> <span class='op'>&lt;-</span> <span class='fu'><a href='rank_regression.html'>rank_regression</a></span><span class='op'>(</span>
   x <span class='op'>=</span> <span class='va'>prob_tbl</span>,
@@ -232,7 +234,7 @@ in the legend.</p></td>
   p_obj <span class='op'>=</span> <span class='va'>plot_lognormal</span>,
   x <span class='op'>=</span> <span class='va'>conf_betabin_ln</span>
 <span class='op'>)</span>
-
+</div><div class='output co'>#&gt; <span class='error'>Error in names(mod) &lt;- method: Attribut 'names' [72] muss dieselbe Länge haben wie der Vektor [1]</span></div><div class='input'>
 <span class='co'># Example 3 - Probability Plot, Regression Line and Confidence Bounds for MLE</span>
 <span class='va'>ml</span> <span class='op'>&lt;-</span> <span class='fu'><a href='ml_estimation.html'>ml_estimation</a></span><span class='op'>(</span>
   x <span class='op'>=</span> <span class='va'>data</span>,
@@ -250,11 +252,8 @@ in the legend.</p></td>
   p_obj <span class='op'>=</span> <span class='va'>plot_weibull</span>,
   x <span class='op'>=</span> <span class='va'>conf_fisher</span>
 <span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='warning'>Warning: Unknown or uninitialised column: `method`.</span></div><div class='output co'>#&gt; <span class='error'>Error: Problem with `mutate()` input `hovertext`.</span>
-#&gt; <span class='error'><span style='color: #BB0000;'>x</span><span> Objekt 'param_val' nicht gefunden</span>
-#&gt; <span class='error'></span><span style='color: #0000BB;'>i</span><span> Input `hovertext` is `to_hovertext(x_p, y_p, param_val, param_label, x_mark, y_mark)`.</span>
-#&gt; <span class='error'></span><span style='color: #0000BB;'>i</span><span> The error occurred in row 1.</span></div><div class='input'>
-</div></span></pre>
+
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

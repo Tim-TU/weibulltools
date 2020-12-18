@@ -70,9 +70,11 @@ plot_prob_vis.ggplot <- function(
   if (n_group <= 1) tbl_prob$group <- ""
 
   mapping <- if (n_group == 1) {
-    ggplot2::aes(x = x, y = q, color = method)
+    ggplot2::aes(x = .data$x, y = .data$q, color = .data$method)
   } else {
-    ggplot2::aes(x = x, y = q, color = method, shape = group)
+    ggplot2::aes(
+      x = .data$x, y = .data$q, color = .data$method, shape = .data$group
+    )
   }
 
   labs <- if (n_group == 1) {
@@ -101,11 +103,15 @@ plot_mod_vis.ggplot <- function(
   if (n_method == 1) tbl_pred$method <- ""
 
   mapping <- if (n_group == 1) {
-    ggplot2::aes(x = x_p, y = q, color = method)
+    ggplot2::aes(x = .data$x_p, y = .data$q, color = .data$method)
   } else {
     # group aesthetic must be paste of method and group to create distinct
     # groups
-    ggplot2::aes(x = x_p, y = q, color = method, group = paste(method, group))
+    ggplot2::aes(
+      x = .data$x_p,
+      y = .data$q,
+      color = .data$method,
+      group = paste(.data$method, .data$group))
   }
 
   p_mod <- p_obj +
@@ -121,13 +127,16 @@ plot_mod_vis.ggplot <- function(
 
 #' @export
 plot_conf_vis.ggplot <- function(p_obj, tbl_p, title_trace) {
-  mapping <- if (all(tbl_p$method == "conf_null")) {
+  mapping <- if (all(is.na(tbl_p$method))) {
     ggplot2::aes(
-      x = x, y = q, group = bound, color = I("#CC2222")
+      x = .data$x, y = .data$q, group = .data$bound, color = I("#CC2222")
     )
   } else {
     ggplot2::aes(
-      x = x, y = q, group = paste(bound, method), color = method
+      x = .data$x,
+      y = .data$q,
+      group = paste(.data$bound, .data$method),
+      color = .data$method
     )
   }
 
@@ -147,7 +156,8 @@ plot_pop_vis.ggplot <- function(
 ) {
   p_pop <- p_obj +
     ggplot2::geom_line(
-      data = tbl_pop, mapping = ggplot2::aes(x = x_s, y = q, color = group)
+      data = tbl_pop,
+      mapping = ggplot2::aes(x = .data$x_s, y = .data$q, color = .data$group)
     ) +
     ggplot2::labs(color = title_trace)
 

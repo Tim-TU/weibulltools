@@ -54,8 +54,8 @@ plot_prob_helper <- function(
   tbl, distribution
 ) {
   tbl <- tbl %>%
-    dplyr::filter(status == 1) %>%
-    dplyr::arrange(x)
+    dplyr::filter(.data$status == 1) %>%
+    dplyr::arrange(.data$x)
 
   # Choice of distribution:
   if (distribution %in% c("weibull", "sev")) {
@@ -145,7 +145,7 @@ plot_mod_helper <- function(
 plot_mod_mix_helper <- function(model_estimation, method, group) {
   distribution <- model_estimation$distribution
   data <- model_estimation$data %>%
-    dplyr::filter(status == 1)
+    dplyr::filter(.data$status == 1)
 
   x_min <- min(data$x, na.rm = TRUE)
   x_max <- max(data$x, na.rm = TRUE)
@@ -213,7 +213,7 @@ plot_conf_helper_2 <- function(confint, distribution) {
     tbl_p$q <- stats::qlogis(tbl_p$y)
   }
 
-  tbl_p <- dplyr::group_by(tbl_p, bound)
+  tbl_p <- dplyr::group_by(tbl_p, .data$bound)
 
   return(tbl_p)
 }
@@ -241,7 +241,7 @@ plot_conf_helper <- function(tbl_mod, x, y, direction, distribution) {
     tbl_p$q <- stats::qlogis(tbl_p$y)
   }
 
-  tbl_p <- dplyr::group_by(tbl_p, bound)
+  tbl_p <- dplyr::group_by(tbl_p, .data$bound)
   tbl_p$method <- NA_character_
 
   return(tbl_p)
@@ -284,20 +284,20 @@ plot_pop_helper <- function(x, dist_params_tbl, distribution, tol = 1e-6) {
   )
 
   tbl_pop <- tbl_pop %>%
-    tidyr::unnest(cols = x_y) %>%
-    dplyr::filter(y_s < 1, y_s > 0)
+    tidyr::unnest(cols = .data$x_y) %>%
+    dplyr::filter(.data$y_s < 1, .data$y_s > 0)
 
   if (distribution %in% c("weibull", "weibull3", "sev")) {
     tbl_pop <- tbl_pop %>%
-      dplyr::mutate(q = SPREDA::qsev(y_s))
+      dplyr::mutate(q = SPREDA::qsev(.data$y_s))
   }
   if (distribution %in% c("lognormal", "lognormal3", "normal")) {
     tbl_pop <- tbl_pop %>%
-      dplyr::mutate(q = stats::qnorm(y_s))
+      dplyr::mutate(q = stats::qnorm(.data$y_s))
   }
   if (distribution %in% c("loglogistic", "loglogistic3", "logistic")) {
     tbl_pop <- tbl_pop %>%
-      dplyr::mutate(q = stats::qlogis(y_s))
+      dplyr::mutate(q = stats::qlogis(.data$y_s))
   }
 
   # set values and labels for plotlys hoverinfo:
@@ -312,12 +312,19 @@ plot_pop_helper <- function(x, dist_params_tbl, distribution, tol = 1e-6) {
     ) %>%
     dplyr::rowwise() %>%
     dplyr::mutate(
-      param_val = list(c(param_val_1, param_val_2, param_val_3)),
-      param_label = list(c(param_label_1, param_label_2, param_label_3))
+      param_val = list(
+        c(.data$param_val_1, .data$param_val_2, .data$param_val_3)
+      ),
+      param_label = list(
+        c(.data$param_label_1, .data$param_label_2, .data$param_label_3)
+      )
     ) %>%
     dplyr::ungroup() %>%
-    dplyr::select(x_s, y_s, q, param_val, param_label, group) %>%
-    dplyr::filter(y_s <= 1 - tol, y_s >= tol)
+    dplyr::select(
+      .data$x_s, .data$y_s, .data$q, .data$param_val, .data$param_label,
+      .data$group
+    ) %>%
+    dplyr::filter(.data$y_s <= 1 - tol, .data$y_s >= tol)
 
   return(tbl_pop)
 }

@@ -2,7 +2,7 @@
 % Please edit documentation in R/rank_regression.R
 \name{r_squared_profiling.default}
 \alias{r_squared_profiling.default}
-\title{R-Squared-Profile Function for Log-Location-Scale Distributions with Threshold}
+\title{R-Squared-Profile Function for Parametric Lifetime Distributions with Threshold}
 \usage{
 \method{r_squared_profiling}{default}(
   x,

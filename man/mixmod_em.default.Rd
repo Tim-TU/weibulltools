@@ -2,7 +2,7 @@
 % Please edit documentation in R/mixture_identification.R
 \name{mixmod_em.default}
 \alias{mixmod_em.default}
-\title{Mixture Model Estimation using EM-Algorithm}
+\title{Weibull Mixture Model Estimation using EM-Algorithm}
 \usage{
 \method{mixmod_em}{default}(
   x,

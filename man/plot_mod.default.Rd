@@ -28,7 +28,7 @@ is the threshold parameter \eqn{\gamma}.}
 
 \item{distribution}{Supposed distribution of the random variable.}
 
-\item{title_trace}{A character string whis is assigned to the trace shown in
+\item{title_trace}{A character string which is assigned to the trace shown in
 the legend.}
 
 \item{...}{Further arguments passed to or from other methods. Currently not used.}
@@ -38,11 +38,8 @@ Returns a plot object containing the probability plot with
 plotting positions and the estimated regression line(s).
 }
 \description{
-This function adds one or multiple estimated regression lines to an existing
-probability plot (\code{\link{plot_prob}}). Depending on the output of the
-functions \code{\link{rank_regression}}, \code{ml_estimation},
-\code{\link{mixmod_regression}} or \code{\link{mixmod_em}} one or
-multiple lines are plotted.
+This function adds an estimated regression lines to an existing
+probability plot (\code{\link{plot_prob}}).
 }
 \examples{
 # Alloy T7987 dataset taken from Meeker and Escobar(1998, p. 131)

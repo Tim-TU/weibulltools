@@ -8,7 +8,7 @@
 delta_method(
   p,
   dist_params,
-  loc_sc_varcov,
+  dist_varcov,
   distribution = c("weibull", "lognormal", "loglogistic", "normal", "logistic", "sev",
     "weibull3", "lognormal3", "loglogistic3"),
   direction = c("y", "x")
@@ -23,7 +23,7 @@ should be computed corresponding quantiles are required.}
 \item{dist_params}{A (named) numeric vector of (log-)location-scale parameters
 returned from \code{\link{ml_estimation}}.}
 
-\item{loc_sc_varcov}{A (named) numeric matrix of estimated variances and
+\item{dist_varcov}{A (named) numeric matrix of estimated variances and
 covariances returned from \code{\link{ml_estimation}}.}
 
 \item{distribution}{Supposed distribution of the random variable. Has to be in
@@ -73,7 +73,7 @@ mle <- ml_estimation(
 delta_y <- delta_method(
   p = shock$distance,
   dist_params = mle$coefficients,
-  loc_sc_varcov = mle$loc_sc_varcov,
+  dist_varcov = mle$varcov,
   distribution = "weibull",
   direction = "y"
 )
@@ -82,7 +82,7 @@ delta_y <- delta_method(
 delta_x <- delta_method(
   p = seq(0.01, 0.99, 0.01),
   dist_params = mle$coefficients,
-  loc_sc_varcov = mle$loc_sc_varcov,
+  dist_varcov = mle$varcov,
   distribution = "weibull",
   direction = "x"
 )

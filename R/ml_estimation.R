@@ -5,8 +5,9 @@
 #' distribution for complete and (multiple) right censored data. The parameters
 #' are determined in the frequently used (log-)location-scale parameterization.
 #'
-#' For the Weibull, estimates are transformed such that they are in line with the
-#' parameterization provided by the \emph{stats} package (see \link[stats]{Weibull}).
+#' For the Weibull, estimates are additionally transformed such that they are in
+#' line with the parameterization provided by the \emph{stats} package
+#' (see \link[stats]{Weibull}).
 #'
 #' @details
 #' \code{ml_estimation} calls \code{\link[SPREDA:lifedata.MLE]{Lifedata.MLE}},
@@ -96,15 +97,12 @@ ml_estimation.reliability_data <- function(x,
 #' @inherit ml_estimation description details return references
 #'
 #' @inheritParams ml_estimation
-#'
 #' @param x A numeric vector which consists of lifetime data. Lifetime
 #'   data could be every characteristic influencing the reliability of a product,
 #'   e.g. operating time (days/months in service), mileage (km, miles), load
 #'   cycles.
 #' @param status A vector of binary data (0 or 1) indicating whether unit \emph{i}
 #'   is a right censored observation (= 0) or a failure (= 1).
-#'
-#'
 #'
 #' @seealso \code{\link{ml_estimation}}
 #'
@@ -207,18 +205,19 @@ ml_estimation_ <- function(data,
 
       ml_output <- list(
         coefficients = estimates_loc_sc,
+        confint = conf_ints_loc_sc,
+        varcov = vcov_loc_sc,
         shape_scale_coefficients = estimates,
-        confint = conf_ints,
-        loc_sc_confint = conf_ints_loc_sc,
-        loc_sc_varcov = vcov_loc_sc, logL = -ml$min,
+        shape_scale_confint = conf_ints,
+        logL = -ml$min,
         aic = -2 * (-ml$min) + 2 * length(estimates_loc_sc),
         bic = (-2 * (-ml$min) + log(length(x)) * length(estimates_loc_sc))
       )
     } else {
       ml_output <- list(
         coefficients = estimates_loc_sc,
-        loc_sc_confint = conf_ints_loc_sc,
-        loc_sc_varcov = vcov_loc_sc, logL = -ml$min,
+        confint = conf_ints_loc_sc,
+        varcov = vcov_loc_sc, logL = -ml$min,
         aic = -2 * (-ml$min) + 2 * length(estimates_loc_sc),
         bic = (-2 * (-ml$min) + log(length(x)) * length(estimates_loc_sc))
       )
@@ -309,10 +308,11 @@ ml_estimation_ <- function(data,
 
       ml_output <- list(
         coefficients = estimates_loc_sc,
+        confint = conf_ints_loc_sc,
+        varcov = vcov_loc_sc,
         shape_scale_coefficients = estimates,
-        confint = conf_ints,
-        loc_sc_confint = conf_ints_loc_sc,
-        loc_sc_varcov = vcov_loc_sc, logL = ml$value,
+        shape_scale_confint = conf_ints,
+        logL = ml$value,
         aic = -2 * (ml$value) + 2 * length(estimates_loc_sc),
         bic = (-2 * (ml$value) + log(length(x)) * length(estimates_loc_sc))
       )
@@ -320,8 +320,8 @@ ml_estimation_ <- function(data,
     } else {
       ml_output <- list(
         coefficients = estimates_loc_sc,
-        loc_sc_confint = conf_ints_loc_sc,
-        loc_sc_varcov = vcov_loc_sc, logL = ml$value,
+        confint = conf_ints_loc_sc,
+        varcov = vcov_loc_sc, logL = ml$value,
         aic = -2 * (ml$value) + 2 * length(estimates_loc_sc),
         bic = (-2 * (ml$value) + log(length(x)) * length(estimates_loc_sc))
       )
@@ -387,8 +387,8 @@ ml_estimation_ <- function(data,
 
     ml_output <- list(
       coefficients = estimates_loc_sc,
-      loc_sc_confint = conf_ints_loc_sc,
-      loc_sc_varcov = vcov_loc_sc, logL = ml$value,
+      confint = conf_ints_loc_sc,
+      varcov = vcov_loc_sc, logL = ml$value,
       aic = -2 * (ml$value) + 2 * length(estimates_loc_sc),
       bic = (-2 * (ml$value) +
                log(length(x)) * length(estimates_loc_sc))
