@@ -32,8 +32,8 @@ print.model_estimation_list <- function(x,
 
 #' @export
 vcov.model_estimation <- function(x, ...) {
-  if (hasName(x, "loc_sc_varcov")) {
-    x$loc_sc_varcov
+  if (hasName(x, "varcov")) {
+    x$varcov
   } else {
     stop("Variance-covariance matrix of location-scale parameters does not exist!")
   }
