@@ -18,21 +18,6 @@
 #' @return Returns a plot object which contains the layout
 #'   that is used for probability plotting.
 #'
-#' @examples
-#' # Example 1: Weibull-Grid:
-#' x_layout <- seq(1e-5, 1e+07, length.out = 10)
-#' grid_weibull <- plot_layout(x = x_layout)
-#'
-#' # Example 2: Grid of Normal Distribution:
-#' x_layout <- seq(1, 10, length.out = 10)
-#' grid_normal <- plot_layout(
-#'   x = x_layout,
-#'   distribution = "normal",
-#'   title_main = "Normal Grid",
-#'   title_x = "Time to Event",
-#'   title_y = "Failure Probability in %"
-#' )
-#'
 #' @keywords internal
 plot_layout <- function(
   x,
@@ -101,22 +86,6 @@ plot_layout <- function(
 #' | \code{mixmod_regression} | \code{\link{mixmod_regression}} | One method in \code{\link{estimate_cdf}}. |
 #' | \code{mixmod_regression_list} | \code{\link{mixmod_regression}} | Multiple methods in \code{\link{estimate_cdf}}.
 #' | \code{mixmod_em} | \code{\link{mixmod_em}} | - |
-#'
-#' @usage
-#' plot_prob(x, ...)
-#'
-#' ## S3 method for classes 'cdf_estimation', 'model_estimation',
-#' ## 'mixmod_regression', 'mixmod_em', 'mixmod_regression_list'
-#' plot_prob(
-#'   x,
-#'   title_main = "Probability Plot",
-#'   title_x = "Characteristic",
-#'   title_y = "Unreliability",
-#'   title_trace = "Sample",
-#'   distribution = c("weibull", "lognormal", "loglogistic", "normal", "logistic", "sev"),
-#'   plot_method = c("plotly", "ggplot2"),
-#'   ...
-#' )
 #'
 #' @param x An object of aforementioned classes. See 'S3 methods'.
 #' @param distribution Supposed distribution of the random variable.
@@ -188,8 +157,6 @@ plot_prob <- function(x, ...) {
 
 #' @rdname plot_prob
 #'
-#' @usage NULL
-#'
 #' @export
 plot_prob.cdf_estimation <- function(
   x,
@@ -221,8 +188,6 @@ plot_prob.cdf_estimation <- function(
 
 #' @rdname plot_prob
 #'
-#' @usage NULL
-#'
 #' @export
 plot_prob.model_estimation <- function(x,
                                        title_main = "Probability Plot",
@@ -250,8 +215,6 @@ plot_prob.model_estimation <- function(x,
 
 
 #' @rdname plot_prob
-#'
-#' @usage NULL
 #'
 #' @export
 plot_prob.mixmod_regression <- function(x,
@@ -287,8 +250,6 @@ plot_prob.mixmod_regression <- function(x,
 
 
 #' @rdname plot_prob
-#'
-#' @usage NULL
 #'
 #' @export
 plot_prob.mixmod_em <- function(x,
@@ -332,8 +293,6 @@ plot_prob.mixmod_em <- function(x,
 
 
 #' @rdname plot_prob
-#'
-#' @usage NULL
 #'
 #' @export
 plot_prob.mixmod_regression_list <- function(x,
@@ -554,7 +513,6 @@ plot_prob_ <- function(
 #' plot_weibull_em <- plot_prob_mix(
 #'   x = hours,
 #'   status = status,
-#'   id = id,
 #'   distribution = "weibull",
 #'   mix_output = mix_mod_em
 #' )
@@ -563,7 +521,6 @@ plot_prob_ <- function(
 #' john <- estimate_cdf(
 #'   x = hours,
 #'   status = status,
-#'   id = id,
 #'   method = "johnson"
 #' )
 #'
@@ -577,7 +534,6 @@ plot_prob_ <- function(
 #' plot_weibull_reg <- plot_prob_mix(
 #'   x = hours,
 #'   status = status,
-#'   id = id,
 #'   distribution = "weibull",
 #'   mix_output = mix_mod_reg
 #' )
@@ -628,13 +584,6 @@ plot_prob_mix <- function(
 #' \code{\link{mixmod_em}}. If \code{title_trace = "Line"} and the
 #' data could be splitted in two groups, the legend entries would be "Line: 1"
 #' and "Line: 2".
-#'
-#' @usage
-#' plot_mod(p_obj, x, ...)
-#'
-#' ## S3 method for classes 'model_estimation', 'model_estimation_list',
-#' ## 'mixmod_regression', 'mixmod_regression_list', 'mixmod_em'
-#' plot_mod(p_obj, x, title_trace = "Fit")
 #'
 #' @template mod_classes
 #'
@@ -702,8 +651,6 @@ plot_mod <- function(p_obj, x, ...) {
 
 #' @rdname plot_mod
 #'
-#' @usage NULL
-#'
 #' @export
 #'
 plot_mod.model_estimation <- function(p_obj, x, title_trace = "Fit", ...) {
@@ -723,15 +670,13 @@ plot_mod.model_estimation <- function(p_obj, x, title_trace = "Fit", ...) {
 
 #' @rdname plot_mod
 #'
-#' @usage NULL
-#'
 #' @export
 #'
 plot_mod.model_estimation_list <- function(p_obj, x, title_trace = "Fit", ...) {
   methods <- names(x)
 
   tbl_pred <- purrr::map2_dfr(x, methods, function(model_estimation, method) {
-    failed_data <- dplyr::filter(model_estimation$data, status == 1)
+    failed_data <- dplyr::filter(model_estimation$data, .data$status == 1)
 
     plot_mod_helper(
       x = range(failed_data$x),
@@ -751,8 +696,6 @@ plot_mod.model_estimation_list <- function(p_obj, x, title_trace = "Fit", ...) {
 
 
 #' @rdname plot_mod
-#'
-#' @usage NULL
 #'
 #' @export
 plot_mod.mixmod_regression <- function(p_obj, x, title_trace = "Fit", ...) {
@@ -782,8 +725,6 @@ plot_mod.mixmod_regression <- function(p_obj, x, title_trace = "Fit", ...) {
 
 
 #' @rdname plot_mod
-#'
-#' @usage NULL
 #'
 #' @export
 plot_mod.mixmod_regression_list <- function(p_obj,
@@ -815,8 +756,6 @@ plot_mod.mixmod_regression_list <- function(p_obj,
 
 
 #' @rdname plot_mod
-#'
-#' @usage NULL
 #'
 #' @export
 plot_mod.mixmod_em <- function(p_obj, x, title_trace = "Fit", ...) {
@@ -984,8 +923,15 @@ plot_mod.default <- function(p_obj,
 #' status <- voltage$status
 #'
 #' # Example 1 - Using result of mixmod_em in mix_output:
-#' mix_mod_em <- mixmod_em(x = hours, status = state, distribution = "weibull",
-#'                         conf_level = 0.95, k = 2, method = "EM", n_iter = 150)
+#' mix_mod_em <- mixmod_em(
+#'   x = hours,
+#'   status = status,
+#'   distribution = "weibull",
+#'   conf_level = 0.95,
+#'   k = 2,
+#'   method = "EM",
+#'   n_iter = 150
+#' )
 #'
 #' plot_weibull_em <- plot_prob_mix(
 #'   x = hours,
@@ -1209,7 +1155,7 @@ plot_conf.confint <- function(p_obj,
 #' \lifecycle{soft-deprecated}
 #'
 #' \code{plot_conf.default()} is no longer under active development, switching
-#' to \code{\link[plot_conf]{plot_conf.confint}} is recommended.
+#' to \code{\link[=plot_conf]{plot_conf.confint}} is recommended.
 #'
 #' @details
 #'

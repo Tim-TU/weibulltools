@@ -12,9 +12,15 @@
 \usage{
 plot_mod(p_obj, x, ...)
 
-## S3 method for classes 'model_estimation', 'model_estimation_list',
-## 'mixmod_regression', 'mixmod_regression_list', 'mixmod_em'
-plot_mod(p_obj, x, title_trace = "Fit")
+\method{plot_mod}{model_estimation}(p_obj, x, title_trace = "Fit", ...)
+
+\method{plot_mod}{model_estimation_list}(p_obj, x, title_trace = "Fit", ...)
+
+\method{plot_mod}{mixmod_regression}(p_obj, x, title_trace = "Fit", ...)
+
+\method{plot_mod}{mixmod_regression_list}(p_obj, x, title_trace = "Fit", ...)
+
+\method{plot_mod}{mixmod_em}(p_obj, x, title_trace = "Fit", ...)
 }
 \arguments{
 \item{p_obj}{A plot object returned from \code{\link{plot_prob}}.}

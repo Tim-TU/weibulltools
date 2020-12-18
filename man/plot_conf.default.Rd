@@ -43,7 +43,7 @@ Returns a plot object containing the probability plot with
 \lifecycle{soft-deprecated}
 
 \code{plot_conf.default()} is no longer under active development, switching
-to \code{\link[plot_conf]{plot_conf.confint}} is recommended.
+to \code{\link[=plot_conf]{plot_conf.confint}} is recommended.
 }
 \details{
 This function is used to add estimated confidence region(s) to an existing

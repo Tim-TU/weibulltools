@@ -63,8 +63,15 @@ hours <- voltage$hours
 status <- voltage$status
 
 # Example 1 - Using result of mixmod_em in mix_output:
-mix_mod_em <- mixmod_em(x = hours, status = state, distribution = "weibull",
-                        conf_level = 0.95, k = 2, method = "EM", n_iter = 150)
+mix_mod_em <- mixmod_em(
+  x = hours,
+  status = status,
+  distribution = "weibull",
+  conf_level = 0.95,
+  k = 2,
+  method = "EM",
+  n_iter = 150
+)
 
 plot_weibull_em <- plot_prob_mix(
   x = hours,

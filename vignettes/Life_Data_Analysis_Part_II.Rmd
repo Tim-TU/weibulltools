@@ -9,7 +9,7 @@ output:
     fig_width: 7
     fig_caption: yes
 vignette: >
-  %\VignetteEngine{knitr::knitr}
+  %\VignetteEngine{knitr::rmarkdown}
   %\VignetteIndexEntry{Life Data Analysis Part II - Parameter Estimation of Parametric Lifetime Models}
   %\VignetteEncoding{UTF-8}
 ---

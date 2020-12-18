@@ -61,35 +61,6 @@ Weibull distributions. The Weibull distributions are parameterized with scale
 Newton-Raphson. This function is implemented in c++ and is called in function
 \code{\link{mixmod_em}}.
 }
-\examples{
-# Vectors:
-hours <- voltage$hours
-status <- voltage$status
-
-# Example 1 - EM algorithm with randomly assgined posterior probabilities:
-mix_mod_em_1 <- mixture_em_cpp(
-  x = hours,
-  status = status,
-  post = NULL,
-  k = 2,
-  n_iter = 150
-)
-
-# Example 2 - EM algorithm with user-specific posterior probabilities:
-set.seed(1)
-
-x_vec <- runif(n = length(hours))
-post <- matrix(c(x_vec, 1 - x_vec), ncol = 2)
-
-mix_mod_em_2 <- mixture_em_cpp(x = hours,
-                             status = state,
-                             post = post,
-                             distribution = "weibull",
-                             k = 2,
-                             method = "EM",
-                             n_iter = 150)
-
-}
 \references{
 Doganaksoy, N.; Hahn, G.; Meeker, W. Q., Reliability Analysis by
   Failure Mode, Quality Progress, 35(6), 47-52, 2002

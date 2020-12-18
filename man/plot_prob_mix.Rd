@@ -94,7 +94,6 @@ mix_mod_em <- mixmod_em(
 plot_weibull_em <- plot_prob_mix(
   x = hours,
   status = status,
-  id = id,
   distribution = "weibull",
   mix_output = mix_mod_em
 )
@@ -103,7 +102,6 @@ plot_weibull_em <- plot_prob_mix(
 john <- estimate_cdf(
   x = hours,
   status = status,
-  id = id,
   method = "johnson"
 )
 
@@ -117,7 +115,6 @@ mix_mod_reg <- mixmod_regression(
 plot_weibull_reg <- plot_prob_mix(
   x = hours,
   status = status,
-  id = id,
   distribution = "weibull",
   mix_output = mix_mod_reg
 )
