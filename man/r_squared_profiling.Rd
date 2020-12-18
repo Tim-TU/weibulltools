@@ -4,7 +4,7 @@
 \name{r_squared_profiling}
 \alias{r_squared_profiling}
 \alias{r_squared_profiling.cdf_estimation}
-\title{R-Squared-Profile Function for Log-Location-Scale Distributions with Threshold}
+\title{R-Squared-Profile Function for Parametric Lifetime Distributions with Threshold}
 \usage{
 r_squared_profiling(x, ...)
 
@@ -24,9 +24,6 @@ r_squared_profiling(x, ...)
 \item{thres}{A numeric value for the threshold parameter.}
 
 \item{distribution}{Supposed three-parametric distribution of the random variable.}
-
-\item{y}{A numeric vector which consists of estimated failure probabilities
-regarding the lifetime data in \code{x}.}
 }
 \value{
 Returns the coefficient of determination with respect to the threshold parameter

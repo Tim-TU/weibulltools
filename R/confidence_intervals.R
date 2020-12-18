@@ -498,7 +498,7 @@ confint_betabinom_ <- function(model_estimation,
 #'   returned from \code{\link{ml_estimation}}.
 #' @param distribution Supposed distribution of the random variable. Has to be in
 #'   line with the specification made in \code{\link{ml_estimation}}.
-#' @param loc_sc_varcov A (named) numeric matrix of estimated variances and
+#' @param dist_varcov A (named) numeric matrix of estimated variances and
 #'   covariances returned from \code{\link{ml_estimation}}.
 #' @param direction A character string specifying for which quantity the standard
 #'   errors are calculated. One of \code{"y"} (if \code{p} are quantiles) or
@@ -531,7 +531,7 @@ confint_betabinom_ <- function(model_estimation,
 #' delta_y <- delta_method(
 #'   p = shock$distance,
 #'   dist_params = mle$coefficients,
-#'   loc_sc_varcov = mle$loc_sc_varcov,
+#'   dist_varcov = mle$varcov,
 #'   distribution = "weibull",
 #'   direction = "y"
 #' )
@@ -540,7 +540,7 @@ confint_betabinom_ <- function(model_estimation,
 #' delta_x <- delta_method(
 #'   p = seq(0.01, 0.99, 0.01),
 #'   dist_params = mle$coefficients,
-#'   loc_sc_varcov = mle$loc_sc_varcov,
+#'   dist_varcov = mle$varcov,
 #'   distribution = "weibull",
 #'   direction = "x"
 #' )
@@ -548,7 +548,7 @@ confint_betabinom_ <- function(model_estimation,
 #' @export
 delta_method <- function(p,
                          dist_params,
-                         loc_sc_varcov,
+                         dist_varcov,
                          distribution = c(
                            "weibull", "lognormal", "loglogistic",
                            "normal", "logistic", "sev",
@@ -565,7 +565,7 @@ delta_method <- function(p,
   dm_vectorized(
     p = p,
     dist_params = dist_params,
-    loc_sc_varcov = loc_sc_varcov,
+    dist_varcov = dist_varcov,
     distribution = distribution,
     direction = direction
   )
@@ -575,7 +575,7 @@ delta_method <- function(p,
 
 delta_method_ <- function(p,
                           dist_params,
-                          loc_sc_varcov,
+                          dist_varcov,
                           distribution = c(
                             "weibull", "lognormal", "loglogistic",
                             "normal", "logistic", "sev",
@@ -636,7 +636,7 @@ delta_method_ <- function(p,
     }
 
     # Variance and standard error of quantiles:
-    var_q <- t(dq_dpar) %*% loc_sc_varcov %*% dq_dpar
+    var_q <- t(dq_dpar) %*% dist_varcov %*% dq_dpar
     std_err <- sqrt(var_q)
 
     # Standard Errors for z: The "z-Procedure":
@@ -667,7 +667,7 @@ delta_method_ <- function(p,
       dz_dpar <- c(dz_dmu, dz_dsc, dz_dgam)
     }
 
-    var_z <- t(dz_dpar) %*% loc_sc_varcov %*% dz_dpar
+    var_z <- t(dz_dpar) %*% dist_varcov %*% dz_dpar
     std_err <- sqrt(var_z)
   }
 
@@ -896,7 +896,7 @@ confint_fisher.model_estimation <- function(
 #'   x = obs,
 #'   status = status_1,
 #'   dist_params = ml$coefficients,
-#'   loc_sc_varcov = ml$loc_sc_varcov,
+#'   dist_varcov = ml$varcov,
 #'   distribution = "weibull",
 #'   bounds = "two_sided",
 #'   conf_level = 0.95,
@@ -908,7 +908,7 @@ confint_fisher.model_estimation <- function(
 #'   x = obs,
 #'   status = status_1,
 #'   dist_params = ml$coefficients,
-#'   loc_sc_varcov = ml$loc_sc_varcov,
+#'   dist_varcov = ml$varcov,
 #'   distribution = "weibull",
 #'   bounds = "lower",
 #'   conf_level = 0.90,
@@ -919,7 +919,7 @@ confint_fisher.model_estimation <- function(
 #'   x = obs,
 #'   status = status_1,
 #'   dist_params = ml$coefficients,
-#'   loc_sc_varcov = ml$loc_sc_varcov,
+#'   dist_varcov = ml$varcov,
 #'   distribution = "weibull",
 #'   bounds = "upper",
 #'   conf_level = 0.90,
@@ -933,7 +933,7 @@ confint_fisher.model_estimation <- function(
 #'   x = cycles,
 #'   status = status_2,
 #'   dist_params = ml_2$coefficients,
-#'   loc_sc_varcov = ml_2$loc_sc_varcov,
+#'   dist_varcov = ml_2$varcov,
 #'   distribution = "lognormal3",
 #'   bounds = "two_sided",
 #'   conf_level = 0.90,
@@ -944,7 +944,7 @@ confint_fisher.model_estimation <- function(
 #'   x = cycles,
 #'   status = status_2,
 #'   dist_params = ml_2$coefficients,
-#'   loc_sc_varcov = ml_2$loc_sc_varcov,
+#'   dist_varcov = ml_2$varcov,
 #'   distribution = "lognormal3",
 #'   bounds = "two_sided",
 #'   conf_level = 0.90,
@@ -955,7 +955,7 @@ confint_fisher.model_estimation <- function(
 confint_fisher.default <- function(x,
                                    status,
                                    dist_params,
-                                   loc_sc_varcov,
+                                   dist_varcov,
                                    distribution = c(
                                      "weibull", "lognormal", "loglogistic",
                                      "normal", "logistic", "sev",
@@ -976,7 +976,7 @@ confint_fisher.default <- function(x,
   model_estimation <- list(
     data = tibble::tibble(x = x, status = status, method = NA_character_),
     coefficients = dist_params,
-    loc_sc_varcov = loc_sc_varcov,
+    dist_varcov = dist_varcov,
     distribution = distribution
   )
 
@@ -1001,7 +1001,7 @@ confint_fisher_ <- function(model_estimation,
   x <- model_estimation$data$x
   status <- model_estimation$data$status
   dist_params <- model_estimation$coefficients
-  loc_sc_varcov <- model_estimation$loc_sc_varcov
+  dist_varcov <- model_estimation$varcov
   distribution <- model_estimation$distribution
 
   n <- length(x)
@@ -1016,7 +1016,7 @@ confint_fisher_ <- function(model_estimation,
     se_delta <- delta_method(
       p = y_seq,
       dist_params = dist_params,
-      loc_sc_varcov = loc_sc_varcov,
+      dist_varcov = dist_varcov,
       distribution = distribution,
       direction = direction
     )
@@ -1045,7 +1045,7 @@ confint_fisher_ <- function(model_estimation,
     se_delta <- delta_method(
       p = x_seq,
       dist_params = dist_params,
-      loc_sc_varcov = loc_sc_varcov,
+      dist_varcov = dist_varcov,
       distribution = distribution,
       direction = direction
     )
@@ -1118,7 +1118,7 @@ confint_fisher_ <- function(model_estimation,
       distribution = distribution,
       bounds = bounds,
       direction = direction,
-      method = "conf_null"
+      method = NA_character_
     )
 
   if ("model_estimation" %in% class(model_estimation)) {

@@ -8,7 +8,7 @@
   x,
   status,
   dist_params,
-  loc_sc_varcov,
+  dist_varcov,
   distribution = c("weibull", "lognormal", "loglogistic", "normal", "logistic", "sev",
     "weibull3", "lognormal3", "loglogistic3"),
   b_lives = c(0.01, 0.1, 0.5),
@@ -30,7 +30,7 @@ is a right censored observation (= 0) or a failure (= 1).}
 \item{dist_params}{A (named) numeric vector of (log-)location-scale parameters
 returned from \code{\link{ml_estimation}}.}
 
-\item{loc_sc_varcov}{A (named) numeric matrix of estimated variances and
+\item{dist_varcov}{A (named) numeric matrix of estimated variances and
 covariances returned from \code{\link{ml_estimation}}.}
 
 \item{distribution}{Supposed distribution of the random variable. Has to be in
@@ -117,7 +117,7 @@ conf_fisher_1 <- confint_fisher(
   x = obs,
   status = status_1,
   dist_params = ml$coefficients,
-  loc_sc_varcov = ml$loc_sc_varcov,
+  dist_varcov = ml$varcov,
   distribution = "weibull",
   bounds = "two_sided",
   conf_level = 0.95,
@@ -129,7 +129,7 @@ conf_fisher_2_1 <- confint_fisher(
   x = obs,
   status = status_1,
   dist_params = ml$coefficients,
-  loc_sc_varcov = ml$loc_sc_varcov,
+  dist_varcov = ml$varcov,
   distribution = "weibull",
   bounds = "lower",
   conf_level = 0.90,
@@ -140,7 +140,7 @@ conf_fisher_2_2 <- confint_fisher(
   x = obs,
   status = status_1,
   dist_params = ml$coefficients,
-  loc_sc_varcov = ml$loc_sc_varcov,
+  dist_varcov = ml$varcov,
   distribution = "weibull",
   bounds = "upper",
   conf_level = 0.90,
@@ -154,7 +154,7 @@ conf_fisher_3_1 <- confint_fisher(
   x = cycles,
   status = status_2,
   dist_params = ml_2$coefficients,
-  loc_sc_varcov = ml_2$loc_sc_varcov,
+  dist_varcov = ml_2$varcov,
   distribution = "lognormal3",
   bounds = "two_sided",
   conf_level = 0.90,
@@ -165,7 +165,7 @@ conf_fisher_3_2 <- confint_fisher(
   x = cycles,
   status = status_2,
   dist_params = ml_2$coefficients,
-  loc_sc_varcov = ml_2$loc_sc_varcov,
+  dist_varcov = ml_2$varcov,
   distribution = "lognormal3",
   bounds = "two_sided",
   conf_level = 0.90,

@@ -23,7 +23,7 @@ plot_mod(p_obj, x, title_trace = "Fit")
 
 \item{...}{Further arguments passed to or from other methods. Currently not used.}
 
-\item{title_trace}{A character string whis is assigned to the trace shown in
+\item{title_trace}{A character string which is assigned to the trace shown in
 the legend.}
 }
 \value{
@@ -47,24 +47,25 @@ and "Line: 2".
 \section{S3 methods}{
 \tabular{lll}{
    \strong{Class} \tab \strong{Returned from} \tab \strong{Condition} \cr
-   \code{model_estimation} \tab \code{\link{rank_regression}} \tab One method in \code{\link{estimate_cdf}} \cr
+   \code{model_estimation} \tab \code{\link{rank_regression}} \tab One method in \code{\link{estimate_cdf}}. \cr
    \code{model_estimation} \tab \code{\link{mixmod_regression}} \tab One method in \code{\link{estimate_cdf}}. No subgroups determined. \cr
    \code{model_estimation} \tab \code{\link{ml_estimation}} \tab - \cr
-   \code{model_estimation_list} \tab \code{\link{rank_regression}} \tab Multiple methods in \code{\link{estimate_cdf}} \cr
-   \code{mixmod_regression} \tab \code{\link{mixmod_regression}} \tab One method in \code{\link{estimate_cdf}} \cr
-   \code{mixmod_regression_list} \tab \code{\link{mixmod_regression}} \tab Multiple methods in \code{\link{estimate_cdf}} \cr
+   \code{model_estimation_list} \tab \code{\link{rank_regression}} \tab Multiple methods in \code{\link{estimate_cdf}}. \cr
+   \code{mixmod_regression} \tab \code{\link{mixmod_regression}} \tab One method in \code{\link{estimate_cdf}}. \cr
+   \code{mixmod_regression_list} \tab \code{\link{mixmod_regression}} \tab Multiple methods in \code{\link{estimate_cdf}}. \cr
    \code{mixmod_em} \tab \code{\link{mixmod_em}} \tab - \cr
 }
 }
 
 \examples{
-
+# Reliability data:
 data <- reliability_data(
   data = alloy,
   x = cycles,
   status = status
 )
 
+# Probability estimation:
 prob_tbl <- estimate_cdf(data, methods = c("johnson", "kaplan"))
 
 # Example 1 - Probability Plot and Regression Line Three-Parameter-Weibull:

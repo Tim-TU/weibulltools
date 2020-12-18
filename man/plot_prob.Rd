@@ -40,7 +40,7 @@ x axis.}
 \item{title_y}{A character string which is assigned to the title of the
 y axis.}
 
-\item{title_trace}{A character string whis is assigned to the trace shown in
+\item{title_trace}{A character string which is assigned to the trace shown in
 the legend.}
 
 \item{plot_method}{Package, which is used for generating the plot output.}
@@ -53,7 +53,7 @@ This function is used to apply the graphical technique of probability
 plotting.
 }
 \details{
-If data was splitted by \code{\link{mixmod_em}} \code{\link{estimate_cdf}} with
+If data was split by \code{\link{mixmod_em}} \code{\link{estimate_cdf}} with
 method \code{"johnson"} is applied to subgroup-specific data. The
 calculated plotting positions are shaped according to the determined split in
 \code{\link{mixmod_em}}.
@@ -69,7 +69,7 @@ argument \code{title_x} and \code{title_y} respectively, i.e. if
 
 The name of the legend entry is a combination of the \code{title_trace} and
 the number of determined subgroups (if any). If \code{title_trace = "Group"}
-and the data is split in two groups, the legend entries are "Group: 1"
+and the data has been split in two groups, the legend entries are "Group: 1"
 and "Group: 2".
 }
 \section{S3 methods}{
@@ -78,7 +78,7 @@ and "Group: 2".
    \code{cdf_estimation} \tab \code{\link{estimate_cdf}} \tab - \cr
    \code{model_estimation} \tab \code{\link{mixmod_regression}} \tab One method in \code{\link{estimate_cdf}}. No subgroups determined. \cr
    \code{mixmod_regression} \tab \code{\link{mixmod_regression}} \tab One method in \code{\link{estimate_cdf}}. \cr
-   \code{mixmod_regression_list} \tab \code{mixmod_regression} \tab Multiple methods in \code{\link{estimate_cdf}}. \cr
+   \code{mixmod_regression_list} \tab \code{\link{mixmod_regression}} \tab Multiple methods in \code{\link{estimate_cdf}}. \cr
    \code{mixmod_em} \tab \code{\link{mixmod_em}} \tab - \cr
 }
 }
@@ -91,6 +91,7 @@ data <- reliability_data(
   status = status
 )
 
+# Probability estimation:
 prob_tbl <- estimate_cdf(data, methods = c("johnson", "kaplan"))
 
 # Example 1 - Probability Plot Weibull:

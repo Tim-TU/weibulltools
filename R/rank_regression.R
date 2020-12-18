@@ -6,8 +6,9 @@
 #' censored data. The parameters are determined in the frequently used
 #' (log-)location-scale parameterization.
 #'
-#' For the Weibull, estimates are transformed such that they are in line with the
-#' parameterization provided by the \emph{stats} package (see \link[stats]{Weibull}).
+#' For the Weibull, estimates are additionally transformed such that they are in
+#' line with the parameterization provided by the \emph{stats} package
+#' (see \link[stats]{Weibull}).
 #'
 #' @details
 #' If \code{distribution} is \code{"weibull"} or \code{"weibull3"}, the approximated
@@ -289,9 +290,9 @@ rank_regression_ <- function(cdf_estimation,
 
     mrr_output <- list(
       coefficients = estimates_loc_sc,
+      confint = conf_ints_loc_sc,
       shape_scale_coefficients = estimates,
-      confint = conf_ints,
-      loc_sc_confint = conf_ints_loc_sc,
+      shape_scale_confint = conf_ints,
       r_squared = r_sq
     )
   }
@@ -371,8 +372,8 @@ rank_regression_ <- function(cdf_estimation,
       mrr_output <- list(
         coefficients = estimates_loc_sc,
         shape_scale_coefficients = estimates,
-        confint = conf_ints,
-        loc_sc_confint = conf_ints_loc_sc,
+        shape_scale_confint = conf_ints,
+        confint = conf_ints_loc_sc,
         r_squared = r_sq
       )
 
@@ -419,8 +420,8 @@ rank_regression_ <- function(cdf_estimation,
 
       mrr_output <- list(
         coefficients = estimates_loc_sc,
-        loc_sc_confint = conf_ints_loc_sc,
-        loc_sc_varcov = vcov_loc_sc,
+        confint = conf_ints_loc_sc,
+        varcov = vcov_loc_sc,
         r_squared = r_sq
       )
     }
@@ -476,8 +477,8 @@ rank_regression_ <- function(cdf_estimation,
 
     mrr_output <- list(
       coefficients = estimates_loc_sc,
-      loc_sc_confint = conf_ints_loc_sc,
-      loc_sc_varcov = vcov_loc_sc,
+      confint = conf_ints_loc_sc,
+      varcov = vcov_loc_sc,
       r_squared = r_sq
     )
   }
@@ -504,7 +505,7 @@ print.rank_regression <- function(x,
 
 
 
-#' R-Squared-Profile Function for Log-Location-Scale Distributions with Threshold
+#' R-Squared-Profile Function for Parametric Lifetime Distributions with Threshold
 #'
 #' @description
 #' This function evaluates the coefficient of determination with respect to a
@@ -514,8 +515,6 @@ print.rank_regression <- function(x,
 #'
 #' @param x Object of class \code{cdf_estimation} returned from
 #'   \code{\link{estimate_cdf}}.
-#' @param y A numeric vector which consists of estimated failure probabilities
-#'   regarding the lifetime data in \code{x}.
 #' @param thres A numeric value for the threshold parameter.
 #' @param distribution Supposed three-parametric distribution of the random variable.
 #' @template dots
@@ -614,7 +613,7 @@ r_squared_profiling.cdf_estimation <- function(x,
 
 
 
-#' R-Squared-Profile Function for Log-Location-Scale Distributions with Threshold
+#' R-Squared-Profile Function for Parametric Lifetime Distributions with Threshold
 #'
 #' @inherit r_squared_profiling description details return references
 #'

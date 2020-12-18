@@ -121,7 +121,7 @@ plot_mod_vis.ggplot <- function(
 
 #' @export
 plot_conf_vis.ggplot <- function(p_obj, tbl_p, title_trace) {
-  mapping <- if (all(tbl_p$method == "conf_null")) {
+  mapping <- if (all(is.na(tbl_p$method))) {
     ggplot2::aes(
       x = x, y = q, group = bound, color = I("#CC2222")
     )

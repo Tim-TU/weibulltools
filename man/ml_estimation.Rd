@@ -36,21 +36,17 @@ Returns a list with the classes \code{"ml_estimation"} and
 \itemize{
   \item \code{coefficients} : A named vector of estimated coefficients
     (parameters of the assumed distribution). \strong{Note}: The parameters
-    are given in location-scale-parameterization. If \code{distribution} is
-    \code{"weibull"} this is not the parameterization used in
-    \code{\link[stats:Weibull]{stats::Weibull}}. The parameters of the
-    shape-scale-parameterization are given under
-    \code{shape_scale_coefficients}.
-  \item \code{shape_scale_coefficients} : Only included if
-    \code{distribution} is \code{"weibull"} or \code{"weibull3"}. See
-    \code{coefficients}.
-  \item \code{confint} : Only included if \code{distribution} is \code{"weibull"}
-    or \code{"weibull3"}. Confidence intervals for \eqn{\eta} and \eqn{\beta}
-    (and \eqn{\gamma} if \code{distribution} is \code{"weibull3"}).
-  \item \code{loc_sc_confint} : Confidence intervals the (log-)location-scale
+    are given in location-scale-parameterization.
+  \item \code{confint} : Confidence intervals for parameters.
+  \item \code{varcov} : Estimated variance-covariance matrix for the
     parameters.
-  \item \code{loc_sc_varcov} : Estimated variance-covariance matrix for the
-    (log-)location-scale parameters.
+  \item \code{shape_scale_coefficients} : Only included if
+    \code{distribution} is \code{"weibull"} or \code{"weibull3"}
+    (parameterization used in \code{\link[stats:Weibull]{stats::Weibull}}).
+  \item \code{shape_scale_confint} : Only included if \code{distribution} is
+    \code{"weibull"} or \code{"weibull3"}. Confidence intervals
+    for scale \eqn{\eta} and shape \eqn{\beta} (and threshold \eqn{\gamma})
+    if \code{distribution} is \code{"weibull3"}.
   \item \code{logL} : The log-likelihood value.
   \item \code{aic} : Akaike Information Criterion.
   \item \code{bic} : Bayesian Information Criterion.
@@ -63,8 +59,9 @@ This function estimates the parameters of a two- or three-parametric lifetime
 distribution for complete and (multiple) right censored data. The parameters
 are determined in the frequently used (log-)location-scale parameterization.
 
-For the Weibull, estimates are transformed such that they are in line with the
-parameterization provided by the \emph{stats} package (see \link[stats]{Weibull}).
+For the Weibull, estimates are additionally transformed such that they are in
+line with the parameterization provided by the \emph{stats} package
+(see \link[stats]{Weibull}).
 }
 \details{
 \code{ml_estimation} calls \code{\link[SPREDA:lifedata.MLE]{Lifedata.MLE}},

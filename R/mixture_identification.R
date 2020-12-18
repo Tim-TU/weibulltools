@@ -568,7 +568,7 @@ mixmod_em.reliability_data <- function(x,
 
 
 
-#' Mixture Model Estimation using EM-Algorithm
+#' Weibull Mixture Model Estimation using EM-Algorithm
 #'
 #' @inherit mixmod_em description details return references
 #'
