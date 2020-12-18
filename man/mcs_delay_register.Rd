@@ -57,7 +57,8 @@ A numeric vector of corrected operating times for the censored units
 
 \code{mcs_delay_register()} is no longer under active development, switching
 to \code{\link{mcs_delay}} is recommended.
-
+}
+\details{
 In general the amount of information about units in the field, that have not
 failed yet, are rare. For example it is common that a supplier, who provides
 parts to the automotive industry does not know when a vehicle was put in

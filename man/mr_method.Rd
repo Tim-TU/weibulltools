@@ -50,8 +50,8 @@ This non-parametric approach (\emph{Median Ranks}) is used to estimate the
 failure probabilities in terms of complete data. Two methods are available to
 estimate the cumulative distribution function \emph{F(t)}:
 \itemize{
-  \item "benard" : Benard's approximation for Median Ranks
-  \item "invbeta" : Exact Median Ranks using the inverse beta distribution
+  \item "benard" : Benard's approximation for Median Ranks.
+  \item "invbeta" : Exact Median Ranks using the inverse beta distribution.
 }
 }
 \examples{

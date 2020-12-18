@@ -17,7 +17,8 @@
 \arguments{
 \item{p_obj}{A plot object returned from \code{\link{plot_prob}}.}
 
-\item{x}{A numeric vector containing the x-coordinates of the regression line.}
+\item{x}{A numeric vector containing the x-coordinates of the respective
+regression line.}
 
 \item{dist_params}{A (named) numeric vector of estimated location
 and scale parameters for a specified distribution. The order of

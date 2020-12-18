@@ -1209,7 +1209,7 @@ plot_conf.confint <- function(p_obj,
 #' \lifecycle{soft-deprecated}
 #'
 #' \code{plot_conf.default()} is no longer under active development, switching
-#' to \code{\link[plot_conf]{plot_conf.confint} is recommended.
+#' to \code{\link[plot_conf]{plot_conf.confint}} is recommended.
 #'
 #' @details
 #'
