@@ -42,15 +42,7 @@
 <meta property="og:title" content="Adjustment of Operating Times by Delays in Report using a Monte Carlo Approach — mcs_delay_report" />
 <meta property="og:description" content="
 mcs_delay_report() is no longer under active development, switching
-to mcs_delay is recommended.
-The delay in report describes the time between the occurence of a damage and
-the registration in the warranty database. For a given date where the analysis
-is made there could be units which had a failure but are not registered in the
-database and therefore treated as censored units. To overcome this problem
-this function uses a Monte Carlo approach for simulating the operating
-times of (multiple) right censored observations, taking account of reporting
-delays. The simulation is based on the distribution of operating times that were
-calculated from complete data, i.e. failed items (see dist_delay_report)." />
+to mcs_delay is recommended." />
 
 
 
@@ -143,14 +135,6 @@ calculated from complete data, i.e. failed items (see dist_delay_report)." />
     <p><img src='figures/lifecycle-soft-deprecated.svg' alt='Soft-deprecated lifecycle' /></p>
 <p><code>mcs_delay_report()</code> is no longer under active development, switching
 to <code><a href='mcs_delay.html'>mcs_delay</a></code> is recommended.</p>
-<p>The delay in report describes the time between the occurence of a damage and
-the registration in the warranty database. For a given date where the analysis
-is made there could be units which had a failure but are not registered in the
-database and therefore treated as censored units. To overcome this problem
-this function uses a Monte Carlo approach for simulating the operating
-times of (multiple) right censored observations, taking account of reporting
-delays. The simulation is based on the distribution of operating times that were
-calculated from complete data, i.e. failed items (see <code><a href='dist_delay_report.html'>dist_delay_report</a></code>).</p>
     </div>
 
     <pre class="usage"><span class='fu'>mcs_delay_report</span><span class='op'>(</span>
@@ -216,6 +200,16 @@ estimated distribution parameters.</p></td>
     distribution.</p></li>
 </ul>
 
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+
+    <p>The delay in report describes the time between the occurence of a damage and
+the registration in the warranty database. For a given date where the analysis
+is made there could be units which had a failure but are not registered in the
+database and therefore treated as censored units. To overcome this problem
+this function uses a Monte Carlo approach for simulating the operating
+times of (multiple) right censored observations, taking account of reporting
+delays. The simulation is based on the distribution of operating times that were
+calculated from complete data, i.e. failed items (see <code><a href='dist_delay_report.html'>dist_delay_report</a></code>).</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='va'>date_of_repair</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='cn'>NA</span>, <span class='st'>"2014-09-15"</span>, <span class='st'>"2015-07-04"</span>, <span class='st'>"2015-04-10"</span>, <span class='cn'>NA</span>,
