@@ -132,7 +132,7 @@
     10 7640. 0.0262 <chr [2]> <chr [2]>   johnson group -3.63
     # ... with 190 more rows
 
-# plot_conf_helper remains stable
+# plot_conf_helper_2 remains stable
 
     # A tibble: 204 x 5
     # Groups:   bound [2]
