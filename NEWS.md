@@ -3,10 +3,11 @@
 * Package now depends on R(>= 3.5.0)
 * Renamed argument `event` with `status`.
 * Renamed argument `loc_sc_params` with `dist_params`.
+* Renamed argument `loc_sc_varcov` with `dist_varcov`.
 * Output of probability estimators: Renamed column `characteristic` with `x`.
-* `plot_conf()`: Switched position of arguments distribution and direction.
-* `rank_regression()`, `ml_estimation()`: Removed `details` argument.
-* `rank_regression()`, `ml_estimation()`: Renamed output: `loc_sc_vcov` -> `loc_sc_varcov`. Removed `loc_sc_params` from output. Added `shape_scale_coefficients` if `distribution` is `"weibull"` or `"weibull3"`.
+* Output of parameter estimators: Renamed and changed content of list elements. See `?ml_estimation` and `?rank_regression`.
+* Switched position of arguments `distribution` and `direction` in `plot_conf()`.
+* Removed `details` argument from `ml_estimation()` and `rank_regression()`.
 * `plot_pop()`: Added argument `tol` to restrict the range of failure probabilities. Removed argument `color`. Renamed argument `params` to `dist_params_tbl`, which only supports location and scale parameters (also for `distribution = "weibull"`). Changed behaviour of `dist_params_tbl`: A tibble is now recommended instead of a vector.
 * `plot_prob_mix`: Removed default value `NULL` for argument `mix_output`.
 * `dist_mileage()`: Removed `status` argument and switched argument positions of `x` and `mileage`  -> (`mileage`, `x`, `distribution`). Argument `x` was renamed to `time`.
@@ -17,7 +18,7 @@
 * `mixmod_em()`: Removed argument `post`.
 
 ## New Features
-* Added support for ggplot2 in all plot functions. Plot method can be selected in `plot_prob()` or `plot_prob_mix()` via argument `plot_method`.
+* Added support for ggplot2 in all plot functions. Plot method can be selected in `plot_prob()` or `plot_pop()` via argument `plot_method`.
 * Added function `reliability_data()`: Create consistent reliability data.
 * New argument in `mr_method()`: With `ties.method` it can be specified how ties should be treated.
 * Added `estimate_cdf()`: Unite functionality of `mr_method()`, `johnson_method()`, `kaplan_method()` and `nelson_method()`.

@@ -74,34 +74,6 @@ normalize <- function(M) {
 #'   \item \code{priori} : A vector with estimated a-priori probabilities.
 #'   \item \code{logL} : The value of the complete log-likelihood.}
 #'
-#' @examples
-#' # Vectors:
-#' hours <- voltage$hours
-#' status <- voltage$status
-#'
-#' # Example 1 - EM algorithm with randomly assgined posterior probabilities:
-#' mix_mod_em_1 <- mixture_em_cpp(
-#'   x = hours,
-#'   status = status,
-#'   post = NULL,
-#'   k = 2,
-#'   n_iter = 150
-#' )
-#'
-#' # Example 2 - EM algorithm with user-specific posterior probabilities:
-#' set.seed(1)
-#'
-#' x_vec <- runif(n = length(hours))
-#' post <- matrix(c(x_vec, 1 - x_vec), ncol = 2)
-#'
-#' mix_mod_em_2 <- mixture_em_cpp(x = hours,
-#'                              status = state,
-#'                              post = post,
-#'                              distribution = "weibull",
-#'                              k = 2,
-#'                              method = "EM",
-#'                              n_iter = 150)
-#'
 #' @keywords internal
 mixture_em_cpp <- function(x, status, post, distribution = "weibull", k = 2L, method = "EM", n_iter = 100L, conv_limit = 1e-6) {
     .Call(`_weibulltools_mixture_em_cpp`, x, status, post, distribution, k, method, n_iter, conv_limit)
@@ -120,12 +92,6 @@ mixture_em_cpp <- function(x, status, post, distribution = "weibull", k = 2L, me
 #' @param n an integer value indicating the sample size.
 #'
 #' @return A numeric vector containing the computed Johnson ranks.
-#'
-#' @examples
-#'   defectives <- c(0, 1, 2, 0, 0, 0, 3, 0, 2, 0)
-#'   n_out <- c(0, 2, 4, 8, 9, 11, 12, 16, 20, 22)
-#'   n <- 23
-#'   johnson_ranks <- calculate_ranks(f = defectives, n_out = n_out, n = n)
 #'
 #' @keywords internal
 calculate_ranks <- function(f, n_out, n) {

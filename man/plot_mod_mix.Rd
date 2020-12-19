@@ -3,7 +3,7 @@
 \encoding{UTF-8}
 \name{plot_mod_mix}
 \alias{plot_mod_mix}
-\title{Adding Estimated Population Lines of a Separated Mixture Model to a
+\title{Add Estimated Population Lines of a Separated Mixture Model to a
 Probability Plot}
 \usage{
 plot_mod_mix(
@@ -17,9 +17,10 @@ plot_mod_mix(
 )
 }
 \arguments{
-\item{p_obj}{A plot object provided by function \code{\link{plot_prob}}.}
+\item{p_obj}{A plot object provided by function \code{\link{plot_prob_mix}}.}
 
-\item{x}{A numeric vector containing the x-coordinates of the regression line.}
+\item{x}{A numeric vector containing the x-coordinates of the respective
+regression line.}
 
 \item{status}{A vector of binary data (0 or 1) indicating whether unit \emph{i}
 is a right censored observation (= 0) or a failure (= 1).}
@@ -42,33 +43,35 @@ Returns a plot object containing the probability plot with
 \description{
 \lifecycle{soft-deprecated}
 
+\code{plot_mod_mix()} is no longer under active development, switching to
+\code{\link{plot_mod}} is recommended.
+}
+\details{
 This function adds one or multiple estimated regression lines to an existing
 probability plot (\code{\link{plot_prob}}). Depending on the output of the
 function \code{\link{mixmod_regression}} or \code{\link{mixmod_em}} one or
 multiple lines are plotted.
-}
-\details{
+
 The name of the legend entry is a combination of the \code{title_trace} and
 the number of determined subgroups. If \code{title_trace = "Line"} and the
-data could be splitted in two groups, the legend entries would be "Line: 1"
-and "Line: 2".
+data has been split in two groups, the legend entries would be
+\code{"Line: 1"} and \code{"Line: 2"}.
 }
 \examples{
-# Data is taken from given reference:
-hours <- c(2, 28, 67, 119, 179, 236, 282, 317, 348, 387, 3, 31, 69, 135,
-          191, 241, 284, 318, 348, 392, 5, 31, 76, 144, 203, 257, 286,
-          320, 350, 412, 8, 52, 78, 157, 211, 261, 298, 327, 360, 446,
-          13, 53, 104, 160, 221, 264, 303, 328, 369, 21, 64, 113, 168,
-          226, 278, 314, 328, 377)
-status <- c(1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1,
-          1, 0, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 0, 0,
-          1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-          0, 1, 1, 1, 1, 1, 1)
-id <- 1:length(hours)
+# Vectors:
+hours <- voltage$hours
+status <- voltage$status
 
 # Example 1 - Using result of mixmod_em in mix_output:
-mix_mod_em <- mixmod_em(x = hours, status = state, distribution = "weibull",
-                        conf_level = 0.95, k = 2, method = "EM", n_iter = 150)
+mix_mod_em <- mixmod_em(
+  x = hours,
+  status = status,
+  distribution = "weibull",
+  conf_level = 0.95,
+  k = 2,
+  method = "EM",
+  n_iter = 150
+)
 
 plot_weibull_em <- plot_prob_mix(
   x = hours,
@@ -87,7 +90,7 @@ plot_weibull_emlines <- plot_mod_mix(
 )
 
 # Example 2 - Using result of mixmod_regression in mix_output:
-john <- johnson_method(x = hours, status = state)
+john <- johnson_method(x = hours, status = status)
 mix_mod_reg <- mixmod_regression(
   x = john$x,
   y = john$prob,

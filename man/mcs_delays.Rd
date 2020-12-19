@@ -73,7 +73,8 @@ A numerical vector of corrected operating times for the censored units
 
 \code{mcs_delays()} is no longer under active development, switching
 to \code{\link{mcs_delay}} is recommended.
-
+}
+\details{
 This function is a wrapper that combines both, the
 \code{\link{mcs_delay_register}} and \code{\link{mcs_delay_report}} function
 for adjusting the operation times of censored units.

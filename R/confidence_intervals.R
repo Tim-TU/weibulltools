@@ -976,7 +976,7 @@ confint_fisher.default <- function(x,
   model_estimation <- list(
     data = tibble::tibble(x = x, status = status, method = NA_character_),
     coefficients = dist_params,
-    dist_varcov = dist_varcov,
+    varcov = dist_varcov,
     distribution = distribution
   )
 

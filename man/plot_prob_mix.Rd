@@ -55,12 +55,15 @@ the legend.}
 \description{
 \lifecycle{soft-deprecated}
 
-This function is used to apply the graphical technique of probability
-plotting to univariate mixture models that were separated with functions
-\code{\link{mixmod_regression}} or \code{\link{mixmod_em}}.
+\code{plot_prob_mix()} is no longer under active development, switching to
+\code{\link{plot_prob}} is recommended.
 }
 \details{
-If data was splitted by \code{mixmod_em} the function \code{johnson_method}
+This function is used to apply the graphical technique of probability
+plotting to univariate mixture models that have been separated with functions
+\code{\link{mixmod_regression}} or \code{\link{mixmod_em}}.
+
+If data has been split by \code{mixmod_em} the function \code{johnson_method}
 is applied to subgroup-specific data. The calculated plotting positions are
 shaped regarding the obtained split of the used splitting function.
 
@@ -78,17 +81,9 @@ number of determined subgroups. If \code{title_trace = "Group"} and the data
 could be splitted in two groups, the legend entries would be "Group 1" and "Group 2".
 }
 \examples{
-# Data is taken from given reference:
-hours <- c(2, 28, 67, 119, 179, 236, 282, 317, 348, 387, 3, 31, 69, 135,
-          191, 241, 284, 318, 348, 392, 5, 31, 76, 144, 203, 257, 286,
-          320, 350, 412, 8, 52, 78, 157, 211, 261, 298, 327, 360, 446,
-          13, 53, 104, 160, 221, 264, 303, 328, 369, 21, 64, 113, 168,
-          226, 278, 314, 328, 377)
-status <- c(1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1,
-          1, 0, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 0, 0,
-          1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-          0, 1, 1, 1, 1, 1, 1)
-id <- 1:length(hours)
+# Vectors
+hours <- voltage$hours
+status <- voltage$status
 
 # Example 1 - Using result of mixmod_em:
 mix_mod_em <- mixmod_em(
@@ -99,7 +94,6 @@ mix_mod_em <- mixmod_em(
 plot_weibull_em <- plot_prob_mix(
   x = hours,
   status = status,
-  id = id,
   distribution = "weibull",
   mix_output = mix_mod_em
 )
@@ -108,7 +102,6 @@ plot_weibull_em <- plot_prob_mix(
 john <- estimate_cdf(
   x = hours,
   status = status,
-  id = id,
   method = "johnson"
 )
 
@@ -122,7 +115,6 @@ mix_mod_reg <- mixmod_regression(
 plot_weibull_reg <- plot_prob_mix(
   x = hours,
   status = status,
-  id = id,
   distribution = "weibull",
   mix_output = mix_mod_reg
 )

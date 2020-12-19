@@ -137,8 +137,52 @@ plotting.</p>
 
     <pre class="usage"><span class='fu'>plot_prob</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>...</span><span class='op'>)</span>
 
-<span class='co'>## S3 method for classes 'cdf_estimation', 'model_estimation',</span>
-<span class='co'>## 'mixmod_regression', 'mixmod_em', 'mixmod_regression_list'</span>
+<span class='co'># S3 method for cdf_estimation</span>
+<span class='fu'>plot_prob</span><span class='op'>(</span>
+  <span class='va'>x</span>,
+  distribution <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"weibull"</span>, <span class='st'>"lognormal"</span>, <span class='st'>"loglogistic"</span>, <span class='st'>"normal"</span>, <span class='st'>"logistic"</span>, <span class='st'>"sev"</span><span class='op'>)</span>,
+  title_main <span class='op'>=</span> <span class='st'>"Probability Plot"</span>,
+  title_x <span class='op'>=</span> <span class='st'>"Characteristic"</span>,
+  title_y <span class='op'>=</span> <span class='st'>"Unreliability"</span>,
+  title_trace <span class='op'>=</span> <span class='st'>"Sample"</span>,
+  plot_method <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"plotly"</span>, <span class='st'>"ggplot2"</span><span class='op'>)</span>,
+  <span class='va'>...</span>
+<span class='op'>)</span>
+
+<span class='co'># S3 method for model_estimation</span>
+<span class='fu'>plot_prob</span><span class='op'>(</span>
+  <span class='va'>x</span>,
+  title_main <span class='op'>=</span> <span class='st'>"Probability Plot"</span>,
+  title_x <span class='op'>=</span> <span class='st'>"Characteristic"</span>,
+  title_y <span class='op'>=</span> <span class='st'>"Unreliability"</span>,
+  title_trace <span class='op'>=</span> <span class='st'>"Sample"</span>,
+  plot_method <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"plotly"</span>, <span class='st'>"ggplot2"</span><span class='op'>)</span>,
+  <span class='va'>...</span>
+<span class='op'>)</span>
+
+<span class='co'># S3 method for mixmod_regression</span>
+<span class='fu'>plot_prob</span><span class='op'>(</span>
+  <span class='va'>x</span>,
+  title_main <span class='op'>=</span> <span class='st'>"Probability Plot"</span>,
+  title_x <span class='op'>=</span> <span class='st'>"Characteristic"</span>,
+  title_y <span class='op'>=</span> <span class='st'>"Unreliability"</span>,
+  title_trace <span class='op'>=</span> <span class='st'>"Sample"</span>,
+  plot_method <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"plotly"</span>, <span class='st'>"ggplot2"</span><span class='op'>)</span>,
+  <span class='va'>...</span>
+<span class='op'>)</span>
+
+<span class='co'># S3 method for mixmod_em</span>
+<span class='fu'>plot_prob</span><span class='op'>(</span>
+  <span class='va'>x</span>,
+  title_main <span class='op'>=</span> <span class='st'>"Probability Plot"</span>,
+  title_x <span class='op'>=</span> <span class='st'>"Characteristic"</span>,
+  title_y <span class='op'>=</span> <span class='st'>"Unreliability"</span>,
+  title_trace <span class='op'>=</span> <span class='st'>"Sample"</span>,
+  plot_method <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"plotly"</span>, <span class='st'>"ggplot2"</span><span class='op'>)</span>,
+  <span class='va'>...</span>
+<span class='op'>)</span>
+
+<span class='co'># S3 method for mixmod_regression_list</span>
 <span class='fu'>plot_prob</span><span class='op'>(</span>
   <span class='va'>x</span>,
   title_main <span class='op'>=</span> <span class='st'>"Probability Plot"</span>,

@@ -2,7 +2,7 @@
 % Please edit documentation in R/probability_estimators.R
 \name{kaplan_method}
 \alias{kaplan_method}
-\title{Estimation of Failure Probabilities using Kaplan-Meier}
+\title{Estimation of Failure Probabilities using the Kaplan-Meier Estimator}
 \usage{
 kaplan_method(x, status, id = NULL)
 }

@@ -174,34 +174,6 @@ double logLikelihood(arma::mat& posterior, arma::mat& logDensity,
 //'   \item \code{priori} : A vector with estimated a-priori probabilities.
 //'   \item \code{logL} : The value of the complete log-likelihood.}
 //'
-//' @examples
-//' # Vectors:
-//' hours <- voltage$hours
-//' status <- voltage$status
-//'
-//' # Example 1 - EM algorithm with randomly assgined posterior probabilities:
-//' mix_mod_em_1 <- mixture_em_cpp(
-//'   x = hours,
-//'   status = status,
-//'   post = NULL,
-//'   k = 2,
-//'   n_iter = 150
-//' )
-//'
-//' # Example 2 - EM algorithm with user-specific posterior probabilities:
-//' set.seed(1)
-//'
-//' x_vec <- runif(n = length(hours))
-//' post <- matrix(c(x_vec, 1 - x_vec), ncol = 2)
-//'
-//' mix_mod_em_2 <- mixture_em_cpp(x = hours,
-//'                              status = state,
-//'                              post = post,
-//'                              distribution = "weibull",
-//'                              k = 2,
-//'                              method = "EM",
-//'                              n_iter = 150)
-//'
 //' @keywords internal
 // [[Rcpp::export]]
 List mixture_em_cpp(NumericVector& x,

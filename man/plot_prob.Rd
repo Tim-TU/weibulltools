@@ -12,15 +12,53 @@
 \usage{
 plot_prob(x, ...)
 
-## S3 method for classes 'cdf_estimation', 'model_estimation',
-## 'mixmod_regression', 'mixmod_em', 'mixmod_regression_list'
-plot_prob(
+\method{plot_prob}{cdf_estimation}(
+  x,
+  distribution = c("weibull", "lognormal", "loglogistic", "normal", "logistic", "sev"),
+  title_main = "Probability Plot",
+  title_x = "Characteristic",
+  title_y = "Unreliability",
+  title_trace = "Sample",
+  plot_method = c("plotly", "ggplot2"),
+  ...
+)
+
+\method{plot_prob}{model_estimation}(
   x,
   title_main = "Probability Plot",
   title_x = "Characteristic",
   title_y = "Unreliability",
   title_trace = "Sample",
-  distribution = c("weibull", "lognormal", "loglogistic", "normal", "logistic", "sev"),
+  plot_method = c("plotly", "ggplot2"),
+  ...
+)
+
+\method{plot_prob}{mixmod_regression}(
+  x,
+  title_main = "Probability Plot",
+  title_x = "Characteristic",
+  title_y = "Unreliability",
+  title_trace = "Sample",
+  plot_method = c("plotly", "ggplot2"),
+  ...
+)
+
+\method{plot_prob}{mixmod_em}(
+  x,
+  title_main = "Probability Plot",
+  title_x = "Characteristic",
+  title_y = "Unreliability",
+  title_trace = "Sample",
+  plot_method = c("plotly", "ggplot2"),
+  ...
+)
+
+\method{plot_prob}{mixmod_regression_list}(
+  x,
+  title_main = "Probability Plot",
+  title_x = "Characteristic",
+  title_y = "Unreliability",
+  title_trace = "Sample",
   plot_method = c("plotly", "ggplot2"),
   ...
 )

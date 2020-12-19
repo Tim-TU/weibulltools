@@ -27,7 +27,8 @@ A named vector of estimated parameters for the specified
 
 \code{dist_delay_report()} is no longer under active development, switching
 to \code{\link{dist_delay}} is recommended.
-
+}
+\details{
 This function introduces a delay random variable by calculating the time
 difference between the report and repair date for the sample units
 and afterwards estimates the parameter(s) of a supposed distribution,

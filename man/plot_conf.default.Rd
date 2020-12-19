@@ -2,7 +2,7 @@
 % Please edit documentation in R/plot_functions.R
 \name{plot_conf.default}
 \alias{plot_conf.default}
-\title{Add Confidence Region(s) for Quantiles or Probabilities}
+\title{Add Confidence Region(s) for Quantiles and Probabilities}
 \usage{
 \method{plot_conf}{default}(
   p_obj,
@@ -42,10 +42,13 @@ Returns a plot object containing the probability plot with
 \description{
 \lifecycle{soft-deprecated}
 
-This function is used to add estimated confidence region(s) to an existing
-probability plot which also includes the estimated regression line.
+\code{plot_conf.default()} is no longer under active development, switching
+to \code{\link[=plot_conf]{plot_conf.confint}} is recommended.
 }
 \details{
+This function is used to add estimated confidence region(s) to an existing
+probability plot which also includes the estimated regression line.
+
 It is important that the length of the vectors provided as lists in \code{x}
 and \code{y} match with the length of the vectors \code{x} and \code{y} in
 the function \code{\link{plot_mod}}. For this reason the following procedure
@@ -59,18 +62,13 @@ is recommended:
   \item In \strong{Examples} the described approach is shown with code.}
 }
 \examples{
-# Alloy T7987 dataset taken from Meeker and Escobar(1998, p. 131)
-cycles   <- c(300, 300, 300, 300, 300, 291, 274, 271, 269, 257, 256, 227, 226,
-              224, 213, 211, 205, 203, 197, 196, 190, 189, 188, 187, 184, 180,
-              180, 177, 176, 173, 172, 171, 170, 170, 169, 168, 168, 162, 159,
-              159, 159, 159, 152, 152, 149, 149, 144, 143, 141, 141, 140, 139,
-              139, 136, 135, 133, 131, 129, 123, 121, 121, 118, 117, 117, 114,
-              112, 108, 104, 99, 99, 96, 94)
-status <- c(rep(0, 5), rep(1, 67))
+# Vectors:
+cycles   <- alloy$cycles
+status <- alloy$status
 
 tbl_john <- estimate_cdf(x = cycles, status = status, method = "johnson")
 
-# Example 1: Probability Plot, Regression Line and Confidence Bounds for Three-Parameter-Weibull:
+# Example 1 - Probability Plot, Regression Line and Confidence Bounds for Three-Parameter-Weibull:
 rr <- rank_regression(
   x = tbl_john$x,
   y = tbl_john$prob,
@@ -109,7 +107,7 @@ plot_conf_beta <- plot_conf(
   distribution = "weibull3"
 )
 
-# Example 2: Probability Plot, Regression Line and Confidence Bounds for Three-Parameter-Lognormal:
+# Example 2 - Probability Plot, Regression Line and Confidence Bounds for Three-Parameter-Lognormal:
 rr_ln <- rank_regression(
   x = tbl_john$x,
   y = tbl_john$prob,

@@ -359,7 +359,7 @@ mixmod_regression_ <- function(cdf_estimation,
 
     # already determined segment 1 with group 1:
     cdf_failed_1 <- cdf_failed %>%
-      dplyr::filter(group == min(.data$group, na.rm = TRUE))
+      dplyr::filter(.data$group == min(.data$group, na.rm = TRUE))
 
     mrr_1 <- rank_regression(
       cdf_failed_1,
@@ -369,7 +369,7 @@ mixmod_regression_ <- function(cdf_estimation,
 
     # Rest with group 2 that can potentially be segmented:
     cdf_failed_rest <- cdf_failed %>%
-      dplyr::filter(group == max(.data$group, na.rm = TRUE))
+      dplyr::filter(.data$group == max(.data$group, na.rm = TRUE))
 
     # Initial regression for the part that can potentially be segmented:
     mrr_23 <- rank_regression(
@@ -415,7 +415,7 @@ mixmod_regression_ <- function(cdf_estimation,
       # Determine second segment:
       cdf_failed_2 <- dplyr::filter(
         cdf_failed_rest,
-        group == min(.data$group, na.rm = TRUE)
+        .data$group == min(.data$group, na.rm = TRUE)
       )
 
       mrr_2 <- rank_regression(
@@ -427,7 +427,7 @@ mixmod_regression_ <- function(cdf_estimation,
       # Determine third segment:
       cdf_failed_3 <- dplyr::filter(
         cdf_failed_rest,
-        group == max(.data$group, na.rm = TRUE)
+        .data$group == max(.data$group, na.rm = TRUE)
       )
 
       mrr_3 <- rank_regression(

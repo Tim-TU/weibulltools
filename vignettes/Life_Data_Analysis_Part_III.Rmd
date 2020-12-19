@@ -10,7 +10,7 @@ output:
     fig_caption: yes
 vignette: >
   %\VignetteIndexEntry{Life Data Analysis Part III - Mixture Models}
-  %\VignetteEngine{knitr::knitr}
+  %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
 

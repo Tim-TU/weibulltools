@@ -23,11 +23,4 @@ A numeric vector containing the computed Johnson ranks.
 This function calculates the Johnson ranks which are used to estimate the
 failure probabilities in case of (multiple) right censored data.
 }
-\examples{
-  defectives <- c(0, 1, 2, 0, 0, 0, 3, 0, 2, 0)
-  n_out <- c(0, 2, 4, 8, 9, 11, 12, 16, 20, 22)
-  n <- 23
-  johnson_ranks <- calculate_ranks(f = defectives, n_out = n_out, n = n)
-
-}
 \keyword{internal}

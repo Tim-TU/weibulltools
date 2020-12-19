@@ -56,7 +56,7 @@ tbl_john <- johnson_method(
   id = uic
 )
 
-# Example 2 - Johnson's method works for defectives only:
+# Example 2 - Johnson's method works also if only defective units are considered:
 tbl_john_2 <- johnson_method(
   x = obs,
   status = rep(1, length(obs))
