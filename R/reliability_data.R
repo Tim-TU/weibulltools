@@ -1,4 +1,4 @@
-#' Reliability data
+#' Reliability Data
 #'
 #' @description
 #' Create consistent reliability data based on an existing \code{data.frame}

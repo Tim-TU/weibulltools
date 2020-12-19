@@ -119,7 +119,7 @@ plot_mod_vis.ggplot <- function(
       data = tbl_pred, mapping = mapping
     ) +
     ggplot2::labs(
-      color = paste(p_obj$labels$colour, "+", title_trace)
+      color = paste(p_obj$labels$colour, "+\n", title_trace)
     )
 
   return(p_mod)
@@ -145,6 +145,9 @@ plot_conf_vis.ggplot <- function(p_obj, tbl_p, title_trace) {
       data = tbl_p,
       mapping = mapping,
       linetype = "CC"
+    ) +
+    ggplot2::labs(
+      color = paste(p_obj$labels$colour, "+\n", title_trace)
     )
 
   return(p_conf)

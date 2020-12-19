@@ -217,7 +217,8 @@ ml_estimation_ <- function(data,
       ml_output <- list(
         coefficients = estimates_loc_sc,
         confint = conf_ints_loc_sc,
-        varcov = vcov_loc_sc, logL = -ml$min,
+        varcov = vcov_loc_sc,
+        logL = -ml$min,
         aic = -2 * (-ml$min) + 2 * length(estimates_loc_sc),
         bic = (-2 * (-ml$min) + log(length(x)) * length(estimates_loc_sc))
       )
@@ -321,7 +322,8 @@ ml_estimation_ <- function(data,
       ml_output <- list(
         coefficients = estimates_loc_sc,
         confint = conf_ints_loc_sc,
-        varcov = vcov_loc_sc, logL = ml$value,
+        varcov = vcov_loc_sc,
+        logL = ml$value,
         aic = -2 * (ml$value) + 2 * length(estimates_loc_sc),
         bic = (-2 * (ml$value) + log(length(x)) * length(estimates_loc_sc))
       )
@@ -388,7 +390,8 @@ ml_estimation_ <- function(data,
     ml_output <- list(
       coefficients = estimates_loc_sc,
       confint = conf_ints_loc_sc,
-      varcov = vcov_loc_sc, logL = ml$value,
+      varcov = vcov_loc_sc,
+      logL = ml$value,
       aic = -2 * (ml$value) + 2 * length(estimates_loc_sc),
       bic = (-2 * (ml$value) +
                log(length(x)) * length(estimates_loc_sc))
