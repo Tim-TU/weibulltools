@@ -40,15 +40,10 @@ Returns a plot object containing the probability plot with
   confidence region(s).
 }
 \description{
-\lifecycle{soft-deprecated}
-
-\code{plot_conf.default()} is no longer under active development, switching
-to \code{\link[=plot_conf]{plot_conf.confint}} is recommended.
-}
-\details{
 This function is used to add estimated confidence region(s) to an existing
 probability plot which also includes the estimated regression line.
-
+}
+\details{
 It is important that the length of the vectors provided as lists in \code{x}
 and \code{y} match with the length of the vectors \code{x} and \code{y} in
 the function \code{\link{plot_mod}}. For this reason the following procedure
@@ -150,4 +145,7 @@ plot_conf_beta_ln <- plot_conf(
 \references{
 Meeker, William Q; Escobar, Luis A., Statistical methods for
   reliability data, New York: Wiley series in probability and statistics, 1998
+}
+\seealso{
+\code{\link{plot_conf}}
 }

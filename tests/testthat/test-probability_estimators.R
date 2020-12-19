@@ -68,3 +68,5 @@ test_that("snapshots: input with repeating characteristics", {
   expect_snapshot_output(kaplan_method_(tbl))
   expect_snapshot_output(nelson_method_(tbl))
 })
+
+options(testthat.progress.max_fails = 20)

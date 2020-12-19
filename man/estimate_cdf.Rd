@@ -2,12 +2,12 @@
 % Please edit documentation in R/probability_estimators.R
 \name{estimate_cdf}
 \alias{estimate_cdf}
-\alias{estimate_cdf.reliability_data}
+\alias{estimate_cdf.wt_reliability_data}
 \title{Estimation of Failure Probabilities}
 \usage{
 estimate_cdf(x, ...)
 
-\method{estimate_cdf}{reliability_data}(
+\method{estimate_cdf}{wt_reliability_data}(
   x,
   methods = c("mr", "johnson", "kaplan", "nelson"),
   options = list(),

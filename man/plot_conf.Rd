@@ -3,12 +3,12 @@
 \encoding{UTF-8}
 \name{plot_conf}
 \alias{plot_conf}
-\alias{plot_conf.confint}
+\alias{plot_conf.wt_confint}
 \title{Add Confidence Region(s) for Quantiles and Probabilities}
 \usage{
 plot_conf(p_obj, x, ...)
 
-\method{plot_conf}{confint}(
+\method{plot_conf}{wt_confint}(
   p_obj,
   x,
   title_trace_mod = "Fit",

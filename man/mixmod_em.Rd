@@ -3,12 +3,12 @@
 \encoding{UTF-8}
 \name{mixmod_em}
 \alias{mixmod_em}
-\alias{mixmod_em.reliability_data}
+\alias{mixmod_em.wt_reliability_data}
 \title{Weibull Mixture Model Estimation using EM-Algorithm}
 \usage{
 mixmod_em(x, ...)
 
-\method{mixmod_em}{reliability_data}(
+\method{mixmod_em}{wt_reliability_data}(
   x,
   distribution = "weibull",
   conf_level = 0.95,
@@ -21,7 +21,7 @@ mixmod_em(x, ...)
 )
 }
 \arguments{
-\item{x}{An object of class \code{reliability_data} returned from
+\item{x}{An object of class \code{"wt_reliability_data"} returned from
 \code{\link{reliability_data}}.}
 
 \item{...}{Further arguments passed to or from other methods. Currently not used.}
@@ -43,13 +43,14 @@ of every component \code{k}.}
 log-likelihood values, which seems permissible.}
 }
 \value{
-Returns a list with class \code{"mixmod_em"}. The length of the list
-depends on the number of specified subgroups \emph{k}. The first \code{k} lists
-contain information provided by \link{ml_estimation}. The values of \code{logL},
-\code{aic} and \code{bic} are the results of a weighted log-likelihood, where
-the weights are the posterior probabilities determined by the algorithm.
-The last list summarizes further results of the EM algorithm and is therefore
-called \code{em_results}. It contains the following elements:
+Returns a list with class \code{"wt_mixmod_em"}. The length of the
+list depends on the number of specified subgroups \emph{k}. The first
+\code{k} lists contain information provided by \link{ml_estimation}. The
+values of \code{logL}, \code{aic} and \code{bic} are the results of a
+weighted log-likelihood, where the weights are the posterior probabilities
+determined by the algorithm. The last list summarizes further results of the
+EM algorithm and is therefore called \code{em_results}. It contains the
+following elements:
   \itemize{
     \item \code{a_priori} : A vector with estimated prior probabilities.
     \item \code{a_posteriori} : A matrix with estimated posterior probabilities.

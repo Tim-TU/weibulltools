@@ -51,8 +51,8 @@
 
 ## Introduction of S3 interface
 * `rank_regression()` is now an S3 generic. `rank_regression()` becomes `rank_regression.default()`. Added `rank_regression.cdf_estimation()`.
-* `plot_prob()` is now an S3 generic. `plot_prob()` becomes `plot_prob.default()`. Added `plot_prob.cdf_estimation()`, `plot_prob.model_estimation()`, `plot_prob.mixmod_regression()`, `plot_prob.mixmod_em()`, `plot_prob.mixmod_regression_list()`.
-* `plot_mod()` is now an S3 generic. `plot_mod()` becomes `plot_mod.default()`. Added `plot_mod.model_estimation()`.
+* `plot_prob()` is now an S3 generic. `plot_prob()` becomes `plot_prob.default()`. Added `plot_prob.cdf_estimation()` and `plot_prob.weibulltools_model()`.
+* `plot_mod()` is now an S3 generic. `plot_mod()` becomes `plot_mod.default()`. Added `plot_mod.weibulltools_model()`.
 * `plot_conf()` is now an S3 generic. `plot_conf()` becomes `plot_conf.default()`. Added `plot_conf.confint()`.
 * `plot_pop()`: Added support for multiple population lines and comparison of two- and three-parametric distributions.
 

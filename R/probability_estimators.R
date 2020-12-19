@@ -89,12 +89,13 @@ estimate_cdf <- function(x, ...) {
 #' @rdname estimate_cdf
 #'
 #' @export
-estimate_cdf.reliability_data <- function(x,
-                                          methods = c(
-                                            "mr", "johnson", "kaplan", "nelson"
-                                          ),
-                                          options = list(),
-                                          ...
+estimate_cdf.wt_reliability_data <- function(x,
+                                             methods = c(
+                                               "mr", "johnson", "kaplan",
+                                               "nelson"
+                                             ),
+                                             options = list(),
+                                             ...
 ) {
 
   methods <- if (missing(methods)) {
@@ -110,7 +111,7 @@ estimate_cdf.reliability_data <- function(x,
     nelson = nelson_method_
   )
 
-  purrr::map_dfr(methods, function(method) {
+  tbl_out <- purrr::map_dfr(methods, function(method) {
     if (method == "mr") {
       method_funs[[method]](
         data = x,
@@ -123,6 +124,10 @@ estimate_cdf.reliability_data <- function(x,
       method_funs[[method]](data = x)
     }
   })
+
+  class(tbl_out) <- c("wt_cdf_estimation", class(tbl_out))
+
+  return(tbl_out)
 }
 
 
@@ -183,16 +188,16 @@ estimate_cdf.default <- function(x,
                                  options = list(),
                                  ...
 ) {
-  # Fail early, if user tries to call estimate_cdf.reliability_data with a tibble
-  # which is not of class reliability data. Otherwise failure would occur in
-  # reliability_data, which is counterintuitive
+  # Fail early, if user tries to call estimate_cdf.wt_reliability_data with a
+  # tibble which is not of class reliability data. Otherwise failure would occur
+  # in reliability_data, which is counterintuitive
   status
 
   data <- reliability_data(x = x, status = status, id = id)
 
   method = match.arg(method)
 
-  estimate_cdf.reliability_data(
+  estimate_cdf.wt_reliability_data(
     x = data,
     methods = method,
     options = options
@@ -202,7 +207,7 @@ estimate_cdf.default <- function(x,
 
 
 #' @export
-print.cdf_estimation <- function(x, ...) {
+print.wt_cdf_estimation <- function(x, ...) {
   n_methods <- length(unique(x$method))
   if (n_methods == 1) {
     cat("CDF estimation for method '", x$method[1], "':\n", sep = "")
@@ -341,9 +346,7 @@ mr_method_ <- function(data,
       .data$id, .data$x, .data$status, .data$rank, .data$prob, .data$method
     )
 
-  class(tbl_out) <- c("cdf_estimation", class(tbl_out))
-
-  return(tbl_out)
+  tbl_out
 }
 
 
@@ -469,9 +472,7 @@ johnson_method_ <- function(data) {
       .data$id, .data$x, .data$status, .data$rank, .data$prob, .data$method
     )
 
-  class(tbl_out) <- c("cdf_estimation", class(tbl_out))
-
-  return(tbl_out)
+  tbl_out
 }
 
 
@@ -614,9 +615,7 @@ kaplan_method_ <- function(data) {
       .data$id, .data$x, .data$status, .data$rank, .data$prob, .data$method
     )
 
-  class(tbl_out) <- c("cdf_estimation", class(tbl_out))
-
-  return(tbl_out)
+  tbl_out
 }
 
 
@@ -731,7 +730,5 @@ nelson_method_ <- function(data) {
       .data$id, .data$x, .data$status, .data$rank, .data$prob, .data$method
     )
 
-  class(tbl_out) <- c("cdf_estimation", class(tbl_out))
-
-  return(tbl_out)
+  tbl_out
 }

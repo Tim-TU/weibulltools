@@ -213,14 +213,15 @@ dist_delay <- function(date_1,
 #'
 #' @return A list containing the following elements:
 #'   \itemize{
-#'     \item \code{data} : A tibble with classes \code{"mcs_data"} and
-#'       \code{"reliability_data"} if \code{status} is provided. Since the
-#'       attribute \code{"reliability_data"} enables the direct usage of \code{data}
-#'       inside \code{estimate_cdf} (\code{\link{estimate_cdf.reliability_data}}),
-#'       the required lifetime characteristic is automatically set to the operating
+#'     \item \code{data} : A tibble with classes \code{"wt_mcs_data"} and
+#'       \code{"wt_reliability_data"} if \code{status} is provided. Since the
+#'       class \code{"wt_reliability_data"} enables the direct usage of
+#'       \code{data} inside
+#'       \code{\link[=estimate_cdf]{estimate_cdf.wt_reliability_data}}, the
+#'       required lifetime characteristic is automatically set to the operating
 #'       time \code{time}.
 #'
-#'       If \code{status = NULL} class is \code{"mcs_data"}, which is not
+#'       If \code{status = NULL} class is \code{"wt_mcs_data"}, which is not
 #'       supported by \code{estimate_cdf} due to missing \code{status}.
 #'
 #'       The tibble contains the following columns:
@@ -418,13 +419,13 @@ mcs_delay <- function(date_1,
 
   if (purrr::is_null(status)) {
     names(data_list) <- c(data_list_names, "time", "id")
-    class_assign <- "mcs_data"
+    class_assign <- "wt_mcs_data"
   } else {
     names(data_list) <- c(data_list_names, "time", "status", "id")
-    class_assign <- c("mcs_data", "reliability_data")
+    class_assign <- c("wt_mcs_data", "wt_reliability_data")
   }
 
-  # Defining data_tbl with class "mcs_data" and/or "reliability_data":
+  # Defining data_tbl with class "wt_mcs_data" and/or "wt_reliability_data":
   data_tbl <- tibble::as_tibble(data_list)
   class(data_tbl) <- c(class_assign, class(data_tbl))
 

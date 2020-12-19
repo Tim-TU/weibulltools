@@ -3,12 +3,12 @@
 \encoding{UTF-8}
 \name{r_squared_profiling}
 \alias{r_squared_profiling}
-\alias{r_squared_profiling.cdf_estimation}
+\alias{r_squared_profiling.wt_cdf_estimation}
 \title{R-Squared-Profile Function for Parametric Lifetime Distributions with Threshold}
 \usage{
 r_squared_profiling(x, ...)
 
-\method{r_squared_profiling}{cdf_estimation}(
+\method{r_squared_profiling}{wt_cdf_estimation}(
   x,
   thres,
   distribution = c("weibull3", "lognormal3", "loglogistic3"),
@@ -16,7 +16,7 @@ r_squared_profiling(x, ...)
 )
 }
 \arguments{
-\item{x}{Object of class \code{cdf_estimation} returned from
+\item{x}{Object of class \code{"wt_cdf_estimation"} returned from
 \code{\link{estimate_cdf}}.}
 
 \item{...}{Further arguments passed to or from other methods. Currently not used.}

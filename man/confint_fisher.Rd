@@ -3,12 +3,12 @@
 \encoding{UTF-8}
 \name{confint_fisher}
 \alias{confint_fisher}
-\alias{confint_fisher.model_estimation}
+\alias{confint_fisher.wt_model}
 \title{Fisher's Confidence Bounds for Quantiles and Probabilities}
 \usage{
 confint_fisher(x, ...)
 
-\method{confint_fisher}{model_estimation}(
+\method{confint_fisher}{wt_model}(
   x,
   b_lives = c(0.01, 0.1, 0.5),
   bounds = c("two_sided", "lower", "upper"),
@@ -18,8 +18,8 @@ confint_fisher(x, ...)
 )
 }
 \arguments{
-\item{x}{Object of class \code{model_estimation} returned from
-\code{\link{ml_estimation}}.}
+\item{x}{Object with classes \code{"wt_model"} \strong{and}
+\code{"wt_ml_estimation"} returned from \code{\link{ml_estimation}}.}
 
 \item{...}{Further arguments passed to or from other methods. Currently not used.}
 
@@ -36,7 +36,8 @@ confidence interval. One of \code{"y"} (failure probabilities) or \code{"x"}
 (quantiles).}
 }
 \value{
-A tibble with class \code{"confint"} containing the following columns:
+A tibble with class \code{"wt_confint"} containing the following
+columns:
   \itemize{
     \item \code{x} : An ordered sequence of the lifetime characteristic regarding
       the failed units, starting at \code{min(x)} and ending up at \code{max(x)}.

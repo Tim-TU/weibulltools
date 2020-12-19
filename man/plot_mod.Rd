@@ -3,29 +3,17 @@
 \encoding{UTF-8}
 \name{plot_mod}
 \alias{plot_mod}
-\alias{plot_mod.model_estimation}
-\alias{plot_mod.model_estimation_list}
-\alias{plot_mod.mixmod_regression}
-\alias{plot_mod.mixmod_regression_list}
-\alias{plot_mod.mixmod_em}
+\alias{plot_mod.wt_model}
 \title{Add Estimated Population Line(s) to a Probability Plot}
 \usage{
 plot_mod(p_obj, x, ...)
 
-\method{plot_mod}{model_estimation}(p_obj, x, title_trace = "Fit", ...)
-
-\method{plot_mod}{model_estimation_list}(p_obj, x, title_trace = "Fit", ...)
-
-\method{plot_mod}{mixmod_regression}(p_obj, x, title_trace = "Fit", ...)
-
-\method{plot_mod}{mixmod_regression_list}(p_obj, x, title_trace = "Fit", ...)
-
-\method{plot_mod}{mixmod_em}(p_obj, x, title_trace = "Fit", ...)
+\method{plot_mod}{wt_model}(p_obj, x, title_trace = "Fit", ...)
 }
 \arguments{
 \item{p_obj}{A plot object returned from \code{\link{plot_prob}}.}
 
-\item{x}{An object of aforementioned model classes. See 'S3 methods'.}
+\item{x}{An object of class \code{"wt_model"}.}
 
 \item{...}{Further arguments passed to or from other methods. Currently not used.}
 
@@ -50,19 +38,6 @@ the number of determined subgroups from \code{\link{mixmod_regression}} or
 data could be splitted in two groups, the legend entries would be "Line: 1"
 and "Line: 2".
 }
-\section{S3 methods}{
-\tabular{lll}{
-   \strong{Class} \tab \strong{Returned from} \tab \strong{Condition} \cr
-   \code{model_estimation} \tab \code{\link{rank_regression}} \tab One method in \code{\link{estimate_cdf}}. \cr
-   \code{model_estimation} \tab \code{\link{mixmod_regression}} \tab One method in \code{\link{estimate_cdf}}. No subgroups determined. \cr
-   \code{model_estimation} \tab \code{\link{ml_estimation}} \tab - \cr
-   \code{model_estimation_list} \tab \code{\link{rank_regression}} \tab Multiple methods in \code{\link{estimate_cdf}}. \cr
-   \code{mixmod_regression} \tab \code{\link{mixmod_regression}} \tab One method in \code{\link{estimate_cdf}}. \cr
-   \code{mixmod_regression_list} \tab \code{\link{mixmod_regression}} \tab Multiple methods in \code{\link{estimate_cdf}}. \cr
-   \code{mixmod_em} \tab \code{\link{mixmod_em}} \tab - \cr
-}
-}
-
 \examples{
 # Reliability data:
 data <- reliability_data(

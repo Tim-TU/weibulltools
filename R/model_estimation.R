@@ -1,10 +1,15 @@
 #' @export
-print.model_estimation <- function(x,
-                                   digits = max(
-                                     3L,
-                                     getOption("digits") - 3L
-                                   ),
-                                   ...
+print.wt_model <- function(x, digits = max(3L, getOption("digits") - 3L), ...) {
+  NextMethod("print")
+}
+
+#' @export
+print.wt_model_estimation <- function(x,
+                                      digits = max(
+                                        3L,
+                                        getOption("digits") - 3L
+                                      ),
+                                      ...
 ) {
   cat("Coefficients:\n")
   print(format(stats::coef(x), digits = digits), print.gap = 2L, quote = FALSE)
@@ -14,7 +19,7 @@ print.model_estimation <- function(x,
 
 
 #' @export
-print.model_estimation_list <- function(x,
+print.wt_model_estimation_list <- function(x,
                                         digits = max(
                                           3L,
                                           getOption("digits") - 3L
@@ -31,7 +36,7 @@ print.model_estimation_list <- function(x,
 }
 
 #' @export
-vcov.model_estimation <- function(object, ...) {
+vcov.wt_model_estimation <- function(object, ...) {
   if (hasName(object, "varcov")) {
     object$varcov
   } else {

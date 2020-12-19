@@ -3,12 +3,12 @@
 \encoding{UTF-8}
 \name{rank_regression}
 \alias{rank_regression}
-\alias{rank_regression.cdf_estimation}
+\alias{rank_regression.wt_cdf_estimation}
 \title{Rank Regression for Parametric Lifetime Distributions}
 \usage{
 rank_regression(x, ...)
 
-\method{rank_regression}{cdf_estimation}(
+\method{rank_regression}{wt_cdf_estimation}(
   x,
   distribution = c("weibull", "lognormal", "loglogistic", "normal", "logistic", "sev",
     "weibull3", "lognormal3", "loglogistic3"),
@@ -17,7 +17,7 @@ rank_regression(x, ...)
 )
 }
 \arguments{
-\item{x}{Object of class \code{cdf_estimation} returned from
+\item{x}{Object of class \code{"wt_cdf_estimation"} returned from
 \code{\link{estimate_cdf}}.}
 
 \item{...}{Further arguments passed to or from other methods. Currently not used.}
@@ -28,8 +28,8 @@ rank_regression(x, ...)
 \code{"weibull"} this must be one of \code{0.9}, \code{0.95} or \code{0.99}.}
 }
 \value{
-Returns a list with the classes \code{"rank_regression"} and
-\code{"model_estimation"} containing the following elements:
+Returns a list with the classes \code{"wt_rank_regression"} and
+\code{"wt_model_estimation"} containing the following elements:
 \itemize{
   \item \code{coefficients} : A named vector of estimated coefficients
     (parameters of the assumed distribution). \strong{Note}: The parameters
@@ -48,14 +48,14 @@ Returns a list with the classes \code{"rank_regression"} and
     for scale \eqn{\eta} and shape \eqn{\beta} (and threshold \eqn{\gamma})
     if \code{distribution} is \code{"weibull3"}.
   \item \code{r_squared} : Coefficient of determination.
-  \item \code{data} : A tibble with class \code{"cdf_estimation"} returned from \code{\link{estimate_cdf}}.
+  \item \code{data} : A tibble with class \code{"wt_cdf_estimation"} returned from \code{\link{estimate_cdf}}.
   \item \code{distribution} : Specified distribution.
 }
 
 If more than one method was specified in \code{\link{estimate_cdf}},
-  the resulting output is a list with class \code{"model_estimation_list"}.
-  In this case each list element has classes \code{"rank_regression"} and
-  \code{"model_estimation"} and the items listed above, are included.
+  the resulting output is a list with class \code{"wt_model_estimation_list"}.
+  In this case each list element has classes \code{"wt_rank_regression"} and
+  \code{"wt_model_estimation"} and the items listed above, are included.
 }
 \description{
 This function fits an \strong{x on y} regression to a linearized two- or

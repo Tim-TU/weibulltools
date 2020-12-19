@@ -2,22 +2,12 @@
 % Please edit documentation in R/confidence_intervals.R
 \name{confint_betabinom}
 \alias{confint_betabinom}
-\alias{confint_betabinom.model_estimation}
-\alias{confint_betabinom.model_estimation_list}
+\alias{confint_betabinom.wt_model}
 \title{Beta Binomial Confidence Bounds for Quantiles and Probabilities}
 \usage{
 confint_betabinom(x, ...)
 
-\method{confint_betabinom}{model_estimation}(
-  x,
-  b_lives = c(0.01, 0.1, 0.5),
-  bounds = c("two_sided", "lower", "upper"),
-  conf_level = 0.95,
-  direction = c("y", "x"),
-  ...
-)
-
-\method{confint_betabinom}{model_estimation_list}(
+\method{confint_betabinom}{wt_model}(
   x,
   b_lives = c(0.01, 0.1, 0.5),
   bounds = c("two_sided", "lower", "upper"),
@@ -27,8 +17,9 @@ confint_betabinom(x, ...)
 )
 }
 \arguments{
-\item{x}{Object of class \code{model_estimation} (or \code{model_estimation_list})
-returned from \code{\link{rank_regression}}.}
+\item{x}{Object with class \code{"wt_model"} and one of the classes
+\code{"wt_model_estimation"} or \code{"wt_model_estimation_list"} returned from
+\code{\link{rank_regression}}.}
 
 \item{...}{Further arguments passed to or from other methods. Currently not used.}
 
@@ -45,7 +36,7 @@ confidence interval. One of \code{"y"} (failure probabilities) or \code{"x"}
 (quantiles).}
 }
 \value{
-A tibble with class \code{"confint"} containing the following columns:
+A tibble with class \code{"wt_confint"} containing the following columns:
   \itemize{
     \item \code{x} : An ordered sequence of the lifetime characteristic regarding
       the failed units, starting at \code{min(x)} and ending up at \code{max(x)}.

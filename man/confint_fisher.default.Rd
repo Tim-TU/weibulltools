@@ -51,7 +51,8 @@ confidence interval. One of \code{"y"} (failure probabilities) or \code{"x"}
 \item{...}{Further arguments passed to or from other methods. Currently not used.}
 }
 \value{
-A tibble with class \code{"confint"} containing the following columns:
+A tibble with class \code{"wt_confint"} containing the following
+columns:
   \itemize{
     \item \code{x} : An ordered sequence of the lifetime characteristic regarding
       the failed units, starting at \code{min(x)} and ending up at \code{max(x)}.

@@ -58,7 +58,7 @@ plot_layout <- function(
 #'
 #' @details
 #'
-#' If data was split by \code{\link{mixmod_em}} \code{\link{estimate_cdf}} with
+#' If \code{x} was split by \code{\link{mixmod_em}} \code{\link{estimate_cdf}} with
 #' method \code{"johnson"} is applied to subgroup-specific data. The
 #' calculated plotting positions are shaped according to the determined split in
 #' \code{\link{mixmod_em}}.
@@ -77,17 +77,8 @@ plot_layout <- function(
 #' and the data has been split in two groups, the legend entries are "Group: 1"
 #' and "Group: 2".
 #'
-#' @section S3 methods:
-#'
-#' | **Class** | **Returned from** | **Condition** |
-#' | --- | --- | --- |
-#' | \code{cdf_estimation} | \code{\link{estimate_cdf}} | - |
-#' | \code{model_estimation} | \code{\link{mixmod_regression}} | One method in \code{\link{estimate_cdf}}. No subgroups determined. |
-#' | \code{mixmod_regression} | \code{\link{mixmod_regression}} | One method in \code{\link{estimate_cdf}}. |
-#' | \code{mixmod_regression_list} | \code{\link{mixmod_regression}} | Multiple methods in \code{\link{estimate_cdf}}.
-#' | \code{mixmod_em} | \code{\link{mixmod_em}} | - |
-#'
-#' @param x An object of aforementioned classes. See 'S3 methods'.
+#' @param x An object of class \code{"wt_cdf_estimation"} or
+#'   \code{"wt_model"}.
 #' @param distribution Supposed distribution of the random variable.
 #' @param title_main A character string which is assigned to the main title
 #'   of the plot.
@@ -164,17 +155,37 @@ plot_prob <- function(x, ...) {
 #' @rdname plot_prob
 #'
 #' @export
-plot_prob.cdf_estimation <- function(
-  x,
-  distribution = c(
-    "weibull", "lognormal", "loglogistic", "normal", "logistic", "sev"
-  ),
-  title_main = "Probability Plot",
-  title_x = "Characteristic",
-  title_y = "Unreliability",
-  title_trace = "Sample",
-  plot_method = c("plotly", "ggplot2"),
-  ...
+plot_prob.wt_model <- function(x,
+                               distribution = c(
+                                 "weibull", "lognormal", "loglogistic",
+                                 "normal", "logistic", "sev"
+                               ),
+                               title_main = "Probability Plot",
+                               title_x = "Characteristic",
+                               title_y = "Unreliability",
+                               title_trace = "Sample",
+                               plot_method = c("plotly", "ggplot2"),
+                               ...
+) {
+  NextMethod()
+}
+
+
+
+#' @rdname plot_prob
+#'
+#' @export
+plot_prob.wt_cdf_estimation <- function(x,
+                                        distribution = c(
+                                          "weibull", "lognormal", "loglogistic",
+                                          "normal", "logistic", "sev"
+                                        ),
+                                        title_main = "Probability Plot",
+                                        title_x = "Characteristic",
+                                        title_y = "Unreliability",
+                                        title_trace = "Sample",
+                                        plot_method = c("plotly", "ggplot2"),
+                                        ...
 ) {
   distribution <- match.arg(distribution)
   plot_method <- match.arg(plot_method)
@@ -192,22 +203,20 @@ plot_prob.cdf_estimation <- function(
 
 
 
-#' @rdname plot_prob
-#'
 #' @export
-plot_prob.model_estimation <- function(x,
-                                       title_main = "Probability Plot",
-                                       title_x = "Characteristic",
-                                       title_y = "Unreliability",
-                                       title_trace = "Sample",
-                                       plot_method = c("plotly", "ggplot2"),
-                                       ...
+plot_prob.wt_model_estimation <- function(x,
+                                          title_main = "Probability Plot",
+                                          title_x = "Characteristic",
+                                          title_y = "Unreliability",
+                                          title_trace = "Sample",
+                                          plot_method = c("plotly", "ggplot2"),
+                                          ...
 ) {
   plot_method <- match.arg(plot_method)
 
   cdf_estimation <- x$data
 
-  plot_prob.cdf_estimation(
+  plot_prob.wt_cdf_estimation(
     x = cdf_estimation,
     distribution = x$distribution,
     title_main = title_main,
@@ -220,16 +229,14 @@ plot_prob.model_estimation <- function(x,
 
 
 
-#' @rdname plot_prob
-#'
 #' @export
-plot_prob.mixmod_regression <- function(x,
-                                        title_main = "Probability Plot",
-                                        title_x = "Characteristic",
-                                        title_y = "Unreliability",
-                                        title_trace = "Sample",
-                                        plot_method = c("plotly", "ggplot2"),
-                                        ...
+plot_prob.wt_mixmod_regression <- function(x,
+                                           title_main = "Probability Plot",
+                                           title_x = "Characteristic",
+                                           title_y = "Unreliability",
+                                           title_trace = "Sample",
+                                           plot_method = c("plotly", "ggplot2"),
+                                           ...
 ) {
 
   plot_method <- match.arg(plot_method)
@@ -242,7 +249,7 @@ plot_prob.mixmod_regression <- function(x,
   })
 
   distribution <- x[[1]]$distribution
-  plot_prob.cdf_estimation(
+  plot_prob.wt_cdf_estimation(
     x = cdf_estimation,
     distribution = distribution,
     title_main = title_main,
@@ -255,16 +262,14 @@ plot_prob.mixmod_regression <- function(x,
 
 
 
-#' @rdname plot_prob
-#'
 #' @export
-plot_prob.mixmod_em <- function(x,
-                                title_main = "Probability Plot",
-                                title_x = "Characteristic",
-                                title_y = "Unreliability",
-                                title_trace = "Sample",
-                                plot_method = c("plotly", "ggplot2"),
-                                ...
+plot_prob.wt_mixmod_em <- function(x,
+                                   title_main = "Probability Plot",
+                                   title_x = "Characteristic",
+                                   title_y = "Unreliability",
+                                   title_trace = "Sample",
+                                   plot_method = c("plotly", "ggplot2"),
+                                   ...
 ) {
 
   plot_method <- match.arg(plot_method)
@@ -286,7 +291,7 @@ plot_prob.mixmod_em <- function(x,
     }
   )
 
-  plot_prob.cdf_estimation(
+  plot_prob.wt_cdf_estimation(
     x = john,
     title_main = title_main,
     title_x = title_x,
@@ -298,10 +303,8 @@ plot_prob.mixmod_em <- function(x,
 
 
 
-#' @rdname plot_prob
-#'
 #' @export
-plot_prob.mixmod_regression_list <- function(x,
+plot_prob.wt_mixmod_regression_list <- function(x,
                                              title_main = "Probability Plot",
                                              title_x = "Characteristic",
                                              title_y = "Unreliability",
@@ -324,7 +327,7 @@ plot_prob.mixmod_regression_list <- function(x,
   })
 
   distribution <- x[[1]][[1]]$distribution
-  plot_prob.cdf_estimation(
+  plot_prob.wt_cdf_estimation(
     x = cdf_estimation,
     distribution = distribution,
     title_main = title_main,
@@ -591,11 +594,9 @@ plot_prob_mix <- function(
 #' data could be splitted in two groups, the legend entries would be "Line: 1"
 #' and "Line: 2".
 #'
-#' @template mod_classes
-#'
 #' @param p_obj A plot object returned from \code{\link{plot_prob}}.
-#' @param x An object of aforementioned model classes. See 'S3 methods'.
-#' @inheritParams plot_prob.cdf_estimation
+#' @param x An object of class \code{"wt_model"}.
+#' @inheritParams plot_prob.wt_cdf_estimation
 #'
 #' @encoding UTF-8
 #' @references Meeker, William Q; Escobar, Luis A., Statistical methods for
@@ -664,8 +665,14 @@ plot_mod <- function(p_obj, x, ...) {
 #' @rdname plot_mod
 #'
 #' @export
-#'
-plot_mod.model_estimation <- function(p_obj, x, title_trace = "Fit", ...) {
+plot_mod.wt_model <- function(p_obj, x, title_trace = "Fit", ...) {
+  NextMethod("plot_mod", x)
+}
+
+
+
+#' @export
+plot_mod.wt_model_estimation <- function(p_obj, x, title_trace = "Fit", ...) {
 
   failed_data <- dplyr::filter(x$data, .data$status == 1)
 
@@ -680,11 +687,8 @@ plot_mod.model_estimation <- function(p_obj, x, title_trace = "Fit", ...) {
 
 
 
-#' @rdname plot_mod
-#'
 #' @export
-#'
-plot_mod.model_estimation_list <- function(p_obj, x, title_trace = "Fit", ...) {
+plot_mod.wt_model_estimation_list <- function(p_obj, x, title_trace = "Fit", ...) {
   methods <- names(x)
 
   tbl_pred <- purrr::map2_dfr(x, methods, function(model_estimation, method) {
@@ -707,10 +711,8 @@ plot_mod.model_estimation_list <- function(p_obj, x, title_trace = "Fit", ...) {
 
 
 
-#' @rdname plot_mod
-#'
 #' @export
-plot_mod.mixmod_regression <- function(p_obj, x, title_trace = "Fit", ...) {
+plot_mod.wt_mixmod_regression <- function(p_obj, x, title_trace = "Fit", ...) {
   tbl_pred <- purrr::map2_dfr(x, seq_along(x), function(model_estimation, index) {
     method <- if (!tibble::has_name(model_estimation$data, "method")) {
       # Case mixmod_em (plot_mod.mixmod_em calls this method internally)
@@ -736,13 +738,11 @@ plot_mod.mixmod_regression <- function(p_obj, x, title_trace = "Fit", ...) {
 
 
 
-#' @rdname plot_mod
-#'
 #' @export
-plot_mod.mixmod_regression_list <- function(p_obj,
-                                            x,
-                                            title_trace = "Fit",
-                                            ...
+plot_mod.wt_mixmod_regression_list <- function(p_obj,
+                                               x,
+                                               title_trace = "Fit",
+                                               ...
 ) {
   tbl_pred <- purrr::map2_dfr(x, names(x), function(mixmod_regression, method) {
     purrr::map2_dfr(
@@ -767,15 +767,13 @@ plot_mod.mixmod_regression_list <- function(p_obj,
 
 
 
-#' @rdname plot_mod
-#'
 #' @export
-plot_mod.mixmod_em <- function(p_obj, x, title_trace = "Fit", ...) {
+plot_mod.wt_mixmod_em <- function(p_obj, x, title_trace = "Fit", ...) {
 
   # Remove em results to get model_estimation_list
   model_estimation_list <- x[-length(x)]
 
-  plot_mod.mixmod_regression(
+  plot_mod.wt_mixmod_regression(
     p_obj = p_obj,
     x = model_estimation_list,
     title_trace = title_trace
@@ -799,7 +797,7 @@ plot_mod.mixmod_em <- function(p_obj, x, title_trace = "Fit", ...) {
 #'   parameter \eqn{\mu} and the second element needs to be the scale
 #'   parameter \eqn{\sigma}. If a three-parametric model is used the third element
 #'   is the threshold parameter \eqn{\gamma}.
-#' @inheritParams plot_mod.model_estimation
+#' @inheritParams plot_mod
 #' @inheritParams plot_prob.default
 #'
 #' @return Returns a plot object containing the probability plot with
@@ -1105,7 +1103,7 @@ plot_conf <- function(p_obj, x, ...) {
 #' @rdname plot_conf
 #'
 #' @export
-plot_conf.confint <- function(p_obj,
+plot_conf.wt_confint <- function(p_obj,
                               x,
                               title_trace_mod = "Fit",
                               title_trace_conf = "Confidence Limit",
@@ -1114,7 +1112,7 @@ plot_conf.confint <- function(p_obj,
 
   mod <- attr(x, "model_estimation")
 
-  if (inherits(mod, "model_estimation")) {
+  if (inherits(mod, "wt_model_estimation")) {
     ## Fake model_estimation_list
     # ml_estimation$data has no method column
     method <- if (hasName(mod$data, "method")) mod$data$method[1] else

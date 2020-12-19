@@ -1,6 +1,6 @@
 #' @return
-#' Returns a list with the classes \code{"ml_estimation"} and
-#' \code{"model_estimation"} containing the following elements:
+#' Returns a list with the classes \code{"wt_ml_estimation"} and
+#' \code{"wt_model_estimation"} containing the following elements:
 #' \itemize{
 #'   \item \code{coefficients} : A named vector of estimated coefficients
 #'     (parameters of the assumed distribution). \strong{Note}: The parameters

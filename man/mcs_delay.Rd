@@ -51,14 +51,15 @@ to the second (See 'Examples').}
 \value{
 A list containing the following elements:
   \itemize{
-    \item \code{data} : A tibble with classes \code{"mcs_data"} and
-      \code{"reliability_data"} if \code{status} is provided. Since the
-      attribute \code{"reliability_data"} enables the direct usage of \code{data}
-      inside \code{estimate_cdf} (\code{\link{estimate_cdf.reliability_data}}),
-      the required lifetime characteristic is automatically set to the operating
+    \item \code{data} : A tibble with classes \code{"wt_mcs_data"} and
+      \code{"wt_reliability_data"} if \code{status} is provided. Since the
+      class \code{"wt_reliability_data"} enables the direct usage of
+      \code{data} inside
+      \code{\link[=estimate_cdf]{estimate_cdf.wt_reliability_data}}, the
+      required lifetime characteristic is automatically set to the operating
       time \code{time}.
 
-      If \code{status = NULL} class is \code{"mcs_data"}, which is not
+      If \code{status = NULL} class is \code{"wt_mcs_data"}, which is not
       supported by \code{estimate_cdf} due to missing \code{status}.
 
       The tibble contains the following columns:
