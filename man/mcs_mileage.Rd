@@ -138,7 +138,7 @@ mcs_distances_3 <- mcs_mileage(
   distribution = "lognormal"
 )
 
-## Using result of *$data in estimate_cdf() -> not working at the moment!
+## Using result of *$data in estimate_cdf()
 prob_estimation <- estimate_cdf(
   x = mcs_distances_3$data,
   methods = "kaplan"

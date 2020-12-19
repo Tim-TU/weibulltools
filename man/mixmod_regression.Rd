@@ -79,14 +79,14 @@ the main types of failures, a maximum of three subgroups can be obtained.
 # Reliability data preparation:
 ## Data for mixture model:
 data_mix <- reliability_data(
-  data = voltage,
+  voltage,
   x = hours,
   status = status
 )
 
 ## Data for simple unimodal distribution:
 data <- reliability_data(
-  data = shock,
+  shock,
   x = distance,
   status = status
 )
@@ -123,7 +123,7 @@ mix_mod_lognorm <- mixmod_regression(
 
 # Example 3 - Mixture identification for multiple methods specified in estimate_cdf:
 mix_mod_mult <- mixmod_regression(
-  prob_mix_mult,
+  x = prob_mix_mult,
   distribution = "loglogistic"
 )
 

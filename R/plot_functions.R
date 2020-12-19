@@ -109,42 +109,48 @@ plot_layout <- function(
 #' @examples
 #' # Reliability data:
 #' data <- reliability_data(
-#'   data = alloy,
+#'   alloy,
 #'   x = cycles,
 #'   status = status
 #' )
 #'
 #' # Probability estimation:
-#' prob_tbl <- estimate_cdf(data, methods = c("johnson", "kaplan"))
+#' prob_tbl <- estimate_cdf(
+#'   data,
+#'   methods = c("johnson", "kaplan")
+#' )
 #'
 #' # Example 1 - Probability Plot Weibull:
 #' plot_weibull <- plot_prob(prob_tbl)
 #'
 #' # Example 2 - Probability Plot Lognormal:
 #' plot_lognormal <- plot_prob(
-#'   prob_tbl,
+#'   x = prob_tbl,
 #'   distribution = "lognormal"
 #' )
 #'
 #' ## Mixture identification
 #' # Reliability data:
 #' data_mix <- reliability_data(
-#'   data = voltage,
+#'   voltage,
 #'   x = hours,
 #'   status = status
 #' )
 #'
-#' prob_mix <- estimate_cdf(data_mix, methods = c("johnson", "kaplan"))
+#' prob_mix <- estimate_cdf(
+#'   data_mix,
+#'   methods = c("johnson", "kaplan")
+#' )
 #'
 #' # Example 3 - Mixture identification using mixmod_regression:
 #' mix_mod_rr <- mixmod_regression(prob_mix)
 #'
-#' plot_mix_rr <- plot_prob(mix_mod_rr)
+#' plot_mix_mod_rr <- plot_prob(x = mix_mod_rr)
 #'
 #' # Example 4 - Mixture identification using mixmod_em:
 #' mix_mod_em <- mixmod_em(data_mix)
 #'
-#' plot_mix_em <- plot_prob(mix_mod_em)
+#' plot_mix_mod_em <- plot_prob(x = mix_mod_em)
 #'
 #' @md
 #' @export
@@ -588,7 +594,7 @@ plot_prob_mix <- function(
 #' @template mod_classes
 #'
 #' @param p_obj A plot object returned from \code{\link{plot_prob}}.
-#' @param x An object of aforementioned classes. See 'S3 methods'.
+#' @param x An object of aforementioned model classes. See 'S3 methods'.
 #' @inheritParams plot_prob.cdf_estimation
 #'
 #' @encoding UTF-8
@@ -610,36 +616,42 @@ plot_prob_mix <- function(
 #' prob_tbl <- estimate_cdf(data, methods = c("johnson", "kaplan"))
 #'
 #' # Example 1 - Probability Plot and Regression Line Three-Parameter-Weibull:
-#' plot_weibull <- plot_prob(
-#'   prob_tbl,
-#'   distribution = "weibull"
-#' )
+#' plot_weibull <- plot_prob(prob_tbl, distribution = "weibull")
 #'
-#' rr_weibull <- rank_regression(
-#'   prob_tbl,
-#'   distribution = "weibull3"
-#' )
+#' rr_weibull <- rank_regression(prob_tbl, distribution = "weibull3")
 #'
-#' plot_reg_weibull <- plot_mod(
-#'   p_obj = plot_weibull,
-#'   x = rr_weibull
-#' )
+#' plot_reg_weibull <- plot_mod(p_obj = plot_weibull, x = rr_weibull)
 #'
 #' # Example 2 - Probability Plot and Regression Line Three-Parameter-Lognormal:
-#' plot_lognormal <- plot_prob(
-#'   prob_tbl,
-#'   distribution = "lognormal"
+#' plot_lognormal <- plot_prob(prob_tbl, distribution = "lognormal")
+#'
+#' rr_lognormal <- rank_regression(prob_tbl, distribution = "lognormal3")
+#'
+#' plot_reg_lognormal <- plot_mod(p_obj = plot_lognormal, x = rr_lognormal)
+#'
+#' ## Mixture Identification
+#' # Reliability data:
+#' data_mix <- reliability_data(voltage, x = hours, status = status)
+#'
+#' # Probability estimation:
+#' prob_mix <- estimate_cdf(
+#'   data_mix,
+#'   methods = c("johnson", "kaplan", "nelson")
 #' )
 #'
-#' rr_lognormal <- rank_regression(
-#'   prob_tbl,
-#'   distribution = "lognormal3"
-#' )
+#' # Example 3 - Probability Plot and Regression Line Mixmod Regression:
+#' mix_mod_rr <- mixmod_regression(prob_mix, distribution = "weibull")
 #'
-#' plot_reg_lognormal <- plot_mod(
-#'   p_obj = plot_lognormal,
-#'   x = rr_lognormal
-#' )
+#' plot_weibull <- plot_prob(mix_mod_rr)
+#'
+#' plot_reg_mix_mod_rr <- plot_mod(p_obj = plot_weibull, x = mix_mod_rr)
+#'
+#' # Example 4 - Probability Plot and Regression Line Mixmod EM:
+#' mix_mod_em <- mixmod_em(data_mix)
+#'
+#' plot_weibull <- plot_prob(mix_mod_em)
+#'
+#' plot_reg_mix_mod_em <- plot_mod(p_obj = plot_weibull, x = mix_mod_em)
 #'
 #' @export
 #'
@@ -796,36 +808,32 @@ plot_mod.mixmod_em <- function(p_obj, x, title_trace = "Fit", ...) {
 #' @seealso \code{\link{plot_mod}}
 #'
 #' @examples
-#' # Alloy T7987 dataset taken from Meeker and Escobar(1998, p. 131)
-#' cycles   <- c(300, 300, 300, 300, 300, 291, 274, 271, 269, 257, 256, 227, 226,
-#'               224, 213, 211, 205, 203, 197, 196, 190, 189, 188, 187, 184, 180,
-#'               180, 177, 176, 173, 172, 171, 170, 170, 169, 168, 168, 162, 159,
-#'               159, 159, 159, 152, 152, 149, 149, 144, 143, 141, 141, 140, 139,
-#'               139, 136, 135, 133, 131, 129, 123, 121, 121, 118, 117, 117, 114,
-#'               112, 108, 104, 99, 99, 96, 94)
-#' status <- c(rep(0, 5), rep(1, 67))
+#' # Vectors:
+#' cycles <- alloy$cycles
+#' status <- alloy$status
 #'
-#' tbl_john <- estimate_cdf(x = cycles, status = status, method = "johnson")
+#' # Probability estimation
+#' prob_tbl <- estimate_cdf(x = cycles, status = status, method = "johnson")
 #'
 #' # Example 1: Probability Plot and Regression Line Three-Parameter-Weibull:
 #' plot_weibull <- plot_prob(
-#'   x = tbl_john$x,
-#'   y = tbl_john$prob,
-#'   status = tbl_john$status,
-#'   id = tbl_john$id,
+#'   x = prob_tbl$x,
+#'   y = prob_tbl$prob,
+#'   status = prob_tbl$status,
+#'   id = prob_tbl$id,
 #'   distribution = "weibull"
 #' )
 #'
 #' rr <- rank_regression(
-#'   x = tbl_john$x,
-#'   y = tbl_john$prob,
-#'   status = tbl_john$status,
+#'   x = prob_tbl$x,
+#'   y = prob_tbl$prob,
+#'   status = prob_tbl$status,
 #'   distribution = "weibull3"
 #' )
 #'
 #' plot_reg_weibull <- plot_mod(
 #'   p_obj = plot_weibull,
-#'   x = tbl_john$x,
+#'   x = prob_tbl$x,
 #'   dist_params = rr$coefficients,
 #'   distribution = "weibull3"
 #' )
@@ -834,25 +842,37 @@ plot_mod.mixmod_em <- function(p_obj, x, title_trace = "Fit", ...) {
 #'
 #' # Example 2: Probability Plot and Regression Line Three-Parameter-Lognormal:
 #' plot_lognormal <- plot_prob(
-#'   x = tbl_john$x,
-#'   y = tbl_john$prob,
-#'   status = tbl_john$status,
-#'   id = tbl_john$id,
+#'   x = prob_tbl$x,
+#'   y = prob_tbl$prob,
+#'   status = prob_tbl$status,
+#'   id = prob_tbl$id,
 #'   distribution = "lognormal"
 #' )
 #'
 #' rr_ln <- rank_regression(
-#'   x = tbl_john$x,
-#'   y = tbl_john$prob,
-#'   status = tbl_john$status,
+#'   x = prob_tbl$x,
+#'   y = prob_tbl$prob,
+#'   status = prob_tbl$status,
 #'   distribution = "lognormal3"
 #' )
 #'
 #' plot_reg_lognormal <- plot_mod(
 #'   p_obj = plot_lognormal,
-#'   x = tbl_john$x,
+#'   x = prob_tbl$x,
 #'   dist_params = rr_ln$coefficients,
 #'   distribution = "lognormal3"
+#' )
+#'
+#' ## Mixture Identification
+#' # Vectors:
+#' hours <- voltage$hours
+#' status <- voltage$status
+#'
+#' # Probability estimation:
+#' prob_mix <- estimate_cdf(
+#'   x = hours,
+#'   status = status,
+#'   method = "johnson"
 #' )
 #'
 #' @export
@@ -1030,17 +1050,11 @@ plot_mod_mix <- function(p_obj,
 #' prob_tbl <- estimate_cdf(data, methods = "johnson")
 #'
 #' # Example 1 - Probability Plot, Regression Line and Confidence Bounds for Three-Parameter-Weibull:
-#' rr <- rank_regression(
-#'   x = prob_tbl,
-#'   distribution = "weibull3"
-#' )
+#' rr <- rank_regression(prob_tbl, distribution = "weibull3")
 #'
-#' conf_betabin <- confint_betabinom(x = rr)
+#' conf_betabin <- confint_betabinom(rr)
 #'
-#' plot_weibull <- plot_prob(
-#'   x = prob_tbl,
-#'   distribution = "weibull"
-#' )
+#' plot_weibull <- plot_prob(prob_tbl, distribution = "weibull")
 #'
 #' plot_conf_beta <- plot_conf(
 #'   p_obj = plot_weibull,
@@ -1049,22 +1063,19 @@ plot_mod_mix <- function(p_obj,
 #'
 #' # Example 2 - Probability Plot, Regression Line and Confidence Bounds for Three-Parameter-Lognormal:
 #' rr_ln <- rank_regression(
-#'   x = prob_tbl,
+#'   prob_tbl,
 #'   distribution = "lognormal3",
 #'   conf_level = 0.9
 #' )
 #'
 #' conf_betabin_ln <- confint_betabinom(
-#'   x = rr_ln,
+#'   rr_ln,
 #'   bounds = "two_sided",
 #'   conf_level = 0.9,
 #'   direction = "y"
 #' )
 #'
-#' plot_lognormal <- plot_prob(
-#'   x = prob_tbl,
-#'   distribution = "lognormal"
-#' )
+#' plot_lognormal <- plot_prob(prob_tbl, distribution = "lognormal")
 #'
 #' plot_conf_beta_ln <- plot_conf(
 #'   p_obj = plot_lognormal,
@@ -1072,17 +1083,11 @@ plot_mod_mix <- function(p_obj,
 #' )
 #'
 #' # Example 3 - Probability Plot, Regression Line and Confidence Bounds for MLE
-#' ml <- ml_estimation(
-#'   x = data,
-#'   distribution = "weibull"
-#' )
+#' ml <- ml_estimation(data, distribution = "weibull")
 #'
 #' conf_fisher <- confint_fisher(ml)
 #'
-#' plot_weibull <- plot_prob(
-#'   x = prob_tbl,
-#'   distribution = "weibull"
-#' )
+#' plot_weibull <- plot_prob(prob_tbl, distribution = "weibull")
 #'
 #' plot_conf_fisher_weibull <- plot_conf(
 #'   p_obj = plot_weibull,
@@ -1191,28 +1196,28 @@ plot_conf.confint <- function(p_obj,
 #' cycles   <- alloy$cycles
 #' status <- alloy$status
 #'
-#' tbl_john <- estimate_cdf(x = cycles, status = status, method = "johnson")
+#' prob_tbl <- estimate_cdf(x = cycles, status = status, method = "johnson")
 #'
 #' # Example 1 - Probability Plot, Regression Line and Confidence Bounds for Three-Parameter-Weibull:
 #' rr <- rank_regression(
-#'   x = tbl_john$x,
-#'   y = tbl_john$prob,
-#'   status = tbl_john$status,
+#'   x = prob_tbl$x,
+#'   y = prob_tbl$prob,
+#'   status = prob_tbl$status,
 #'   distribution = "weibull3"
 #' )
 #'
 #' conf_betabin <- confint_betabinom(
-#'   x = tbl_john$x,
-#'   status = tbl_john$status,
+#'   x = prob_tbl$x,
+#'   status = prob_tbl$status,
 #'   dist_params = rr$coefficients,
 #'   distribution = "weibull3"
 #' )
 #'
 #' plot_weibull <- plot_prob(
-#'   x = tbl_john$x,
-#'   y = tbl_john$prob,
-#'   status = tbl_john$status,
-#'   id = tbl_john$id,
+#'   x = prob_tbl$x,
+#'   y = prob_tbl$prob,
+#'   status = prob_tbl$status,
+#'   id = prob_tbl$id,
 #'   distribution = "weibull"
 #' )
 #'
@@ -1234,24 +1239,24 @@ plot_conf.confint <- function(p_obj,
 #'
 #' # Example 2 - Probability Plot, Regression Line and Confidence Bounds for Three-Parameter-Lognormal:
 #' rr_ln <- rank_regression(
-#'   x = tbl_john$x,
-#'   y = tbl_john$prob,
-#'   status = tbl_john$status,
+#'   x = prob_tbl$x,
+#'   y = prob_tbl$prob,
+#'   status = prob_tbl$status,
 #'   distribution = "lognormal3"
 #' )
 #'
 #' conf_betabin_ln <- confint_betabinom(
-#'   x = tbl_john$x,
-#'   status = tbl_john$status,
+#'   x = prob_tbl$x,
+#'   status = prob_tbl$status,
 #'   dist_params = rr_ln$coefficients,
 #'   distribution = "lognormal3"
 #' )
 #'
 #' plot_lognormal <- plot_prob(
-#'   x = tbl_john$x,
-#'   y = tbl_john$prob,
-#'   status = tbl_john$status,
-#'   id = tbl_john$id,
+#'   x = prob_tbl$x,
+#'   y = prob_tbl$prob,
+#'   status = prob_tbl$status,
+#'   id = prob_tbl$id,
 #'   distribution = "lognormal"
 #' )
 #'

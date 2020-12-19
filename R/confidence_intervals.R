@@ -50,48 +50,48 @@
 #' # Reliability data preparation:
 #' ## Data for two-parametric model:
 #' data_2p <- reliability_data(
-#'   data = shock,
+#'   shock,
 #'   x = distance,
 #'   status = status
 #' )
 #'
 #' ## Data for three-parametric model:
 #' data_3p <- reliability_data(
-#'   data = alloy,
+#'   alloy,
 #'   x = cycles,
 #'   status = status
 #' )
 #'
 #' # Probability estimation:
 #' prob_tbl_2p <- estimate_cdf(
-#'   x = data_2p,
+#'   data_2p,
 #'   methods = "johnson"
 #' )
 #'
 #' prob_tbl_3p <- estimate_cdf(
-#'   x = data_3p,
+#'   data_3p,
 #'   methods = "johnson"
 #' )
 #'
 #' prob_tbl_mult <- estimate_cdf(
-#'   x = data_3p,
+#'   data_3p,
 #'   methods = c("johnson", "mr")
 #' )
 #'
 #' # Model estimation with rank_regression():
 #' rr_2p <- rank_regression(
-#'   x = prob_tbl_2p,
+#'   prob_tbl_2p,
 #'   distribution = "weibull"
 #' )
 #'
 #' rr_3p <- rank_regression(
-#'   x = prob_tbl_3p,
+#'   prob_tbl_3p,
 #'   distribution = "lognormal3",
 #'   conf_level = 0.90
 #' )
 #'
 #' rr_lists <- rank_regression(
-#'   x = prob_tbl_mult,
+#'   prob_tbl_mult,
 #'   distribution = "loglogistic3",
 #'   conf_level = 0.90
 #' )
@@ -258,13 +258,13 @@ confint_betabinom.model_estimation_list <- function(
 #' status_2 <- alloy$status
 #'
 #' # Probability estimation:
-#' tbl_john <- estimate_cdf(
+#' prob_tbl <- estimate_cdf(
 #'   x = obs,
 #'   status = status_1,
 #'   method = "johnson"
 #' )
 #'
-#' tbl_john_2 <- estimate_cdf(
+#' prob_tbl_2 <- estimate_cdf(
 #'   x = cycles,
 #'   status = status_2,
 #'   method = "johnson"
@@ -272,24 +272,24 @@ confint_betabinom.model_estimation_list <- function(
 #'
 #' # Model estimation with rank_regression():
 #' rr <- rank_regression(
-#'   x = tbl_john$x,
-#'   y = tbl_john$prob,
-#'   status = tbl_john$status,
+#'   x = prob_tbl$x,
+#'   y = prob_tbl$prob,
+#'   status = prob_tbl$status,
 #'   distribution = "weibull",
-#'   conf_level = 0.90
+#'   conf_level = 0.9
 #' )
 #'
 #' rr_2 <- rank_regression(
-#'   x = tbl_john_2$x,
-#'   y = tbl_john_2$prob,
-#'   status = tbl_john_2$status,
+#'   x = prob_tbl_2$x,
+#'   y = prob_tbl_2$prob,
+#'   status = prob_tbl_2$status,
 #'   distribution = "lognormal3"
 #' )
 #'
 #' # Example 1 - Two-sided 95% confidence interval for probabilities ('y'):
 #' conf_betabin_1 <- confint_betabinom(
-#'   x = obs,
-#'   status = status_1,
+#'   x = prob_tbl$x,
+#'   status = prob_tbl$status,
 #'   dist_params = rr$coefficients,
 #'   distribution = "weibull",
 #'   bounds = "two_sided",
@@ -299,22 +299,22 @@ confint_betabinom.model_estimation_list <- function(
 #'
 #' # Example 2 - One-sided lower/upper 90% confidence interval for quantiles ('x'):
 #' conf_betabin_2_1 <- confint_betabinom(
-#'   x = obs,
-#'   status = status_1,
+#'   x = prob_tbl$x,
+#'   status = prob_tbl$status,
 #'   dist_params = rr$coefficients,
 #'   distribution = "weibull",
 #'   bounds = "lower",
-#'   conf_level = 0.90,
+#'   conf_level = 0.9,
 #'   direction = "x"
 #' )
 #'
 #' conf_betabin_2_2 <- confint_betabinom(
-#'   x = obs,
-#'   status = status_1,
+#'   x = prob_tbl$x,
+#'   status = prob_tbl$status,
 #'   dist_params = rr$coefficients,
 #'   distribution = "weibull",
 #'   bounds = "upper",
-#'   conf_level = 0.90,
+#'   conf_level = 0.9,
 #'   direction = "x"
 #' )
 #'
@@ -322,22 +322,22 @@ confint_betabinom.model_estimation_list <- function(
 #' # a three-parametric model:
 #'
 #' conf_betabin_3_1 <- confint_betabinom(
-#'   x = cycles,
-#'   status = status_2,
+#'   x = prob_tbl_2$x,
+#'   status = prob_tbl_2$status,
 #'   dist_params = rr_2$coefficients,
 #'   distribution = "lognormal3",
 #'   bounds = "two_sided",
-#'   conf_level = 0.90,
+#'   conf_level = 0.9,
 #'   direction = "y"
 #' )
 #'
 #' conf_betabin_3_2 <- confint_betabinom(
-#'   x = cycles,
-#'   status = status_2,
+#'   x = prob_tbl_2$x,
+#'   status = prob_tbl_2$status,
 #'   dist_params = rr_2$coefficients,
 #'   distribution = "lognormal3",
 #'   bounds = "two_sided",
-#'   conf_level = 0.90,
+#'   conf_level = 0.9,
 #'   direction = "x"
 #' )
 #'
@@ -515,14 +515,14 @@ confint_betabinom_ <- function(model_estimation,
 #' @examples
 #' # Reliability data preparation:
 #' data <- reliability_data(
-#'   data = shock,
+#'   shock,
 #'   x = distance,
 #'   status = status
 #' )
 #'
 #' # Parameter estimation using maximum likelihood:
 #' mle <- ml_estimation(
-#'   x = data,
+#'   data,
 #'   distribution = "weibull",
 #'   conf_level = 0.95
 #' )
@@ -730,26 +730,26 @@ delta_method_ <- function(p,
 #' # Reliability data preparation:
 #' ## Data for two-parametric model:
 #' data_2p <- reliability_data(
-#'   data = shock,
+#'   shock,
 #'   x = distance,
 #'   status = status
 #' )
 #'
 #' ## Data for three-parametric model:
 #' data_3p <- reliability_data(
-#'   data = alloy,
+#'   alloy,
 #'   x = cycles,
 #'   status = status
 #' )
 #'
 #' # Model estimation with ml_estimation():
 #' ml_2p <- ml_estimation(
-#'   x = data_2p,
+#'   data_2p,
 #'   distribution = "weibull"
 #' )
 #'
 #' ml_3p <- ml_estimation(
-#'   x = data_3p,
+#'   data_3p,
 #'   distribution = "lognormal3",
 #'   conf_level = 0.90
 #' )

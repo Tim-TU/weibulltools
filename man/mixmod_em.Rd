@@ -84,7 +84,7 @@ This procedure is repeated until the complete log-likelihood has converged.
 # Reliability data preparation:
 ## Data for mixture model:
 data_mix <- reliability_data(
-  data = voltage,
+  voltage,
   x = hours,
   status = status
 )

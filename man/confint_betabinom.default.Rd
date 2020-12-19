@@ -91,13 +91,13 @@ cycles <- alloy$cycles
 status_2 <- alloy$status
 
 # Probability estimation:
-tbl_john <- estimate_cdf(
+prob_tbl <- estimate_cdf(
   x = obs,
   status = status_1,
   method = "johnson"
 )
 
-tbl_john_2 <- estimate_cdf(
+prob_tbl_2 <- estimate_cdf(
   x = cycles,
   status = status_2,
   method = "johnson"
@@ -105,24 +105,24 @@ tbl_john_2 <- estimate_cdf(
 
 # Model estimation with rank_regression():
 rr <- rank_regression(
-  x = tbl_john$x,
-  y = tbl_john$prob,
-  status = tbl_john$status,
+  x = prob_tbl$x,
+  y = prob_tbl$prob,
+  status = prob_tbl$status,
   distribution = "weibull",
-  conf_level = 0.90
+  conf_level = 0.9
 )
 
 rr_2 <- rank_regression(
-  x = tbl_john_2$x,
-  y = tbl_john_2$prob,
-  status = tbl_john_2$status,
+  x = prob_tbl_2$x,
+  y = prob_tbl_2$prob,
+  status = prob_tbl_2$status,
   distribution = "lognormal3"
 )
 
 # Example 1 - Two-sided 95\% confidence interval for probabilities ('y'):
 conf_betabin_1 <- confint_betabinom(
-  x = obs,
-  status = status_1,
+  x = prob_tbl$x,
+  status = prob_tbl$status,
   dist_params = rr$coefficients,
   distribution = "weibull",
   bounds = "two_sided",
@@ -132,22 +132,22 @@ conf_betabin_1 <- confint_betabinom(
 
 # Example 2 - One-sided lower/upper 90\% confidence interval for quantiles ('x'):
 conf_betabin_2_1 <- confint_betabinom(
-  x = obs,
-  status = status_1,
+  x = prob_tbl$x,
+  status = prob_tbl$status,
   dist_params = rr$coefficients,
   distribution = "weibull",
   bounds = "lower",
-  conf_level = 0.90,
+  conf_level = 0.9,
   direction = "x"
 )
 
 conf_betabin_2_2 <- confint_betabinom(
-  x = obs,
-  status = status_1,
+  x = prob_tbl$x,
+  status = prob_tbl$status,
   dist_params = rr$coefficients,
   distribution = "weibull",
   bounds = "upper",
-  conf_level = 0.90,
+  conf_level = 0.9,
   direction = "x"
 )
 
@@ -155,22 +155,22 @@ conf_betabin_2_2 <- confint_betabinom(
 # a three-parametric model:
 
 conf_betabin_3_1 <- confint_betabinom(
-  x = cycles,
-  status = status_2,
+  x = prob_tbl_2$x,
+  status = prob_tbl_2$status,
   dist_params = rr_2$coefficients,
   distribution = "lognormal3",
   bounds = "two_sided",
-  conf_level = 0.90,
+  conf_level = 0.9,
   direction = "y"
 )
 
 conf_betabin_3_2 <- confint_betabinom(
-  x = cycles,
-  status = status_2,
+  x = prob_tbl_2$x,
+  status = prob_tbl_2$status,
   dist_params = rr_2$coefficients,
   distribution = "lognormal3",
   bounds = "two_sided",
-  conf_level = 0.90,
+  conf_level = 0.9,
   direction = "x"
 )
 

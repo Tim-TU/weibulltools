@@ -58,14 +58,14 @@
 #' # Reliability data preparation:
 #' ## Data for mixture model:
 #' data_mix <- reliability_data(
-#'   data = voltage,
+#'   voltage,
 #'   x = hours,
 #'   status = status
 #' )
 #'
 #' ## Data for simple unimodal distribution:
 #' data <- reliability_data(
-#'   data = shock,
+#'   shock,
 #'   x = distance,
 #'   status = status
 #' )
@@ -102,7 +102,7 @@
 #'
 #' # Example 3 - Mixture identification for multiple methods specified in estimate_cdf:
 #' mix_mod_mult <- mixmod_regression(
-#'   prob_mix_mult,
+#'   x = prob_mix_mult,
 #'   distribution = "loglogistic"
 #' )
 #'
@@ -516,7 +516,7 @@ mixmod_regression_ <- function(cdf_estimation,
 #' # Reliability data preparation:
 #' ## Data for mixture model:
 #' data_mix <- reliability_data(
-#'   data = voltage,
+#'   voltage,
 #'   x = hours,
 #'   status = status
 #' )
@@ -744,7 +744,7 @@ mixmod_em_ <- function(data,
 
 
 
-#Function that simulates a sample from a Dirichlet distribution:
+# Simulate a sample from a Dirichlet distribution:
 rdirichlet <- function(n, par) {
   k <- length(par)
   z <- matrix(0, nrow = n, ncol = k)

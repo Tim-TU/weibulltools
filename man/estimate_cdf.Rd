@@ -96,7 +96,7 @@ The listed options can only be applied for method \code{"mr"}:
 \examples{
 # Reliability data:
 data <- reliability_data(
-  data = alloy,
+  alloy,
   x = cycles,
   status = status
 )

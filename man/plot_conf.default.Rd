@@ -66,28 +66,28 @@ is recommended:
 cycles   <- alloy$cycles
 status <- alloy$status
 
-tbl_john <- estimate_cdf(x = cycles, status = status, method = "johnson")
+prob_tbl <- estimate_cdf(x = cycles, status = status, method = "johnson")
 
 # Example 1 - Probability Plot, Regression Line and Confidence Bounds for Three-Parameter-Weibull:
 rr <- rank_regression(
-  x = tbl_john$x,
-  y = tbl_john$prob,
-  status = tbl_john$status,
+  x = prob_tbl$x,
+  y = prob_tbl$prob,
+  status = prob_tbl$status,
   distribution = "weibull3"
 )
 
 conf_betabin <- confint_betabinom(
-  x = tbl_john$x,
-  status = tbl_john$status,
+  x = prob_tbl$x,
+  status = prob_tbl$status,
   dist_params = rr$coefficients,
   distribution = "weibull3"
 )
 
 plot_weibull <- plot_prob(
-  x = tbl_john$x,
-  y = tbl_john$prob,
-  status = tbl_john$status,
-  id = tbl_john$id,
+  x = prob_tbl$x,
+  y = prob_tbl$prob,
+  status = prob_tbl$status,
+  id = prob_tbl$id,
   distribution = "weibull"
 )
 
@@ -109,24 +109,24 @@ plot_conf_beta <- plot_conf(
 
 # Example 2 - Probability Plot, Regression Line and Confidence Bounds for Three-Parameter-Lognormal:
 rr_ln <- rank_regression(
-  x = tbl_john$x,
-  y = tbl_john$prob,
-  status = tbl_john$status,
+  x = prob_tbl$x,
+  y = prob_tbl$prob,
+  status = prob_tbl$status,
   distribution = "lognormal3"
 )
 
 conf_betabin_ln <- confint_betabinom(
-  x = tbl_john$x,
-  status = tbl_john$status,
+  x = prob_tbl$x,
+  status = prob_tbl$status,
   dist_params = rr_ln$coefficients,
   distribution = "lognormal3"
 )
 
 plot_lognormal <- plot_prob(
-  x = tbl_john$x,
-  y = tbl_john$prob,
-  status = tbl_john$status,
-  id = tbl_john$id,
+  x = prob_tbl$x,
+  y = prob_tbl$prob,
+  status = prob_tbl$status,
+  id = prob_tbl$id,
   distribution = "lognormal"
 )
 

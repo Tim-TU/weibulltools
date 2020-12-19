@@ -88,31 +88,31 @@ in context of \emph{Rank Regression}. For an accepted statistical method use
 # Reliability data preparation:
 ## Data for two-parametric model:
 data_2p <- reliability_data(
-  data = shock,
+  shock,
   x = distance,
   status = status
 )
 
 ## Data for three-parametric model:
 data_3p <- reliability_data(
-  data = alloy,
+  alloy,
   x = cycles,
   status = status
 )
 
 # Probability estimation:
 prob_tbl_2p <- estimate_cdf(
-  x = data_2p,
+  data_2p,
   methods = "johnson"
 )
 
 prob_tbl_3p <- estimate_cdf(
-  x = data_3p,
+  data_3p,
   methods = "johnson"
 )
 
 prob_tbl_mult <- estimate_cdf(
-  x = data_3p,
+  data_3p,
   methods = c("johnson", "kaplan")
 )
 

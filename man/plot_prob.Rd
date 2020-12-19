@@ -125,42 +125,48 @@ and "Group: 2".
 \examples{
 # Reliability data:
 data <- reliability_data(
-  data = alloy,
+  alloy,
   x = cycles,
   status = status
 )
 
 # Probability estimation:
-prob_tbl <- estimate_cdf(data, methods = c("johnson", "kaplan"))
+prob_tbl <- estimate_cdf(
+  data,
+  methods = c("johnson", "kaplan")
+)
 
 # Example 1 - Probability Plot Weibull:
 plot_weibull <- plot_prob(prob_tbl)
 
 # Example 2 - Probability Plot Lognormal:
 plot_lognormal <- plot_prob(
-  prob_tbl,
+  x = prob_tbl,
   distribution = "lognormal"
 )
 
 ## Mixture identification
 # Reliability data:
 data_mix <- reliability_data(
-  data = voltage,
+  voltage,
   x = hours,
   status = status
 )
 
-prob_mix <- estimate_cdf(data_mix, methods = c("johnson", "kaplan"))
+prob_mix <- estimate_cdf(
+  data_mix,
+  methods = c("johnson", "kaplan")
+)
 
 # Example 3 - Mixture identification using mixmod_regression:
 mix_mod_rr <- mixmod_regression(prob_mix)
 
-plot_mix_rr <- plot_prob(mix_mod_rr)
+plot_mix_mod_rr <- plot_prob(x = mix_mod_rr)
 
 # Example 4 - Mixture identification using mixmod_em:
 mix_mod_em <- mixmod_em(data_mix)
 
-plot_mix_em <- plot_prob(mix_mod_em)
+plot_mix_mod_em <- plot_prob(x = mix_mod_em)
 
 }
 \references{

@@ -109,26 +109,30 @@ date_of_report <- c(NA, "2014-10-09", "2015-08-28", "2015-04-15", NA,
                     "2015-12-02", NA, NA)
 
 op_time <- rep(1000, length(date_of_repair))
-state <- c(0, 1, 1, 1, 0, 0, 1, 0, 1, 1, 1, 0, 1, 0, 0, 1, 0, 1, 0, 1, 1, 0, 0)
+status <- c(0, 1, 1, 1, 0, 0, 1, 0, 1, 1, 1, 0, 1, 0, 0, 1, 0, 1, 0, 1, 1, 0, 0)
 
 # Example 1 - Simplified vector output:
-x_corrected <- mcs_delays(date_prod = date_of_production,
-                          date_register = date_of_registration,
-                          date_repair = date_of_repair,
-                          date_report = date_of_report,
-                          time = op_time,
-                          status = state,
-                          distribution = "lognormal",
-                          details = FALSE)
+x_corrected <- mcs_delays(
+  date_prod = date_of_production,
+  date_register = date_of_registration,
+  date_repair = date_of_repair,
+  date_report = date_of_report,
+  time = op_time,
+  status = status,
+  distribution = "lognormal",
+  details = FALSE
+)
 
 # Example 2 - Detailed list output:
-list_detail <- mcs_delays(date_prod = date_of_production,
-                                date_register = date_of_registration,
-                                date_repair = date_of_repair,
-                                date_report = date_of_report,
-                                time = op_time,
-                                status = state,
-                                distribution = "lognormal",
-                                details = TRUE)
+list_detail <- mcs_delays(
+  date_prod = date_of_production,
+  date_register = date_of_registration,
+  date_repair = date_of_repair,
+  date_report = date_of_report,
+  time = op_time,
+  status = status,
+  distribution = "lognormal",
+  details = TRUE
+)
 
 }

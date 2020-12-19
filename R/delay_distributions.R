@@ -628,23 +628,27 @@ dist_delay_register <- function(date_prod,
 #'                           NA, "2014-03-21", "2014-06-19", NA, NA)
 #'
 #' op_time <- rep(1000, length(date_of_production))
-#' state <- c(0, 1, 1, 1, 0, 0, 1, 0, 1, 1, 1, 0, 1, 0, 0, 1, 0, 1, 0, 1, 1, 0, 0)
+#' status <- c(0, 1, 1, 1, 0, 0, 1, 0, 1, 1, 1, 0, 1, 0, 0, 1, 0, 1, 0, 1, 1, 0, 0)
 #'
 #' # Example 1 - Simplified vector output:
-#' x_corrected <- mcs_delay_register(date_prod = date_of_production,
-#'                                   date_register = date_of_registration,
-#'                                   time = op_time,
-#'                                   status = state,
-#'                                   distribution = "lognormal",
-#'                                   details = FALSE)
+#' x_corrected <- mcs_delay_register(
+#'   date_prod = date_of_production,
+#'   date_register = date_of_registration,
+#'   time = op_time,
+#'   status = status,
+#'   distribution = "lognormal",
+#'   details = FALSE
+#' )
 #'
 #' # Example 2 - Detailed list output:
-#' list_detail <- mcs_delay_register(date_prod = date_of_production,
-#'                                   date_register = date_of_registration,
-#'                                   time = op_time,
-#'                                   status = state,
-#'                                   distribution = "lognormal",
-#'                                   details = TRUE)
+#' list_detail <- mcs_delay_register(
+#'   date_prod = date_of_production,
+#'   date_register = date_of_registration,
+#'   time = op_time,
+#'   status = status,
+#'   distribution = "lognormal",
+#'   details = TRUE
+#' )
 #'
 #' @export
 mcs_delay_register <- function(date_prod,
@@ -831,23 +835,27 @@ dist_delay_report <- function(date_repair,
 #'                     "2015-12-02", NA, NA)
 #'
 #' op_time <- rep(1000, length(date_of_repair))
-#' state <- c(0, 1, 1, 1, 0, 0, 1, 0, 1, 1, 1, 0, 1, 0, 0, 1, 0, 1, 0, 1, 1, 0, 0)
+#' status <- c(0, 1, 1, 1, 0, 0, 1, 0, 1, 1, 1, 0, 1, 0, 0, 1, 0, 1, 0, 1, 1, 0, 0)
 #'
 #' # Example 1 - Simplified vector output:
-#' x_corrected <- mcs_delay_report(date_repair = date_of_repair,
-#'                                 date_report = date_of_report,
-#'                                 time = op_time,
-#'                                 status = state,
-#'                                 distribution = "lognormal",
-#'                                 details = FALSE)
+#' x_corrected <- mcs_delay_report(
+#'   date_repair = date_of_repair,
+#'   date_report = date_of_report,
+#'   time = op_time,
+#'   status = status,
+#'   distribution = "lognormal",
+#'   details = FALSE
+#' )
 #'
 #' # Example 2 - Detailed list output:
-#' list_detail <- mcs_delay_report(date_repair = date_of_repair,
-#'                                 date_report = date_of_report,
-#'                                 time = op_time,
-#'                                 status = state,
-#'                                 distribution = "lognormal",
-#'                                 details = TRUE)
+#' list_detail <- mcs_delay_report(
+#'   date_repair = date_of_repair,
+#'   date_report = date_of_report,
+#'   time = op_time,
+#'   status = status,
+#'   distribution = "lognormal",
+#'   details = TRUE
+#' )
 #'
 #' @export
 mcs_delay_report <- function(date_repair,
@@ -961,27 +969,31 @@ mcs_delay_report <- function(date_repair,
 #'                     "2015-12-02", NA, NA)
 #'
 #' op_time <- rep(1000, length(date_of_repair))
-#' state <- c(0, 1, 1, 1, 0, 0, 1, 0, 1, 1, 1, 0, 1, 0, 0, 1, 0, 1, 0, 1, 1, 0, 0)
+#' status <- c(0, 1, 1, 1, 0, 0, 1, 0, 1, 1, 1, 0, 1, 0, 0, 1, 0, 1, 0, 1, 1, 0, 0)
 #'
 #' # Example 1 - Simplified vector output:
-#' x_corrected <- mcs_delays(date_prod = date_of_production,
-#'                           date_register = date_of_registration,
-#'                           date_repair = date_of_repair,
-#'                           date_report = date_of_report,
-#'                           time = op_time,
-#'                           status = state,
-#'                           distribution = "lognormal",
-#'                           details = FALSE)
+#' x_corrected <- mcs_delays(
+#'   date_prod = date_of_production,
+#'   date_register = date_of_registration,
+#'   date_repair = date_of_repair,
+#'   date_report = date_of_report,
+#'   time = op_time,
+#'   status = status,
+#'   distribution = "lognormal",
+#'   details = FALSE
+#' )
 #'
 #' # Example 2 - Detailed list output:
-#' list_detail <- mcs_delays(date_prod = date_of_production,
-#'                                 date_register = date_of_registration,
-#'                                 date_repair = date_of_repair,
-#'                                 date_report = date_of_report,
-#'                                 time = op_time,
-#'                                 status = state,
-#'                                 distribution = "lognormal",
-#'                                 details = TRUE)
+#' list_detail <- mcs_delays(
+#'   date_prod = date_of_production,
+#'   date_register = date_of_registration,
+#'   date_repair = date_of_repair,
+#'   date_report = date_of_report,
+#'   time = op_time,
+#'   status = status,
+#'   distribution = "lognormal",
+#'   details = TRUE
+#' )
 #'
 #' @export
 mcs_delays <- function(date_prod,

@@ -84,22 +84,26 @@ date_of_registration <- c(NA, "2014-03-29", "2014-12-06", "2014-09-09",
                           NA, "2014-03-21", "2014-06-19", NA, NA)
 
 op_time <- rep(1000, length(date_of_production))
-state <- c(0, 1, 1, 1, 0, 0, 1, 0, 1, 1, 1, 0, 1, 0, 0, 1, 0, 1, 0, 1, 1, 0, 0)
+status <- c(0, 1, 1, 1, 0, 0, 1, 0, 1, 1, 1, 0, 1, 0, 0, 1, 0, 1, 0, 1, 1, 0, 0)
 
 # Example 1 - Simplified vector output:
-x_corrected <- mcs_delay_register(date_prod = date_of_production,
-                                  date_register = date_of_registration,
-                                  time = op_time,
-                                  status = state,
-                                  distribution = "lognormal",
-                                  details = FALSE)
+x_corrected <- mcs_delay_register(
+  date_prod = date_of_production,
+  date_register = date_of_registration,
+  time = op_time,
+  status = status,
+  distribution = "lognormal",
+  details = FALSE
+)
 
 # Example 2 - Detailed list output:
-list_detail <- mcs_delay_register(date_prod = date_of_production,
-                                  date_register = date_of_registration,
-                                  time = op_time,
-                                  status = state,
-                                  distribution = "lognormal",
-                                  details = TRUE)
+list_detail <- mcs_delay_register(
+  date_prod = date_of_production,
+  date_register = date_of_registration,
+  time = op_time,
+  status = status,
+  distribution = "lognormal",
+  details = TRUE
+)
 
 }

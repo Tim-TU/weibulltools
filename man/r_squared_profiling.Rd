@@ -38,14 +38,14 @@ In terms of \emph{Rank Regression} this function can be optimized
 \examples{
 # Data:
 data <- reliability_data(
-  data = alloy,
+  alloy,
   x = cycles,
   status = status
 )
 
 # Probability estimation:
 prob_tbl <- estimate_cdf(
-  x = data,
+  data,
   methods = "johnson"
 )
 

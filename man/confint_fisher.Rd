@@ -78,26 +78,26 @@ The bounds on the probability are determined by the \emph{z-procedure}. See
 # Reliability data preparation:
 ## Data for two-parametric model:
 data_2p <- reliability_data(
-  data = shock,
+  shock,
   x = distance,
   status = status
 )
 
 ## Data for three-parametric model:
 data_3p <- reliability_data(
-  data = alloy,
+  alloy,
   x = cycles,
   status = status
 )
 
 # Model estimation with ml_estimation():
 ml_2p <- ml_estimation(
-  x = data_2p,
+  data_2p,
   distribution = "weibull"
 )
 
 ml_3p <- ml_estimation(
-  x = data_3p,
+  data_3p,
   distribution = "lognormal3",
   conf_level = 0.90
 )

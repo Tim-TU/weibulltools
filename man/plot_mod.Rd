@@ -25,7 +25,7 @@ plot_mod(p_obj, x, ...)
 \arguments{
 \item{p_obj}{A plot object returned from \code{\link{plot_prob}}.}
 
-\item{x}{An object of aforementioned classes. See 'S3 methods'.}
+\item{x}{An object of aforementioned model classes. See 'S3 methods'.}
 
 \item{...}{Further arguments passed to or from other methods. Currently not used.}
 
@@ -75,36 +75,42 @@ data <- reliability_data(
 prob_tbl <- estimate_cdf(data, methods = c("johnson", "kaplan"))
 
 # Example 1 - Probability Plot and Regression Line Three-Parameter-Weibull:
-plot_weibull <- plot_prob(
-  prob_tbl,
-  distribution = "weibull"
-)
+plot_weibull <- plot_prob(prob_tbl, distribution = "weibull")
 
-rr_weibull <- rank_regression(
-  prob_tbl,
-  distribution = "weibull3"
-)
+rr_weibull <- rank_regression(prob_tbl, distribution = "weibull3")
 
-plot_reg_weibull <- plot_mod(
-  p_obj = plot_weibull,
-  x = rr_weibull
-)
+plot_reg_weibull <- plot_mod(p_obj = plot_weibull, x = rr_weibull)
 
 # Example 2 - Probability Plot and Regression Line Three-Parameter-Lognormal:
-plot_lognormal <- plot_prob(
-  prob_tbl,
-  distribution = "lognormal"
+plot_lognormal <- plot_prob(prob_tbl, distribution = "lognormal")
+
+rr_lognormal <- rank_regression(prob_tbl, distribution = "lognormal3")
+
+plot_reg_lognormal <- plot_mod(p_obj = plot_lognormal, x = rr_lognormal)
+
+## Mixture Identification
+# Reliability data:
+data_mix <- reliability_data(voltage, x = hours, status = status)
+
+# Probability estimation:
+prob_mix <- estimate_cdf(
+  data_mix,
+  methods = c("johnson", "kaplan", "nelson")
 )
 
-rr_lognormal <- rank_regression(
-  prob_tbl,
-  distribution = "lognormal3"
-)
+# Example 3 - Probability Plot and Regression Line Mixmod Regression:
+mix_mod_rr <- mixmod_regression(prob_mix, distribution = "weibull")
 
-plot_reg_lognormal <- plot_mod(
-  p_obj = plot_lognormal,
-  x = rr_lognormal
-)
+plot_weibull <- plot_prob(mix_mod_rr)
+
+plot_reg_mix_mod_rr <- plot_mod(p_obj = plot_weibull, x = mix_mod_rr)
+
+# Example 4 - Probability Plot and Regression Line Mixmod EM:
+mix_mod_em <- mixmod_em(data_mix)
+
+plot_weibull <- plot_prob(mix_mod_em)
+
+plot_reg_mix_mod_em <- plot_mod(p_obj = plot_weibull, x = mix_mod_em)
 
 }
 \references{
