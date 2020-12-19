@@ -57,7 +57,7 @@
       <a href="../articles/Life_Data_Analysis_Part_I.html">Life Data Analysis Part I - Estimation of Failure Probabilities</a>
     </li>
     <li>
-      <a href="../articles/Life_Data_Analysis_Part_II.html">Life Data Analysis Part II - Parameter Estimation of Parametric Lifetime Models</a>
+      <a href="../articles/Life_Data_Analysis_Part_II.html">Life Data Analysis Part II - Estimation Methods for Parametric Lifetime Models</a>
     </li>
     <li>
       <a href="../articles/Life_Data_Analysis_Part_III.html">Life Data Analysis Part III - Mixture Models</a>
@@ -83,8 +83,9 @@
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Life Data Analysis Part III - Mixture Models</h1>
-            <h3 class="subtitle">Segmented Regression and EM-Algorithm</h3>
+            <h3 class="subtitle">Segmented Regression and EM Algorithm</h3>
                         <h4 class="author">Tim-Gunnar Hensel</h4>
+                        <h4 class="author">David Barkemeyer</h4>
             
             <h4 class="date">2020-12-19</h4>
       
@@ -95,40 +96,56 @@
 
     
     
-<p>In this vignette two methods for the separation of mixture models are presented. A mixture model can be assumed, if the points in a probability plot show one or more changes in slope, depict one or several saddle points or follow an S-shape. A mixed distribution often represents the combination of multiple failure modes and thus must be splitted in its components to get reasonable results in further analyses.</p>
-<p>Segmented regression aims to detect breakpoints in the sample data from whom a split in subgroups can be made. The EM-Algorithm is a computation-intensive method that iteratively tries to maximize a likelihood function, which is weighted by the posterior probability, the conditional probability that an observation belongs to subgroup <em>k</em>.</p>
-<p>In the following we will focus on the application of these methods and their visualizations using functions <code><a href="../reference/mixmod_regression.html">mixmod_regression()</a></code>, <code><a href="../reference/mixmod_em.html">mixmod_em()</a></code>, <code><a href="../reference/plot_prob_mix.html">plot_prob_mix()</a></code> and <code><a href="../reference/plot_mod_mix.html">plot_mod_mix()</a></code>, which are implemented in <code>weibulltools</code>.</p>
+<p>In this vignette two methods for the separation of mixture models are presented. A mixture model can be assumed, if the points in a probability plot show one or more changes in slope, depict one or several saddle points or follow an S-shape. A mixed distribution often represents the combination of multiple failure modes and thus must be split in its components to get reasonable results in further analyses.</p>
+<p>Segmented regression aims to detect breakpoints in the sample data from whom a split in subgroups can be made. The EM-Algorithm is a computation-intensive method that iteratively tries to maximize a likelihood function, which is weighted by posterior probabilities, conditional probabilities that an observation belongs to subgroup <em>k</em>.</p>
+<p>In the following, the focus is on the application of these methods and their visualizations using functions <code><a href="../reference/mixmod_regression.html">mixmod_regression()</a></code>, <code><a href="../reference/mixmod_em.html">mixmod_em()</a></code>, <code><a href="../reference/plot_prob.html">plot_prob()</a></code> and <code><a href="../reference/plot_mod.html">plot_mod()</a></code>.</p>
 <div id="data-voltage-stress-test" class="section level2">
 <h2 class="hasAnchor">
 <a href="#data-voltage-stress-test" class="anchor"></a>Data: Voltage Stress Test</h2>
-<p>To apply the introduced methods we will use a dataset where units were passed to a high voltage stress test. <em>hours</em> indicates the number of hours until a failure occurs, or the number of hours until a unit was taken out of the test and has not failed. <em>state</em> is a flag variable and describes the condition of a unit. If a unit failed the flag is 1 and 0 otherwise. Data was taken from <em>Reliability Analysis by Failure Mode</em> <a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a>.</p>
+<p>To apply the introduced methods a dataset <code>voltage</code> is used. The dataset contains observations for units that were passed to a high voltage stress test. <em>hours</em> indicates the number of hours until a failure occurs or the number of hours until a unit was taken out of the test and has not failed. <em>status</em> is a flag variable and describes the condition of a unit. If a unit has failed the flag is 1 and 0 otherwise. The dataset is taken from <em>Reliability Analysis by Failure Mode</em> <a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a>.</p>
+<p>For consistent handling of the data, <code>weibulltools</code> introduces the function <code><a href="../reference/reliability_data.html">reliability_data()</a></code> that converts the original dataset into a <code>wt_reliability_data</code> object. This formatted object allows to easily apply the presented methods.</p>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">voltage_tbl</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/reliability_data.html">reliability_data</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">voltage</span>, x <span class="op">=</span> <span class="va">hours</span>, status <span class="op">=</span> <span class="va">status</span><span class="op">)</span>
+<span class="va">voltage_tbl</span>
+<span class="co">#&gt; Reliability Data:</span>
+<span class="co">#&gt; # A tibble: 58 x 3</span>
+<span class="co">#&gt;        x status id   </span>
+<span class="co">#&gt;    &lt;dbl&gt;  &lt;dbl&gt; &lt;chr&gt;</span>
+<span class="co">#&gt;  1     2      1 ID1  </span>
+<span class="co">#&gt;  2    28      1 ID2  </span>
+<span class="co">#&gt;  3    67      0 ID3  </span>
+<span class="co">#&gt;  4   119      1 ID4  </span>
+<span class="co">#&gt;  5   179      0 ID5  </span>
+<span class="co">#&gt;  6   236      1 ID6  </span>
+<span class="co">#&gt;  7   282      1 ID7  </span>
+<span class="co">#&gt;  8   317      1 ID8  </span>
+<span class="co">#&gt;  9   348      1 ID9  </span>
+<span class="co">#&gt; 10   387      1 ID10 </span>
+<span class="co">#&gt; # ... with 48 more rows</span></code></pre></div>
 </div>
 <div id="probability-plot-for-voltage-stress-test-data" class="section level2">
 <h2 class="hasAnchor">
 <a href="#probability-plot-for-voltage-stress-test-data" class="anchor"></a>Probability Plot for Voltage Stress Test Data</h2>
-<p>To get an intuition whether we can assume the presence of a mixture model, we will construct a Weibull probability plot.</p>
-<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># Data: </span>
-<span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/reliability_data.html">reliability_data</a></span><span class="op">(</span><span class="va">voltage</span>, x <span class="op">=</span> <span class="va">hours</span>, status <span class="op">=</span> <span class="va">status</span><span class="op">)</span>
-
-<span class="co"># Estimating failure probabilities: </span>
-<span class="va">cdf_john_tbl</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/estimate_cdf.html">estimate_cdf</a></span><span class="op">(</span><span class="va">data</span>, <span class="st">"johnson"</span><span class="op">)</span>
+<p>To get an intuition whether one can assume the presence of a mixture model, a Weibull probability plot is constructed.</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co"># Estimating failure probabilities: </span>
+<span class="va">voltage_cdf</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/estimate_cdf.html">estimate_cdf</a></span><span class="op">(</span><span class="va">voltage_tbl</span>, <span class="st">"johnson"</span><span class="op">)</span>
 
 <span class="co"># Probability plot: </span>
 <span class="va">weibull_plot</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plot_prob.html">plot_prob</a></span><span class="op">(</span>
-  <span class="va">cdf_john_tbl</span>,
+  <span class="va">voltage_cdf</span>,
   distribution <span class="op">=</span> <span class="st">"weibull"</span>, 
   title_main <span class="op">=</span> <span class="st">"Weibull Probability Plot"</span>, 
   title_x <span class="op">=</span> <span class="st">"Time in Hours"</span>, 
   title_y <span class="op">=</span> <span class="st">"Probability of Failure in %"</span>,
-  title_trace <span class="op">=</span> <span class="st">"Defect Items"</span>,
+  title_trace <span class="op">=</span> <span class="st">"Defectives"</span>,
   plot_method <span class="op">=</span> <span class="st">"ggplot2"</span>
 <span class="op">)</span>
 
 <span class="va">weibull_plot</span></code></pre></div>
 <div class="figure">
-<img src="Life_Data_Analysis_Part_III_files/figure-html/probability%20plot%20weibull-1.png" alt="Figure 1: Plotting positions in weibull grid." width="700"><p class="caption">
-Figure 1: Plotting positions in weibull grid.
+<img src="Life_Data_Analysis_Part_III_files/figure-html/probability%20plot%20weibull-1.png" alt="Figure 1: Plotting positions in Weibull grid." width="700"><p class="caption">
+Figure 1: Plotting positions in Weibull grid.
 </p>
 </div>
 <p><br> Since there is an obvious slope change in the Weibull probability plot of <em>Figure 1</em>, the appearance of a mixture model is strengthened.</p>
@@ -137,14 +154,18 @@ Figure 1: Plotting positions in weibull grid.
 <h2 class="hasAnchor">
 <a href="#segmented-regression-with-package-weibulltools" class="anchor"></a>Segmented Regression with Package <code>weibulltools</code>
 </h2>
-<p>In package <code>weibulltools</code> the method of segmented regression is implemented in function <code><a href="../reference/mixmod_regression.html">mixmod_regression()</a></code>. If a breakpoint was detected, the failure data is separated by that point. After breakpoint detection the function <code><a href="../reference/rank_regression.html">rank_regression()</a></code> is called inside <code><a href="../reference/mixmod_regression.html">mixmod_regression()</a></code> and is used to estimate the distribution parameters of the subgroups. The visualization of the obtained results is done by functions <code><a href="../reference/plot_prob_mix.html">plot_prob_mix()</a></code> and <code><a href="../reference/plot_mod_mix.html">plot_mod_mix()</a></code>. The produced graph of <code><a href="../reference/plot_prob_mix.html">plot_prob_mix()</a></code> is pretty similar to the graph provided by <code><a href="../reference/plot_prob.html">plot_prob()</a></code>, but the difference is, that the detected subgroups are colored differently. <code><a href="../reference/plot_mod_mix.html">plot_mod_mix()</a></code> then is used to add the estimated regression line of every sub-distribution. In the following the described procedure is expressed with code.</p>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<p>The method of segmented regression is implemented in the function <code><a href="../reference/mixmod_regression.html">mixmod_regression()</a></code>. If a breakpoint was detected, the failure data is separated by that point. After breakpoint detection the function <code><a href="../reference/rank_regression.html">rank_regression()</a></code> is called inside <code><a href="../reference/mixmod_regression.html">mixmod_regression()</a></code> and is used to estimate the distribution parameters of the subgroups. The visualization of the obtained results is done by functions <code><a href="../reference/plot_prob.html">plot_prob()</a></code> and <code><a href="../reference/plot_mod.html">plot_mod()</a></code>.</p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Applying mixmod_regression(): </span>
-<span class="va">mixreg_weib</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mixmod_regression.html">mixmod_regression</a></span><span class="op">(</span><span class="va">cdf_john_tbl</span>, distribution <span class="op">=</span> <span class="st">"weibull"</span><span class="op">)</span>
+<span class="va">mixreg_weib</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mixmod_regression.html">mixmod_regression</a></span><span class="op">(</span>
+  x <span class="op">=</span> <span class="va">voltage_cdf</span>, 
+  distribution <span class="op">=</span> <span class="st">"weibull"</span>, 
+  control <span class="op">=</span> <span class="fu">segmented</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/segmented/man/seg.control.html">seg.control</a></span><span class="op">(</span>nonParam <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
+<span class="op">)</span>
 
 <span class="co"># Using plot_prob_mix(). </span>
 <span class="va">mix_reg_plot</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plot_prob.html">plot_prob</a></span><span class="op">(</span>
-  <span class="va">mixreg_weib</span>, 
+  x <span class="op">=</span> <span class="va">mixreg_weib</span>, 
   title_main <span class="op">=</span> <span class="st">"Weibull Mixture Regression"</span>, 
   title_x <span class="op">=</span> <span class="st">"Time in Hours"</span>, 
   title_y <span class="op">=</span> <span class="st">"Probability of Failure"</span>, 
@@ -154,45 +175,43 @@ Figure 1: Plotting positions in weibull grid.
 
 <span class="va">mix_reg_plot</span></code></pre></div>
 <div class="figure">
-<img src="Life_Data_Analysis_Part_III_files/figure-html/segmented%20weibull%20I-1.png" alt="Figure 2: Subgroup-specific plotting positions." width="700"><p class="caption">
-Figure 2: Subgroup-specific plotting positions.
+<img src="Life_Data_Analysis_Part_III_files/figure-html/segmented%20weibull%20I-1.png" alt="Figure 2: Subgroup-specific plotting positions using segmented regression." width="700"><p class="caption">
+Figure 2: Subgroup-specific plotting positions using segmented regression.
 </p>
 </div>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<p><br></p>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Using plot_mod() to visualize regression lines of subgroups: </span>
 <span class="va">mix_reg_lines</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plot_mod.html">plot_mod</a></span><span class="op">(</span>
   <span class="va">mix_reg_plot</span>, 
-  <span class="va">mixreg_weib</span>, 
+  x <span class="op">=</span> <span class="va">mixreg_weib</span>, 
   title_trace <span class="op">=</span> <span class="st">"Fitted Line"</span>
 <span class="op">)</span>
 
 <span class="va">mix_reg_lines</span></code></pre></div>
 <div class="figure">
-<img src="Life_Data_Analysis_Part_III_files/figure-html/segmented%20weibull%20II-1.png" alt="Figure 3: Subgroup-specific regression lines." width="700"><p class="caption">
-Figure 3: Subgroup-specific regression lines.
+<img src="Life_Data_Analysis_Part_III_files/figure-html/segmented%20weibull%20II-1.png" alt="Figure 3: Subgroup-specific regression lines using segmented regression." width="700"><p class="caption">
+Figure 3: Subgroup-specific regression lines using segmented regression.
 </p>
 </div>
-<p><br> Without specifying the number of mixed components <em>(k)</em> this method has splitted the data in two groups. This can bee seen in <em>Figure 2</em> and <em>Figure 3</em>. To sum up, an upside of this function is that one does not have to specify the number of mixing components, since segmentation happens in an automated fashion. Nevertheless the intention of this function is to give a hint for the existence of a mixture model. An in-depth analysis should be done afterwards.</p>
+<p><br> Without specifying the number of mixed components <em>(k)</em> this method has separated the data in three groups. This can bee seen in <em>Figure 2</em> and <em>Figure 3</em>. To sum up, an upside of this function is that one does not have to specify the number of mixing components, since segmentation happens in an automated fashion. Nevertheless the intention of this function is to give a hint for the existence of a mixture model. An in-depth analysis should be done afterwards.</p>
 </div>
 <div id="em-algorithm-with-package-weibulltools" class="section level2">
 <h2 class="hasAnchor">
-<a href="#em-algorithm-with-package-weibulltools" class="anchor"></a>EM-Algorithm with Package <code>weibulltools</code>
+<a href="#em-algorithm-with-package-weibulltools" class="anchor"></a>EM Algorithm with Package <code>weibulltools</code>
 </h2>
-<p>The EM-Algorithm can be applied through the usage of the function <code><a href="../reference/mixmod_em.html">mixmod_em()</a></code>. In comparison to <code><a href="../reference/mixmod_regression.html">mixmod_regression()</a></code> one has to specify <em>k</em>, the number of subgroups. The obtained results can be visualized by functions <code><a href="../reference/plot_prob_mix.html">plot_prob_mix()</a></code> and <code><a href="../reference/plot_mod_mix.html">plot_mod_mix()</a></code>, too.</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<p>The EM algorithm can be applied through the usage of the function <code><a href="../reference/mixmod_em.html">mixmod_em()</a></code>. In comparison to <code><a href="../reference/mixmod_regression.html">mixmod_regression()</a></code> one has to specify <em>k</em>, the number of subgroups. The obtained results can be also visualized by functions <code><a href="../reference/plot_prob.html">plot_prob()</a></code> and <code><a href="../reference/plot_mod.html">plot_mod()</a></code>.</p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Applying mixmod_regression(): </span>
 <span class="va">mix_em_weib</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mixmod_em.html">mixmod_em</a></span><span class="op">(</span>
-  x <span class="op">=</span> <span class="va">data</span>, 
+  x <span class="op">=</span> <span class="va">voltage_tbl</span>, 
   distribution <span class="op">=</span> <span class="st">"weibull"</span>,
-  conf_level <span class="op">=</span> <span class="fl">0.95</span>, 
-  k <span class="op">=</span> <span class="fl">2</span>, 
-  method <span class="op">=</span> <span class="st">"EM"</span>, 
-  n_iter <span class="op">=</span> <span class="fl">150</span>
+  k <span class="op">=</span> <span class="fl">2</span>
 <span class="op">)</span>
 
 <span class="co"># Using plot_prob(): </span>
 <span class="va">mix_em_plot</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plot_prob.html">plot_prob</a></span><span class="op">(</span>
-  <span class="va">mix_em_weib</span>,
+  x <span class="op">=</span> <span class="va">mix_em_weib</span>,
   title_main <span class="op">=</span> <span class="st">"Weibull Mixture EM"</span>, 
   title_x <span class="op">=</span> <span class="st">"Time in Hours"</span>, 
   title_y <span class="op">=</span> <span class="st">"Probability of Failure"</span>, 
@@ -202,18 +221,23 @@ Figure 3: Subgroup-specific regression lines.
 
 <span class="va">mix_em_plot</span></code></pre></div>
 <div class="figure">
-<img src="Life_Data_Analysis_Part_III_files/figure-html/em%20weibull%20I-1.png" alt="Figure 4: Subgroup-specific plotting positions." width="700"><p class="caption">
-Figure 4: Subgroup-specific plotting positions.
+<img src="Life_Data_Analysis_Part_III_files/figure-html/em%20weibull%20I-1.png" alt="Figure 4: Subgroup-specific plotting positions using EM algorithm." width="700"><p class="caption">
+Figure 4: Subgroup-specific plotting positions using EM algorithm.
 </p>
 </div>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R">
 <span class="co"># Using plot_mod() to visualize regression lines of subgroups: </span>
-<span class="va">mix_em_lines</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plot_mod.html">plot_mod</a></span><span class="op">(</span><span class="va">mix_em_plot</span>, <span class="va">mix_em_weib</span>, title_trace <span class="op">=</span> <span class="st">"Fitted Line"</span><span class="op">)</span>
+<span class="va">mix_em_lines</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plot_mod.html">plot_mod</a></span><span class="op">(</span>
+  <span class="va">mix_em_plot</span>, 
+  x <span class="op">=</span> <span class="va">mix_em_weib</span>, 
+  title_trace <span class="op">=</span> <span class="st">"Fitted Line"</span>
+<span class="op">)</span>
+
 <span class="va">mix_em_lines</span></code></pre></div>
 <div class="figure">
-<img src="Life_Data_Analysis_Part_III_files/figure-html/em%20weibull%20II-1.png" alt="Figure 5: Subgroup-specific regression lines." width="700"><p class="caption">
-Figure 5: Subgroup-specific regression lines.
+<img src="Life_Data_Analysis_Part_III_files/figure-html/em%20weibull%20II-1.png" alt="Figure 5: Subgroup-specific regression lines using EM algorithm." width="700"><p class="caption">
+Figure 5: Subgroup-specific regression lines using EM algorithm.
 </p>
 </div>
 <p><br> In comparison to <code><a href="../reference/mixmod_regression.html">mixmod_regression()</a></code> the EM-Algorithm can also assign censored items to a specific subgroup. Hence, an individual analysis of the mixing components, depicted in <em>Figure 4</em> and <em>Figure 5</em>, is possible. In conclusion an analysis of a mixture model using <code><a href="../reference/mixmod_em.html">mixmod_em()</a></code> is statistically founded. A drawback of this function is, that the identification of the number of subgroups can not be determined automatically.</p>

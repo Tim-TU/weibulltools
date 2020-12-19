@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>EM-Algorithm using Newton-Raphson Method — mixture_em_cpp • weibulltools</title>
+<title>weibulltools — weibulltools-package • weibulltools</title>
 
 
 <!-- jquery -->
@@ -39,13 +39,20 @@
 
 
 
-<meta property="og:title" content="EM-Algorithm using Newton-Raphson Method — mixture_em_cpp" />
-<meta property="og:description" content="This method uses the EM-Algorithm to estimate the parameters of a univariate
-mixture model. Until now, the mixture model can consist of k two-parametric
-Weibull distributions. The Weibull distributions are parameterized with scale
-\(\eta\) and shape \(\beta\). In M-step these parameters are estimated using
-Newton-Raphson. This function is implemented in c++ and is called in function
-mixmod_em." />
+<meta property="og:title" content="weibulltools — weibulltools-package" />
+<meta property="og:description" content="The weibulltools package focuses on statistical methods and
+visualizations that are often used in reliability engineering. It provides a
+compact and easily accessible set of methods and visualization tools that
+make the examination and adjustment as well as the analysis and
+interpretation of field data (and bench tests) as simple as possible.
+Besides the well-known weibull analysis, the package supports multiple
+lifetime distributions and also contains Monte Carlo methods for the
+correction and completion of imprecisely recorded or unknown lifetime
+characteristics.
+Plots are created statically
+(ggplot2) or
+interactively (plotly) and can be
+customized with functions of the respective visualization package." />
 
 
 
@@ -129,93 +136,29 @@ mixmod_em." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>EM-Algorithm using Newton-Raphson Method</h1>
+    <h1>weibulltools</h1>
     
-    <div class="hidden name"><code>mixture_em_cpp.Rd</code></div>
+    <div class="hidden name"><code>weibulltools-package.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>This method uses the EM-Algorithm to estimate the parameters of a univariate
-mixture model. Until now, the mixture model can consist of k two-parametric
-Weibull distributions. The Weibull distributions are parameterized with scale
-\(\eta\) and shape \(\beta\). In M-step these parameters are estimated using
-Newton-Raphson. This function is implemented in c++ and is called in function
-<code><a href='mixmod_em.html'>mixmod_em</a></code>.</p>
+    <p>The <em>weibulltools</em> package focuses on statistical methods and
+visualizations that are often used in reliability engineering. It provides a
+compact and easily accessible set of methods and visualization tools that
+make the examination and adjustment as well as the analysis and
+interpretation of field data (and bench tests) as simple as possible.</p>
+<p>Besides the well-known weibull analysis, the package supports multiple
+lifetime distributions and also contains Monte Carlo methods for the
+correction and completion of imprecisely recorded or unknown lifetime
+characteristics.</p>
+<p>Plots are created statically
+(<code><a href='https://ggplot2.tidyverse.org/reference/ggplot2-package.html'>ggplot2</a></code>) or
+interactively (<code><a href='https://rdrr.io/pkg/plotly/man/plot_ly.html'>plotly</a></code>) and can be
+customized with functions of the respective visualization package.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>mixture_em_cpp</span><span class='op'>(</span>
-  <span class='va'>x</span>,
-  <span class='va'>status</span>,
-  <span class='va'>post</span>,
-  distribution <span class='op'>=</span> <span class='st'>"weibull"</span>,
-  k <span class='op'>=</span> <span class='fl'>2L</span>,
-  method <span class='op'>=</span> <span class='st'>"EM"</span>,
-  n_iter <span class='op'>=</span> <span class='fl'>100L</span>,
-  conv_limit <span class='op'>=</span> <span class='fl'>1e-06</span>
-<span class='op'>)</span></pre>
 
-    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
-    <table class="ref-arguments">
-    <colgroup><col class="name" /><col class="desc" /></colgroup>
-    <tr>
-      <th>x</th>
-      <td><p>a numeric vector which consists of lifetime data. Lifetime
-data could be every characteristic influencing the reliability of a product,
-e.g. operating time (days/months in service), mileage (km, miles), load
-cycles.</p></td>
-    </tr>
-    <tr>
-      <th>status</th>
-      <td><p>a vector of binary data (0 or 1) indicating whether unit <em>i</em>
-is a right censored observation (= 0) or a failure (= 1).</p></td>
-    </tr>
-    <tr>
-      <th>post</th>
-      <td><p>a numeric matrix specifiying initial a-posteriori probabilities.
-The number of rows have to be in line with observations <code>x</code> and the
-number of columns must equal the mixture components <code>k</code>.</p></td>
-    </tr>
-    <tr>
-      <th>distribution</th>
-      <td><p>supposed distribution of mixture model components.
-The value must be <code>"weibull"</code>. Other distributions have not been
-implemented yet.</p></td>
-    </tr>
-    <tr>
-      <th>k</th>
-      <td><p>integer of mixture components, default is 2.</p></td>
-    </tr>
-    <tr>
-      <th>method</th>
-      <td><p>default method is <code>"EM"</code>. Other methods have not been
-implemented yet.</p></td>
-    </tr>
-    <tr>
-      <th>n_iter</th>
-      <td><p>integer defining the maximum number of iterations.</p></td>
-    </tr>
-    <tr>
-      <th>conv_limit</th>
-      <td><p>numeric value defining the convergence limit.</p></td>
-    </tr>
-    </table>
 
-    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
-
-    <p>Returns a list with the following components:</p><ul>
-<li><p><code>coefficients</code> : A matrix with estimated Weibull parameters. In the
-    first row the estimated scale parameters \(\eta\) and in the second the
-    estimated shape parameters \(\beta\) are provided. The first column belongs
-    to the first mixture component and so forth.</p></li>
-<li><p><code>posteriori</code> : A matrix with estimated a-posteriori probabilities.</p></li>
-<li><p><code>priori</code> : A vector with estimated a-priori probabilities.</p></li>
-<li><p><code>logL</code> : The value of the complete log-likelihood.</p></li>
-</ul>
-
-    <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
-
-    <p>Doganaksoy, N.; Hahn, G.; Meeker, W. Q., Reliability Analysis by
-  Failure Mode, Quality Progress, 35(6), 47-52, 2002</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

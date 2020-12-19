@@ -5,13 +5,13 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Life Data Analysis Part II - Parameter Estimation of Parametric Lifetime Models • weibulltools</title>
+<title>Life Data Analysis Part II - Estimation Methods for Parametric Lifetime Models • weibulltools</title>
 <!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script><!-- Bootstrap --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha256-bZLfwXAP04zRMK2BjiO8iu9pf4FbLqX6zitd+tIvLhE=" crossorigin="anonymous">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script><!-- bootstrap-toc --><link rel="stylesheet" href="../bootstrap-toc.css">
 <script src="../bootstrap-toc.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
 <!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
-<script src="../pkgdown.js"></script><meta property="og:title" content="Life Data Analysis Part II - Parameter Estimation of Parametric Lifetime Models">
+<script src="../pkgdown.js"></script><meta property="og:title" content="Life Data Analysis Part II - Estimation Methods for Parametric Lifetime Models">
 <meta property="og:description" content="weibulltools">
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
@@ -57,7 +57,7 @@
       <a href="../articles/Life_Data_Analysis_Part_I.html">Life Data Analysis Part I - Estimation of Failure Probabilities</a>
     </li>
     <li>
-      <a href="../articles/Life_Data_Analysis_Part_II.html">Life Data Analysis Part II - Parameter Estimation of Parametric Lifetime Models</a>
+      <a href="../articles/Life_Data_Analysis_Part_II.html">Life Data Analysis Part II - Estimation Methods for Parametric Lifetime Models</a>
     </li>
     <li>
       <a href="../articles/Life_Data_Analysis_Part_III.html">Life Data Analysis Part III - Mixture Models</a>
@@ -82,9 +82,10 @@
 <script src="Life_Data_Analysis_Part_II_files/anchor-sections-1.0/anchor-sections.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
-      <h1 data-toc-skip>Life Data Analysis Part II - Parameter Estimation of Parametric Lifetime Models</h1>
-            <h3 class="subtitle">Median Rank Regression and Maximum Likelihood Method</h3>
+      <h1 data-toc-skip>Life Data Analysis Part II - Estimation Methods for Parametric Lifetime Models</h1>
+            <h3 class="subtitle">Rank Regression and Maximum Likelihood</h3>
                         <h4 class="author">Tim-Gunnar Hensel</h4>
+                        <h4 class="author">David Barkemeyer</h4>
             
             <h4 class="date">2020-12-19</h4>
       
@@ -95,21 +96,21 @@
 
     
     
-<p>This document introduces two methods for the parameter estimation of lifetime models. Where Median Rank Regression <em>(MRR)</em> fits a straight line through transformed plotting positions (transformation is described precisely in <code><a href="../articles/Life_Data_Analysis_Part_I.html">vignette(topic = "Life_Data_Analysis_Part_I", package = "weibulltools")</a></code>), Maximum Likelihood <em>(ML)</em> strives to maximize a function of the parameters given the sample data. If the parameters are obtained a cumulative distribution function <em>(CDF)</em> can be computed and added to a probability plot.</p>
-<p>In the theoretical part of this vignette we will focus on a two-parameter Weibull distribution. The second part is about the application of the provided estimation methods in <code>weibulltools</code>. All implemented models can be found in the help pages of <code><a href="../reference/rank_regression.html">rank_regression()</a></code> and <code><a href="../reference/ml_estimation.html">ml_estimation()</a></code>.</p>
+<p>This document introduces two methods for the parameter estimation of lifetime distributions. Where <em>Rank Regression (RR)</em> fits a straight line through transformed plotting positions (transformation is described precisely in <code><a href="../articles/Life_Data_Analysis_Part_I.html">vignette(topic = "Life_Data_Analysis_Part_I", package = "weibulltools")</a></code>), <em>Maximum likelihood (ML)</em> strives to maximize a function of the parameters given the sample data. If the parameters are obtained, a cumulative distribution function <em>(CDF)</em> can be computed and added to a probability plot.</p>
+<p>In the theoretical part of this vignette the focus is on the two-parameter Weibull distribution. The second part is about the application of the provided estimation methods in <code>weibulltools</code>. All implemented models can be found in the help pages of <code><a href="../reference/rank_regression.html">rank_regression()</a></code> and <code><a href="../reference/ml_estimation.html">ml_estimation()</a></code>.</p>
 <div id="the-weibull-distribution" class="section level2">
 <h2 class="hasAnchor">
 <a href="#the-weibull-distribution" class="anchor"></a>The Weibull Distribution</h2>
-<p>The Weibull distribution is a continuous probability distribution, which is specified by the shape parameter <span class="math inline">\(\beta\)</span> and the scale parameter <span class="math inline">\(\eta\)</span> (two-parameter representation). Its CDF and PDF <em>(probability density function)</em> are given by the following formula:</p>
-<p><span class="math display">\[F(t)=1-\exp\left[ -\left(\frac{t}{\eta}\right)^{\beta}\right]\]</span></p>
-<p><span class="math display">\[f(t)=\frac{\beta}{\eta} \cdot \left(\frac{t}{\eta}\right)^{\beta-1} \cdot \exp\left[-\left(\frac{t}{\eta}\right)^\beta\right]\]</span> The practical benefit of the Weibull in the field of lifetime analysis is that the common profiles of failure rates, which are observed over the lifetime of a large number of technical products, can be described using this statistical distribution.</p>
-<p>In the following, the estimation of the specific parameters <span class="math inline">\(\beta\)</span> and <span class="math inline">\(\eta\)</span> is explained.</p>
+<p>The Weibull distribution is a continuous probability distribution, which is specified by the location parameter <span class="math inline">\(\mu\)</span> and the scale parameter <span class="math inline">\(\sigma\)</span>. Its <em>CDF</em> and <em>PDF (probability density function)</em> are given by the following formulas:</p>
+<p><span class="math display">\[F(t)=\Phi_{SEV}\left(\frac{\log(t) - \mu}{\sigma}\right)\]</span></p>
+<p><span class="math display">\[f(t)=\frac{1}{\sigma t}\;\phi_{SEV}\left(\frac{\log(t) - \mu}{\sigma}\right)\]</span> The practical benefit of the Weibull in the field of lifetime analysis is that the common profiles of failure rates, which are observed over the lifetime of a large number of technical products, can be described using this statistical distribution.</p>
+<p>In the following, the estimation of the specific parameters <span class="math inline">\(\mu\)</span> and <span class="math inline">\(\sigma\)</span> is explained.</p>
 </div>
-<div id="median-rank-regression-mrr" class="section level2">
+<div id="rank-regression-rr" class="section level2">
 <h2 class="hasAnchor">
-<a href="#median-rank-regression-mrr" class="anchor"></a>Median Rank Regression (MRR)</h2>
-<p>In MRR the cumulative distribution function is linearized so that the true, unknown population is estimated by a straight line which is analytically placed among the plotting pairs. The lifetime characteristic, entered on the x-axis, is displayed on a logarithmic scale. A double-logarithmic representation of the estimated failure probabilities is used for the y-axis. Using Ordinary Least Squares <em>(OLS)</em> we will determine a best-fit line in order that the sum of squared deviations between this fitted regression line and the plotted points is minimized.</p>
-<p>In reliability analysis, it became prevalent that the line is placed in the probability plot so that the horizontal distances between the best-fit line and the points are minimized <a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a>. This procedure is called <strong>x on y</strong> rank regression.</p>
+<a href="#rank-regression-rr" class="anchor"></a>Rank Regression (RR)</h2>
+<p>In <em>RR</em> the <em>CDF</em> is linearized such that the true, unknown population is estimated by a straight line which is analytically placed among the plotting pairs. The lifetime characteristic, entered on the x-axis, is displayed on a logarithmic scale. A double-logarithmic representation of the estimated failure probabilities is used for the y-axis. Ordinary Least Squares <em>(OLS)</em> determines a best-fit line in order that the sum of squared deviations between this fitted regression line and the plotted points is minimized.</p>
+<p>In reliability analysis, it became prevalent that the line is placed in the probability plot in the way that the horizontal distances between the best-fit line and the points are minimized <a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a>. This procedure is called <strong>x on y</strong> rank regression.</p>
 <p>The formulas for estimating the slope and the intercept of the regression line according to the described method are given below.</p>
 <p>Slope:</p>
 <p><span class="math display">\[\hat{b}=\frac{\sum_{i=1}^{n}(x_i-\bar{x})\cdot(y_i-\bar{y})}{\sum_{i=1}^{n}(y_i-\bar{y})^2}\]</span></p>
@@ -118,68 +119,96 @@
 <p>With</p>
 <p><span class="math display">\[x_i=\log(t_i)\;;\; \bar{x}=\frac{1}{n}\cdot\sum_{i=1}^{n}\log(t_i)\;;\]</span></p>
 <p>as well as</p>
-<p><span class="math display">\[y_i=\log\left[-\log(1-F(t_i))\right]\;and \; \bar{y}=\frac{1}{n}\cdot\sum_{i=1}^{n}\log\left[-\log(1-F(t_i))\right].\]</span></p>
-<p>In order to obtain the Weibull-specific parameters the slope and the intercept needs to be transformed <a href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a>.</p>
-<p><span class="math display">\[\hat{\beta}=\frac{1}{\hat{b}}\]</span></p>
-<p><span class="math display">\[\hat{\eta}=\exp(\hat{a})\]</span> Using the location-scale parameterization, which is mentioned in <code><a href="../articles/Life_Data_Analysis_Part_I.html">vignette(topic = "Life_Data_Analysis_Part_I", package = "weibulltools")</a></code>, we can see that <span class="math inline">\(b\)</span> equals <span class="math inline">\(\sigma\)</span> and <span class="math inline">\(a\)</span> equals <span class="math inline">\(\mu\)</span>.</p>
+<p><span class="math display">\[y_i=\Phi^{-1}_{SEV}\left[F(t)\right]=\log\left\{-\log\left[1-F(t_i)\right]\right\}\;and \; \bar{y}=\frac{1}{n}\cdot\sum_{i=1}^{n}\log\left\{-\log\left[1-F(t_i)\right]\right\}.\]</span><br>
+The estimates of the intercept and slope are equal to the weibull parameters <span class="math inline">\(\mu\)</span> and <span class="math inline">\(\sigma\)</span>, i.e. </p>
+<p><span class="math display">\[\hat{\mu}=\hat{a}\]</span></p>
+<p>and</p>
+<p><span class="math display">\[\hat{\sigma}=\hat{b}.\]</span></p>
+<p>In order to obtain the parameters of the shape-scale parameterization the intercept and the slope need to be transformed <a href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a>.</p>
+<p><span class="math display">\[\hat{\eta}=\exp(\hat{a})=\exp(\hat{\mu})\]</span></p>
+<p>and</p>
+<p><span class="math display">\[\hat{\beta}=\frac{1}{\hat{b}}=\frac{1}{\hat{\sigma}}.\]</span></p>
 </div>
 <div id="maximum-likelihood-ml" class="section level2">
 <h2 class="hasAnchor">
 <a href="#maximum-likelihood-ml" class="anchor"></a>Maximum Likelihood (ML)</h2>
-<p>The ML method of Ronald A. Fisher estimates the parameters by maximizing the likelihood function. Assuming a theoretical distribution, the idea of ML is that the specific parameters are chosen in such a way that the plausibility of obtaining the present sample is maximized. The log-likelihood is given by the following equation:</p>
-<p><span class="math display">\[\log L = n \cdot \log\left(\frac{\beta}{\eta}\right) - \sum_{i=1}^n\left(\frac{t_i}{\eta}\right)^\beta + \left(\beta - 1\right) \cdot \sum_{i = 1}^n\log\left(\frac{t_i}{\eta}\right)\]</span></p>
-<p>Deriving and nullifying the log-likelihood function according to <span class="math inline">\(\beta\)</span> results in:</p>
-<p><span class="math display">\[\frac{\partial \log L}{\partial \beta}=\frac{n}{\beta}+\sum_{i=1}^{n}\log(t_i)-\frac{n\cdot\sum_{i=1}^{n}(t_i^{\beta}\cdot \log(t_i))}{\sum_{i=1}^{n}(t_i)^\beta}=0\]</span></p>
-<p>Since there is no closed-form expression <span class="math inline">\(\beta\)</span> needs to be determined numerically. Once received, the parameter <span class="math inline">\(\eta\)</span> can be calculated analytically.</p>
-<p><span class="math display">\[\hat{\eta}=[\frac{1}{n}\cdot\sum_{i=1}^{n}t_i^{\hat{\beta}}]^\frac{1}{\hat{\beta}}\]</span></p>
-<p>In large samples, ML estimators have optimality properties. In addition, the simulation studies by Genschel and Meeker <a href="#fn3" class="footnote-ref" id="fnref3"><sup>3</sup></a> have shown that even in small samples it is difficult to find an estimator that regularly has better properties than ML estimators.</p>
+<p>The <em>ML</em> method of Ronald A. Fisher estimates the parameters by maximizing the likelihood function. Assuming a theoretical distribution, the idea of <em>ML</em> is that the specific parameters are chosen in such a way that the plausibility of obtaining the present sample is maximized. The likelihood and log-likelihood are given by the following equations:</p>
+<p><span class="math display">\[L = \prod_{i=1}^n\left\{\frac{1}{\sigma t_i}\;\phi_{SEV}\left(\frac{\log(t_i) - \mu}{\sigma}\right)\right\}\]</span></p>
+<p>and</p>
+<p><span class="math display">\[\log L = \sum_{i=1}^n\log\left\{\frac{1}{\sigma t_i}\;\phi_{SEV}\left(\frac{\log(t_i) - \mu}{\sigma}\right)\right\}\]</span></p>
+<p>Deriving and nullifying the log-likelihood function according to parameters results in two formulas that have to be solved numerically in order to obtain the estimates.</p>
+<p>In large samples, ML estimators have optimality properties. In addition, the simulation studies by <em>Genschel and Meeker</em> <a href="#fn3" class="footnote-ref" id="fnref3"><sup>3</sup></a> have shown that even in small samples it is difficult to find an estimator that regularly has better properties than ML estimators.</p>
 </div>
-<div id="data-i-shock" class="section level2">
+<div id="data" class="section level2">
 <h2 class="hasAnchor">
-<a href="#data-i-shock" class="anchor"></a>Data I: shock</h2>
-<p>To apply the introduced estimation methods and related visualizations the <code>shock</code> data is used. In this dataset kilometer-dependent problems that occurred on shock absorbers are reported. In addition to failed items the dataset also contains non-defectives. The data can be found in <em>Statistical Methods for Reliability Data</em> <a href="#fn4" class="footnote-ref" id="fnref4"><sup>4</sup></a>.</p>
-</div>
-<div id="median-rank-regression-and-maximum-likelihood-estimation-with-package-weibulltools" class="section level2">
-<h2 class="hasAnchor">
-<a href="#median-rank-regression-and-maximum-likelihood-estimation-with-package-weibulltools" class="anchor"></a>Median Rank Regression and Maximum Likelihood Estimation with Package <code>weibulltools</code>
-</h2>
-<p>Where <code><a href="../reference/rank_regression.html">rank_regression()</a></code> determines a regression model (<code>x ~ y</code>) based on the linearized CDF of a specified model, <code><a href="../reference/ml_estimation.html">ml_estimation()</a></code> computes the parameters which maximize the log-likelihood of an underlying distribution. Both methods can be applied to complete failure data as well as failure and (multiple) right-censored data. A special characteristic of these functions is that the implemented distributions are parameterized in such a way that they are part of a (log-)location-scale family with parameters <span class="math inline">\(\mu\)</span> and <span class="math inline">\(\sigma\)</span>. This representation is often used in reliability analysis. Subsequent transformations especially to get the Weibull-specific values in the scale-shape parameterization with <span class="math inline">\(\eta\)</span> and <span class="math inline">\(\beta\)</span> are included. This parameterization is also used in the <code>stats</code> package (e.g., in the function <a href="https://stat.ethz.ch/R-manual/R-devel/library/stats/html/Weibull.html"><code>pweibull</code></a>). <code><a href="../reference/rank_regression.html">rank_regression()</a></code> and <code><a href="../reference/ml_estimation.html">ml_estimation()</a></code> can also deal with models that have a threshold parameter <span class="math inline">\(\gamma\)</span> like the three-parametric Weibull. If a three-parametric distribution is specified both methods call corresponding profiling functions. Inside <code><a href="../reference/rank_regression.html">rank_regression()</a></code> the function <code><a href="../reference/r_squared_profiling.html">r_squared_profiling()</a></code> is called and if <code><a href="../reference/ml_estimation.html">ml_estimation()</a></code> is used <code><a href="../reference/loglik_profiling.html">loglik_profiling()</a></code> is executed. To get information about the provided confidence intervals of the parameters the help pages of <code><a href="../reference/rank_regression.html">rank_regression()</a></code> and <code><a href="../reference/ml_estimation.html">ml_estimation()</a></code> should be read carefully.</p>
-<p>In the following we want to apply both methods to the dataset <code>shock</code>. We assume that the data can be best described by a two-parametric Weibull distribution. The estimated parameters will be used to calculate the population lines and for the purpose of comparison they will be visualized in one Weibull probability plot.</p>
-<div id="mrr-code-two-parametric-weibull" class="section level3">
+<a href="#data" class="anchor"></a>Data</h2>
+<p>To apply the introduced parameter estimation methods the <code>shock</code> and <code>alloy</code> datasets are used.</p>
+<div id="shock-absorber" class="section level3">
 <h3 class="hasAnchor">
-<a href="#mrr-code-two-parametric-weibull" class="anchor"></a>MRR-Code two-parametric Weibull</h3>
+<a href="#shock-absorber" class="anchor"></a>Shock Absorber</h3>
+<p>In this dataset kilometer-dependent problems that have occurred on shock absorbers are reported. In addition to failed items the dataset also contains non-defectives (<em>censored</em>) observations. The data can be found in <em>Statistical Methods for Reliability Data</em> <a href="#fn4" class="footnote-ref" id="fnref4"><sup>4</sup></a>.</p>
+<p>For consistent handling of the data, <code>weibulltools</code> introduces the function <code><a href="../reference/reliability_data.html">reliability_data()</a></code> that converts the original dataset into a <code>wt_reliability_data</code> object. This formatted object allows to easily apply the presented methods.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="va">shock</span><span class="op">)</span>
-<span class="co"># generate random ids for units: </span>
-<span class="va">shock_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/reliability_data.html">reliability_data</a></span><span class="op">(</span><span class="va">shock</span>, x <span class="op">=</span> <span class="va">distance</span>, status <span class="op">=</span> <span class="va">status</span><span class="op">)</span>
-
-<span class="co"># Rank Regression: </span>
-<span class="co"># for rank_regression(), estimated failure probabilities are required: </span>
-<span class="va">shock_cdf</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/estimate_cdf.html">estimate_cdf</a></span><span class="op">(</span><span class="va">shock_data</span>, methods <span class="op">=</span> <span class="st">"johnson"</span><span class="op">)</span>
-
-<span class="co"># Using all models which are provided in rank_regression: </span>
-<span class="va">distributions</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"weibull"</span>, <span class="st">"lognormal"</span>, <span class="st">"loglogistic"</span>, <span class="st">"normal"</span>, <span class="st">"logistic"</span>, <span class="st">"sev"</span>, 
-           <span class="st">"weibull3"</span>, <span class="st">"lognormal3"</span>, <span class="st">"loglogistic3"</span><span class="op">)</span>
-
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="http://purrr.tidyverse.org">purrr</a></span><span class="op">)</span>
-<span class="va">r_sq_vec</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html">map_dbl</a></span><span class="op">(</span><span class="va">distributions</span>, <span class="kw">function</span><span class="op">(</span><span class="va">distribution</span><span class="op">)</span> <span class="op">{</span>
-  <span class="fu"><a href="../reference/rank_regression.html">rank_regression</a></span><span class="op">(</span><span class="va">shock_cdf</span>, distribution <span class="op">=</span> <span class="va">distribution</span><span class="op">)</span><span class="op">$</span><span class="va">r_squared</span>
-<span class="op">}</span><span class="op">)</span>
-
-<span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">r_sq_vec</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">distributions</span>
-
-<span class="va">r_sq_vec</span>
-<span class="co">#&gt;      weibull    lognormal  loglogistic       normal     logistic          sev </span>
-<span class="co">#&gt;    0.9901585    0.9641187    0.9820248    0.9846976    0.9720249    0.9563309 </span>
-<span class="co">#&gt;     weibull3   lognormal3 loglogistic3 </span>
-<span class="co">#&gt;    0.9901585    0.9641187    0.9820248</span></code></pre></div>
-<p><br></p>
-<p>The use of a two-parametric Weibull (<code>weibull</code>) is acceptable since <span class="math inline">\(R^2\)</span> is highest. It should also be noticed that <span class="math inline">\(R^2\)</span> values for <code>weibull</code>, <code>lognormal</code>, <code>loglogistic</code> are equal to their three-parametric models <code>weibull3</code>, <code>lognormal3</code>, <code>loglogistic3</code>. This means that the estimate of threshold parameter is 0.</p>
-<p>We will construct a probability plot for the Weibull distribution and add the estimated regression line.</p>
+<code class="sourceCode R"><span class="va">shock_tbl</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/reliability_data.html">reliability_data</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">shock</span>, x <span class="op">=</span> <span class="va">distance</span>, status <span class="op">=</span> <span class="va">status</span><span class="op">)</span>
+<span class="va">shock_tbl</span>
+<span class="co">#&gt; Reliability Data:</span>
+<span class="co">#&gt; # A tibble: 38 x 3</span>
+<span class="co">#&gt;        x status id   </span>
+<span class="co">#&gt;    &lt;int&gt;  &lt;dbl&gt; &lt;chr&gt;</span>
+<span class="co">#&gt;  1  6700      1 ID1  </span>
+<span class="co">#&gt;  2  6950      0 ID2  </span>
+<span class="co">#&gt;  3  7820      0 ID3  </span>
+<span class="co">#&gt;  4  8790      0 ID4  </span>
+<span class="co">#&gt;  5  9120      1 ID5  </span>
+<span class="co">#&gt;  6  9660      0 ID6  </span>
+<span class="co">#&gt;  7  9820      0 ID7  </span>
+<span class="co">#&gt;  8 11310      0 ID8  </span>
+<span class="co">#&gt;  9 11690      0 ID9  </span>
+<span class="co">#&gt; 10 11850      0 ID10 </span>
+<span class="co">#&gt; # ... with 28 more rows</span></code></pre></div>
+</div>
+<div id="alloy-t7989" class="section level3">
+<h3 class="hasAnchor">
+<a href="#alloy-t7989" class="anchor"></a>Alloy T7989</h3>
+<p>The dataset <code>alloy</code> in which the cycles until a fatigue failure of a special alloy occurs are inspected. The data is also taken from Meeker and Escobar <a href="#fn5" class="footnote-ref" id="fnref5"><sup>5</sup></a>.</p>
+<p>Again, the data have to be formatted as a <code>wt_reliability_data</code> object:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># Again estimating weibull: </span>
-<span class="va">mrr_weibull</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/rank_regression.html">rank_regression</a></span><span class="op">(</span><span class="va">shock_cdf</span>, distribution <span class="op">=</span> <span class="st">"weibull"</span><span class="op">)</span>
-<span class="va">mrr_weibull</span> 
+<code class="sourceCode R"><span class="co"># Data: </span>
+<span class="va">alloy_tbl</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/reliability_data.html">reliability_data</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">alloy</span>, x <span class="op">=</span> <span class="va">cycles</span>, status <span class="op">=</span> <span class="va">status</span><span class="op">)</span>
+<span class="va">alloy_tbl</span>
+<span class="co">#&gt; Reliability Data:</span>
+<span class="co">#&gt; # A tibble: 72 x 3</span>
+<span class="co">#&gt;        x status id   </span>
+<span class="co">#&gt;    &lt;dbl&gt;  &lt;dbl&gt; &lt;chr&gt;</span>
+<span class="co">#&gt;  1   300      0 ID1  </span>
+<span class="co">#&gt;  2   300      0 ID2  </span>
+<span class="co">#&gt;  3   300      0 ID3  </span>
+<span class="co">#&gt;  4   300      0 ID4  </span>
+<span class="co">#&gt;  5   300      0 ID5  </span>
+<span class="co">#&gt;  6   291      1 ID6  </span>
+<span class="co">#&gt;  7   274      1 ID7  </span>
+<span class="co">#&gt;  8   271      1 ID8  </span>
+<span class="co">#&gt;  9   269      1 ID9  </span>
+<span class="co">#&gt; 10   257      1 ID10 </span>
+<span class="co">#&gt; # ... with 62 more rows</span></code></pre></div>
+</div>
+</div>
+<div id="rr-and-ml-with-package-weibulltools" class="section level2">
+<h2 class="hasAnchor">
+<a href="#rr-and-ml-with-package-weibulltools" class="anchor"></a>RR and ML with Package <code>weibulltools</code>
+</h2>
+<p><code><a href="../reference/rank_regression.html">rank_regression()</a></code> and <code><a href="../reference/ml_estimation.html">ml_estimation()</a></code> can be applied to complete data as well as failure and (multiple) right-censored data. Both methods can also deal with models that have a threshold parameter <span class="math inline">\(\gamma\)</span>.</p>
+<p>In the following both methods are applied to the dataset <code>shock</code>.</p>
+<div id="rr-for-two-parameter-weibull-distribution" class="section level3">
+<h3 class="hasAnchor">
+<a href="#rr-for-two-parameter-weibull-distribution" class="anchor"></a>RR for two-parameter Weibull distribution</h3>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co"># rank_regression needs estimated failure probabilities: </span>
+<span class="va">shock_cdf</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/estimate_cdf.html">estimate_cdf</a></span><span class="op">(</span><span class="va">shock_tbl</span>, methods <span class="op">=</span> <span class="st">"johnson"</span><span class="op">)</span>
+
+<span class="co"># Estimating two-parameter weibull: </span>
+<span class="va">rr_weibull</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/rank_regression.html">rank_regression</a></span><span class="op">(</span><span class="va">shock_cdf</span>, distribution <span class="op">=</span> <span class="st">"weibull"</span><span class="op">)</span>
+<span class="va">rr_weibull</span> 
 <span class="co">#&gt; Rank Regression</span>
 <span class="co">#&gt; Coefficients:</span>
 <span class="co">#&gt;      mu    sigma  </span>
@@ -192,48 +221,31 @@
   title_main <span class="op">=</span> <span class="st">"Weibull Probability Plot"</span>, 
   title_x <span class="op">=</span> <span class="st">"Mileage in km"</span>, 
   title_y <span class="op">=</span> <span class="st">"Probability of Failure in %"</span>,
-  title_trace <span class="op">=</span> <span class="st">"Defect Shock Absorbers"</span>,
+  title_trace <span class="op">=</span> <span class="st">"Defectives"</span>,
   plot_method <span class="op">=</span> <span class="st">"ggplot2"</span>
 <span class="op">)</span>
 
 <span class="co"># Add regression line: </span>
-<span class="va">weibull_plot</span> <span class="op">&lt;-</span> <span class="va">weibull_grid</span> <span class="op">%&gt;%</span> 
-  <span class="fu"><a href="../reference/plot_mod.html">plot_mod</a></span><span class="op">(</span>
-    <span class="va">mrr_weibull</span>,
-    title_trace <span class="op">=</span> <span class="st">"Median Rank Regression"</span>
-  <span class="op">)</span>
+<span class="va">weibull_plot</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plot_mod.html">plot_mod</a></span><span class="op">(</span>
+  <span class="va">weibull_grid</span>,
+  x <span class="op">=</span> <span class="va">rr_weibull</span>,
+  title_trace <span class="op">=</span> <span class="st">"Rank Regression"</span>
+<span class="op">)</span>
 
 <span class="va">weibull_plot</span></code></pre></div>
 <div class="figure">
-<img src="Life_Data_Analysis_Part_II_files/figure-html/MRR%20weibull-1.png" alt="Figure 1: Median Rank Regression using two-parameter Weibull." width="700"><p class="caption">
-Figure 1: Median Rank Regression using two-parameter Weibull.
+<img src="Life_Data_Analysis_Part_II_files/figure-html/RR%20weibull-1.png" alt="Figure 1: RR for a two-parametric Weibull distribution." width="700"><p class="caption">
+Figure 1: RR for a two-parametric Weibull distribution.
 </p>
 </div>
 </div>
-<div id="ml-code-two-parametric-weibull" class="section level3">
+<div id="ml-for-two-parameter-weibull-distribution" class="section level3">
 <h3 class="hasAnchor">
-<a href="#ml-code-two-parametric-weibull" class="anchor"></a>ML-Code two-parametric Weibull</h3>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># Using all models which are provided in ml_estimation: </span>
-<span class="va">ml_list</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html">map</a></span><span class="op">(</span><span class="va">distributions</span>, <span class="kw">function</span><span class="op">(</span><span class="va">distribution</span><span class="op">)</span> <span class="op">{</span>
-  <span class="fu"><a href="../reference/ml_estimation.html">ml_estimation</a></span><span class="op">(</span><span class="va">shock_data</span>, distribution <span class="op">=</span> <span class="va">distribution</span><span class="op">)</span>
-<span class="op">}</span><span class="op">)</span>
-
-<span class="va">loglik_vec</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html">map_dbl</a></span><span class="op">(</span><span class="va">ml_list</span>, <span class="kw">function</span><span class="op">(</span><span class="va">el</span><span class="op">)</span> <span class="va">el</span><span class="op">$</span><span class="va">logL</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">loglik_vec</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">distributions</span>
-
-<span class="va">loglik_vec</span>
-<span class="co">#&gt;      weibull    lognormal  loglogistic       normal     logistic          sev </span>
-<span class="co">#&gt;    -123.9954    -124.6085    -124.3654    -124.2301    -124.5476    -124.6229 </span>
-<span class="co">#&gt;     weibull3   lognormal3 loglogistic3 </span>
-<span class="co">#&gt;    -123.9954    -124.6085    -124.3654</span></code></pre></div>
-<p><br></p>
-<p>We can see that the estimate for threshold parameter of the three-parametric distributions is 0, since the log-likelihood values of <code>weibull</code>, <code>lognormal</code>, <code>loglogistic</code> are equal to their three-parametric representations <code>weibull3</code>, <code>lognormal3</code>, <code>loglogistic3</code>. As the log-likelihood value of the two-parameter Weibull is highest, its usage is again justified.</p>
-<p>For comparison <em>Figure 1</em> will be extended by a straight line estimated with ML. Thus, we use the <code>add_lines()</code> function which is part of package <code>plotly</code>.</p>
+<a href="#ml-for-two-parameter-weibull-distribution" class="anchor"></a>ML for two-parameter Weibull distribution</h3>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Again estimating weibull: </span>
 <span class="va">ml_weibull</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ml_estimation.html">ml_estimation</a></span><span class="op">(</span>
-  <span class="va">shock_data</span>, 
+  <span class="va">shock_tbl</span>, 
   distribution <span class="op">=</span> <span class="st">"weibull"</span>
 <span class="op">)</span>
 
@@ -243,41 +255,28 @@ Figure 1: Median Rank Regression using two-parameter Weibull.
 <span class="co">#&gt;      mu    sigma  </span>
 <span class="co">#&gt; 10.2299   0.3164</span>
 
-<span class="co"># Add ML estimation to weibull_plot: </span>
-<span class="va">weibull_both</span> <span class="op">&lt;-</span> <span class="va">weibull_plot</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="../reference/plot_mod.html">plot_mod</a></span><span class="op">(</span><span class="va">ml_weibull</span>, title_trace <span class="op">=</span> <span class="st">"Maximum Likelihood"</span><span class="op">)</span>
+<span class="co"># Add ML estimation to weibull_grid: </span>
+<span class="va">weibull_plot2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plot_mod.html">plot_mod</a></span><span class="op">(</span>
+  <span class="va">weibull_grid</span>, 
+  x <span class="op">=</span> <span class="va">ml_weibull</span>, 
+  title_trace <span class="op">=</span> <span class="st">"Maximum Likelihood"</span>
+<span class="op">)</span>
 
-<span class="va">weibull_both</span></code></pre></div>
+<span class="va">weibull_plot2</span></code></pre></div>
 <div class="figure">
-<img src="Life_Data_Analysis_Part_II_files/figure-html/ML%20weibull-1.png" alt="Figure 2: Comparison of Median Rank Regression and Maximum Likelihood." width="700"><p class="caption">
-Figure 2: Comparison of Median Rank Regression and Maximum Likelihood.
+<img src="Life_Data_Analysis_Part_II_files/figure-html/ML%20weibull-1.png" alt="Figure 2: ML for a two-parametric Weibull distribution." width="700"><p class="caption">
+Figure 2: ML for a two-parametric Weibull distribution.
 </p>
 </div>
 </div>
-</div>
-<div id="data-ii-alloy-t7989" class="section level2">
-<h2 class="hasAnchor">
-<a href="#data-ii-alloy-t7989" class="anchor"></a>Data II: Alloy T7989</h2>
-<p>Finally we will use the dataset <code>Alloy T7989</code> in which the cycles until a fatigue failure of a special alloy occurs are inspected. The data is also taken from Meeker and Escobar <a href="#fn5" class="footnote-ref" id="fnref5"><sup>5</sup></a>. The authors visualized the data in a Weibull and Log-normal probability plot and detected a right-curved pattern. Thus, two-parametric distributions won’t be adequate and they fitted three-parametric models. In the following we want to compare the fit of a two- and three-parametric Log-normal using method <code><a href="../reference/ml_estimation.html">ml_estimation()</a></code>.</p>
-<div id="ml-code-two--and-three-parametric-log-normal" class="section level3">
+<div id="ml-for-two--and-three-parameter-log-normal-distribution" class="section level3">
 <h3 class="hasAnchor">
-<a href="#ml-code-two--and-three-parametric-log-normal" class="anchor"></a>ML-Code two- and three-parametric Log-normal</h3>
+<a href="#ml-for-two--and-three-parameter-log-normal-distribution" class="anchor"></a>ML for two- and three-parameter log-normal distribution</h3>
+<p>Finally, two- and three-parametric log-normal distributions are fitted to the <code>alloy</code> data using maximum likelihood.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># Data: </span>
-<span class="va">cycles</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">300</span>, <span class="fl">300</span>, <span class="fl">300</span>, <span class="fl">300</span>, <span class="fl">300</span>, <span class="fl">291</span>, <span class="fl">274</span>, <span class="fl">271</span>, <span class="fl">269</span>, <span class="fl">257</span>, <span class="fl">256</span>, <span class="fl">227</span>, <span class="fl">226</span>,
-            <span class="fl">224</span>, <span class="fl">213</span>, <span class="fl">211</span>, <span class="fl">205</span>, <span class="fl">203</span>, <span class="fl">197</span>, <span class="fl">196</span>, <span class="fl">190</span>, <span class="fl">189</span>, <span class="fl">188</span>, <span class="fl">187</span>, <span class="fl">184</span>, <span class="fl">180</span>,
-            <span class="fl">180</span>, <span class="fl">177</span>, <span class="fl">176</span>, <span class="fl">173</span>, <span class="fl">172</span>, <span class="fl">171</span>, <span class="fl">170</span>, <span class="fl">170</span>, <span class="fl">169</span>, <span class="fl">168</span>, <span class="fl">168</span>, <span class="fl">162</span>, <span class="fl">159</span>,
-            <span class="fl">159</span>, <span class="fl">159</span>, <span class="fl">159</span>, <span class="fl">152</span>, <span class="fl">152</span>, <span class="fl">149</span>, <span class="fl">149</span>, <span class="fl">144</span>, <span class="fl">143</span>, <span class="fl">141</span>, <span class="fl">141</span>, <span class="fl">140</span>, <span class="fl">139</span>,
-            <span class="fl">139</span>, <span class="fl">136</span>, <span class="fl">135</span>, <span class="fl">133</span>, <span class="fl">131</span>, <span class="fl">129</span>, <span class="fl">123</span>, <span class="fl">121</span>, <span class="fl">121</span>, <span class="fl">118</span>, <span class="fl">117</span>, <span class="fl">117</span>, <span class="fl">114</span>,
-            <span class="fl">112</span>, <span class="fl">108</span>, <span class="fl">104</span>, <span class="fl">99</span>, <span class="fl">99</span>, <span class="fl">96</span>, <span class="fl">94</span><span class="op">)</span>
-<span class="va">state</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">5</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">67</span><span class="op">)</span><span class="op">)</span>
-<span class="va">id</span> <span class="op">&lt;-</span> <span class="fl">1</span><span class="op">:</span><span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span><span class="op">(</span><span class="va">cycles</span><span class="op">)</span>
-
-<span class="va">cycles_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/reliability_data.html">reliability_data</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">cycles</span>, status <span class="op">=</span> <span class="va">state</span>, id <span class="op">=</span> <span class="va">id</span><span class="op">)</span>
-
-<span class="co"># Two-parameter Log-normal:  </span>
+<code class="sourceCode R"><span class="co"># Two-parameter log-normal:  </span>
 <span class="va">ml_lognormal</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ml_estimation.html">ml_estimation</a></span><span class="op">(</span>
-  <span class="va">cycles_data</span>,
+  <span class="va">alloy_tbl</span>,
   distribution <span class="op">=</span> <span class="st">"lognormal"</span>
 <span class="op">)</span>
 
@@ -289,7 +288,7 @@ Figure 2: Comparison of Median Rank Regression and Maximum Likelihood.
 
 <span class="co"># Three-parameter Log-normal:  </span>
 <span class="va">ml_lognormal3</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ml_estimation.html">ml_estimation</a></span><span class="op">(</span>
-  <span class="va">cycles_data</span>,
+  <span class="va">alloy_tbl</span>,
   distribution <span class="op">=</span> <span class="st">"lognormal3"</span>
 <span class="op">)</span>
 
@@ -299,54 +298,55 @@ Figure 2: Comparison of Median Rank Regression and Maximum Likelihood.
 <span class="co">#&gt;      mu    sigma    gamma  </span>
 <span class="co">#&gt;  4.5015   0.6132  72.0727</span></code></pre></div>
 <p><br></p>
-<p>The two model selection criteria <code>aic</code> and <code>bic</code> are smaller for <code>lognormal3</code> meaning that this model is preferable.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Constructing probability plot: </span>
-<span class="va">johnson_cdf_tbl</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/estimate_cdf.html">estimate_cdf</a></span><span class="op">(</span><span class="va">cycles_data</span>, <span class="st">"johnson"</span><span class="op">)</span>
+<span class="va">tbl_cdf_john</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/estimate_cdf.html">estimate_cdf</a></span><span class="op">(</span><span class="va">alloy_tbl</span>, <span class="st">"johnson"</span><span class="op">)</span>
 
 <span class="va">lognormal_grid</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plot_prob.html">plot_prob</a></span><span class="op">(</span>
-  <span class="va">johnson_cdf_tbl</span>,
+  <span class="va">tbl_cdf_john</span>,
   distribution <span class="op">=</span> <span class="st">"lognormal"</span>, 
   title_main <span class="op">=</span> <span class="st">"Log-normal Probability Plot"</span>, 
   title_x <span class="op">=</span> <span class="st">"Cycles"</span>, 
   title_y <span class="op">=</span> <span class="st">"Probability of Failure in %"</span>,
-  title_trace <span class="op">=</span> <span class="st">"Failed Units"</span>,
+  title_trace <span class="op">=</span> <span class="st">"Failed units"</span>,
   plot_method <span class="op">=</span> <span class="st">"ggplot2"</span>
 <span class="op">)</span>
 
-<span class="co"># Add three-parametric model to grid: </span>
-<span class="va">lognormal_plot</span> <span class="op">&lt;-</span> <span class="va">lognormal_grid</span> <span class="op">%&gt;%</span> 
-  <span class="fu"><a href="../reference/plot_mod.html">plot_mod</a></span><span class="op">(</span>
-    <span class="va">ml_lognormal3</span>,
-    title_trace <span class="op">=</span> <span class="st">"Three-parametric Log-normal"</span>
-  <span class="op">)</span>
+<span class="co"># Add two-parametric model to grid: </span>
+<span class="va">lognormal_plot</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plot_mod.html">plot_mod</a></span><span class="op">(</span>
+  <span class="va">lognormal_grid</span>,
+  x <span class="op">=</span> <span class="va">ml_lognormal</span>,
+  title_trace <span class="op">=</span> <span class="st">"Two-parametric log-normal"</span>
+<span class="op">)</span>
 
 <span class="va">lognormal_plot</span></code></pre></div>
 <div class="figure">
-<img src="Life_Data_Analysis_Part_II_files/figure-html/ML%20visualization%20I-1.png" alt="Figure 3: Three-parametric Log-normal distribution." width="700"><p class="caption">
-Figure 3: Three-parametric Log-normal distribution.
-</p>
-</div>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># Add two-parametric model to lognormal_plot: </span>
-<span class="va">lognormal_both</span> <span class="op">&lt;-</span> <span class="va">lognormal_plot</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="../reference/plot_mod.html">plot_mod</a></span><span class="op">(</span><span class="va">ml_lognormal</span>, title_trace <span class="op">=</span> <span class="st">"Two-parametric Log-normal"</span><span class="op">)</span>
-
-<span class="va">lognormal_both</span></code></pre></div>
-<div class="figure">
-<img src="Life_Data_Analysis_Part_II_files/figure-html/ML%20visualization%20II-1.png" alt="Figure 4: Comparison of two- and three-parametric Log-normal distribution." width="700"><p class="caption">
-Figure 4: Comparison of two- and three-parametric Log-normal distribution.
+<img src="Life_Data_Analysis_Part_II_files/figure-html/ML%20visualization%20I-1.png" alt="Figure 3: ML for a two-parametric log-normal distribution." width="700"><p class="caption">
+Figure 3: ML for a two-parametric log-normal distribution.
 </p>
 </div>
 <p><br></p>
-<p>In <em>Figure 4</em> we can see that the data is better described if the three-parametric model is used.</p>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co"># Add three-parametric model to lognormal_plot:</span>
+<span class="va">lognormal3_plot</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plot_mod.html">plot_mod</a></span><span class="op">(</span>
+  <span class="va">lognormal_grid</span>, 
+  x <span class="op">=</span> <span class="va">ml_lognormal3</span>, 
+  title_trace <span class="op">=</span> <span class="st">"Three-parametric log-normal"</span>
+<span class="op">)</span>
+
+<span class="va">lognormal3_plot</span></code></pre></div>
+<div class="figure">
+<img src="Life_Data_Analysis_Part_II_files/figure-html/ML%20visualization%20II-1.png" alt="Figure 4: ML for a three-parametric log-normal distribution." width="700"><p class="caption">
+Figure 4: ML for a three-parametric log-normal distribution.
+</p>
+</div>
 </div>
 </div>
 <div class="footnotes">
 <hr>
 <ol>
 <li id="fn1"><p>Berkson, J.: <em>Are There Two Regressions?</em>, <em>Journal of the American Statistical Association 45 (250)</em>, DOI: 10.2307/2280676, 1950, pp. 164-180<a href="#fnref1" class="footnote-back">↩︎</a></p></li>
-<li id="fn2"><p>ReliaSoft Corporation: <em>Life Data Analysis Reference Book</em>, online: <a href="http://reliawiki.org/index.php/The_Weibull_Distribution">ReliaSoft</a>, accessed 09 January 2018<a href="#fnref2" class="footnote-back">↩︎</a></p></li>
+<li id="fn2"><p>ReliaSoft Corporation: <em>Life Data Analysis Reference Book</em>, online: <a href="http://reliawiki.org/index.php/The_Weibull_Distribution">ReliaSoft</a>, accessed 19 December 2020<a href="#fnref2" class="footnote-back">↩︎</a></p></li>
 <li id="fn3"><p>Genschel, U.; Meeker, W. Q.: <em>A Comparison of Maximum Likelihood and Median-Rank Regression for Weibull Estimation</em>, in: <em>Quality Engineering 22 (4)</em>, DOI: 10.1080/08982112.2010.503447, 2010, pp. 236-255<a href="#fnref3" class="footnote-back">↩︎</a></p></li>
 <li id="fn4"><p>Meeker, W. Q.; Escobar, L. A.: <em>Statistical Methods for Reliability Data</em>, <em>New York, Wiley series in probability and statistics</em>, 1998, p. 630<a href="#fnref4" class="footnote-back">↩︎</a></p></li>
 <li id="fn5"><p>Meeker, W. Q.; Escobar, L. A.: <em>Statistical Methods for Reliability Data</em>, <em>New York, Wiley series in probability and statistics</em>, 1998, p. 131<a href="#fnref5" class="footnote-back">↩︎</a></p></li>

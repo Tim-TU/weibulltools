@@ -97,7 +97,7 @@
       <a href="../articles/Life_Data_Analysis_Part_I.html">Life Data Analysis Part I - Estimation of Failure Probabilities</a>
     </li>
     <li>
-      <a href="../articles/Life_Data_Analysis_Part_II.html">Life Data Analysis Part II - Parameter Estimation of Parametric Lifetime Models</a>
+      <a href="../articles/Life_Data_Analysis_Part_II.html">Life Data Analysis Part II - Estimation Methods for Parametric Lifetime Models</a>
     </li>
     <li>
       <a href="../articles/Life_Data_Analysis_Part_III.html">Life Data Analysis Part III - Mixture Models</a>
@@ -136,85 +136,125 @@
 <a href="#breaking-changes" class="anchor"></a>Breaking Changes</h2>
 <ul>
 <li>Package now depends on R(&gt;= 3.5.0)</li>
-<li>Renamed argument <code>event</code> with <code>status</code>.</li>
-<li>Renamed argument <code>loc_sc_params</code> with <code>dist_params</code>.</li>
-<li>Renamed argument <code>loc_sc_varcov</code> with <code>dist_varcov</code>.</li>
-<li>Output of probability estimators: Renamed column <code>characteristic</code> with <code>x</code>.</li>
-<li>Output of parameter estimators: Renamed and changed content of list elements. See <code><a href="../reference/ml_estimation.html">?ml_estimation</a></code> and <code><a href="../reference/rank_regression.html">?rank_regression</a></code>.</li>
-<li>Switched position of arguments <code>distribution</code> and <code>direction</code> in <code><a href="../reference/plot_conf.html">plot_conf()</a></code>.</li>
-<li>Removed <code>details</code> argument from <code><a href="../reference/ml_estimation.html">ml_estimation()</a></code> and <code><a href="../reference/rank_regression.html">rank_regression()</a></code>.</li>
-<li>
-<code><a href="../reference/plot_pop.html">plot_pop()</a></code>: Added argument <code>tol</code> to restrict the range of failure probabilities. Removed argument <code>color</code>. Renamed argument <code>params</code> to <code>dist_params_tbl</code>, which only supports location and scale parameters (also for <code>distribution = "weibull"</code>). Changed behaviour of <code>dist_params_tbl</code>: A tibble is now recommended instead of a vector.</li>
-<li>
-<code>plot_prob_mix</code>: Removed default value <code>NULL</code> for argument <code>mix_output</code>.</li>
-<li>
-<code><a href="../reference/dist_mileage.html">dist_mileage()</a></code>: Removed <code>status</code> argument and switched argument positions of <code>x</code> and <code>mileage</code> -&gt; (<code>mileage</code>, <code>x</code>, <code>distribution</code>). Argument <code>x</code> was renamed to <code>time</code>.</li>
-<li>
-<code><a href="../reference/mcs_mileage.html">mcs_mileage()</a></code>: Removed arguments <code>seed</code> and <code>details</code>, incorporated new default argument <code>id</code>. For now, the argument <code>status</code> is optional. Argument positions of <code>x</code> and <code>mileage</code> are switched -&gt; (<code>mileage</code>, <code>x</code>). Argument <code>x</code> was renamed to <code>time</code>.</li>
-<li>
-<code><a href="../reference/mcs_delay_register.html">mcs_delay_register()</a></code>, <code><a href="../reference/mcs_delay_report.html">mcs_delay_report()</a></code>, <code><a href="../reference/mcs_delays.html">mcs_delays()</a></code>: Argument <code>seed</code> and element <code>int_seed</code> of the output list have been removed. For reproducibility use <code><a href="https://rdrr.io/r/base/Random.html">set.seed()</a></code> before calling one of these functions. Argument <code>x</code> was renamed to <code>time</code>.<br>
-</li>
-<li>
-<code><a href="../reference/confint_betabinom.default.html">confint_betabinom.default()</a></code> and <code><a href="../reference/confint_fisher.default.html">confint_fisher.default()</a></code>: New argument <code>b_lives</code>.</li>
-<li>
-<code><a href="../reference/loglik_function.html">loglik_function()</a></code>: Renamed argument <code>pars</code> with <code>dist_params</code>.</li>
-<li>
-<code><a href="../reference/mixmod_em.html">mixmod_em()</a></code>: Removed argument <code>post</code>.</li>
 </ul>
+<div id="non-parametric-failure-probabilities" class="section level3">
+<h3 class="hasAnchor">
+<a href="#non-parametric-failure-probabilities" class="anchor"></a>Non-Parametric Failure Probabilities</h3>
+<ul>
+<li>
+<code><a href="../reference/mr_method.html">mr_method()</a></code>: Deprecated, use <code><a href="../reference/estimate_cdf.html">estimate_cdf()</a></code> instead. Renamed output column <code>characteristic</code> with <code>x</code>. Set default value for <code>id</code> to <code>NULL</code>.</li>
+<li>
+<code><a href="../reference/johnson_method.html">johnson_method()</a></code>: Deprecated, use <code><a href="../reference/estimate_cdf.html">estimate_cdf()</a></code> instead. Renamed output column <code>characteristic</code> with <code>x</code>. Set default value for <code>id</code> to <code>NULL</code>.</li>
+<li>
+<code><a href="../reference/kaplan_method.html">kaplan_method()</a></code>: Deprecated, use <code><a href="../reference/estimate_cdf.html">estimate_cdf()</a></code> instead. Renamed output column <code>characteristic</code> with <code>x</code>. Set default value for <code>id</code> to <code>NULL</code>.</li>
+<li>
+<code><a href="../reference/nelson_method.html">nelson_method()</a></code>: Deprecated, use <code><a href="../reference/estimate_cdf.html">estimate_cdf()</a></code> instead. Renamed output column <code>characteristic</code> with <code>x</code>. Set default value for <code>id</code> to <code>NULL</code>.</li>
+<li>
+<code><a href="../reference/plot_prob.default.html">plot_prob.default()</a></code> (former <code><a href="../reference/plot_prob.html">plot_prob()</a></code>): Renamed <code>event</code> with <code>status</code>.</li>
+<li>
+<code><a href="../reference/plot_prob_mix.html">plot_prob_mix()</a></code>: Deprecated, use <code><a href="../reference/plot_prob.html">plot_prob()</a></code> instead. Removed default value <code>NULL</code> for argument <code>mix_output</code>. Renamed <code>event</code> with <code>status</code>.</li>
+</ul>
+</div>
+<div id="parametric-models" class="section level3">
+<h3 class="hasAnchor">
+<a href="#parametric-models" class="anchor"></a>Parametric Models</h3>
+<ul>
+<li>
+<code><a href="../reference/ml_estimation.default.html">ml_estimation.default()</a></code> (former <code><a href="../reference/ml_estimation.html">ml_estimation()</a></code>): Renamed <code>event</code> with <code>status</code>. Removed <code>details</code>. Changed names and contents of list elements in output. See <code><a href="../reference/ml_estimation.html">?ml_estimation</a></code>.</li>
+<li>
+<code>loglik_function</code>: Renamed <code>event</code> with <code>status</code>. Renamed <code>pars</code> with <code>dist_params</code>.</li>
+<li>
+<code><a href="../reference/rank_regression.default.html">rank_regression.default()</a></code> (former <code><a href="../reference/rank_regression.html">rank_regression()</a></code>): Renamed <code>event</code> with <code>status</code>. Removed <code>details</code>. Changed names and contents of list elements in output. See <code><a href="../reference/rank_regression.html">?rank_regression</a></code>.</li>
+<li>
+<code><a href="../reference/mixmod_em.default.html">mixmod_em.default()</a></code> (former <code><a href="../reference/mixmod_em.html">mixmod_em()</a></code>): Renamed <code>event</code> with <code>status</code>. Removed <code>post</code>.</li>
+<li>
+<code><a href="../reference/mixmod_regression.default.html">mixmod_regression.default()</a></code> (former <code><a href="../reference/mixmod_regression.html">mixmod_regression()</a></code>): Renamed <code>event</code> with <code>status</code>.</li>
+<li>
+<code><a href="../reference/predict_prob.html">predict_prob()</a></code>: Renamed <code>loc_sc_params</code> with <code>dist_params</code>.</li>
+<li>
+<code><a href="../reference/predict_quantile.html">predict_quantile()</a></code>: Renamed <code>loc_sc_params</code> with <code>dist_params</code>.</li>
+<li>
+<code><a href="../reference/plot_mod.default.html">plot_mod.default()</a></code> (former <code><a href="../reference/plot_mod.html">plot_mod()</a></code>): Renamed <code>event</code> with <code>status</code>. Renamed <code>loc_sc_params</code> with <code>dist_params</code>. Removed <code>y</code>.</li>
+<li>
+<code><a href="../reference/plot_mod_mix.html">plot_mod_mix()</a></code>: Deprecated, use <code><a href="../reference/plot_mod.html">plot_mod()</a></code> instead. Renamed <code>event</code> with <code>status</code>.</li>
+<li>
+<code><a href="../reference/plot_pop.html">plot_pop()</a></code>: Added argument <code>tol</code> to restrict the range of failure probabilities. Removed argument <code>color</code>. Renamed argument <code>params</code> to <code>dist_params_tbl</code>, which only supports location and scale parameters (also for <code>distribution = "weibull"</code>). Changed behaviour of <code>dist_params_tbl</code>: A <code>tibble</code> is now recommended instead of a vector.</li>
+</ul>
+</div>
+<div id="confidence-intervals" class="section level3">
+<h3 class="hasAnchor">
+<a href="#confidence-intervals" class="anchor"></a>Confidence Intervals</h3>
+<ul>
+<li>
+<code><a href="../reference/confint_betabinom.default.html">confint_betabinom.default()</a></code> (former <code><a href="../reference/confint_betabinom.html">confint_betabinom()</a></code>): Renamed <code>event</code> with <code>status</code>. Renamed <code>loc_sc_params</code> with <code>dist_params</code>. Added argument <code>b_lives</code> which allows the user to specify probabilities of interest.</li>
+<li>
+<code><a href="../reference/confint_fisher.default.html">confint_fisher.default()</a></code> (former <code><a href="../reference/confint_fisher.html">confint_fisher()</a></code>): Renamed <code>event</code> with <code>status</code>. Renamed <code>loc_sc_params</code> with <code>dist_params</code>. Renamed <code>loc_sc_varcov</code> with <code>dist_varcov</code>. Added argument <code>b_lives</code> which allows the user to specify probabilities of interest.</li>
+<li>
+<code><a href="../reference/delta_method.html">delta_method()</a></code>: Renamed <code>loc_sc_params</code> with <code>dist_params</code>. Renamed <code>loc_sc_varcov</code> with <code>dist_varcov</code>.</li>
+<li>
+<code><a href="../reference/plot_conf.default.html">plot_conf.default()</a></code> (former <code><a href="../reference/plot_conf.html">plot_conf()</a></code>): Switched position of arguments <code>direction</code> and <code>distribution</code>.</li>
+</ul>
+</div>
+<div id="monte-carlo-simulation" class="section level3">
+<h3 class="hasAnchor">
+<a href="#monte-carlo-simulation" class="anchor"></a>Monte Carlo Simulation</h3>
+<ul>
+<li>
+<code><a href="../reference/dist_delay_register.html">dist_delay_register()</a></code>: Deprecated, use <code><a href="../reference/dist_delay.html">dist_delay()</a></code> instead.</li>
+<li>
+<code><a href="../reference/dist_delay_report.html">dist_delay_report()</a></code>: Deprecated, use <code><a href="../reference/dist_delay.html">dist_delay()</a></code> instead.</li>
+<li>
+<code><a href="../reference/mcs_delay_register.html">mcs_delay_register()</a></code>: Deprecated, use <code><a href="../reference/mcs_delay.html">mcs_delay()</a></code> instead. Renamed <code>x</code> with <code>time</code>. Renamed <code>event</code> with <code>status</code>. Removed <code>seed</code> and <code>int_seed</code> from output.</li>
+<li>
+<code><a href="../reference/mcs_delay_report.html">mcs_delay_report()</a></code>: Deprecated, use <code><a href="../reference/mcs_delay.html">mcs_delay()</a></code> instead. Renamed <code>x</code> with <code>time</code>. Renamed <code>event</code> with <code>status</code>. Removed <code>seed</code> and <code>int_seed</code> from output.</li>
+<li>
+<code><a href="../reference/mcs_delays.html">mcs_delays()</a></code>: Deprecated, use <code><a href="../reference/mcs_delay.html">mcs_delay()</a></code> instead. Renamed <code>x</code> with <code>time</code>. Renamed <code>event</code> with <code>status</code>. Removed <code>seed</code> and <code>int_seed</code> from output.</li>
+<li>
+<code><a href="../reference/dist_mileage.html">dist_mileage()</a></code>: Removed <code>event</code>. Renamed <code>x</code> with <code>time</code>. Switched position of arguments <code>time</code> and <code>mileage</code>.</li>
+<li>
+<code><a href="../reference/mcs_mileage.html">mcs_mileage()</a></code>: Removed <code>event</code>. Renamed <code>x</code> with <code>time</code>. Switched position of arguments <code>time</code> and <code>mileage</code>.</li>
+</ul>
+</div>
 </div>
 <div id="new-features" class="section level2">
 <h2 class="hasAnchor">
 <a href="#new-features" class="anchor"></a>New Features</h2>
 <ul>
 <li>Added support for ggplot2 in all plot functions. Plot method can be selected in <code><a href="../reference/plot_prob.html">plot_prob()</a></code> or <code><a href="../reference/plot_pop.html">plot_pop()</a></code> via argument <code>plot_method</code>.</li>
-<li>Added function <code><a href="../reference/reliability_data.html">reliability_data()</a></code>: Create consistent reliability data.</li>
+<li>Added <code><a href="../reference/reliability_data.html">reliability_data()</a></code>: Create consistent reliability data.</li>
 <li>New argument in <code><a href="../reference/mr_method.html">mr_method()</a></code>: With <code>ties.method</code> it can be specified how ties should be treated.</li>
 <li>Added <code><a href="../reference/estimate_cdf.html">estimate_cdf()</a></code>: Unite functionality of <code><a href="../reference/mr_method.html">mr_method()</a></code>, <code><a href="../reference/johnson_method.html">johnson_method()</a></code>, <code><a href="../reference/kaplan_method.html">kaplan_method()</a></code> and <code><a href="../reference/nelson_method.html">nelson_method()</a></code>.</li>
-<li>Support of multiple methods in <code><a href="../reference/estimate_cdf.html">estimate_cdf()</a></code> and all functions that depend on the <code>cdf_estimation</code> (<code><a href="../reference/rank_regression.html">rank_regression()</a></code>, <code><a href="../reference/plot_prob.html">plot_prob()</a></code>, <code><a href="../reference/plot_mod.html">plot_mod()</a></code>, <code><a href="../reference/plot_conf.html">plot_conf()</a></code>, <code><a href="../reference/mixmod_regression.html">mixmod_regression()</a></code>, <code><a href="../reference/plot_prob_mix.html">plot_prob_mix()</a></code>, <code><a href="../reference/plot_mod_mix.html">plot_mod_mix()</a></code>).</li>
+<li>Support of multiple methods in <code><a href="../reference/estimate_cdf.html">estimate_cdf()</a></code> and all functions that depend on the <code>cdf_estimation</code> (<code><a href="../reference/rank_regression.html">rank_regression()</a></code>, <code><a href="../reference/plot_prob.html">plot_prob()</a></code>, <code><a href="../reference/plot_mod.html">plot_mod()</a></code>, <code><a href="../reference/plot_conf.html">plot_conf()</a></code>, <code><a href="../reference/mixmod_regression.html">mixmod_regression()</a></code>).</li>
 <li>Added <code>print.rank_regression()</code>, <code>print.ml_estimation()</code>, <code>print.model_estimation()</code> and <code>print.model_estimation_list()</code>.</li>
 <li>Added <code>vcov.model_estimation()</code>.</li>
-<li>Added function <code><a href="../reference/dist_delay.html">dist_delay()</a></code>: Generalizes the distribution-specific modeling of delays.</li>
-<li>Added function <code><a href="../reference/mcs_delay.html">mcs_delay()</a></code>: Generalizes the adjustment of operating times by delays and supports multiple delays at once.</li>
+<li>Added <code><a href="../reference/dist_delay.html">dist_delay()</a></code>: Generalizes the distribution-specific modeling of delays.</li>
+<li>Added <code><a href="../reference/mcs_delay.html">mcs_delay()</a></code>: Generalizes the adjustment of operating times by delays and supports multiple delays at once.</li>
 <li>Added lifecycle badges</li>
 </ul>
-</div>
-<div id="minor-changes" class="section level2">
-<h2 class="hasAnchor">
-<a href="#minor-changes" class="anchor"></a>Minor Changes</h2>
 </div>
 <div id="introduction-of-s3-interface" class="section level2">
 <h2 class="hasAnchor">
 <a href="#introduction-of-s3-interface" class="anchor"></a>Introduction of S3 interface</h2>
 <ul>
 <li>
-<code><a href="../reference/rank_regression.html">rank_regression()</a></code> is now an S3 generic. <code><a href="../reference/rank_regression.html">rank_regression()</a></code> becomes <code><a href="../reference/rank_regression.default.html">rank_regression.default()</a></code>. Added <code><a href="../reference/rank_regression.html">rank_regression.cdf_estimation()</a></code>.</li>
+<code><a href="../reference/rank_regression.html">rank_regression()</a></code> is now an S3 generic. <code><a href="../reference/rank_regression.html">rank_regression()</a></code> becomes <code><a href="../reference/rank_regression.default.html">rank_regression.default()</a></code>. Added <code>rank_regression.cdf_estimation()</code>.</li>
 <li>
-<code><a href="../reference/plot_prob.html">plot_prob()</a></code> is now an S3 generic. <code><a href="../reference/plot_prob.html">plot_prob()</a></code> becomes <code><a href="../reference/plot_prob.default.html">plot_prob.default()</a></code>. Added <code><a href="../reference/plot_prob.html">plot_prob.cdf_estimation()</a></code>.</li>
+<code><a href="../reference/plot_prob.html">plot_prob()</a></code> is now an S3 generic. <code><a href="../reference/plot_prob.html">plot_prob()</a></code> becomes <code><a href="../reference/plot_prob.default.html">plot_prob.default()</a></code>. Added <code>plot_prob.cdf_estimation()</code> and <code>plot_prob.weibulltools_model()</code>.</li>
 <li>
-<code><a href="../reference/plot_prob_mix.html">plot_prob_mix()</a></code> is now an S3 generic. <code><a href="../reference/plot_prob_mix.html">plot_prob_mix()</a></code> becomes <code><a href="../reference/plot_prob.default.html">plot_prob.default()</a></code>. Added <code>plot_prob_mix.model_estimation()</code>, <code>plot_prob_mix.mixmod_regression()</code> and <code>plot_prob_mix.mixmod_em()</code>.</li>
+<code><a href="../reference/plot_mod.html">plot_mod()</a></code> is now an S3 generic. <code><a href="../reference/plot_mod.html">plot_mod()</a></code> becomes <code><a href="../reference/plot_mod.default.html">plot_mod.default()</a></code>. Added <code>plot_mod.weibulltools_model()</code>.</li>
 <li>
-<code><a href="../reference/plot_mod.html">plot_mod()</a></code> is now an S3 generic. <code><a href="../reference/plot_mod.html">plot_mod()</a></code> becomes <code><a href="../reference/plot_mod.default.html">plot_mod.default()</a></code>. Added <code><a href="../reference/plot_mod.html">plot_mod.model_estimation()</a></code>.</li>
-<li>
-<code><a href="../reference/plot_conf.html">plot_conf()</a></code> is now an S3 generic. <code><a href="../reference/plot_conf.html">plot_conf()</a></code> becomes <code><a href="../reference/plot_conf.default.html">plot_conf.default()</a></code>. Added <code><a href="../reference/plot_conf.html">plot_conf.confint()</a></code>.</li>
+<code><a href="../reference/plot_conf.html">plot_conf()</a></code> is now an S3 generic. <code><a href="../reference/plot_conf.html">plot_conf()</a></code> becomes <code><a href="../reference/plot_conf.default.html">plot_conf.default()</a></code>. Added <code>plot_conf.confint()</code>.</li>
 <li>
 <code><a href="../reference/plot_pop.html">plot_pop()</a></code>: Added support for multiple population lines and comparison of two- and three-parametric distributions.</li>
-<li>
-<code><a href="../reference/confint_betabinom.html">confint_betabinom()</a></code>, <code><a href="../reference/confint_fisher.html">confint_fisher()</a></code>: Added argument <code>b_lives</code> which allows the user to specify probabilities of interest.</li>
 </ul>
 </div>
-<div id="documentation" class="section level2">
+<div id="documentation-improvements" class="section level2">
 <h2 class="hasAnchor">
-<a href="#documentation" class="anchor"></a>Documentation</h2>
+<a href="#documentation-improvements" class="anchor"></a>Documentation improvements</h2>
 <ul>
-<li>Revised README</li>
+<li>Revised README.</li>
+<li>Revised vignettes.</li>
 <li>Capitalized parameter documentation.</li>
-<li>Revised documentation of <code><a href="../reference/dist_mileage.html">dist_mileage()</a></code> and <code><a href="../reference/mcs_mileage.html">mcs_mileage()</a></code>.</li>
-<li>Revised documentation of <code><a href="../reference/mr_method.html">mr_method()</a></code>, <code><a href="../reference/kaplan_method.html">kaplan_method()</a></code>, <code><a href="../reference/johnson_method.html">johnson_method()</a></code> and <code><a href="../reference/nelson_method.html">nelson_method()</a></code>.</li>
-<li>Revised documentation of <code><a href="../reference/rank_regression.html">rank_regression()</a></code> and <code><a href="../reference/ml_estimation.html">ml_estimation()</a></code>.</li>
-<li>Revised documentation of <code><a href="../reference/predict_quantile.html">predict_quantile()</a></code> and <code><a href="../reference/predict_prob.html">predict_prob()</a></code>.</li>
-<li>Revised documentation of <code><a href="../reference/r_squared_profiling.html">r_squared_profiling()</a></code>, <code><a href="../reference/loglik_profiling.html">loglik_profiling()</a></code> and <code><a href="../reference/loglik_function.html">loglik_function()</a></code>.</li>
-<li>Revised documentation of <code><a href="../reference/delta_method.html">delta_method()</a></code>.</li>
-<li>Revised documentation of <code><a href="../reference/confint_betabinom.html">confint_betabinom()</a></code> and <code><a href="../reference/confint_fisher.html">confint_fisher()</a></code>.</li>
 </ul>
 </div>
 <div id="lifecycle-changes" class="section level2">
@@ -224,15 +264,28 @@
 <h3 class="hasAnchor">
 <a href="#deprecated" class="anchor"></a>Deprecated</h3>
 <ul>
-<li><code><a href="../reference/plot_layout.html">plot_layout()</a></code></li>
+<li>
+<code><a href="../reference/dist_delay_register.html">dist_delay_register()</a></code> and <code><a href="../reference/dist_delay_report.html">dist_delay_report()</a></code>: Use <code><a href="../reference/dist_delay.html">dist_delay()</a></code> instead.</li>
+<li>
+<code><a href="../reference/mcs_delay_register.html">mcs_delay_register()</a></code>, <code><a href="../reference/mcs_delay_report.html">mcs_delay_report()</a></code> and <code><a href="../reference/mcs_delays.html">mcs_delays()</a></code>: Use <code><a href="../reference/mcs_delay.html">mcs_delay()</a></code> instead.</li>
 <li>
 <code><a href="../reference/mr_method.html">mr_method()</a></code>, <code><a href="../reference/johnson_method.html">johnson_method()</a></code>, <code><a href="../reference/kaplan_method.html">kaplan_method()</a></code> and <code><a href="../reference/nelson_method.html">nelson_method()</a></code>: Use <code><a href="../reference/estimate_cdf.html">estimate_cdf()</a></code> instead.</li>
 <li>
-<code><a href="../reference/dist_delay_register.html">dist_delay_register()</a></code> and <code><a href="../reference/dist_delay_report.html">dist_delay_report()</a></code> are deprecated. Use <code><a href="../reference/dist_delay.html">dist_delay()</a></code> instead.</li>
+<code><a href="../reference/plot_prob_mix.html">plot_prob_mix()</a></code>: Use <code><a href="../reference/plot_prob.html">plot_prob()</a></code> instead.</li>
 <li>
-<code><a href="../reference/mcs_delay_register.html">mcs_delay_register()</a></code>, <code><a href="../reference/mcs_delay_report.html">mcs_delay_report()</a></code> and <code><a href="../reference/mcs_delays.html">mcs_delays()</a></code> are deprecated. Use <code><a href="../reference/mcs_delay.html">mcs_delay()</a></code> instead.</li>
+<code><a href="../reference/plot_mod_mix.html">plot_mod_mix()</a></code>: Use <code><a href="../reference/plot_mod.html">plot_mod()</a></code> instead.</li>
+</ul>
+</div>
+<div id="removed" class="section level3">
+<h3 class="hasAnchor">
+<a href="#removed" class="anchor"></a>Removed</h3>
+<ul>
 <li>
-<code>plot_prob_mix.default()</code> and <code>plot_mod_mix.default()</code>. Use further S3 methods instead.</li>
+<code>calculate_ranks</code>.</li>
+<li>
+<code>mixture_em_cpp</code>.</li>
+<li>
+<code>plot_layout</code>.</li>
 </ul>
 </div>
 </div>
@@ -240,12 +293,11 @@
 <h2 class="hasAnchor">
 <a href="#minor-improvements-and-bug-fixes" class="anchor"></a>Minor improvements and bug fixes</h2>
 <ul>
-<li>The default of <code>id</code> inside <code><a href="../reference/mr_method.html">mr_method()</a></code>, <code><a href="../reference/johnson_method.html">johnson_method()</a></code>, <code><a href="../reference/kaplan_method.html">kaplan_method()</a></code> and <code><a href="../reference/nelson_method.html">nelson_method()</a></code> is set to <code>NULL</code>.</li>
 <li>Fixed bug inside <code><a href="../reference/plot_mod_mix.html">plot_mod_mix()</a></code> for the case of no mixture distribution.</li>
-<li>Fixed bug inside <code><a href="../reference/confint_betabinom.html">confint_betabinom()</a></code>; many cases near one -&gt; unique().</li>
-<li>Fixed bug inside <code><a href="../reference/mr_method.html">mr_method()</a></code>: Assigning a rank for the same lifetime.</li>
+<li>Fixed bug inside <code><a href="../reference/confint_betabinom.html">confint_betabinom()</a></code>: many cases near one -&gt; <code><a href="https://rdrr.io/r/base/unique.html">unique()</a></code>.</li>
+<li>Fixed bug inside <code><a href="../reference/mr_method.html">mr_method()</a></code>: assigning a rank for the same lifetime.</li>
 <li>Fixed bug inside <code>mixmod_regression</code>: call to <code><a href="https://rdrr.io/pkg/segmented/man/segmented.html">segmented::segmented.lm()</a></code> was defective.</li>
-<li>Added trace type “scatter” and scatter mode “markers” to <code>plot_layout</code>.</li>
+<li>Added trace type <code>"scatter"</code> and scatter mode <code>"markers"</code> to plotly plots..</li>
 <li>
 <code><a href="../reference/delta_method.html">delta_method()</a></code>, <code><a href="../reference/r_squared_profiling.html">r_squared_profiling()</a></code> and <code><a href="../reference/loglik_profiling.html">loglik_profiling()</a></code> were vectorized.</li>
 </ul>
