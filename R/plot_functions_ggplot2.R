@@ -69,7 +69,7 @@ plot_prob_vis.ggplot <- function(
   if (n_method == 1) tbl_prob$method <- ""
   if (n_group <= 1) tbl_prob$group <- ""
 
-  mapping <- if (n_group == 1) {
+  mapping <- if (n_group <= 1) {
     ggplot2::aes(x = .data$x, y = .data$q, color = .data$method)
   } else {
     ggplot2::aes(
@@ -77,7 +77,7 @@ plot_prob_vis.ggplot <- function(
     )
   }
 
-  labs <- if (n_group == 1) {
+  labs <- if (n_group <= 1) {
     ggplot2::labs(color = title_trace)
   } else {
     ggplot2::labs(color = title_trace, shape = "Subgroups")
