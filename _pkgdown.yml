@@ -41,6 +41,7 @@ reference:
   - confint_fisher.default
   - delta_method
   - plot_conf
+  - plot_conf.default
 - title: "Monte Carlo Simulation"
   desc: >
     Functions for the simulation of delays and mileages as well as the
@@ -67,7 +68,6 @@ reference:
   - nelson_method
   - plot_prob_mix
   - plot_mod_mix
-  - plot_conf.default
   - dist_delay_register
   - dist_delay_report
   - mcs_delays

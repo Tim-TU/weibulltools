@@ -1156,14 +1156,6 @@ plot_conf.confint <- function(p_obj,
 
 #' Add Confidence Region(s) for Quantiles and Probabilities
 #'
-#' @description
-#' \lifecycle{soft-deprecated}
-#'
-#' \code{plot_conf.default()} is no longer under active development, switching
-#' to \code{\link[=plot_conf]{plot_conf.confint}} is recommended.
-#'
-#' @details
-#'
 #' This function is used to add estimated confidence region(s) to an existing
 #' probability plot which also includes the estimated regression line.
 #'
@@ -1190,6 +1182,8 @@ plot_conf.confint <- function(p_obj,
 #'   interval(s). Must be either "y" (failure probabilities) or "x" (quantiles).
 #' @inheritParams plot_prob.default
 #' @template dots
+#'
+#' @seealso \code{\link{plot_conf}}
 #'
 #' @examples
 #' # Vectors:
@@ -1288,8 +1282,6 @@ plot_conf.default <- function(
   title_trace = "Confidence Limit",
   ...
 ) {
-
-  deprecate_soft("2.0.0", "plot_conf.default()", "plot_conf.confint()")
 
   direction <- match.arg(direction)
   distribution <- match.arg(distribution)
