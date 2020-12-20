@@ -23,17 +23,17 @@
 * `plot_pop()`: Added argument `tol` to restrict the range of failure probabilities. Removed argument `color`. Renamed argument `params` to `dist_params_tbl`, which only supports location and scale parameters (also for `distribution = "weibull"`). Changed behaviour of `dist_params_tbl`: A `tibble` is now recommended instead of a vector.
 
 ### Confidence Intervals
-* `confint_betabinom.default()` (former `confint_betabinom()`): Renamed `event` with `status`. Renamed `loc_sc_params` with `dist_params`. Added argument `b_lives` which allows the user to specify probabilities of interest.
-* `confint_fisher.default()` (former `confint_fisher()`): Renamed `event` with `status`. Renamed `loc_sc_params` with `dist_params`. Renamed `loc_sc_varcov` with `dist_varcov`. Added argument `b_lives` which allows the user to specify probabilities of interest.
+* `confint_betabinom.default()` (former `confint_betabinom()`): Renamed `event` with `status`. Renamed `loc_sc_params` with `dist_params`. Added argument `b_lives` which allows the user to specify probabilities `p` for `B_p-lives` to be considered.
+* `confint_fisher.default()` (former `confint_fisher()`): Renamed `event` with `status`. Renamed `loc_sc_params` with `dist_params`. Renamed `loc_sc_varcov` with `dist_varcov`. Added argument `b_lives` which allows the user to specify probabilities `p` for `B_p-lives` to be considered.
 * `delta_method()`: Renamed `loc_sc_params` with `dist_params`. Renamed `loc_sc_varcov` with `dist_varcov`.
 * `plot_conf.default()` (former `plot_conf()`): Switched position of arguments `direction` and `distribution`.
 
 ### Monte Carlo Simulation
 * `dist_delay_register()`: Deprecated, use `dist_delay()` instead.
 * `dist_delay_report()`: Deprecated, use `dist_delay()` instead.
-* `mcs_delay_register()`: Deprecated, use `mcs_delay()` instead. Renamed `x` with `time`. Renamed `event` with `status`. Removed `seed` and `int_seed` from output.
-* `mcs_delay_report()`: Deprecated, use `mcs_delay()` instead. Renamed `x` with `time`. Renamed `event` with `status`. Removed `seed` and `int_seed` from output.
-* `mcs_delays()`: Deprecated, use `mcs_delay()` instead. Renamed `x` with `time`. Renamed `event` with `status`. Removed `seed` and `int_seed` from output.
+* `mcs_delay_register()`: Deprecated, use `mcs_delay()` instead. Renamed `x` with `time`. Renamed `event` with `status`. Removed `seed`. Removed `int_seed` from output list.
+* `mcs_delay_report()`: Deprecated, use `mcs_delay()` instead. Renamed `x` with `time`. Renamed `event` with `status`. Removed `seed`. Removed `int_seed` from output list.
+* `mcs_delays()`: Deprecated, use `mcs_delay()` instead. Renamed `x` with `time`. Renamed `event` with `status`. Removed `seed`. Removed `int_seed` from output list.
 * `dist_mileage()`: Removed `event`. Renamed `x` with `time`. Switched position of arguments `time` and `mileage`.
 * `mcs_mileage()`: Removed `event`. Renamed `x` with `time`. Switched position of arguments `time` and `mileage`.
 
@@ -50,10 +50,10 @@
 * Added lifecycle badges
 
 ## Introduction of S3 interface
-* `rank_regression()` is now an S3 generic. `rank_regression()` becomes `rank_regression.default()`. Added `rank_regression.cdf_estimation()`.
-* `plot_prob()` is now an S3 generic. `plot_prob()` becomes `plot_prob.default()`. Added `plot_prob.cdf_estimation()` and `plot_prob.weibulltools_model()`.
-* `plot_mod()` is now an S3 generic. `plot_mod()` becomes `plot_mod.default()`. Added `plot_mod.weibulltools_model()`.
-* `plot_conf()` is now an S3 generic. `plot_conf()` becomes `plot_conf.default()`. Added `plot_conf.confint()`.
+* `rank_regression()` is now an S3 generic. `rank_regression()` becomes `rank_regression.default()`. Added `rank_regression.wt_cdf_estimation()`.
+* `plot_prob()` is now an S3 generic. `plot_prob()` becomes `plot_prob.default()`. Added `plot_prob.wt_cdf_estimation()` and `plot_prob.wt_model()`.
+* `plot_mod()` is now an S3 generic. `plot_mod()` becomes `plot_mod.default()`. Added `plot_mod.wt_model()`.
+* `plot_conf()` is now an S3 generic. `plot_conf()` becomes `plot_conf.default()`. Added `plot_conf.wt_confint()`.
 * `plot_pop()`: Added support for multiple population lines and comparison of two- and three-parametric distributions.
 
 ## Documentation improvements
@@ -79,8 +79,8 @@
 * Fixed bug inside `plot_mod_mix()` for the case of no mixture distribution.
 * Fixed bug inside `confint_betabinom()`: many cases near one -> `unique()`.
 * Fixed bug inside `mr_method()`: assigning a rank for the same lifetime. 
-* Fixed bug inside `mixmod_regression`: call to `segmented::segmented.lm()` was defective.
-* Added trace type `"scatter"` and scatter mode `"markers"` to plotly plots..
+* Fixed bug inside `mixmod_regression`: call to `segmented::segmented.lm()` was incorrect.
+* Added trace type `"scatter"` and scatter mode `"markers"` to plotly plots.
 * `delta_method()`, `r_squared_profiling()` and `loglik_profiling()` were vectorized.
 
 # weibulltools v1.0.1
