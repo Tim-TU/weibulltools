@@ -103,7 +103,7 @@ line with the parameterization provided by the stats package
       <a href="../articles/Life_Data_Analysis_Part_I.html">Life Data Analysis Part I - Estimation of Failure Probabilities</a>
     </li>
     <li>
-      <a href="../articles/Life_Data_Analysis_Part_II.html">Life Data Analysis Part II - Parameter Estimation of Parametric Lifetime Models</a>
+      <a href="../articles/Life_Data_Analysis_Part_II.html">Life Data Analysis Part II - Estimation Methods for Parametric Lifetime Models</a>
     </li>
     <li>
       <a href="../articles/Life_Data_Analysis_Part_III.html">Life Data Analysis Part III - Mixture Models</a>
@@ -190,8 +190,8 @@ same as the number of observations in <code>x</code>.</p></td>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>Returns a list with the classes <code>"ml_estimation"</code> and
-<code>"model_estimation"</code> containing the following elements:</p><ul>
+    <p>Returns a list with the classes <code>"wt_ml_estimation"</code> and
+<code>"wt_model_estimation"</code> containing the following elements:</p><ul>
 <li><p><code>coefficients</code> : A named vector of estimated coefficients
     (parameters of the assumed distribution). <strong>Note</strong>: The parameters
     are given in location-scale-parameterization.</p></li>
@@ -208,7 +208,7 @@ same as the number of observations in <code>x</code>.</p></td>
 <li><p><code>logL</code> : The log-likelihood value.</p></li>
 <li><p><code>aic</code> : Akaike Information Criterion.</p></li>
 <li><p><code>bic</code> : Bayesian Information Criterion.</p></li>
-<li><p><code>data</code> : A tibble with class <code>"reliability_data"</code> returned from <code><a href='reliability_data.html'>reliability_data</a></code>.</p></li>
+<li><p><code>data</code> : A tibble with class <code>"wt_reliability_data"</code> returned from <code><a href='reliability_data.html'>reliability_data</a></code>.</p></li>
 <li><p><code>distribution</code> : Specified distribution.</p></li>
 </ul>
 

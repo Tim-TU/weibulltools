@@ -181,14 +181,15 @@ dist_mileage <- function(mileage,
 #'
 #' @return A list containing the following elements:
 #'   \itemize{
-#'     \item \code{data} : A tibble with classes \code{"mcs_data"} and
-#'       \code{"reliability_data"} if \code{status} is provided. Since the
-#'       attribute \code{"reliability_data"} enables the direct usage of \code{data}
-#'       inside \code{estimate_cdf} (\code{\link{estimate_cdf.reliability_data}}),
-#'       the required lifetime characteristic is automatically set to the distance
+#'     \item \code{data} : A tibble with classes \code{"wt_mcs_data"} and
+#'       \code{"wt_reliability_data"} if \code{status} is provided. Since the
+#'       class \code{"wt_reliability_data"} enables the direct usage of
+#'       \code{data} inside
+#'       \code{\link[=estimate_cdf]{estimate_cdf.wt_reliability_data}}, the
+#'       required lifetime characteristic is automatically set to the distance
 #'       \code{mileage}.
 #'
-#'       If \code{status = NULL} class is \code{"mcs_data"}, which is not
+#'       If \code{status = NULL} class is \code{"wt_mcs_data"}, which is not
 #'       supported by \code{estimate_cdf} due to missing \code{status}.
 #'
 #'       The tibble contains the following columns:
@@ -275,7 +276,7 @@ dist_mileage <- function(mileage,
 #'   distribution = "lognormal"
 #' )
 #'
-#' ## Using result of *$data in estimate_cdf() -> not working at the moment!
+#' ## Using result of *$data in estimate_cdf()
 #' prob_estimation <- estimate_cdf(
 #'   x = mcs_distances_3$data,
 #'   methods = "kaplan"
@@ -316,14 +317,14 @@ mcs_mileage <- function(mileage,
   ## Imputation of missing mileages:
   mileage[is.na(mileage)] <- (sim_nums[is.na(mileage)] * time[is.na(mileage)]) / 365
 
-  # Defining data_tbl with class "mcs_data" and/or "reliability_data":
+  # Defining data_tbl with class "wt_mcs_data" and/or "wt_reliability_data":
   if (purrr::is_null(status)) {
     data_tbl <- tibble::tibble(
       mileage = mileage,
       time = time,
       id = id
     )
-    class(data_tbl) <- c("mcs_data", class(data_tbl))
+    class(data_tbl) <- c("wt_mcs_data", class(data_tbl))
 
   } else {
     # check for status:
@@ -338,7 +339,7 @@ mcs_mileage <- function(mileage,
       id = id
     )
 
-    class(data_tbl) <- c("mcs_data", "reliability_data", class(data_tbl))
+    class(data_tbl) <- c("wt_mcs_data", "wt_reliability_data", class(data_tbl))
 
     attr(data_tbl, "characteristic") <- "mileage"
   }

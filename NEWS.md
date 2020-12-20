@@ -1,72 +1,86 @@
 # weibulltools v2.0.0
 ## Breaking Changes
 * Package now depends on R(>= 3.5.0)
-* Renamed argument `event` with `status`.
-* Renamed argument `loc_sc_params` with `dist_params`.
-* Renamed argument `loc_sc_varcov` with `dist_varcov`.
-* Output of probability estimators: Renamed column `characteristic` with `x`.
-* Output of parameter estimators: Renamed and changed content of list elements. See `?ml_estimation` and `?rank_regression`.
-* Switched position of arguments `distribution` and `direction` in `plot_conf()`.
-* Removed `details` argument from `ml_estimation()` and `rank_regression()`.
-* `plot_pop()`: Added argument `tol` to restrict the range of failure probabilities. Removed argument `color`. Renamed argument `params` to `dist_params_tbl`, which only supports location and scale parameters (also for `distribution = "weibull"`). Changed behaviour of `dist_params_tbl`: A tibble is now recommended instead of a vector.
-* `plot_prob_mix`: Removed default value `NULL` for argument `mix_output`.
-* `dist_mileage()`: Removed `status` argument and switched argument positions of `x` and `mileage`  -> (`mileage`, `x`, `distribution`). Argument `x` was renamed to `time`.
-* `mcs_mileage()`: Removed arguments `seed` and `details`, incorporated new default argument `id`. For now, the argument `status` is optional. Argument positions of `x` and `mileage` are switched -> (`mileage`, `x`). Argument `x` was renamed to `time`. 
-* `mcs_delay_register()`, `mcs_delay_report()`, `mcs_delays()`: Argument `seed` and element `int_seed` of the output list have been removed. For reproducibility use `set.seed()` before calling one of these functions. Argument `x` was renamed to `time`.  
-* `confint_betabinom.default()` and `confint_fisher.default()`: New argument `b_lives`.
-* `loglik_function()`: Renamed argument `pars` with `dist_params`. 
-* `mixmod_em()`: Removed argument `post`.
+
+### Non-Parametric Failure Probabilities
+* `mr_method()`: Deprecated, use `estimate_cdf()` instead. Renamed output column `characteristic` with `x`. Set default value for `id` to `NULL`.
+* `johnson_method()`: Deprecated, use `estimate_cdf()` instead. Renamed output column `characteristic` with `x`. Set default value for `id` to `NULL`.
+* `kaplan_method()`: Deprecated, use `estimate_cdf()` instead. Renamed output column `characteristic` with `x`. Set default value for `id` to `NULL`.
+* `nelson_method()`: Deprecated, use `estimate_cdf()` instead. Renamed output column `characteristic` with `x`. Set default value for `id` to `NULL`.
+* `plot_prob.default()` (former `plot_prob()`): Renamed `event` with `status`.
+* `plot_prob_mix()`: Deprecated, use `plot_prob()` instead. Removed default value `NULL` for argument `mix_output`. Renamed `event` with `status`.
+
+### Parametric Models
+* `ml_estimation.default()` (former `ml_estimation()`): Renamed `event` with `status`. Removed `details`. Changed names and contents of list elements in output. See `?ml_estimation`.
+* `loglik_function`: Renamed `event` with `status`. Renamed `pars` with `dist_params`.
+* `rank_regression.default()` (former `rank_regression()`): Renamed `event` with `status`. Removed `details`. Changed names and contents of list elements in output. See `?rank_regression`.
+* `mixmod_em.default()` (former `mixmod_em()`): Renamed `event` with `status`. Removed `post`.
+* `mixmod_regression.default()` (former `mixmod_regression()`): Renamed `event` with `status`. 
+* `predict_prob()`: Renamed `loc_sc_params` with `dist_params`.
+* `predict_quantile()`: Renamed `loc_sc_params` with `dist_params`.
+* `plot_mod.default()` (former `plot_mod()`): Renamed `event` with `status`. Renamed `loc_sc_params` with `dist_params`. Removed `y`.
+* `plot_mod_mix()`: Deprecated, use `plot_mod()` instead. Renamed `event` with `status`.
+* `plot_pop()`: Added argument `tol` to restrict the range of failure probabilities. Removed argument `color`. Renamed argument `params` to `dist_params_tbl`, which only supports location and scale parameters (also for `distribution = "weibull"`). Changed behaviour of `dist_params_tbl`: A `tibble` is now recommended instead of a vector.
+
+### Confidence Intervals
+* `confint_betabinom.default()` (former `confint_betabinom()`): Renamed `event` with `status`. Renamed `loc_sc_params` with `dist_params`. Added argument `b_lives` which allows the user to specify probabilities `p` for `B_p-lives` to be considered.
+* `confint_fisher.default()` (former `confint_fisher()`): Renamed `event` with `status`. Renamed `loc_sc_params` with `dist_params`. Renamed `loc_sc_varcov` with `dist_varcov`. Added argument `b_lives` which allows the user to specify probabilities `p` for `B_p-lives` to be considered.
+* `delta_method()`: Renamed `loc_sc_params` with `dist_params`. Renamed `loc_sc_varcov` with `dist_varcov`.
+* `plot_conf.default()` (former `plot_conf()`): Switched position of arguments `direction` and `distribution`.
+
+### Monte Carlo Simulation
+* `dist_delay_register()`: Deprecated, use `dist_delay()` instead.
+* `dist_delay_report()`: Deprecated, use `dist_delay()` instead.
+* `mcs_delay_register()`: Deprecated, use `mcs_delay()` instead. Renamed `x` with `time`. Renamed `event` with `status`. Removed `seed`. Removed `int_seed` from output list.
+* `mcs_delay_report()`: Deprecated, use `mcs_delay()` instead. Renamed `x` with `time`. Renamed `event` with `status`. Removed `seed`. Removed `int_seed` from output list.
+* `mcs_delays()`: Deprecated, use `mcs_delay()` instead. Renamed `x` with `time`. Renamed `event` with `status`. Removed `seed`. Removed `int_seed` from output list.
+* `dist_mileage()`: Removed `event`. Renamed `x` with `time`. Switched position of arguments `time` and `mileage`.
+* `mcs_mileage()`: Removed `event`. Renamed `x` with `time`. Switched position of arguments `time` and `mileage`.
 
 ## New Features
 * Added support for ggplot2 in all plot functions. Plot method can be selected in `plot_prob()` or `plot_pop()` via argument `plot_method`.
-* Added function `reliability_data()`: Create consistent reliability data.
+* Added `reliability_data()`: Create consistent reliability data.
 * New argument in `mr_method()`: With `ties.method` it can be specified how ties should be treated.
 * Added `estimate_cdf()`: Unite functionality of `mr_method()`, `johnson_method()`, `kaplan_method()` and `nelson_method()`.
-* Support of multiple methods in `estimate_cdf()` and all functions that depend on the `cdf_estimation` (`rank_regression()`, `plot_prob()`, `plot_mod()`, `plot_conf()`, `mixmod_regression()`, `plot_prob_mix()`, `plot_mod_mix()`).
+* Support of multiple methods in `estimate_cdf()` and all functions that depend on the `cdf_estimation` (`rank_regression()`, `plot_prob()`, `plot_mod()`, `plot_conf()`, `mixmod_regression()`).
 * Added `print.rank_regression()`, `print.ml_estimation()`, `print.model_estimation()` and `print.model_estimation_list()`.
 * Added `vcov.model_estimation()`.
-* Added function `dist_delay()`: Generalizes the distribution-specific modeling of delays. 
-* Added function `mcs_delay()`: Generalizes the adjustment of operating times by delays and supports multiple delays at once.
+* Added `dist_delay()`: Generalizes the distribution-specific modeling of delays. 
+* Added `mcs_delay()`: Generalizes the adjustment of operating times by delays and supports multiple delays at once.
 * Added lifecycle badges
 
-## Minor Changes
-
 ## Introduction of S3 interface
-* `rank_regression()` is now an S3 generic. `rank_regression()` becomes `rank_regression.default()`. Added `rank_regression.cdf_estimation()`.
-* `plot_prob()` is now an S3 generic. `plot_prob()` becomes `plot_prob.default()`. Added `plot_prob.cdf_estimation()`.
-* `plot_prob_mix()` is now an S3 generic. `plot_prob_mix()` becomes `plot_prob.default()`. Added `plot_prob_mix.model_estimation()`, `plot_prob_mix.mixmod_regression()` and `plot_prob_mix.mixmod_em()`.
-* `plot_mod()` is now an S3 generic. `plot_mod()` becomes `plot_mod.default()`. Added `plot_mod.model_estimation()`.
-* `plot_conf()` is now an S3 generic. `plot_conf()` becomes `plot_conf.default()`. Added `plot_conf.confint()`.
+* `rank_regression()` is now an S3 generic. `rank_regression()` becomes `rank_regression.default()`. Added `rank_regression.wt_cdf_estimation()`.
+* `plot_prob()` is now an S3 generic. `plot_prob()` becomes `plot_prob.default()`. Added `plot_prob.wt_cdf_estimation()` and `plot_prob.wt_model()`.
+* `plot_mod()` is now an S3 generic. `plot_mod()` becomes `plot_mod.default()`. Added `plot_mod.wt_model()`.
+* `plot_conf()` is now an S3 generic. `plot_conf()` becomes `plot_conf.default()`. Added `plot_conf.wt_confint()`.
 * `plot_pop()`: Added support for multiple population lines and comparison of two- and three-parametric distributions.
-* `confint_betabinom()`, `confint_fisher()`: Added argument `b_lives` which allows the user to specify probabilities of interest.
 
-## Documentation
-* Revised README
+## Documentation improvements
+* Revised README.
+* Revised vignettes.
 * Capitalized parameter documentation.
-* Revised documentation of `dist_mileage()` and `mcs_mileage()`.
-* Revised documentation of `mr_method()`, `kaplan_method()`, `johnson_method()` and `nelson_method()`.
-* Revised documentation of `rank_regression()` and `ml_estimation()`.
-* Revised documentation of `predict_quantile()` and `predict_prob()`.
-* Revised documentation of `r_squared_profiling()`, `loglik_profiling()` and `loglik_function()`.
-* Revised documentation of `delta_method()`.
-* Revised documentation of `confint_betabinom()` and `confint_fisher()`.
 
 ## Lifecycle changes
 
 ### Deprecated
-* `plot_layout()`
+* `dist_delay_register()` and `dist_delay_report()`: Use `dist_delay()` instead. 
+* `mcs_delay_register()`, `mcs_delay_report()` and `mcs_delays()`: Use `mcs_delay()` instead.
 * `mr_method()`, `johnson_method()`, `kaplan_method()` and `nelson_method()`: Use `estimate_cdf()` instead.
-* `dist_delay_register()` and `dist_delay_report()` are deprecated. Use `dist_delay()` instead. 
-* `mcs_delay_register()`, `mcs_delay_report()` and `mcs_delays()`  are deprecated. Use `mcs_delay()` instead.
-* `plot_prob_mix.default()` and `plot_mod_mix.default()`. Use further S3 methods instead.
+* `plot_prob_mix()`: Use `plot_prob()` instead.
+* `plot_mod_mix()`: Use `plot_mod()` instead.
+
+### Removed
+* `calculate_ranks`.
+* `mixture_em_cpp`.
+* `plot_layout`.
 
 ## Minor improvements and bug fixes
-* The default of `id` inside `mr_method()`, `johnson_method()`, `kaplan_method()` and `nelson_method()` is set to `NULL`. 
 * Fixed bug inside `plot_mod_mix()` for the case of no mixture distribution.
-* Fixed bug inside `confint_betabinom()`; many cases near one -> unique().
-* Fixed bug inside `mr_method()`: Assigning a rank for the same lifetime. 
-* Fixed bug inside `mixmod_regression`: call to `segmented::segmented.lm()` was defective.
-* Added trace type "scatter" and scatter mode "markers" to `plot_layout`.
+* Fixed bug inside `confint_betabinom()`: many cases near one -> `unique()`.
+* Fixed bug inside `mr_method()`: assigning a rank for the same lifetime. 
+* Fixed bug inside `mixmod_regression`: call to `segmented::segmented.lm()` was incorrect.
+* Added trace type `"scatter"` and scatter mode `"markers"` to plotly plots.
 * `delta_method()`, `r_squared_profiling()` and `loglik_profiling()` were vectorized.
 
 # weibulltools v1.0.1

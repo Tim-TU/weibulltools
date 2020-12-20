@@ -99,7 +99,7 @@ subgroups. See 'Details'." />
       <a href="../articles/Life_Data_Analysis_Part_I.html">Life Data Analysis Part I - Estimation of Failure Probabilities</a>
     </li>
     <li>
-      <a href="../articles/Life_Data_Analysis_Part_II.html">Life Data Analysis Part II - Parameter Estimation of Parametric Lifetime Models</a>
+      <a href="../articles/Life_Data_Analysis_Part_II.html">Life Data Analysis Part II - Estimation Methods for Parametric Lifetime Models</a>
     </li>
     <li>
       <a href="../articles/Life_Data_Analysis_Part_III.html">Life Data Analysis Part III - Mixture Models</a>
@@ -189,18 +189,18 @@ See 'Examples' for usage.</p></td>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>Returns a list of class <code>"rank_regression"</code> if no breakpoint was
-detected. See <code><a href='rank_regression.html'>rank_regression</a></code>. The tibble <code>data</code> is returned
-with class <code>"cdf_estimation"</code> and contains the additional dummy columns
-<code>method</code> and <code>id</code>. The former is filled with
-<code>"_null"</code>, due to generic visualization functions and the latter is filled
-with <code>"XXXXXX"</code> to point out that unit identification is not possible when
-using the vector-based approach.</p>
-<p>Returns a list of class <code>"mixmod_regression"</code> if at least one breakpoint
-was determined. The length of the list depends on the number of identified
-subgroups. Each list contains the information provided by
-<code><a href='rank_regression.html'>rank_regression</a></code>. The returned tibble <code>data</code> of
-each list element only retains information on the failed units and has modified
+    <p>Returns a list of class <code>"wt_rank_regression"</code> if no breakpoint
+was detected. See <code><a href='rank_regression.html'>rank_regression</a></code>. The tibble <code>data</code> is
+returned with class <code>"wt_cdf_estimation"</code> and contains the additional
+dummy columns <code>method</code> and <code>id</code>. The former is filled with
+<code>NA_character</code>, due to generic visualization functions and the latter is
+filled with <code>"XXXXXX"</code> to point out that unit identification is not
+possible when using the vector-based approach.</p>
+<p>Returns a list of class <code>"wt_mixmod_regression"</code> if at least one
+breakpoint was determined. The length of the list depends on the number of
+identified subgroups. Each list contains the information provided by
+<code><a href='rank_regression.html'>rank_regression</a></code>. The returned tibble <code>data</code> of each list
+element only retains information on the failed units and has modified
 and additional columns:</p><ul>
 <li><p><code>id</code> : Modified id, overwritten with <code>"XXXXXX"</code> to point out
     that unit identification is not possible when using the vector-based approach.</p></li>

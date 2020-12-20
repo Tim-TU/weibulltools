@@ -5,45 +5,8 @@
 #' probabilities of complete data taking (multiple) right-censored observations
 #' into account.
 #'
-#' @details
-#' One or multiple techniques can be used for the \code{methods} argument:
-#' \itemize{
-#'   \item \code{"mr"} : Method \emph{Median Ranks} is used to estimate the failure
-#'     probabilities of failed units without considering censored items.
-#'     Tied observations can be handled in three ways (See 'Options'):
-#'     \itemize{
-#'       \item \code{"max"} : Highest observed rank is assigned to tied observations.
-#'       \item \code{"min"} : Lowest observed rank is assigned to tied observations.
-#'       \item \code{"average"} : Mean rank is assigned to tied observations.
-#'     }
-#'     Two formulas can be used to determine cumulative failure probabilities
-#'     \emph{F(t)} (See 'Options'):
-#'     \itemize{
-#'       \item \code{"benard"} : Benard's approximation for Median Ranks.
-#'       \item \code{"invbeta"} : Exact Median Ranks using the inverse beta distribution.
-#'     }
-#'   \item \code{"johnson"} : The \emph{Johnson} method is used to estimate the
-#'     failure probabilities of failed units, taking censored units into account.
-#'     Compared to complete data, correction of probabilities is done by the
-#'     computation of adjusted ranks.
-#'   \item \code{"kaplan"} : The method of \emph{Kaplan} and \emph{Meier} is used
-#'     to estimate the survival function \emph{S(t)} with respect to (multiple)
-#'     right censored data. The complement of \emph{S(t)}, i.e. \emph{F(t)}, is
-#'     returned. In contrast to the original \emph{Kaplan-Meier} estimator, one
-#'     modification is made (see 'References').
-#'
-#'     \strong{Note} : The \emph{Kaplan-Meier} estimator does not assign ranks to
-#'     observations, so the beta-binomial confidence intervals \emph{cannot} be
-#'     calculated using this method.
-#'   \item \code{"nelson"} : The \emph{Nelson-Aalen} estimator models the cumulative
-#'     hazard rate function in case of (multiple) right censored data. Equating the
-#'     formal definition of the hazard rate with that according to \emph{Nelson-Aalen}
-#'     results in a formula for the calculation of failure probabilities.
-#'
-#'     \strong{Note} : The \emph{Nelson-Aalen} estimator does not assign ranks to
-#'     observations, so the beta-binomial confidence intervals \emph{cannot} be
-#'     calculated using this method.
-#' }
+#' @template details-estimate-cdf
+#' @templateVar header One or multiple techniques can be used for the \code{methods} argument:
 #'
 #' @param x A tibble returned by \link{reliability_data}.
 #' @param methods One or multiple methods of \code{"mr"}, \code{"johnson"},
@@ -80,7 +43,7 @@
 #' @examples
 #' # Reliability data:
 #' data <- reliability_data(
-#'   data = alloy,
+#'   alloy,
 #'   x = cycles,
 #'   status = status
 #' )
@@ -126,12 +89,13 @@ estimate_cdf <- function(x, ...) {
 #' @rdname estimate_cdf
 #'
 #' @export
-estimate_cdf.reliability_data <- function(x,
-                                          methods = c(
-                                            "mr", "johnson", "kaplan", "nelson"
-                                          ),
-                                          options = list(),
-                                          ...
+estimate_cdf.wt_reliability_data <- function(x,
+                                             methods = c(
+                                               "mr", "johnson", "kaplan",
+                                               "nelson"
+                                             ),
+                                             options = list(),
+                                             ...
 ) {
 
   methods <- if (missing(methods)) {
@@ -147,7 +111,7 @@ estimate_cdf.reliability_data <- function(x,
     nelson = nelson_method_
   )
 
-  purrr::map_dfr(methods, function(method) {
+  tbl_out <- purrr::map_dfr(methods, function(method) {
     if (method == "mr") {
       method_funs[[method]](
         data = x,
@@ -160,13 +124,20 @@ estimate_cdf.reliability_data <- function(x,
       method_funs[[method]](data = x)
     }
   })
+
+  class(tbl_out) <- c("wt_cdf_estimation", class(tbl_out))
+
+  return(tbl_out)
 }
 
 
 
 #' Estimation of Failure Probabilities
 #'
-#' @inherit estimate_cdf description details return references
+#' @inherit estimate_cdf description return references
+#'
+#' @template details-estimate-cdf
+#' @templateVar header The following techniques can be used for the \code{method} argument:
 #'
 #' @inheritParams estimate_cdf
 #' @param x A numeric vector which consists of lifetime data. Lifetime
@@ -217,16 +188,16 @@ estimate_cdf.default <- function(x,
                                  options = list(),
                                  ...
 ) {
-  # Fail early, if user tries to call estimate_cdf.reliability_data with a tibble
-  # which is not of class reliability data. Otherwise failure would occur in
-  # reliability_data, which is counterintuitive
+  # Fail early, if user tries to call estimate_cdf.wt_reliability_data with a
+  # tibble which is not of class reliability data. Otherwise failure would occur
+  # in reliability_data, which is counterintuitive
   status
 
   data <- reliability_data(x = x, status = status, id = id)
 
   method = match.arg(method)
 
-  estimate_cdf.reliability_data(
+  estimate_cdf.wt_reliability_data(
     x = data,
     methods = method,
     options = options
@@ -236,7 +207,7 @@ estimate_cdf.default <- function(x,
 
 
 #' @export
-print.cdf_estimation <- function(x, ...) {
+print.wt_cdf_estimation <- function(x, ...) {
   n_methods <- length(unique(x$method))
   if (n_methods == 1) {
     cat("CDF estimation for method '", x$method[1], "':\n", sep = "")
@@ -375,9 +346,7 @@ mr_method_ <- function(data,
       .data$id, .data$x, .data$status, .data$rank, .data$prob, .data$method
     )
 
-  class(tbl_out) <- c("cdf_estimation", class(tbl_out))
-
-  return(tbl_out)
+  tbl_out
 }
 
 
@@ -503,9 +472,7 @@ johnson_method_ <- function(data) {
       .data$id, .data$x, .data$status, .data$rank, .data$prob, .data$method
     )
 
-  class(tbl_out) <- c("cdf_estimation", class(tbl_out))
-
-  return(tbl_out)
+  tbl_out
 }
 
 
@@ -648,9 +615,7 @@ kaplan_method_ <- function(data) {
       .data$id, .data$x, .data$status, .data$rank, .data$prob, .data$method
     )
 
-  class(tbl_out) <- c("cdf_estimation", class(tbl_out))
-
-  return(tbl_out)
+  tbl_out
 }
 
 
@@ -765,7 +730,5 @@ nelson_method_ <- function(data) {
       .data$id, .data$x, .data$status, .data$rank, .data$prob, .data$method
     )
 
-  class(tbl_out) <- c("cdf_estimation", class(tbl_out))
-
-  return(tbl_out)
+  tbl_out
 }

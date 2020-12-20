@@ -51,7 +51,7 @@ probabilities of complete data taking (multiple) right-censored observations
 into account.
 }
 \details{
-One or multiple techniques can be used for the \code{methods} argument:
+The following techniques can be used for the \code{method} argument:
 \itemize{
   \item \code{"mr"} : Method \emph{Median Ranks} is used to estimate the failure
     probabilities of failed units without considering censored items.

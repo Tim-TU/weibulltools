@@ -100,7 +100,7 @@ of probabilities in terms of (Median Ranks)." />
       <a href="../articles/Life_Data_Analysis_Part_I.html">Life Data Analysis Part I - Estimation of Failure Probabilities</a>
     </li>
     <li>
-      <a href="../articles/Life_Data_Analysis_Part_II.html">Life Data Analysis Part II - Parameter Estimation of Parametric Lifetime Models</a>
+      <a href="../articles/Life_Data_Analysis_Part_II.html">Life Data Analysis Part II - Estimation Methods for Parametric Lifetime Models</a>
     </li>
     <li>
       <a href="../articles/Life_Data_Analysis_Part_III.html">Life Data Analysis Part III - Mixture Models</a>
@@ -204,7 +204,8 @@ confidence interval. One of <code>"y"</code> (failure probabilities) or <code>"x
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A tibble with class <code>"confint"</code> containing the following columns:</p><ul>
+    <p>A tibble with class <code>"wt_confint"</code> containing the following
+columns:</p><ul>
 <li><p><code>x</code> : An ordered sequence of the lifetime characteristic regarding
       the failed units, starting at <code><a href='https://rdrr.io/r/base/Extremes.html'>min(x)</a></code> and ending up at <code><a href='https://rdrr.io/r/base/Extremes.html'>max(x)</a></code>.
       With <code>b_lives = c(0.01, 0.1, 0.5)</code> the 1%, 10% and 50% quantiles
@@ -246,13 +247,13 @@ on another level, the specified confidence level.</p>
 <span class='va'>status_2</span> <span class='op'>&lt;-</span> <span class='va'>alloy</span><span class='op'>$</span><span class='va'>status</span>
 
 <span class='co'># Probability estimation:</span>
-<span class='va'>tbl_john</span> <span class='op'>&lt;-</span> <span class='fu'><a href='estimate_cdf.html'>estimate_cdf</a></span><span class='op'>(</span>
+<span class='va'>prob_tbl</span> <span class='op'>&lt;-</span> <span class='fu'><a href='estimate_cdf.html'>estimate_cdf</a></span><span class='op'>(</span>
   x <span class='op'>=</span> <span class='va'>obs</span>,
   status <span class='op'>=</span> <span class='va'>status_1</span>,
   method <span class='op'>=</span> <span class='st'>"johnson"</span>
 <span class='op'>)</span>
 
-<span class='va'>tbl_john_2</span> <span class='op'>&lt;-</span> <span class='fu'><a href='estimate_cdf.html'>estimate_cdf</a></span><span class='op'>(</span>
+<span class='va'>prob_tbl_2</span> <span class='op'>&lt;-</span> <span class='fu'><a href='estimate_cdf.html'>estimate_cdf</a></span><span class='op'>(</span>
   x <span class='op'>=</span> <span class='va'>cycles</span>,
   status <span class='op'>=</span> <span class='va'>status_2</span>,
   method <span class='op'>=</span> <span class='st'>"johnson"</span>
@@ -260,24 +261,24 @@ on another level, the specified confidence level.</p>
 
 <span class='co'># Model estimation with rank_regression():</span>
 <span class='va'>rr</span> <span class='op'>&lt;-</span> <span class='fu'><a href='rank_regression.html'>rank_regression</a></span><span class='op'>(</span>
-  x <span class='op'>=</span> <span class='va'>tbl_john</span><span class='op'>$</span><span class='va'>x</span>,
-  y <span class='op'>=</span> <span class='va'>tbl_john</span><span class='op'>$</span><span class='va'>prob</span>,
-  status <span class='op'>=</span> <span class='va'>tbl_john</span><span class='op'>$</span><span class='va'>status</span>,
+  x <span class='op'>=</span> <span class='va'>prob_tbl</span><span class='op'>$</span><span class='va'>x</span>,
+  y <span class='op'>=</span> <span class='va'>prob_tbl</span><span class='op'>$</span><span class='va'>prob</span>,
+  status <span class='op'>=</span> <span class='va'>prob_tbl</span><span class='op'>$</span><span class='va'>status</span>,
   distribution <span class='op'>=</span> <span class='st'>"weibull"</span>,
-  conf_level <span class='op'>=</span> <span class='fl'>0.90</span>
+  conf_level <span class='op'>=</span> <span class='fl'>0.9</span>
 <span class='op'>)</span>
 
 <span class='va'>rr_2</span> <span class='op'>&lt;-</span> <span class='fu'><a href='rank_regression.html'>rank_regression</a></span><span class='op'>(</span>
-  x <span class='op'>=</span> <span class='va'>tbl_john_2</span><span class='op'>$</span><span class='va'>x</span>,
-  y <span class='op'>=</span> <span class='va'>tbl_john_2</span><span class='op'>$</span><span class='va'>prob</span>,
-  status <span class='op'>=</span> <span class='va'>tbl_john_2</span><span class='op'>$</span><span class='va'>status</span>,
+  x <span class='op'>=</span> <span class='va'>prob_tbl_2</span><span class='op'>$</span><span class='va'>x</span>,
+  y <span class='op'>=</span> <span class='va'>prob_tbl_2</span><span class='op'>$</span><span class='va'>prob</span>,
+  status <span class='op'>=</span> <span class='va'>prob_tbl_2</span><span class='op'>$</span><span class='va'>status</span>,
   distribution <span class='op'>=</span> <span class='st'>"lognormal3"</span>
 <span class='op'>)</span>
 
 <span class='co'># Example 1 - Two-sided 95% confidence interval for probabilities ('y'):</span>
 <span class='va'>conf_betabin_1</span> <span class='op'>&lt;-</span> <span class='fu'><a href='confint_betabinom.html'>confint_betabinom</a></span><span class='op'>(</span>
-  x <span class='op'>=</span> <span class='va'>obs</span>,
-  status <span class='op'>=</span> <span class='va'>status_1</span>,
+  x <span class='op'>=</span> <span class='va'>prob_tbl</span><span class='op'>$</span><span class='va'>x</span>,
+  status <span class='op'>=</span> <span class='va'>prob_tbl</span><span class='op'>$</span><span class='va'>status</span>,
   dist_params <span class='op'>=</span> <span class='va'>rr</span><span class='op'>$</span><span class='va'>coefficients</span>,
   distribution <span class='op'>=</span> <span class='st'>"weibull"</span>,
   bounds <span class='op'>=</span> <span class='st'>"two_sided"</span>,
@@ -287,22 +288,22 @@ on another level, the specified confidence level.</p>
 
 <span class='co'># Example 2 - One-sided lower/upper 90% confidence interval for quantiles ('x'):</span>
 <span class='va'>conf_betabin_2_1</span> <span class='op'>&lt;-</span> <span class='fu'><a href='confint_betabinom.html'>confint_betabinom</a></span><span class='op'>(</span>
-  x <span class='op'>=</span> <span class='va'>obs</span>,
-  status <span class='op'>=</span> <span class='va'>status_1</span>,
+  x <span class='op'>=</span> <span class='va'>prob_tbl</span><span class='op'>$</span><span class='va'>x</span>,
+  status <span class='op'>=</span> <span class='va'>prob_tbl</span><span class='op'>$</span><span class='va'>status</span>,
   dist_params <span class='op'>=</span> <span class='va'>rr</span><span class='op'>$</span><span class='va'>coefficients</span>,
   distribution <span class='op'>=</span> <span class='st'>"weibull"</span>,
   bounds <span class='op'>=</span> <span class='st'>"lower"</span>,
-  conf_level <span class='op'>=</span> <span class='fl'>0.90</span>,
+  conf_level <span class='op'>=</span> <span class='fl'>0.9</span>,
   direction <span class='op'>=</span> <span class='st'>"x"</span>
 <span class='op'>)</span>
 
 <span class='va'>conf_betabin_2_2</span> <span class='op'>&lt;-</span> <span class='fu'><a href='confint_betabinom.html'>confint_betabinom</a></span><span class='op'>(</span>
-  x <span class='op'>=</span> <span class='va'>obs</span>,
-  status <span class='op'>=</span> <span class='va'>status_1</span>,
+  x <span class='op'>=</span> <span class='va'>prob_tbl</span><span class='op'>$</span><span class='va'>x</span>,
+  status <span class='op'>=</span> <span class='va'>prob_tbl</span><span class='op'>$</span><span class='va'>status</span>,
   dist_params <span class='op'>=</span> <span class='va'>rr</span><span class='op'>$</span><span class='va'>coefficients</span>,
   distribution <span class='op'>=</span> <span class='st'>"weibull"</span>,
   bounds <span class='op'>=</span> <span class='st'>"upper"</span>,
-  conf_level <span class='op'>=</span> <span class='fl'>0.90</span>,
+  conf_level <span class='op'>=</span> <span class='fl'>0.9</span>,
   direction <span class='op'>=</span> <span class='st'>"x"</span>
 <span class='op'>)</span>
 
@@ -310,22 +311,22 @@ on another level, the specified confidence level.</p>
 <span class='co'># a three-parametric model:</span>
 
 <span class='va'>conf_betabin_3_1</span> <span class='op'>&lt;-</span> <span class='fu'><a href='confint_betabinom.html'>confint_betabinom</a></span><span class='op'>(</span>
-  x <span class='op'>=</span> <span class='va'>cycles</span>,
-  status <span class='op'>=</span> <span class='va'>status_2</span>,
+  x <span class='op'>=</span> <span class='va'>prob_tbl_2</span><span class='op'>$</span><span class='va'>x</span>,
+  status <span class='op'>=</span> <span class='va'>prob_tbl_2</span><span class='op'>$</span><span class='va'>status</span>,
   dist_params <span class='op'>=</span> <span class='va'>rr_2</span><span class='op'>$</span><span class='va'>coefficients</span>,
   distribution <span class='op'>=</span> <span class='st'>"lognormal3"</span>,
   bounds <span class='op'>=</span> <span class='st'>"two_sided"</span>,
-  conf_level <span class='op'>=</span> <span class='fl'>0.90</span>,
+  conf_level <span class='op'>=</span> <span class='fl'>0.9</span>,
   direction <span class='op'>=</span> <span class='st'>"y"</span>
 <span class='op'>)</span>
 
 <span class='va'>conf_betabin_3_2</span> <span class='op'>&lt;-</span> <span class='fu'><a href='confint_betabinom.html'>confint_betabinom</a></span><span class='op'>(</span>
-  x <span class='op'>=</span> <span class='va'>cycles</span>,
-  status <span class='op'>=</span> <span class='va'>status_2</span>,
+  x <span class='op'>=</span> <span class='va'>prob_tbl_2</span><span class='op'>$</span><span class='va'>x</span>,
+  status <span class='op'>=</span> <span class='va'>prob_tbl_2</span><span class='op'>$</span><span class='va'>status</span>,
   dist_params <span class='op'>=</span> <span class='va'>rr_2</span><span class='op'>$</span><span class='va'>coefficients</span>,
   distribution <span class='op'>=</span> <span class='st'>"lognormal3"</span>,
   bounds <span class='op'>=</span> <span class='st'>"two_sided"</span>,
-  conf_level <span class='op'>=</span> <span class='fl'>0.90</span>,
+  conf_level <span class='op'>=</span> <span class='fl'>0.9</span>,
   direction <span class='op'>=</span> <span class='st'>"x"</span>
 <span class='op'>)</span>
 

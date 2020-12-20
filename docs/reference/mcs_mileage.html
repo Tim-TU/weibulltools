@@ -103,7 +103,7 @@ relationship. See 'Details'." />
       <a href="../articles/Life_Data_Analysis_Part_I.html">Life Data Analysis Part I - Estimation of Failure Probabilities</a>
     </li>
     <li>
-      <a href="../articles/Life_Data_Analysis_Part_II.html">Life Data Analysis Part II - Parameter Estimation of Parametric Lifetime Models</a>
+      <a href="../articles/Life_Data_Analysis_Part_II.html">Life Data Analysis Part II - Estimation Methods for Parametric Lifetime Models</a>
     </li>
     <li>
       <a href="../articles/Life_Data_Analysis_Part_III.html">Life Data Analysis Part III - Mixture Models</a>
@@ -183,13 +183,14 @@ a failure (= 1). The effect of status on the return is described in 'Value'.</p>
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>A list containing the following elements:</p><ul>
-<li><p><code>data</code> : A tibble with classes <code>"mcs_data"</code> and
-      <code>"reliability_data"</code> if <code>status</code> is provided. Since the
-      attribute <code>"reliability_data"</code> enables the direct usage of <code>data</code>
-      inside <code>estimate_cdf</code> (<code><a href='estimate_cdf.html'>estimate_cdf.reliability_data</a></code>),
-      the required lifetime characteristic is automatically set to the distance
+<li><p><code>data</code> : A tibble with classes <code>"wt_mcs_data"</code> and
+      <code>"wt_reliability_data"</code> if <code>status</code> is provided. Since the
+      class <code>"wt_reliability_data"</code> enables the direct usage of
+      <code>data</code> inside
+      <code><a href='estimate_cdf.html'>estimate_cdf.wt_reliability_data</a></code>, the
+      required lifetime characteristic is automatically set to the distance
       <code>mileage</code>.</p>
-<p>If <code>status = NULL</code> class is <code>"mcs_data"</code>, which is not
+<p>If <code>status = NULL</code> class is <code>"wt_mcs_data"</code>, which is not
       supported by <code>estimate_cdf</code> due to missing <code>status</code>.</p>
 <p>The tibble contains the following columns:</p><ul>
 <li><p><code>mileage</code> : Simulated distances for unknown <code>mileage</code> and
@@ -281,7 +282,7 @@ distance of this vehicle is $$3500.25 km \cdot (\frac{200 d} {365 d}) = 1917.945
   distribution <span class='op'>=</span> <span class='st'>"lognormal"</span>
 <span class='op'>)</span>
 
-<span class='co'>## Using result of *$data in estimate_cdf() -&gt; not working at the moment!</span>
+<span class='co'>## Using result of *$data in estimate_cdf()</span>
 <span class='va'>prob_estimation</span> <span class='op'>&lt;-</span> <span class='fu'><a href='estimate_cdf.html'>estimate_cdf</a></span><span class='op'>(</span>
   x <span class='op'>=</span> <span class='va'>mcs_distances_3</span><span class='op'>$</span><span class='va'>data</span>,
   methods <span class='op'>=</span> <span class='st'>"kaplan"</span>

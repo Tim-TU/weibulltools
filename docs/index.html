@@ -85,7 +85,7 @@
       <a href="articles/Life_Data_Analysis_Part_I.html">Life Data Analysis Part I - Estimation of Failure Probabilities</a>
     </li>
     <li>
-      <a href="articles/Life_Data_Analysis_Part_II.html">Life Data Analysis Part II - Parameter Estimation of Parametric Lifetime Models</a>
+      <a href="articles/Life_Data_Analysis_Part_II.html">Life Data Analysis Part II - Estimation Methods for Parametric Lifetime Models</a>
     </li>
     <li>
       <a href="articles/Life_Data_Analysis_Part_III.html">Life Data Analysis Part III - Mixture Models</a>
@@ -116,10 +116,9 @@
 <div id="overview" class="section level2">
 <h2 class="hasAnchor">
 <a href="#overview" class="anchor"></a>Overview</h2>
-<p>The <em>weibulltools</em> package focuses on statistical methods and visualizations that are often used in reliability engineering.</p>
-<p>The goal of <em>weibulltools</em> is to equip the user with a compact and easily accessible set of methods and visualization tools that make the examination and adjustment as well as the analysis and interpretation of field data (and bench tests) as simple as possible.</p>
-<p>Besides the well-known weibull analysis, <em>weibulltools</em> supports multiple lifetime distributions and also contains Monte Carlo methods for the correction and completion of imprecisely recorded or unknown lifetime characteristics.</p>
-<p>Plots are created statically (<a href="https://ggplot2.tidyverse.org/">ggplot2</a>) or interactively (<a href="https://plotly.com/r/">plotly</a>) and can be customized with the corresponding functions of the respective visualization package.</p>
+<p>The <em>weibulltools</em> package focuses on statistical methods and visualizations that are often used in reliability engineering. It provides a compact and easily accessible set of methods and visualization tools that make the examination and adjustment as well as the analysis and interpretation of field data (and bench tests) as simple as possible.</p>
+<p>Besides the well-known weibull analysis, the package supports multiple lifetime distributions and also contains Monte Carlo methods for the correction and completion of imprecisely recorded or unknown lifetime characteristics.</p>
+<p>Plots are created statically (<a href="https://ggplot2.tidyverse.org/">ggplot2</a>) or interactively (<a href="https://plotly.com/r/">plotly</a>) and can be customized with functions of the respective visualization package.</p>
 </div>
 <div id="installation" class="section level2">
 <h2 class="hasAnchor">
@@ -207,26 +206,26 @@
 <span class="co">#&gt; List of 4 model estimations:</span>
 <span class="co">#&gt; Rank Regression</span>
 <span class="co">#&gt; Coefficients:</span>
-<span class="co">#&gt;       eta       beta  </span>
-<span class="co">#&gt; 28554.796      2.753  </span>
+<span class="co">#&gt;      mu    sigma  </span>
+<span class="co">#&gt; 10.2596   0.3632  </span>
 <span class="co">#&gt; Method of CDF Estimation: johnson </span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Rank Regression</span>
 <span class="co">#&gt; Coefficients:</span>
-<span class="co">#&gt;       eta       beta  </span>
-<span class="co">#&gt; 27815.241      2.651  </span>
+<span class="co">#&gt;      mu    sigma  </span>
+<span class="co">#&gt; 10.2333   0.3773  </span>
 <span class="co">#&gt; Method of CDF Estimation: kaplan </span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Rank Regression</span>
 <span class="co">#&gt; Coefficients:</span>
-<span class="co">#&gt;       eta       beta  </span>
-<span class="co">#&gt; 19652.111      2.528  </span>
+<span class="co">#&gt;     mu   sigma  </span>
+<span class="co">#&gt; 9.8859  0.3956  </span>
 <span class="co">#&gt; Method of CDF Estimation: mr </span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Rank Regression</span>
 <span class="co">#&gt; Coefficients:</span>
-<span class="co">#&gt;       eta       beta  </span>
-<span class="co">#&gt; 28523.655      2.596  </span>
+<span class="co">#&gt;      mu    sigma  </span>
+<span class="co">#&gt; 10.2585   0.3852  </span>
 <span class="co">#&gt; Method of CDF Estimation: nelson</span></code></pre></div>
 <p>Model visualization in an existing probability plot:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">

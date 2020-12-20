@@ -2,7 +2,7 @@
 % Please edit documentation in R/reliability_data.R
 \name{reliability_data}
 \alias{reliability_data}
-\title{Reliability data}
+\title{Reliability Data}
 \usage{
 reliability_data(data = NULL, x, status, id = NULL, .keep_all = FALSE)
 }
@@ -24,7 +24,7 @@ censored observation (= 0) or a failure (= 1).}
 \item{.keep_all}{If \code{TRUE}, keep all variables in \code{data}.}
 }
 \value{
-A tibble with class \code{"reliability_data"} containing the following
+A tibble with class \code{"wt_reliability_data"} containing the following
 columns (if \code{.keep_all = FALSE}):
 \itemize{
   \item \code{x} : Lifetime characteristic.

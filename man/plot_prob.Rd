@@ -3,16 +3,13 @@
 \encoding{UTF-8}
 \name{plot_prob}
 \alias{plot_prob}
-\alias{plot_prob.cdf_estimation}
-\alias{plot_prob.model_estimation}
-\alias{plot_prob.mixmod_regression}
-\alias{plot_prob.mixmod_em}
-\alias{plot_prob.mixmod_regression_list}
+\alias{plot_prob.wt_model}
+\alias{plot_prob.wt_cdf_estimation}
 \title{Probability Plotting Method for Univariate Lifetime Distributions}
 \usage{
 plot_prob(x, ...)
 
-\method{plot_prob}{cdf_estimation}(
+\method{plot_prob}{wt_model}(
   x,
   distribution = c("weibull", "lognormal", "loglogistic", "normal", "logistic", "sev"),
   title_main = "Probability Plot",
@@ -23,38 +20,9 @@ plot_prob(x, ...)
   ...
 )
 
-\method{plot_prob}{model_estimation}(
+\method{plot_prob}{wt_cdf_estimation}(
   x,
-  title_main = "Probability Plot",
-  title_x = "Characteristic",
-  title_y = "Unreliability",
-  title_trace = "Sample",
-  plot_method = c("plotly", "ggplot2"),
-  ...
-)
-
-\method{plot_prob}{mixmod_regression}(
-  x,
-  title_main = "Probability Plot",
-  title_x = "Characteristic",
-  title_y = "Unreliability",
-  title_trace = "Sample",
-  plot_method = c("plotly", "ggplot2"),
-  ...
-)
-
-\method{plot_prob}{mixmod_em}(
-  x,
-  title_main = "Probability Plot",
-  title_x = "Characteristic",
-  title_y = "Unreliability",
-  title_trace = "Sample",
-  plot_method = c("plotly", "ggplot2"),
-  ...
-)
-
-\method{plot_prob}{mixmod_regression_list}(
-  x,
+  distribution = c("weibull", "lognormal", "loglogistic", "normal", "logistic", "sev"),
   title_main = "Probability Plot",
   title_x = "Characteristic",
   title_y = "Unreliability",
@@ -64,7 +32,8 @@ plot_prob(x, ...)
 )
 }
 \arguments{
-\item{x}{An object of aforementioned classes. See 'S3 methods'.}
+\item{x}{An object of class \code{"wt_cdf_estimation"} or
+\code{"wt_model"}.}
 
 \item{...}{Further arguments passed to or from other methods. Currently not used.}
 
@@ -92,7 +61,7 @@ This function is used to apply the graphical technique of probability
 plotting.
 }
 \details{
-If data was split by \code{\link{mixmod_em}} \code{\link{estimate_cdf}} with
+If \code{x} was split by \code{\link{mixmod_em}} \code{\link{estimate_cdf}} with
 method \code{"johnson"} is applied to subgroup-specific data. The
 calculated plotting positions are shaped according to the determined split in
 \code{\link{mixmod_em}}.
@@ -111,56 +80,51 @@ the number of determined subgroups (if any). If \code{title_trace = "Group"}
 and the data has been split in two groups, the legend entries are "Group: 1"
 and "Group: 2".
 }
-\section{S3 methods}{
-\tabular{lll}{
-   \strong{Class} \tab \strong{Returned from} \tab \strong{Condition} \cr
-   \code{cdf_estimation} \tab \code{\link{estimate_cdf}} \tab - \cr
-   \code{model_estimation} \tab \code{\link{mixmod_regression}} \tab One method in \code{\link{estimate_cdf}}. No subgroups determined. \cr
-   \code{mixmod_regression} \tab \code{\link{mixmod_regression}} \tab One method in \code{\link{estimate_cdf}}. \cr
-   \code{mixmod_regression_list} \tab \code{\link{mixmod_regression}} \tab Multiple methods in \code{\link{estimate_cdf}}. \cr
-   \code{mixmod_em} \tab \code{\link{mixmod_em}} \tab - \cr
-}
-}
-
 \examples{
 # Reliability data:
 data <- reliability_data(
-  data = alloy,
+  alloy,
   x = cycles,
   status = status
 )
 
 # Probability estimation:
-prob_tbl <- estimate_cdf(data, methods = c("johnson", "kaplan"))
+prob_tbl <- estimate_cdf(
+  data,
+  methods = c("johnson", "kaplan")
+)
 
 # Example 1 - Probability Plot Weibull:
 plot_weibull <- plot_prob(prob_tbl)
 
 # Example 2 - Probability Plot Lognormal:
 plot_lognormal <- plot_prob(
-  prob_tbl,
+  x = prob_tbl,
   distribution = "lognormal"
 )
 
 ## Mixture identification
 # Reliability data:
 data_mix <- reliability_data(
-  data = voltage,
+  voltage,
   x = hours,
   status = status
 )
 
-prob_mix <- estimate_cdf(data_mix, methods = c("johnson", "kaplan"))
+prob_mix <- estimate_cdf(
+  data_mix,
+  methods = c("johnson", "kaplan")
+)
 
 # Example 3 - Mixture identification using mixmod_regression:
 mix_mod_rr <- mixmod_regression(prob_mix)
 
-plot_mix_rr <- plot_prob(mix_mod_rr)
+plot_mix_mod_rr <- plot_prob(x = mix_mod_rr)
 
 # Example 4 - Mixture identification using mixmod_em:
 mix_mod_em <- mixmod_em(data_mix)
 
-plot_mix_em <- plot_prob(mix_mod_em)
+plot_mix_mod_em <- plot_prob(x = mix_mod_em)
 
 }
 \references{

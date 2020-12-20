@@ -99,7 +99,7 @@ and failure probabilities." />
       <a href="../articles/Life_Data_Analysis_Part_I.html">Life Data Analysis Part I - Estimation of Failure Probabilities</a>
     </li>
     <li>
-      <a href="../articles/Life_Data_Analysis_Part_II.html">Life Data Analysis Part II - Parameter Estimation of Parametric Lifetime Models</a>
+      <a href="../articles/Life_Data_Analysis_Part_II.html">Life Data Analysis Part II - Estimation Methods for Parametric Lifetime Models</a>
     </li>
     <li>
       <a href="../articles/Life_Data_Analysis_Part_III.html">Life Data Analysis Part III - Mixture Models</a>
@@ -208,7 +208,8 @@ confidence interval. One of <code>"y"</code> (failure probabilities) or <code>"x
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A tibble with class <code>"confint"</code> containing the following columns:</p><ul>
+    <p>A tibble with class <code>"wt_confint"</code> containing the following
+columns:</p><ul>
 <li><p><code>x</code> : An ordered sequence of the lifetime characteristic regarding
       the failed units, starting at <code><a href='https://rdrr.io/r/base/Extremes.html'>min(x)</a></code> and ending up at <code><a href='https://rdrr.io/r/base/Extremes.html'>max(x)</a></code>.
       With <code>b_lives = c(0.01, 0.1, 0.5)</code> the 1%, 10% and 50% quantiles

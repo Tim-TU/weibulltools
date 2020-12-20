@@ -14,22 +14,20 @@ status](https://www.r-pkg.org/badges/version/weibulltools)](https://CRAN.R-proje
 ## Overview
 
 The *weibulltools* package focuses on statistical methods and
-visualizations that are often used in reliability engineering.
+visualizations that are often used in reliability engineering. It
+provides a compact and easily accessible set of methods and
+visualization tools that make the examination and adjustment as well as
+the analysis and interpretation of field data (and bench tests) as
+simple as possible.
 
-The goal of *weibulltools* is to equip the user with a compact and
-easily accessible set of methods and visualization tools that make the
-examination and adjustment as well as the analysis and interpretation of
-field data (and bench tests) as simple as possible.
-
-Besides the well-known weibull analysis, *weibulltools* supports
-multiple lifetime distributions and also contains Monte Carlo methods
-for the correction and completion of imprecisely recorded or unknown
-lifetime characteristics.
+Besides the well-known weibull analysis, the package supports multiple
+lifetime distributions and also contains Monte Carlo methods for the
+correction and completion of imprecisely recorded or unknown lifetime
+characteristics.
 
 Plots are created statically ([ggplot2](https://ggplot2.tidyverse.org/))
 or interactively ([plotly](https://plotly.com/r/)) and can be customized
-with the corresponding functions of the respective visualization
-package.
+with functions of the respective visualization package.
 
 ## Installation
 
@@ -127,26 +125,26 @@ rr_list
 #> List of 4 model estimations:
 #> Rank Regression
 #> Coefficients:
-#>       eta       beta  
-#> 28554.796      2.753  
+#>      mu    sigma  
+#> 10.2596   0.3632  
 #> Method of CDF Estimation: johnson 
 #> 
 #> Rank Regression
 #> Coefficients:
-#>       eta       beta  
-#> 27815.241      2.651  
+#>      mu    sigma  
+#> 10.2333   0.3773  
 #> Method of CDF Estimation: kaplan 
 #> 
 #> Rank Regression
 #> Coefficients:
-#>       eta       beta  
-#> 19652.111      2.528  
+#>     mu   sigma  
+#> 9.8859  0.3956  
 #> Method of CDF Estimation: mr 
 #> 
 #> Rank Regression
 #> Coefficients:
-#>       eta       beta  
-#> 28523.655      2.596  
+#>      mu    sigma  
+#> 10.2585   0.3852  
 #> Method of CDF Estimation: nelson
 ```
 

@@ -2,22 +2,12 @@
 % Please edit documentation in R/confidence_intervals.R
 \name{confint_betabinom}
 \alias{confint_betabinom}
-\alias{confint_betabinom.model_estimation}
-\alias{confint_betabinom.model_estimation_list}
+\alias{confint_betabinom.wt_model}
 \title{Beta Binomial Confidence Bounds for Quantiles and Probabilities}
 \usage{
 confint_betabinom(x, ...)
 
-\method{confint_betabinom}{model_estimation}(
-  x,
-  b_lives = c(0.01, 0.1, 0.5),
-  bounds = c("two_sided", "lower", "upper"),
-  conf_level = 0.95,
-  direction = c("y", "x"),
-  ...
-)
-
-\method{confint_betabinom}{model_estimation_list}(
+\method{confint_betabinom}{wt_model}(
   x,
   b_lives = c(0.01, 0.1, 0.5),
   bounds = c("two_sided", "lower", "upper"),
@@ -27,8 +17,9 @@ confint_betabinom(x, ...)
 )
 }
 \arguments{
-\item{x}{Object of class \code{model_estimation} (or \code{model_estimation_list})
-returned from \code{\link{rank_regression}}.}
+\item{x}{Object with class \code{"wt_model"} and one of the classes
+\code{"wt_model_estimation"} or \code{"wt_model_estimation_list"} returned from
+\code{\link{rank_regression}}.}
 
 \item{...}{Further arguments passed to or from other methods. Currently not used.}
 
@@ -45,7 +36,7 @@ confidence interval. One of \code{"y"} (failure probabilities) or \code{"x"}
 (quantiles).}
 }
 \value{
-A tibble with class \code{"confint"} containing the following columns:
+A tibble with class \code{"wt_confint"} containing the following columns:
   \itemize{
     \item \code{x} : An ordered sequence of the lifetime characteristic regarding
       the failed units, starting at \code{min(x)} and ending up at \code{max(x)}.
@@ -84,48 +75,48 @@ on another level, the specified confidence level.
 # Reliability data preparation:
 ## Data for two-parametric model:
 data_2p <- reliability_data(
-  data = shock,
+  shock,
   x = distance,
   status = status
 )
 
 ## Data for three-parametric model:
 data_3p <- reliability_data(
-  data = alloy,
+  alloy,
   x = cycles,
   status = status
 )
 
 # Probability estimation:
 prob_tbl_2p <- estimate_cdf(
-  x = data_2p,
+  data_2p,
   methods = "johnson"
 )
 
 prob_tbl_3p <- estimate_cdf(
-  x = data_3p,
+  data_3p,
   methods = "johnson"
 )
 
 prob_tbl_mult <- estimate_cdf(
-  x = data_3p,
+  data_3p,
   methods = c("johnson", "mr")
 )
 
 # Model estimation with rank_regression():
 rr_2p <- rank_regression(
-  x = prob_tbl_2p,
+  prob_tbl_2p,
   distribution = "weibull"
 )
 
 rr_3p <- rank_regression(
-  x = prob_tbl_3p,
+  prob_tbl_3p,
   distribution = "lognormal3",
   conf_level = 0.90
 )
 
 rr_lists <- rank_regression(
-  x = prob_tbl_mult,
+  prob_tbl_mult,
   distribution = "loglogistic3",
   conf_level = 0.90
 )

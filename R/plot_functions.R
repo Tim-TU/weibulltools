@@ -58,7 +58,7 @@ plot_layout <- function(
 #'
 #' @details
 #'
-#' If data was split by \code{\link{mixmod_em}} \code{\link{estimate_cdf}} with
+#' If \code{x} was split by \code{\link{mixmod_em}} \code{\link{estimate_cdf}} with
 #' method \code{"johnson"} is applied to subgroup-specific data. The
 #' calculated plotting positions are shaped according to the determined split in
 #' \code{\link{mixmod_em}}.
@@ -77,17 +77,8 @@ plot_layout <- function(
 #' and the data has been split in two groups, the legend entries are "Group: 1"
 #' and "Group: 2".
 #'
-#' @section S3 methods:
-#'
-#' | **Class** | **Returned from** | **Condition** |
-#' | --- | --- | --- |
-#' | \code{cdf_estimation} | \code{\link{estimate_cdf}} | - |
-#' | \code{model_estimation} | \code{\link{mixmod_regression}} | One method in \code{\link{estimate_cdf}}. No subgroups determined. |
-#' | \code{mixmod_regression} | \code{\link{mixmod_regression}} | One method in \code{\link{estimate_cdf}}. |
-#' | \code{mixmod_regression_list} | \code{\link{mixmod_regression}} | Multiple methods in \code{\link{estimate_cdf}}.
-#' | \code{mixmod_em} | \code{\link{mixmod_em}} | - |
-#'
-#' @param x An object of aforementioned classes. See 'S3 methods'.
+#' @param x An object of class \code{"wt_cdf_estimation"} or
+#'   \code{"wt_model"}.
 #' @param distribution Supposed distribution of the random variable.
 #' @param title_main A character string which is assigned to the main title
 #'   of the plot.
@@ -109,42 +100,48 @@ plot_layout <- function(
 #' @examples
 #' # Reliability data:
 #' data <- reliability_data(
-#'   data = alloy,
+#'   alloy,
 #'   x = cycles,
 #'   status = status
 #' )
 #'
 #' # Probability estimation:
-#' prob_tbl <- estimate_cdf(data, methods = c("johnson", "kaplan"))
+#' prob_tbl <- estimate_cdf(
+#'   data,
+#'   methods = c("johnson", "kaplan")
+#' )
 #'
 #' # Example 1 - Probability Plot Weibull:
 #' plot_weibull <- plot_prob(prob_tbl)
 #'
 #' # Example 2 - Probability Plot Lognormal:
 #' plot_lognormal <- plot_prob(
-#'   prob_tbl,
+#'   x = prob_tbl,
 #'   distribution = "lognormal"
 #' )
 #'
 #' ## Mixture identification
 #' # Reliability data:
 #' data_mix <- reliability_data(
-#'   data = voltage,
+#'   voltage,
 #'   x = hours,
 #'   status = status
 #' )
 #'
-#' prob_mix <- estimate_cdf(data_mix, methods = c("johnson", "kaplan"))
+#' prob_mix <- estimate_cdf(
+#'   data_mix,
+#'   methods = c("johnson", "kaplan")
+#' )
 #'
 #' # Example 3 - Mixture identification using mixmod_regression:
 #' mix_mod_rr <- mixmod_regression(prob_mix)
 #'
-#' plot_mix_rr <- plot_prob(mix_mod_rr)
+#' plot_mix_mod_rr <- plot_prob(x = mix_mod_rr)
 #'
 #' # Example 4 - Mixture identification using mixmod_em:
 #' mix_mod_em <- mixmod_em(data_mix)
 #'
-#' plot_mix_em <- plot_prob(mix_mod_em)
+#' plot_mix_mod_em <- plot_prob(x = mix_mod_em)
 #'
 #' @md
 #' @export
@@ -158,17 +155,37 @@ plot_prob <- function(x, ...) {
 #' @rdname plot_prob
 #'
 #' @export
-plot_prob.cdf_estimation <- function(
-  x,
-  distribution = c(
-    "weibull", "lognormal", "loglogistic", "normal", "logistic", "sev"
-  ),
-  title_main = "Probability Plot",
-  title_x = "Characteristic",
-  title_y = "Unreliability",
-  title_trace = "Sample",
-  plot_method = c("plotly", "ggplot2"),
-  ...
+plot_prob.wt_model <- function(x,
+                               distribution = c(
+                                 "weibull", "lognormal", "loglogistic",
+                                 "normal", "logistic", "sev"
+                               ),
+                               title_main = "Probability Plot",
+                               title_x = "Characteristic",
+                               title_y = "Unreliability",
+                               title_trace = "Sample",
+                               plot_method = c("plotly", "ggplot2"),
+                               ...
+) {
+  NextMethod()
+}
+
+
+
+#' @rdname plot_prob
+#'
+#' @export
+plot_prob.wt_cdf_estimation <- function(x,
+                                        distribution = c(
+                                          "weibull", "lognormal", "loglogistic",
+                                          "normal", "logistic", "sev"
+                                        ),
+                                        title_main = "Probability Plot",
+                                        title_x = "Characteristic",
+                                        title_y = "Unreliability",
+                                        title_trace = "Sample",
+                                        plot_method = c("plotly", "ggplot2"),
+                                        ...
 ) {
   distribution <- match.arg(distribution)
   plot_method <- match.arg(plot_method)
@@ -186,22 +203,20 @@ plot_prob.cdf_estimation <- function(
 
 
 
-#' @rdname plot_prob
-#'
 #' @export
-plot_prob.model_estimation <- function(x,
-                                       title_main = "Probability Plot",
-                                       title_x = "Characteristic",
-                                       title_y = "Unreliability",
-                                       title_trace = "Sample",
-                                       plot_method = c("plotly", "ggplot2"),
-                                       ...
+plot_prob.wt_model_estimation <- function(x,
+                                          title_main = "Probability Plot",
+                                          title_x = "Characteristic",
+                                          title_y = "Unreliability",
+                                          title_trace = "Sample",
+                                          plot_method = c("plotly", "ggplot2"),
+                                          ...
 ) {
   plot_method <- match.arg(plot_method)
 
   cdf_estimation <- x$data
 
-  plot_prob.cdf_estimation(
+  plot_prob.wt_cdf_estimation(
     x = cdf_estimation,
     distribution = x$distribution,
     title_main = title_main,
@@ -214,16 +229,14 @@ plot_prob.model_estimation <- function(x,
 
 
 
-#' @rdname plot_prob
-#'
 #' @export
-plot_prob.mixmod_regression <- function(x,
-                                        title_main = "Probability Plot",
-                                        title_x = "Characteristic",
-                                        title_y = "Unreliability",
-                                        title_trace = "Sample",
-                                        plot_method = c("plotly", "ggplot2"),
-                                        ...
+plot_prob.wt_mixmod_regression <- function(x,
+                                           title_main = "Probability Plot",
+                                           title_x = "Characteristic",
+                                           title_y = "Unreliability",
+                                           title_trace = "Sample",
+                                           plot_method = c("plotly", "ggplot2"),
+                                           ...
 ) {
 
   plot_method <- match.arg(plot_method)
@@ -236,7 +249,7 @@ plot_prob.mixmod_regression <- function(x,
   })
 
   distribution <- x[[1]]$distribution
-  plot_prob.cdf_estimation(
+  plot_prob.wt_cdf_estimation(
     x = cdf_estimation,
     distribution = distribution,
     title_main = title_main,
@@ -249,16 +262,14 @@ plot_prob.mixmod_regression <- function(x,
 
 
 
-#' @rdname plot_prob
-#'
 #' @export
-plot_prob.mixmod_em <- function(x,
-                                title_main = "Probability Plot",
-                                title_x = "Characteristic",
-                                title_y = "Unreliability",
-                                title_trace = "Sample",
-                                plot_method = c("plotly", "ggplot2"),
-                                ...
+plot_prob.wt_mixmod_em <- function(x,
+                                   title_main = "Probability Plot",
+                                   title_x = "Characteristic",
+                                   title_y = "Unreliability",
+                                   title_trace = "Sample",
+                                   plot_method = c("plotly", "ggplot2"),
+                                   ...
 ) {
 
   plot_method <- match.arg(plot_method)
@@ -280,7 +291,7 @@ plot_prob.mixmod_em <- function(x,
     }
   )
 
-  plot_prob.cdf_estimation(
+  plot_prob.wt_cdf_estimation(
     x = john,
     title_main = title_main,
     title_x = title_x,
@@ -292,10 +303,8 @@ plot_prob.mixmod_em <- function(x,
 
 
 
-#' @rdname plot_prob
-#'
 #' @export
-plot_prob.mixmod_regression_list <- function(x,
+plot_prob.wt_mixmod_regression_list <- function(x,
                                              title_main = "Probability Plot",
                                              title_x = "Characteristic",
                                              title_y = "Unreliability",
@@ -318,7 +327,7 @@ plot_prob.mixmod_regression_list <- function(x,
   })
 
   distribution <- x[[1]][[1]]$distribution
-  plot_prob.cdf_estimation(
+  plot_prob.wt_cdf_estimation(
     x = cdf_estimation,
     distribution = distribution,
     title_main = title_main,
@@ -585,11 +594,9 @@ plot_prob_mix <- function(
 #' data could be splitted in two groups, the legend entries would be "Line: 1"
 #' and "Line: 2".
 #'
-#' @template mod_classes
-#'
 #' @param p_obj A plot object returned from \code{\link{plot_prob}}.
-#' @param x An object of aforementioned classes. See 'S3 methods'.
-#' @inheritParams plot_prob.cdf_estimation
+#' @param x An object of class \code{"wt_model"}.
+#' @inheritParams plot_prob.wt_cdf_estimation
 #'
 #' @encoding UTF-8
 #' @references Meeker, William Q; Escobar, Luis A., Statistical methods for
@@ -610,36 +617,42 @@ plot_prob_mix <- function(
 #' prob_tbl <- estimate_cdf(data, methods = c("johnson", "kaplan"))
 #'
 #' # Example 1 - Probability Plot and Regression Line Three-Parameter-Weibull:
-#' plot_weibull <- plot_prob(
-#'   prob_tbl,
-#'   distribution = "weibull"
-#' )
+#' plot_weibull <- plot_prob(prob_tbl, distribution = "weibull")
 #'
-#' rr_weibull <- rank_regression(
-#'   prob_tbl,
-#'   distribution = "weibull3"
-#' )
+#' rr_weibull <- rank_regression(prob_tbl, distribution = "weibull3")
 #'
-#' plot_reg_weibull <- plot_mod(
-#'   p_obj = plot_weibull,
-#'   x = rr_weibull
-#' )
+#' plot_reg_weibull <- plot_mod(p_obj = plot_weibull, x = rr_weibull)
 #'
 #' # Example 2 - Probability Plot and Regression Line Three-Parameter-Lognormal:
-#' plot_lognormal <- plot_prob(
-#'   prob_tbl,
-#'   distribution = "lognormal"
+#' plot_lognormal <- plot_prob(prob_tbl, distribution = "lognormal")
+#'
+#' rr_lognormal <- rank_regression(prob_tbl, distribution = "lognormal3")
+#'
+#' plot_reg_lognormal <- plot_mod(p_obj = plot_lognormal, x = rr_lognormal)
+#'
+#' ## Mixture Identification
+#' # Reliability data:
+#' data_mix <- reliability_data(voltage, x = hours, status = status)
+#'
+#' # Probability estimation:
+#' prob_mix <- estimate_cdf(
+#'   data_mix,
+#'   methods = c("johnson", "kaplan", "nelson")
 #' )
 #'
-#' rr_lognormal <- rank_regression(
-#'   prob_tbl,
-#'   distribution = "lognormal3"
-#' )
+#' # Example 3 - Probability Plot and Regression Line Mixmod Regression:
+#' mix_mod_rr <- mixmod_regression(prob_mix, distribution = "weibull")
 #'
-#' plot_reg_lognormal <- plot_mod(
-#'   p_obj = plot_lognormal,
-#'   x = rr_lognormal
-#' )
+#' plot_weibull <- plot_prob(mix_mod_rr)
+#'
+#' plot_reg_mix_mod_rr <- plot_mod(p_obj = plot_weibull, x = mix_mod_rr)
+#'
+#' # Example 4 - Probability Plot and Regression Line Mixmod EM:
+#' mix_mod_em <- mixmod_em(data_mix)
+#'
+#' plot_weibull <- plot_prob(mix_mod_em)
+#'
+#' plot_reg_mix_mod_em <- plot_mod(p_obj = plot_weibull, x = mix_mod_em)
 #'
 #' @export
 #'
@@ -652,8 +665,14 @@ plot_mod <- function(p_obj, x, ...) {
 #' @rdname plot_mod
 #'
 #' @export
-#'
-plot_mod.model_estimation <- function(p_obj, x, title_trace = "Fit", ...) {
+plot_mod.wt_model <- function(p_obj, x, title_trace = "Fit", ...) {
+  NextMethod("plot_mod", x)
+}
+
+
+
+#' @export
+plot_mod.wt_model_estimation <- function(p_obj, x, title_trace = "Fit", ...) {
 
   failed_data <- dplyr::filter(x$data, .data$status == 1)
 
@@ -668,11 +687,8 @@ plot_mod.model_estimation <- function(p_obj, x, title_trace = "Fit", ...) {
 
 
 
-#' @rdname plot_mod
-#'
 #' @export
-#'
-plot_mod.model_estimation_list <- function(p_obj, x, title_trace = "Fit", ...) {
+plot_mod.wt_model_estimation_list <- function(p_obj, x, title_trace = "Fit", ...) {
   methods <- names(x)
 
   tbl_pred <- purrr::map2_dfr(x, methods, function(model_estimation, method) {
@@ -695,10 +711,8 @@ plot_mod.model_estimation_list <- function(p_obj, x, title_trace = "Fit", ...) {
 
 
 
-#' @rdname plot_mod
-#'
 #' @export
-plot_mod.mixmod_regression <- function(p_obj, x, title_trace = "Fit", ...) {
+plot_mod.wt_mixmod_regression <- function(p_obj, x, title_trace = "Fit", ...) {
   tbl_pred <- purrr::map2_dfr(x, seq_along(x), function(model_estimation, index) {
     method <- if (!tibble::has_name(model_estimation$data, "method")) {
       # Case mixmod_em (plot_mod.mixmod_em calls this method internally)
@@ -724,13 +738,11 @@ plot_mod.mixmod_regression <- function(p_obj, x, title_trace = "Fit", ...) {
 
 
 
-#' @rdname plot_mod
-#'
 #' @export
-plot_mod.mixmod_regression_list <- function(p_obj,
-                                            x,
-                                            title_trace = "Fit",
-                                            ...
+plot_mod.wt_mixmod_regression_list <- function(p_obj,
+                                               x,
+                                               title_trace = "Fit",
+                                               ...
 ) {
   tbl_pred <- purrr::map2_dfr(x, names(x), function(mixmod_regression, method) {
     purrr::map2_dfr(
@@ -755,15 +767,13 @@ plot_mod.mixmod_regression_list <- function(p_obj,
 
 
 
-#' @rdname plot_mod
-#'
 #' @export
-plot_mod.mixmod_em <- function(p_obj, x, title_trace = "Fit", ...) {
+plot_mod.wt_mixmod_em <- function(p_obj, x, title_trace = "Fit", ...) {
 
   # Remove em results to get model_estimation_list
   model_estimation_list <- x[-length(x)]
 
-  plot_mod.mixmod_regression(
+  plot_mod.wt_mixmod_regression(
     p_obj = p_obj,
     x = model_estimation_list,
     title_trace = title_trace
@@ -787,7 +797,7 @@ plot_mod.mixmod_em <- function(p_obj, x, title_trace = "Fit", ...) {
 #'   parameter \eqn{\mu} and the second element needs to be the scale
 #'   parameter \eqn{\sigma}. If a three-parametric model is used the third element
 #'   is the threshold parameter \eqn{\gamma}.
-#' @inheritParams plot_mod.model_estimation
+#' @inheritParams plot_mod
 #' @inheritParams plot_prob.default
 #'
 #' @return Returns a plot object containing the probability plot with
@@ -796,36 +806,32 @@ plot_mod.mixmod_em <- function(p_obj, x, title_trace = "Fit", ...) {
 #' @seealso \code{\link{plot_mod}}
 #'
 #' @examples
-#' # Alloy T7987 dataset taken from Meeker and Escobar(1998, p. 131)
-#' cycles   <- c(300, 300, 300, 300, 300, 291, 274, 271, 269, 257, 256, 227, 226,
-#'               224, 213, 211, 205, 203, 197, 196, 190, 189, 188, 187, 184, 180,
-#'               180, 177, 176, 173, 172, 171, 170, 170, 169, 168, 168, 162, 159,
-#'               159, 159, 159, 152, 152, 149, 149, 144, 143, 141, 141, 140, 139,
-#'               139, 136, 135, 133, 131, 129, 123, 121, 121, 118, 117, 117, 114,
-#'               112, 108, 104, 99, 99, 96, 94)
-#' status <- c(rep(0, 5), rep(1, 67))
+#' # Vectors:
+#' cycles <- alloy$cycles
+#' status <- alloy$status
 #'
-#' tbl_john <- estimate_cdf(x = cycles, status = status, method = "johnson")
+#' # Probability estimation
+#' prob_tbl <- estimate_cdf(x = cycles, status = status, method = "johnson")
 #'
 #' # Example 1: Probability Plot and Regression Line Three-Parameter-Weibull:
 #' plot_weibull <- plot_prob(
-#'   x = tbl_john$x,
-#'   y = tbl_john$prob,
-#'   status = tbl_john$status,
-#'   id = tbl_john$id,
+#'   x = prob_tbl$x,
+#'   y = prob_tbl$prob,
+#'   status = prob_tbl$status,
+#'   id = prob_tbl$id,
 #'   distribution = "weibull"
 #' )
 #'
 #' rr <- rank_regression(
-#'   x = tbl_john$x,
-#'   y = tbl_john$prob,
-#'   status = tbl_john$status,
+#'   x = prob_tbl$x,
+#'   y = prob_tbl$prob,
+#'   status = prob_tbl$status,
 #'   distribution = "weibull3"
 #' )
 #'
 #' plot_reg_weibull <- plot_mod(
 #'   p_obj = plot_weibull,
-#'   x = tbl_john$x,
+#'   x = prob_tbl$x,
 #'   dist_params = rr$coefficients,
 #'   distribution = "weibull3"
 #' )
@@ -834,25 +840,37 @@ plot_mod.mixmod_em <- function(p_obj, x, title_trace = "Fit", ...) {
 #'
 #' # Example 2: Probability Plot and Regression Line Three-Parameter-Lognormal:
 #' plot_lognormal <- plot_prob(
-#'   x = tbl_john$x,
-#'   y = tbl_john$prob,
-#'   status = tbl_john$status,
-#'   id = tbl_john$id,
+#'   x = prob_tbl$x,
+#'   y = prob_tbl$prob,
+#'   status = prob_tbl$status,
+#'   id = prob_tbl$id,
 #'   distribution = "lognormal"
 #' )
 #'
 #' rr_ln <- rank_regression(
-#'   x = tbl_john$x,
-#'   y = tbl_john$prob,
-#'   status = tbl_john$status,
+#'   x = prob_tbl$x,
+#'   y = prob_tbl$prob,
+#'   status = prob_tbl$status,
 #'   distribution = "lognormal3"
 #' )
 #'
 #' plot_reg_lognormal <- plot_mod(
 #'   p_obj = plot_lognormal,
-#'   x = tbl_john$x,
+#'   x = prob_tbl$x,
 #'   dist_params = rr_ln$coefficients,
 #'   distribution = "lognormal3"
+#' )
+#'
+#' ## Mixture Identification
+#' # Vectors:
+#' hours <- voltage$hours
+#' status <- voltage$status
+#'
+#' # Probability estimation:
+#' prob_mix <- estimate_cdf(
+#'   x = hours,
+#'   status = status,
+#'   method = "johnson"
 #' )
 #'
 #' @export
@@ -1030,17 +1048,11 @@ plot_mod_mix <- function(p_obj,
 #' prob_tbl <- estimate_cdf(data, methods = "johnson")
 #'
 #' # Example 1 - Probability Plot, Regression Line and Confidence Bounds for Three-Parameter-Weibull:
-#' rr <- rank_regression(
-#'   x = prob_tbl,
-#'   distribution = "weibull3"
-#' )
+#' rr <- rank_regression(prob_tbl, distribution = "weibull3")
 #'
-#' conf_betabin <- confint_betabinom(x = rr)
+#' conf_betabin <- confint_betabinom(rr)
 #'
-#' plot_weibull <- plot_prob(
-#'   x = prob_tbl,
-#'   distribution = "weibull"
-#' )
+#' plot_weibull <- plot_prob(prob_tbl, distribution = "weibull")
 #'
 #' plot_conf_beta <- plot_conf(
 #'   p_obj = plot_weibull,
@@ -1049,22 +1061,19 @@ plot_mod_mix <- function(p_obj,
 #'
 #' # Example 2 - Probability Plot, Regression Line and Confidence Bounds for Three-Parameter-Lognormal:
 #' rr_ln <- rank_regression(
-#'   x = prob_tbl,
+#'   prob_tbl,
 #'   distribution = "lognormal3",
 #'   conf_level = 0.9
 #' )
 #'
 #' conf_betabin_ln <- confint_betabinom(
-#'   x = rr_ln,
+#'   rr_ln,
 #'   bounds = "two_sided",
 #'   conf_level = 0.9,
 #'   direction = "y"
 #' )
 #'
-#' plot_lognormal <- plot_prob(
-#'   x = prob_tbl,
-#'   distribution = "lognormal"
-#' )
+#' plot_lognormal <- plot_prob(prob_tbl, distribution = "lognormal")
 #'
 #' plot_conf_beta_ln <- plot_conf(
 #'   p_obj = plot_lognormal,
@@ -1072,17 +1081,11 @@ plot_mod_mix <- function(p_obj,
 #' )
 #'
 #' # Example 3 - Probability Plot, Regression Line and Confidence Bounds for MLE
-#' ml <- ml_estimation(
-#'   x = data,
-#'   distribution = "weibull"
-#' )
+#' ml <- ml_estimation(data, distribution = "weibull")
 #'
 #' conf_fisher <- confint_fisher(ml)
 #'
-#' plot_weibull <- plot_prob(
-#'   x = prob_tbl,
-#'   distribution = "weibull"
-#' )
+#' plot_weibull <- plot_prob(prob_tbl, distribution = "weibull")
 #'
 #' plot_conf_fisher_weibull <- plot_conf(
 #'   p_obj = plot_weibull,
@@ -1100,7 +1103,7 @@ plot_conf <- function(p_obj, x, ...) {
 #' @rdname plot_conf
 #'
 #' @export
-plot_conf.confint <- function(p_obj,
+plot_conf.wt_confint <- function(p_obj,
                               x,
                               title_trace_mod = "Fit",
                               title_trace_conf = "Confidence Limit",
@@ -1109,7 +1112,7 @@ plot_conf.confint <- function(p_obj,
 
   mod <- attr(x, "model_estimation")
 
-  if (inherits(mod, "model_estimation")) {
+  if (inherits(mod, "wt_model_estimation")) {
     ## Fake model_estimation_list
     # ml_estimation$data has no method column
     method <- if (hasName(mod$data, "method")) mod$data$method[1] else
@@ -1151,14 +1154,6 @@ plot_conf.confint <- function(p_obj,
 
 #' Add Confidence Region(s) for Quantiles and Probabilities
 #'
-#' @description
-#' \lifecycle{soft-deprecated}
-#'
-#' \code{plot_conf.default()} is no longer under active development, switching
-#' to \code{\link[=plot_conf]{plot_conf.confint}} is recommended.
-#'
-#' @details
-#'
 #' This function is used to add estimated confidence region(s) to an existing
 #' probability plot which also includes the estimated regression line.
 #'
@@ -1186,33 +1181,35 @@ plot_conf.confint <- function(p_obj,
 #' @inheritParams plot_prob.default
 #' @template dots
 #'
+#' @seealso \code{\link{plot_conf}}
+#'
 #' @examples
 #' # Vectors:
 #' cycles   <- alloy$cycles
 #' status <- alloy$status
 #'
-#' tbl_john <- estimate_cdf(x = cycles, status = status, method = "johnson")
+#' prob_tbl <- estimate_cdf(x = cycles, status = status, method = "johnson")
 #'
 #' # Example 1 - Probability Plot, Regression Line and Confidence Bounds for Three-Parameter-Weibull:
 #' rr <- rank_regression(
-#'   x = tbl_john$x,
-#'   y = tbl_john$prob,
-#'   status = tbl_john$status,
+#'   x = prob_tbl$x,
+#'   y = prob_tbl$prob,
+#'   status = prob_tbl$status,
 #'   distribution = "weibull3"
 #' )
 #'
 #' conf_betabin <- confint_betabinom(
-#'   x = tbl_john$x,
-#'   status = tbl_john$status,
+#'   x = prob_tbl$x,
+#'   status = prob_tbl$status,
 #'   dist_params = rr$coefficients,
 #'   distribution = "weibull3"
 #' )
 #'
 #' plot_weibull <- plot_prob(
-#'   x = tbl_john$x,
-#'   y = tbl_john$prob,
-#'   status = tbl_john$status,
-#'   id = tbl_john$id,
+#'   x = prob_tbl$x,
+#'   y = prob_tbl$prob,
+#'   status = prob_tbl$status,
+#'   id = prob_tbl$id,
 #'   distribution = "weibull"
 #' )
 #'
@@ -1234,24 +1231,24 @@ plot_conf.confint <- function(p_obj,
 #'
 #' # Example 2 - Probability Plot, Regression Line and Confidence Bounds for Three-Parameter-Lognormal:
 #' rr_ln <- rank_regression(
-#'   x = tbl_john$x,
-#'   y = tbl_john$prob,
-#'   status = tbl_john$status,
+#'   x = prob_tbl$x,
+#'   y = prob_tbl$prob,
+#'   status = prob_tbl$status,
 #'   distribution = "lognormal3"
 #' )
 #'
 #' conf_betabin_ln <- confint_betabinom(
-#'   x = tbl_john$x,
-#'   status = tbl_john$status,
+#'   x = prob_tbl$x,
+#'   status = prob_tbl$status,
 #'   dist_params = rr_ln$coefficients,
 #'   distribution = "lognormal3"
 #' )
 #'
 #' plot_lognormal <- plot_prob(
-#'   x = tbl_john$x,
-#'   y = tbl_john$prob,
-#'   status = tbl_john$status,
-#'   id = tbl_john$id,
+#'   x = prob_tbl$x,
+#'   y = prob_tbl$prob,
+#'   status = prob_tbl$status,
+#'   id = prob_tbl$id,
 #'   distribution = "lognormal"
 #' )
 #'
@@ -1283,8 +1280,6 @@ plot_conf.default <- function(
   title_trace = "Confidence Limit",
   ...
 ) {
-
-  deprecate_soft("2.0.0", "plot_conf.default()", "plot_conf.confint()")
 
   direction <- match.arg(direction)
   distribution <- match.arg(distribution)

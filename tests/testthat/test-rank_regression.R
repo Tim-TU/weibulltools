@@ -63,7 +63,7 @@ test_that("rank_regression supports multiple methods", {
 
   cdf_tbl <- estimate_cdf(data, methods)
 
-  rr <- rank_regression.cdf_estimation(
+  rr <- rank_regression(
     x = cdf_tbl,
     distribution = "weibull"
   )

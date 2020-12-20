@@ -3,29 +3,17 @@
 \encoding{UTF-8}
 \name{plot_mod}
 \alias{plot_mod}
-\alias{plot_mod.model_estimation}
-\alias{plot_mod.model_estimation_list}
-\alias{plot_mod.mixmod_regression}
-\alias{plot_mod.mixmod_regression_list}
-\alias{plot_mod.mixmod_em}
+\alias{plot_mod.wt_model}
 \title{Add Estimated Population Line(s) to a Probability Plot}
 \usage{
 plot_mod(p_obj, x, ...)
 
-\method{plot_mod}{model_estimation}(p_obj, x, title_trace = "Fit", ...)
-
-\method{plot_mod}{model_estimation_list}(p_obj, x, title_trace = "Fit", ...)
-
-\method{plot_mod}{mixmod_regression}(p_obj, x, title_trace = "Fit", ...)
-
-\method{plot_mod}{mixmod_regression_list}(p_obj, x, title_trace = "Fit", ...)
-
-\method{plot_mod}{mixmod_em}(p_obj, x, title_trace = "Fit", ...)
+\method{plot_mod}{wt_model}(p_obj, x, title_trace = "Fit", ...)
 }
 \arguments{
 \item{p_obj}{A plot object returned from \code{\link{plot_prob}}.}
 
-\item{x}{An object of aforementioned classes. See 'S3 methods'.}
+\item{x}{An object of class \code{"wt_model"}.}
 
 \item{...}{Further arguments passed to or from other methods. Currently not used.}
 
@@ -50,19 +38,6 @@ the number of determined subgroups from \code{\link{mixmod_regression}} or
 data could be splitted in two groups, the legend entries would be "Line: 1"
 and "Line: 2".
 }
-\section{S3 methods}{
-\tabular{lll}{
-   \strong{Class} \tab \strong{Returned from} \tab \strong{Condition} \cr
-   \code{model_estimation} \tab \code{\link{rank_regression}} \tab One method in \code{\link{estimate_cdf}}. \cr
-   \code{model_estimation} \tab \code{\link{mixmod_regression}} \tab One method in \code{\link{estimate_cdf}}. No subgroups determined. \cr
-   \code{model_estimation} \tab \code{\link{ml_estimation}} \tab - \cr
-   \code{model_estimation_list} \tab \code{\link{rank_regression}} \tab Multiple methods in \code{\link{estimate_cdf}}. \cr
-   \code{mixmod_regression} \tab \code{\link{mixmod_regression}} \tab One method in \code{\link{estimate_cdf}}. \cr
-   \code{mixmod_regression_list} \tab \code{\link{mixmod_regression}} \tab Multiple methods in \code{\link{estimate_cdf}}. \cr
-   \code{mixmod_em} \tab \code{\link{mixmod_em}} \tab - \cr
-}
-}
-
 \examples{
 # Reliability data:
 data <- reliability_data(
@@ -75,36 +50,42 @@ data <- reliability_data(
 prob_tbl <- estimate_cdf(data, methods = c("johnson", "kaplan"))
 
 # Example 1 - Probability Plot and Regression Line Three-Parameter-Weibull:
-plot_weibull <- plot_prob(
-  prob_tbl,
-  distribution = "weibull"
-)
+plot_weibull <- plot_prob(prob_tbl, distribution = "weibull")
 
-rr_weibull <- rank_regression(
-  prob_tbl,
-  distribution = "weibull3"
-)
+rr_weibull <- rank_regression(prob_tbl, distribution = "weibull3")
 
-plot_reg_weibull <- plot_mod(
-  p_obj = plot_weibull,
-  x = rr_weibull
-)
+plot_reg_weibull <- plot_mod(p_obj = plot_weibull, x = rr_weibull)
 
 # Example 2 - Probability Plot and Regression Line Three-Parameter-Lognormal:
-plot_lognormal <- plot_prob(
-  prob_tbl,
-  distribution = "lognormal"
+plot_lognormal <- plot_prob(prob_tbl, distribution = "lognormal")
+
+rr_lognormal <- rank_regression(prob_tbl, distribution = "lognormal3")
+
+plot_reg_lognormal <- plot_mod(p_obj = plot_lognormal, x = rr_lognormal)
+
+## Mixture Identification
+# Reliability data:
+data_mix <- reliability_data(voltage, x = hours, status = status)
+
+# Probability estimation:
+prob_mix <- estimate_cdf(
+  data_mix,
+  methods = c("johnson", "kaplan", "nelson")
 )
 
-rr_lognormal <- rank_regression(
-  prob_tbl,
-  distribution = "lognormal3"
-)
+# Example 3 - Probability Plot and Regression Line Mixmod Regression:
+mix_mod_rr <- mixmod_regression(prob_mix, distribution = "weibull")
 
-plot_reg_lognormal <- plot_mod(
-  p_obj = plot_lognormal,
-  x = rr_lognormal
-)
+plot_weibull <- plot_prob(mix_mod_rr)
+
+plot_reg_mix_mod_rr <- plot_mod(p_obj = plot_weibull, x = mix_mod_rr)
+
+# Example 4 - Probability Plot and Regression Line Mixmod EM:
+mix_mod_em <- mixmod_em(data_mix)
+
+plot_weibull <- plot_prob(mix_mod_em)
+
+plot_reg_mix_mod_em <- plot_mod(p_obj = plot_weibull, x = mix_mod_em)
 
 }
 \references{

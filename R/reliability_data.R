@@ -1,4 +1,4 @@
-#' Reliability data
+#' Reliability Data
 #'
 #' @description
 #' Create consistent reliability data based on an existing \code{data.frame}
@@ -16,7 +16,7 @@
 #' @param id Identification of every unit.
 #' @param .keep_all If \code{TRUE}, keep all variables in \code{data}.
 #'
-#' @return A tibble with class \code{"reliability_data"} containing the following
+#' @return A tibble with class \code{"wt_reliability_data"} containing the following
 #' columns (if \code{.keep_all = FALSE}):
 #' \itemize{
 #'   \item \code{x} : Lifetime characteristic.
@@ -112,7 +112,7 @@ reliability_data <- function(data = NULL,
     tbl <- dplyr::relocate(tbl, x, status, id)
   }
 
-  class(tbl) <- c("reliability_data", class(tbl))
+  class(tbl) <- c("wt_reliability_data", class(tbl))
   # Mark column x as characteristic
   attr(tbl, "characteristic") <- "x"
 
@@ -122,7 +122,7 @@ reliability_data <- function(data = NULL,
 
 
 #' @export
-print.reliability_data <- function(x, ...) {
+print.wt_reliability_data <- function(x, ...) {
   if (attr(x, "characteristic") == "x") {
     cat("Reliability Data:\n")
   } else {

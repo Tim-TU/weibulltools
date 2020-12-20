@@ -57,14 +57,14 @@ of quantiles (\code{direction = "x"}) are required. For more information see
 \examples{
 # Reliability data preparation:
 data <- reliability_data(
-  data = shock,
+  shock,
   x = distance,
   status = status
 )
 
 # Parameter estimation using maximum likelihood:
 mle <- ml_estimation(
-  x = data,
+  data,
   distribution = "weibull",
   conf_level = 0.95
 )

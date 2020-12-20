@@ -26,7 +26,7 @@ library(weibulltools)
 ```
 
 This document introduces two methods for the parameter estimation of lifetime 
-distributions. Where _Rank Regression (RR)_ fits a straight line through 
+distributions. Whereas _Rank Regression (RR)_ fits a straight line through 
 transformed plotting positions (transformation is described precisely in 
 `vignette(topic = "Life_Data_Analysis_Part_I", package = "weibulltools")`), 
 _Maximum likelihood (ML)_ strives to maximize a function of the parameters given 
@@ -153,7 +153,7 @@ For consistent handling of the data, `weibulltools` introduces the function `rel
 that converts the original dataset into a `wt_reliability_data` object. This formatted object 
 allows to easily apply the presented methods.  
 
-```{r dataset shock, message = FALSE}
+```{r dataset_shock, message = FALSE}
 shock_tbl <- reliability_data(data = shock, x = distance, status = status)
 shock_tbl
 ```          
@@ -168,7 +168,7 @@ special alloy occurs are inspected. The data is also taken from Meeker and Escob
           
 Again, the data have to be formatted as a `wt_reliability_data` object: 
 
-```{r, Data alloy}
+```{r, data_alloy}
 # Data: 
 alloy_tbl <- reliability_data(data = alloy, x = cycles, status = status)
 alloy_tbl
@@ -184,7 +184,7 @@ In the following both methods are applied to the dataset `shock`.
 
 ### RR for two-parameter Weibull distribution
 
-```{r RR weibull, fig.cap = "Figure 1: RR for a two-parametric Weibull distribution.", message = FALSE}
+```{r RR_weibull, fig.cap = "Figure 1: RR for a two-parametric Weibull distribution.", message = FALSE}
 # rank_regression needs estimated failure probabilities: 
 shock_cdf <- estimate_cdf(shock_tbl, methods = "johnson")
 
@@ -215,7 +215,7 @@ weibull_plot
 
 ### ML for two-parameter Weibull distribution
 
-```{r ML weibull, fig.cap = "Figure 2: ML for a two-parametric Weibull distribution.", message = FALSE}
+```{r ML_weibull, fig.cap = "Figure 2: ML for a two-parametric Weibull distribution.", message = FALSE}
 # Again estimating weibull: 
 ml_weibull <- ml_estimation(
   shock_tbl, 
@@ -239,7 +239,7 @@ weibull_plot2
 Finally, two- and three-parametric log-normal distributions are fitted to the 
 `alloy` data using maximum likelihood.  
 
-```{r ML estimation log-normal, message = FALSE}
+```{r ML_estimation_log-normal, message = FALSE}
 # Two-parameter log-normal:  
 ml_lognormal <- ml_estimation(
   alloy_tbl,
@@ -259,7 +259,7 @@ ml_lognormal3
 
 <br> 
 
-```{r ML visualization I, fig.cap = "Figure 3: ML for a two-parametric log-normal distribution.", message = FALSE}
+```{r ML_visualization_I, fig.cap = "Figure 3: ML for a two-parametric log-normal distribution.", message = FALSE}
 # Constructing probability plot: 
 tbl_cdf_john <- estimate_cdf(alloy_tbl, "johnson")
 
@@ -285,7 +285,7 @@ lognormal_plot
 
 <br> 
 
-```{r ML visualization II, fig.cap = "Figure 4: ML for a three-parametric log-normal distribution.", message = FALSE}
+```{r ML_visualization_II, fig.cap = "Figure 4: ML for a three-parametric log-normal distribution.", message = FALSE}
 # Add three-parametric model to lognormal_plot:
 lognormal3_plot <- plot_mod(
   lognormal_grid, 

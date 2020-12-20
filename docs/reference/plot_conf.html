@@ -100,7 +100,7 @@ regression line, the latter is provided as well." />
       <a href="../articles/Life_Data_Analysis_Part_I.html">Life Data Analysis Part I - Estimation of Failure Probabilities</a>
     </li>
     <li>
-      <a href="../articles/Life_Data_Analysis_Part_II.html">Life Data Analysis Part II - Parameter Estimation of Parametric Lifetime Models</a>
+      <a href="../articles/Life_Data_Analysis_Part_II.html">Life Data Analysis Part II - Estimation Methods for Parametric Lifetime Models</a>
     </li>
     <li>
       <a href="../articles/Life_Data_Analysis_Part_III.html">Life Data Analysis Part III - Mixture Models</a>
@@ -139,7 +139,7 @@ regression line, the latter is provided as well.</p>
 
     <pre class="usage"><span class='fu'>plot_conf</span><span class='op'>(</span><span class='va'>p_obj</span>, <span class='va'>x</span>, <span class='va'>...</span><span class='op'>)</span>
 
-<span class='co'># S3 method for confint</span>
+<span class='co'># S3 method for wt_confint</span>
 <span class='fu'>plot_conf</span><span class='op'>(</span>
   <span class='va'>p_obj</span>,
   <span class='va'>x</span>,
@@ -194,17 +194,11 @@ in the legend.</p></td>
 <span class='va'>prob_tbl</span> <span class='op'>&lt;-</span> <span class='fu'><a href='estimate_cdf.html'>estimate_cdf</a></span><span class='op'>(</span><span class='va'>data</span>, methods <span class='op'>=</span> <span class='st'>"johnson"</span><span class='op'>)</span>
 
 <span class='co'># Example 1 - Probability Plot, Regression Line and Confidence Bounds for Three-Parameter-Weibull:</span>
-<span class='va'>rr</span> <span class='op'>&lt;-</span> <span class='fu'><a href='rank_regression.html'>rank_regression</a></span><span class='op'>(</span>
-  x <span class='op'>=</span> <span class='va'>prob_tbl</span>,
-  distribution <span class='op'>=</span> <span class='st'>"weibull3"</span>
-<span class='op'>)</span>
+<span class='va'>rr</span> <span class='op'>&lt;-</span> <span class='fu'><a href='rank_regression.html'>rank_regression</a></span><span class='op'>(</span><span class='va'>prob_tbl</span>, distribution <span class='op'>=</span> <span class='st'>"weibull3"</span><span class='op'>)</span>
 
-<span class='va'>conf_betabin</span> <span class='op'>&lt;-</span> <span class='fu'><a href='confint_betabinom.html'>confint_betabinom</a></span><span class='op'>(</span>x <span class='op'>=</span> <span class='va'>rr</span><span class='op'>)</span>
+<span class='va'>conf_betabin</span> <span class='op'>&lt;-</span> <span class='fu'><a href='confint_betabinom.html'>confint_betabinom</a></span><span class='op'>(</span><span class='va'>rr</span><span class='op'>)</span>
 
-<span class='va'>plot_weibull</span> <span class='op'>&lt;-</span> <span class='fu'><a href='plot_prob.html'>plot_prob</a></span><span class='op'>(</span>
-  x <span class='op'>=</span> <span class='va'>prob_tbl</span>,
-  distribution <span class='op'>=</span> <span class='st'>"weibull"</span>
-<span class='op'>)</span>
+<span class='va'>plot_weibull</span> <span class='op'>&lt;-</span> <span class='fu'><a href='plot_prob.html'>plot_prob</a></span><span class='op'>(</span><span class='va'>prob_tbl</span>, distribution <span class='op'>=</span> <span class='st'>"weibull"</span><span class='op'>)</span>
 
 <span class='va'>plot_conf_beta</span> <span class='op'>&lt;-</span> <span class='fu'>plot_conf</span><span class='op'>(</span>
   p_obj <span class='op'>=</span> <span class='va'>plot_weibull</span>,
@@ -213,22 +207,19 @@ in the legend.</p></td>
 
 <span class='co'># Example 2 - Probability Plot, Regression Line and Confidence Bounds for Three-Parameter-Lognormal:</span>
 <span class='va'>rr_ln</span> <span class='op'>&lt;-</span> <span class='fu'><a href='rank_regression.html'>rank_regression</a></span><span class='op'>(</span>
-  x <span class='op'>=</span> <span class='va'>prob_tbl</span>,
+  <span class='va'>prob_tbl</span>,
   distribution <span class='op'>=</span> <span class='st'>"lognormal3"</span>,
   conf_level <span class='op'>=</span> <span class='fl'>0.9</span>
 <span class='op'>)</span>
 
 <span class='va'>conf_betabin_ln</span> <span class='op'>&lt;-</span> <span class='fu'><a href='confint_betabinom.html'>confint_betabinom</a></span><span class='op'>(</span>
-  x <span class='op'>=</span> <span class='va'>rr_ln</span>,
+  <span class='va'>rr_ln</span>,
   bounds <span class='op'>=</span> <span class='st'>"two_sided"</span>,
   conf_level <span class='op'>=</span> <span class='fl'>0.9</span>,
   direction <span class='op'>=</span> <span class='st'>"y"</span>
 <span class='op'>)</span>
 
-<span class='va'>plot_lognormal</span> <span class='op'>&lt;-</span> <span class='fu'><a href='plot_prob.html'>plot_prob</a></span><span class='op'>(</span>
-  x <span class='op'>=</span> <span class='va'>prob_tbl</span>,
-  distribution <span class='op'>=</span> <span class='st'>"lognormal"</span>
-<span class='op'>)</span>
+<span class='va'>plot_lognormal</span> <span class='op'>&lt;-</span> <span class='fu'><a href='plot_prob.html'>plot_prob</a></span><span class='op'>(</span><span class='va'>prob_tbl</span>, distribution <span class='op'>=</span> <span class='st'>"lognormal"</span><span class='op'>)</span>
 
 <span class='va'>plot_conf_beta_ln</span> <span class='op'>&lt;-</span> <span class='fu'>plot_conf</span><span class='op'>(</span>
   p_obj <span class='op'>=</span> <span class='va'>plot_lognormal</span>,
@@ -236,17 +227,11 @@ in the legend.</p></td>
 <span class='op'>)</span>
 
 <span class='co'># Example 3 - Probability Plot, Regression Line and Confidence Bounds for MLE</span>
-<span class='va'>ml</span> <span class='op'>&lt;-</span> <span class='fu'><a href='ml_estimation.html'>ml_estimation</a></span><span class='op'>(</span>
-  x <span class='op'>=</span> <span class='va'>data</span>,
-  distribution <span class='op'>=</span> <span class='st'>"weibull"</span>
-<span class='op'>)</span>
+<span class='va'>ml</span> <span class='op'>&lt;-</span> <span class='fu'><a href='ml_estimation.html'>ml_estimation</a></span><span class='op'>(</span><span class='va'>data</span>, distribution <span class='op'>=</span> <span class='st'>"weibull"</span><span class='op'>)</span>
 
 <span class='va'>conf_fisher</span> <span class='op'>&lt;-</span> <span class='fu'><a href='confint_fisher.html'>confint_fisher</a></span><span class='op'>(</span><span class='va'>ml</span><span class='op'>)</span>
 
-<span class='va'>plot_weibull</span> <span class='op'>&lt;-</span> <span class='fu'><a href='plot_prob.html'>plot_prob</a></span><span class='op'>(</span>
-  x <span class='op'>=</span> <span class='va'>prob_tbl</span>,
-  distribution <span class='op'>=</span> <span class='st'>"weibull"</span>
-<span class='op'>)</span>
+<span class='va'>plot_weibull</span> <span class='op'>&lt;-</span> <span class='fu'><a href='plot_prob.html'>plot_prob</a></span><span class='op'>(</span><span class='va'>prob_tbl</span>, distribution <span class='op'>=</span> <span class='st'>"weibull"</span><span class='op'>)</span>
 
 <span class='va'>plot_conf_fisher_weibull</span> <span class='op'>&lt;-</span> <span class='fu'>plot_conf</span><span class='op'>(</span>
   p_obj <span class='op'>=</span> <span class='va'>plot_weibull</span>,
