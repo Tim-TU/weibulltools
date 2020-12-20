@@ -129,5 +129,5 @@ plot_mix_mod_em <- plot_prob(x = mix_mod_em)
 }
 \references{
 Meeker, William Q; Escobar, Luis A., Statistical methods for
-reliability data, New York: Wiley series in probability and statistics, 1998
+  reliability data, New York: Wiley series in probability and statistics, 1998
 }

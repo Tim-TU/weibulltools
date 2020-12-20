@@ -131,9 +131,9 @@ plot_prob_vis.plotly <- function(
 
   # Suppress warning by subsetting with character
   n_group <- length(unique(tbl_prob[["group"]]))
-  n_method <- length(unique(tbl_prob$method))
+  n_method <- length(unique(tbl_prob$cdf_estimation_method))
 
-  color <- if (n_method == 1) I("#3C8DBC") else ~method
+  color <- if (n_method == 1) I("#3C8DBC") else ~cdf_estimation_method
   symbol <- if (n_group == 0) NULL else ~group
 
   name <- to_name(tbl_prob, n_method, n_group, title_trace)
@@ -151,7 +151,7 @@ plot_prob_vis.plotly <- function(
       color = color,
       colors = "Set2",
       symbol = symbol,
-      legendgroup = ~method,
+      legendgroup = ~cdf_estimation_method,
       text = paste(
         "ID:", tbl_prob$id,
         paste("<br>", paste0(mark_x, ":")), format(tbl_prob$x, digits = 3),
@@ -179,10 +179,10 @@ plot_mod_vis.plotly <- function(
     )) %>%
     dplyr::ungroup()
 
-  n_method <- length(unique(tbl_pred$method))
+  n_method <- length(unique(tbl_pred$cdf_estimation_method))
   n_group <- length(unique(tbl_pred$group))
 
-  color <- if (n_method == 1) I("#CC2222") else ~method
+  color <- if (n_method == 1) I("#CC2222") else ~cdf_estimation_method
 
   # Reminder: Splitting the line by group happens by using the name
   name <- to_name(tbl_pred, n_method, n_group, title_trace)
@@ -198,7 +198,7 @@ plot_mod_vis.plotly <- function(
     name = name,
     color = color,
     colors = "Set2",
-    legendgroup = ~method,
+    legendgroup = ~cdf_estimation_method,
     text = ~hovertext
   )
 
@@ -211,9 +211,9 @@ plot_conf_vis.plotly <- function(p_obj, tbl_p, title_trace) {
   x_mark <- unlist(strsplit(p_obj$x$layoutAttrs[[2]]$xaxis$title$text,  " "))[1]
   y_mark <- unlist(strsplit(p_obj$x$layoutAttrs[[2]]$yaxis$title$text,  " "))[1]
 
-  n_method <- length(unique(tbl_p$method))
+  n_method <- length(unique(tbl_p$cdf_estimation_method))
 
-  color <- if (n_method == 1) I("#CC2222") else ~method
+  color <- if (n_method == 1) I("#CC2222") else ~cdf_estimation_method
 
   name <- to_name(tbl_p, n_method, n_group = 0, title_trace)
 
@@ -229,7 +229,7 @@ plot_conf_vis.plotly <- function(p_obj, tbl_p, title_trace) {
     color = color,
     colors = "Set2",
     name = name,
-    legendgroup = ~method,
+    legendgroup = ~cdf_estimation_method,
     text = paste(
       paste0(x_mark, ":"),
       format(tbl_p$x, digits = 3),
@@ -337,9 +337,9 @@ to_name <- function(tbl, n_method, n_group, title_trace) {
     }
   } else {
     if (n_group <= 1) {
-      paste0(title_trace, ": ", tbl$method)
+      paste0(title_trace, ": ", tbl$cdf_estimation_method)
     } else {
-      paste0(title_trace, ": ", tbl$method, ", ", tbl$group)
+      paste0(title_trace, ": ", tbl$cdf_estimation_method, ", ", tbl$group)
     }
   }
 }

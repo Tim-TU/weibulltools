@@ -42,7 +42,8 @@ A tibble containing the following columns:
     and \code{"johnson"}, filled with \code{NA} for other methods or if
     \code{status = 0}.
   \item \code{prob} : Estimated failure probabilities, \code{NA} if \code{status = 0}.
-  \item \code{method} : Specified method for the estimation of failure probabilities.
+  \item \code{cdf_estimation_method} : Specified method for the estimation of
+    failure probabilities.
 }
 }
 \description{

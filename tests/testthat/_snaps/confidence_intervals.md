@@ -13,7 +13,7 @@
      8 24242.  1.43 0.109      0.00950       0.372 weibull      two_s~ y        
      9 24949.  1.48 0.113      0.0105        0.378 weibull      two_s~ y        
     10 25657.  1.52 0.118      0.0116        0.385 weibull      two_s~ y        
-    # ... with 92 more rows, and 1 more variable: method <chr>
+    # ... with 92 more rows, and 1 more variable: cdf_estimation_method <chr>
 
 ---
 
@@ -30,7 +30,7 @@
      8 108.   6.33 0.0832    0.0340        0.161  weibull3     two_s~ y        
      9 110.   7.24 0.0959    0.0422        0.177  weibull3     two_s~ y        
     10 111.   7.54 0.1       0.0449        0.182  weibull3     two_s~ y        
-    # ... with 92 more rows, and 1 more variable: method <chr>
+    # ... with 92 more rows, and 1 more variable: cdf_estimation_method <chr>
 
 ---
 
@@ -47,7 +47,7 @@
      8 24242.  1.43 0.109        4485.      62393. weibull      two_s~ x        
      9 24949.  1.48 0.113        4807.      63307. weibull      two_s~ x        
     10 25657.  1.52 0.118        5136.      64220. weibull      two_s~ x        
-    # ... with 92 more rows, and 1 more variable: method <chr>
+    # ... with 92 more rows, and 1 more variable: cdf_estimation_method <chr>
 
 # confint_fisher remains stable
 
@@ -64,7 +64,7 @@
      8 24949. 0.0687   1.01      0.00982       0.401 weibull      two_s~ y        
      9 25657. 0.0723   0.988     0.0108        0.406 weibull      two_s~ y        
     10 26364. 0.0760   0.970     0.0117        0.411 weibull      two_s~ y        
-    # ... with 92 more rows, and 1 more variable: method <chr>
+    # ... with 92 more rows, and 1 more variable: cdf_estimation_method <chr>
 
 ---
 
@@ -81,7 +81,7 @@
      8 24949. 0.0687  13141.       8886.      70048. weibull      two_s~ x        
      9 25657. 0.0723  13254.       9321.      70617. weibull      two_s~ x        
     10 26364. 0.0760  13361.       9764.      71185. weibull      two_s~ x        
-    # ... with 92 more rows, and 1 more variable: method <chr>
+    # ... with 92 more rows, and 1 more variable: cdf_estimation_method <chr>
 
 # delta_method remains stable
 

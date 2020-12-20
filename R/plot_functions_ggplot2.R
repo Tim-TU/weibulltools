@@ -63,17 +63,18 @@ plot_prob_vis.ggplot <- function(
 
   distribution <- match.arg(distribution)
 
-  n_method <- length(unique(tbl_prob$method))
+  n_method <- length(unique(tbl_prob$cdf_estimation_method))
   n_group <- length(unique(tbl_prob[["group"]]))
 
-  if (n_method == 1) tbl_prob$method <- ""
+  if (n_method == 1) tbl_prob$cdf_estimation_method <- ""
   if (n_group <= 1) tbl_prob$group <- ""
 
   mapping <- if (n_group <= 1) {
-    ggplot2::aes(x = .data$x, y = .data$q, color = .data$method)
+    ggplot2::aes(x = .data$x, y = .data$q, color = .data$cdf_estimation_method)
   } else {
     ggplot2::aes(
-      x = .data$x, y = .data$q, color = .data$method, shape = .data$group
+      x = .data$x, y = .data$q, color = .data$cdf_estimation_method,
+      shape = .data$group
     )
   }
 
@@ -97,21 +98,23 @@ plot_mod_vis.ggplot <- function(
   p_obj, tbl_pred, title_trace = "Fit"
 ) {
 
-  n_method <- length(unique(tbl_pred$method))
+  n_method <- length(unique(tbl_pred$cdf_estimation_method))
   n_group <- length(unique(tbl_pred$group))
 
-  if (n_method == 1) tbl_pred$method <- ""
+  if (n_method == 1) tbl_pred$cdf_estimation_method <- ""
 
   mapping <- if (n_group == 1) {
-    ggplot2::aes(x = .data$x_p, y = .data$q, color = .data$method)
+    ggplot2::aes(
+      x = .data$x_p, y = .data$q, color = .data$cdf_estimation_method
+    )
   } else {
     # group aesthetic must be paste of method and group to create distinct
     # groups
     ggplot2::aes(
       x = .data$x_p,
       y = .data$q,
-      color = .data$method,
-      group = paste(.data$method, .data$group))
+      color = .data$cdf_estimation_method,
+      group = paste(.data$cdf_estimation_method, .data$group))
   }
 
   p_mod <- p_obj +
@@ -127,7 +130,7 @@ plot_mod_vis.ggplot <- function(
 
 #' @export
 plot_conf_vis.ggplot <- function(p_obj, tbl_p, title_trace) {
-  mapping <- if (all(is.na(tbl_p$method))) {
+  mapping <- if (all(is.na(tbl_p$cdf_estimation_method))) {
     ggplot2::aes(
       x = .data$x, y = .data$q, group = .data$bound, color = I("#CC2222")
     )
@@ -135,8 +138,8 @@ plot_conf_vis.ggplot <- function(p_obj, tbl_p, title_trace) {
     ggplot2::aes(
       x = .data$x,
       y = .data$q,
-      group = paste(.data$bound, .data$method),
-      color = .data$method
+      group = paste(.data$bound, .data$cdf_estimation_method),
+      color = .data$cdf_estimation_method
     )
   }
 

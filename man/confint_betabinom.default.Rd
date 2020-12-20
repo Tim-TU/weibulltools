@@ -68,9 +68,9 @@ columns:
     \item \code{distribution} : Specified distribution.
     \item \code{bounds} : Specified bound(s).
     \item \code{direction} : Specified direction.
-    \item \code{method} : A character that is always \code{NA_character}. Due
-      to the generic visualization functions column \code{method} has to be
-      provided.
+    \item \code{cdf_estimation_method} : A character that is always
+      \code{NA_character}. Due to the generic visualization functions this
+      column has to be provided.
   }
 }
 \description{

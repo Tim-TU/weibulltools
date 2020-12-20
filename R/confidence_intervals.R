@@ -43,8 +43,9 @@
 #'       \code{\link{rank_regression}}).
 #'     \item \code{bounds} : Specified bound(s).
 #'     \item \code{direction} : Specified direction.
-#'     \item \code{method} : Specified method for the estimation of failure
-#'       probabilities (determined when calling \code{\link{estimate_cdf}}).
+#'     \item \code{cdf_estimation_method} : Specified method for the estimation
+#'       of failure probabilities (determined when calling
+#'       \code{\link{estimate_cdf}}).
 #'   }
 #'
 #' @examples
@@ -264,9 +265,9 @@ confint_betabinom.wt_model_estimation_list <- function(
 #'     \item \code{distribution} : Specified distribution.
 #'     \item \code{bounds} : Specified bound(s).
 #'     \item \code{direction} : Specified direction.
-#'     \item \code{method} : A character that is always \code{NA_character}. Due
-#'       to the generic visualization functions column \code{method} has to be
-#'       provided.
+#'     \item \code{cdf_estimation_method} : A character that is always
+#'       \code{NA_character}. Due to the generic visualization functions this
+#'       column has to be provided.
 #'   }
 #'
 #' @seealso \code{\link{confint_betabinom}}
@@ -385,7 +386,9 @@ confint_betabinom.default <- function(x,
 
   # Fake wt_model_estimation
   model_estimation <- list(
-    data = tibble::tibble(x = x, status = status, method = NA_character_),
+    data = tibble::tibble(
+      x = x, status = status, cdf_estimation_method = NA_character_
+    ),
     coefficients = dist_params,
     distribution = distribution
   )
@@ -408,12 +411,12 @@ confint_betabinom_ <- function(model_estimation,
                                direction
 ) {
 
-  method <- model_estimation$data$method[1]
+  cdf_estimation_method <- model_estimation$data$cdf_estimation_method[1]
 
-  if (method %in% c("kaplan", "nelson")) {
+  if (cdf_estimation_method %in% c("kaplan", "nelson")) {
     stop(
       "The beta binomial confidence intervals cannot be calculated for method '",
-      method, "'. Use method 'mr' or 'johnson'."
+      cdf_estimation_method, "'. Use method 'mr' or 'johnson' in estimate_cdf()."
     )
   }
 
@@ -478,7 +481,7 @@ confint_betabinom_ <- function(model_estimation,
       distribution = distribution,
       bounds = bounds,
       direction = direction,
-      method = method
+      cdf_estimation_method = cdf_estimation_method
     )
 
   if (inherits(model_estimation, "wt_model_estimation")) {
@@ -740,8 +743,9 @@ delta_method_ <- function(p,
 #'     \code{\link{ml_estimation}}).
 #'     \item \code{bounds} : Specified bound(s).
 #'     \item \code{direction} : Specified direction.
-#'     \item \code{method} : A character that is always \code{"conf_null"}. Due to
-#'       generic visualization functions column \code{method} has to be provided.
+#'     \item \code{cdf_estimation_method} : A character that is always
+#'       \code{NA_character}. For the generic visualization functions this
+#'       column has to be provided.
 #'   }
 #'
 #' @encoding UTF-8
@@ -901,8 +905,9 @@ confint_fisher.wt_ml_estimation <- function(x,
 #'     \code{\link{ml_estimation}}).
 #'     \item \code{bounds} : Specified bound(s).
 #'     \item \code{direction} : Specified direction.
-#'     \item \code{method} : A character that is always \code{"conf_null"}. Due to
-#'       generic visualization functions column \code{method} has to be provided.
+#'     \item \code{cdf_estimation_method} : A character that is always
+#'       \code{NA_character}. For the generic visualization functions this
+#'       column has to be provided.
 #'   }
 #'
 #' @seealso \code{\link{confint_fisher}}
@@ -1013,7 +1018,9 @@ confint_fisher.default <- function(x,
 
   # Fake model_estimation
   model_estimation <- list(
-    data = tibble::tibble(x = x, status = status, method = NA_character_),
+    data = tibble::tibble(
+      x = x, status = status, cdf_estimation_method = NA_character_
+    ),
     coefficients = dist_params,
     varcov = dist_varcov,
     distribution = distribution
@@ -1157,7 +1164,7 @@ confint_fisher_ <- function(model_estimation,
       distribution = distribution,
       bounds = bounds,
       direction = direction,
-      method = NA_character_
+      cdf_estimation_method = NA_character_
     )
 
   if (inherits(model_estimation, "wt_model_estimation")) {

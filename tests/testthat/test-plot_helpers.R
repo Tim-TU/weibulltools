@@ -73,7 +73,7 @@ test_that("plot_mod_mix_helper remains stable", {
 
   helper <- plot_mod_mix_helper(
     model_estimation = rr,
-    method = "johnson",
+    cdf_estimation_method = "johnson",
     group = "group"
   )
 

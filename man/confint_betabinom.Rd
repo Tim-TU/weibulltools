@@ -57,8 +57,9 @@ A tibble with class \code{"wt_confint"} containing the following columns:
       \code{\link{rank_regression}}).
     \item \code{bounds} : Specified bound(s).
     \item \code{direction} : Specified direction.
-    \item \code{method} : Specified method for the estimation of failure
-      probabilities (determined when calling \code{\link{estimate_cdf}}).
+    \item \code{cdf_estimation_method} : Specified method for the estimation
+      of failure probabilities (determined when calling
+      \code{\link{estimate_cdf}}).
   }
 }
 \description{

@@ -142,9 +142,9 @@ mixmod_regression.wt_cdf_estimation <- function(
 
   distribution <- match.arg(distribution)
 
-  x_split <- split(x, x$method)
+  x_split <- split(x, x$cdf_estimation_method)
 
-  if (length(unique(x$method)) == 1) {
+  if (length(unique(x$cdf_estimation_method)) == 1) {
     out <- mixmod_regression_(
       cdf_estimation = x,
       distribution = distribution,
@@ -283,7 +283,7 @@ mixmod_regression.default <- function(x,
     x = x,
     status = status,
     prob = y,
-    method = "_null"
+    cdf_estimation_method = NA_character_
   )
 
   class(cdf) <- c("wt_cdf_estimation", class(cdf))

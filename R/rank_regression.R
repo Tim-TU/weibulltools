@@ -127,15 +127,15 @@ rank_regression.wt_cdf_estimation <- function(x,
 
   distribution <- match.arg(distribution)
 
-  if (length(unique(x$method)) == 1) {
+  if (length(unique(x$cdf_estimation_method)) == 1) {
     rank_regression_(
       cdf_estimation = x,
       distribution = distribution,
       conf_level = conf_level
     )
   } else {
-    # Apply rank_regression to each method separately
-    x_split <- split(x, x$method)
+    # Apply rank_regression to each cdf estimation method separately
+    x_split <- split(x, x$cdf_estimation_method)
 
     model_estimation_list <- purrr::map(x_split, function(cdf_estimation) {
       rank_regression_(

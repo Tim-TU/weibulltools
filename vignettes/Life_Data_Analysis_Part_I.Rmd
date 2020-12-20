@@ -214,11 +214,11 @@ To deal with survived and failed units we will use `estimate_cdf()` with
 cdf_tbl <- estimate_cdf(shock_tbl, methods = c("mr", "johnson"))
 
 # First case where only failed units are taken into account:
-cdf_tbl_mr <- cdf_tbl %>% filter(method == "mr")
+cdf_tbl_mr <- cdf_tbl %>% filter(cdf_estimation_method == "mr")
 cdf_tbl_mr
 
 # Second case where both, survived and failed units are considered:
-cdf_tbl_john <- cdf_tbl %>% filter(method == "johnson") 
+cdf_tbl_john <- cdf_tbl %>% filter(cdf_estimation_method == "johnson") 
 cdf_tbl_john
 ```
 

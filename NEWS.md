@@ -43,8 +43,8 @@
 * New argument in `mr_method()`: With `ties.method` it can be specified how ties should be treated.
 * Added `estimate_cdf()`: Unite functionality of `mr_method()`, `johnson_method()`, `kaplan_method()` and `nelson_method()`.
 * Support of multiple methods in `estimate_cdf()` and all functions that depend on the `cdf_estimation` (`rank_regression()`, `plot_prob()`, `plot_mod()`, `plot_conf()`, `mixmod_regression()`).
-* Added `print.rank_regression()`, `print.ml_estimation()`, `print.model_estimation()` and `print.model_estimation_list()`.
-* Added `vcov.model_estimation()`.
+* Added `print.wt_rank_regression()`, `print.wt_ml_estimation()`, `print.wt_model_estimation()`, `print.wt_model_estimation_list()`, `print.wt_mixmod_regression()` and `print.wt_mixmod_regression_list()`.
+* Added `vcov.wt_model_estimation()`.
 * Added `dist_delay()`: Generalizes the distribution-specific modeling of delays. 
 * Added `mcs_delay()`: Generalizes the adjustment of operating times by delays and supports multiple delays at once.
 * Added lifecycle badges

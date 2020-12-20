@@ -73,8 +73,9 @@ columns:
     \code{\link{ml_estimation}}).
     \item \code{bounds} : Specified bound(s).
     \item \code{direction} : Specified direction.
-    \item \code{method} : A character that is always \code{"conf_null"}. Due to
-      generic visualization functions column \code{method} has to be provided.
+    \item \code{cdf_estimation_method} : A character that is always
+      \code{NA_character}. For the generic visualization functions this
+      column has to be provided.
   }
 }
 \description{

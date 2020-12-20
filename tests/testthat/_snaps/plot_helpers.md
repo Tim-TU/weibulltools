@@ -66,88 +66,88 @@
 
     CDF estimation for methods 'johnson', 'kaplan':
     # A tibble: 134 x 7
-       id        x status  rank    prob method      q
-       <chr> <dbl>  <dbl> <dbl>   <dbl> <chr>   <dbl>
-     1 ID72     94      1     1 0.00967 johnson -4.63
-     2 ID72     94      1    NA 0.0139  kaplan  -4.27
-     3 ID71     96      1     2 0.0235  johnson -3.74
-     4 ID71     96      1    NA 0.0278  kaplan  -3.57
-     5 ID69     99      1     4 0.0511  johnson -2.95
-     6 ID70     99      1     4 0.0511  johnson -2.95
-     7 ID69     99      1    NA 0.0556  kaplan  -2.86
-     8 ID70     99      1    NA 0.0556  kaplan  -2.86
-     9 ID68    104      1     5 0.0649  johnson -2.70
-    10 ID68    104      1    NA 0.0694  kaplan  -2.63
+       id        x status  rank    prob cdf_estimation_method     q
+       <chr> <dbl>  <dbl> <dbl>   <dbl> <chr>                 <dbl>
+     1 ID72     94      1     1 0.00967 johnson               -4.63
+     2 ID72     94      1    NA 0.0139  kaplan                -4.27
+     3 ID71     96      1     2 0.0235  johnson               -3.74
+     4 ID71     96      1    NA 0.0278  kaplan                -3.57
+     5 ID69     99      1     4 0.0511  johnson               -2.95
+     6 ID70     99      1     4 0.0511  johnson               -2.95
+     7 ID69     99      1    NA 0.0556  kaplan                -2.86
+     8 ID70     99      1    NA 0.0556  kaplan                -2.86
+     9 ID68    104      1     5 0.0649  johnson               -2.70
+    10 ID68    104      1    NA 0.0694  kaplan                -2.63
     # ... with 124 more rows
 
 ---
 
     CDF estimation for methods 'johnson', 'kaplan':
     # A tibble: 134 x 7
-       id        x status  rank    prob method      q
-       <chr> <dbl>  <dbl> <dbl>   <dbl> <chr>   <dbl>
-     1 ID72     94      1     1 0.00967 johnson -2.34
-     2 ID72     94      1    NA 0.0139  kaplan  -2.20
-     3 ID71     96      1     2 0.0235  johnson -1.99
-     4 ID71     96      1    NA 0.0278  kaplan  -1.91
-     5 ID69     99      1     4 0.0511  johnson -1.63
-     6 ID70     99      1     4 0.0511  johnson -1.63
-     7 ID69     99      1    NA 0.0556  kaplan  -1.59
-     8 ID70     99      1    NA 0.0556  kaplan  -1.59
-     9 ID68    104      1     5 0.0649  johnson -1.51
-    10 ID68    104      1    NA 0.0694  kaplan  -1.48
+       id        x status  rank    prob cdf_estimation_method     q
+       <chr> <dbl>  <dbl> <dbl>   <dbl> <chr>                 <dbl>
+     1 ID72     94      1     1 0.00967 johnson               -2.34
+     2 ID72     94      1    NA 0.0139  kaplan                -2.20
+     3 ID71     96      1     2 0.0235  johnson               -1.99
+     4 ID71     96      1    NA 0.0278  kaplan                -1.91
+     5 ID69     99      1     4 0.0511  johnson               -1.63
+     6 ID70     99      1     4 0.0511  johnson               -1.63
+     7 ID69     99      1    NA 0.0556  kaplan                -1.59
+     8 ID70     99      1    NA 0.0556  kaplan                -1.59
+     9 ID68    104      1     5 0.0649  johnson               -1.51
+    10 ID68    104      1    NA 0.0694  kaplan                -1.48
     # ... with 124 more rows
 
 # plot_mod_helper remains stable
 
     # A tibble: 100 x 7
-         x_p    y_p param_val param_label method group     q
-       <dbl>  <dbl> <list>    <list>      <chr>  <chr> <dbl>
-     1 6700  0.0183 <chr [3]> <chr [3]>   <NA>   <NA>  -3.99
-     2 6798. 0.0190 <chr [3]> <chr [3]>   <NA>   <NA>  -3.95
-     3 6897. 0.0198 <chr [3]> <chr [3]>   <NA>   <NA>  -3.91
-     4 6997. 0.0206 <chr [3]> <chr [3]>   <NA>   <NA>  -3.87
-     5 7100. 0.0214 <chr [3]> <chr [3]>   <NA>   <NA>  -3.83
-     6 7203. 0.0223 <chr [3]> <chr [3]>   <NA>   <NA>  -3.79
-     7 7308. 0.0232 <chr [3]> <chr [3]>   <NA>   <NA>  -3.75
-     8 7415. 0.0241 <chr [3]> <chr [3]>   <NA>   <NA>  -3.71
-     9 7523. 0.0251 <chr [3]> <chr [3]>   <NA>   <NA>  -3.67
-    10 7633. 0.0261 <chr [3]> <chr [3]>   <NA>   <NA>  -3.63
+         x_p    y_p param_val param_label cdf_estimation_method group     q
+       <dbl>  <dbl> <list>    <list>      <chr>                 <chr> <dbl>
+     1 6700  0.0183 <chr [3]> <chr [3]>   <NA>                  <NA>  -3.99
+     2 6798. 0.0190 <chr [3]> <chr [3]>   <NA>                  <NA>  -3.95
+     3 6897. 0.0198 <chr [3]> <chr [3]>   <NA>                  <NA>  -3.91
+     4 6997. 0.0206 <chr [3]> <chr [3]>   <NA>                  <NA>  -3.87
+     5 7100. 0.0214 <chr [3]> <chr [3]>   <NA>                  <NA>  -3.83
+     6 7203. 0.0223 <chr [3]> <chr [3]>   <NA>                  <NA>  -3.79
+     7 7308. 0.0232 <chr [3]> <chr [3]>   <NA>                  <NA>  -3.75
+     8 7415. 0.0241 <chr [3]> <chr [3]>   <NA>                  <NA>  -3.71
+     9 7523. 0.0251 <chr [3]> <chr [3]>   <NA>                  <NA>  -3.67
+    10 7633. 0.0261 <chr [3]> <chr [3]>   <NA>                  <NA>  -3.63
     # ... with 90 more rows
 
 # plot_mod_mix_helper remains stable
 
     # A tibble: 200 x 7
-         x_p    y_p param_val param_label method  group     q
-       <dbl>  <dbl> <list>    <list>      <chr>   <chr> <dbl>
-     1 6700  0.0183 <chr [2]> <chr [2]>   johnson group -3.99
-     2 6804. 0.0191 <chr [2]> <chr [2]>   johnson group -3.95
-     3 6909. 0.0199 <chr [2]> <chr [2]>   johnson group -3.91
-     4 7013. 0.0207 <chr [2]> <chr [2]>   johnson group -3.87
-     5 7118. 0.0216 <chr [2]> <chr [2]>   johnson group -3.82
-     6 7222. 0.0225 <chr [2]> <chr [2]>   johnson group -3.78
-     7 7327. 0.0234 <chr [2]> <chr [2]>   johnson group -3.75
-     8 7431. 0.0243 <chr [2]> <chr [2]>   johnson group -3.71
-     9 7536. 0.0252 <chr [2]> <chr [2]>   johnson group -3.67
-    10 7640. 0.0262 <chr [2]> <chr [2]>   johnson group -3.63
+         x_p    y_p param_val param_label cdf_estimation_method group     q
+       <dbl>  <dbl> <list>    <list>      <chr>                 <chr> <dbl>
+     1 6700  0.0183 <chr [2]> <chr [2]>   johnson               group -3.99
+     2 6804. 0.0191 <chr [2]> <chr [2]>   johnson               group -3.95
+     3 6909. 0.0199 <chr [2]> <chr [2]>   johnson               group -3.91
+     4 7013. 0.0207 <chr [2]> <chr [2]>   johnson               group -3.87
+     5 7118. 0.0216 <chr [2]> <chr [2]>   johnson               group -3.82
+     6 7222. 0.0225 <chr [2]> <chr [2]>   johnson               group -3.78
+     7 7327. 0.0234 <chr [2]> <chr [2]>   johnson               group -3.75
+     8 7431. 0.0243 <chr [2]> <chr [2]>   johnson               group -3.71
+     9 7536. 0.0252 <chr [2]> <chr [2]>   johnson               group -3.67
+    10 7640. 0.0262 <chr [2]> <chr [2]>   johnson               group -3.63
     # ... with 190 more rows
 
 # plot_conf_helper_2 remains stable
 
     # A tibble: 204 x 5
     # Groups:   bound [2]
-           x      y bound method      q
-       <dbl>  <dbl> <chr> <chr>   <dbl>
-     1 6700. 0.0927 Upper johnson -2.33
-     2 6910. 0.0958 Upper johnson -2.30
-     3 7120. 0.0990 Upper johnson -2.26
-     4 7330. 0.102  Upper johnson -2.23
-     5 7540. 0.106  Upper johnson -2.19
-     6 7750. 0.109  Upper johnson -2.16
-     7 7960. 0.113  Upper johnson -2.12
-     8 8170. 0.117  Upper johnson -2.09
-     9 8380  0.121  Upper johnson -2.05
-    10 8590. 0.124  Upper johnson -2.02
+           x      y bound cdf_estimation_method     q
+       <dbl>  <dbl> <chr> <chr>                 <dbl>
+     1 6700. 0.0927 Upper johnson               -2.33
+     2 6910. 0.0958 Upper johnson               -2.30
+     3 7120. 0.0990 Upper johnson               -2.26
+     4 7330. 0.102  Upper johnson               -2.23
+     5 7540. 0.106  Upper johnson               -2.19
+     6 7750. 0.109  Upper johnson               -2.16
+     7 7960. 0.113  Upper johnson               -2.12
+     8 8170. 0.117  Upper johnson               -2.09
+     9 8380  0.121  Upper johnson               -2.05
+    10 8590. 0.124  Upper johnson               -2.02
     # ... with 194 more rows
 
 # plot_pop_helper remains stable
