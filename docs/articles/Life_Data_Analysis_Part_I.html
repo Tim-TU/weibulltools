@@ -68,7 +68,14 @@
   <a href="../news/index.html">Changelog</a>
 </li>
       </ul>
-<ul class="nav navbar-nav navbar-right"></ul>
+<ul class="nav navbar-nav navbar-right">
+<li>
+  <a href="https://github.com/Tim-TU/weibulltools/">
+    <span class="fab fa fab fa-github fa-lg"></span>
+     
+  </a>
+</li>
+      </ul>
 </div>
 <!--/.nav-collapse -->
   </div>
@@ -87,9 +94,9 @@
                         <h4 class="author">Tim-Gunnar Hensel</h4>
                         <h4 class="author">David Barkemeyer</h4>
             
-            <h4 class="date">2020-12-19</h4>
+            <h4 class="date">2020-12-20</h4>
       
-      
+      <small class="dont-index">Source: <a href="https://github.com/Tim-TU/weibulltools/blob/master/vignettes/Life_Data_Analysis_Part_I.Rmd"><code>vignettes/Life_Data_Analysis_Part_I.Rmd</code></a></small>
       <div class="hidden name"><code>Life_Data_Analysis_Part_I.Rmd</code></div>
 
     </div>
@@ -103,7 +110,7 @@
 <a href="#introduction-to-life-data-analysis" class="anchor"></a>Introduction to Life Data Analysis</h2>
 <p>If the lifetime (or any other damage-equivalent quantity such as distance or load cycles) of a unit is considered to be a continuous random variable <em>T</em>, then the probability that a unit has failed at <em>t</em> is defined by its <em>CDF (cumulative distribution function)</em> <em>F(t)</em>.</p>
 <p><span class="math display">\[ P(T\leq t) = F(t) \]</span></p>
-<p>In order to obtain an estimate of the <em>CDF</em> for each observation <span class="math inline">\(t_1, t_2, ..., t_n\)</span> two approaches are possible. Using a parametric lifetime distribution requires that the underlying assumptions for the sample data are valid. If the distribution-specific assumptions are correct, the model parameters can be estimated and the <em>CDF</em> is computable. But if conditions could not be met, interpretations and derived conclusions are not reliable.</p>
+<p>In order to obtain an estimate of the <em>CDF</em> for each observation <span class="math inline">\(t_1, t_2, ..., t_n\)</span> two approaches are possible. Using a parametric lifetime distribution requires that the underlying assumptions for the sample data are valid. If the distribution-specific assumptions are correct, the model parameters can be estimated and the <em>CDF</em> is computable. But if assumptions are not held, interpretations and derived conclusions are not reliable.</p>
 <p>A more general approach for the calculation of cumulative failure probabilities is to use non-parametric statistical estimators <span class="math inline">\(\hat{F}(t_1), \hat{F}(t_2), ..., \hat{F}(t_n)\)</span>. In comparison to a parametric distribution no general assumptions must be held. For non-parametric estimators, an ordered sample of size <span class="math inline">\(n\)</span> is needed. Starting at <span class="math inline">\(1\)</span>, the ranks <span class="math inline">\(i \in \{1, 2, ..., n \}\)</span> are assigned to the ascending sorted sample values. Since there is a known relationship between ranks and corresponding ranking probabilities a <em>CDF</em> can be determined.</p>
 <p>But rank distributions are systematically skewed distributions and thus the median value instead of the expected value <span class="math inline">\(E\left[F\left(t_i\right)\right] = \frac{i}{n + 1}\)</span> is used for the estimation <a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a>. This skewness is visualized in <em>Figure 1</em>.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
@@ -126,7 +133,7 @@
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">labs</a></span><span class="op">(</span>x <span class="op">=</span> <span class="st">"Failure Probability"</span>, y <span class="op">=</span> <span class="st">"Density"</span><span class="op">)</span>
 <span class="va">densplot</span></code></pre></div>
 <div class="figure">
-<img src="Life_Data_Analysis_Part_I_files/figure-html/rank%20densities-1.png" alt="Figure 1: Densities for different ranks i in samples of size n = 10." width="700"><p class="caption">
+<img src="Life_Data_Analysis_Part_I_files/figure-html/rank_densities-1.png" alt="Figure 1: Densities for different ranks i in samples of size n = 10." width="700"><p class="caption">
 Figure 1: Densities for different ranks i in samples of size n = 10.
 </p>
 </div>
@@ -144,7 +151,7 @@ Figure 1: Densities for different ranks i in samples of size n = 10.
 <p>Here, <span class="math inline">\(j_ {i-1}\)</span> is the adjusted rank of the previous failure, <span class="math inline">\(x_i\)</span> is the number of defectives at <span class="math inline">\(t_i\)</span> and <span class="math inline">\(I_i\)</span> is the increment that corrects the considered rank by the potential candidates.</p>
 <p><span class="math display">\[I_i=\frac{(n+1)-j_{i-1}}{1+(n-n_i)}\]</span></p>
 <p>The sample size is <span class="math inline">\(n\)</span> and <span class="math inline">\(n_i\)</span> is the number of units that have a lower <span class="math inline">\(t\)</span> than the <em>i</em>-th unit. Once the adjusted ranks are calculated, the <em>CDF</em> can be estimated according to <em>Benard’s</em> approximation.</p>
-<p>Other methods in <code>weibulltools</code> that can also handle (multiple) right-censored data are the <em>Kaplan-Meier</em> estimator (<code><a href="../reference/estimate_cdf.html">estimate_cdf(methods = "kaplan")</a></code>) and the <em>Nelson-Aalen</em> estimator (<code><a href="../reference/estimate_cdf.html">estimate_cdf(methods = "nelson")</a></code>).</p>
+<p>Other methods in <code>weibulltools</code> that can also handle (multiple) right-censored data are the <em>Kaplan-Meier</em> estimator (<code><a href="../reference/estimate_cdf.html">estimate_cdf(methods = "kaplan", ...)</a></code>) and the <em>Nelson-Aalen</em> estimator (<code><a href="../reference/estimate_cdf.html">estimate_cdf(methods = "nelson", ...)</a></code>).</p>
 </div>
 <div id="probability-plotting" class="section level3">
 <h3 class="hasAnchor">
@@ -273,7 +280,7 @@ Figure 1: Densities for different ranks i in samples of size n = 10.
 
 <span class="va">weibull_grid</span></code></pre></div>
 <div class="figure">
-<img src="Life_Data_Analysis_Part_I_files/figure-html/probability%20plot%20weibull-1.png" alt="Figure 3: Plotting positions in Weibull grid." width="700"><p class="caption">
+<img src="Life_Data_Analysis_Part_I_files/figure-html/probability_plot_weibull-1.png" alt="Figure 3: Plotting positions in Weibull grid." width="700"><p class="caption">
 Figure 3: Plotting positions in Weibull grid.
 </p>
 </div>
@@ -298,7 +305,7 @@ Figure 3: Plotting positions in Weibull grid.
 
 <span class="va">lognorm_grid</span></code></pre></div>
 <div class="figure">
-<img src="Life_Data_Analysis_Part_I_files/figure-html/probability%20plot%20log-normal-1.png" alt="Figure 4: Plotting positions in log-normal grid." width="700"><p class="caption">
+<img src="Life_Data_Analysis_Part_I_files/figure-html/probability_plot_log-normal-1.png" alt="Figure 4: Plotting positions in log-normal grid." width="700"><p class="caption">
 Figure 4: Plotting positions in log-normal grid.
 </p>
 </div>
