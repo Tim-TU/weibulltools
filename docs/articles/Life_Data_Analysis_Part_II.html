@@ -68,7 +68,14 @@
   <a href="../news/index.html">Changelog</a>
 </li>
       </ul>
-<ul class="nav navbar-nav navbar-right"></ul>
+<ul class="nav navbar-nav navbar-right">
+<li>
+  <a href="https://github.com/Tim-TU/weibulltools/">
+    <span class="fab fa fab fa-github fa-lg"></span>
+     
+  </a>
+</li>
+      </ul>
 </div>
 <!--/.nav-collapse -->
   </div>
@@ -87,16 +94,16 @@
                         <h4 class="author">Tim-Gunnar Hensel</h4>
                         <h4 class="author">David Barkemeyer</h4>
             
-            <h4 class="date">2020-12-19</h4>
+            <h4 class="date">2020-12-20</h4>
       
-      
+      <small class="dont-index">Source: <a href="https://github.com/Tim-TU/weibulltools/blob/master/vignettes/Life_Data_Analysis_Part_II.Rmd"><code>vignettes/Life_Data_Analysis_Part_II.Rmd</code></a></small>
       <div class="hidden name"><code>Life_Data_Analysis_Part_II.Rmd</code></div>
 
     </div>
 
     
     
-<p>This document introduces two methods for the parameter estimation of lifetime distributions. Where <em>Rank Regression (RR)</em> fits a straight line through transformed plotting positions (transformation is described precisely in <code><a href="../articles/Life_Data_Analysis_Part_I.html">vignette(topic = "Life_Data_Analysis_Part_I", package = "weibulltools")</a></code>), <em>Maximum likelihood (ML)</em> strives to maximize a function of the parameters given the sample data. If the parameters are obtained, a cumulative distribution function <em>(CDF)</em> can be computed and added to a probability plot.</p>
+<p>This document introduces two methods for the parameter estimation of lifetime distributions. Whereas <em>Rank Regression (RR)</em> fits a straight line through transformed plotting positions (transformation is described precisely in <code><a href="../articles/Life_Data_Analysis_Part_I.html">vignette(topic = "Life_Data_Analysis_Part_I", package = "weibulltools")</a></code>), <em>Maximum likelihood (ML)</em> strives to maximize a function of the parameters given the sample data. If the parameters are obtained, a cumulative distribution function <em>(CDF)</em> can be computed and added to a probability plot.</p>
 <p>In the theoretical part of this vignette the focus is on the two-parameter Weibull distribution. The second part is about the application of the provided estimation methods in <code>weibulltools</code>. All implemented models can be found in the help pages of <code><a href="../reference/rank_regression.html">rank_regression()</a></code> and <code><a href="../reference/ml_estimation.html">ml_estimation()</a></code>.</p>
 <div id="the-weibull-distribution" class="section level2">
 <h2 class="hasAnchor">
@@ -234,7 +241,7 @@ The estimates of the intercept and slope are equal to the weibull parameters <sp
 
 <span class="va">weibull_plot</span></code></pre></div>
 <div class="figure">
-<img src="Life_Data_Analysis_Part_II_files/figure-html/RR%20weibull-1.png" alt="Figure 1: RR for a two-parametric Weibull distribution." width="700"><p class="caption">
+<img src="Life_Data_Analysis_Part_II_files/figure-html/RR_weibull-1.png" alt="Figure 1: RR for a two-parametric Weibull distribution." width="700"><p class="caption">
 Figure 1: RR for a two-parametric Weibull distribution.
 </p>
 </div>
@@ -264,7 +271,7 @@ Figure 1: RR for a two-parametric Weibull distribution.
 
 <span class="va">weibull_plot2</span></code></pre></div>
 <div class="figure">
-<img src="Life_Data_Analysis_Part_II_files/figure-html/ML%20weibull-1.png" alt="Figure 2: ML for a two-parametric Weibull distribution." width="700"><p class="caption">
+<img src="Life_Data_Analysis_Part_II_files/figure-html/ML_weibull-1.png" alt="Figure 2: ML for a two-parametric Weibull distribution." width="700"><p class="caption">
 Figure 2: ML for a two-parametric Weibull distribution.
 </p>
 </div>
@@ -321,7 +328,7 @@ Figure 2: ML for a two-parametric Weibull distribution.
 
 <span class="va">lognormal_plot</span></code></pre></div>
 <div class="figure">
-<img src="Life_Data_Analysis_Part_II_files/figure-html/ML%20visualization%20I-1.png" alt="Figure 3: ML for a two-parametric log-normal distribution." width="700"><p class="caption">
+<img src="Life_Data_Analysis_Part_II_files/figure-html/ML_visualization_I-1.png" alt="Figure 3: ML for a two-parametric log-normal distribution." width="700"><p class="caption">
 Figure 3: ML for a two-parametric log-normal distribution.
 </p>
 </div>
@@ -336,7 +343,7 @@ Figure 3: ML for a two-parametric log-normal distribution.
 
 <span class="va">lognormal3_plot</span></code></pre></div>
 <div class="figure">
-<img src="Life_Data_Analysis_Part_II_files/figure-html/ML%20visualization%20II-1.png" alt="Figure 4: ML for a three-parametric log-normal distribution." width="700"><p class="caption">
+<img src="Life_Data_Analysis_Part_II_files/figure-html/ML_visualization_II-1.png" alt="Figure 4: ML for a three-parametric log-normal distribution." width="700"><p class="caption">
 Figure 4: ML for a three-parametric log-normal distribution.
 </p>
 </div>

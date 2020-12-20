@@ -40,6 +40,8 @@ Description: Contains methods for examining bench test or field data using the
              and the possibility of adding regression lines and confidence bounds 
              to existing plots. 
 License: GPL-2
+URL: https://tim-tu.github.io/weibulltools/
+    https://github.com/Tim-TU/weibulltools
 Imports:
     dplyr,
     ggplot2,
