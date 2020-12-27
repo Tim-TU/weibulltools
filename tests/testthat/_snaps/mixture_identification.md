@@ -10,13 +10,7 @@
     Rank Regression
     Coefficients:
         mu   sigma  
-    5.9155  0.6474  
-    
-    $mod_3
-    Rank Regression
-    Coefficients:
-        mu   sigma  
-    5.7387  0.2563  
+    5.7141  0.3048  
     
     attr(,"class")
     [1] "mixmod_regression" "list"             

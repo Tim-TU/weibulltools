@@ -10,9 +10,10 @@
 #' items are taken into account. It is performed with the support of
 #' \code{\link[segmented:segmented]{segmented.lm}}.
 #'
-#' Since the attempt to separate the failure data happens in an automated fashion,
-#' the algorithm tends to overestimate the number of breakpoints (see 'Warning'
-#' in \code{\link[segmented:segmented]{segmented.lm}}).
+#' Segmentation can be done with a specified number of subgroups or in an automated
+#' fashion (see argument \code{k}).
+#' The algorithm tends to overestimate the number of breakpoints when the separation
+#' is done automatically (see 'Warning' in \code{\link[segmented:segmented]{segmented.lm}}).
 #'
 #' In the context of reliability analysis it is important that the main types of
 #' failures can be identified and analyzed separately. These are
@@ -22,10 +23,13 @@
 #'   \item wear-out failures.
 #' }
 #' In order to reduce the risk of overestimation as well as being able to consider
-#' the main types of failures, a maximum of three subgroups can be obtained.
+#' the main types of failures, a maximum of three subgroups (\code{k = 3}) is recommended.
 #'
 #' @inheritParams rank_regression.cdf_estimation
 #'
+#' @param k Number of mixture components. If the data should be split in an automated
+#'   fashion \code{k} must be set to \code{NULL}. The argument \code{fix.psi}
+#'   of \code{control} is then set to \code{FALSE}.
 #' @param control Output of the call to \code{\link[segmented]{seg.control}}, which
 #'   is passed to \code{\link[segmented:segmented]{segmented.lm}}.
 #'   See 'Examples' for usage.
@@ -34,11 +38,10 @@
 #' detected. See \code{\link{rank_regression}}.
 #'
 #' Returns a list of class \code{"mixmod_regression"} if at least one breakpoint
-#' was determined. The length of the list depends on the number of identified
-#' subgroups. Each list element contains the information provided by
-#' \code{\link{rank_regression}}. In addition, the returned tibble \code{data} of
-#' each list element only retains information on the failed units and has two more
-#' columns:
+#' was determined. The length of the list depends on the number of subgroups.
+#' Each list element contains the information provided by \code{\link{rank_regression}}.
+#' In addition, the returned tibble \code{data} of each list element only retains
+#' information on the failed units and has two more columns:
 #' \itemize{
 #'   \item \code{q} : Quantiles of the standard distribution calculated from
 #'     column \code{prob}.
@@ -87,17 +90,19 @@
 #'   methods = c("johnson", "kaplan", "nelson")
 #' )
 #'
-#' # Example 1 - Mixture identification using two-parametric weibull models:
+#' # Example 1 - Mixture identification using k = 2 two-parametric weibull models:
 #' mix_mod_weibull <- mixmod_regression(
 #'   x = prob_mix,
 #'   distribution = "weibull",
-#'   conf_level = 0.99
+#'   conf_level = 0.99,
+#'   k = 2
 #' )
 #'
-#' # Example 2 - Mixture identification using two-parametric lognormal models:
+#' # Example 2 - Mixture identification using k = 3 two-parametric lognormal models:
 #' mix_mod_lognorm <- mixmod_regression(
 #'   x = prob_mix,
-#'   distribution = "lognormal"
+#'   distribution = "lognormal",
+#'   k = 3
 #' )
 #'
 #' # Example 3 - Mixture identification for multiple methods specified in estimate_cdf:
@@ -113,11 +118,11 @@
 #'   control = segmented::seg.control(display = TRUE)
 #' )
 #'
-#' # Example 5 - Mixture identification returns one model if breakpoint detection
-#' # has not succeeded:
+#' # Example 5 - Mixture identification performs rank_regression for k = 1:
 #' mod <- mixmod_regression(
 #'   x = prob,
-#'   distribution = "weibull"
+#'   distribution = "weibull",
+#'   k = 1
 #' )
 #'
 #' @export
@@ -136,6 +141,7 @@ mixmod_regression.cdf_estimation <- function(
                                  "weibull", "lognormal", "loglogistic"
                                ),
                                conf_level = .95,
+                               k = 2,
                                control = segmented::seg.control(),
                                ...
 ) {
@@ -149,6 +155,7 @@ mixmod_regression.cdf_estimation <- function(
       cdf_estimation = x,
       distribution = distribution,
       conf_level = conf_level,
+      k = k,
       control = control
     )
   } else {
@@ -157,6 +164,7 @@ mixmod_regression.cdf_estimation <- function(
         cdf_estimation = cdf_estimation,
         distribution = distribution,
         conf_level = conf_level,
+        k = k,
         control = control
       )
     })
@@ -228,39 +236,42 @@ mixmod_regression.cdf_estimation <- function(
 #'   method = "johnson"
 #' )
 #'
-#' # Example 1 - Mixture identification using weibull models:
+#'  # Example 1 - Mixture identification using k = 2 two-parametric weibull models:
 #' mix_mod_weibull <- mixmod_regression(
 #'    x = prob_mix$x,
 #'    y = prob_mix$prob,
 #'    status = prob_mix$status,
 #'    distribution = "weibull",
-#'    conf_level = 0.99
+#'    conf_level = 0.99,
+#'    k = 2
 #' )
 #'
-#' # Example 2 - Mixture identification using two-parametric lognormal models:
+#' # Example 2 - Mixture identification using k = 3 two-parametric lognormal models:
 #' mix_mod_lognorm <- mixmod_regression(
 #'    x = prob_mix$x,
 #'    y = prob_mix$prob,
 #'    status = prob_mix$status,
 #'    distribution = "lognormal",
+#'    k = 3
 #' )
 #'
 #' # Example 3 - Mixture identification using control argument:
 #' mix_mod_control <- mixmod_regression(
-#'    x = prob_mix$x,
-#'    y = prob_mix$prob,
-#'    status = prob_mix$status,
-#'    distribution = "weibull",
+#'   x = prob_mix$x,
+#'   y = prob_mix$prob,
+#'   status = prob_mix$status,
+#'   distribution = "weibull",
+#'   k = 2,
 #'   control = segmented::seg.control(display = TRUE)
 #' )
 #'
-#' # Example 4 - Mixture identification returns one model if breakpoint detection
-#' # has not succeeded:
+#' # Example 4 - Mixture identification performs rank_regression for k = 1:
 #' mod <- mixmod_regression(
-#'    x = prob$x,
-#'    y = prob$prob,
-#'    status = prob$status,
-#'   distribution = "weibull"
+#'   x = prob$x,
+#'   y = prob$prob,
+#'   status = prob$status,
+#'   distribution = "weibull",
+#'   k = 1
 #' )
 #'
 #' @export
@@ -271,6 +282,7 @@ mixmod_regression.default <- function(x,
                                         "weibull", "lognormal", "loglogistic"
                                       ),
                                       conf_level = .95,
+                                      k = 2,
                                       control = segmented::seg.control(),
                                       ...
 ) {
@@ -292,6 +304,7 @@ mixmod_regression.default <- function(x,
     cdf_estimation = cdf,
     distribution = distribution,
     conf_level = conf_level,
+    k = k,
     control = control
   )
 }
@@ -301,8 +314,13 @@ mixmod_regression.default <- function(x,
 mixmod_regression_ <- function(cdf_estimation,
                                distribution,
                                conf_level,
+                               k,
                                control
 ) {
+
+  if (!purrr::is_null(k) && k < 1) {
+    stop("'k' must be greater or equal than 1!")
+  }
 
   # Preparation for segmented regression:
   cdf_failed <- dplyr::filter(cdf_estimation, .data$status == 1)
@@ -319,132 +337,66 @@ mixmod_regression_ <- function(cdf_estimation,
 
   mrr <- stats::lm(log(x) ~ q, cdf_failed)
 
+  if (k == 1) {
+    mrr_output <- rank_regression(
+      cdf_estimation,
+      distribution = distribution,
+      conf_level = conf_level
+    )
+
+    return(mrr_output)
+  }
+
   # Segmented regression:
-  seg_mrr <- try(
-    # Ensure x is taken from cdf_failed
-    with(
+  if (purrr::is_null(k)) {
+    message("Automated segmentation process was used",
+            " problem of overestimation may have occured!")
+
+    control$fix.npsi <- FALSE
+
+    seg_mrr <- with(
       cdf_failed,
       segmented::segmented.lm(
         mrr,
+        psi = NA,
         control = control
       )
-    ),
-    silent = TRUE
-  )
+    )
+  } else {
+    seg_mrr <- with(
+      cdf_failed,
+      segmented::segmented.lm(
+        mrr,
+        psi = quantile(q, probs = 1 / k * (1:(k-1))),
+        control = control
+      )
+    )
+  }
 
   # Group membership:
   group_seg <- seg_mrr$id.group
 
-  # Reference model:
-  mrr_0 <- rank_regression(
-    cdf_estimation,
+  # Test for successful segmentation of all failed units:
+  if (purrr::is_null(group_seg)) {
+    # Not succeeded:
+    stop("Segmentation has not succeeded, Reduce 'k' in the function call!")
+  }
+
+  # Succeeded:
+  cdf_failed$group <- group_seg + 1
+
+  cdf_split <- split(cdf_failed, cdf_failed$group)
+
+  mrr_output <- purrr::map(
+    cdf_split,
+    rank_regression,
     distribution = distribution,
     conf_level = conf_level
   )
 
-  # Test for successful segmentation of all failed units:
-  if (purrr::is_null(group_seg)) {
-    # Not succeeded:
-    message("Simple linear regression model was used!")
-    mrr_output <- mrr_0
-  } else if (sum(group_seg != 0) < 5) {
-    # Succeeded but too few points:
-    warning("Second segment has less than 5 elements,",
-            " simple linear regression model was used!")
-    mrr_output <- mrr_0
-  } else {
-    # Succeeded:
-    # group output 1 and 2:
-    cdf_failed$group <- group_seg + 1
+  names(mrr_output) <- paste("mod", seq_along(mrr_output), sep = "_")
 
-    # already determined segment 1 with group 1:
-    cdf_failed_1 <- cdf_failed %>%
-      dplyr::filter(.data$group == min(.data$group, na.rm = TRUE))
-
-    mrr_1 <- rank_regression(
-      cdf_failed_1,
-      distribution = distribution,
-      conf_level = conf_level
-    )
-
-    # Rest with group 2 that can potentially be segmented:
-    cdf_failed_rest <- cdf_failed %>%
-      dplyr::filter(.data$group == max(.data$group, na.rm = TRUE))
-
-    # Initial regression for the part that can potentially be segmented:
-    mrr_23 <- rank_regression(
-      cdf_failed_rest,
-      distribution = distribution,
-      conf_level = conf_level
-    )
-
-    # Preparation for segmented.lm applied to everything beyond first breakpoint:
-    mrr2 <- stats::lm(log(x) ~ q, data = cdf_failed_rest)
-
-    # Suppress warning no breakpoint estimated since one breakpoint already exists
-    # and this would be irritating:
-    seg_mrr2 <- try(
-      suppressWarnings(
-        # Ensure x is taken from cdf_failed
-        with(
-          cdf_failed_rest,
-          segmented::segmented.lm(
-            mrr2,
-            control = control
-          )
-        )
-      ),
-      silent = TRUE
-    )
-
-    group_seg2 <- seg_mrr2$id.group
-
-    # Test for second successful segmentation of rest failed units:
-    if (purrr::is_null(group_seg2)) {
-      # Two segments case, i.e. mrr_23 cannot be segmented anymore:
-      mrr_output <- list(mod_1 = mrr_1, mod_2 = mrr_23)
-    } else if (sum(group_seg2 != 0) < 5) {
-      # Two segment case succeeded but too few points:
-      warning("Third segment has less than 5 elements,",
-              " two segments were used!")
-      mrr_output <- list(mod_1 = mrr_1, mod_2 = mrr_23)
-    } else {
-      # Third segment case suceeded:
-      cdf_failed_rest$group <- group_seg2 + 2 # 2 and 3, three segments case!
-
-      # Determine second segment:
-      cdf_failed_2 <- dplyr::filter(
-        cdf_failed_rest,
-        .data$group == min(.data$group, na.rm = TRUE)
-      )
-
-      mrr_2 <- rank_regression(
-        cdf_failed_2,
-        distribution = distribution,
-        conf_level = conf_level
-      )
-
-      # Determine third segment:
-      cdf_failed_3 <- dplyr::filter(
-        cdf_failed_rest,
-        .data$group == max(.data$group, na.rm = TRUE)
-      )
-
-      mrr_3 <- rank_regression(
-        cdf_failed_3,
-        distribution = distribution,
-        conf_level = conf_level
-      )
-
-      mrr_output <- list(mod_1 = mrr_1, mod_2 = mrr_2, mod_3 = mrr_3)
-      message("Three segments have been obtained, problem of overestimation may"
-              , " have occured. Further investigations are recommended!")
-    }
-  }
-
-  if (!inherits(mrr_output, "rank_regression")) {
-    class(mrr_output) <- c("mixmod_regression", class(mrr_output))
-  }
+  class(mrr_output) <- c("mixmod_regression", class(mrr_output))
 
   return(mrr_output)
 }

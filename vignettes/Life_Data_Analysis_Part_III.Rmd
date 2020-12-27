@@ -56,7 +56,7 @@ For consistent handling of the data, `weibulltools` introduces the function
 `reliability_data()` that converts the original dataset into a `wt_reliability_data` 
 object. This formatted object allows to easily apply the presented methods.  
 
-```{r dataset voltage, message = FALSE}
+```{r dataset_voltage, message = FALSE}
 voltage_tbl <- reliability_data(data = voltage, x = hours, status = status)
 voltage_tbl
 ```
