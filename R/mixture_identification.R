@@ -340,7 +340,7 @@ mixmod_regression_ <- function(cdf_estimation,
 
   mrr <- stats::lm(log(x) ~ q, cdf_failed)
 
-  if (k == 1) {
+  if (!purrr::is_null(k) && k == 1) {
     mrr_output <- rank_regression(
       cdf_estimation,
       distribution = distribution,
@@ -370,7 +370,7 @@ mixmod_regression_ <- function(cdf_estimation,
       cdf_failed,
       segmented::segmented.lm(
         mrr,
-        psi = quantile(q, probs = 1 / k * (1:(k-1))),
+        psi = quantile(q, probs = 1 / k * (1:(k - 1))),
         control = control
       )
     )

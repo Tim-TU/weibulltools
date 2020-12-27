@@ -10,35 +10,37 @@ Authors@R:
       email = "david.barkemeyer@campus.tu-berlin.de",
       role = "aut")
     )
-Description: Contains methods for examining bench test or field data using the 
-             well-known Weibull Analysis. It includes Monte Carlo simulation for 
-             estimating the life span of products that have not failed, taking 
-             account of registering and reporting delays as stated in 
-             (Verband der Automobilindustrie e.V. (VDA), 2016, <ISSN:0943-9412>). 
-             If the products looked upon are vehicles, the covered mileage can 
-             be estimated as well. 
-             It also provides non-parametric estimators like Median Ranks, 
+Description: The weibulltools package focuses on statistical methods and 
+             visualizations that are often used in reliability engineering. It 
+             provides a compact and easily accessible set of methods and visualization 
+             tools that make the examination and adjustment as well as the analysis 
+             and interpretation of field data (and bench tests) as simple as possible.
+             
+             Non-parametric estimators like Median Ranks, 
              Kaplan-Meier (Abernethy, 2006, <ISBN:978-0-9653062-3-2>), 
              Johnson (Johnson, 1964, <ISBN:978-0444403223>), and Nelson-Aalen 
              for failure probability estimation within samples that contain 
-             failures as well as censored data.   
-             Methods for estimating the parameters of lifetime distributions, like 
-             Maximum Likelihood and Median-Rank Regression, 
+             failures as well as censored data are included.   
+             It also supports methods like Maximum Likelihood and Rank Regression, 
              (Genschel and Meeker, 2010, <DOI:10.1080/08982112.2010.503447>) 
+             for the estimation of multiple parametric lifetime distributions,  
              as well as the computation of confidence intervals of quantiles and 
              probabilities using the delta method related to Fisher's confidence 
              intervals (Meeker and Escobar, 1998, <ISBN:9780471673279>) and the 
-             beta-binomial confidence bounds are also included. 
-             If desired, the data can automatically be divided into subgroups 
-             using segmented regression. And if the number of subgroups in a 
-             Weibull Mixture Model is known, data can be analyzed using the 
-             EM-Algorithm. 
-             Besides the calculation, methods for interactive visualization of 
-             the edited data using *plotly* are provided as well. These 
-             visualizations include the layout of a probability plot for a 
-             specified distribution, the graphical technique of probability plotting 
-             and the possibility of adding regression lines and confidence bounds 
-             to existing plots. 
+             beta-binomial confidence bounds. 
+             If desired, mixture model analysis can be done with segmented regression
+             and the EM algorithm.
+             
+             Besides the well-known weibull analysis, the package also contains 
+             Monte Carlo methods for the correction and completion of imprecisely 
+             recorded or unknown lifetime characteristics.
+             (Verband der Automobilindustrie e.V. (VDA), 2016, <ISSN:0943-9412>). 
+              
+             Plots are created statically (ggplot2) or interactively (plotly) and 
+             can be customized with functions of the respective visualization package.
+             The graphical technique of probability plotting as well as the possibility 
+             of adding regression lines and confidence bounds to existing plots are 
+             supported. 
 License: GPL-2
 URL: https://tim-tu.github.io/weibulltools/
     https://github.com/Tim-TU/weibulltools
