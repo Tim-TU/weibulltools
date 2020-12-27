@@ -188,14 +188,14 @@ a failure (= 1). The effect of status on the return is described in 'Value'.</p>
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>A list containing the following elements:</p><ul>
-<li><p><code>data</code> : A tibble with classes <code>"wt_mcs_data"</code> and
-      <code>"wt_reliability_data"</code> if <code>status</code> is provided. Since the
-      class <code>"wt_reliability_data"</code> enables the direct usage of
+<li><p><code>data</code> : A tibble with classes <code>wt_mcs_data</code> and
+      <code>wt_reliability_data</code> if <code>status</code> is provided. Since the
+      class <code>wt_reliability_data</code> enables the direct usage of
       <code>data</code> inside
       <code><a href='estimate_cdf.html'>estimate_cdf.wt_reliability_data</a></code>, the
       required lifetime characteristic is automatically set to the distance
       <code>mileage</code>.</p>
-<p>If <code>status = NULL</code> class is <code>"wt_mcs_data"</code>, which is not
+<p>If <code>status = NULL</code> class is <code>wt_mcs_data</code>, which is not
       supported by <code>estimate_cdf</code> due to missing <code>status</code>.</p>
 <p>The tibble contains the following columns:</p><ul>
 <li><p><code>mileage</code> : Simulated distances for unknown <code>mileage</code> and
