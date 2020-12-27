@@ -28,7 +28,7 @@
 #' @inheritParams rank_regression.wt_cdf_estimation
 #'
 #' @param k Number of mixture components. If the data should be split in an automated
-#'   fashion \code{k} must be set to \code{NULL}. The argument \code{fix.psi}
+#'   fashion, \code{k} must be set to \code{NULL}. The argument \code{fix.psi}
 #'   of \code{control} is then set to \code{FALSE}.
 #' @param control Output of the call to \code{\link[segmented]{seg.control}}, which
 #'   is passed to \code{\link[segmented:segmented]{segmented.lm}}.
@@ -382,7 +382,7 @@ mixmod_regression_ <- function(cdf_estimation,
   # Test for successful segmentation of all failed units:
   if (purrr::is_null(group_seg)) {
     # Not succeeded:
-    stop("Segmentation has not succeeded, Reduce 'k' in the function call!")
+    stop("Segmentation has not succeeded. Reduce 'k' in the function call!")
   }
 
   # Succeeded:

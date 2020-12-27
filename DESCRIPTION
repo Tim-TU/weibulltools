@@ -35,8 +35,8 @@ Description: The weibulltools package focuses on statistical methods and
              (Verband der Automobilindustrie e.V. (VDA), 2016, <ISSN:0943-9412>). 
              Plots are created statically (ggplot2) or interactively (plotly) and 
              can be customized with functions of the respective visualization package.
-             The graphical technique of probability plotting as well as the possibility 
-             of adding regression lines and confidence bounds to existing plots are 
+             The graphical technique of probability plotting as well as the addition 
+             of regression lines and confidence bounds to existing plots are 
              supported. 
 License: GPL-2
 URL: https://tim-tu.github.io/weibulltools/
