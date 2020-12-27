@@ -15,7 +15,7 @@
 * `loglik_function`: Renamed `event` with `status`. Renamed `pars` with `dist_params`.
 * `rank_regression.default()` (former `rank_regression()`): Renamed `event` with `status`. Removed `details`. Changed names and contents of list elements in output. See `?rank_regression`.
 * `mixmod_em.default()` (former `mixmod_em()`): Renamed `event` with `status`. Removed `post`.
-* `mixmod_regression.default()` (former `mixmod_regression()`): Renamed `event` with `status`. 
+* `mixmod_regression.default()` (former `mixmod_regression()`): Renamed `event` with `status`. Added arguments `k` and `control`, which provide finer control over the segmentation process. Expect default setting to provide other results than in prior versions.
 * `predict_prob()`: Renamed `loc_sc_params` with `dist_params`.
 * `predict_quantile()`: Renamed `loc_sc_params` with `dist_params`.
 * `plot_mod.default()` (former `plot_mod()`): Renamed `event` with `status`. Renamed `loc_sc_params` with `dist_params`. Removed `y`.
@@ -40,9 +40,10 @@
 ## New Features
 * Added support for ggplot2 in all plot functions. Plot method can be selected in `plot_prob()` or `plot_pop()` via argument `plot_method`.
 * Added `reliability_data()`: Create consistent reliability data.
-* New argument in `mr_method()`: With `ties.method` it can be specified how ties should be treated.
-* Added `estimate_cdf()`: Unite functionality of `mr_method()`, `johnson_method()`, `kaplan_method()` and `nelson_method()`.
+* Added `estimate_cdf()`: Unite functionality of `mr_method()`, `johnson_method()`, `kaplan_method()` and `nelson_method()`. Added option `ties.method` for `method = "mr"`, which specifies how ties should be treated.
 * Support of multiple methods in `estimate_cdf()` and all functions that depend on the `cdf_estimation` (`rank_regression()`, `plot_prob()`, `plot_mod()`, `plot_conf()`, `mixmod_regression()`).
+* `plot_prob()` and `plot_mod()` are able to handle mixture models.
+* `mixmod_regression()` is now more flexible. Argument `k` can be used to control number of subgroups or to determine them in an automatic fashion. Argument `control` provides additional control over the segmentation procedure.
 * Added `print.wt_rank_regression()`, `print.wt_ml_estimation()`, `print.wt_model_estimation()`, `print.wt_model_estimation_list()`, `print.wt_mixmod_regression()` and `print.wt_mixmod_regression_list()`.
 * Added `vcov.wt_model_estimation()`.
 * Added `dist_delay()`: Generalizes the distribution-specific modeling of delays. 
