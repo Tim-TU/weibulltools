@@ -34,7 +34,7 @@ a right censored observation (= 0) or a failure (= 1).}
 \code{"weibull"} this must be one of \code{0.9}, \code{0.95} or \code{0.99}.}
 
 \item{k}{Number of mixture components. If the data should be split in an automated
-fashion \code{k} must be set to \code{NULL}. The argument \code{fix.psi}
+fashion, \code{k} must be set to \code{NULL}. The argument \code{fix.psi}
 of \code{control} is then set to \code{FALSE}.}
 
 \item{control}{Output of the call to \code{\link[segmented]{seg.control}}, which
