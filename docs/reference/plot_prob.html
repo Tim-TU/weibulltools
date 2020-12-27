@@ -171,8 +171,8 @@ plotting.</p>
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>x</th>
-      <td><p>An object of class <code>"wt_cdf_estimation"</code> or
-<code>"wt_model"</code>.</p></td>
+      <td><p>An object of class <code>wt_cdf_estimation</code> or
+<code>wt_model</code>.</p></td>
     </tr>
     <tr>
       <th>...</th>
@@ -213,7 +213,7 @@ the legend.</p></td>
     <p>Returns a plot object containing the probability plot.</p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>If <code>x</code> was split by <code><a href='mixmod_em.html'>mixmod_em</a></code> <code><a href='estimate_cdf.html'>estimate_cdf</a></code> with
+    <p>If <code>x</code> was split by <code><a href='mixmod_em.html'>mixmod_em</a></code>, <code><a href='estimate_cdf.html'>estimate_cdf</a></code> with
 method <code>"johnson"</code> is applied to subgroup-specific data. The
 calculated plotting positions are shaped according to the determined split in
 <code><a href='mixmod_em.html'>mixmod_em</a></code>.</p>
@@ -271,7 +271,7 @@ and "Group: 2".</p>
 
 <span class='co'># Example 3 - Mixture identification using mixmod_regression:</span>
 <span class='va'>mix_mod_rr</span> <span class='op'>&lt;-</span> <span class='fu'><a href='mixmod_regression.html'>mixmod_regression</a></span><span class='op'>(</span><span class='va'>prob_mix</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='message'>Three segments have been obtained, problem of overestimation may have occured. Further investigations are recommended!</span></div><div class='output co'>#&gt; <span class='message'>Three segments have been obtained, problem of overestimation may have occured. Further investigations are recommended!</span></div><div class='input'>
+
 <span class='va'>plot_mix_mod_rr</span> <span class='op'>&lt;-</span> <span class='fu'>plot_prob</span><span class='op'>(</span>x <span class='op'>=</span> <span class='va'>mix_mod_rr</span><span class='op'>)</span>
 
 <span class='co'># Example 4 - Mixture identification using mixmod_em:</span>

@@ -160,7 +160,7 @@ parameters of a univariate weibull mixture model. See 'Details'.</p>
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>x</th>
-      <td><p>An object of class <code>"wt_reliability_data"</code> returned from
+      <td><p>An object of class <code>wt_reliability_data</code> returned from
 <code><a href='reliability_data.html'>reliability_data</a></code>.</p></td>
     </tr>
     <tr>
@@ -201,14 +201,14 @@ log-likelihood values, which seems permissible.</p></td>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>Returns a list with class <code>"wt_mixmod_em"</code>. The length of the
-list depends on the number of specified subgroups <em>k</em>. The first
-<code>k</code> lists contain information provided by <a href='ml_estimation.html'>ml_estimation</a>. The
-values of <code>logL</code>, <code>aic</code> and <code>bic</code> are the results of a
-weighted log-likelihood, where the weights are the posterior probabilities
-determined by the algorithm. The last list summarizes further results of the
-EM algorithm and is therefore called <code>em_results</code>. It contains the
-following elements:</p><ul>
+    <p>Returns a list with classes <code>wt_model</code> and <code>wt_mixmod_em</code>.
+The length of the list depends on the number of specified subgroups <em>k</em>.
+The first <code>k</code> lists contain information provided by
+<a href='ml_estimation.html'>ml_estimation</a>. The values of <code>logL</code>, <code>aic</code> and <code>bic</code>
+are the results of a weighted log-likelihood, where the weights are the
+posterior probabilities determined by the algorithm. The last list summarizes
+further results of the EM algorithm and is therefore called
+<code>em_results</code>. It contains the following elements:</p><ul>
 <li><p><code>a_priori</code> : A vector with estimated prior probabilities.</p></li>
 <li><p><code>a_posteriori</code> : A matrix with estimated posterior probabilities.</p></li>
 <li><p><code>groups</code> : Numeric vector specifying the group membership of

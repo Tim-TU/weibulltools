@@ -10,12 +10,7 @@
     Rank Regression
     Coefficients:
         mu   sigma  
-    5.9155  0.6474  
-    Subgroup 3:
-    Rank Regression
-    Coefficients:
-        mu   sigma  
-    5.7387  0.2563  
+    5.7141  0.3048  
 
 # mixmod_em remains stable
 

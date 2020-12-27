@@ -159,8 +159,8 @@ of probabilities in terms of (<em>Median Ranks</em>).</p>
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>x</th>
-      <td><p>Object with class <code>"wt_model"</code> and one of the classes
-<code>"wt_model_estimation"</code> or <code>"wt_model_estimation_list"</code> returned from
+      <td><p>Object with class <code>wt_model</code> and one of the classes
+<code>wt_model_estimation</code> or <code>wt_model_estimation_list</code> returned from
 <code><a href='rank_regression.html'>rank_regression</a></code>.</p></td>
     </tr>
     <tr>
@@ -191,7 +191,7 @@ confidence interval. One of <code>"y"</code> (failure probabilities) or <code>"x
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A tibble with class <code>"wt_confint"</code> containing the following columns:</p><ul>
+    <p>A tibble with class <code>wt_confint</code> containing the following columns:</p><ul>
 <li><p><code>x</code> : An ordered sequence of the lifetime characteristic regarding
       the failed units, starting at <code><a href='https://rdrr.io/r/base/Extremes.html'>min(x)</a></code> and ending up at <code><a href='https://rdrr.io/r/base/Extremes.html'>max(x)</a></code>.
       With <code>b_lives = c(0.01, 0.1, 0.5)</code> the 1%, 10% and 50% quantiles

@@ -11,6 +11,7 @@
   status,
   distribution = c("weibull", "lognormal", "loglogistic"),
   conf_level = 0.95,
+  k = 2,
   control = segmented::seg.control(),
   ...
 )
@@ -31,6 +32,10 @@ a right censored observation (= 0) or a failure (= 1).}
 
 \item{conf_level}{Confidence level of the interval. If \code{distribution} is
 \code{"weibull"} this must be one of \code{0.9}, \code{0.95} or \code{0.99}.}
+
+\item{k}{Number of mixture components. If the data should be split in an automated
+fashion \code{k} must be set to \code{NULL}. The argument \code{fix.psi}
+of \code{control} is then set to \code{FALSE}.}
 
 \item{control}{Output of the call to \code{\link[segmented]{seg.control}}, which
 is passed to \code{\link[segmented:segmented]{segmented.lm}}.
@@ -73,9 +78,10 @@ units and their corresponding estimated failure probabilities for which intact
 items are taken into account. It is performed with the support of
 \code{\link[segmented:segmented]{segmented.lm}}.
 
-Since the attempt to separate the failure data happens in an automated fashion,
-the algorithm tends to overestimate the number of breakpoints (see 'Warning'
-in \code{\link[segmented:segmented]{segmented.lm}}).
+Segmentation can be done with a specified number of subgroups or in an automated
+fashion (see argument \code{k}).
+The algorithm tends to overestimate the number of breakpoints when the separation
+is done automatically (see 'Warning' in \code{\link[segmented:segmented]{segmented.lm}}).
 
 In the context of reliability analysis it is important that the main types of
 failures can be identified and analyzed separately. These are
@@ -85,7 +91,7 @@ failures can be identified and analyzed separately. These are
   \item wear-out failures.
 }
 In order to reduce the risk of overestimation as well as being able to consider
-the main types of failures, a maximum of three subgroups can be obtained.
+the main types of failures, a maximum of three subgroups (\code{k = 3}) is recommended.
 }
 \examples{
 # Vectors:
@@ -110,39 +116,42 @@ prob <- estimate_cdf(
   method = "johnson"
 )
 
-# Example 1 - Mixture identification using weibull models:
+ # Example 1 - Mixture identification using k = 2 two-parametric weibull models:
 mix_mod_weibull <- mixmod_regression(
    x = prob_mix$x,
    y = prob_mix$prob,
    status = prob_mix$status,
    distribution = "weibull",
-   conf_level = 0.99
+   conf_level = 0.99,
+   k = 2
 )
 
-# Example 2 - Mixture identification using two-parametric lognormal models:
+# Example 2 - Mixture identification using k = 3 two-parametric lognormal models:
 mix_mod_lognorm <- mixmod_regression(
    x = prob_mix$x,
    y = prob_mix$prob,
    status = prob_mix$status,
    distribution = "lognormal",
+   k = 3
 )
 
 # Example 3 - Mixture identification using control argument:
 mix_mod_control <- mixmod_regression(
-   x = prob_mix$x,
-   y = prob_mix$prob,
-   status = prob_mix$status,
-   distribution = "weibull",
+  x = prob_mix$x,
+  y = prob_mix$prob,
+  status = prob_mix$status,
+  distribution = "weibull",
+  k = 2,
   control = segmented::seg.control(display = TRUE)
 )
 
-# Example 4 - Mixture identification returns one model if breakpoint detection
-# has not succeeded:
+# Example 4 - Mixture identification performs rank_regression for k = 1:
 mod <- mixmod_regression(
-   x = prob$x,
-   y = prob$prob,
-   status = prob$status,
-  distribution = "weibull"
+  x = prob$x,
+  y = prob$prob,
+  status = prob$status,
+  distribution = "weibull",
+  k = 1
 )
 
 }
