@@ -18,8 +18,8 @@ confint_fisher(x, ...)
 )
 }
 \arguments{
-\item{x}{Object with classes \code{"wt_model"} \strong{and}
-\code{"wt_ml_estimation"} returned from \code{\link{ml_estimation}}.}
+\item{x}{Object with classes \code{wt_model} \strong{and}
+\code{wt_ml_estimation} returned from \code{\link{ml_estimation}}.}
 
 \item{...}{Further arguments passed to or from other methods. Currently not used.}
 
@@ -36,7 +36,7 @@ confidence interval. One of \code{"y"} (failure probabilities) or \code{"x"}
 (quantiles).}
 }
 \value{
-A tibble with class \code{"wt_confint"} containing the following
+A tibble with class \code{wt_confint} containing the following
 columns:
   \itemize{
     \item \code{x} : An ordered sequence of the lifetime characteristic regarding

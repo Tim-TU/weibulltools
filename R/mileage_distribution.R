@@ -24,7 +24,7 @@
 #'   elements.
 #' @param distribution Supposed distribution of the random variable.
 #'
-#' @return A list of class \code{"mileage_estimation"} which contains:
+#' @return A list of class \code{mileage_estimation} which contains:
 #'   \itemize{
 #'     \item \code{coefficients} : A named vector of estimated parameter(s).
 #'     \item \code{miles_annual} : A numeric vector of element-wise computed annual
@@ -181,15 +181,15 @@ dist_mileage <- function(mileage,
 #'
 #' @return A list containing the following elements:
 #'   \itemize{
-#'     \item \code{data} : A tibble with classes \code{"wt_mcs_data"} and
-#'       \code{"wt_reliability_data"} if \code{status} is provided. Since the
-#'       class \code{"wt_reliability_data"} enables the direct usage of
+#'     \item \code{data} : A tibble with classes \code{wt_mcs_data} and
+#'       \code{wt_reliability_data} if \code{status} is provided. Since the
+#'       class \code{wt_reliability_data} enables the direct usage of
 #'       \code{data} inside
 #'       \code{\link[=estimate_cdf]{estimate_cdf.wt_reliability_data}}, the
 #'       required lifetime characteristic is automatically set to the distance
 #'       \code{mileage}.
 #'
-#'       If \code{status = NULL} class is \code{"wt_mcs_data"}, which is not
+#'       If \code{status = NULL} class is \code{wt_mcs_data}, which is not
 #'       supported by \code{estimate_cdf} due to missing \code{status}.
 #'
 #'       The tibble contains the following columns:

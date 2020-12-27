@@ -18,7 +18,7 @@ ml_estimation(x, ...)
 )
 }
 \arguments{
-\item{x}{Object of class \code{"wt_reliability_data"} returned by
+\item{x}{Object of class \code{wt_reliability_data} returned by
 \code{\link{reliability_data}}.}
 
 \item{...}{Further arguments passed to or from other methods. Currently not used.}
@@ -31,8 +31,8 @@ same as the number of observations in \code{x}.}
 \item{conf_level}{Confidence level of the interval.}
 }
 \value{
-Returns a list with the classes \code{"wt_ml_estimation"} and
-\code{"wt_model_estimation"} containing the following elements:
+Returns a list with classes \code{wt_model}, \code{wt_ml_estimation} and
+\code{wt_model_estimation} containing the following elements:
 \itemize{
   \item \code{coefficients} : A named vector of estimated coefficients
     (parameters of the assumed distribution). \strong{Note}: The parameters
@@ -50,7 +50,7 @@ Returns a list with the classes \code{"wt_ml_estimation"} and
   \item \code{logL} : The log-likelihood value.
   \item \code{aic} : Akaike Information Criterion.
   \item \code{bic} : Bayesian Information Criterion.
-  \item \code{data} : A tibble with class \code{"wt_reliability_data"} returned from \code{\link{reliability_data}}.
+  \item \code{data} : A tibble with class \code{wt_reliability_data} returned from \code{\link{reliability_data}}.
   \item \code{distribution} : Specified distribution.
 }
 }

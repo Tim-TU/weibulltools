@@ -32,8 +32,8 @@ plot_prob(x, ...)
 )
 }
 \arguments{
-\item{x}{An object of class \code{"wt_cdf_estimation"} or
-\code{"wt_model"}.}
+\item{x}{An object of class \code{wt_cdf_estimation} or
+\code{wt_model}.}
 
 \item{...}{Further arguments passed to or from other methods. Currently not used.}
 
@@ -61,7 +61,7 @@ This function is used to apply the graphical technique of probability
 plotting.
 }
 \details{
-If \code{x} was split by \code{\link{mixmod_em}} \code{\link{estimate_cdf}} with
+If \code{x} was split by \code{\link{mixmod_em}}, \code{\link{estimate_cdf}} with
 method \code{"johnson"} is applied to subgroup-specific data. The
 calculated plotting positions are shaped according to the determined split in
 \code{\link{mixmod_em}}.

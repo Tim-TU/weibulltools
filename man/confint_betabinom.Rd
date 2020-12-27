@@ -17,8 +17,8 @@ confint_betabinom(x, ...)
 )
 }
 \arguments{
-\item{x}{Object with class \code{"wt_model"} and one of the classes
-\code{"wt_model_estimation"} or \code{"wt_model_estimation_list"} returned from
+\item{x}{Object with class \code{wt_model} and one of the classes
+\code{wt_model_estimation} or \code{wt_model_estimation_list} returned from
 \code{\link{rank_regression}}.}
 
 \item{...}{Further arguments passed to or from other methods. Currently not used.}
@@ -36,7 +36,7 @@ confidence interval. One of \code{"y"} (failure probabilities) or \code{"x"}
 (quantiles).}
 }
 \value{
-A tibble with class \code{"wt_confint"} containing the following columns:
+A tibble with class \code{wt_confint} containing the following columns:
   \itemize{
     \item \code{x} : An ordered sequence of the lifetime characteristic regarding
       the failed units, starting at \code{min(x)} and ending up at \code{max(x)}.

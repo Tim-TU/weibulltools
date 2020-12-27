@@ -16,7 +16,7 @@ r_squared_profiling(x, ...)
 )
 }
 \arguments{
-\item{x}{Object of class \code{"wt_cdf_estimation"} returned from
+\item{x}{Object of class \code{wt_cdf_estimation} returned from
 \code{\link{estimate_cdf}}.}
 
 \item{...}{Further arguments passed to or from other methods. Currently not used.}

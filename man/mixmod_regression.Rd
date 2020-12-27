@@ -17,7 +17,7 @@ mixmod_regression(x, ...)
 )
 }
 \arguments{
-\item{x}{Object of class \code{"wt_cdf_estimation"} returned from
+\item{x}{Object of class \code{wt_cdf_estimation} returned from
 \code{\link{estimate_cdf}}.}
 
 \item{...}{Further arguments passed to or from other methods. Currently not used.}
@@ -32,15 +32,16 @@ is passed to \code{\link[segmented:segmented]{segmented.lm}}.
 See 'Examples' for usage.}
 }
 \value{
-Returns a list of class \code{"wt_rank_regression"} if no breakpoint
-was detected. See \code{\link{rank_regression}}.
+Returns a list with classes \code{wt_model} and
+\code{wt_rank_regression} if no breakpoint was detected. See
+\code{\link{rank_regression}}.
 
-Returns a list of class \code{"wt_mixmod_regression"} if at least one
-breakpoint was determined. The length of the list depends on the number of
-identified subgroups. Each list element contains the information provided by
-\code{\link{rank_regression}}. In addition, the returned tibble \code{data}
-of each list element only retains information on the failed units and has two
-more columns:
+Returns a list with classes \code{wt_model} and \code{wt_mixmod_regression}
+if at least one breakpoint was determined. The length of the list depends on
+the number of identified subgroups. Each list element contains the
+information provided by \code{\link{rank_regression}}. In addition, the
+returned tibble \code{data} of each list element only retains information on
+the failed units and has two more columns:
 \itemize{
   \item \code{q} : Quantiles of the standard distribution calculated from
     column \code{prob}.
@@ -48,8 +49,8 @@ more columns:
 }
 
 If more than one method was specified in \code{\link{estimate_cdf}}, the
-resulting output is a list with class \code{"wt_mixmod_regression_list"}
-where each list element has class \code{"wt_mixmod_regression"}.
+resulting output is a list with class \code{wt_mixmod_regression_list}
+where each list element has class \code{wt_mixmod_regression}.
 }
 \description{
 This function uses piecewise linear regression to divide the data into
