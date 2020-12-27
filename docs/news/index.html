@@ -167,7 +167,7 @@
 <li>
 <code><a href="../reference/mixmod_em.default.html">mixmod_em.default()</a></code> (former <code><a href="../reference/mixmod_em.html">mixmod_em()</a></code>): Renamed <code>event</code> with <code>status</code>. Removed <code>post</code>.</li>
 <li>
-<code><a href="../reference/mixmod_regression.default.html">mixmod_regression.default()</a></code> (former <code><a href="../reference/mixmod_regression.html">mixmod_regression()</a></code>): Renamed <code>event</code> with <code>status</code>.</li>
+<code><a href="../reference/mixmod_regression.default.html">mixmod_regression.default()</a></code> (former <code><a href="../reference/mixmod_regression.html">mixmod_regression()</a></code>): Renamed <code>event</code> with <code>status</code>. Added arguments <code>k</code> and <code>control</code>, which provide finer control over the segmentation process. Expect default setting to provide other results than in prior versions.</li>
 <li>
 <code><a href="../reference/predict_prob.html">predict_prob()</a></code>: Renamed <code>loc_sc_params</code> with <code>dist_params</code>.</li>
 <li>
@@ -221,9 +221,12 @@
 <ul>
 <li>Added support for ggplot2 in all plot functions. Plot method can be selected in <code><a href="../reference/plot_prob.html">plot_prob()</a></code> or <code><a href="../reference/plot_pop.html">plot_pop()</a></code> via argument <code>plot_method</code>.</li>
 <li>Added <code><a href="../reference/reliability_data.html">reliability_data()</a></code>: Create consistent reliability data.</li>
-<li>New argument in <code><a href="../reference/mr_method.html">mr_method()</a></code>: With <code>ties.method</code> it can be specified how ties should be treated.</li>
-<li>Added <code><a href="../reference/estimate_cdf.html">estimate_cdf()</a></code>: Unite functionality of <code><a href="../reference/mr_method.html">mr_method()</a></code>, <code><a href="../reference/johnson_method.html">johnson_method()</a></code>, <code><a href="../reference/kaplan_method.html">kaplan_method()</a></code> and <code><a href="../reference/nelson_method.html">nelson_method()</a></code>.</li>
+<li>Added <code><a href="../reference/estimate_cdf.html">estimate_cdf()</a></code>: Unite functionality of <code><a href="../reference/mr_method.html">mr_method()</a></code>, <code><a href="../reference/johnson_method.html">johnson_method()</a></code>, <code><a href="../reference/kaplan_method.html">kaplan_method()</a></code> and <code><a href="../reference/nelson_method.html">nelson_method()</a></code>. Added option <code>ties.method</code> for <code>method = "mr"</code>, which specifies how ties should be treated.</li>
 <li>Support of multiple methods in <code><a href="../reference/estimate_cdf.html">estimate_cdf()</a></code> and all functions that depend on the <code>cdf_estimation</code> (<code><a href="../reference/rank_regression.html">rank_regression()</a></code>, <code><a href="../reference/plot_prob.html">plot_prob()</a></code>, <code><a href="../reference/plot_mod.html">plot_mod()</a></code>, <code><a href="../reference/plot_conf.html">plot_conf()</a></code>, <code><a href="../reference/mixmod_regression.html">mixmod_regression()</a></code>).</li>
+<li>
+<code><a href="../reference/plot_prob.html">plot_prob()</a></code> and <code><a href="../reference/plot_mod.html">plot_mod()</a></code> are able to handle mixture models.</li>
+<li>
+<code><a href="../reference/mixmod_regression.html">mixmod_regression()</a></code> is now more flexible. Argument <code>k</code> can be used to control number of subgroups or to determine them in an automatic fashion. Argument <code>control</code> provides additional control over the segmentation procedure.</li>
 <li>Added <code>print.wt_rank_regression()</code>, <code>print.wt_ml_estimation()</code>, <code>print.wt_model_estimation()</code>, <code>print.wt_model_estimation_list()</code>, <code>print.wt_mixmod_regression()</code> and <code>print.wt_mixmod_regression_list()</code>.</li>
 <li>Added <code>vcov.wt_model_estimation()</code>.</li>
 <li>Added <code><a href="../reference/dist_delay.html">dist_delay()</a></code>: Generalizes the distribution-specific modeling of delays.</li>
