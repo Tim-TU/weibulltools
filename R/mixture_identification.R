@@ -47,8 +47,9 @@
 #' }
 #'
 #' If more than one method was specified in \code{\link{estimate_cdf}}, the
-#' resulting output is a list with class \code{wt_mixmod_regression_list}
-#' where each list element has class \code{wt_mixmod_regression}.
+#' resulting output is a list with classes \code{wt_model} and
+#' \code{wt_mixmod_regression_list} where each list element has class
+#' \code{wt_model} and \code{wt_mixmod_regression}.
 #'
 #' @encoding UTF-8
 #'
@@ -152,8 +153,6 @@ mixmod_regression.wt_cdf_estimation <- function(
       conf_level = conf_level,
       control = control
     )
-
-    class(out) <- c("wt_model", class(out))
   } else {
     out <- purrr::map(x_split, function(cdf_estimation) {
       mixmod_regression_(
