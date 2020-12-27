@@ -32,10 +32,10 @@ A mixed distribution often represents the combination of multiple failure modes
 and thus must be split in its components to get reasonable results in further analyses. 
 
 Segmented regression aims to detect breakpoints in the sample data from which a 
-split in subgroups can be made. The EM-Algorithm is a computation-intensive method 
-that iteratively tries to maximize a likelihood function, which is weighted by 
-posterior probabilities, which are conditional probabilities that an observation 
-belongs to subgroup _k_.  
+split in subgroups can be made. The expectation-maximization (EM) algorithm is a 
+computation-intensive method that iteratively tries to maximize a likelihood function, 
+which is weighted by posterior probabilities. These are conditional probabilities 
+that an observation belongs to subgroup _k_.  
 
 In the following, the focus is on the application of these methods and their 
 visualizations using the functions `mixmod_regression()`, `mixmod_em()`, 
@@ -86,8 +86,8 @@ weibull_plot
 ```
 
 <br>
-Since there is an obvious slope change in the Weibull probability plot of _Figure 1_, 
-the appearance of a mixture model is strengthened.  
+Since there is one obvious slope change in the Weibull probability plot of _Figure 1_, 
+the appearance of a mixture model consisting of two subgroups is strengthened.  
 
 ## Segmented Regression with Package `weibulltools`
 
@@ -102,8 +102,10 @@ of the obtained results is done by functions `plot_prob()` and `plot_mod()`.
 mixreg_weib <- mixmod_regression(
   x = voltage_cdf, 
   distribution = "weibull", 
-  control = segmented::seg.control(nonParam = FALSE)
+  k = 2
 )
+
+mixreg_weib
 
 # Using plot_prob_mix(). 
 mix_reg_plot <- plot_prob(
@@ -132,17 +134,23 @@ mix_reg_lines
 ```
 
 <br>
-Without specifying the number of mixed components _(k)_ this method has separated 
-the data in three groups. This can bee seen in _Figure 2_ and _Figure 3_. 
-To sum up, an upside of this function is that one does not have to specify the 
-number of mixing components, since segmentation happens in an automated fashion. 
-Nevertheless the intention of this function is to give a hint for the existence of 
-a mixture model. An in-depth analysis should be done afterwards.  
+The method has separated the data into $k = 2$ subgroups. This can bee seen in 
+_Figure 2_ and _Figure 3_.  
+An upside of this function is that the segmentation is done in a comprehensible 
+manner.  
+
+Furthermore, the segmentation process can be done automatically by setting `k = NULL`. 
+The danger here, however, is an overestimation of the breakpoints.  
+
+To sum up, this function should give an intention of the existence of a mixture 
+model. An in-depth analysis should be done afterwards.  
 
 ## EM Algorithm with Package `weibulltools`
 
 The EM algorithm can be applied through the usage of the function `mixmod_em()`. 
-In comparison to `mixmod_regression()` one has to specify _k_, the number of subgroups. 
+In contrast to `mixmod_regression()`, this method does not support an automatic 
+separation routine and therefore _k_, the number of subgroups, must always be specified.  
+
 The obtained results can be also visualized by the functions `plot_prob()` and `plot_mod()`.  
 
 ```{r em_weibull_I, fig.cap = "Figure 4: Subgroup-specific plotting positions using EM algorithm.", message = FALSE}
@@ -152,6 +160,8 @@ mix_em_weib <- mixmod_em(
   distribution = "weibull",
   k = 2
 )
+
+mix_em_weib
 
 # Using plot_prob(): 
 mix_em_plot <- plot_prob(
@@ -179,8 +189,7 @@ mix_em_lines
 ```
 
 <br>
-In comparison to `mixmod_regression()` the EM-Algorithm can also assign censored 
-items to a specific subgroup. Hence, an individual analysis of the mixing components, 
-depicted in _Figure 4_ and _Figure 5_, is possible. In conclusion an analysis of 
-a mixture model using `mixmod_em()` is statistically founded. A drawback of this 
-function is, that the identification of the number of subgroups can not be determined automatically.
+One advantage over `mixmod_regression()` is, that the EM algorithm can also assign 
+censored items to a specific subgroup. Hence, an individual analysis of the mixing 
+components, depicted in _Figure 4_ and _Figure 5_, is possible.  
+In conclusion an analysis of a mixture model using `mixmod_em()` is statistically founded.
