@@ -25,7 +25,8 @@
 #'     and \code{"johnson"}, filled with \code{NA} for other methods or if
 #'     \code{status = 0}.
 #'   \item \code{prob} : Estimated failure probabilities, \code{NA} if \code{status = 0}.
-#'   \item \code{method} : Specified method for the estimation of failure probabilities.
+#'   \item \code{cdf_estimation_method} : Specified method for the estimation of
+#'     failure probabilities.
 #' }
 #'
 #' @section Options:
@@ -208,13 +209,16 @@ estimate_cdf.default <- function(x,
 
 #' @export
 print.wt_cdf_estimation <- function(x, ...) {
-  n_methods <- length(unique(x$method))
+  n_methods <- length(unique(x$cdf_estimation_method))
   if (n_methods == 1) {
-    cat("CDF estimation for method '", x$method[1], "':\n", sep = "")
+    cat(
+      "CDF estimation for method '", x$cdf_estimation_method[1], "':\n",
+      sep = ""
+    )
   } else {
     cat(
       "CDF estimation for methods ",
-      paste0("'", unique(x$method), "'", collapse = ", "),
+      paste0("'", unique(x$cdf_estimation_method), "'", collapse = ", "),
       ":\n",
       sep = ""
     )
@@ -341,9 +345,10 @@ mr_method_ <- function(data,
   }
 
   tbl_out <- tbl_calc %>%
-    dplyr::mutate(method = "mr") %>%
+    dplyr::mutate(cdf_estimation_method = "mr") %>%
     dplyr::select(
-      .data$id, .data$x, .data$status, .data$rank, .data$prob, .data$method
+      .data$id, .data$x, .data$status, .data$rank, .data$prob,
+      .data$cdf_estimation_method
     )
 
   tbl_out
@@ -378,8 +383,8 @@ mr_method_ <- function(data,
 #'     right censored observation (= 0) or a failure (= 1).
 #'   \item \code{rank} : The adjusted ranks.
 #'   \item \code{prob} : Estimated failure probabilities, \code{NA} if \code{status = 0}.
-#'   \item \code{method} : Specified method for the estimation of failure
-#'     probabilities (always 'johnson').
+#'   \item \code{cdf_estimation_method} : Specified method for the estimation of
+#'     failure probabilities (always 'johnson').
 #' }
 #'
 #' @examples
@@ -467,9 +472,10 @@ johnson_method_ <- function(data) {
         NA_real_
       )
     ) %>%
-    dplyr::mutate(method = "johnson") %>%
+    dplyr::mutate(cdf_estimation_method = "johnson") %>%
     dplyr::select(
-      .data$id, .data$x, .data$status, .data$rank, .data$prob, .data$method
+      .data$id, .data$x, .data$status, .data$rank, .data$prob,
+      .data$cdf_estimation_method
     )
 
   tbl_out
@@ -506,8 +512,8 @@ johnson_method_ <- function(data) {
 #'     right censored observation (= 0) or a failure (= 1).
 #'   \item \code{rank} : Filled with \code{NA}.
 #'   \item \code{prob} : Estimated failure probabilities, \code{NA} if \code{status = 0}.
-#'   \item \code{method} : Specified method for the estimation of failure
-#'     probabilities (always 'kaplan').
+#'   \item \code{cdf_estimation_method} : Specified method for the estimation of
+#'     failure probabilities (always 'kaplan').
 #' }
 #'
 #' @references \emph{NIST/SEMATECH e-Handbook of Statistical Methods},
@@ -609,10 +615,11 @@ kaplan_method_ <- function(data) {
         tbl_calc$prob[match(.data$x[order(.data$x)], tbl_calc$x)],
         NA_real_
       ),
-      method = "kaplan"
+      cdf_estimation_method = "kaplan"
     ) %>%
     dplyr::select(
-      .data$id, .data$x, .data$status, .data$rank, .data$prob, .data$method
+      .data$id, .data$x, .data$status, .data$rank, .data$prob,
+      .data$cdf_estimation_method
     )
 
   tbl_out
@@ -647,8 +654,8 @@ kaplan_method_ <- function(data) {
 #'     right censored observation (= 0) or a failure (= 1).
 #'   \item \code{rank} : Filled with \code{NA}.
 #'   \item \code{prob} : Estimated failure probabilities, \code{NA} if \code{status = 0}.
-#'   \item \code{method} : Specified method for the estimation of failure
-#'     probabilities (always 'nelson').
+#'   \item \code{cdf_estimation_method} : Specified method for the estimation of
+#'     failure probabilities (always 'nelson').
 #' }
 #'
 #' @examples
@@ -724,10 +731,11 @@ nelson_method_ <- function(data) {
         tbl_calc$prob[match(.data$x[order(.data$x)], tbl_calc$x)],
         NA_real_
       ),
-      method = "nelson"
+      cdf_estimation_method = "nelson"
     ) %>%
     dplyr::select(
-      .data$id, .data$x, .data$status, .data$rank, .data$prob, .data$method
+      .data$id, .data$x, .data$status, .data$rank, .data$prob,
+      .data$cdf_estimation_method
     )
 
   tbl_out

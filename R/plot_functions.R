@@ -284,7 +284,7 @@ plot_prob.wt_mixmod_em <- function(x,
 
       john <- estimate_cdf(data, "johnson")
 
-      john$method <- as.character(index)
+      john$cdf_estimation_method <- as.character(index)
 
       john
     }
@@ -419,7 +419,7 @@ plot_prob.default <- function(
     prob = y,
     status = status,
     id = id,
-    method = NA_character_
+    cdf_estimation_method = NA_character_
   )
 
   plot_prob_(
@@ -697,18 +697,21 @@ plot_mod.wt_model_estimation <- function(p_obj, x, title_trace = "Fit", ...) {
 
 #' @export
 plot_mod.wt_model_estimation_list <- function(p_obj, x, title_trace = "Fit", ...) {
-  methods <- names(x)
+  cdf_estimation_methods <- names(x)
 
-  tbl_pred <- purrr::map2_dfr(x, methods, function(model_estimation, method) {
-    failed_data <- dplyr::filter(model_estimation$data, .data$status == 1)
+  tbl_pred <- purrr::map2_dfr(
+    x, cdf_estimation_methods,
+    function(model_estimation, cdf_estimation_method) {
+      failed_data <- dplyr::filter(model_estimation$data, .data$status == 1)
 
-    plot_mod_helper(
-      x = range(failed_data$x),
-      dist_params = model_estimation$coefficients,
-      distribution = model_estimation$distribution,
-      method = method
-    )
-  })
+      plot_mod_helper(
+        x = range(failed_data$x),
+        dist_params = model_estimation$coefficients,
+        distribution = model_estimation$distribution,
+        cdf_estimation_method = cdf_estimation_method
+      )
+    }
+  )
 
   plot_mod_vis(
     p_obj = p_obj,
@@ -722,17 +725,19 @@ plot_mod.wt_model_estimation_list <- function(p_obj, x, title_trace = "Fit", ...
 #' @export
 plot_mod.wt_mixmod_regression <- function(p_obj, x, title_trace = "Fit", ...) {
   tbl_pred <- purrr::map2_dfr(x, seq_along(x), function(model_estimation, index) {
-    method <- if (!tibble::has_name(model_estimation$data, "method")) {
+    cdf_estimation_method <- if (
+      !tibble::has_name(model_estimation$data, "cdf_estimation_method")
+    ) {
       # Case mixmod_em (plot_mod.mixmod_em calls this method internally)
       as.character(index)
     } else {
       # Case mixmod_regression
-      model_estimation$data$method[1]
+      model_estimation$data$cdf_estimation_method[1]
     }
 
     plot_mod_mix_helper(
       model_estimation = model_estimation,
-      method = method,
+      cdf_estimation_method = cdf_estimation_method,
       group = as.character(index)
     )
   })
@@ -752,19 +757,22 @@ plot_mod.wt_mixmod_regression_list <- function(p_obj,
                                                title_trace = "Fit",
                                                ...
 ) {
-  tbl_pred <- purrr::map2_dfr(x, names(x), function(mixmod_regression, method) {
-    purrr::map2_dfr(
-      mixmod_regression,
-      seq_along(mixmod_regression),
-      function(model_estimation, index) {
-        plot_mod_mix_helper(
-          model_estimation = model_estimation,
-          method = method,
-          group = as.character(index)
-        )
-      }
-    )
-  })
+  tbl_pred <- purrr::map2_dfr(
+    x, names(x),
+    function(mixmod_regression, cdf_estimation_method) {
+      purrr::map2_dfr(
+        mixmod_regression,
+        seq_along(mixmod_regression),
+        function(model_estimation, index) {
+          plot_mod_mix_helper(
+            model_estimation = model_estimation,
+            cdf_estimation_method = cdf_estimation_method,
+            group = as.character(index)
+          )
+        }
+      )
+    }
+  )
 
   plot_mod_vis(
     p_obj = p_obj,
@@ -1122,24 +1130,29 @@ plot_conf.wt_confint <- function(p_obj,
 
   if (inherits(mod, "wt_model_estimation")) {
     ## Fake model_estimation_list
-    # ml_estimation$data has no method column
-    method <- if (hasName(mod$data, "method")) mod$data$method[1] else
-      NA_character_
+    # ml_estimation$data has no cdf_estimation_method column
+    cdf_estimation_method <- if (hasName(mod$data, "method")) {
+      mod$data$cdf_estimation_method[1]
+    } else NA_character_
     mod <- list(mod)
-    names(mod) <- method
+    names(mod) <- cdf_estimation_method
   }
 
   # Perform customised plot_mod on model_estimation_list
-  methods <- names(mod)
-  tbl_pred <- purrr::map2_dfr(mod, methods, function(model_estimation, method) {
-    plot_mod_helper(
-      # Take x coordinates from confint. This guarantees considering of b lives
-      x = x$x,
-      dist_params = model_estimation$coefficients,
-      distribution = model_estimation$distribution,
-      method = method
-    )
-  })
+  cdf_estimation_methods <- names(mod)
+  tbl_pred <- purrr::map2_dfr(
+    mod, cdf_estimation_methods,
+    function(model_estimation, cdf_estimation_method) {
+      plot_mod_helper(
+        # Take x coordinates from confint. This guarantees consideration of
+        # b lives
+        x = x$x,
+        dist_params = model_estimation$coefficients,
+        distribution = model_estimation$distribution,
+        cdf_estimation_method = cdf_estimation_method
+      )
+    }
+  )
 
   p_mod <- plot_mod_vis(
     p_obj = p_obj,
