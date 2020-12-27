@@ -14,11 +14,11 @@ mcs_delay_report(
 )
 }
 \arguments{
-\item{date_repair}{a vector of class \code{"character"} or \code{"Date"}, in the
+\item{date_repair}{a vector of class \code{character} or \code{Date}, in the
 format "yyyy-mm-dd", indicating the date of repair of a failed unit.
 Use \code{NA} for missing elements.}
 
-\item{date_report}{a vector of class \code{"character"} or \code{"Date"}, in the
+\item{date_report}{a vector of class \code{character} or \code{Date}, in the
 format "yyyy-mm-dd", indicating the date of report of a failed unit.
 Use \code{NA} for missing elements.}
 

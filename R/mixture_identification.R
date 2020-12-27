@@ -30,15 +30,16 @@
 #'   is passed to \code{\link[segmented:segmented]{segmented.lm}}.
 #'   See 'Examples' for usage.
 #'
-#' @return Returns a list of class \code{wt_rank_regression} if no breakpoint
-#' was detected. See \code{\link{rank_regression}}.
+#' @return Returns a list with classes \code{wt_model} and
+#' \code{wt_rank_regression} if no breakpoint was detected. See
+#' \code{\link{rank_regression}}.
 #'
-#' Returns a list of class \code{wt_mixmod_regression} if at least one
-#' breakpoint was determined. The length of the list depends on the number of
-#' identified subgroups. Each list element contains the information provided by
-#' \code{\link{rank_regression}}. In addition, the returned tibble \code{data}
-#' of each list element only retains information on the failed units and has two
-#' more columns:
+#' Returns a list with classes \code{wt_model} and \code{wt_mixmod_regression}
+#' if at least one breakpoint was determined. The length of the list depends on
+#' the number of identified subgroups. Each list element contains the
+#' information provided by \code{\link{rank_regression}}. In addition, the
+#' returned tibble \code{data} of each list element only retains information on
+#' the failed units and has two more columns:
 #' \itemize{
 #'   \item \code{q} : Quantiles of the standard distribution calculated from
 #'     column \code{prob}.
@@ -522,14 +523,14 @@ print.wt_mixmod_regression_list <- function(x,
 #'   log-likelihood values, which seems permissible.
 #' @template dots
 #'
-#' @return Returns a list with class \code{wt_mixmod_em}. The length of the
-#' list depends on the number of specified subgroups \emph{k}. The first
-#' \code{k} lists contain information provided by \link{ml_estimation}. The
-#' values of \code{logL}, \code{aic} and \code{bic} are the results of a
-#' weighted log-likelihood, where the weights are the posterior probabilities
-#' determined by the algorithm. The last list summarizes further results of the
-#' EM algorithm and is therefore called \code{em_results}. It contains the
-#' following elements:
+#' @return Returns a list with classes \code{wt_model} and \code{wt_mixmod_em}.
+#' The length of the list depends on the number of specified subgroups \emph{k}.
+#' The first \code{k} lists contain information provided by
+#' \link{ml_estimation}. The values of \code{logL}, \code{aic} and \code{bic}
+#' are the results of a weighted log-likelihood, where the weights are the
+#' posterior probabilities determined by the algorithm. The last list summarizes
+#' further results of the EM algorithm and is therefore called
+#' \code{em_results}. It contains the following elements:
 #'   \itemize{
 #'     \item \code{a_priori} : A vector with estimated prior probabilities.
 #'     \item \code{a_posteriori} : A matrix with estimated posterior probabilities.

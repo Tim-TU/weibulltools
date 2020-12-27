@@ -14,7 +14,7 @@ mcs_delay(
 )
 }
 \arguments{
-\item{date_1}{A vector of class \code{"character"} or \code{"Date"}, in the
+\item{date_1}{A vector of class \code{character} or \code{Date}, in the
   format "yyyy-mm-dd", indicating the earlier of the two dates. Use \code{NA}
   for missing elements.
 
@@ -22,7 +22,7 @@ mcs_delay(
   element contains the earlier dates of the first delay and the second element
   contains the earlier dates of the second delay, and so forth.(See 'Examples').}
 
-\item{date_2}{A vector of class \code{"character"} or \code{"Date"}, in the
+\item{date_2}{A vector of class \code{character} or \code{Date}, in the
   format "yyyy-mm-dd", indicating the later of the two dates. Use \code{NA}
   for missing elements.
 
@@ -51,15 +51,15 @@ to the second (See 'Examples').}
 \value{
 A list containing the following elements:
   \itemize{
-    \item \code{data} : A tibble with classes \code{"wt_mcs_data"} and
-      \code{"wt_reliability_data"} if \code{status} is provided. Since the
-      class \code{"wt_reliability_data"} enables the direct usage of
+    \item \code{data} : A tibble with classes \code{wt_mcs_data} and
+      \code{wt_reliability_data} if \code{status} is provided. Since the
+      class \code{wt_reliability_data} enables the direct usage of
       \code{data} inside
       \code{\link[=estimate_cdf]{estimate_cdf.wt_reliability_data}}, the
       required lifetime characteristic is automatically set to the operating
       time \code{time}.
 
-      If \code{status = NULL} class is \code{"wt_mcs_data"}, which is not
+      If \code{status = NULL} class is \code{wt_mcs_data}, which is not
       supported by \code{estimate_cdf} due to missing \code{status}.
 
       The tibble contains the following columns:

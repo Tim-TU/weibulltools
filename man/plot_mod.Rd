@@ -13,7 +13,7 @@ plot_mod(p_obj, x, ...)
 \arguments{
 \item{p_obj}{A plot object returned from \code{\link{plot_prob}}.}
 
-\item{x}{An object of class \code{"wt_model"}.}
+\item{x}{An object of class \code{wt_model}.}
 
 \item{...}{Further arguments passed to or from other methods. Currently not used.}
 

@@ -488,7 +488,7 @@ mcs_helper <- function(x, par_list) {
 #' and afterwards estimates the parameter(s) of a supposed distribution,
 #' using maximum likelihood.
 #'
-#' @param date_prod A vector of class \code{character"} or \code{Date}, in the
+#' @param date_prod A vector of class \code{character} or \code{Date}, in the
 #'   format "yyyy-mm-dd", indicating the date of production of a unit.
 #'   Use \code{NA} for missing elements.
 #' @param date_register A vector of class \code{character} or \code{Date}, in

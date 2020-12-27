@@ -1,5 +1,5 @@
 #' @return
-#' Returns a list with the classes \code{wt_ml_estimation} and
+#' Returns a list with classes \code{wt_model}, \code{wt_ml_estimation} and
 #' \code{wt_model_estimation} containing the following elements:
 #' \itemize{
 #'   \item \code{coefficients} : A named vector of estimated coefficients
