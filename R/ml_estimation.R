@@ -14,7 +14,7 @@
 #' which is implemented in \emph{SPREDA}, to obtain the estimates. Normal
 #' approximation confidence intervals for the parameters are computed as well.
 #'
-#' @param x Object of class \code{"wt_reliability_data"} returned by
+#' @param x Object of class \code{wt_reliability_data} returned by
 #'   \code{\link{reliability_data}}.
 #' @param distribution Supposed distribution of the random variable.
 #' @param wts Optional vector of case weights. The length of \code{wts} must be the
@@ -23,7 +23,7 @@
 #' @template dots
 #'
 #' @template return-ml-estimation
-#' @templateVar data A tibble with class \code{"wt_reliability_data"} returned from \code{\link{reliability_data}}.
+#' @templateVar data A tibble with class \code{wt_reliability_data} returned from \code{\link{reliability_data}}.
 #'
 #' @encoding UTF-8
 #'

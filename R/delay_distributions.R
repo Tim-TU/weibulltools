@@ -14,15 +14,15 @@
 #' \code{c(date_1[i], date_2[i])}. Time differences less than or equal to zero are
 #' not considered as well.
 #'
-#' @param date_1 A vector of class \code{"character"} or \code{"Date"}, in the
+#' @param date_1 A vector of class \code{character} or \code{Date}, in the
 #'   format "yyyy-mm-dd", indicating the earlier of the two dates. Use \code{NA}
 #'   for missing elements.
-#' @param date_2 A vector of class \code{"character"} or \code{"Date"}, in the
+#' @param date_2 A vector of class \code{character} or \code{Date}, in the
 #'   format "yyyy-mm-dd", indicating the later of the two dates. Use \code{NA}
 #'   for missing elements.
 #' @param distribution Supposed distribution of the random variable.
 #'
-#' @return A list of class \code{"delay_estimation"} which contains:
+#' @return A list of class \code{delay_estimation} which contains:
 #'   \itemize{
 #'     \item \code{coefficients} : A named vector of estimated parameter(s).
 #'     \item \code{delay} : A numeric vector of element-wise computed differences
@@ -182,14 +182,14 @@ dist_delay <- function(date_1,
 #'     reporting delays.
 #' }
 #'
-#' @param date_1 A vector of class \code{"character"} or \code{"Date"}, in the
+#' @param date_1 A vector of class \code{character} or \code{Date}, in the
 #'   format "yyyy-mm-dd", indicating the earlier of the two dates. Use \code{NA}
 #'   for missing elements.
 #'
 #'   If more than one delay should be considered it must be a list where the first
 #'   element contains the earlier dates of the first delay and the second element
 #'   contains the earlier dates of the second delay, and so forth.(See 'Examples').
-#' @param date_2 A vector of class \code{"character"} or \code{"Date"}, in the
+#' @param date_2 A vector of class \code{character} or \code{Date}, in the
 #'   format "yyyy-mm-dd", indicating the later of the two dates. Use \code{NA}
 #'   for missing elements.
 #'
@@ -213,15 +213,15 @@ dist_delay <- function(date_1,
 #'
 #' @return A list containing the following elements:
 #'   \itemize{
-#'     \item \code{data} : A tibble with classes \code{"wt_mcs_data"} and
-#'       \code{"wt_reliability_data"} if \code{status} is provided. Since the
-#'       class \code{"wt_reliability_data"} enables the direct usage of
+#'     \item \code{data} : A tibble with classes \code{wt_mcs_data} and
+#'       \code{wt_reliability_data} if \code{status} is provided. Since the
+#'       class \code{wt_reliability_data} enables the direct usage of
 #'       \code{data} inside
 #'       \code{\link[=estimate_cdf]{estimate_cdf.wt_reliability_data}}, the
 #'       required lifetime characteristic is automatically set to the operating
 #'       time \code{time}.
 #'
-#'       If \code{status = NULL} class is \code{"wt_mcs_data"}, which is not
+#'       If \code{status = NULL} class is \code{wt_mcs_data}, which is not
 #'       supported by \code{estimate_cdf} due to missing \code{status}.
 #'
 #'       The tibble contains the following columns:
@@ -488,10 +488,10 @@ mcs_helper <- function(x, par_list) {
 #' and afterwards estimates the parameter(s) of a supposed distribution,
 #' using maximum likelihood.
 #'
-#' @param date_prod A vector of class \code{"character"} or \code{"Date"}, in the
+#' @param date_prod A vector of class \code{character"} or \code{Date}, in the
 #'   format "yyyy-mm-dd", indicating the date of production of a unit.
 #'   Use \code{NA} for missing elements.
-#' @param date_register A vector of class \code{"character"} or \code{"Date"}, in
+#' @param date_register A vector of class \code{character} or \code{Date}, in
 #'   the format "yyyy-mm-dd", indicating the date of registration of a unit.
 #'   Use \code{NA} for missing elements.
 #' @param distribution Supposed distribution of the random variable. Only
@@ -711,10 +711,10 @@ mcs_delay_register <- function(date_prod,
 #'
 #' @inheritParams dist_delay_register
 #'
-#' @param date_repair a vector of class \code{"character"} or \code{"Date"}, in the
+#' @param date_repair a vector of class \code{character} or \code{Date}, in the
 #'   format "yyyy-mm-dd", indicating the date of repair of a failed unit.
 #'   Use \code{NA} for missing elements.
-#' @param date_report a vector of class \code{"character"} or \code{"Date"}, in the
+#' @param date_report a vector of class \code{character} or \code{Date}, in the
 #'   format "yyyy-mm-dd", indicating the date of report of a failed unit.
 #'   Use \code{NA} for missing elements.
 #'

@@ -30,10 +30,10 @@
 #'   is passed to \code{\link[segmented:segmented]{segmented.lm}}.
 #'   See 'Examples' for usage.
 #'
-#' @return Returns a list of class \code{"wt_rank_regression"} if no breakpoint
+#' @return Returns a list of class \code{wt_rank_regression} if no breakpoint
 #' was detected. See \code{\link{rank_regression}}.
 #'
-#' Returns a list of class \code{"wt_mixmod_regression"} if at least one
+#' Returns a list of class \code{wt_mixmod_regression} if at least one
 #' breakpoint was determined. The length of the list depends on the number of
 #' identified subgroups. Each list element contains the information provided by
 #' \code{\link{rank_regression}}. In addition, the returned tibble \code{data}
@@ -46,8 +46,8 @@
 #' }
 #'
 #' If more than one method was specified in \code{\link{estimate_cdf}}, the
-#' resulting output is a list with class \code{"wt_mixmod_regression_list"}
-#' where each list element has class \code{"wt_mixmod_regression"}.
+#' resulting output is a list with class \code{wt_mixmod_regression_list}
+#' where each list element has class \code{wt_mixmod_regression}.
 #'
 #' @encoding UTF-8
 #'
@@ -177,15 +177,15 @@ mixmod_regression.wt_cdf_estimation <- function(
 #' @inheritParams mixmod_regression.wt_cdf_estimation
 #'
 #'
-#' @return Returns a list of class \code{"wt_rank_regression"} if no breakpoint
+#' @return Returns a list of class \code{wt_rank_regression} if no breakpoint
 #' was detected. See \code{\link{rank_regression}}. The tibble \code{data} is
-#' returned with class \code{"wt_cdf_estimation"} and contains the additional
+#' returned with class \code{wt_cdf_estimation} and contains the additional
 #' dummy columns \code{method} and \code{id}. The former is filled with
 #' \code{NA_character}, due to generic visualization functions and the latter is
 #' filled with \code{"XXXXXX"} to point out that unit identification is not
 #' possible when using the vector-based approach.
 #'
-#' Returns a list of class \code{"wt_mixmod_regression"} if at least one
+#' Returns a list of class \code{wt_mixmod_regression} if at least one
 #' breakpoint was determined. The length of the list depends on the number of
 #' identified subgroups. Each list contains the information provided by
 #' \code{\link{rank_regression}}. The returned tibble \code{data} of each list
@@ -509,7 +509,7 @@ print.wt_mixmod_regression_list <- function(x,
 #'
 #' This procedure is repeated until the complete log-likelihood has converged.
 #'
-#' @param x An object of class \code{"wt_reliability_data"} returned from
+#' @param x An object of class \code{wt_reliability_data} returned from
 #'   \code{\link{reliability_data}}.
 #' @param distribution \code{"weibull"} until further distributions are implemented.
 #' @param conf_level Confidence level for the intervals of the weibull parameters
@@ -522,7 +522,7 @@ print.wt_mixmod_regression_list <- function(x,
 #'   log-likelihood values, which seems permissible.
 #' @template dots
 #'
-#' @return Returns a list with class \code{"wt_mixmod_em"}. The length of the
+#' @return Returns a list with class \code{wt_mixmod_em}. The length of the
 #' list depends on the number of specified subgroups \emph{k}. The first
 #' \code{k} lists contain information provided by \link{ml_estimation}. The
 #' values of \code{logL}, \code{aic} and \code{bic} are the results of a

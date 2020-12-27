@@ -27,7 +27,7 @@
 #' in context of \emph{Rank Regression}. For an accepted statistical method use
 #' \link[=ml_estimation]{maximum likelihood}.
 #'
-#' @param x Object of class \code{"wt_cdf_estimation"} returned from
+#' @param x Object of class \code{wt_cdf_estimation} returned from
 #'  \code{\link{estimate_cdf}}.
 #' @param distribution Supposed distribution of the random variable.
 #' @param conf_level Confidence level of the interval. If \code{distribution} is
@@ -35,12 +35,12 @@
 #' @template dots
 #'
 #' @template return-rank-regression
-#' @templateVar data A tibble with class \code{"wt_cdf_estimation"} returned from \code{\link{estimate_cdf}}.
+#' @templateVar data A tibble with class \code{wt_cdf_estimation} returned from \code{\link{estimate_cdf}}.
 #' @return
 #'   If more than one method was specified in \code{\link{estimate_cdf}},
-#'   the resulting output is a list with class \code{"wt_model_estimation_list"}.
-#'   In this case each list element has classes \code{"wt_rank_regression"} and
-#'   \code{"wt_model_estimation"} and the items listed above, are included.
+#'   the resulting output is a list with class \code{wt_model_estimation_list}.
+#'   In this case each list element has classes \code{wt_rank_regression} and
+#'   \code{wt_model_estimation} and the items listed above, are included.
 #'
 #' @encoding UTF-8
 #'
@@ -518,7 +518,7 @@ print.wt_rank_regression <- function(x,
 #' In terms of \emph{Rank Regression} this function can be optimized
 #' (\code{\link{optim}}) to estimate the threshold parameter.
 #'
-#' @param x Object of class \code{"wt_cdf_estimation"} returned from
+#' @param x Object of class \code{wt_cdf_estimation} returned from
 #'   \code{\link{estimate_cdf}}.
 #' @param thres A numeric value for the threshold parameter.
 #' @param distribution Supposed three-parametric distribution of the random variable.

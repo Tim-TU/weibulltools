@@ -58,7 +58,7 @@ plot_layout <- function(
 #'
 #' @details
 #'
-#' If \code{x} was split by \code{\link{mixmod_em}} \code{\link{estimate_cdf}} with
+#' If \code{x} was split by \code{\link{mixmod_em}}, \code{\link{estimate_cdf}} with
 #' method \code{"johnson"} is applied to subgroup-specific data. The
 #' calculated plotting positions are shaped according to the determined split in
 #' \code{\link{mixmod_em}}.
@@ -77,8 +77,8 @@ plot_layout <- function(
 #' and the data has been split in two groups, the legend entries are "Group: 1"
 #' and "Group: 2".
 #'
-#' @param x An object of class \code{"wt_cdf_estimation"} or
-#'   \code{"wt_model"}.
+#' @param x An object of class \code{wt_cdf_estimation} or
+#'   \code{wt_model}.
 #' @param distribution Supposed distribution of the random variable.
 #' @param title_main A character string which is assigned to the main title
 #'   of the plot.
@@ -594,7 +594,7 @@ plot_prob_mix <- function(
 #' and "Line: 2".
 #'
 #' @param p_obj A plot object returned from \code{\link{plot_prob}}.
-#' @param x An object of class \code{"wt_model"}.
+#' @param x An object of class \code{wt_model}.
 #' @inheritParams plot_prob.wt_cdf_estimation
 #'
 #' @encoding UTF-8

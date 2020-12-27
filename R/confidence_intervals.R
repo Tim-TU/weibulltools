@@ -9,8 +9,8 @@
 #' rank \emph{j} at a 50\% level, is to determine the probability of rank \emph{j}
 #' on another level, the specified confidence level.
 #'
-#' @param x Object with class \code{"wt_model"} and one of the classes
-#'   \code{"wt_model_estimation"} or \code{"wt_model_estimation_list"} returned from
+#' @param x Object with class \code{wt_model} and one of the classes
+#'   \code{wt_model_estimation} or \code{wt_model_estimation_list} returned from
 #'   \code{\link{rank_regression}}.
 #' @param b_lives A numeric vector indicating the probabilities \emph{p} of the
 #'   \eqn{B_p}-lives (quantiles) to be considered.
@@ -22,7 +22,7 @@
 #'   (quantiles).
 #' @template dots
 #'
-#' @return A tibble with class \code{"wt_confint"} containing the following columns:
+#' @return A tibble with class \code{wt_confint} containing the following columns:
 #'   \itemize{
 #'     \item \code{x} : An ordered sequence of the lifetime characteristic regarding
 #'       the failed units, starting at \code{min(x)} and ending up at \code{max(x)}.
@@ -244,7 +244,7 @@ confint_betabinom.wt_model_estimation_list <- function(
 #' @param distribution Supposed distribution of the random variable. Has to be in
 #'   line with the specification made in \code{\link{rank_regression}}.
 #'
-#' @return A tibble with class \code{"wt_confint"} containing the following
+#' @return A tibble with class \code{wt_confint} containing the following
 #' columns:
 #'   \itemize{
 #'     \item \code{x} : An ordered sequence of the lifetime characteristic regarding
@@ -718,10 +718,10 @@ delta_method_ <- function(p,
 #'
 #' @inheritParams confint_betabinom
 #'
-#' @param x Object with classes \code{"wt_model"} \strong{and}
-#'   \code{"wt_ml_estimation"} returned from \code{\link{ml_estimation}}.
+#' @param x Object with classes \code{wt_model} \strong{and}
+#'   \code{wt_ml_estimation} returned from \code{\link{ml_estimation}}.
 #'
-#' @return A tibble with class \code{"wt_confint"} containing the following
+#' @return A tibble with class \code{wt_confint} containing the following
 #' columns:
 #'   \itemize{
 #'     \item \code{x} : An ordered sequence of the lifetime characteristic regarding
@@ -883,7 +883,7 @@ confint_fisher.wt_ml_estimation <- function(x,
 #'   confidence interval. One of \code{"y"} (failure probabilities) or \code{"x"}
 #'   (quantiles).
 #'
-#' @return A tibble with class \code{"wt_confint"} containing the following
+#' @return A tibble with class \code{wt_confint} containing the following
 #' columns:
 #'   \itemize{
 #'     \item \code{x} : An ordered sequence of the lifetime characteristic regarding
