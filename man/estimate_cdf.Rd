@@ -2,12 +2,12 @@
 % Please edit documentation in R/probability_estimators.R
 \name{estimate_cdf}
 \alias{estimate_cdf}
-\alias{estimate_cdf.reliability_data}
+\alias{estimate_cdf.wt_reliability_data}
 \title{Estimation of Failure Probabilities}
 \usage{
 estimate_cdf(x, ...)
 
-\method{estimate_cdf}{reliability_data}(
+\method{estimate_cdf}{wt_reliability_data}(
   x,
   methods = c("mr", "johnson", "kaplan", "nelson"),
   options = list(),
@@ -36,7 +36,8 @@ A tibble containing the following columns:
     and \code{"johnson"}, filled with \code{NA} for other methods or if
     \code{status = 0}.
   \item \code{prob} : Estimated failure probabilities, \code{NA} if \code{status = 0}.
-  \item \code{method} : Specified method for the estimation of failure probabilities.
+  \item \code{cdf_estimation_method} : Specified method for the estimation of
+    failure probabilities.
 }
 }
 \description{
@@ -96,7 +97,7 @@ The listed options can only be applied for method \code{"mr"}:
 \examples{
 # Reliability data:
 data <- reliability_data(
-  data = alloy,
+  alloy,
   x = cycles,
   status = status
 )

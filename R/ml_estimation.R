@@ -14,7 +14,7 @@
 #' which is implemented in \emph{SPREDA}, to obtain the estimates. Normal
 #' approximation confidence intervals for the parameters are computed as well.
 #'
-#' @param x Object of class \code{reliability_data} returned by
+#' @param x Object of class \code{wt_reliability_data} returned by
 #'   \code{\link{reliability_data}}.
 #' @param distribution Supposed distribution of the random variable.
 #' @param wts Optional vector of case weights. The length of \code{wts} must be the
@@ -23,7 +23,7 @@
 #' @template dots
 #'
 #' @template return-ml-estimation
-#' @templateVar data A tibble with class \code{"reliability_data"} returned from \code{\link{reliability_data}}.
+#' @templateVar data A tibble with class \code{wt_reliability_data} returned from \code{\link{reliability_data}}.
 #'
 #' @encoding UTF-8
 #'
@@ -34,27 +34,27 @@
 #' # Reliability data preparation:
 #' ## Data for two-parametric model:
 #' data_2p <- reliability_data(
-#'   data = shock,
+#'   shock,
 #'   x = distance,
 #'   status = status
 #' )
 #'
 #' ## Data for three-parametric model:
 #' data_3p <- reliability_data(
-#'   data = alloy,
+#'   alloy,
 #'   x = cycles,
 #'   status = status
 #' )
 #'
 #' # Example 1 - Fitting a two-parametric weibull distribution:
 #' ml_2p <- ml_estimation(
-#'   x = data_2p,
+#'   data_2p,
 #'   distribution = "weibull"
 #' )
 #'
 #' # Example 2 - Fitting a three-parametric lognormal distribution:
 #' ml_3p <- ml_estimation(
-#'   x = data_3p,
+#'   data_3p,
 #'   distribution = "lognormal3",
 #'   conf_level = 0.99
 #' )
@@ -69,15 +69,16 @@ ml_estimation <- function(x, ...) {
 #' @rdname ml_estimation
 #'
 #' @export
-ml_estimation.reliability_data <- function(x,
-                                           distribution = c(
-                                             "weibull", "lognormal", "loglogistic",
-                                             "normal", "logistic", "sev",
-                                             "weibull3", "lognormal3", "loglogistic3"
-                                           ),
-                                           wts = rep(1, nrow(x)),
-                                           conf_level = 0.95,
-                                           ...
+ml_estimation.wt_reliability_data <- function(x,
+                                              distribution = c(
+                                                "weibull", "lognormal",
+                                                "loglogistic", "normal",
+                                                "logistic", "sev", "weibull3",
+                                                "lognormal3", "loglogistic3"
+                                              ),
+                                              wts = rep(1, nrow(x)),
+                                              conf_level = 0.95,
+                                              ...
 ) {
 
   distribution <- match.arg(distribution)
@@ -158,7 +159,8 @@ ml_estimation_ <- function(data,
                            conf_level
 ) {
 
-  x <- if (inherits(data, "reliability_data")) get_characteristic(data) else data$x
+  x <- if (inherits(data, "wt_reliability_data")) get_characteristic(data) else
+    data$x
   status <- data$status
   id <- data$id
 
@@ -217,7 +219,8 @@ ml_estimation_ <- function(data,
       ml_output <- list(
         coefficients = estimates_loc_sc,
         confint = conf_ints_loc_sc,
-        varcov = vcov_loc_sc, logL = -ml$min,
+        varcov = vcov_loc_sc,
+        logL = -ml$min,
         aic = -2 * (-ml$min) + 2 * length(estimates_loc_sc),
         bic = (-2 * (-ml$min) + log(length(x)) * length(estimates_loc_sc))
       )
@@ -321,7 +324,8 @@ ml_estimation_ <- function(data,
       ml_output <- list(
         coefficients = estimates_loc_sc,
         confint = conf_ints_loc_sc,
-        varcov = vcov_loc_sc, logL = ml$value,
+        varcov = vcov_loc_sc,
+        logL = ml$value,
         aic = -2 * (ml$value) + 2 * length(estimates_loc_sc),
         bic = (-2 * (ml$value) + log(length(x)) * length(estimates_loc_sc))
       )
@@ -388,14 +392,17 @@ ml_estimation_ <- function(data,
     ml_output <- list(
       coefficients = estimates_loc_sc,
       confint = conf_ints_loc_sc,
-      varcov = vcov_loc_sc, logL = ml$value,
+      varcov = vcov_loc_sc,
+      logL = ml$value,
       aic = -2 * (ml$value) + 2 * length(estimates_loc_sc),
       bic = (-2 * (ml$value) +
                log(length(x)) * length(estimates_loc_sc))
     )
   }
 
-  class(ml_output) <- c("ml_estimation", "model_estimation", class(ml_output))
+  class(ml_output) <- c(
+    "wt_model", "wt_ml_estimation", "wt_model_estimation", class(ml_output)
+  )
 
   if (all(id == "", na.rm = TRUE)) {
     ml_output$data <- tibble::tibble(
@@ -413,9 +420,9 @@ ml_estimation_ <- function(data,
 
 
 #' @export
-print.ml_estimation <- function(x,
-                                digits = max(3L, getOption("digits") - 3L),
-                                ...
+print.wt_ml_estimation <- function(x,
+                                   digits = max(3L, getOption("digits") - 3L),
+                                   ...
 ) {
   cat("Maximum Likelihood Estimation\n")
   NextMethod("print")

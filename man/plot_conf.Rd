@@ -3,12 +3,12 @@
 \encoding{UTF-8}
 \name{plot_conf}
 \alias{plot_conf}
-\alias{plot_conf.confint}
+\alias{plot_conf.wt_confint}
 \title{Add Confidence Region(s) for Quantiles and Probabilities}
 \usage{
 plot_conf(p_obj, x, ...)
 
-\method{plot_conf}{confint}(
+\method{plot_conf}{wt_confint}(
   p_obj,
   x,
   title_trace_mod = "Fit",
@@ -48,17 +48,11 @@ data <- reliability_data(data = alloy, x = cycles, status = status)
 prob_tbl <- estimate_cdf(data, methods = "johnson")
 
 # Example 1 - Probability Plot, Regression Line and Confidence Bounds for Three-Parameter-Weibull:
-rr <- rank_regression(
-  x = prob_tbl,
-  distribution = "weibull3"
-)
+rr <- rank_regression(prob_tbl, distribution = "weibull3")
 
-conf_betabin <- confint_betabinom(x = rr)
+conf_betabin <- confint_betabinom(rr)
 
-plot_weibull <- plot_prob(
-  x = prob_tbl,
-  distribution = "weibull"
-)
+plot_weibull <- plot_prob(prob_tbl, distribution = "weibull")
 
 plot_conf_beta <- plot_conf(
   p_obj = plot_weibull,
@@ -67,22 +61,19 @@ plot_conf_beta <- plot_conf(
 
 # Example 2 - Probability Plot, Regression Line and Confidence Bounds for Three-Parameter-Lognormal:
 rr_ln <- rank_regression(
-  x = prob_tbl,
+  prob_tbl,
   distribution = "lognormal3",
   conf_level = 0.9
 )
 
 conf_betabin_ln <- confint_betabinom(
-  x = rr_ln,
+  rr_ln,
   bounds = "two_sided",
   conf_level = 0.9,
   direction = "y"
 )
 
-plot_lognormal <- plot_prob(
-  x = prob_tbl,
-  distribution = "lognormal"
-)
+plot_lognormal <- plot_prob(prob_tbl, distribution = "lognormal")
 
 plot_conf_beta_ln <- plot_conf(
   p_obj = plot_lognormal,
@@ -90,17 +81,11 @@ plot_conf_beta_ln <- plot_conf(
 )
 
 # Example 3 - Probability Plot, Regression Line and Confidence Bounds for MLE
-ml <- ml_estimation(
-  x = data,
-  distribution = "weibull"
-)
+ml <- ml_estimation(data, distribution = "weibull")
 
 conf_fisher <- confint_fisher(ml)
 
-plot_weibull <- plot_prob(
-  x = prob_tbl,
-  distribution = "weibull"
-)
+plot_weibull <- plot_prob(prob_tbl, distribution = "weibull")
 
 plot_conf_fisher_weibull <- plot_conf(
   p_obj = plot_weibull,

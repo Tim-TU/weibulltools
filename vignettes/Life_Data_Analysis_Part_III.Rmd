@@ -31,18 +31,19 @@ more changes in slope, depict one or several saddle points or follow an S-shape.
 A mixed distribution often represents the combination of multiple failure modes 
 and thus must be split in its components to get reasonable results in further analyses. 
 
-Segmented regression aims to detect breakpoints in the sample data from whom a 
+Segmented regression aims to detect breakpoints in the sample data from which a 
 split in subgroups can be made. The EM-Algorithm is a computation-intensive method 
 that iteratively tries to maximize a likelihood function, which is weighted by 
-posterior probabilities, conditional probabilities that an observation belongs to subgroup _k_.  
+posterior probabilities, which are conditional probabilities that an observation 
+belongs to subgroup _k_.  
 
 In the following, the focus is on the application of these methods and their 
-visualizations using functions `mixmod_regression()`, `mixmod_em()`, `plot_prob()` 
-and `plot_mod()`. 
+visualizations using the functions `mixmod_regression()`, `mixmod_em()`, 
+`plot_prob()` and `plot_mod()`. 
 
 ## Data: Voltage Stress Test
 
-To apply the introduced methods a dataset `voltage` is used. The dataset contains 
+To apply the introduced methods the dataset `voltage` is used. The dataset contains 
 observations for units that were passed to a high voltage stress test. _hours_ 
 indicates the number of hours until a failure occurs or the number of hours until 
 a unit was taken out of the test and has not failed. _status_ is a flag variable 
@@ -66,7 +67,7 @@ voltage_tbl
 To get an intuition whether one can assume the presence of a mixture model, a 
 Weibull probability plot is constructed. 
 
-```{r probability plot weibull, fig.cap = "Figure 1: Plotting positions in Weibull grid.", message = FALSE}
+```{r probability_plot_weibull, fig.cap = "Figure 1: Plotting positions in Weibull grid.", message = FALSE}
 # Estimating failure probabilities: 
 voltage_cdf <- estimate_cdf(voltage_tbl, "johnson")
 
@@ -96,7 +97,7 @@ breakpoint detection the function `rank_regression()` is called inside `mixmod_r
 and is used to estimate the distribution parameters of the subgroups. The visualization 
 of the obtained results is done by functions `plot_prob()` and `plot_mod()`.  
 
-```{r segmented weibull I, fig.cap = "Figure 2: Subgroup-specific plotting positions using segmented regression.", message = FALSE}
+```{r segmented_weibull_I, fig.cap = "Figure 2: Subgroup-specific plotting positions using segmented regression.", message = FALSE}
 # Applying mixmod_regression(): 
 mixreg_weib <- mixmod_regression(
   x = voltage_cdf, 
@@ -119,7 +120,7 @@ mix_reg_plot
 
 <br>
 
-```{r segmented weibull II, fig.cap = "Figure 3: Subgroup-specific regression lines using segmented regression.", message = FALSE}
+```{r segmented_weibull_II, fig.cap = "Figure 3: Subgroup-specific regression lines using segmented regression.", message = FALSE}
 # Using plot_mod() to visualize regression lines of subgroups: 
 mix_reg_lines <- plot_mod(
   mix_reg_plot, 
@@ -142,9 +143,9 @@ a mixture model. An in-depth analysis should be done afterwards.
 
 The EM algorithm can be applied through the usage of the function `mixmod_em()`. 
 In comparison to `mixmod_regression()` one has to specify _k_, the number of subgroups. 
-The obtained results can be also visualized by functions `plot_prob()` and `plot_mod()`.  
+The obtained results can be also visualized by the functions `plot_prob()` and `plot_mod()`.  
 
-```{r em weibull I, fig.cap = "Figure 4: Subgroup-specific plotting positions using EM algorithm.", message = FALSE}
+```{r em_weibull_I, fig.cap = "Figure 4: Subgroup-specific plotting positions using EM algorithm.", message = FALSE}
 # Applying mixmod_regression(): 
 mix_em_weib <- mixmod_em(
   x = voltage_tbl, 
@@ -165,7 +166,7 @@ mix_em_plot <- plot_prob(
 mix_em_plot
 ```
 
-```{r em weibull II, fig.cap = "Figure 5: Subgroup-specific regression lines using EM algorithm.", message = FALSE}
+```{r em_weibull_II, fig.cap = "Figure 5: Subgroup-specific regression lines using EM algorithm.", message = FALSE}
 
 # Using plot_mod() to visualize regression lines of subgroups: 
 mix_em_lines <- plot_mod(

@@ -100,7 +100,7 @@ to estimate_cdf is recommended." />
       <a href="../articles/Life_Data_Analysis_Part_I.html">Life Data Analysis Part I - Estimation of Failure Probabilities</a>
     </li>
     <li>
-      <a href="../articles/Life_Data_Analysis_Part_II.html">Life Data Analysis Part II - Parameter Estimation of Parametric Lifetime Models</a>
+      <a href="../articles/Life_Data_Analysis_Part_II.html">Life Data Analysis Part II - Estimation Methods for Parametric Lifetime Models</a>
     </li>
     <li>
       <a href="../articles/Life_Data_Analysis_Part_III.html">Life Data Analysis Part III - Mixture Models</a>
@@ -112,7 +112,12 @@ to estimate_cdf is recommended." />
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
-        
+        <li>
+  <a href="https://github.com/Tim-TU/weibulltools/">
+    <span class="fab fa fab fa-github fa-lg"></span>
+     
+  </a>
+</li>
       </ul>
       
     </div><!--/.nav-collapse -->
@@ -127,7 +132,7 @@ to estimate_cdf is recommended." />
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Estimation of Failure Probabilities using Johnson's Method</h1>
-    
+    <small class="dont-index">Source: <a href='https://github.com/Tim-TU/weibulltools/blob/master/R/probability_estimators.R'><code>R/probability_estimators.R</code></a></small>
     <div class="hidden name"><code>johnson_method.Rd</code></div>
     </div>
 
@@ -169,8 +174,8 @@ is a right censored observation (= 0) or a failure (= 1).</p></td>
     right censored observation (= 0) or a failure (= 1).</p></li>
 <li><p><code>rank</code> : The adjusted ranks.</p></li>
 <li><p><code>prob</code> : Estimated failure probabilities, <code>NA</code> if <code>status = 0</code>.</p></li>
-<li><p><code>method</code> : Specified method for the estimation of failure
-    probabilities (always 'johnson').</p></li>
+<li><p><code>cdf_estimation_method</code> : Specified method for the estimation of
+    failure probabilities (always 'johnson').</p></li>
 </ul>
 
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>

@@ -99,7 +99,7 @@ parameters of a univariate weibull mixture model. See 'Details'." />
       <a href="../articles/Life_Data_Analysis_Part_I.html">Life Data Analysis Part I - Estimation of Failure Probabilities</a>
     </li>
     <li>
-      <a href="../articles/Life_Data_Analysis_Part_II.html">Life Data Analysis Part II - Parameter Estimation of Parametric Lifetime Models</a>
+      <a href="../articles/Life_Data_Analysis_Part_II.html">Life Data Analysis Part II - Estimation Methods for Parametric Lifetime Models</a>
     </li>
     <li>
       <a href="../articles/Life_Data_Analysis_Part_III.html">Life Data Analysis Part III - Mixture Models</a>
@@ -111,7 +111,12 @@ parameters of a univariate weibull mixture model. See 'Details'." />
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
-        
+        <li>
+  <a href="https://github.com/Tim-TU/weibulltools/">
+    <span class="fab fa fab fa-github fa-lg"></span>
+     
+  </a>
+</li>
       </ul>
       
     </div><!--/.nav-collapse -->
@@ -126,7 +131,7 @@ parameters of a univariate weibull mixture model. See 'Details'." />
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Weibull Mixture Model Estimation using EM-Algorithm</h1>
-    
+    <small class="dont-index">Source: <a href='https://github.com/Tim-TU/weibulltools/blob/master/R/mixture_identification.R'><code>R/mixture_identification.R</code></a></small>
     <div class="hidden name"><code>mixmod_em.Rd</code></div>
     </div>
 
@@ -137,7 +142,7 @@ parameters of a univariate weibull mixture model. See 'Details'.</p>
 
     <pre class="usage"><span class='fu'>mixmod_em</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>...</span><span class='op'>)</span>
 
-<span class='co'># S3 method for reliability_data</span>
+<span class='co'># S3 method for wt_reliability_data</span>
 <span class='fu'>mixmod_em</span><span class='op'>(</span>
   <span class='va'>x</span>,
   distribution <span class='op'>=</span> <span class='st'>"weibull"</span>,
@@ -155,7 +160,7 @@ parameters of a univariate weibull mixture model. See 'Details'.</p>
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>x</th>
-      <td><p>An object of class <code>reliability_data</code> returned from
+      <td><p>An object of class <code>"wt_reliability_data"</code> returned from
 <code><a href='reliability_data.html'>reliability_data</a></code>.</p></td>
     </tr>
     <tr>
@@ -196,13 +201,14 @@ log-likelihood values, which seems permissible.</p></td>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>Returns a list with class <code>"mixmod_em"</code>. The length of the list
-depends on the number of specified subgroups <em>k</em>. The first <code>k</code> lists
-contain information provided by <a href='ml_estimation.html'>ml_estimation</a>. The values of <code>logL</code>,
-<code>aic</code> and <code>bic</code> are the results of a weighted log-likelihood, where
-the weights are the posterior probabilities determined by the algorithm.
-The last list summarizes further results of the EM algorithm and is therefore
-called <code>em_results</code>. It contains the following elements:</p><ul>
+    <p>Returns a list with class <code>"wt_mixmod_em"</code>. The length of the
+list depends on the number of specified subgroups <em>k</em>. The first
+<code>k</code> lists contain information provided by <a href='ml_estimation.html'>ml_estimation</a>. The
+values of <code>logL</code>, <code>aic</code> and <code>bic</code> are the results of a
+weighted log-likelihood, where the weights are the posterior probabilities
+determined by the algorithm. The last list summarizes further results of the
+EM algorithm and is therefore called <code>em_results</code>. It contains the
+following elements:</p><ul>
 <li><p><code>a_priori</code> : A vector with estimated prior probabilities.</p></li>
 <li><p><code>a_posteriori</code> : A matrix with estimated posterior probabilities.</p></li>
 <li><p><code>groups</code> : Numeric vector specifying the group membership of
@@ -240,7 +246,7 @@ update of the posterior probabilities.</p>
     <pre class="examples"><div class='input'><span class='co'># Reliability data preparation:</span>
 <span class='co'>## Data for mixture model:</span>
 <span class='va'>data_mix</span> <span class='op'>&lt;-</span> <span class='fu'><a href='reliability_data.html'>reliability_data</a></span><span class='op'>(</span>
-  data <span class='op'>=</span> <span class='va'>voltage</span>,
+  <span class='va'>voltage</span>,
   x <span class='op'>=</span> <span class='va'>hours</span>,
   status <span class='op'>=</span> <span class='va'>status</span>
 <span class='op'>)</span>

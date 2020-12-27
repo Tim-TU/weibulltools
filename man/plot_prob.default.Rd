@@ -58,7 +58,7 @@ This function is used to apply the graphical technique of probability
 plotting.
 }
 \details{
-If data was split by \code{\link{mixmod_em}} \code{\link{estimate_cdf}} with
+If \code{x} was split by \code{\link{mixmod_em}}, \code{\link{estimate_cdf}} with
 method \code{"johnson"} is applied to subgroup-specific data. The
 calculated plotting positions are shaped according to the determined split in
 \code{\link{mixmod_em}}.
@@ -109,7 +109,7 @@ plot_lognormal <- plot_prob(
 }
 \references{
 Meeker, William Q; Escobar, Luis A., Statistical methods for
-reliability data, New York: Wiley series in probability and statistics, 1998
+  reliability data, New York: Wiley series in probability and statistics, 1998
 }
 \seealso{
 \code{\link{plot_prob}}

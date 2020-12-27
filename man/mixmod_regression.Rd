@@ -3,12 +3,12 @@
 \encoding{UTF-8}
 \name{mixmod_regression}
 \alias{mixmod_regression}
-\alias{mixmod_regression.cdf_estimation}
+\alias{mixmod_regression.wt_cdf_estimation}
 \title{Mixture Model Identification using Segmented Regression}
 \usage{
 mixmod_regression(x, ...)
 
-\method{mixmod_regression}{cdf_estimation}(
+\method{mixmod_regression}{wt_cdf_estimation}(
   x,
   distribution = c("weibull", "lognormal", "loglogistic"),
   conf_level = 0.95,
@@ -18,7 +18,7 @@ mixmod_regression(x, ...)
 )
 }
 \arguments{
-\item{x}{Object of class \code{cdf_estimation} returned from
+\item{x}{Object of class \code{wt_cdf_estimation} returned from
 \code{\link{estimate_cdf}}.}
 
 \item{...}{Further arguments passed to or from other methods. Currently not used.}
@@ -37,14 +37,16 @@ is passed to \code{\link[segmented:segmented]{segmented.lm}}.
 See 'Examples' for usage.}
 }
 \value{
-Returns a list of class \code{"rank_regression"} if no breakpoint was
-detected. See \code{\link{rank_regression}}.
+Returns a list with classes \code{wt_model} and
+\code{wt_rank_regression} if no breakpoint was detected. See
+\code{\link{rank_regression}}.
 
-Returns a list of class \code{"mixmod_regression"} if at least one breakpoint
-was determined. The length of the list depends on the number of subgroups.
-Each list element contains the information provided by \code{\link{rank_regression}}.
-In addition, the returned tibble \code{data} of each list element only retains
-information on the failed units and has two more columns:
+Returns a list with classes \code{wt_model} and \code{wt_mixmod_regression}
+if at least one breakpoint was determined. The length of the list depends on
+the number of identified subgroups. Each list element contains the
+information provided by \code{\link{rank_regression}}. In addition, the
+returned tibble \code{data} of each list element only retains information on
+the failed units and has two more columns:
 \itemize{
   \item \code{q} : Quantiles of the standard distribution calculated from
     column \code{prob}.
@@ -52,8 +54,9 @@ information on the failed units and has two more columns:
 }
 
 If more than one method was specified in \code{\link{estimate_cdf}}, the
-resulting output is a list with class \code{"mixmod_regression_list"} where
-each list element has class \code{"mixmod_regression"}.
+resulting output is a list with classes \code{wt_model} and
+\code{wt_mixmod_regression_list} where each list element has class
+\code{wt_model} and \code{wt_mixmod_regression}.
 }
 \description{
 This function uses piecewise linear regression to divide the data into
@@ -84,14 +87,14 @@ the main types of failures, a maximum of three subgroups (\code{k = 3}) is recom
 # Reliability data preparation:
 ## Data for mixture model:
 data_mix <- reliability_data(
-  data = voltage,
+  voltage,
   x = hours,
   status = status
 )
 
 ## Data for simple unimodal distribution:
 data <- reliability_data(
-  data = shock,
+  shock,
   x = distance,
   status = status
 )
@@ -130,7 +133,7 @@ mix_mod_lognorm <- mixmod_regression(
 
 # Example 3 - Mixture identification for multiple methods specified in estimate_cdf:
 mix_mod_mult <- mixmod_regression(
-  prob_mix_mult,
+  x = prob_mix_mult,
   distribution = "loglogistic"
 )
 

@@ -102,7 +102,7 @@ multiple lines are plotted." />
       <a href="../articles/Life_Data_Analysis_Part_I.html">Life Data Analysis Part I - Estimation of Failure Probabilities</a>
     </li>
     <li>
-      <a href="../articles/Life_Data_Analysis_Part_II.html">Life Data Analysis Part II - Parameter Estimation of Parametric Lifetime Models</a>
+      <a href="../articles/Life_Data_Analysis_Part_II.html">Life Data Analysis Part II - Estimation Methods for Parametric Lifetime Models</a>
     </li>
     <li>
       <a href="../articles/Life_Data_Analysis_Part_III.html">Life Data Analysis Part III - Mixture Models</a>
@@ -114,7 +114,12 @@ multiple lines are plotted." />
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
-        
+        <li>
+  <a href="https://github.com/Tim-TU/weibulltools/">
+    <span class="fab fa fab fa-github fa-lg"></span>
+     
+  </a>
+</li>
       </ul>
       
     </div><!--/.nav-collapse -->
@@ -129,7 +134,7 @@ multiple lines are plotted." />
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Add Estimated Population Line(s) to a Probability Plot</h1>
-    
+    <small class="dont-index">Source: <a href='https://github.com/Tim-TU/weibulltools/blob/master/R/plot_functions.R'><code>R/plot_functions.R</code></a></small>
     <div class="hidden name"><code>plot_mod.Rd</code></div>
     </div>
 
@@ -143,19 +148,7 @@ multiple lines are plotted.</p>
 
     <pre class="usage"><span class='fu'>plot_mod</span><span class='op'>(</span><span class='va'>p_obj</span>, <span class='va'>x</span>, <span class='va'>...</span><span class='op'>)</span>
 
-<span class='co'># S3 method for model_estimation</span>
-<span class='fu'>plot_mod</span><span class='op'>(</span><span class='va'>p_obj</span>, <span class='va'>x</span>, title_trace <span class='op'>=</span> <span class='st'>"Fit"</span>, <span class='va'>...</span><span class='op'>)</span>
-
-<span class='co'># S3 method for model_estimation_list</span>
-<span class='fu'>plot_mod</span><span class='op'>(</span><span class='va'>p_obj</span>, <span class='va'>x</span>, title_trace <span class='op'>=</span> <span class='st'>"Fit"</span>, <span class='va'>...</span><span class='op'>)</span>
-
-<span class='co'># S3 method for mixmod_regression</span>
-<span class='fu'>plot_mod</span><span class='op'>(</span><span class='va'>p_obj</span>, <span class='va'>x</span>, title_trace <span class='op'>=</span> <span class='st'>"Fit"</span>, <span class='va'>...</span><span class='op'>)</span>
-
-<span class='co'># S3 method for mixmod_regression_list</span>
-<span class='fu'>plot_mod</span><span class='op'>(</span><span class='va'>p_obj</span>, <span class='va'>x</span>, title_trace <span class='op'>=</span> <span class='st'>"Fit"</span>, <span class='va'>...</span><span class='op'>)</span>
-
-<span class='co'># S3 method for mixmod_em</span>
+<span class='co'># S3 method for wt_model</span>
 <span class='fu'>plot_mod</span><span class='op'>(</span><span class='va'>p_obj</span>, <span class='va'>x</span>, title_trace <span class='op'>=</span> <span class='st'>"Fit"</span>, <span class='va'>...</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -167,7 +160,7 @@ multiple lines are plotted.</p>
     </tr>
     <tr>
       <th>x</th>
-      <td><p>An object of aforementioned classes. See 'S3 methods'.</p></td>
+      <td><p>An object of class <code>"wt_model"</code>.</p></td>
     </tr>
     <tr>
       <th>...</th>
@@ -191,21 +184,6 @@ the number of determined subgroups from <code><a href='mixmod_regression.html'>m
 <code><a href='mixmod_em.html'>mixmod_em</a></code>. If <code>title_trace = "Line"</code> and the
 data could be splitted in two groups, the legend entries would be "Line: 1"
 and "Line: 2".</p>
-    <h2 class="hasAnchor" id="s-methods"><a class="anchor" href="#s-methods"></a>S3 methods</h2>
-
-    
-<table class='table'>
-<tr><td><strong>Class</strong></td><td><strong>Returned from</strong></td><td><strong>Condition</strong></td></tr>
-<tr><td><code>model_estimation</code></td><td><code><a href='rank_regression.html'>rank_regression</a></code></td><td>One method in <code><a href='estimate_cdf.html'>estimate_cdf</a></code>.</td></tr>
-<tr><td><code>model_estimation</code></td><td><code><a href='mixmod_regression.html'>mixmod_regression</a></code></td><td>One method in <code><a href='estimate_cdf.html'>estimate_cdf</a></code>. No subgroups determined.</td></tr>
-<tr><td><code>model_estimation</code></td><td><code><a href='ml_estimation.html'>ml_estimation</a></code></td><td>-</td></tr>
-<tr><td><code>model_estimation_list</code></td><td><code><a href='rank_regression.html'>rank_regression</a></code></td><td>Multiple methods in <code><a href='estimate_cdf.html'>estimate_cdf</a></code>.</td></tr>
-<tr><td><code>mixmod_regression</code></td><td><code><a href='mixmod_regression.html'>mixmod_regression</a></code></td><td>One method in <code><a href='estimate_cdf.html'>estimate_cdf</a></code>.</td></tr>
-<tr><td><code>mixmod_regression_list</code></td><td><code><a href='mixmod_regression.html'>mixmod_regression</a></code></td><td>Multiple methods in <code><a href='estimate_cdf.html'>estimate_cdf</a></code>.</td></tr>
-<tr><td><code>mixmod_em</code></td><td><code><a href='mixmod_em.html'>mixmod_em</a></code></td><td>-</td></tr>
-</table>
-
-
     <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
 
     <p>Meeker, William Q; Escobar, Luis A., Statistical methods for
@@ -213,46 +191,61 @@ and "Line: 2".</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='co'># Reliability data:</span>
-<span class='va'>data</span> <span class='op'>&lt;-</span> <span class='fu'><a href='reliability_data.html'>reliability_data</a></span><span class='op'>(</span>
-  data <span class='op'>=</span> <span class='va'>alloy</span>,
-  x <span class='op'>=</span> <span class='va'>cycles</span>,
-  status <span class='op'>=</span> <span class='va'>status</span>
-<span class='op'>)</span>
+<span class='va'>data</span> <span class='op'>&lt;-</span> <span class='fu'><a href='reliability_data.html'>reliability_data</a></span><span class='op'>(</span>data <span class='op'>=</span> <span class='va'>alloy</span>, x <span class='op'>=</span> <span class='va'>cycles</span>, status <span class='op'>=</span> <span class='va'>status</span><span class='op'>)</span>
 
 <span class='co'># Probability estimation:</span>
 <span class='va'>prob_tbl</span> <span class='op'>&lt;-</span> <span class='fu'><a href='estimate_cdf.html'>estimate_cdf</a></span><span class='op'>(</span><span class='va'>data</span>, methods <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"johnson"</span>, <span class='st'>"kaplan"</span><span class='op'>)</span><span class='op'>)</span>
 
+
+<span class='co'>## Rank Regression</span>
 <span class='co'># Example 1 - Probability Plot and Regression Line Three-Parameter-Weibull:</span>
-<span class='va'>plot_weibull</span> <span class='op'>&lt;-</span> <span class='fu'><a href='plot_prob.html'>plot_prob</a></span><span class='op'>(</span>
-  <span class='va'>prob_tbl</span>,
-  distribution <span class='op'>=</span> <span class='st'>"weibull"</span>
-<span class='op'>)</span>
+<span class='va'>plot_weibull</span> <span class='op'>&lt;-</span> <span class='fu'><a href='plot_prob.html'>plot_prob</a></span><span class='op'>(</span><span class='va'>prob_tbl</span>, distribution <span class='op'>=</span> <span class='st'>"weibull"</span><span class='op'>)</span>
+<span class='va'>rr_weibull</span> <span class='op'>&lt;-</span> <span class='fu'><a href='rank_regression.html'>rank_regression</a></span><span class='op'>(</span><span class='va'>prob_tbl</span>, distribution <span class='op'>=</span> <span class='st'>"weibull3"</span><span class='op'>)</span>
 
-<span class='va'>rr_weibull</span> <span class='op'>&lt;-</span> <span class='fu'><a href='rank_regression.html'>rank_regression</a></span><span class='op'>(</span>
-  <span class='va'>prob_tbl</span>,
-  distribution <span class='op'>=</span> <span class='st'>"weibull3"</span>
-<span class='op'>)</span>
-
-<span class='va'>plot_reg_weibull</span> <span class='op'>&lt;-</span> <span class='fu'>plot_mod</span><span class='op'>(</span>
-  p_obj <span class='op'>=</span> <span class='va'>plot_weibull</span>,
-  x <span class='op'>=</span> <span class='va'>rr_weibull</span>
-<span class='op'>)</span>
+<span class='va'>plot_reg_weibull</span> <span class='op'>&lt;-</span> <span class='fu'>plot_mod</span><span class='op'>(</span>p_obj <span class='op'>=</span> <span class='va'>plot_weibull</span>, x <span class='op'>=</span> <span class='va'>rr_weibull</span><span class='op'>)</span>
 
 <span class='co'># Example 2 - Probability Plot and Regression Line Three-Parameter-Lognormal:</span>
-<span class='va'>plot_lognormal</span> <span class='op'>&lt;-</span> <span class='fu'><a href='plot_prob.html'>plot_prob</a></span><span class='op'>(</span>
-  <span class='va'>prob_tbl</span>,
-  distribution <span class='op'>=</span> <span class='st'>"lognormal"</span>
+<span class='va'>plot_lognormal</span> <span class='op'>&lt;-</span> <span class='fu'><a href='plot_prob.html'>plot_prob</a></span><span class='op'>(</span><span class='va'>prob_tbl</span>, distribution <span class='op'>=</span> <span class='st'>"lognormal"</span><span class='op'>)</span>
+<span class='va'>rr_lognormal</span> <span class='op'>&lt;-</span> <span class='fu'><a href='rank_regression.html'>rank_regression</a></span><span class='op'>(</span><span class='va'>prob_tbl</span>, distribution <span class='op'>=</span> <span class='st'>"lognormal3"</span><span class='op'>)</span>
+
+<span class='va'>plot_reg_lognormal</span> <span class='op'>&lt;-</span> <span class='fu'>plot_mod</span><span class='op'>(</span>p_obj <span class='op'>=</span> <span class='va'>plot_lognormal</span>, x <span class='op'>=</span> <span class='va'>rr_lognormal</span><span class='op'>)</span>
+
+
+<span class='co'>## ML Estimation</span>
+<span class='co'># Example 3 - Probability Plot and Regression Line Two-Parameter-Weibull:</span>
+<span class='va'>plot_weibull</span> <span class='op'>&lt;-</span> <span class='fu'><a href='plot_prob.html'>plot_prob</a></span><span class='op'>(</span><span class='va'>prob_tbl</span>, distribution <span class='op'>=</span> <span class='st'>"weibull"</span><span class='op'>)</span>
+<span class='va'>ml_weibull_2</span> <span class='op'>&lt;-</span> <span class='fu'><a href='ml_estimation.html'>ml_estimation</a></span><span class='op'>(</span><span class='va'>data</span>, distribution <span class='op'>=</span> <span class='st'>"weibull"</span><span class='op'>)</span>
+
+<span class='va'>plot_reg_weibull_2</span> <span class='op'>&lt;-</span> <span class='fu'>plot_mod</span><span class='op'>(</span>p_obj <span class='op'>=</span> <span class='va'>plot_weibull</span>, <span class='va'>ml_weibull_2</span><span class='op'>)</span>
+
+<span class='co'># Example 4 - Probability Plot and Regression Line Three-Parameter-Weibull:</span>
+<span class='va'>plot_weibull</span> <span class='op'>&lt;-</span> <span class='fu'><a href='plot_prob.html'>plot_prob</a></span><span class='op'>(</span><span class='va'>prob_tbl</span>, distribution <span class='op'>=</span> <span class='st'>"weibull"</span><span class='op'>)</span>
+<span class='va'>ml_weibull_3</span> <span class='op'>&lt;-</span> <span class='fu'><a href='ml_estimation.html'>ml_estimation</a></span><span class='op'>(</span><span class='va'>data</span>, distribution <span class='op'>=</span> <span class='st'>"weibull3"</span><span class='op'>)</span>
+
+<span class='va'>plot_reg_weibull_3</span> <span class='op'>&lt;-</span> <span class='fu'>plot_mod</span><span class='op'>(</span>p_obj <span class='op'>=</span> <span class='va'>plot_weibull</span>, <span class='va'>ml_weibull_3</span><span class='op'>)</span>
+
+
+<span class='co'>## Mixture Identification</span>
+<span class='co'># Reliability data:</span>
+<span class='va'>data_mix</span> <span class='op'>&lt;-</span> <span class='fu'><a href='reliability_data.html'>reliability_data</a></span><span class='op'>(</span><span class='va'>voltage</span>, x <span class='op'>=</span> <span class='va'>hours</span>, status <span class='op'>=</span> <span class='va'>status</span><span class='op'>)</span>
+
+<span class='co'># Probability estimation:</span>
+<span class='va'>prob_mix</span> <span class='op'>&lt;-</span> <span class='fu'><a href='estimate_cdf.html'>estimate_cdf</a></span><span class='op'>(</span>
+  <span class='va'>data_mix</span>,
+  methods <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"johnson"</span>, <span class='st'>"kaplan"</span>, <span class='st'>"nelson"</span><span class='op'>)</span>
 <span class='op'>)</span>
 
-<span class='va'>rr_lognormal</span> <span class='op'>&lt;-</span> <span class='fu'><a href='rank_regression.html'>rank_regression</a></span><span class='op'>(</span>
-  <span class='va'>prob_tbl</span>,
-  distribution <span class='op'>=</span> <span class='st'>"lognormal3"</span>
-<span class='op'>)</span>
+<span class='co'># Example 5 - Probability Plot and Regression Line Mixmod Regression:</span>
+<span class='va'>mix_mod_rr</span> <span class='op'>&lt;-</span> <span class='fu'><a href='mixmod_regression.html'>mixmod_regression</a></span><span class='op'>(</span><span class='va'>prob_mix</span>, distribution <span class='op'>=</span> <span class='st'>"weibull"</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='message'>Three segments have been obtained, problem of overestimation may have occured. Further investigations are recommended!</span></div><div class='output co'>#&gt; <span class='message'>Three segments have been obtained, problem of overestimation may have occured. Further investigations are recommended!</span></div><div class='output co'>#&gt; <span class='message'>Three segments have been obtained, problem of overestimation may have occured. Further investigations are recommended!</span></div><div class='input'><span class='va'>plot_weibull</span> <span class='op'>&lt;-</span> <span class='fu'><a href='plot_prob.html'>plot_prob</a></span><span class='op'>(</span><span class='va'>mix_mod_rr</span><span class='op'>)</span>
 
-<span class='va'>plot_reg_lognormal</span> <span class='op'>&lt;-</span> <span class='fu'>plot_mod</span><span class='op'>(</span>
-  p_obj <span class='op'>=</span> <span class='va'>plot_lognormal</span>,
-  x <span class='op'>=</span> <span class='va'>rr_lognormal</span>
-<span class='op'>)</span>
+<span class='va'>plot_reg_mix_mod_rr</span> <span class='op'>&lt;-</span> <span class='fu'>plot_mod</span><span class='op'>(</span>p_obj <span class='op'>=</span> <span class='va'>plot_weibull</span>, x <span class='op'>=</span> <span class='va'>mix_mod_rr</span><span class='op'>)</span>
+
+<span class='co'># Example 6 - Probability Plot and Regression Line Mixmod EM:</span>
+<span class='va'>mix_mod_em</span> <span class='op'>&lt;-</span> <span class='fu'><a href='mixmod_em.html'>mixmod_em</a></span><span class='op'>(</span><span class='va'>data_mix</span><span class='op'>)</span>
+<span class='va'>plot_weibull</span> <span class='op'>&lt;-</span> <span class='fu'><a href='plot_prob.html'>plot_prob</a></span><span class='op'>(</span><span class='va'>mix_mod_em</span><span class='op'>)</span>
+
+<span class='va'>plot_reg_mix_mod_em</span> <span class='op'>&lt;-</span> <span class='fu'>plot_mod</span><span class='op'>(</span>p_obj <span class='op'>=</span> <span class='va'>plot_weibull</span>, x <span class='op'>=</span> <span class='va'>mix_mod_em</span><span class='op'>)</span>
 
 </div></pre>
   </div>

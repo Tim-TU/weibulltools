@@ -42,7 +42,8 @@ A tibble containing the following columns:
     and \code{"johnson"}, filled with \code{NA} for other methods or if
     \code{status = 0}.
   \item \code{prob} : Estimated failure probabilities, \code{NA} if \code{status = 0}.
-  \item \code{method} : Specified method for the estimation of failure probabilities.
+  \item \code{cdf_estimation_method} : Specified method for the estimation of
+    failure probabilities.
 }
 }
 \description{
@@ -51,7 +52,7 @@ probabilities of complete data taking (multiple) right-censored observations
 into account.
 }
 \details{
-One or multiple techniques can be used for the \code{methods} argument:
+The following techniques can be used for the \code{method} argument:
 \itemize{
   \item \code{"mr"} : Method \emph{Median Ranks} is used to estimate the failure
     probabilities of failed units without considering censored items.

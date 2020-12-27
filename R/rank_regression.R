@@ -27,7 +27,7 @@
 #' in context of \emph{Rank Regression}. For an accepted statistical method use
 #' \link[=ml_estimation]{maximum likelihood}.
 #'
-#' @param x Object of class \code{cdf_estimation} returned from
+#' @param x Object of class \code{wt_cdf_estimation} returned from
 #'  \code{\link{estimate_cdf}}.
 #' @param distribution Supposed distribution of the random variable.
 #' @param conf_level Confidence level of the interval. If \code{distribution} is
@@ -35,12 +35,12 @@
 #' @template dots
 #'
 #' @template return-rank-regression
-#' @templateVar data A tibble with class \code{"cdf_estimation"} returned from \code{\link{estimate_cdf}}.
+#' @templateVar data A tibble with class \code{wt_cdf_estimation} returned from \code{\link{estimate_cdf}}.
 #' @return
 #'   If more than one method was specified in \code{\link{estimate_cdf}},
-#'   the resulting output is a list with class \code{"model_estimation_list"}.
-#'   In this case each list element has classes \code{"rank_regression"} and
-#'   \code{"model_estimation"} and the items listed above, are included.
+#'   the resulting output is a list with class \code{wt_model_estimation_list}.
+#'   In this case each list element has classes \code{wt_rank_regression} and
+#'   \code{wt_model_estimation} and the items listed above, are included.
 #'
 #' @encoding UTF-8
 #'
@@ -55,31 +55,31 @@
 #' # Reliability data preparation:
 #' ## Data for two-parametric model:
 #' data_2p <- reliability_data(
-#'   data = shock,
+#'   shock,
 #'   x = distance,
 #'   status = status
 #' )
 #'
 #' ## Data for three-parametric model:
 #' data_3p <- reliability_data(
-#'   data = alloy,
+#'   alloy,
 #'   x = cycles,
 #'   status = status
 #' )
 #'
 #' # Probability estimation:
 #' prob_tbl_2p <- estimate_cdf(
-#'   x = data_2p,
+#'   data_2p,
 #'   methods = "johnson"
 #' )
 #'
 #' prob_tbl_3p <- estimate_cdf(
-#'   x = data_3p,
+#'   data_3p,
 #'   methods = "johnson"
 #' )
 #'
 #' prob_tbl_mult <- estimate_cdf(
-#'   x = data_3p,
+#'   data_3p,
 #'   methods = c("johnson", "kaplan")
 #' )
 #'
@@ -106,7 +106,7 @@
 #'
 #' @export
 rank_regression <- function(x, ...) {
-  UseMethod("rank_regression", x)
+  UseMethod("rank_regression")
 }
 
 
@@ -114,27 +114,28 @@ rank_regression <- function(x, ...) {
 #' @rdname rank_regression
 #'
 #' @export
-rank_regression.cdf_estimation <- function(x,
-                                           distribution = c("weibull", "lognormal",
-                                                            "loglogistic", "normal",
-                                                            "logistic", "sev",
-                                                            "weibull3", "lognormal3",
-                                                            "loglogistic3"),
-                                           conf_level = 0.95,
-                                           ...
+rank_regression.wt_cdf_estimation <- function(x,
+                                              distribution = c(
+                                                "weibull", "lognormal",
+                                                "loglogistic", "normal",
+                                                "logistic", "sev", "weibull3",
+                                                "lognormal3", "loglogistic3"
+                                              ),
+                                              conf_level = 0.95,
+                                              ...
 ) {
 
   distribution <- match.arg(distribution)
 
-  if (length(unique(x$method)) == 1) {
+  if (length(unique(x$cdf_estimation_method)) == 1) {
     rank_regression_(
       cdf_estimation = x,
       distribution = distribution,
       conf_level = conf_level
     )
   } else {
-    # Apply rank_regression to each method separately
-    x_split <- split(x, x$method)
+    # Apply rank_regression to each cdf estimation method separately
+    x_split <- split(x, x$cdf_estimation_method)
 
     model_estimation_list <- purrr::map(x_split, function(cdf_estimation) {
       rank_regression_(
@@ -145,7 +146,8 @@ rank_regression.cdf_estimation <- function(x,
     })
 
     class(model_estimation_list) <- c(
-      "model_estimation_list", class(model_estimation_list)
+      "wt_model", "wt_model_estimation_list",
+      class(model_estimation_list)
     )
 
     model_estimation_list
@@ -487,7 +489,10 @@ rank_regression_ <- function(cdf_estimation,
 
   mrr_output$distribution <- distribution
 
-  class(mrr_output) <- c("rank_regression", "model_estimation", class(mrr_output))
+  class(mrr_output) <- c(
+    "wt_model", "wt_rank_regression", "wt_model_estimation",
+    class(mrr_output)
+  )
 
   return(mrr_output)
 }
@@ -495,9 +500,9 @@ rank_regression_ <- function(cdf_estimation,
 
 
 #' @export
-print.rank_regression <- function(x,
-                                  digits = max(3L, getOption("digits") - 3L),
-                                  ...
+print.wt_rank_regression <- function(x,
+                                     digits = max(3L, getOption("digits") - 3L),
+                                     ...
 ) {
   cat("Rank Regression\n")
   NextMethod("print")
@@ -513,7 +518,7 @@ print.rank_regression <- function(x,
 #' In terms of \emph{Rank Regression} this function can be optimized
 #' (\code{\link{optim}}) to estimate the threshold parameter.
 #'
-#' @param x Object of class \code{cdf_estimation} returned from
+#' @param x Object of class \code{wt_cdf_estimation} returned from
 #'   \code{\link{estimate_cdf}}.
 #' @param thres A numeric value for the threshold parameter.
 #' @param distribution Supposed three-parametric distribution of the random variable.
@@ -531,14 +536,14 @@ print.rank_regression <- function(x,
 #' @examples
 #' # Data:
 #' data <- reliability_data(
-#'   data = alloy,
+#'   alloy,
 #'   x = cycles,
 #'   status = status
 #' )
 #'
 #' # Probability estimation:
 #' prob_tbl <- estimate_cdf(
-#'   x = data,
+#'   data,
 #'   methods = "johnson"
 #' )
 #'
@@ -594,12 +599,13 @@ r_squared_profiling <- function(x, ...) {
 #' @rdname r_squared_profiling
 #'
 #' @export
-r_squared_profiling.cdf_estimation <- function(x,
-                                               thres,
-                                               distribution = c("weibull3",
-                                                                "lognormal3",
-                                                                "loglogistic3"),
-                                               ...
+r_squared_profiling.wt_cdf_estimation <- function(x,
+                                                  thres,
+                                                  distribution = c(
+                                                    "weibull3", "lognormal3",
+                                                    "loglogistic3"
+                                                  ),
+                                                  ...
 ) {
   distribution <- match.arg(distribution)
 

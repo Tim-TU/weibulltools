@@ -16,7 +16,7 @@ elements.}
 \item{distribution}{Supposed distribution of the random variable.}
 }
 \value{
-A list of class \code{"mileage_estimation"} which contains:
+A list of class \code{mileage_estimation} which contains:
   \itemize{
     \item \code{coefficients} : A named vector of estimated parameter(s).
     \item \code{miles_annual} : A numeric vector of element-wise computed annual

@@ -100,7 +100,7 @@ of probabilities in terms of (Median Ranks)." />
       <a href="../articles/Life_Data_Analysis_Part_I.html">Life Data Analysis Part I - Estimation of Failure Probabilities</a>
     </li>
     <li>
-      <a href="../articles/Life_Data_Analysis_Part_II.html">Life Data Analysis Part II - Parameter Estimation of Parametric Lifetime Models</a>
+      <a href="../articles/Life_Data_Analysis_Part_II.html">Life Data Analysis Part II - Estimation Methods for Parametric Lifetime Models</a>
     </li>
     <li>
       <a href="../articles/Life_Data_Analysis_Part_III.html">Life Data Analysis Part III - Mixture Models</a>
@@ -112,7 +112,12 @@ of probabilities in terms of (Median Ranks)." />
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
-        
+        <li>
+  <a href="https://github.com/Tim-TU/weibulltools/">
+    <span class="fab fa fab fa-github fa-lg"></span>
+     
+  </a>
+</li>
       </ul>
       
     </div><!--/.nav-collapse -->
@@ -127,7 +132,7 @@ of probabilities in terms of (Median Ranks)." />
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Beta Binomial Confidence Bounds for Quantiles and Probabilities</h1>
-    
+    <small class="dont-index">Source: <a href='https://github.com/Tim-TU/weibulltools/blob/master/R/confidence_intervals.R'><code>R/confidence_intervals.R</code></a></small>
     <div class="hidden name"><code>confint_betabinom.Rd</code></div>
     </div>
 
@@ -139,17 +144,7 @@ of probabilities in terms of (<em>Median Ranks</em>).</p>
 
     <pre class="usage"><span class='fu'>confint_betabinom</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>...</span><span class='op'>)</span>
 
-<span class='co'># S3 method for model_estimation</span>
-<span class='fu'>confint_betabinom</span><span class='op'>(</span>
-  <span class='va'>x</span>,
-  b_lives <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.01</span>, <span class='fl'>0.1</span>, <span class='fl'>0.5</span><span class='op'>)</span>,
-  bounds <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"two_sided"</span>, <span class='st'>"lower"</span>, <span class='st'>"upper"</span><span class='op'>)</span>,
-  conf_level <span class='op'>=</span> <span class='fl'>0.95</span>,
-  direction <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"y"</span>, <span class='st'>"x"</span><span class='op'>)</span>,
-  <span class='va'>...</span>
-<span class='op'>)</span>
-
-<span class='co'># S3 method for model_estimation_list</span>
+<span class='co'># S3 method for wt_model</span>
 <span class='fu'>confint_betabinom</span><span class='op'>(</span>
   <span class='va'>x</span>,
   b_lives <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.01</span>, <span class='fl'>0.1</span>, <span class='fl'>0.5</span><span class='op'>)</span>,
@@ -164,8 +159,9 @@ of probabilities in terms of (<em>Median Ranks</em>).</p>
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>x</th>
-      <td><p>Object of class <code>model_estimation</code> (or <code>model_estimation_list</code>)
-returned from <code><a href='rank_regression.html'>rank_regression</a></code>.</p></td>
+      <td><p>Object with class <code>"wt_model"</code> and one of the classes
+<code>"wt_model_estimation"</code> or <code>"wt_model_estimation_list"</code> returned from
+<code><a href='rank_regression.html'>rank_regression</a></code>.</p></td>
     </tr>
     <tr>
       <th>...</th>
@@ -195,7 +191,7 @@ confidence interval. One of <code>"y"</code> (failure probabilities) or <code>"x
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A tibble with class <code>"confint"</code> containing the following columns:</p><ul>
+    <p>A tibble with class <code>"wt_confint"</code> containing the following columns:</p><ul>
 <li><p><code>x</code> : An ordered sequence of the lifetime characteristic regarding
       the failed units, starting at <code><a href='https://rdrr.io/r/base/Extremes.html'>min(x)</a></code> and ending up at <code><a href='https://rdrr.io/r/base/Extremes.html'>max(x)</a></code>.
       With <code>b_lives = c(0.01, 0.1, 0.5)</code> the 1%, 10% and 50% quantiles
@@ -215,8 +211,9 @@ confidence interval. One of <code>"y"</code> (failure probabilities) or <code>"x
       <code><a href='rank_regression.html'>rank_regression</a></code>).</p></li>
 <li><p><code>bounds</code> : Specified bound(s).</p></li>
 <li><p><code>direction</code> : Specified direction.</p></li>
-<li><p><code>method</code> : Specified method for the estimation of failure
-      probabilities (determined when calling <code><a href='estimate_cdf.html'>estimate_cdf</a></code>).</p></li>
+<li><p><code>cdf_estimation_method</code> : Specified method for the estimation
+      of failure probabilities (determined when calling
+      <code><a href='estimate_cdf.html'>estimate_cdf</a></code>).</p></li>
 </ul>
 
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
@@ -229,48 +226,48 @@ on another level, the specified confidence level.</p>
     <pre class="examples"><div class='input'><span class='co'># Reliability data preparation:</span>
 <span class='co'>## Data for two-parametric model:</span>
 <span class='va'>data_2p</span> <span class='op'>&lt;-</span> <span class='fu'><a href='reliability_data.html'>reliability_data</a></span><span class='op'>(</span>
-  data <span class='op'>=</span> <span class='va'>shock</span>,
+  <span class='va'>shock</span>,
   x <span class='op'>=</span> <span class='va'>distance</span>,
   status <span class='op'>=</span> <span class='va'>status</span>
 <span class='op'>)</span>
 
 <span class='co'>## Data for three-parametric model:</span>
 <span class='va'>data_3p</span> <span class='op'>&lt;-</span> <span class='fu'><a href='reliability_data.html'>reliability_data</a></span><span class='op'>(</span>
-  data <span class='op'>=</span> <span class='va'>alloy</span>,
+  <span class='va'>alloy</span>,
   x <span class='op'>=</span> <span class='va'>cycles</span>,
   status <span class='op'>=</span> <span class='va'>status</span>
 <span class='op'>)</span>
 
 <span class='co'># Probability estimation:</span>
 <span class='va'>prob_tbl_2p</span> <span class='op'>&lt;-</span> <span class='fu'><a href='estimate_cdf.html'>estimate_cdf</a></span><span class='op'>(</span>
-  x <span class='op'>=</span> <span class='va'>data_2p</span>,
+  <span class='va'>data_2p</span>,
   methods <span class='op'>=</span> <span class='st'>"johnson"</span>
 <span class='op'>)</span>
 
 <span class='va'>prob_tbl_3p</span> <span class='op'>&lt;-</span> <span class='fu'><a href='estimate_cdf.html'>estimate_cdf</a></span><span class='op'>(</span>
-  x <span class='op'>=</span> <span class='va'>data_3p</span>,
+  <span class='va'>data_3p</span>,
   methods <span class='op'>=</span> <span class='st'>"johnson"</span>
 <span class='op'>)</span>
 
 <span class='va'>prob_tbl_mult</span> <span class='op'>&lt;-</span> <span class='fu'><a href='estimate_cdf.html'>estimate_cdf</a></span><span class='op'>(</span>
-  x <span class='op'>=</span> <span class='va'>data_3p</span>,
+  <span class='va'>data_3p</span>,
   methods <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"johnson"</span>, <span class='st'>"mr"</span><span class='op'>)</span>
 <span class='op'>)</span>
 </div><div class='output co'>#&gt; <span class='message'>The 'mr' method only considers failed units (status == 1) and does not retain intact units (status == 0).</span></div><div class='input'>
 <span class='co'># Model estimation with rank_regression():</span>
 <span class='va'>rr_2p</span> <span class='op'>&lt;-</span> <span class='fu'><a href='rank_regression.html'>rank_regression</a></span><span class='op'>(</span>
-  x <span class='op'>=</span> <span class='va'>prob_tbl_2p</span>,
+  <span class='va'>prob_tbl_2p</span>,
   distribution <span class='op'>=</span> <span class='st'>"weibull"</span>
 <span class='op'>)</span>
 
 <span class='va'>rr_3p</span> <span class='op'>&lt;-</span> <span class='fu'><a href='rank_regression.html'>rank_regression</a></span><span class='op'>(</span>
-  x <span class='op'>=</span> <span class='va'>prob_tbl_3p</span>,
+  <span class='va'>prob_tbl_3p</span>,
   distribution <span class='op'>=</span> <span class='st'>"lognormal3"</span>,
   conf_level <span class='op'>=</span> <span class='fl'>0.90</span>
 <span class='op'>)</span>
 
 <span class='va'>rr_lists</span> <span class='op'>&lt;-</span> <span class='fu'><a href='rank_regression.html'>rank_regression</a></span><span class='op'>(</span>
-  x <span class='op'>=</span> <span class='va'>prob_tbl_mult</span>,
+  <span class='va'>prob_tbl_mult</span>,
   distribution <span class='op'>=</span> <span class='st'>"loglogistic3"</span>,
   conf_level <span class='op'>=</span> <span class='fl'>0.90</span>
 <span class='op'>)</span>

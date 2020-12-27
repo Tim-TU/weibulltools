@@ -73,7 +73,7 @@ plot_prob_helper <- function(
 }
 
 plot_mod_helper <- function(
-  x, dist_params, distribution, method = NA_character_
+  x, dist_params, distribution, cdf_estimation_method = NA_character_
 ) {
   if (length(x) == 2) {
     if (distribution %in% c("weibull", "lognormal", "loglogistic")) {
@@ -136,13 +136,13 @@ plot_mod_helper <- function(
     dplyr::mutate(
       param_val = list(param_val),
       param_label = list(param_label),
-      method = method,
+      cdf_estimation_method = cdf_estimation_method,
       group = NA_character_,
       q = q
     )
 }
 
-plot_mod_mix_helper <- function(model_estimation, method, group) {
+plot_mod_mix_helper <- function(model_estimation, cdf_estimation_method, group) {
   distribution <- model_estimation$distribution
   data <- model_estimation$data %>%
     dplyr::filter(.data$status == 1)
@@ -167,7 +167,7 @@ plot_mod_mix_helper <- function(model_estimation, method, group) {
     y_p = y_p,
     param_val = list(c(param_1, param_2)),
     param_label = list(c(label_1, label_2)),
-    method = method,
+    cdf_estimation_method = cdf_estimation_method,
     group = group
   )
 
@@ -191,14 +191,14 @@ plot_conf_helper_2 <- function(confint, distribution) {
     x = confint$x,
     y = confint$upper_bound,
     bound = "Upper",
-    method = confint$method
+    cdf_estimation_method = confint$cdf_estimation_method
   )
 
   tbl_lower <- if (hasName(confint, "lower_bound")) tibble::tibble(
     x = confint$x,
     y = confint$lower_bound,
     bound = "Lower",
-    method = confint$method
+    cdf_estimation_method = confint$cdf_estimation_method
   )
 
   tbl_p <- dplyr::bind_rows(tbl_upper, tbl_lower)
@@ -242,7 +242,7 @@ plot_conf_helper <- function(tbl_mod, x, y, direction, distribution) {
   }
 
   tbl_p <- dplyr::group_by(tbl_p, .data$bound)
-  tbl_p$method <- NA_character_
+  tbl_p$cdf_estimation_method <- NA_character_
 
   return(tbl_p)
 }

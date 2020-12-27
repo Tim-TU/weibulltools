@@ -14,15 +14,15 @@
 #' \code{c(date_1[i], date_2[i])}. Time differences less than or equal to zero are
 #' not considered as well.
 #'
-#' @param date_1 A vector of class \code{"character"} or \code{"Date"}, in the
+#' @param date_1 A vector of class \code{character} or \code{Date}, in the
 #'   format "yyyy-mm-dd", indicating the earlier of the two dates. Use \code{NA}
 #'   for missing elements.
-#' @param date_2 A vector of class \code{"character"} or \code{"Date"}, in the
+#' @param date_2 A vector of class \code{character} or \code{Date}, in the
 #'   format "yyyy-mm-dd", indicating the later of the two dates. Use \code{NA}
 #'   for missing elements.
 #' @param distribution Supposed distribution of the random variable.
 #'
-#' @return A list of class \code{"delay_estimation"} which contains:
+#' @return A list of class \code{delay_estimation} which contains:
 #'   \itemize{
 #'     \item \code{coefficients} : A named vector of estimated parameter(s).
 #'     \item \code{delay} : A numeric vector of element-wise computed differences
@@ -182,14 +182,14 @@ dist_delay <- function(date_1,
 #'     reporting delays.
 #' }
 #'
-#' @param date_1 A vector of class \code{"character"} or \code{"Date"}, in the
+#' @param date_1 A vector of class \code{character} or \code{Date}, in the
 #'   format "yyyy-mm-dd", indicating the earlier of the two dates. Use \code{NA}
 #'   for missing elements.
 #'
 #'   If more than one delay should be considered it must be a list where the first
 #'   element contains the earlier dates of the first delay and the second element
 #'   contains the earlier dates of the second delay, and so forth.(See 'Examples').
-#' @param date_2 A vector of class \code{"character"} or \code{"Date"}, in the
+#' @param date_2 A vector of class \code{character} or \code{Date}, in the
 #'   format "yyyy-mm-dd", indicating the later of the two dates. Use \code{NA}
 #'   for missing elements.
 #'
@@ -213,14 +213,15 @@ dist_delay <- function(date_1,
 #'
 #' @return A list containing the following elements:
 #'   \itemize{
-#'     \item \code{data} : A tibble with classes \code{"mcs_data"} and
-#'       \code{"reliability_data"} if \code{status} is provided. Since the
-#'       attribute \code{"reliability_data"} enables the direct usage of \code{data}
-#'       inside \code{estimate_cdf} (\code{\link{estimate_cdf.reliability_data}}),
-#'       the required lifetime characteristic is automatically set to the operating
+#'     \item \code{data} : A tibble with classes \code{wt_mcs_data} and
+#'       \code{wt_reliability_data} if \code{status} is provided. Since the
+#'       class \code{wt_reliability_data} enables the direct usage of
+#'       \code{data} inside
+#'       \code{\link[=estimate_cdf]{estimate_cdf.wt_reliability_data}}, the
+#'       required lifetime characteristic is automatically set to the operating
 #'       time \code{time}.
 #'
-#'       If \code{status = NULL} class is \code{"mcs_data"}, which is not
+#'       If \code{status = NULL} class is \code{wt_mcs_data}, which is not
 #'       supported by \code{estimate_cdf} due to missing \code{status}.
 #'
 #'       The tibble contains the following columns:
@@ -418,13 +419,13 @@ mcs_delay <- function(date_1,
 
   if (purrr::is_null(status)) {
     names(data_list) <- c(data_list_names, "time", "id")
-    class_assign <- "mcs_data"
+    class_assign <- "wt_mcs_data"
   } else {
     names(data_list) <- c(data_list_names, "time", "status", "id")
-    class_assign <- c("mcs_data", "reliability_data")
+    class_assign <- c("wt_mcs_data", "wt_reliability_data")
   }
 
-  # Defining data_tbl with class "mcs_data" and/or "reliability_data":
+  # Defining data_tbl with class "wt_mcs_data" and/or "wt_reliability_data":
   data_tbl <- tibble::as_tibble(data_list)
   class(data_tbl) <- c(class_assign, class(data_tbl))
 
@@ -487,10 +488,10 @@ mcs_helper <- function(x, par_list) {
 #' and afterwards estimates the parameter(s) of a supposed distribution,
 #' using maximum likelihood.
 #'
-#' @param date_prod A vector of class \code{"character"} or \code{"Date"}, in the
+#' @param date_prod A vector of class \code{character} or \code{Date}, in the
 #'   format "yyyy-mm-dd", indicating the date of production of a unit.
 #'   Use \code{NA} for missing elements.
-#' @param date_register A vector of class \code{"character"} or \code{"Date"}, in
+#' @param date_register A vector of class \code{character} or \code{Date}, in
 #'   the format "yyyy-mm-dd", indicating the date of registration of a unit.
 #'   Use \code{NA} for missing elements.
 #' @param distribution Supposed distribution of the random variable. Only
@@ -628,23 +629,27 @@ dist_delay_register <- function(date_prod,
 #'                           NA, "2014-03-21", "2014-06-19", NA, NA)
 #'
 #' op_time <- rep(1000, length(date_of_production))
-#' state <- c(0, 1, 1, 1, 0, 0, 1, 0, 1, 1, 1, 0, 1, 0, 0, 1, 0, 1, 0, 1, 1, 0, 0)
+#' status <- c(0, 1, 1, 1, 0, 0, 1, 0, 1, 1, 1, 0, 1, 0, 0, 1, 0, 1, 0, 1, 1, 0, 0)
 #'
 #' # Example 1 - Simplified vector output:
-#' x_corrected <- mcs_delay_register(date_prod = date_of_production,
-#'                                   date_register = date_of_registration,
-#'                                   time = op_time,
-#'                                   status = state,
-#'                                   distribution = "lognormal",
-#'                                   details = FALSE)
+#' x_corrected <- mcs_delay_register(
+#'   date_prod = date_of_production,
+#'   date_register = date_of_registration,
+#'   time = op_time,
+#'   status = status,
+#'   distribution = "lognormal",
+#'   details = FALSE
+#' )
 #'
 #' # Example 2 - Detailed list output:
-#' list_detail <- mcs_delay_register(date_prod = date_of_production,
-#'                                   date_register = date_of_registration,
-#'                                   time = op_time,
-#'                                   status = state,
-#'                                   distribution = "lognormal",
-#'                                   details = TRUE)
+#' list_detail <- mcs_delay_register(
+#'   date_prod = date_of_production,
+#'   date_register = date_of_registration,
+#'   time = op_time,
+#'   status = status,
+#'   distribution = "lognormal",
+#'   details = TRUE
+#' )
 #'
 #' @export
 mcs_delay_register <- function(date_prod,
@@ -706,10 +711,10 @@ mcs_delay_register <- function(date_prod,
 #'
 #' @inheritParams dist_delay_register
 #'
-#' @param date_repair a vector of class \code{"character"} or \code{"Date"}, in the
+#' @param date_repair a vector of class \code{character} or \code{Date}, in the
 #'   format "yyyy-mm-dd", indicating the date of repair of a failed unit.
 #'   Use \code{NA} for missing elements.
-#' @param date_report a vector of class \code{"character"} or \code{"Date"}, in the
+#' @param date_report a vector of class \code{character} or \code{Date}, in the
 #'   format "yyyy-mm-dd", indicating the date of report of a failed unit.
 #'   Use \code{NA} for missing elements.
 #'
@@ -831,23 +836,27 @@ dist_delay_report <- function(date_repair,
 #'                     "2015-12-02", NA, NA)
 #'
 #' op_time <- rep(1000, length(date_of_repair))
-#' state <- c(0, 1, 1, 1, 0, 0, 1, 0, 1, 1, 1, 0, 1, 0, 0, 1, 0, 1, 0, 1, 1, 0, 0)
+#' status <- c(0, 1, 1, 1, 0, 0, 1, 0, 1, 1, 1, 0, 1, 0, 0, 1, 0, 1, 0, 1, 1, 0, 0)
 #'
 #' # Example 1 - Simplified vector output:
-#' x_corrected <- mcs_delay_report(date_repair = date_of_repair,
-#'                                 date_report = date_of_report,
-#'                                 time = op_time,
-#'                                 status = state,
-#'                                 distribution = "lognormal",
-#'                                 details = FALSE)
+#' x_corrected <- mcs_delay_report(
+#'   date_repair = date_of_repair,
+#'   date_report = date_of_report,
+#'   time = op_time,
+#'   status = status,
+#'   distribution = "lognormal",
+#'   details = FALSE
+#' )
 #'
 #' # Example 2 - Detailed list output:
-#' list_detail <- mcs_delay_report(date_repair = date_of_repair,
-#'                                 date_report = date_of_report,
-#'                                 time = op_time,
-#'                                 status = state,
-#'                                 distribution = "lognormal",
-#'                                 details = TRUE)
+#' list_detail <- mcs_delay_report(
+#'   date_repair = date_of_repair,
+#'   date_report = date_of_report,
+#'   time = op_time,
+#'   status = status,
+#'   distribution = "lognormal",
+#'   details = TRUE
+#' )
 #'
 #' @export
 mcs_delay_report <- function(date_repair,
@@ -961,27 +970,31 @@ mcs_delay_report <- function(date_repair,
 #'                     "2015-12-02", NA, NA)
 #'
 #' op_time <- rep(1000, length(date_of_repair))
-#' state <- c(0, 1, 1, 1, 0, 0, 1, 0, 1, 1, 1, 0, 1, 0, 0, 1, 0, 1, 0, 1, 1, 0, 0)
+#' status <- c(0, 1, 1, 1, 0, 0, 1, 0, 1, 1, 1, 0, 1, 0, 0, 1, 0, 1, 0, 1, 1, 0, 0)
 #'
 #' # Example 1 - Simplified vector output:
-#' x_corrected <- mcs_delays(date_prod = date_of_production,
-#'                           date_register = date_of_registration,
-#'                           date_repair = date_of_repair,
-#'                           date_report = date_of_report,
-#'                           time = op_time,
-#'                           status = state,
-#'                           distribution = "lognormal",
-#'                           details = FALSE)
+#' x_corrected <- mcs_delays(
+#'   date_prod = date_of_production,
+#'   date_register = date_of_registration,
+#'   date_repair = date_of_repair,
+#'   date_report = date_of_report,
+#'   time = op_time,
+#'   status = status,
+#'   distribution = "lognormal",
+#'   details = FALSE
+#' )
 #'
 #' # Example 2 - Detailed list output:
-#' list_detail <- mcs_delays(date_prod = date_of_production,
-#'                                 date_register = date_of_registration,
-#'                                 date_repair = date_of_repair,
-#'                                 date_report = date_of_report,
-#'                                 time = op_time,
-#'                                 status = state,
-#'                                 distribution = "lognormal",
-#'                                 details = TRUE)
+#' list_detail <- mcs_delays(
+#'   date_prod = date_of_production,
+#'   date_register = date_of_registration,
+#'   date_repair = date_of_repair,
+#'   date_report = date_of_report,
+#'   time = op_time,
+#'   status = status,
+#'   distribution = "lognormal",
+#'   details = TRUE
+#' )
 #'
 #' @export
 mcs_delays <- function(date_prod,

@@ -9,8 +9,9 @@
 #' rank \emph{j} at a 50\% level, is to determine the probability of rank \emph{j}
 #' on another level, the specified confidence level.
 #'
-#' @param x Object of class \code{model_estimation} (or \code{model_estimation_list})
-#'   returned from \code{\link{rank_regression}}.
+#' @param x Object with class \code{wt_model} and one of the classes
+#'   \code{wt_model_estimation} or \code{wt_model_estimation_list} returned from
+#'   \code{\link{rank_regression}}.
 #' @param b_lives A numeric vector indicating the probabilities \emph{p} of the
 #'   \eqn{B_p}-lives (quantiles) to be considered.
 #' @param bounds A character string specifying of which bounds have to be computed.
@@ -21,7 +22,7 @@
 #'   (quantiles).
 #' @template dots
 #'
-#' @return A tibble with class \code{"confint"} containing the following columns:
+#' @return A tibble with class \code{wt_confint} containing the following columns:
 #'   \itemize{
 #'     \item \code{x} : An ordered sequence of the lifetime characteristic regarding
 #'       the failed units, starting at \code{min(x)} and ending up at \code{max(x)}.
@@ -42,56 +43,57 @@
 #'       \code{\link{rank_regression}}).
 #'     \item \code{bounds} : Specified bound(s).
 #'     \item \code{direction} : Specified direction.
-#'     \item \code{method} : Specified method for the estimation of failure
-#'       probabilities (determined when calling \code{\link{estimate_cdf}}).
+#'     \item \code{cdf_estimation_method} : Specified method for the estimation
+#'       of failure probabilities (determined when calling
+#'       \code{\link{estimate_cdf}}).
 #'   }
 #'
 #' @examples
 #' # Reliability data preparation:
 #' ## Data for two-parametric model:
 #' data_2p <- reliability_data(
-#'   data = shock,
+#'   shock,
 #'   x = distance,
 #'   status = status
 #' )
 #'
 #' ## Data for three-parametric model:
 #' data_3p <- reliability_data(
-#'   data = alloy,
+#'   alloy,
 #'   x = cycles,
 #'   status = status
 #' )
 #'
 #' # Probability estimation:
 #' prob_tbl_2p <- estimate_cdf(
-#'   x = data_2p,
+#'   data_2p,
 #'   methods = "johnson"
 #' )
 #'
 #' prob_tbl_3p <- estimate_cdf(
-#'   x = data_3p,
+#'   data_3p,
 #'   methods = "johnson"
 #' )
 #'
 #' prob_tbl_mult <- estimate_cdf(
-#'   x = data_3p,
+#'   data_3p,
 #'   methods = c("johnson", "mr")
 #' )
 #'
 #' # Model estimation with rank_regression():
 #' rr_2p <- rank_regression(
-#'   x = prob_tbl_2p,
+#'   prob_tbl_2p,
 #'   distribution = "weibull"
 #' )
 #'
 #' rr_3p <- rank_regression(
-#'   x = prob_tbl_3p,
+#'   prob_tbl_3p,
 #'   distribution = "lognormal3",
 #'   conf_level = 0.90
 #' )
 #'
 #' rr_lists <- rank_regression(
-#'   x = prob_tbl_mult,
+#'   prob_tbl_mult,
 #'   distribution = "loglogistic3",
 #'   conf_level = 0.90
 #' )
@@ -155,13 +157,35 @@ confint_betabinom <- function(x, ...) {
 #' @rdname confint_betabinom
 #'
 #' @export
-confint_betabinom.model_estimation <- function(
-                                 x,
-                                 b_lives = c(0.01, 0.1, 0.50),
-                                 bounds = c("two_sided", "lower", "upper"),
-                                 conf_level = 0.95,
-                                 direction = c("y", "x"),
-                                 ...
+confint_betabinom.wt_model <- function(x,
+                                       b_lives = c(0.01, 0.1, 0.50),
+                                       bounds = c(
+                                         "two_sided", "lower", "upper"
+                                       ),
+                                       conf_level = 0.95,
+                                       direction = c("y", "x"),
+                                       ...
+) {
+  stopifnot(
+    inherits(x, "wt_model_estimation") ||
+      inherits(x, "wt_model_estimation_list")
+  )
+
+  NextMethod()
+}
+
+
+
+#' @export
+confint_betabinom.wt_model_estimation <- function(x,
+                                                  b_lives = c(0.01, 0.1, 0.50),
+                                                  bounds = c(
+                                                    "two_sided", "lower",
+                                                    "upper"
+                                                  ),
+                                                  conf_level = 0.95,
+                                                  direction = c("y", "x"),
+                                                  ...
 ) {
   bounds <- match.arg(bounds)
   direction <- match.arg(direction)
@@ -177,10 +201,8 @@ confint_betabinom.model_estimation <- function(
 
 
 
-#' @rdname confint_betabinom
-#'
 #' @export
-confint_betabinom.model_estimation_list <- function(
+confint_betabinom.wt_model_estimation_list <- function(
                                       x,
                                       b_lives = c(0.01, 0.1, 0.50),
                                       bounds = c("two_sided", "lower", "upper"),
@@ -222,7 +244,8 @@ confint_betabinom.model_estimation_list <- function(
 #' @param distribution Supposed distribution of the random variable. Has to be in
 #'   line with the specification made in \code{\link{rank_regression}}.
 #'
-#' @return A tibble with class \code{"confint"} containing the following columns:
+#' @return A tibble with class \code{wt_confint} containing the following
+#' columns:
 #'   \itemize{
 #'     \item \code{x} : An ordered sequence of the lifetime characteristic regarding
 #'       the failed units, starting at \code{min(x)} and ending up at \code{max(x)}.
@@ -242,9 +265,9 @@ confint_betabinom.model_estimation_list <- function(
 #'     \item \code{distribution} : Specified distribution.
 #'     \item \code{bounds} : Specified bound(s).
 #'     \item \code{direction} : Specified direction.
-#'     \item \code{method} : A character that is always \code{NA_character}. Due
-#'       to the generic visualization functions column \code{method} has to be
-#'       provided.
+#'     \item \code{cdf_estimation_method} : A character that is always
+#'       \code{NA_character}. Due to the generic visualization functions this
+#'       column has to be provided.
 #'   }
 #'
 #' @seealso \code{\link{confint_betabinom}}
@@ -258,13 +281,13 @@ confint_betabinom.model_estimation_list <- function(
 #' status_2 <- alloy$status
 #'
 #' # Probability estimation:
-#' tbl_john <- estimate_cdf(
+#' prob_tbl <- estimate_cdf(
 #'   x = obs,
 #'   status = status_1,
 #'   method = "johnson"
 #' )
 #'
-#' tbl_john_2 <- estimate_cdf(
+#' prob_tbl_2 <- estimate_cdf(
 #'   x = cycles,
 #'   status = status_2,
 #'   method = "johnson"
@@ -272,24 +295,24 @@ confint_betabinom.model_estimation_list <- function(
 #'
 #' # Model estimation with rank_regression():
 #' rr <- rank_regression(
-#'   x = tbl_john$x,
-#'   y = tbl_john$prob,
-#'   status = tbl_john$status,
+#'   x = prob_tbl$x,
+#'   y = prob_tbl$prob,
+#'   status = prob_tbl$status,
 #'   distribution = "weibull",
-#'   conf_level = 0.90
+#'   conf_level = 0.9
 #' )
 #'
 #' rr_2 <- rank_regression(
-#'   x = tbl_john_2$x,
-#'   y = tbl_john_2$prob,
-#'   status = tbl_john_2$status,
+#'   x = prob_tbl_2$x,
+#'   y = prob_tbl_2$prob,
+#'   status = prob_tbl_2$status,
 #'   distribution = "lognormal3"
 #' )
 #'
 #' # Example 1 - Two-sided 95% confidence interval for probabilities ('y'):
 #' conf_betabin_1 <- confint_betabinom(
-#'   x = obs,
-#'   status = status_1,
+#'   x = prob_tbl$x,
+#'   status = prob_tbl$status,
 #'   dist_params = rr$coefficients,
 #'   distribution = "weibull",
 #'   bounds = "two_sided",
@@ -299,22 +322,22 @@ confint_betabinom.model_estimation_list <- function(
 #'
 #' # Example 2 - One-sided lower/upper 90% confidence interval for quantiles ('x'):
 #' conf_betabin_2_1 <- confint_betabinom(
-#'   x = obs,
-#'   status = status_1,
+#'   x = prob_tbl$x,
+#'   status = prob_tbl$status,
 #'   dist_params = rr$coefficients,
 #'   distribution = "weibull",
 #'   bounds = "lower",
-#'   conf_level = 0.90,
+#'   conf_level = 0.9,
 #'   direction = "x"
 #' )
 #'
 #' conf_betabin_2_2 <- confint_betabinom(
-#'   x = obs,
-#'   status = status_1,
+#'   x = prob_tbl$x,
+#'   status = prob_tbl$status,
 #'   dist_params = rr$coefficients,
 #'   distribution = "weibull",
 #'   bounds = "upper",
-#'   conf_level = 0.90,
+#'   conf_level = 0.9,
 #'   direction = "x"
 #' )
 #'
@@ -322,22 +345,22 @@ confint_betabinom.model_estimation_list <- function(
 #' # a three-parametric model:
 #'
 #' conf_betabin_3_1 <- confint_betabinom(
-#'   x = cycles,
-#'   status = status_2,
+#'   x = prob_tbl_2$x,
+#'   status = prob_tbl_2$status,
 #'   dist_params = rr_2$coefficients,
 #'   distribution = "lognormal3",
 #'   bounds = "two_sided",
-#'   conf_level = 0.90,
+#'   conf_level = 0.9,
 #'   direction = "y"
 #' )
 #'
 #' conf_betabin_3_2 <- confint_betabinom(
-#'   x = cycles,
-#'   status = status_2,
+#'   x = prob_tbl_2$x,
+#'   status = prob_tbl_2$status,
 #'   dist_params = rr_2$coefficients,
 #'   distribution = "lognormal3",
 #'   bounds = "two_sided",
-#'   conf_level = 0.90,
+#'   conf_level = 0.9,
 #'   direction = "x"
 #' )
 #'
@@ -361,9 +384,11 @@ confint_betabinom.default <- function(x,
   direction <- match.arg(direction)
   distribution <- match.arg(distribution)
 
-  # Fake model_estimation
+  # Fake wt_model_estimation
   model_estimation <- list(
-    data = tibble::tibble(x = x, status = status, method = NA_character_),
+    data = tibble::tibble(
+      x = x, status = status, cdf_estimation_method = NA_character_
+    ),
     coefficients = dist_params,
     distribution = distribution
   )
@@ -386,12 +411,12 @@ confint_betabinom_ <- function(model_estimation,
                                direction
 ) {
 
-  method <- model_estimation$data$method[1]
+  cdf_estimation_method <- model_estimation$data$cdf_estimation_method[1]
 
-  if (method %in% c("kaplan", "nelson")) {
+  if (cdf_estimation_method %in% c("kaplan", "nelson")) {
     stop(
       "The beta binomial confidence intervals cannot be calculated for method '",
-      method, "'. Use method 'mr' or 'johnson'."
+      cdf_estimation_method, "'. Use method 'mr' or 'johnson' in estimate_cdf()."
     )
   }
 
@@ -456,15 +481,15 @@ confint_betabinom_ <- function(model_estimation,
       distribution = distribution,
       bounds = bounds,
       direction = direction,
-      method = method
+      cdf_estimation_method = cdf_estimation_method
     )
 
-  if ("model_estimation" %in% class(model_estimation)) {
+  if (inherits(model_estimation, "wt_model_estimation")) {
     # Only add model_estimation if not faked by .default
     attr(tbl_out, "model_estimation") <- model_estimation
   }
 
-  class(tbl_out) <- c("confint", class(tbl_out))
+  class(tbl_out) <- c("wt_confint", class(tbl_out))
 
   return(tbl_out)
 }
@@ -515,14 +540,14 @@ confint_betabinom_ <- function(model_estimation,
 #' @examples
 #' # Reliability data preparation:
 #' data <- reliability_data(
-#'   data = shock,
+#'   shock,
 #'   x = distance,
 #'   status = status
 #' )
 #'
 #' # Parameter estimation using maximum likelihood:
 #' mle <- ml_estimation(
-#'   x = data,
+#'   data,
 #'   distribution = "weibull",
 #'   conf_level = 0.95
 #' )
@@ -693,10 +718,11 @@ delta_method_ <- function(p,
 #'
 #' @inheritParams confint_betabinom
 #'
-#' @param x Object of class \code{model_estimation} returned from
-#'   \code{\link{ml_estimation}}.
+#' @param x Object with classes \code{wt_model} \strong{and}
+#'   \code{wt_ml_estimation} returned from \code{\link{ml_estimation}}.
 #'
-#' @return A tibble with class \code{"confint"} containing the following columns:
+#' @return A tibble with class \code{wt_confint} containing the following
+#' columns:
 #'   \itemize{
 #'     \item \code{x} : An ordered sequence of the lifetime characteristic regarding
 #'       the failed units, starting at \code{min(x)} and ending up at \code{max(x)}.
@@ -717,8 +743,9 @@ delta_method_ <- function(p,
 #'     \code{\link{ml_estimation}}).
 #'     \item \code{bounds} : Specified bound(s).
 #'     \item \code{direction} : Specified direction.
-#'     \item \code{method} : A character that is always \code{"conf_null"}. Due to
-#'       generic visualization functions column \code{method} has to be provided.
+#'     \item \code{cdf_estimation_method} : A character that is always
+#'       \code{NA_character}. For the generic visualization functions this
+#'       column has to be provided.
 #'   }
 #'
 #' @encoding UTF-8
@@ -730,26 +757,26 @@ delta_method_ <- function(p,
 #' # Reliability data preparation:
 #' ## Data for two-parametric model:
 #' data_2p <- reliability_data(
-#'   data = shock,
+#'   shock,
 #'   x = distance,
 #'   status = status
 #' )
 #'
 #' ## Data for three-parametric model:
 #' data_3p <- reliability_data(
-#'   data = alloy,
+#'   alloy,
 #'   x = cycles,
 #'   status = status
 #' )
 #'
 #' # Model estimation with ml_estimation():
 #' ml_2p <- ml_estimation(
-#'   x = data_2p,
+#'   data_2p,
 #'   distribution = "weibull"
 #' )
 #'
 #' ml_3p <- ml_estimation(
-#'   x = data_3p,
+#'   data_3p,
 #'   distribution = "lognormal3",
 #'   conf_level = 0.90
 #' )
@@ -805,15 +832,30 @@ confint_fisher <- function(x, ...) {
 #' @rdname confint_fisher
 #'
 #' @export
-confint_fisher.model_estimation <- function(
-                              x,
-                              b_lives = c(0.01, 0.1, 0.50),
-                              bounds = c(
-                                "two_sided", "lower", "upper"
-                              ),
-                              conf_level = 0.95,
-                              direction = c("y", "x"),
-                              ...
+confint_fisher.wt_model <- function(x,
+                                    b_lives = c(0.01, 0.1, 0.50),
+                                    bounds = c(
+                                      "two_sided", "lower", "upper"
+                                    ),
+                                    conf_level = 0.95,
+                                    direction = c("y", "x"),
+                                    ...
+) {
+  stopifnot(inherits(x, "wt_ml_estimation"))
+  NextMethod()
+}
+
+
+
+#' @export
+confint_fisher.wt_ml_estimation <- function(x,
+                                            b_lives = c(0.01, 0.1, 0.50),
+                                            bounds = c(
+                                              "two_sided", "lower", "upper"
+                                            ),
+                                            conf_level = 0.95,
+                                            direction = c("y", "x"),
+                                            ...
 ) {
 
   bounds <- match.arg(bounds)
@@ -841,7 +883,8 @@ confint_fisher.model_estimation <- function(
 #'   confidence interval. One of \code{"y"} (failure probabilities) or \code{"x"}
 #'   (quantiles).
 #'
-#' @return A tibble with class \code{"confint"} containing the following columns:
+#' @return A tibble with class \code{wt_confint} containing the following
+#' columns:
 #'   \itemize{
 #'     \item \code{x} : An ordered sequence of the lifetime characteristic regarding
 #'       the failed units, starting at \code{min(x)} and ending up at \code{max(x)}.
@@ -862,8 +905,9 @@ confint_fisher.model_estimation <- function(
 #'     \code{\link{ml_estimation}}).
 #'     \item \code{bounds} : Specified bound(s).
 #'     \item \code{direction} : Specified direction.
-#'     \item \code{method} : A character that is always \code{"conf_null"}. Due to
-#'       generic visualization functions column \code{method} has to be provided.
+#'     \item \code{cdf_estimation_method} : A character that is always
+#'       \code{NA_character}. For the generic visualization functions this
+#'       column has to be provided.
 #'   }
 #'
 #' @seealso \code{\link{confint_fisher}}
@@ -974,7 +1018,9 @@ confint_fisher.default <- function(x,
 
   # Fake model_estimation
   model_estimation <- list(
-    data = tibble::tibble(x = x, status = status, method = NA_character_),
+    data = tibble::tibble(
+      x = x, status = status, cdf_estimation_method = NA_character_
+    ),
     coefficients = dist_params,
     varcov = dist_varcov,
     distribution = distribution
@@ -1118,16 +1164,16 @@ confint_fisher_ <- function(model_estimation,
       distribution = distribution,
       bounds = bounds,
       direction = direction,
-      method = NA_character_
+      cdf_estimation_method = NA_character_
     )
 
-  if ("model_estimation" %in% class(model_estimation)) {
+  if (inherits(model_estimation, "wt_model_estimation")) {
     # Only add model_estimation if not faked by .default
     attr(tbl_out, "model_estimation") <- model_estimation
   }
 
   # Make output usable for generics
-  class(tbl_out) <- c("confint", class(tbl_out))
+  class(tbl_out) <- c("wt_confint", class(tbl_out))
 
   return(tbl_out)
 }

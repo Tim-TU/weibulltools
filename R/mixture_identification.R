@@ -25,7 +25,7 @@
 #' In order to reduce the risk of overestimation as well as being able to consider
 #' the main types of failures, a maximum of three subgroups (\code{k = 3}) is recommended.
 #'
-#' @inheritParams rank_regression.cdf_estimation
+#' @inheritParams rank_regression.wt_cdf_estimation
 #'
 #' @param k Number of mixture components. If the data should be split in an automated
 #'   fashion \code{k} must be set to \code{NULL}. The argument \code{fix.psi}
@@ -34,14 +34,16 @@
 #'   is passed to \code{\link[segmented:segmented]{segmented.lm}}.
 #'   See 'Examples' for usage.
 #'
-#' @return Returns a list of class \code{"rank_regression"} if no breakpoint was
-#' detected. See \code{\link{rank_regression}}.
+#' @return Returns a list with classes \code{wt_model} and
+#' \code{wt_rank_regression} if no breakpoint was detected. See
+#' \code{\link{rank_regression}}.
 #'
-#' Returns a list of class \code{"mixmod_regression"} if at least one breakpoint
-#' was determined. The length of the list depends on the number of subgroups.
-#' Each list element contains the information provided by \code{\link{rank_regression}}.
-#' In addition, the returned tibble \code{data} of each list element only retains
-#' information on the failed units and has two more columns:
+#' Returns a list with classes \code{wt_model} and \code{wt_mixmod_regression}
+#' if at least one breakpoint was determined. The length of the list depends on
+#' the number of identified subgroups. Each list element contains the
+#' information provided by \code{\link{rank_regression}}. In addition, the
+#' returned tibble \code{data} of each list element only retains information on
+#' the failed units and has two more columns:
 #' \itemize{
 #'   \item \code{q} : Quantiles of the standard distribution calculated from
 #'     column \code{prob}.
@@ -49,8 +51,9 @@
 #' }
 #'
 #' If more than one method was specified in \code{\link{estimate_cdf}}, the
-#' resulting output is a list with class \code{"mixmod_regression_list"} where
-#' each list element has class \code{"mixmod_regression"}.
+#' resulting output is a list with classes \code{wt_model} and
+#' \code{wt_mixmod_regression_list} where each list element has class
+#' \code{wt_model} and \code{wt_mixmod_regression}.
 #'
 #' @encoding UTF-8
 #'
@@ -61,14 +64,14 @@
 #' # Reliability data preparation:
 #' ## Data for mixture model:
 #' data_mix <- reliability_data(
-#'   data = voltage,
+#'   voltage,
 #'   x = hours,
 #'   status = status
 #' )
 #'
 #' ## Data for simple unimodal distribution:
 #' data <- reliability_data(
-#'   data = shock,
+#'   shock,
 #'   x = distance,
 #'   status = status
 #' )
@@ -107,7 +110,7 @@
 #'
 #' # Example 3 - Mixture identification for multiple methods specified in estimate_cdf:
 #' mix_mod_mult <- mixmod_regression(
-#'   prob_mix_mult,
+#'   x = prob_mix_mult,
 #'   distribution = "loglogistic"
 #' )
 #'
@@ -135,7 +138,7 @@ mixmod_regression <- function(x, ...) {
 #' @rdname mixmod_regression
 #'
 #' @export
-mixmod_regression.cdf_estimation <- function(
+mixmod_regression.wt_cdf_estimation <- function(
                                x,
                                distribution = c(
                                  "weibull", "lognormal", "loglogistic"
@@ -148,9 +151,9 @@ mixmod_regression.cdf_estimation <- function(
 
   distribution <- match.arg(distribution)
 
-  x_split <- split(x, x$method)
+  x_split <- split(x, x$cdf_estimation_method)
 
-  if (length(unique(x$method)) == 1) {
+  if (length(unique(x$cdf_estimation_method)) == 1) {
     out <- mixmod_regression_(
       cdf_estimation = x,
       distribution = distribution,
@@ -169,7 +172,7 @@ mixmod_regression.cdf_estimation <- function(
       )
     })
 
-    class(out) <- c("mixmod_regression_list", class(out))
+    class(out) <- c("wt_model", "wt_mixmod_regression_list", class(out))
   }
 
   out
@@ -182,22 +185,22 @@ mixmod_regression.cdf_estimation <- function(
 #' @inherit mixmod_regression description details references
 #'
 #' @inheritParams rank_regression.default
-#' @inheritParams mixmod_regression.cdf_estimation
+#' @inheritParams mixmod_regression.wt_cdf_estimation
 #'
 #'
-#' @return Returns a list of class \code{"rank_regression"} if no breakpoint was
-#' detected. See \code{\link{rank_regression}}. The tibble \code{data} is returned
-#' with class \code{"cdf_estimation"} and contains the additional dummy columns
-#' \code{method} and \code{id}. The former is filled with
-#' \code{"_null"}, due to generic visualization functions and the latter is filled
-#' with \code{"XXXXXX"} to point out that unit identification is not possible when
-#' using the vector-based approach.
+#' @return Returns a list of class \code{wt_rank_regression} if no breakpoint
+#' was detected. See \code{\link{rank_regression}}. The tibble \code{data} is
+#' returned with class \code{wt_cdf_estimation} and contains the additional
+#' dummy columns \code{method} and \code{id}. The former is filled with
+#' \code{NA_character}, due to generic visualization functions and the latter is
+#' filled with \code{"XXXXXX"} to point out that unit identification is not
+#' possible when using the vector-based approach.
 #'
-#' Returns a list of class \code{"mixmod_regression"} if at least one breakpoint
-#' was determined. The length of the list depends on the number of identified
-#' subgroups. Each list contains the information provided by
-#' \code{\link{rank_regression}}. The returned tibble \code{data} of
-#' each list element only retains information on the failed units and has modified
+#' Returns a list of class \code{wt_mixmod_regression} if at least one
+#' breakpoint was determined. The length of the list depends on the number of
+#' identified subgroups. Each list contains the information provided by
+#' \code{\link{rank_regression}}. The returned tibble \code{data} of each list
+#' element only retains information on the failed units and has modified
 #' and additional columns:
 #' \itemize{
 #'   \item \code{id} : Modified id, overwritten with \code{"XXXXXX"} to point out
@@ -295,10 +298,10 @@ mixmod_regression.default <- function(x,
     x = x,
     status = status,
     prob = y,
-    method = "_null"
+    cdf_estimation_method = NA_character_
   )
 
-  class(cdf) <- c("cdf_estimation", class(cdf))
+  class(cdf) <- c("wt_cdf_estimation", class(cdf))
 
   mixmod_regression_(
     cdf_estimation = cdf,
@@ -396,9 +399,45 @@ mixmod_regression_ <- function(cdf_estimation,
 
   names(mrr_output) <- paste("mod", seq_along(mrr_output), sep = "_")
 
-  class(mrr_output) <- c("mixmod_regression", class(mrr_output))
+  class(mrr_output) <- c("wt_model", "wt_mixmod_regression", class(mrr_output))
 
   return(mrr_output)
+}
+
+
+
+#' @export
+print.wt_mixmod_regression <- function(x,
+                                       digits = max(
+                                         3L,
+                                         getOption("digits") - 3L
+                                       ),
+                                       ...
+) {
+  cat("Mixmod Regression:\n")
+  purrr::walk2(x, seq_along(x), function(model_estimation, i) {
+    cat(paste0("Subgroup ", i, ":\n"))
+    print(model_estimation)
+  })
+}
+
+
+
+#' @export
+print.wt_mixmod_regression_list <- function(x,
+                                            digits = max(
+                                              3L,
+                                              getOption("digits") - 3L
+                                            ),
+                                            ...
+) {
+  cat(paste("List of", length(x), "mixmod regressions:\n"))
+  purrr::walk2(x, names(x), function(mixmod_regression, method) {
+    print(mixmod_regression)
+    cat(paste("Method of CDF Estimation:", method, "\n"))
+    cat("\n")
+  })
+  invisible(x)
 }
 
 
@@ -425,7 +464,7 @@ mixmod_regression_ <- function(cdf_estimation,
 #'
 #' This procedure is repeated until the complete log-likelihood has converged.
 #'
-#' @param x An object of class \code{reliability_data} returned from
+#' @param x An object of class \code{wt_reliability_data} returned from
 #'   \code{\link{reliability_data}}.
 #' @param distribution \code{"weibull"} until further distributions are implemented.
 #' @param conf_level Confidence level for the intervals of the weibull parameters
@@ -438,13 +477,14 @@ mixmod_regression_ <- function(cdf_estimation,
 #'   log-likelihood values, which seems permissible.
 #' @template dots
 #'
-#' @return Returns a list with class \code{"mixmod_em"}. The length of the list
-#' depends on the number of specified subgroups \emph{k}. The first \code{k} lists
-#' contain information provided by \link{ml_estimation}. The values of \code{logL},
-#' \code{aic} and \code{bic} are the results of a weighted log-likelihood, where
-#' the weights are the posterior probabilities determined by the algorithm.
-#' The last list summarizes further results of the EM algorithm and is therefore
-#' called \code{em_results}. It contains the following elements:
+#' @return Returns a list with classes \code{wt_model} and \code{wt_mixmod_em}.
+#' The length of the list depends on the number of specified subgroups \emph{k}.
+#' The first \code{k} lists contain information provided by
+#' \link{ml_estimation}. The values of \code{logL}, \code{aic} and \code{bic}
+#' are the results of a weighted log-likelihood, where the weights are the
+#' posterior probabilities determined by the algorithm. The last list summarizes
+#' further results of the EM algorithm and is therefore called
+#' \code{em_results}. It contains the following elements:
 #'   \itemize{
 #'     \item \code{a_priori} : A vector with estimated prior probabilities.
 #'     \item \code{a_posteriori} : A matrix with estimated posterior probabilities.
@@ -468,7 +508,7 @@ mixmod_regression_ <- function(cdf_estimation,
 #' # Reliability data preparation:
 #' ## Data for mixture model:
 #' data_mix <- reliability_data(
-#'   data = voltage,
+#'   voltage,
 #'   x = hours,
 #'   status = status
 #' )
@@ -499,15 +539,15 @@ mixmod_em <- function(x, ...) {
 #' @rdname mixmod_em
 #'
 #' @export
-mixmod_em.reliability_data <- function(x,
-                                       distribution = "weibull",
-                                       conf_level = .95,
-                                       k = 2,
-                                       method = "EM",
-                                       n_iter = 100L,
-                                       conv_limit = 1e-6,
-                                       diff_loglik = 0.01,
-                                       ...
+mixmod_em.wt_reliability_data <- function(x,
+                                          distribution = "weibull",
+                                          conf_level = .95,
+                                          k = 2,
+                                          method = "EM",
+                                          n_iter = 100L,
+                                          conv_limit = 1e-6,
+                                          diff_loglik = 0.01,
+                                          ...
 ) {
 
   distribution <- match.arg(distribution)
@@ -689,14 +729,14 @@ mixmod_em_ <- function(data,
   ml$em_results <- list(a_priori = mix_est$priori, a_posteriori = mix_est$posteriori,
                         groups = split_obs, logL = logL_complete, aic = aic_complete, bic = bic_complete)
 
-  class(ml) <- c("mixmod_em", class(ml))
+  class(ml) <- c("wt_model", "wt_mixmod_em", class(ml))
 
   ml
 }
 
 
 
-#Function that simulates a sample from a Dirichlet distribution:
+# Simulate a sample from a Dirichlet distribution:
 rdirichlet <- function(n, par) {
   k <- length(par)
   z <- matrix(0, nrow = n, ncol = k)

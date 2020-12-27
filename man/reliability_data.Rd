@@ -2,7 +2,7 @@
 % Please edit documentation in R/reliability_data.R
 \name{reliability_data}
 \alias{reliability_data}
-\title{Reliability data}
+\title{Reliability Data}
 \usage{
 reliability_data(data = NULL, x, status, id = NULL, .keep_all = FALSE)
 }
@@ -21,10 +21,10 @@ censored observation (= 0) or a failure (= 1).}
 
 \item{id}{Identification of every unit.}
 
-\item{.keep_all}{If \code{TRUE}, keep all variables in \code{data}.}
+\item{.keep_all}{If \code{TRUE} keep remaining variables in \code{data}.}
 }
 \value{
-A tibble with class \code{"reliability_data"} containing the following
+A tibble with class \code{wt_reliability_data} containing the following
 columns (if \code{.keep_all = FALSE}):
 \itemize{
   \item \code{x} : Lifetime characteristic.
@@ -32,7 +32,7 @@ columns (if \code{.keep_all = FALSE}):
     censored observation (= 0) or a failure (= 1).
   \item \code{id} : Identification for every unit.
 }
-If \code{.keep_all = TRUE} the remaining columns of \code{data} are also preserved.
+If \code{.keep_all = TRUE}, the remaining columns of \code{data} are also preserved.
 }
 \description{
 Create consistent reliability data based on an existing \code{data.frame}

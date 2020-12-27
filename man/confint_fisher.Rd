@@ -3,12 +3,12 @@
 \encoding{UTF-8}
 \name{confint_fisher}
 \alias{confint_fisher}
-\alias{confint_fisher.model_estimation}
+\alias{confint_fisher.wt_model}
 \title{Fisher's Confidence Bounds for Quantiles and Probabilities}
 \usage{
 confint_fisher(x, ...)
 
-\method{confint_fisher}{model_estimation}(
+\method{confint_fisher}{wt_model}(
   x,
   b_lives = c(0.01, 0.1, 0.5),
   bounds = c("two_sided", "lower", "upper"),
@@ -18,8 +18,8 @@ confint_fisher(x, ...)
 )
 }
 \arguments{
-\item{x}{Object of class \code{model_estimation} returned from
-\code{\link{ml_estimation}}.}
+\item{x}{Object with classes \code{wt_model} \strong{and}
+\code{wt_ml_estimation} returned from \code{\link{ml_estimation}}.}
 
 \item{...}{Further arguments passed to or from other methods. Currently not used.}
 
@@ -36,7 +36,8 @@ confidence interval. One of \code{"y"} (failure probabilities) or \code{"x"}
 (quantiles).}
 }
 \value{
-A tibble with class \code{"confint"} containing the following columns:
+A tibble with class \code{wt_confint} containing the following
+columns:
   \itemize{
     \item \code{x} : An ordered sequence of the lifetime characteristic regarding
       the failed units, starting at \code{min(x)} and ending up at \code{max(x)}.
@@ -57,8 +58,9 @@ A tibble with class \code{"confint"} containing the following columns:
     \code{\link{ml_estimation}}).
     \item \code{bounds} : Specified bound(s).
     \item \code{direction} : Specified direction.
-    \item \code{method} : A character that is always \code{"conf_null"}. Due to
-      generic visualization functions column \code{method} has to be provided.
+    \item \code{cdf_estimation_method} : A character that is always
+      \code{NA_character}. For the generic visualization functions this
+      column has to be provided.
   }
 }
 \description{
@@ -78,26 +80,26 @@ The bounds on the probability are determined by the \emph{z-procedure}. See
 # Reliability data preparation:
 ## Data for two-parametric model:
 data_2p <- reliability_data(
-  data = shock,
+  shock,
   x = distance,
   status = status
 )
 
 ## Data for three-parametric model:
 data_3p <- reliability_data(
-  data = alloy,
+  alloy,
   x = cycles,
   status = status
 )
 
 # Model estimation with ml_estimation():
 ml_2p <- ml_estimation(
-  x = data_2p,
+  data_2p,
   distribution = "weibull"
 )
 
 ml_3p <- ml_estimation(
-  x = data_3p,
+  data_3p,
   distribution = "lognormal3",
   conf_level = 0.90
 )

@@ -43,36 +43,32 @@ This function adds an estimated regression lines to an existing
 probability plot (\code{\link{plot_prob}}).
 }
 \examples{
-# Alloy T7987 dataset taken from Meeker and Escobar(1998, p. 131)
-cycles   <- c(300, 300, 300, 300, 300, 291, 274, 271, 269, 257, 256, 227, 226,
-              224, 213, 211, 205, 203, 197, 196, 190, 189, 188, 187, 184, 180,
-              180, 177, 176, 173, 172, 171, 170, 170, 169, 168, 168, 162, 159,
-              159, 159, 159, 152, 152, 149, 149, 144, 143, 141, 141, 140, 139,
-              139, 136, 135, 133, 131, 129, 123, 121, 121, 118, 117, 117, 114,
-              112, 108, 104, 99, 99, 96, 94)
-status <- c(rep(0, 5), rep(1, 67))
+# Vectors:
+cycles <- alloy$cycles
+status <- alloy$status
 
-tbl_john <- estimate_cdf(x = cycles, status = status, method = "johnson")
+# Probability estimation
+prob_tbl <- estimate_cdf(x = cycles, status = status, method = "johnson")
 
 # Example 1: Probability Plot and Regression Line Three-Parameter-Weibull:
 plot_weibull <- plot_prob(
-  x = tbl_john$x,
-  y = tbl_john$prob,
-  status = tbl_john$status,
-  id = tbl_john$id,
+  x = prob_tbl$x,
+  y = prob_tbl$prob,
+  status = prob_tbl$status,
+  id = prob_tbl$id,
   distribution = "weibull"
 )
 
 rr <- rank_regression(
-  x = tbl_john$x,
-  y = tbl_john$prob,
-  status = tbl_john$status,
+  x = prob_tbl$x,
+  y = prob_tbl$prob,
+  status = prob_tbl$status,
   distribution = "weibull3"
 )
 
 plot_reg_weibull <- plot_mod(
   p_obj = plot_weibull,
-  x = tbl_john$x,
+  x = prob_tbl$x,
   dist_params = rr$coefficients,
   distribution = "weibull3"
 )
@@ -81,25 +77,37 @@ plot_reg_weibull <- plot_mod(
 
 # Example 2: Probability Plot and Regression Line Three-Parameter-Lognormal:
 plot_lognormal <- plot_prob(
-  x = tbl_john$x,
-  y = tbl_john$prob,
-  status = tbl_john$status,
-  id = tbl_john$id,
+  x = prob_tbl$x,
+  y = prob_tbl$prob,
+  status = prob_tbl$status,
+  id = prob_tbl$id,
   distribution = "lognormal"
 )
 
 rr_ln <- rank_regression(
-  x = tbl_john$x,
-  y = tbl_john$prob,
-  status = tbl_john$status,
+  x = prob_tbl$x,
+  y = prob_tbl$prob,
+  status = prob_tbl$status,
   distribution = "lognormal3"
 )
 
 plot_reg_lognormal <- plot_mod(
   p_obj = plot_lognormal,
-  x = tbl_john$x,
+  x = prob_tbl$x,
   dist_params = rr_ln$coefficients,
   distribution = "lognormal3"
+)
+
+## Mixture Identification
+# Vectors:
+hours <- voltage$hours
+status <- voltage$status
+
+# Probability estimation:
+prob_mix <- estimate_cdf(
+  x = hours,
+  status = status,
+  method = "johnson"
 )
 
 }

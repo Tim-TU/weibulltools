@@ -44,7 +44,7 @@ In order to obtain an estimate of the _CDF_ for each observation $t_1, t_2, ...,
 two approaches are possible. Using a parametric lifetime distribution requires that 
 the underlying assumptions for the sample data are valid. If the distribution-specific 
 assumptions are correct, the model parameters can be estimated and the _CDF_ is 
-computable. But if conditions could not be met, interpretations and derived conclusions 
+computable. But if assumptions are not held, interpretations and derived conclusions 
 are not reliable.
 
 A more general approach for the calculation of cumulative failure probabilities is 
@@ -62,7 +62,7 @@ is used for the estimation [^note1]. This skewness is visualized in _Figure 1_.
 [^note1]: Kapur, K. C.; Lamberson, L. R.: _Reliability in Engineering Design_, 
           _New York: Wiley_, 1977, pp. 297-301  
 
-```{r rank densities, fig.cap = "Figure 1: Densities for different ranks i in samples of size n = 10.", message = FALSE}
+```{r rank_densities, fig.cap = "Figure 1: Densities for different ranks i in samples of size n = 10.", message = FALSE}
 library(dplyr) # data manipulation 
 library(ggplot2) # visualization
 
@@ -128,8 +128,8 @@ the _i_-th unit. Once the adjusted ranks are calculated, the _CDF_ can be estima
 according to _Benard's_ approximation.  
 
 Other methods in `weibulltools` that can also handle (multiple) right-censored data 
-are the _Kaplan-Meier_ estimator (`estimate_cdf(methods = "kaplan")`) and the 
-_Nelson-Aalen_ estimator (`estimate_cdf(methods = "nelson")`). 
+are the _Kaplan-Meier_ estimator (`estimate_cdf(methods = "kaplan", ...)`) and the 
+_Nelson-Aalen_ estimator (`estimate_cdf(methods = "nelson", ...)`). 
 
 ### Probability Plotting  
 
@@ -197,7 +197,7 @@ For consistent handling of the data, `weibulltools` introduces the function
 `reliability_data()` that converts the original dataset into a `wt_reliability_data` 
 object. This formatted object allows to easily apply the presented methods.  
 
-```{r dataset shock, message = FALSE}
+```{r dataset_shock, message = FALSE}
 shock_tbl <- reliability_data(data = shock, x = distance, status = status)
 shock_tbl
 ```
@@ -209,16 +209,16 @@ failure probabilities in comparison to the case where only failed units are cons
 To deal with survived and failed units we will use `estimate_cdf()` with 
 `methods = "johnson"`, whereas `methods = "mr"` only considers failures. 
 
-```{r failure probabilities}
+```{r failure_probabilities}
 # Estimate CDF with both methods: 
 cdf_tbl <- estimate_cdf(shock_tbl, methods = c("mr", "johnson"))
 
 # First case where only failed units are taken into account:
-cdf_tbl_mr <- cdf_tbl %>% filter(method == "mr")
+cdf_tbl_mr <- cdf_tbl %>% filter(cdf_estimation_method == "mr")
 cdf_tbl_mr
 
 # Second case where both, survived and failed units are considered:
-cdf_tbl_john <- cdf_tbl %>% filter(method == "johnson") 
+cdf_tbl_john <- cdf_tbl %>% filter(cdf_estimation_method == "johnson") 
 cdf_tbl_john
 ```
 
@@ -236,7 +236,7 @@ and estimates of multiple methods can be displayed at once.
 
 ### Weibull Probability Plot
 
-```{r probability plot weibull, fig.cap = "Figure 3: Plotting positions in Weibull grid.", message = FALSE}
+```{r probability_plot_weibull, fig.cap = "Figure 3: Plotting positions in Weibull grid.", message = FALSE}
 # Weibull grid for estimated probabilities: 
 weibull_grid <- plot_prob(
   cdf_tbl,
@@ -262,7 +262,7 @@ items (green points, _Method: mr_).
 Finally, we want to use a log-normal probability plot to visualize the estimated 
 failure probabilities.
 
-```{r probability plot log-normal, fig.cap = "Figure 4: Plotting positions in log-normal grid.", message = FALSE}
+```{r probability_plot_log-normal, fig.cap = "Figure 4: Plotting positions in log-normal grid.", message = FALSE}
 # Log-normal grid for estimated probabilities: 
 lognorm_grid <- plot_prob(
   cdf_tbl,

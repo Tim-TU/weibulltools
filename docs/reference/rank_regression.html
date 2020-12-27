@@ -104,7 +104,7 @@ line with the parameterization provided by the stats package
       <a href="../articles/Life_Data_Analysis_Part_I.html">Life Data Analysis Part I - Estimation of Failure Probabilities</a>
     </li>
     <li>
-      <a href="../articles/Life_Data_Analysis_Part_II.html">Life Data Analysis Part II - Parameter Estimation of Parametric Lifetime Models</a>
+      <a href="../articles/Life_Data_Analysis_Part_II.html">Life Data Analysis Part II - Estimation Methods for Parametric Lifetime Models</a>
     </li>
     <li>
       <a href="../articles/Life_Data_Analysis_Part_III.html">Life Data Analysis Part III - Mixture Models</a>
@@ -116,7 +116,12 @@ line with the parameterization provided by the stats package
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
-        
+        <li>
+  <a href="https://github.com/Tim-TU/weibulltools/">
+    <span class="fab fa fab fa-github fa-lg"></span>
+     
+  </a>
+</li>
       </ul>
       
     </div><!--/.nav-collapse -->
@@ -131,7 +136,7 @@ line with the parameterization provided by the stats package
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Rank Regression for Parametric Lifetime Distributions</h1>
-    
+    <small class="dont-index">Source: <a href='https://github.com/Tim-TU/weibulltools/blob/master/R/rank_regression.R'><code>R/rank_regression.R</code></a></small>
     <div class="hidden name"><code>rank_regression.Rd</code></div>
     </div>
 
@@ -147,7 +152,7 @@ line with the parameterization provided by the <em>stats</em> package
 
     <pre class="usage"><span class='fu'>rank_regression</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>...</span><span class='op'>)</span>
 
-<span class='co'># S3 method for cdf_estimation</span>
+<span class='co'># S3 method for wt_cdf_estimation</span>
 <span class='fu'>rank_regression</span><span class='op'>(</span>
   <span class='va'>x</span>,
   distribution <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"weibull"</span>, <span class='st'>"lognormal"</span>, <span class='st'>"loglogistic"</span>, <span class='st'>"normal"</span>, <span class='st'>"logistic"</span>, <span class='st'>"sev"</span>,
@@ -161,7 +166,7 @@ line with the parameterization provided by the <em>stats</em> package
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>x</th>
-      <td><p>Object of class <code>cdf_estimation</code> returned from
+      <td><p>Object of class <code>"wt_cdf_estimation"</code> returned from
 <code><a href='estimate_cdf.html'>estimate_cdf</a></code>.</p></td>
     </tr>
     <tr>
@@ -181,8 +186,8 @@ line with the parameterization provided by the <em>stats</em> package
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>Returns a list with the classes <code>"rank_regression"</code> and
-<code>"model_estimation"</code> containing the following elements:</p><ul>
+    <p>Returns a list with the classes <code>"wt_rank_regression"</code> and
+<code>"wt_model_estimation"</code> containing the following elements:</p><ul>
 <li><p><code>coefficients</code> : A named vector of estimated coefficients
     (parameters of the assumed distribution). <strong>Note</strong>: The parameters
     are given in location-scale-parameterization.</p></li>
@@ -200,14 +205,14 @@ line with the parameterization provided by the <em>stats</em> package
     for scale \(\eta\) and shape \(\beta\) (and threshold \(\gamma\))
     if <code>distribution</code> is <code>"weibull3"</code>.</p></li>
 <li><p><code>r_squared</code> : Coefficient of determination.</p></li>
-<li><p><code>data</code> : A tibble with class <code>"cdf_estimation"</code> returned from <code><a href='estimate_cdf.html'>estimate_cdf</a></code>.</p></li>
+<li><p><code>data</code> : A tibble with class <code>"wt_cdf_estimation"</code> returned from <code><a href='estimate_cdf.html'>estimate_cdf</a></code>.</p></li>
 <li><p><code>distribution</code> : Specified distribution.</p></li>
 </ul>
 
 <p>If more than one method was specified in <code><a href='estimate_cdf.html'>estimate_cdf</a></code>,
-  the resulting output is a list with class <code>"model_estimation_list"</code>.
-  In this case each list element has classes <code>"rank_regression"</code> and
-  <code>"model_estimation"</code> and the items listed above, are included.</p>
+  the resulting output is a list with class <code>"wt_model_estimation_list"</code>.
+  In this case each list element has classes <code>"wt_rank_regression"</code> and
+  <code>"wt_model_estimation"</code> and the items listed above, are included.</p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
     <p>If <code>distribution</code> is <code>"weibull"</code> or <code>"weibull3"</code>, the approximated
@@ -239,31 +244,31 @@ in context of <em>Rank Regression</em>. For an accepted statistical method use
     <pre class="examples"><div class='input'><span class='co'># Reliability data preparation:</span>
 <span class='co'>## Data for two-parametric model:</span>
 <span class='va'>data_2p</span> <span class='op'>&lt;-</span> <span class='fu'><a href='reliability_data.html'>reliability_data</a></span><span class='op'>(</span>
-  data <span class='op'>=</span> <span class='va'>shock</span>,
+  <span class='va'>shock</span>,
   x <span class='op'>=</span> <span class='va'>distance</span>,
   status <span class='op'>=</span> <span class='va'>status</span>
 <span class='op'>)</span>
 
 <span class='co'>## Data for three-parametric model:</span>
 <span class='va'>data_3p</span> <span class='op'>&lt;-</span> <span class='fu'><a href='reliability_data.html'>reliability_data</a></span><span class='op'>(</span>
-  data <span class='op'>=</span> <span class='va'>alloy</span>,
+  <span class='va'>alloy</span>,
   x <span class='op'>=</span> <span class='va'>cycles</span>,
   status <span class='op'>=</span> <span class='va'>status</span>
 <span class='op'>)</span>
 
 <span class='co'># Probability estimation:</span>
 <span class='va'>prob_tbl_2p</span> <span class='op'>&lt;-</span> <span class='fu'><a href='estimate_cdf.html'>estimate_cdf</a></span><span class='op'>(</span>
-  x <span class='op'>=</span> <span class='va'>data_2p</span>,
+  <span class='va'>data_2p</span>,
   methods <span class='op'>=</span> <span class='st'>"johnson"</span>
 <span class='op'>)</span>
 
 <span class='va'>prob_tbl_3p</span> <span class='op'>&lt;-</span> <span class='fu'><a href='estimate_cdf.html'>estimate_cdf</a></span><span class='op'>(</span>
-  x <span class='op'>=</span> <span class='va'>data_3p</span>,
+  <span class='va'>data_3p</span>,
   methods <span class='op'>=</span> <span class='st'>"johnson"</span>
 <span class='op'>)</span>
 
 <span class='va'>prob_tbl_mult</span> <span class='op'>&lt;-</span> <span class='fu'><a href='estimate_cdf.html'>estimate_cdf</a></span><span class='op'>(</span>
-  x <span class='op'>=</span> <span class='va'>data_3p</span>,
+  <span class='va'>data_3p</span>,
   methods <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"johnson"</span>, <span class='st'>"kaplan"</span><span class='op'>)</span>
 <span class='op'>)</span>
 

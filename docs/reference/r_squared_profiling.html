@@ -101,7 +101,7 @@ In terms of Rank Regression this function can be optimized
       <a href="../articles/Life_Data_Analysis_Part_I.html">Life Data Analysis Part I - Estimation of Failure Probabilities</a>
     </li>
     <li>
-      <a href="../articles/Life_Data_Analysis_Part_II.html">Life Data Analysis Part II - Parameter Estimation of Parametric Lifetime Models</a>
+      <a href="../articles/Life_Data_Analysis_Part_II.html">Life Data Analysis Part II - Estimation Methods for Parametric Lifetime Models</a>
     </li>
     <li>
       <a href="../articles/Life_Data_Analysis_Part_III.html">Life Data Analysis Part III - Mixture Models</a>
@@ -113,7 +113,12 @@ In terms of Rank Regression this function can be optimized
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
-        
+        <li>
+  <a href="https://github.com/Tim-TU/weibulltools/">
+    <span class="fab fa fab fa-github fa-lg"></span>
+     
+  </a>
+</li>
       </ul>
       
     </div><!--/.nav-collapse -->
@@ -128,7 +133,7 @@ In terms of Rank Regression this function can be optimized
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>R-Squared-Profile Function for Parametric Lifetime Distributions with Threshold</h1>
-    
+    <small class="dont-index">Source: <a href='https://github.com/Tim-TU/weibulltools/blob/master/R/rank_regression.R'><code>R/rank_regression.R</code></a></small>
     <div class="hidden name"><code>r_squared_profiling.Rd</code></div>
     </div>
 
@@ -141,7 +146,7 @@ In terms of <em>Rank Regression</em> this function can be optimized
 
     <pre class="usage"><span class='fu'>r_squared_profiling</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>...</span><span class='op'>)</span>
 
-<span class='co'># S3 method for cdf_estimation</span>
+<span class='co'># S3 method for wt_cdf_estimation</span>
 <span class='fu'>r_squared_profiling</span><span class='op'>(</span>
   <span class='va'>x</span>,
   <span class='va'>thres</span>,
@@ -154,7 +159,7 @@ In terms of <em>Rank Regression</em> this function can be optimized
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>x</th>
-      <td><p>Object of class <code>cdf_estimation</code> returned from
+      <td><p>Object of class <code>"wt_cdf_estimation"</code> returned from
 <code><a href='estimate_cdf.html'>estimate_cdf</a></code>.</p></td>
     </tr>
     <tr>
@@ -183,14 +188,14 @@ In terms of <em>Rank Regression</em> this function can be optimized
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='co'># Data:</span>
 <span class='va'>data</span> <span class='op'>&lt;-</span> <span class='fu'><a href='reliability_data.html'>reliability_data</a></span><span class='op'>(</span>
-  data <span class='op'>=</span> <span class='va'>alloy</span>,
+  <span class='va'>alloy</span>,
   x <span class='op'>=</span> <span class='va'>cycles</span>,
   status <span class='op'>=</span> <span class='va'>status</span>
 <span class='op'>)</span>
 
 <span class='co'># Probability estimation:</span>
 <span class='va'>prob_tbl</span> <span class='op'>&lt;-</span> <span class='fu'><a href='estimate_cdf.html'>estimate_cdf</a></span><span class='op'>(</span>
-  x <span class='op'>=</span> <span class='va'>data</span>,
+  <span class='va'>data</span>,
   methods <span class='op'>=</span> <span class='st'>"johnson"</span>
 <span class='op'>)</span>
 

@@ -100,7 +100,7 @@ into account." />
       <a href="../articles/Life_Data_Analysis_Part_I.html">Life Data Analysis Part I - Estimation of Failure Probabilities</a>
     </li>
     <li>
-      <a href="../articles/Life_Data_Analysis_Part_II.html">Life Data Analysis Part II - Parameter Estimation of Parametric Lifetime Models</a>
+      <a href="../articles/Life_Data_Analysis_Part_II.html">Life Data Analysis Part II - Estimation Methods for Parametric Lifetime Models</a>
     </li>
     <li>
       <a href="../articles/Life_Data_Analysis_Part_III.html">Life Data Analysis Part III - Mixture Models</a>
@@ -112,7 +112,12 @@ into account." />
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
-        
+        <li>
+  <a href="https://github.com/Tim-TU/weibulltools/">
+    <span class="fab fa fab fa-github fa-lg"></span>
+     
+  </a>
+</li>
       </ul>
       
     </div><!--/.nav-collapse -->
@@ -127,7 +132,7 @@ into account." />
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Estimation of Failure Probabilities</h1>
-    
+    <small class="dont-index">Source: <a href='https://github.com/Tim-TU/weibulltools/blob/master/R/probability_estimators.R'><code>R/probability_estimators.R</code></a></small>
     <div class="hidden name"><code>estimate_cdf.default.Rd</code></div>
     </div>
 
@@ -192,12 +197,13 @@ is a right censored observation (= 0) or a failure (= 1).</p></td>
     and <code>"johnson"</code>, filled with <code>NA</code> for other methods or if
     <code>status = 0</code>.</p></li>
 <li><p><code>prob</code> : Estimated failure probabilities, <code>NA</code> if <code>status = 0</code>.</p></li>
-<li><p><code>method</code> : Specified method for the estimation of failure probabilities.</p></li>
+<li><p><code>cdf_estimation_method</code> : Specified method for the estimation of
+    failure probabilities.</p></li>
 </ul>
 
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>One or multiple techniques can be used for the <code>methods</code> argument:</p><ul>
+    <p>The following techniques can be used for the <code>method</code> argument:</p><ul>
 <li><p><code>"mr"</code> : Method <em>Median Ranks</em> is used to estimate the failure
     probabilities of failed units without considering censored items.
     Tied observations can be handled in three ways (See 'Options'):</p><ul>

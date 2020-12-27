@@ -14,11 +14,11 @@ mcs_delay_report(
 )
 }
 \arguments{
-\item{date_repair}{a vector of class \code{"character"} or \code{"Date"}, in the
+\item{date_repair}{a vector of class \code{character} or \code{Date}, in the
 format "yyyy-mm-dd", indicating the date of repair of a failed unit.
 Use \code{NA} for missing elements.}
 
-\item{date_report}{a vector of class \code{"character"} or \code{"Date"}, in the
+\item{date_report}{a vector of class \code{character} or \code{Date}, in the
 format "yyyy-mm-dd", indicating the date of report of a failed unit.
 Use \code{NA} for missing elements.}
 
@@ -81,22 +81,26 @@ date_of_report <- c(NA, "2014-10-09", "2015-08-28", "2015-04-15", NA,
                     "2015-12-02", NA, NA)
 
 op_time <- rep(1000, length(date_of_repair))
-state <- c(0, 1, 1, 1, 0, 0, 1, 0, 1, 1, 1, 0, 1, 0, 0, 1, 0, 1, 0, 1, 1, 0, 0)
+status <- c(0, 1, 1, 1, 0, 0, 1, 0, 1, 1, 1, 0, 1, 0, 0, 1, 0, 1, 0, 1, 1, 0, 0)
 
 # Example 1 - Simplified vector output:
-x_corrected <- mcs_delay_report(date_repair = date_of_repair,
-                                date_report = date_of_report,
-                                time = op_time,
-                                status = state,
-                                distribution = "lognormal",
-                                details = FALSE)
+x_corrected <- mcs_delay_report(
+  date_repair = date_of_repair,
+  date_report = date_of_report,
+  time = op_time,
+  status = status,
+  distribution = "lognormal",
+  details = FALSE
+)
 
 # Example 2 - Detailed list output:
-list_detail <- mcs_delay_report(date_repair = date_of_repair,
-                                date_report = date_of_report,
-                                time = op_time,
-                                status = state,
-                                distribution = "lognormal",
-                                details = TRUE)
+list_detail <- mcs_delay_report(
+  date_repair = date_of_repair,
+  date_report = date_of_report,
+  time = op_time,
+  status = status,
+  distribution = "lognormal",
+  details = TRUE
+)
 
 }

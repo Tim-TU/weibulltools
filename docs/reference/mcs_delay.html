@@ -107,7 +107,7 @@ Random delay numbers are drawn from the distribution determined by complete case
       <a href="../articles/Life_Data_Analysis_Part_I.html">Life Data Analysis Part I - Estimation of Failure Probabilities</a>
     </li>
     <li>
-      <a href="../articles/Life_Data_Analysis_Part_II.html">Life Data Analysis Part II - Parameter Estimation of Parametric Lifetime Models</a>
+      <a href="../articles/Life_Data_Analysis_Part_II.html">Life Data Analysis Part II - Estimation Methods for Parametric Lifetime Models</a>
     </li>
     <li>
       <a href="../articles/Life_Data_Analysis_Part_III.html">Life Data Analysis Part III - Mixture Models</a>
@@ -119,7 +119,12 @@ Random delay numbers are drawn from the distribution determined by complete case
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
-        
+        <li>
+  <a href="https://github.com/Tim-TU/weibulltools/">
+    <span class="fab fa fab fa-github fa-lg"></span>
+     
+  </a>
+</li>
       </ul>
       
     </div><!--/.nav-collapse -->
@@ -134,7 +139,7 @@ Random delay numbers are drawn from the distribution determined by complete case
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Adjustment of Operating Times by Delays using a Monte Carlo Approach</h1>
-    
+    <small class="dont-index">Source: <a href='https://github.com/Tim-TU/weibulltools/blob/master/R/delay_distributions.R'><code>R/delay_distributions.R</code></a></small>
     <div class="hidden name"><code>mcs_delay.Rd</code></div>
     </div>
 
@@ -212,13 +217,14 @@ to the second (See 'Examples').</p></td>
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>A list containing the following elements:</p><ul>
-<li><p><code>data</code> : A tibble with classes <code>"mcs_data"</code> and
-      <code>"reliability_data"</code> if <code>status</code> is provided. Since the
-      attribute <code>"reliability_data"</code> enables the direct usage of <code>data</code>
-      inside <code>estimate_cdf</code> (<code><a href='estimate_cdf.html'>estimate_cdf.reliability_data</a></code>),
-      the required lifetime characteristic is automatically set to the operating
+<li><p><code>data</code> : A tibble with classes <code>"wt_mcs_data"</code> and
+      <code>"wt_reliability_data"</code> if <code>status</code> is provided. Since the
+      class <code>"wt_reliability_data"</code> enables the direct usage of
+      <code>data</code> inside
+      <code><a href='estimate_cdf.html'>estimate_cdf.wt_reliability_data</a></code>, the
+      required lifetime characteristic is automatically set to the operating
       time <code>time</code>.</p>
-<p>If <code>status = NULL</code> class is <code>"mcs_data"</code>, which is not
+<p>If <code>status = NULL</code> class is <code>"wt_mcs_data"</code>, which is not
       supported by <code>estimate_cdf</code> due to missing <code>status</code>.</p>
 <p>The tibble contains the following columns:</p><ul>
 <li><p><code>date_1</code> : Earlier dates. If argument <code>date_1</code> is a list

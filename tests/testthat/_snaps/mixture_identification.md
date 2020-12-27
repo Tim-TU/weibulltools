@@ -1,19 +1,39 @@
 # mixmod_regression remains stable
 
-    $mod_1
+    Mixmod Regression:
+    Subgroup 1:
     Rank Regression
     Coefficients:
        mu  sigma  
     6.910  1.566  
-    
-    $mod_2
+    Subgroup 2:
     Rank Regression
     Coefficients:
         mu   sigma  
+<<<<<<< HEAD
     5.7141  0.3048  
     
     attr(,"class")
     [1] "mixmod_regression" "list"             
+||||||| merged common ancestors
+    5.9155  0.6474  
+    
+    $mod_3
+    Rank Regression
+    Coefficients:
+        mu   sigma  
+    5.7387  0.2563  
+    
+    attr(,"class")
+    [1] "mixmod_regression" "list"             
+=======
+    5.9155  0.6474  
+    Subgroup 3:
+    Rank Regression
+    Coefficients:
+        mu   sigma  
+    5.7387  0.2563  
+>>>>>>> master
 
 # mixmod_em remains stable
 

@@ -99,7 +99,7 @@ plotting." />
       <a href="../articles/Life_Data_Analysis_Part_I.html">Life Data Analysis Part I - Estimation of Failure Probabilities</a>
     </li>
     <li>
-      <a href="../articles/Life_Data_Analysis_Part_II.html">Life Data Analysis Part II - Parameter Estimation of Parametric Lifetime Models</a>
+      <a href="../articles/Life_Data_Analysis_Part_II.html">Life Data Analysis Part II - Estimation Methods for Parametric Lifetime Models</a>
     </li>
     <li>
       <a href="../articles/Life_Data_Analysis_Part_III.html">Life Data Analysis Part III - Mixture Models</a>
@@ -111,7 +111,12 @@ plotting." />
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
-        
+        <li>
+  <a href="https://github.com/Tim-TU/weibulltools/">
+    <span class="fab fa fab fa-github fa-lg"></span>
+     
+  </a>
+</li>
       </ul>
       
     </div><!--/.nav-collapse -->
@@ -126,7 +131,7 @@ plotting." />
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Probability Plotting Method for Univariate Lifetime Distributions</h1>
-    
+    <small class="dont-index">Source: <a href='https://github.com/Tim-TU/weibulltools/blob/master/R/plot_functions.R'><code>R/plot_functions.R</code></a></small>
     <div class="hidden name"><code>plot_prob.default.Rd</code></div>
     </div>
 
@@ -213,7 +218,7 @@ the legend.</p></td>
     <p>Returns a plot object containing the probability plot.</p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>If data was split by <code><a href='mixmod_em.html'>mixmod_em</a></code> <code><a href='estimate_cdf.html'>estimate_cdf</a></code> with
+    <p>If <code>x</code> was split by <code><a href='mixmod_em.html'>mixmod_em</a></code> <code><a href='estimate_cdf.html'>estimate_cdf</a></code> with
 method <code>"johnson"</code> is applied to subgroup-specific data. The
 calculated plotting positions are shaped according to the determined split in
 <code><a href='mixmod_em.html'>mixmod_em</a></code>.</p>
@@ -231,7 +236,7 @@ and "Group: 2".</p>
     <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
 
     <p>Meeker, William Q; Escobar, Luis A., Statistical methods for
-reliability data, New York: Wiley series in probability and statistics, 1998</p>
+  reliability data, New York: Wiley series in probability and statistics, 1998</p>
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
     <div class='dont-index'><p><code><a href='plot_prob.html'>plot_prob</a></code></p></div>

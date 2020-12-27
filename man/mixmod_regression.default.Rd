@@ -44,19 +44,19 @@ See 'Examples' for usage.}
 \item{...}{Further arguments passed to or from other methods. Currently not used.}
 }
 \value{
-Returns a list of class \code{"rank_regression"} if no breakpoint was
-detected. See \code{\link{rank_regression}}. The tibble \code{data} is returned
-with class \code{"cdf_estimation"} and contains the additional dummy columns
-\code{method} and \code{id}. The former is filled with
-\code{"_null"}, due to generic visualization functions and the latter is filled
-with \code{"XXXXXX"} to point out that unit identification is not possible when
-using the vector-based approach.
+Returns a list of class \code{wt_rank_regression} if no breakpoint
+was detected. See \code{\link{rank_regression}}. The tibble \code{data} is
+returned with class \code{wt_cdf_estimation} and contains the additional
+dummy columns \code{method} and \code{id}. The former is filled with
+\code{NA_character}, due to generic visualization functions and the latter is
+filled with \code{"XXXXXX"} to point out that unit identification is not
+possible when using the vector-based approach.
 
-Returns a list of class \code{"mixmod_regression"} if at least one breakpoint
-was determined. The length of the list depends on the number of identified
-subgroups. Each list contains the information provided by
-\code{\link{rank_regression}}. The returned tibble \code{data} of
-each list element only retains information on the failed units and has modified
+Returns a list of class \code{wt_mixmod_regression} if at least one
+breakpoint was determined. The length of the list depends on the number of
+identified subgroups. Each list contains the information provided by
+\code{\link{rank_regression}}. The returned tibble \code{data} of each list
+element only retains information on the failed units and has modified
 and additional columns:
 \itemize{
   \item \code{id} : Modified id, overwritten with \code{"XXXXXX"} to point out

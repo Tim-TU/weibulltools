@@ -26,8 +26,8 @@ A tibble containing the following columns:
     right censored observation (= 0) or a failure (= 1).
   \item \code{rank} : The adjusted ranks.
   \item \code{prob} : Estimated failure probabilities, \code{NA} if \code{status = 0}.
-  \item \code{method} : Specified method for the estimation of failure
-    probabilities (always 'johnson').
+  \item \code{cdf_estimation_method} : Specified method for the estimation of
+    failure probabilities (always 'johnson').
 }
 }
 \description{
