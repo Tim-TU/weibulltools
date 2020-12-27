@@ -152,6 +152,8 @@ mixmod_regression.wt_cdf_estimation <- function(
       conf_level = conf_level,
       control = control
     )
+
+    class(out) <- c("wt_model", class(out))
   } else {
     out <- purrr::map(x_split, function(cdf_estimation) {
       mixmod_regression_(
