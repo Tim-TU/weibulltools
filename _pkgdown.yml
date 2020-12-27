@@ -1,5 +1,5 @@
 reference:
-- title: "Reliability data"
+- title: "Reliability Data"
   desc: "Function for converting data into reliability data"
 - contents:
   - reliability_data
