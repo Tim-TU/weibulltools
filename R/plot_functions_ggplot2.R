@@ -70,12 +70,23 @@ plot_prob_vis.ggplot <- function(
   if (n_group <= 1) tbl_prob$group <- ""
 
   mapping <- if (n_group <= 1) {
-    ggplot2::aes(x = .data$x, y = .data$q, color = .data$cdf_estimation_method)
+    if (n_method == 1) {
+      ggplot2::aes(x = .data$x, y = .data$q, color = I("#3C8DBC"))
+    } else {
+      ggplot2::aes(x = .data$x, y = .data$q, color = .data$cdf_estimation_method)
+    }
   } else {
-    ggplot2::aes(
-      x = .data$x, y = .data$q, color = .data$cdf_estimation_method,
-      shape = .data$group
-    )
+    if (n_method == 1) {
+      ggplot2::aes(
+        x = .data$x, y = .data$q, color = I("#3C8DBC"),
+        shape = .data$group
+      )
+    } else {
+      ggplot2::aes(
+        x = .data$x, y = .data$q, color = .data$cdf_estimation_method,
+        shape = .data$group
+      )
+    }
   }
 
   labs <- if (n_group <= 1) {
@@ -104,17 +115,33 @@ plot_mod_vis.ggplot <- function(
   if (n_method == 1) tbl_pred$cdf_estimation_method <- ""
 
   mapping <- if (n_group == 1) {
-    ggplot2::aes(
-      x = .data$x_p, y = .data$q, color = .data$cdf_estimation_method
-    )
+    if (n_method == 1) {
+      ggplot2::aes(
+        x = .data$x_p, y = .data$q, color = I("#CC2222")
+      )
+    } else {
+      ggplot2::aes(
+        x = .data$x_p, y = .data$q, color = .data$cdf_estimation_method
+      )
+    }
   } else {
     # group aesthetic must be paste of method and group to create distinct
     # groups
-    ggplot2::aes(
-      x = .data$x_p,
-      y = .data$q,
-      color = .data$cdf_estimation_method,
-      group = paste(.data$cdf_estimation_method, .data$group))
+    if (n_method == 1) {
+      ggplot2::aes(
+        x = .data$x_p,
+        y = .data$q,
+        color = I("#CC2222"),
+        group = paste(.data$cdf_estimation_method, .data$group)
+      )
+    } else {
+      ggplot2::aes(
+        x = .data$x_p,
+        y = .data$q,
+        color = .data$cdf_estimation_method,
+        group = paste(.data$cdf_estimation_method, .data$group)
+      )
+    }
   }
 
   p_mod <- p_obj +
