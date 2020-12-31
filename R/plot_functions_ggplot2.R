@@ -92,7 +92,11 @@ plot_prob_vis.ggplot <- function(
   labs <- if (n_group <= 1) {
     ggplot2::labs(color = title_trace)
   } else {
-    ggplot2::labs(color = title_trace, shape = "Subgroups")
+    if (n_method == 1) {
+      ggplot2::labs(shape = title_trace)
+    } else {
+      ggplot2::labs(color = title_trace, shape = "Subgroups")
+    }
   }
 
   p_prob <- p_obj +
@@ -151,6 +155,33 @@ plot_mod_vis.ggplot <- function(
     ggplot2::labs(
       color = paste(p_obj$labels$colour, "+\n", title_trace)
     )
+
+  if (n_method == 1) {
+    p_mod <- p_mod +
+      ggplot2::scale_colour_manual(
+        name = "",
+        values = c(
+          "#3C8DBC",
+          "#CC2222"
+        ),
+        labels = c(
+          "CDF Estimation",
+          title_trace
+        ),
+        guide = ggplot2::guide_legend(
+          override.aes = list(
+            linetype = c(
+              "blank",
+              "solid"
+            ),
+            shape = c(
+              16,
+              NA
+            )
+          )
+        )
+      )
+  }
 
   return(p_mod)
 }
