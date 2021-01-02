@@ -130,8 +130,7 @@ plot_mod_vis.ggplot <- function(
       ggplot2::aes(
         x = .data$x_p,
         y = .data$q,
-        color = .data$cdf_estimation_method,
-        group = paste(.data$cdf_estimation_method, .data$group)
+        color = .data$group
       )
     } else {
       ggplot2::aes(
