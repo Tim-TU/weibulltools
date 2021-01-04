@@ -41,6 +41,7 @@ Description: The weibulltools package focuses on statistical methods and
 License: GPL-2
 URL: https://tim-tu.github.io/weibulltools/
     https://github.com/Tim-TU/weibulltools
+BugReports: https://github.com/Tim-TU/weibulltools/issues
 Imports:
     dplyr,
     ggplot2,
