@@ -42,5 +42,11 @@ vcov.wt_model_estimation <- function(object, ...) {
   } else {
     stop("Variance-covariance matrix of location-scale parameters does not exist!")
   }
+}
 
+
+
+indent_by <- function(expr, n) {
+  out <- capture.output(expr)
+  cat(paste(strrep(" ", n), out, "\n"), "\n")
 }

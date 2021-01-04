@@ -417,7 +417,7 @@ print.wt_mixmod_regression <- function(x,
   cat("Mixmod Regression:\n")
   purrr::walk2(x, seq_along(x), function(model_estimation, i) {
     cat(paste0("Subgroup ", i, ":\n"))
-    print(model_estimation)
+    indent_by(print(model_estimation), 2)
   })
 }
 
@@ -726,12 +726,52 @@ mixmod_em_ <- function(data,
 
   names(ml) <- sprintf("mod_%i", 1:k)
 
-  ml$em_results <- list(a_priori = mix_est$priori, a_posteriori = mix_est$posteriori,
-                        groups = split_obs, logL = logL_complete, aic = aic_complete, bic = bic_complete)
+  em_results <- list(
+    a_priori = mix_est$priori,
+    a_posteriori = mix_est$posteriori,
+    groups = split_obs,
+    logL = logL_complete,
+    aic = aic_complete,
+    bic = bic_complete
+  )
+
+  class(em_results) <- c("wt_em_results", class(em_results))
+
+  ml$em_results <- em_results
 
   class(ml) <- c("wt_model", "wt_mixmod_em", class(ml))
 
   ml
+}
+
+
+
+#' @export
+print.wt_mixmod_em <- function(x,
+                               digits = max(3L, getOption("digits") - 3L),
+                               ...
+) {
+  cat("Mixmod EM:\n")
+  mods <- x[-length(x)]
+  purrr::walk2(mods, seq_along(mods), function(model_estimation, i) {
+    cat(paste0("Subgroup ", i, ":\n"))
+    indent_by(print(model_estimation), 2)
+  })
+  print(x[[length(x)]])
+}
+
+
+
+#' @export
+print.wt_em_results <- function(x,
+                                digits = max(3L, getOption("digits") - 3L),
+                                ...
+) {
+  cat("EM Results:\n")
+  indent_by({
+    cat("A priori\n")
+    cat(x$a_priori)
+  }, 2)
 }
 
 
