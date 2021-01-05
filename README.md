@@ -9,6 +9,7 @@
 maturing](https://img.shields.io/badge/lifecycle-maturing-blue.svg)](https://www.tidyverse.org/lifecycle/#maturing)
 [![CRAN
 status](https://www.r-pkg.org/badges/version/weibulltools)](https://CRAN.R-project.org/package=weibulltools)
+[![R-CMD-check](https://github.com/Tim-TU/weibulltools/workflows/R-CMD-check/badge.svg)](https://github.com/Tim-TU/weibulltools/actions)
 <!-- badges: end -->
 
 ## Overview
@@ -90,13 +91,13 @@ prob_tbl <- estimate_cdf(x = rel_tbl, methods = c("mr", "kaplan", "johnson", "ne
 prob_tbl
 #> CDF estimation for methods 'mr', 'kaplan', 'johnson', 'nelson':
 #> # A tibble: 125 x 6
-#>   id        x status  rank   prob method
-#>   <chr> <int>  <dbl> <dbl>  <dbl> <chr> 
-#> 1 ID1    6700      1     1 0.0614 mr    
-#> 2 ID5    9120      1     2 0.149  mr    
-#> 3 ID13  12200      1     3 0.237  mr    
-#> 4 ID15  13150      1     4 0.325  mr    
-#> 5 ID19  14300      1     5 0.412  mr    
+#>   id        x status  rank   prob cdf_estimation_method
+#>   <chr> <int>  <dbl> <dbl>  <dbl> <chr>                
+#> 1 ID1    6700      1     1 0.0614 mr                   
+#> 2 ID5    9120      1     2 0.149  mr                   
+#> 3 ID13  12200      1     3 0.237  mr                   
+#> 4 ID15  13150      1     4 0.325  mr                   
+#> 5 ID19  14300      1     5 0.412  mr                   
 #> # ... with 120 more rows
 ```
 
