@@ -9,46 +9,17 @@ This is the major release 2.0.0.
 
 ## Test environments
 
-* local windows install, 
-    R version 3.5.2, 
-    Platform: x86_64-w64-mingw32/x64 (64-bit)
-    
-* win-builder, 
-    using R version 3.5.2 (2018-12-20) 
-    Platform: x86_64-w64-mingw32 (64-bit)
-    
-    R Under development (unstable) (2019-01-25 r76015)
-    Platform: x86_64-w64-mingw32 (64-bit)
-    
-* Ubuntu Linux 16.04 LTS, R-release, GCC (via r-hub builder), 
-    R version 3.4.4, 
-    Platform: x86_64-pc-linux-gnu (64-bit)
-    
-* Ubuntu Linux 16.04 LTS, R-devel, GCC (via r-hub builder)
-    R Under development (unstable) (2019-01-18 r75994), 
-    Platform: x86_64-pc-linux-gnu (64-bit) 
-    
-* Debian Linux, R-release, GCC (via r-hub builder)
-    R version 3.5.2, 
-    Platform: x86_64-pc-linux-gnu (64-bit)
-    
-* Debian Linux, R-devel, GCC (via r-hub builder)
-    R Under development (unstable) (2019-01-18 r75994), 
-    Platform: x86_64-pc-linux-gnu (64-bit)
-    
-* Fedora Linux, R-devel, clang, gfortran (via r-hub builder)
-    R Under development (unstable) (2019-01-26 r76018), 
-    Platform: x86_64-pc-linux-gnu (64-bit)
-    
-* Windows Server 2008 R2 SP1, R-release and R-devel, 32/64 bit (via r-hub builder)
+* local windows install, R 4.0.3
+* win-builder (devel, old-release and release)
+* macOS 10.13.6 High Sierra, R 4.0.3 (brew and CRAN setup via r-hub builder)
+* Oracle Solaris 10, x86, 32 bit, R 4.0.3 (via r-hub builder)
 
 ## R CMD check results
 
 There were no ERRORs for 
-local windows install, Windows Server 2008 R2 SP1, 
-win_builder, Ubuntu Linux 16.04 LTS and Debian Linux
+local windows install, win-builder, macOS 10.13.6 and Oracle Solaris 10
 
-There was 1 WARNING:
+There was 1 WARNING for local windows install:
 
 * checking package dependencies ... WARNING
   Requires orphaned package: 'plotly'
@@ -56,7 +27,7 @@ There was 1 WARNING:
 This warning is not critical as it is already known and discussed here: 
 https://github.com/ropensci/plotly/issues/1906
   
-There was 1 NOTE:
+There was 1 NOTE for local windows install:
 
 * checking compiled code ... NOTE
   Note: information on .o files for i386 is not available
@@ -74,3 +45,8 @@ This note is also not critical and only emerges with R 4.0.3 and rtools40.
 In the attached link it is already discussed and it is mentioned that it has no 
 implications for CRAN checks/submissions: 
 https://stackoverflow.com/questions/64402688/information-on-o-files-for-x64-is-not-available-note-on-r-package-checks-using
+
+There was an additional NOTE for win-builder:
+
+checking CRAN incoming feasibility ... NOTE
+Maintainer: 'Tim-Gunnar Hensel <tim-gunnar.hensel@tu-berlin.de>'
