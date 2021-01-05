@@ -30,17 +30,17 @@ or "invbeta".}
 \value{
 A tibble with failed units containing the following columns:
 \itemize{
-  \item \code{id} : Identification for every unit.
-  \item \code{x} : Lifetime characteristic.
-  \item \code{status} : Status of failed units (always 1).
-  \item \code{rank} : The assigned ranks.
-  \item \code{prob} : Estimated failure probabilities.
-  \item \code{method} : Specified method for the estimation of failure
-    probabilities (always 'mr').
+\item \code{id} : Identification for every unit.
+\item \code{x} : Lifetime characteristic.
+\item \code{status} : Status of failed units (always 1).
+\item \code{rank} : The assigned ranks.
+\item \code{prob} : Estimated failure probabilities.
+\item \code{method} : Specified method for the estimation of failure
+probabilities (always 'mr').
 }
 }
 \description{
-\lifecycle{soft-deprecated}
+\ifelse{html}{\figure{lifecycle-soft-deprecated.svg}{options: alt='Soft-deprecated lifecycle'}}{\strong{Soft-deprecated}}
 
 \code{mr_method()} is no longer under active development, switching
 to \code{\link{estimate_cdf}} is recommended.
@@ -50,8 +50,8 @@ This non-parametric approach (\emph{Median Ranks}) is used to estimate the
 failure probabilities in terms of complete data. Two methods are available to
 estimate the cumulative distribution function \emph{F(t)}:
 \itemize{
-  \item "benard" : Benard's approximation for Median Ranks.
-  \item "invbeta" : Exact Median Ranks using the inverse beta distribution.
+\item "benard" : Benard's approximation for Median Ranks.
+\item "invbeta" : Exact Median Ranks using the inverse beta distribution.
 }
 }
 \examples{

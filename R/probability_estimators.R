@@ -231,7 +231,7 @@ print.wt_cdf_estimation <- function(x, ...) {
 #' Estimation of Failure Probabilities using Median Ranks
 #'
 #' @description
-#' \lifecycle{soft-deprecated}
+#' `r lifecycle::badge("soft-deprecated")`
 #'
 #' \code{mr_method()} is no longer under active development, switching
 #' to \code{\link{estimate_cdf}} is recommended.
@@ -284,6 +284,8 @@ print.wt_cdf_estimation <- function(x, ...) {
 #'   status = state,
 #'   method = "invbeta"
 #' )
+#'
+#' @md
 #'
 #' @export
 mr_method <- function(x,
@@ -359,7 +361,7 @@ mr_method_ <- function(data,
 #' Estimation of Failure Probabilities using Johnson's Method
 #'
 #' @description
-#' \lifecycle{soft-deprecated}
+#' `r lifecycle::badge("soft-deprecated")`
 #'
 #' \code{johnson_method()} is no longer under active development, switching
 #' to \code{\link{estimate_cdf}} is recommended.
@@ -406,6 +408,8 @@ mr_method_ <- function(data,
 #'   x = obs,
 #'   status = rep(1, length(obs))
 #' )
+#'
+#' @md
 #'
 #' @export
 johnson_method <- function(x,
@@ -486,7 +490,7 @@ johnson_method_ <- function(data) {
 #' Estimation of Failure Probabilities using the Kaplan-Meier Estimator
 #'
 #' @description
-#' \lifecycle{soft-deprecated}
+#' `r lifecycle::badge("soft-deprecated")`
 #'
 #' \code{kaplan_method()} is no longer under active development, switching
 #' to \code{\link{estimate_cdf}} is recommended.
@@ -541,6 +545,8 @@ johnson_method_ <- function(data) {
 #'   x = obs,
 #'   status = state_2
 #' )
+#'
+#' @md
 #'
 #' @export
 kaplan_method <- function(x,
@@ -629,7 +635,7 @@ kaplan_method_ <- function(data) {
 #' Estimation of Failure Probabilities using the Nelson-Aalen Estimator
 #'
 #' @description
-#' \lifecycle{soft-deprecated}
+#' `r lifecycle::badge("soft-deprecated")`
 #'
 #' \code{nelson_method()} is no longer under active development, switching
 #' to \code{\link{estimate_cdf}} is recommended.
@@ -671,6 +677,8 @@ kaplan_method_ <- function(data) {
 #'   status = state,
 #'   id = uic
 #' )
+#'
+#' @md
 #'
 #' @export
 nelson_method <- function(x,

@@ -38,21 +38,21 @@ estimated distribution parameters.}
 }
 \value{
 A numeric vector of corrected operating times for the censored units
-  and the input operating times for the failed units if
-  \code{details = FALSE}. If \code{details = TRUE} the output is a list which
-  consists of the following elements:
-  \itemize{
-  \item \code{time} : Numeric vector of corrected operating times for the
-    censored observations and input operating times for failed units.
-  \item \code{x_sim} : Simulated random numbers of specified distribution with
-    estimated parameters. The length of \code{x_sim} is equal to the number of
-    censored observations.
-  \item \code{coefficients} : Estimated coefficients of supposed
-    distribution.
-  }
+and the input operating times for the failed units if
+\code{details = FALSE}. If \code{details = TRUE} the output is a list which
+consists of the following elements:
+\itemize{
+\item \code{time} : Numeric vector of corrected operating times for the
+censored observations and input operating times for failed units.
+\item \code{x_sim} : Simulated random numbers of specified distribution with
+estimated parameters. The length of \code{x_sim} is equal to the number of
+censored observations.
+\item \code{coefficients} : Estimated coefficients of supposed
+distribution.
+}
 }
 \description{
-\lifecycle{soft-deprecated}
+\ifelse{html}{\figure{lifecycle-soft-deprecated.svg}{options: alt='Soft-deprecated lifecycle'}}{\strong{Soft-deprecated}}
 
 \code{mcs_delay_report()} is no longer under active development, switching
 to \code{\link{mcs_delay}} is recommended.

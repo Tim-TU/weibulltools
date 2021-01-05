@@ -20,10 +20,10 @@ Use \code{NA} for missing elements.}
 }
 \value{
 A named vector of estimated parameters for the specified
-  distribution.
+distribution.
 }
 \description{
-\lifecycle{soft-deprecated}
+\ifelse{html}{\figure{lifecycle-soft-deprecated.svg}{options: alt='Soft-deprecated lifecycle'}}{\strong{Soft-deprecated}}
 
 \code{dist_delay_register()} is no longer under active development, switching
 to \code{\link{dist_delay}} is recommended.

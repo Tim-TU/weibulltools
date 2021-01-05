@@ -38,10 +38,10 @@ the legend.}
 }
 \value{
 Returns a plot object containing the probability plot with
-  plotting positions and estimated regression line(s).
+plotting positions and estimated regression line(s).
 }
 \description{
-\lifecycle{soft-deprecated}
+\ifelse{html}{\figure{lifecycle-soft-deprecated.svg}{options: alt='Soft-deprecated lifecycle'}}{\strong{Soft-deprecated}}
 
 \code{plot_mod_mix()} is no longer under active development, switching to
 \code{\link{plot_mod}} is recommended.
@@ -117,5 +117,5 @@ plot_weibull_reglines <- plot_mod_mix(
 }
 \references{
 Doganaksoy, N.; Hahn, G.; Meeker, W. Q., Reliability Analysis by
-  Failure Mode, Quality Progress, 35(6), 47-52, 2002
+Failure Mode, Quality Progress, 35(6), 47-52, 2002
 }

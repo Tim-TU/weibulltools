@@ -469,7 +469,7 @@ plot_prob_ <- function(
 #' Probability Plot for Separated Mixture Models
 #'
 #' @description
-#' \lifecycle{soft-deprecated}
+#' `r lifecycle::badge("soft-deprecated")`
 #'
 #' \code{plot_prob_mix()} is no longer under active development, switching to
 #' \code{\link{plot_prob}} is recommended.
@@ -545,6 +545,8 @@ plot_prob_ <- function(
 #'   distribution = "weibull",
 #'   mix_output = mix_mod_reg
 #' )
+#'
+#' @md
 #'
 #' @export
 plot_prob_mix <- function(
@@ -921,7 +923,7 @@ plot_mod.default <- function(p_obj,
 #' Probability Plot
 #'
 #' @description
-#' \lifecycle{soft-deprecated}
+#' `r lifecycle::badge("soft-deprecated")`
 #'
 #' \code{plot_mod_mix()} is no longer under active development, switching to
 #' \code{\link{plot_mod}} is recommended.
@@ -1007,6 +1009,8 @@ plot_mod.default <- function(p_obj,
 #'   mix_output = mix_mod_reg,
 #'   distribution = "weibull"
 #' )
+#'
+#' @md
 #'
 #' @export
 plot_mod_mix <- function(p_obj,

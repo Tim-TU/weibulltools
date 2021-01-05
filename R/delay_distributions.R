@@ -477,7 +477,7 @@ mcs_helper <- function(x, par_list) {
 #' Parameter Estimation of the Delay in Registration Distribution
 #'
 #' @description
-#' \lifecycle{soft-deprecated}
+#' `r lifecycle::badge("soft-deprecated")`
 #'
 #' \code{dist_delay_register()} is no longer under active development, switching
 #' to \code{\link{dist_delay}} is recommended.
@@ -520,6 +520,8 @@ mcs_helper <- function(x, par_list) {
 #'   date_register = date_of_registration,
 #'   distribution = "lognormal"
 #' )
+#'
+#' @md
 #'
 #' @export
 dist_delay_register <- function(date_prod,
@@ -572,7 +574,7 @@ dist_delay_register <- function(date_prod,
 #' Approach
 #'
 #' @description
-#' \lifecycle{soft-deprecated}
+#' `r lifecycle::badge("soft-deprecated")`
 #'
 #' \code{mcs_delay_register()} is no longer under active development, switching
 #' to \code{\link{mcs_delay}} is recommended.
@@ -651,6 +653,8 @@ dist_delay_register <- function(date_prod,
 #'   details = TRUE
 #' )
 #'
+#' @md
+#'
 #' @export
 mcs_delay_register <- function(date_prod,
                                date_register,
@@ -698,7 +702,7 @@ mcs_delay_register <- function(date_prod,
 #' Parameter Estimation of the Delay in Report Distribution
 #'
 #' @description
-#' \lifecycle{soft-deprecated}
+#' `r lifecycle::badge("soft-deprecated")`
 #'
 #' \code{dist_delay_report()} is no longer under active development, switching
 #' to \code{\link{dist_delay}} is recommended.
@@ -739,6 +743,8 @@ mcs_delay_register <- function(date_prod,
 #'   date_report = date_of_report,
 #'   distribution = "lognormal"
 #' )
+#'
+#' @md
 #'
 #' @export
 dist_delay_report <- function(date_repair,
@@ -790,7 +796,7 @@ dist_delay_report <- function(date_repair,
 #' Adjustment of Operating Times by Delays in Report using a Monte Carlo Approach
 #'
 #' @description
-#' \lifecycle{soft-deprecated}
+#' `r lifecycle::badge("soft-deprecated")`
 #'
 #' \code{mcs_delay_report()} is no longer under active development, switching
 #' to \code{\link{mcs_delay}} is recommended.
@@ -858,6 +864,8 @@ dist_delay_report <- function(date_repair,
 #'   details = TRUE
 #' )
 #'
+#' @md
+#'
 #' @export
 mcs_delay_report <- function(date_repair,
                              date_report,
@@ -906,7 +914,7 @@ mcs_delay_report <- function(date_repair,
 #' Adjustment of Operating Times by Delays using a Monte Carlo Approach
 #'
 #' @description
-#' \lifecycle{soft-deprecated}
+#' `r lifecycle::badge("soft-deprecated")`
 #'
 #' \code{mcs_delays()} is no longer under active development, switching
 #' to \code{\link{mcs_delay}} is recommended.
@@ -995,6 +1003,8 @@ mcs_delay_report <- function(date_repair,
 #'   distribution = "lognormal",
 #'   details = TRUE
 #' )
+#'
+#' @md
 #'
 #' @export
 mcs_delays <- function(date_prod,

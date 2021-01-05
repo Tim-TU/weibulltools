@@ -20,18 +20,18 @@ is a right censored observation (= 0) or a failure (= 1).}
 \value{
 A tibble containing the following columns:
 \itemize{
-  \item \code{id} : Identification for every unit.
-  \item \code{x} : Lifetime characteristic.
-  \item \code{status} : Binary data (0 or 1) indicating whether a unit is a
-    right censored observation (= 0) or a failure (= 1).
-  \item \code{rank} : The adjusted ranks.
-  \item \code{prob} : Estimated failure probabilities, \code{NA} if \code{status = 0}.
-  \item \code{cdf_estimation_method} : Specified method for the estimation of
-    failure probabilities (always 'johnson').
+\item \code{id} : Identification for every unit.
+\item \code{x} : Lifetime characteristic.
+\item \code{status} : Binary data (0 or 1) indicating whether a unit is a
+right censored observation (= 0) or a failure (= 1).
+\item \code{rank} : The adjusted ranks.
+\item \code{prob} : Estimated failure probabilities, \code{NA} if \code{status = 0}.
+\item \code{cdf_estimation_method} : Specified method for the estimation of
+failure probabilities (always 'johnson').
 }
 }
 \description{
-\lifecycle{soft-deprecated}
+\ifelse{html}{\figure{lifecycle-soft-deprecated.svg}{options: alt='Soft-deprecated lifecycle'}}{\strong{Soft-deprecated}}
 
 \code{johnson_method()} is no longer under active development, switching
 to \code{\link{estimate_cdf}} is recommended.

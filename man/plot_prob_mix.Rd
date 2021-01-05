@@ -53,7 +53,7 @@ the legend.}
 \item{...}{Further arguments passed to or from other methods. Currently not used.}
 }
 \description{
-\lifecycle{soft-deprecated}
+\ifelse{html}{\figure{lifecycle-soft-deprecated.svg}{options: alt='Soft-deprecated lifecycle'}}{\strong{Soft-deprecated}}
 
 \code{plot_prob_mix()} is no longer under active development, switching to
 \code{\link{plot_prob}} is recommended.
@@ -122,7 +122,7 @@ plot_weibull_reg <- plot_prob_mix(
 }
 \references{
 Doganaksoy, N.; Hahn, G.; Meeker, W. Q., Reliability Analysis by
-  Failure Mode, Quality Progress, 35(6), 47-52, 2002
+Failure Mode, Quality Progress, 35(6), 47-52, 2002
 }
 \seealso{
 \code{\link{plot_prob}}
