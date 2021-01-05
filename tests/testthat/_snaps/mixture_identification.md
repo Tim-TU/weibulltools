@@ -2,15 +2,17 @@
 
     Mixmod Regression:
     Subgroup 1:
-    Rank Regression
-    Coefficients:
-       mu  sigma  
-    6.910  1.566  
+       Rank Regression 
+        Coefficients: 
+           mu  sigma   
+        6.910  1.566   
+     
     Subgroup 2:
-    Rank Regression
-    Coefficients:
-        mu   sigma  
-    5.7141  0.3048  
+       Rank Regression 
+        Coefficients: 
+            mu   sigma   
+        5.7141  0.3048   
+     
 
 # mixmod_em remains stable
 

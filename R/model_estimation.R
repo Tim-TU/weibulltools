@@ -47,6 +47,6 @@ vcov.wt_model_estimation <- function(object, ...) {
 
 
 indent_by <- function(expr, n) {
-  out <- capture.output(expr)
+  out <- utils::capture.output(expr)
   cat(paste(strrep(" ", n), out, "\n"), "\n")
 }
