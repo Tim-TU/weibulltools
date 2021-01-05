@@ -212,12 +212,6 @@ and "Line: 2".</p>
 
 <span class='va'>plot_reg_weibull_2</span> <span class='op'>&lt;-</span> <span class='fu'>plot_mod</span><span class='op'>(</span>p_obj <span class='op'>=</span> <span class='va'>plot_weibull</span>, <span class='va'>ml_weibull_2</span><span class='op'>)</span>
 
-<span class='co'># Example 4 - Probability Plot and Regression Line Three-Parameter-Weibull:</span>
-<span class='va'>plot_weibull</span> <span class='op'>&lt;-</span> <span class='fu'><a href='plot_prob.html'>plot_prob</a></span><span class='op'>(</span><span class='va'>prob_tbl</span>, distribution <span class='op'>=</span> <span class='st'>"weibull"</span><span class='op'>)</span>
-<span class='va'>ml_weibull_3</span> <span class='op'>&lt;-</span> <span class='fu'><a href='ml_estimation.html'>ml_estimation</a></span><span class='op'>(</span><span class='va'>data</span>, distribution <span class='op'>=</span> <span class='st'>"weibull3"</span><span class='op'>)</span>
-
-<span class='va'>plot_reg_weibull_3</span> <span class='op'>&lt;-</span> <span class='fu'>plot_mod</span><span class='op'>(</span>p_obj <span class='op'>=</span> <span class='va'>plot_weibull</span>, <span class='va'>ml_weibull_3</span><span class='op'>)</span>
-
 
 <span class='co'>## Mixture Identification</span>
 <span class='co'># Reliability data:</span>
@@ -229,13 +223,13 @@ and "Line: 2".</p>
   methods <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"johnson"</span>, <span class='st'>"kaplan"</span>, <span class='st'>"nelson"</span><span class='op'>)</span>
 <span class='op'>)</span>
 
-<span class='co'># Example 5 - Probability Plot and Regression Line Mixmod Regression:</span>
+<span class='co'># Example 4 - Probability Plot and Regression Line Mixmod Regression:</span>
 <span class='va'>mix_mod_rr</span> <span class='op'>&lt;-</span> <span class='fu'><a href='mixmod_regression.html'>mixmod_regression</a></span><span class='op'>(</span><span class='va'>prob_mix</span>, distribution <span class='op'>=</span> <span class='st'>"weibull"</span><span class='op'>)</span>
 <span class='va'>plot_weibull</span> <span class='op'>&lt;-</span> <span class='fu'><a href='plot_prob.html'>plot_prob</a></span><span class='op'>(</span><span class='va'>mix_mod_rr</span><span class='op'>)</span>
 
 <span class='va'>plot_reg_mix_mod_rr</span> <span class='op'>&lt;-</span> <span class='fu'>plot_mod</span><span class='op'>(</span>p_obj <span class='op'>=</span> <span class='va'>plot_weibull</span>, x <span class='op'>=</span> <span class='va'>mix_mod_rr</span><span class='op'>)</span>
 
-<span class='co'># Example 6 - Probability Plot and Regression Line Mixmod EM:</span>
+<span class='co'># Example 5 - Probability Plot and Regression Line Mixmod EM:</span>
 <span class='va'>mix_mod_em</span> <span class='op'>&lt;-</span> <span class='fu'><a href='mixmod_em.html'>mixmod_em</a></span><span class='op'>(</span><span class='va'>data_mix</span><span class='op'>)</span>
 <span class='va'>plot_weibull</span> <span class='op'>&lt;-</span> <span class='fu'><a href='plot_prob.html'>plot_prob</a></span><span class='op'>(</span><span class='va'>mix_mod_em</span><span class='op'>)</span>
 

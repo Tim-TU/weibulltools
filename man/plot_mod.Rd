@@ -67,12 +67,6 @@ ml_weibull_2 <- ml_estimation(data, distribution = "weibull")
 
 plot_reg_weibull_2 <- plot_mod(p_obj = plot_weibull, ml_weibull_2)
 
-# Example 4 - Probability Plot and Regression Line Three-Parameter-Weibull:
-plot_weibull <- plot_prob(prob_tbl, distribution = "weibull")
-ml_weibull_3 <- ml_estimation(data, distribution = "weibull3")
-
-plot_reg_weibull_3 <- plot_mod(p_obj = plot_weibull, ml_weibull_3)
-
 
 ## Mixture Identification
 # Reliability data:
@@ -84,13 +78,13 @@ prob_mix <- estimate_cdf(
   methods = c("johnson", "kaplan", "nelson")
 )
 
-# Example 5 - Probability Plot and Regression Line Mixmod Regression:
+# Example 4 - Probability Plot and Regression Line Mixmod Regression:
 mix_mod_rr <- mixmod_regression(prob_mix, distribution = "weibull")
 plot_weibull <- plot_prob(mix_mod_rr)
 
 plot_reg_mix_mod_rr <- plot_mod(p_obj = plot_weibull, x = mix_mod_rr)
 
-# Example 6 - Probability Plot and Regression Line Mixmod EM:
+# Example 5 - Probability Plot and Regression Line Mixmod EM:
 mix_mod_em <- mixmod_em(data_mix)
 plot_weibull <- plot_prob(mix_mod_em)
 
