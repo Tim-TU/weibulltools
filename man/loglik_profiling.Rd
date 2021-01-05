@@ -45,7 +45,7 @@ status <- alloy$status
 threshold <- seq(
   0,
   min(cycles[status == 1]) - 0.1,
-  length.out = 100
+  length.out = 50
 )
 
 ## loglikelihood value with respect to threshold values:
