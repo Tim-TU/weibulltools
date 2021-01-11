@@ -10,7 +10,7 @@ A tibble with 58 rows and 3 variables:
   \item{hours}{Observed hours.}
   \item{failure_mode}{
     One of two failure modes (\code{D} and \code{E})
-    or \code{censored} if no failure occured.
+    or \code{censored} if no failure occurred.
   }
   \item{status}{
     If \code{failure_mode} is either \code{D} or \code{E}
@@ -27,6 +27,6 @@ voltage
 }
 \description{
 A sample of 58 segments of bars were subjected to a high voltage stress test.
-Two failure modes occured, Mode D (degradation failure) and Mode E (early failure).
+Two failure modes occurred, Mode D (degradation failure) and Mode E (early failure).
 }
 \keyword{datasets}

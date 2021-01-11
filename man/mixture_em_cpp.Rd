@@ -25,7 +25,7 @@ cycles.}
 \item{status}{a vector of binary data (0 or 1) indicating whether unit \emph{i}
 is a right censored observation (= 0) or a failure (= 1).}
 
-\item{post}{a numeric matrix specifiying initial a-posteriori probabilities.
+\item{post}{a numeric matrix specifying initial a-posteriori probabilities.
 The number of rows have to be in line with observations \code{x} and the
 number of columns must equal the mixture components \code{k}.}
 

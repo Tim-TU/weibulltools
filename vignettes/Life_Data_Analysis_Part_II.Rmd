@@ -89,7 +89,7 @@ $$x_i=\log(t_i)\;;\; \bar{x}=\frac{1}{n}\cdot\sum_{i=1}^{n}\log(t_i)\;;$$
 as well as  
 
 $$y_i=\Phi^{-1}_{SEV}\left[F(t)\right]=\log\left\{-\log\left[1-F(t_i)\right]\right\}\;and \; \bar{y}=\frac{1}{n}\cdot\sum_{i=1}^{n}\log\left\{-\log\left[1-F(t_i)\right]\right\}.$$  
-The estimates of the intercept and slope are equal to the weibull parameters $\mu$ and 
+The estimates of the intercept and slope are equal to the Weibull parameters $\mu$ and 
 $\sigma$, i.e. 
 
 $$\hat{\mu}=\hat{a}$$
@@ -188,7 +188,7 @@ In the following both methods are applied to the dataset `shock`.
 # rank_regression needs estimated failure probabilities: 
 shock_cdf <- estimate_cdf(shock_tbl, methods = "johnson")
 
-# Estimating two-parameter weibull: 
+# Estimating two-parameter Weibull: 
 rr_weibull <- rank_regression(shock_cdf, distribution = "weibull")
 rr_weibull 
 
@@ -216,7 +216,7 @@ weibull_plot
 ### ML for two-parameter Weibull distribution
 
 ```{r ML_weibull, fig.cap = "Figure 2: ML for a two-parametric Weibull distribution.", message = FALSE}
-# Again estimating weibull: 
+# Again estimating Weibull: 
 ml_weibull <- ml_estimation(
   shock_tbl, 
   distribution = "weibull"

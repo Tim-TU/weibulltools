@@ -35,7 +35,7 @@ multiple lines are plotted.
 The name of the legend entry is a combination of the \code{title_trace} and
 the number of determined subgroups from \code{\link{mixmod_regression}} or
 \code{\link{mixmod_em}}. If \code{title_trace = "Line"} and the
-data could be splitted in two groups, the legend entries would be "Line: 1"
+data could be split in two groups, the legend entries would be "Line: 1"
 and "Line: 2".
 }
 \examples{

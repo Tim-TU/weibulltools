@@ -28,7 +28,7 @@ is a right censored observation (= 0) or a failure (= 1).}
 
 \item{distribution}{\code{"weibull"} until further distributions are implemented.}
 
-\item{conf_level}{Confidence level for the intervals of the weibull parameters
+\item{conf_level}{Confidence level for the intervals of the Weibull parameters
 of every component \code{k}.}
 
 \item{k}{Number of mixture components.}
@@ -65,7 +65,7 @@ further results of the EM algorithm and is therefore called
 }
 \description{
 This method applies the expectation-maximization (EM) algorithm to estimate the
-parameters of a univariate weibull mixture model. See 'Details'.
+parameters of a univariate Weibull mixture model. See 'Details'.
 }
 \details{
 The EM algorithm is an iterative algorithm for which starting values must be

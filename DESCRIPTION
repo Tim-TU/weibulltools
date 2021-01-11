@@ -29,7 +29,7 @@ Description: The weibulltools package focuses on statistical methods and
              beta-binomial confidence bounds. 
              If desired, mixture model analysis can be done with segmented regression
              and the EM algorithm.
-             Besides the well-known weibull analysis, the package also contains 
+             Besides the well-known Weibull analysis, the package also contains 
              Monte Carlo methods for the correction and completion of imprecisely 
              recorded or unknown lifetime characteristics.
              (Verband der Automobilindustrie e.V. (VDA), 2016, <ISSN:0943-9412>). 

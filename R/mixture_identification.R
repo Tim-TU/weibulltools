@@ -93,7 +93,7 @@
 #'   methods = c("johnson", "kaplan", "nelson")
 #' )
 #'
-#' # Example 1 - Mixture identification using k = 2 two-parametric weibull models:
+#' # Example 1 - Mixture identification using k = 2 two-parametric Weibull models:
 #' mix_mod_weibull <- mixmod_regression(
 #'   x = prob_mix,
 #'   distribution = "weibull",
@@ -239,7 +239,7 @@ mixmod_regression.wt_cdf_estimation <- function(
 #'   method = "johnson"
 #' )
 #'
-#'  # Example 1 - Mixture identification using k = 2 two-parametric weibull models:
+#'  # Example 1 - Mixture identification using k = 2 two-parametric Weibull models:
 #' mix_mod_weibull <- mixmod_regression(
 #'    x = prob_mix$x,
 #'    y = prob_mix$prob,
@@ -446,7 +446,7 @@ print.wt_mixmod_regression_list <- function(x,
 #'
 #' @description
 #' This method applies the expectation-maximization (EM) algorithm to estimate the
-#' parameters of a univariate weibull mixture model. See 'Details'.
+#' parameters of a univariate Weibull mixture model. See 'Details'.
 #'
 #' @details
 #' The EM algorithm is an iterative algorithm for which starting values must be
@@ -467,7 +467,7 @@ print.wt_mixmod_regression_list <- function(x,
 #' @param x An object of class \code{wt_reliability_data} returned from
 #'   \code{\link{reliability_data}}.
 #' @param distribution \code{"weibull"} until further distributions are implemented.
-#' @param conf_level Confidence level for the intervals of the weibull parameters
+#' @param conf_level Confidence level for the intervals of the Weibull parameters
 #' of every component \code{k}.
 #' @param k Number of mixture components.
 #' @param method \code{"EM"} until other methods are implemented.

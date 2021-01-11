@@ -12,7 +12,7 @@ compact and easily accessible set of methods and visualization tools that
 make the examination and adjustment as well as the analysis and
 interpretation of field data (and bench tests) as simple as possible.
 
-Besides the well-known weibull analysis, the package supports multiple
+Besides the well-known Weibull analysis, the package supports multiple
 lifetime distributions and also contains Monte Carlo methods for the
 correction and completion of imprecisely recorded or unknown lifetime
 characteristics.

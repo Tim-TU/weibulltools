@@ -38,6 +38,12 @@
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
 <li>
+  <a href="../index.html">
+    <span class="fas fa-home fa-lg"></span>
+     
+  </a>
+</li>
+<li>
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
@@ -87,7 +93,7 @@
                         <h4 class="author">Tim-Gunnar Hensel</h4>
                         <h4 class="author">David Barkemeyer</h4>
             
-            <h4 class="date">2021-01-05</h4>
+            <h4 class="date">2021-01-11</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/Tim-TU/weibulltools/blob/master/vignettes/Life_Data_Analysis_Part_II.Rmd"><code>vignettes/Life_Data_Analysis_Part_II.Rmd</code></a></small>
       <div class="hidden name"><code>Life_Data_Analysis_Part_II.Rmd</code></div>
@@ -120,7 +126,7 @@
 <p><span class="math display">\[x_i=\log(t_i)\;;\; \bar{x}=\frac{1}{n}\cdot\sum_{i=1}^{n}\log(t_i)\;;\]</span></p>
 <p>as well as</p>
 <p><span class="math display">\[y_i=\Phi^{-1}_{SEV}\left[F(t)\right]=\log\left\{-\log\left[1-F(t_i)\right]\right\}\;and \; \bar{y}=\frac{1}{n}\cdot\sum_{i=1}^{n}\log\left\{-\log\left[1-F(t_i)\right]\right\}.\]</span><br>
-The estimates of the intercept and slope are equal to the weibull parameters <span class="math inline">\(\mu\)</span> and <span class="math inline">\(\sigma\)</span>, i.e. </p>
+The estimates of the intercept and slope are equal to the Weibull parameters <span class="math inline">\(\mu\)</span> and <span class="math inline">\(\sigma\)</span>, i.e. </p>
 <p><span class="math display">\[\hat{\mu}=\hat{a}\]</span></p>
 <p>and</p>
 <p><span class="math display">\[\hat{\sigma}=\hat{b}.\]</span></p>
@@ -206,7 +212,7 @@ The estimates of the intercept and slope are equal to the weibull parameters <sp
 <code class="sourceCode R"><span class="co"># rank_regression needs estimated failure probabilities: </span>
 <span class="va">shock_cdf</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/estimate_cdf.html">estimate_cdf</a></span><span class="op">(</span><span class="va">shock_tbl</span>, methods <span class="op">=</span> <span class="st">"johnson"</span><span class="op">)</span>
 
-<span class="co"># Estimating two-parameter weibull: </span>
+<span class="co"># Estimating two-parameter Weibull: </span>
 <span class="va">rr_weibull</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/rank_regression.html">rank_regression</a></span><span class="op">(</span><span class="va">shock_cdf</span>, distribution <span class="op">=</span> <span class="st">"weibull"</span><span class="op">)</span>
 <span class="va">rr_weibull</span> 
 <span class="co">#&gt; Rank Regression</span>
@@ -243,7 +249,7 @@ Figure 1: RR for a two-parametric Weibull distribution.
 <h3 class="hasAnchor">
 <a href="#ml-for-two-parameter-weibull-distribution" class="anchor"></a>ML for two-parameter Weibull distribution</h3>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># Again estimating weibull: </span>
+<code class="sourceCode R"><span class="co"># Again estimating Weibull: </span>
 <span class="va">ml_weibull</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ml_estimation.html">ml_estimation</a></span><span class="op">(</span>
   <span class="va">shock_tbl</span>, 
   distribution <span class="op">=</span> <span class="st">"weibull"</span>
@@ -369,7 +375,7 @@ Figure 4: ML for a three-parametric log-normal distribution.
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.9000.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

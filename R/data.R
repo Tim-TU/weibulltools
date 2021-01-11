@@ -25,7 +25,7 @@
 #'   \item{distance}{Observed distance.}
 #'   \item{failure_mode}{
 #'     One of two failure modes (\code{mode_1} and \code{mode_2})
-#'     or \code{censored} if no failure occured.
+#'     or \code{censored} if no failure occurred.
 #'   }
 #'   \item{status}{
 #'     If \code{failure_mode} is either \code{mode_1} or \code{mode_2}
@@ -42,14 +42,14 @@
 #' High Voltage Stress Test for the Dielectric Insulation of Generator armature bars
 #'
 #' A sample of 58 segments of bars were subjected to a high voltage stress test.
-#' Two failure modes occured, Mode D (degradation failure) and Mode E (early failure).
+#' Two failure modes occurred, Mode D (degradation failure) and Mode E (early failure).
 #'
 #' @format A tibble with 58 rows and 3 variables:
 #' \describe{
 #'   \item{hours}{Observed hours.}
 #'   \item{failure_mode}{
 #'     One of two failure modes (\code{D} and \code{E})
-#'     or \code{censored} if no failure occured.
+#'     or \code{censored} if no failure occurred.
 #'   }
 #'   \item{status}{
 #'     If \code{failure_mode} is either \code{D} or \code{E}
