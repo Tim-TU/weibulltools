@@ -33,8 +33,8 @@ with functions of the respective visualization package.
 ## Installation
 
 The latest released version of *weibulltools* from
-[CRAN](https://cran.r-project.org/web/packages/weibulltools/) can be
-installed with:
+[CRAN](https://CRAN.R-project.org/package=weibulltools) can be installed
+with:
 
 ``` r
 install.packages("weibulltools")

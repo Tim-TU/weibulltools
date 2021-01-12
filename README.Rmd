@@ -32,7 +32,7 @@ Plots are created statically ([ggplot2](https://ggplot2.tidyverse.org/)) or inte
 
 ## Installation
 
-The latest released version of *weibulltools* from [CRAN](https://cran.r-project.org/web/packages/weibulltools/) can be installed with:
+The latest released version of *weibulltools* from [CRAN](https://CRAN.R-project.org/package=weibulltools) can be installed with:
 
 ```{r, eval = FALSE}
 install.packages("weibulltools")

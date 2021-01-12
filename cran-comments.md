@@ -3,6 +3,14 @@ title: "CRAN comments"
 output: html_document
 ---
 
+## This is a resubmission
+
+* Uwe Ligges confirmed that the version number can be kept as 2.0.0 for the resubmission
+* omitted the package name of the own package in the description field
+* single quoted packages in the description field
+* fixed invalid URLs
+* CRAN URL in canonical form 
+
 ## Release summary
 
 This is the major release 2.0.0.

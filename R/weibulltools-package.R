@@ -3,11 +3,11 @@
 #' @title weibulltools
 #'
 #' @description
-#' The \emph{weibulltools} package focuses on statistical methods and
-#' visualizations that are often used in reliability engineering. It provides a
-#' compact and easily accessible set of methods and visualization tools that
-#' make the examination and adjustment as well as the analysis and
-#' interpretation of field data (and bench tests) as simple as possible.
+#' Provides statistical methods and visualizations that are often used in
+#' reliability engineering. Comprises a compact and easily accessible set of
+#' methods and visualization tools that make the examination and adjustment as
+#' well as the analysis and interpretation of field data (and bench tests) as
+#' simple as possible.
 #'
 #' Besides the well-known Weibull analysis, the package supports multiple
 #' lifetime distributions and also contains Monte Carlo methods for the
