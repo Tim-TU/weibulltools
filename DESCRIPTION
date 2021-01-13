@@ -1,7 +1,7 @@
 Package: weibulltools
 Type: Package
 Title: Statistical Methods for Life Data Analysis 
-Version: 2.0.0
+Version: 2.0.0.9000
 Authors@R:
     c(person("Tim-Gunnar", "Hensel", 
       email = "tim-gunnar.hensel@tu-berlin.de", 
@@ -39,7 +39,7 @@ Description: Provides statistical methods and visualizations that are often
              of regression lines and confidence bounds to existing plots are 
              supported. 
 License: GPL-2
-URL: https://tim-tu.github.io/weibulltools,
+URL: https://tim-tu.github.io/weibulltools/,
      https://github.com/Tim-TU/weibulltools
 BugReports: https://github.com/Tim-TU/weibulltools/issues
 Imports:
