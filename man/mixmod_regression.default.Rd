@@ -116,7 +116,7 @@ prob <- estimate_cdf(
   method = "johnson"
 )
 
- # Example 1 - Mixture identification using k = 2 two-parametric weibull models:
+ # Example 1 - Mixture identification using k = 2 two-parametric Weibull models:
 mix_mod_weibull <- mixmod_regression(
    x = prob_mix$x,
    y = prob_mix$prob,

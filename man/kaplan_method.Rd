@@ -40,7 +40,7 @@ to \code{\link{estimate_cdf}} is recommended.
 Whereas the non-parametric Kaplan-Meier estimator is used to estimate the
 survival function \emph{S(t)} in terms of (multiple) right censored data, the
 complement is an estimate of the cumulative distribution function \emph{F(t)}.
-One modification is made in contrast to the orginial Kaplan-Meier estimator
+One modification is made in contrast to the original Kaplan-Meier estimator
 (see 'References').
 
 \strong{Note} : The \emph{Kaplan-Meier} estimator does not assign ranks to

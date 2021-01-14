@@ -28,7 +28,7 @@ is a right censored observation (= 0) or a failure (= 1).}
 
 \item{distribution}{\code{"weibull"} until further distributions are implemented.}
 
-\item{conf_level}{Confidence level for the intervals of the weibull parameters
+\item{conf_level}{Confidence level for the intervals of the Weibull parameters
 of every component \code{k}.}
 
 \item{k}{Number of mixture components.}
@@ -65,7 +65,7 @@ further results of the EM algorithm and is therefore called
 }
 \description{
 This method applies the expectation-maximization (EM) algorithm to estimate the
-parameters of a univariate weibull mixture model. See 'Details'.
+parameters of a univariate Weibull mixture model. See 'Details'.
 }
 \details{
 The EM algorithm is an iterative algorithm for which starting values must be
@@ -114,7 +114,7 @@ mix_mod_em_2 <- mixmod_em(
 \itemize{
     \item Doganaksoy, N.; Hahn, G.; Meeker, W. Q., Reliability Analysis by
       Failure Mode, Quality Progress, 35(6), 47-52, 2002
-    \item Blog posts by Stefan Gelissen: \url{http://blogs2.datall-analyse.nl/2016/02/18/rcode_mixture_distribution_censored};
+    \item Blog posts by Stefan Gelissen: \url{https://blogs2.datall-analyse.nl/2016/02/18/rcode_mixture_distribution_censored/};
       last accessed on 8th December 2020}
 }
 \seealso{

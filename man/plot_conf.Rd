@@ -19,7 +19,7 @@ plot_conf(p_obj, x, ...)
 \arguments{
 \item{p_obj}{A plot object returned from \code{\link{plot_prob}}.}
 
-\item{x}{Confindence interval as returned by \code{\link{confint_betabinom}}
+\item{x}{Confidence interval as returned by \code{\link{confint_betabinom}}
 or \code{\link{confint_fisher}}.}
 
 \item{...}{Further arguments passed to or from other methods. Currently not used.}

@@ -10,7 +10,7 @@ A tibble with 38 rows and 3 variables:
   \item{distance}{Observed distance.}
   \item{failure_mode}{
     One of two failure modes (\code{mode_1} and \code{mode_2})
-    or \code{censored} if no failure occured.
+    or \code{censored} if no failure occurred.
   }
   \item{status}{
     If \code{failure_mode} is either \code{mode_1} or \code{mode_2}

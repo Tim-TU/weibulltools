@@ -21,7 +21,7 @@ visualization tools that make the examination and adjustment as well as
 the analysis and interpretation of field data (and bench tests) as
 simple as possible.
 
-Besides the well-known weibull analysis, the package supports multiple
+Besides the well-known Weibull analysis, the package supports multiple
 lifetime distributions and also contains Monte Carlo methods for the
 correction and completion of imprecisely recorded or unknown lifetime
 characteristics.
@@ -33,8 +33,8 @@ with functions of the respective visualization package.
 ## Installation
 
 The latest released version of *weibulltools* from
-[CRAN](https://cran.r-project.org/web/packages/weibulltools/) can be
-installed with:
+[CRAN](https://CRAN.R-project.org/package=weibulltools) can be installed
+with:
 
 ``` r
 install.packages("weibulltools")

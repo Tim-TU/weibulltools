@@ -359,7 +359,7 @@ plot_prob.wt_mixmod_regression_list <- function(x,
 #'   x axis.
 #' @param title_y A character string which is assigned to the title of the
 #'   y axis.
-#' @param title_trace A character string whis is assigned to the trace shown in
+#' @param title_trace A character string which is assigned to the trace shown in
 #'   the legend.
 #' @param plot_method Package, which is used for generating the plot output.
 #' @template dots
@@ -494,7 +494,7 @@ plot_prob_ <- function(
 #'
 #' The name of the legend entry is a combination of the \code{title_trace} and the
 #' number of determined subgroups. If \code{title_trace = "Group"} and the data
-#' could be splitted in two groups, the legend entries would be "Group 1" and "Group 2".
+#' could be split in two groups, the legend entries would be "Group 1" and "Group 2".
 #'
 #' @encoding UTF-8
 #' @references Doganaksoy, N.; Hahn, G.; Meeker, W. Q., Reliability Analysis by
@@ -592,7 +592,7 @@ plot_prob_mix <- function(
 #' The name of the legend entry is a combination of the \code{title_trace} and
 #' the number of determined subgroups from \code{\link{mixmod_regression}} or
 #' \code{\link{mixmod_em}}. If \code{title_trace = "Line"} and the
-#' data could be splitted in two groups, the legend entries would be "Line: 1"
+#' data could be split in two groups, the legend entries would be "Line: 1"
 #' and "Line: 2".
 #'
 #' @param p_obj A plot object returned from \code{\link{plot_prob}}.
@@ -1037,7 +1037,7 @@ plot_mod_mix <- function(p_obj,
 #' regression line, the latter is provided as well.
 #'
 #' @param p_obj A plot object returned from \code{\link{plot_prob}}.
-#' @param x Confindence interval as returned by \code{\link{confint_betabinom}}
+#' @param x Confidence interval as returned by \code{\link{confint_betabinom}}
 #'   or \code{\link{confint_fisher}}.
 #' @param title_trace_mod A character string which is assigned to the mod trace
 #'   in the legend.

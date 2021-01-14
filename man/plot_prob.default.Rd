@@ -43,7 +43,7 @@ x axis.}
 \item{title_y}{A character string which is assigned to the title of the
 y axis.}
 
-\item{title_trace}{A character string whis is assigned to the trace shown in
+\item{title_trace}{A character string which is assigned to the trace shown in
 the legend.}
 
 \item{plot_method}{Package, which is used for generating the plot output.}

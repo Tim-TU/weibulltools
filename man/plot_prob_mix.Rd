@@ -45,7 +45,7 @@ x axis.}
 \item{title_y}{A character string which is assigned to the title of the
 y axis.}
 
-\item{title_trace}{A character string whis is assigned to the trace shown in
+\item{title_trace}{A character string which is assigned to the trace shown in
 the legend.}
 
 \item{plot_method}{Package, which is used for generating the plot output.}
@@ -78,7 +78,7 @@ argument \code{title_x} respective \code{title_y}, i.e. if
 
 The name of the legend entry is a combination of the \code{title_trace} and the
 number of determined subgroups. If \code{title_trace = "Group"} and the data
-could be splitted in two groups, the legend entries would be "Group 1" and "Group 2".
+could be split in two groups, the legend entries would be "Group 1" and "Group 2".
 }
 \examples{
 # Vectors

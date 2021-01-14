@@ -12,30 +12,30 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
 <!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="pkgdown.css" rel="stylesheet">
 <script src="pkgdown.js"></script><meta property="og:title" content="Statistical Methods for Life Data Analysis ">
-<meta property="og:description" content="The weibulltools package focuses on statistical methods and 
-             visualizations that are often used in reliability engineering. It 
-             provides a compact and easily accessible set of methods and visualization 
-             tools that make the examination and adjustment as well as the analysis 
-             and interpretation of field data (and bench tests) as simple as possible.
+<meta property="og:description" content="Provides statistical methods and visualizations that are often 
+             used in reliability engineering. Comprises a compact and easily 
+             accessible set of methods and visualization tools that make the 
+             examination and adjustment as well as the analysis and interpretation 
+             of field data (and bench tests) as simple as possible.
              Non-parametric estimators like Median Ranks, 
              Kaplan-Meier (Abernethy, 2006, &lt;ISBN:978-0-9653062-3-2&gt;), 
              Johnson (Johnson, 1964, &lt;ISBN:978-0444403223&gt;), and Nelson-Aalen 
              for failure probability estimation within samples that contain 
              failures as well as censored data are included.   
-             It also supports methods like Maximum Likelihood and Rank Regression, 
+             The package supports methods like Maximum Likelihood and Rank Regression, 
              (Genschel and Meeker, 2010, &lt;DOI:10.1080/08982112.2010.503447&gt;) 
              for the estimation of multiple parametric lifetime distributions,  
              as well as the computation of confidence intervals of quantiles and 
-             probabilities using the delta method related to Fisher's confidence 
+             probabilities using the delta method related to Fishers confidence 
              intervals (Meeker and Escobar, 1998, &lt;ISBN:9780471673279&gt;) and the 
              beta-binomial confidence bounds. 
              If desired, mixture model analysis can be done with segmented regression
              and the EM algorithm.
-             Besides the well-known weibull analysis, the package also contains 
+             Besides the well-known Weibull analysis, the package also contains 
              Monte Carlo methods for the correction and completion of imprecisely 
              recorded or unknown lifetime characteristics.
              (Verband der Automobilindustrie e.V. (VDA), 2016, &lt;ISSN:0943-9412&gt;). 
-             Plots are created statically (ggplot2) or interactively (plotly) and 
+             Plots are created statically (ggplot2) or interactively (plotly') and 
              can be customized with functions of the respective visualization package.
              The graphical technique of probability plotting as well as the addition 
              of regression lines and confidence bounds to existing plots are 
@@ -58,12 +58,18 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">weibulltools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.0.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.0.0.9000</span>
       </span>
     </div>
 
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
+<li>
+  <a href="index.html">
+    <span class="fas fa-home fa-lg"></span>
+     
+  </a>
+</li>
 <li>
   <a href="reference/index.html">Reference</a>
 </li>
@@ -117,13 +123,13 @@
 <h2 class="hasAnchor">
 <a href="#overview" class="anchor"></a>Overview</h2>
 <p>The <em>weibulltools</em> package focuses on statistical methods and visualizations that are often used in reliability engineering. It provides a compact and easily accessible set of methods and visualization tools that make the examination and adjustment as well as the analysis and interpretation of field data (and bench tests) as simple as possible.</p>
-<p>Besides the well-known weibull analysis, the package supports multiple lifetime distributions and also contains Monte Carlo methods for the correction and completion of imprecisely recorded or unknown lifetime characteristics.</p>
+<p>Besides the well-known Weibull analysis, the package supports multiple lifetime distributions and also contains Monte Carlo methods for the correction and completion of imprecisely recorded or unknown lifetime characteristics.</p>
 <p>Plots are created statically (<a href="https://ggplot2.tidyverse.org/">ggplot2</a>) or interactively (<a href="https://plotly.com/r/">plotly</a>) and can be customized with functions of the respective visualization package.</p>
 </div>
 <div id="installation" class="section level2">
 <h2 class="hasAnchor">
 <a href="#installation" class="anchor"></a>Installation</h2>
-<p>The latest released version of <em>weibulltools</em> from <a href="https://cran.r-project.org/web/packages/weibulltools/">CRAN</a> can be installed with:</p>
+<p>The latest released version of <em>weibulltools</em> from <a href="https://CRAN.R-project.org/package=weibulltools">CRAN</a> can be installed with:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span><span class="op">(</span><span class="st">"weibulltools"</span><span class="op">)</span></code></pre></div>
 <div id="development-version" class="section level3">
@@ -286,7 +292,7 @@
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.9000.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

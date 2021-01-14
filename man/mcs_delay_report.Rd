@@ -58,7 +58,7 @@ distribution.
 to \code{\link{mcs_delay}} is recommended.
 }
 \details{
-The delay in report describes the time between the occurence of a damage and
+The delay in report describes the time between the occurrence of a damage and
 the registration in the warranty database. For a given date where the analysis
 is made there could be units which had a failure but are not registered in the
 database and therefore treated as censored units. To overcome this problem

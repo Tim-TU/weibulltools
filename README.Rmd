@@ -26,13 +26,13 @@ options(tibble.print_min = 5, tibble.print_max = 5)
 
 The *weibulltools* package focuses on statistical methods and visualizations that are often used in reliability engineering. It provides a compact and easily accessible set of methods and visualization tools that make the examination and adjustment as well as the analysis and interpretation of field data (and bench tests) as simple as possible.  
 
-Besides the well-known weibull analysis, the package supports multiple lifetime distributions and also contains Monte Carlo methods for the correction and completion of imprecisely recorded or unknown lifetime characteristics.  
+Besides the well-known Weibull analysis, the package supports multiple lifetime distributions and also contains Monte Carlo methods for the correction and completion of imprecisely recorded or unknown lifetime characteristics.  
 
 Plots are created statically ([ggplot2](https://ggplot2.tidyverse.org/)) or interactively ([plotly](https://plotly.com/r/)) and can be customized with functions of the respective visualization package.
 
 ## Installation
 
-The latest released version of *weibulltools* from [CRAN](https://cran.r-project.org/web/packages/weibulltools/) can be installed with:
+The latest released version of *weibulltools* from [CRAN](https://CRAN.R-project.org/package=weibulltools) can be installed with:
 
 ```{r, eval = FALSE}
 install.packages("weibulltools")

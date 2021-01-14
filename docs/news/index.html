@@ -71,13 +71,19 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">weibulltools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.0.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.0.0.9000</span>
       </span>
     </div>
 
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
+  <a href="../index.html">
+    <span class="fas fa-home fa-lg"></span>
+     
+  </a>
+</li>
+<li>
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
@@ -126,9 +132,14 @@
       <small>Source: <a href='https://github.com/Tim-TU/weibulltools/blob/master/NEWS.md'><code>NEWS.md</code></a></small>
     </div>
 
+    <div id="weibulltools-development-version" class="section level1">
+<h1 class="page-header" data-toc-text="development version">
+<a href="#weibulltools-development-version" class="anchor"></a>weibulltools (development version)<small> Unreleased </small>
+</h1>
+</div>
     <div id="weibulltools-v200" class="section level1">
 <h1 class="page-header" data-toc-text="2.0.0">
-<a href="#weibulltools-v200" class="anchor"></a>weibulltools v2.0.0<small> Unreleased </small>
+<a href="#weibulltools-v200" class="anchor"></a>weibulltools v2.0.0<small> 2021-01-12 </small>
 </h1>
 <div id="breaking-changes" class="section level2">
 <h2 class="hasAnchor">
@@ -177,7 +188,7 @@
 <li>
 <code><a href="../reference/plot_mod_mix.html">plot_mod_mix()</a></code>: Deprecated, use <code><a href="../reference/plot_mod.html">plot_mod()</a></code> instead. Renamed <code>event</code> with <code>status</code>.</li>
 <li>
-<code><a href="../reference/plot_pop.html">plot_pop()</a></code>: Added argument <code>tol</code> to restrict the range of failure probabilities. Removed argument <code>color</code>. Renamed argument <code>params</code> to <code>dist_params_tbl</code>, which only supports location and scale parameters (also for <code>distribution = "weibull"</code>). Changed behaviour of <code>dist_params_tbl</code>: A <code>tibble</code> is now recommended instead of a vector.</li>
+<code><a href="../reference/plot_pop.html">plot_pop()</a></code>: Added argument <code>tol</code> to restrict the range of failure probabilities. Removed argument <code>color</code>. Renamed argument <code>params</code> to <code>dist_params_tbl</code>, which only supports location and scale parameters (also for <code>distribution = "weibull"</code>). Changed behavior of <code>dist_params_tbl</code>: A <code>tibble</code> is now recommended instead of a vector.</li>
 </ul>
 </div>
 <div id="confidence-intervals" class="section level3">
@@ -334,13 +345,13 @@
 <li>Function <code><a href="../reference/plot_mod_mix.html">plot_mod_mix()</a></code> was revised and updated in the way that the obtained results of the function <code><a href="../reference/mixmod_em.html">mixmod_em()</a></code> can be visualized.</li>
 <li>Function <code><a href="../reference/plot_prob_mix.html">plot_prob_mix()</a></code> was revised and updated in the way that the obtained results of the function <code><a href="../reference/mixmod_em.html">mixmod_em()</a></code> can be visualized.</li>
 <li>Implementation of EM-Algorithm using Newton-Raphson. The algorithm is written in c++ (<code><a href="../reference/mixture_em_cpp.html">mixture_em_cpp()</a></code>) and is called in <code><a href="../reference/mixmod_em.html">mixmod_em()</a></code>.</li>
-<li>New method for the computation of Fisher’s Confidence Bounds regarding probabilities is used. These method is called “z-Procedure” and is more appropriate to manage the bend-back behaviour. Therefore an adjustment of functions <code><a href="../reference/delta_method.html">delta_method()</a></code> and <code><a href="../reference/confint_fisher.html">confint_fisher()</a></code> was made.</li>
-<li>Implementation of log-location-scale models with threshold parameter like three-parametric weibull (“weibull3”), three-parametric lognormal (“lognormal3”) and three-parametric loglogistic (“loglogistic3”).</li>
+<li>New method for the computation of Fisher’s Confidence Bounds regarding probabilities is used. These method is called “z-Procedure” and is more appropriate to manage the bend-back behavior. Therefore an adjustment of functions <code><a href="../reference/delta_method.html">delta_method()</a></code> and <code><a href="../reference/confint_fisher.html">confint_fisher()</a></code> was made.</li>
+<li>Implementation of log-location-scale models with threshold parameter like three-parametric Weibull (“weibull3”), three-parametric lognormal (“lognormal3”) and three-parametric loglogistic (“loglogistic3”).</li>
 <li>Implementation of location-scale models like smallest extreme value (“sev”), normal (“normal”) and logistic (“logistic”).</li>
 <li>Implementation of <em>Log-Likelihood Profiling</em> for three-parametric models in function <code><a href="../reference/loglik_profiling.html">loglik_profiling()</a></code>. In general this function is used inside <code><a href="../reference/ml_estimation.html">ml_estimation()</a></code> for the purpose of estimating threshold parameter of three-parametric models.</li>
 <li>Implementation of <em>R-Squared Profiling</em> for three-parametric models in function <code><a href="../reference/r_squared_profiling.html">r_squared_profiling()</a></code>. In general this function is used inside <code><a href="../reference/rank_regression.html">rank_regression()</a></code> for the purpose of estimating threshold parameter of three-parametric models.</li>
 <li>Implementation of <em>Log-Likelihood Function</em> for all implemented models in function <code><a href="../reference/loglik_function.html">loglik_function()</a></code>. In general this function is used inside <code><a href="../reference/ml_estimation.html">ml_estimation()</a></code> for the purpose of estimating the variance-covariance matrix of location-scale models “sev”, “normal” and “logistic”. The function is also used to estimate the variance-covariance matrix of log-location-scale models with a threshold parameter, i.e. “weibull3”, “lognormal3” and “loglogistic3”.</li>
-<li>new argument in function <code><a href="../reference/ml_estimation.html">ml_estimation()</a></code>: <em>wts</em> for case weights.</li>
+<li>new argument in function <code><a href="../reference/ml_estimation.html">ml_estimation()</a></code>: <code>wts</code> for case weights.</li>
 </ul>
 </div>
 </div>
@@ -361,7 +372,7 @@
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.9000.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>
