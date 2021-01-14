@@ -1,5 +1,8 @@
 # weibulltools (development version)
 
+## Minor Improvements and bug fixes
+* Fixed bug in `reliability_data()`: using `!!` syntax with arguments `x` and `status` resulted in an error.
+
 # weibulltools v2.0.0
 ## Breaking Changes
 * Package now depends on R(>= 3.5.0)
