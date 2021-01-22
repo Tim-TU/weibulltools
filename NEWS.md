@@ -1,5 +1,8 @@
 # weibulltools (development version)
 
+## Minor Improvements and bug fixes
+* Fixed bug in `plot_conf()`: Wrong confidence bounds were displayed for `direction = "x"`. 
+
 # weibulltools v2.0.0
 ## Breaking Changes
 * Package now depends on R(>= 3.5.0)
