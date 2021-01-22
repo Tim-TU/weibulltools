@@ -189,7 +189,7 @@ plot_mod_mix_helper <- function(model_estimation, cdf_estimation_method, group) 
 plot_conf_helper_2 <- function(confint, distribution) {
 
   tbl_upper <- if (hasName(confint, "upper_bound")) {
-    if (with(confint, any(upper_bound > 1))) {
+    if (confint$direction[1] == "x") {
       tibble::tibble(
         x = confint$upper_bound,
         y = confint$prob,
@@ -207,7 +207,7 @@ plot_conf_helper_2 <- function(confint, distribution) {
   }
 
   tbl_lower <- if (hasName(confint, "lower_bound")) {
-    if (with(confint, any(lower_bound > 1))) {
+    if (confint$direction[1] == "x") {
       tibble::tibble(
         x = confint$lower_bound,
         y = confint$prob,
