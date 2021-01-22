@@ -89,11 +89,11 @@ reliability_data <- function(data = NULL,
 
     tbl <- tibble::tibble(x = x, status = status, id = id)
   } else {
-    if (!is_characteristic(data[[substitute(x)]])) {
+    if (!is_characteristic(dplyr::select(data, x = {{x}})[[1]])) {
       stop("'x' must be numeric!")
     }
 
-    if (!is_status(data[[substitute(status)]])) {
+    if (!is_status(dplyr::select(data, status = {{status}})[[1]])) {
       stop("'status' must be numeric with elements 0 or 1!")
     }
 
