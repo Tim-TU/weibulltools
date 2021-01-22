@@ -1,6 +1,7 @@
 # weibulltools (development version)
 
 ## Minor Improvements and bug fixes
+* Fixed bug in `plot_conf()`: Wrong confidence bounds were displayed for `direction = "x"`. 
 * Fixed bug in `reliability_data()`: using `!!` syntax with arguments `x` and `status` resulted in an error.
 
 # weibulltools v2.0.0

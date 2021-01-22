@@ -187,19 +187,42 @@ plot_mod_mix_helper <- function(model_estimation, cdf_estimation_method, group) 
 
 
 plot_conf_helper_2 <- function(confint, distribution) {
-  tbl_upper <- if (hasName(confint, "upper_bound")) tibble::tibble(
-    x = confint$x,
-    y = confint$upper_bound,
-    bound = "Upper",
-    cdf_estimation_method = confint$cdf_estimation_method
-  )
 
-  tbl_lower <- if (hasName(confint, "lower_bound")) tibble::tibble(
-    x = confint$x,
-    y = confint$lower_bound,
-    bound = "Lower",
-    cdf_estimation_method = confint$cdf_estimation_method
-  )
+  tbl_upper <- if (hasName(confint, "upper_bound")) {
+    if (confint$direction[1] == "x") {
+      tibble::tibble(
+        x = confint$upper_bound,
+        y = confint$prob,
+        bound = "Upper",
+        cdf_estimation_method = confint$cdf_estimation_method
+      )
+    } else {
+      tibble::tibble(
+        x = confint$x,
+        y = confint$upper_bound,
+        bound = "Upper",
+        cdf_estimation_method = confint$cdf_estimation_method
+      )
+    }
+  }
+
+  tbl_lower <- if (hasName(confint, "lower_bound")) {
+    if (confint$direction[1] == "x") {
+      tibble::tibble(
+        x = confint$lower_bound,
+        y = confint$prob,
+        bound = "Lower",
+        cdf_estimation_method = confint$cdf_estimation_method
+      )
+    } else {
+      tibble::tibble(
+        x = confint$x,
+        y = confint$lower_bound,
+        bound = "Lower",
+        cdf_estimation_method = confint$cdf_estimation_method
+      )
+    }
+  }
 
   tbl_p <- dplyr::bind_rows(tbl_upper, tbl_lower)
 
