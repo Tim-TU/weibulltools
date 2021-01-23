@@ -155,7 +155,9 @@ plot_mod_vis.ggplot <- function(
 
 #' @export
 plot_conf_vis.ggplot <- function(p_obj, tbl_p, title_trace) {
-  mapping <- if (all(is.na(tbl_p$cdf_estimation_method))) {
+  n_method <- length(unique(tbl_p$cdf_estimation_method))
+
+  mapping <- if (all(is.na(tbl_p$cdf_estimation_method)) || n_method == 1) {
     ggplot2::aes(
       x = .data$x, y = .data$q, group = .data$bound, color = I("#CC2222")
     )

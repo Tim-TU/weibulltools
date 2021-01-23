@@ -71,7 +71,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">weibulltools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.0.0.9001</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.0.0.9000</span>
       </span>
     </div>
 
@@ -134,7 +134,9 @@
 <h2 class="hasAnchor">
 <a href="#minor-improvements-and-bug-fixes" class="anchor"></a>Minor Improvements and bug fixes</h2>
 <ul>
-<li>Fixed bug in <code><a href="../reference/plot_conf.html">plot_conf()</a></code>: Wrong confidence bounds were displayed for <code>direction = "x"</code>.</li>
+<li>Fixed bug in <code><a href="../reference/plot_conf.html">plot_conf()</a></code>: wrong confidence bounds were displayed for <code>direction = "x"</code> (<a href='https://github.com/Tim-TU/weibulltools/issues/181'>#181</a>).</li>
+<li>Fixed bug in <code><a href="../reference/plot_conf.html">plot_conf()</a></code>: <code>plot_method = "ggplot2"</code> and exactly one method in <code><a href="../reference/estimate_cdf.html">estimate_cdf()</a></code> resulted in an error (<a href='https://github.com/Tim-TU/weibulltools/issues/182'>#182</a>).</li>
+<li>Fixed bug in <code><a href="../reference/reliability_data.html">reliability_data()</a></code>: using <code>!!</code> syntax with arguments <code>x</code> and <code>status</code> resulted in an error.</li>
 </ul>
 </div>
 </div>
