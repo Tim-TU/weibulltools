@@ -65,12 +65,17 @@ columns:
     \item \code{upper_bound} : Provided, if \code{bounds} is one of
       \code{"two_sided"} or \code{"upper"}. Upper limit of the confidence region
       with respect to \code{direction}, i.e. quantiles or probabilities.
-    \item \code{distribution} : Specified distribution.
-    \item \code{bounds} : Specified bound(s).
-    \item \code{direction} : Specified direction.
     \item \code{cdf_estimation_method} : A character that is always
       \code{NA_character}. Due to the generic visualization functions this
       column has to be provided.
+  }
+
+  Further information is stored in the attributes of this tibble:
+  \itemize{
+    \item \code{distribution} : Specified distribution (determined when calling
+      \code{\link{rank_regression}}).
+    \item \code{bounds} : Specified bound(s).
+    \item \code{direction} : Specified direction.
   }
 }
 \description{

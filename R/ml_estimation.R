@@ -254,7 +254,7 @@ ml_estimation_ <- function(data,
     subs <- x_gamma > 0
 
     ml_init <- SPREDA::Lifedata.MLE(survival::Surv(x_gamma[subs], status[subs]) ~ 1,
-                                    dist = substr(distribution, start = 1, stop = nchar(distribution) - 1),
+                                    dist = two_parametric(distribution),
                                     weights = wts)
 
     ## Initial parameters:
@@ -527,7 +527,7 @@ loglik_profiling_ <- function(x,
   # Log-Likelihood profiling:
   ml_thres <- SPREDA::Lifedata.MLE(
     survival::Surv(x_thres, status) ~ 1,
-    dist = substr(distribution, start = 1, stop = nchar(distribution) - 1)
+    dist = two_parametric(distribution)
   )
 
   -ml_thres$min

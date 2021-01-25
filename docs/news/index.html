@@ -136,6 +136,16 @@
 <h1 class="page-header" data-toc-text="development version">
 <a href="#weibulltools-development-version" class="anchor"></a>weibulltools (development version)<small> Unreleased </small>
 </h1>
+<div id="breaking-changes" class="section level2">
+<h2 class="hasAnchor">
+<a href="#breaking-changes" class="anchor"></a>Breaking Changes</h2>
+<ul>
+<li>
+<code><a href="../reference/confint_betabinom.html">confint_betabinom()</a></code> and <code><a href="../reference/confint_fisher.html">confint_fisher()</a></code>: Removed constant features <code>distribution</code>, <code>bounds</code> and <code>direction</code> from the tibble output and added them as attributes instead.</li>
+<li>
+<code><a href="../reference/plot_prob.html">plot_prob.wt_model()</a></code>: Removed dysfunctional argument <code>distribution</code>. The distribution is inferred using the model <code>x</code>.</li>
+</ul>
+</div>
 <div id="new-features" class="section level2">
 <h2 class="hasAnchor">
 <a href="#new-features" class="anchor"></a>New Features</h2>
@@ -153,14 +163,22 @@
 <li>Fixed bug in <code><a href="../reference/reliability_data.html">reliability_data()</a></code>: Using <code>!!</code> syntax with arguments <code>x</code> and <code>status</code> resulted in an error.</li>
 </ul>
 </div>
+<div id="documentation-improvements" class="section level2">
+<h2 class="hasAnchor">
+<a href="#documentation-improvements" class="anchor"></a>Documentation improvements</h2>
+<ul>
+<li>
+<code><a href="../reference/plot_prob.html">plot_prob()</a></code>: Better work out the distinction between <code><a href="../reference/plot_prob.html">plot_prob.wt_cdf_estimation()</a></code> and <code><a href="../reference/plot_prob.html">plot_prob.wt_model()</a></code>. The former is applied to a CDF estimation whereas the latter is applied to a mixture model.</li>
+</ul>
+</div>
 </div>
     <div id="weibulltools-v200" class="section level1">
 <h1 class="page-header" data-toc-text="2.0.0">
 <a href="#weibulltools-v200" class="anchor"></a>weibulltools v2.0.0<small> 2021-01-12 </small>
 </h1>
-<div id="breaking-changes" class="section level2">
+<div id="breaking-changes-1" class="section level2">
 <h2 class="hasAnchor">
-<a href="#breaking-changes" class="anchor"></a>Breaking Changes</h2>
+<a href="#breaking-changes-1" class="anchor"></a>Breaking Changes</h2>
 <ul>
 <li>Package now depends on R(&gt;= 3.5.0)</li>
 </ul>
@@ -278,9 +296,9 @@
 <code><a href="../reference/plot_pop.html">plot_pop()</a></code>: Added support for multiple population lines and comparison of two- and three-parametric distributions.</li>
 </ul>
 </div>
-<div id="documentation-improvements" class="section level2">
+<div id="documentation-improvements-1" class="section level2">
 <h2 class="hasAnchor">
-<a href="#documentation-improvements" class="anchor"></a>Documentation improvements</h2>
+<a href="#documentation-improvements-1" class="anchor"></a>Documentation improvements</h2>
 <ul>
 <li>Revised README.</li>
 <li>Revised vignettes.</li>

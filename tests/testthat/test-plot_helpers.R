@@ -91,7 +91,7 @@ test_that("plot_conf_helper_2 remains stable", {
   confint <- confint_betabinom(rr)
 
   helper <- plot_conf_helper_2(
-    confint, "weibull"
+    confint
   )
 
   expect_snapshot_output(helper)

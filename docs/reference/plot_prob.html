@@ -41,7 +41,11 @@
 
 <meta property="og:title" content="Probability Plotting Method for Univariate Lifetime Distributions — plot_prob" />
 <meta property="og:description" content="This function is used to apply the graphical technique of probability
-plotting." />
+plotting. It is either applied to the output of estimate_cdf
+(plot_prob.wt_cdf_estimation) or to the output of a mixture model from
+mixmod_regression / mixmod_em
+(plot_prob.wt_model). Note that in the latter case no distribution
+has to be specified because it is inferred from the model." />
 
 
 
@@ -137,12 +141,16 @@ plotting." />
 
     <div class="ref-description">
     <p>This function is used to apply the graphical technique of probability
-plotting.</p>
+plotting. It is either applied to the output of <code><a href='estimate_cdf.html'>estimate_cdf</a></code>
+(<code>plot_prob.wt_cdf_estimation</code>) or to the output of a mixture model from
+<code><a href='mixmod_regression.html'>mixmod_regression</a></code> / <code><a href='mixmod_em.html'>mixmod_em</a></code>
+(<code>plot_prob.wt_model</code>). Note that in the latter case no distribution
+has to be specified because it is inferred from the model.</p>
     </div>
 
     <pre class="usage"><span class='fu'>plot_prob</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>...</span><span class='op'>)</span>
 
-<span class='co'># S3 method for wt_model</span>
+<span class='co'># S3 method for wt_cdf_estimation</span>
 <span class='fu'>plot_prob</span><span class='op'>(</span>
   <span class='va'>x</span>,
   distribution <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"weibull"</span>, <span class='st'>"lognormal"</span>, <span class='st'>"loglogistic"</span>, <span class='st'>"normal"</span>, <span class='st'>"logistic"</span>, <span class='st'>"sev"</span><span class='op'>)</span>,
@@ -154,10 +162,9 @@ plotting.</p>
   <span class='va'>...</span>
 <span class='op'>)</span>
 
-<span class='co'># S3 method for wt_cdf_estimation</span>
+<span class='co'># S3 method for wt_model</span>
 <span class='fu'>plot_prob</span><span class='op'>(</span>
   <span class='va'>x</span>,
-  distribution <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"weibull"</span>, <span class='st'>"lognormal"</span>, <span class='st'>"loglogistic"</span>, <span class='st'>"normal"</span>, <span class='st'>"logistic"</span>, <span class='st'>"sev"</span><span class='op'>)</span>,
   title_main <span class='op'>=</span> <span class='st'>"Probability Plot"</span>,
   title_x <span class='op'>=</span> <span class='st'>"Characteristic"</span>,
   title_y <span class='op'>=</span> <span class='st'>"Unreliability"</span>,
@@ -221,13 +228,13 @@ calculated plotting positions are shaped according to the determined split in
 and thus being plotted. The intention of this function is to give the
 user a hint for the existence of a mixture model. An in-depth analysis should
 be done afterwards.</p>
-<p>The marker label for x and y are determined by the first word provided in the
-argument <code>title_x</code> and <code>title_y</code> respectively, i.e. if
-<code>title_x = "Mileage in km"</code> the x label of the marker is "Mileage".</p>
-<p>The name of the legend entry is a combination of the <code>title_trace</code> and
-the number of determined subgroups (if any). If <code>title_trace = "Group"</code>
-and the data has been split in two groups, the legend entries are "Group: 1"
-and "Group: 2".</p>
+<p>For <code>plot_method == "plotly"</code> the marker label for x and y are
+determined by the first word provided in the argument <code>title_x</code> and
+<code>title_y</code> respectively, i.e. if <code>title_x = "Mileage in km"</code> the x
+label of the marker is "Mileage". The name of the legend entry is a
+combination of the <code>title_trace</code> and the number of determined subgroups
+(if any). If <code>title_trace = "Group"</code> and the data has been split in two
+groups, the legend entries are "Group: 1" and "Group: 2".</p>
     <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
 
     <p>Meeker, William Q; Escobar, Luis A., Statistical methods for
