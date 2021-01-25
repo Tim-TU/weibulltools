@@ -54,7 +54,11 @@ plot_layout <- function(
 #'
 #' @description
 #' This function is used to apply the graphical technique of probability
-#' plotting.
+#' plotting. It is either applied to the output of \code{\link{estimate_cdf}}
+#' (\code{plot_prob.wt_cdf_estimation}) or to the output of a mixture model from
+#' \code{\link{mixmod_regression}} / \code{\link{mixmod_em}}
+#' (\code{plot_prob.wt_model}). Note that in the latter case no distribution
+#' has to be specified because it is inferred from the model.
 #'
 #' @details
 #'
@@ -68,14 +72,13 @@ plot_layout <- function(
 #' user a hint for the existence of a mixture model. An in-depth analysis should
 #' be done afterwards.
 #'
-#' The marker label for x and y are determined by the first word provided in the
-#' argument \code{title_x} and \code{title_y} respectively, i.e. if
-#' \code{title_x = "Mileage in km"} the x label of the marker is "Mileage".
-#'
-#' The name of the legend entry is a combination of the \code{title_trace} and
-#' the number of determined subgroups (if any). If \code{title_trace = "Group"}
-#' and the data has been split in two groups, the legend entries are "Group: 1"
-#' and "Group: 2".
+#' For \code{plot_method == "plotly"} the marker label for x and y are
+#' determined by the first word provided in the argument \code{title_x} and
+#' \code{title_y} respectively, i.e. if \code{title_x = "Mileage in km"} the x
+#' label of the marker is "Mileage". The name of the legend entry is a
+#' combination of the \code{title_trace} and the number of determined subgroups
+#' (if any). If \code{title_trace = "Group"} and the data has been split in two
+#' groups, the legend entries are "Group: 1" and "Group: 2".
 #'
 #' @param x An object of class \code{wt_cdf_estimation} or
 #'   \code{wt_model}.
@@ -154,26 +157,6 @@ plot_prob <- function(x, ...) {
 #' @rdname plot_prob
 #'
 #' @export
-plot_prob.wt_model <- function(x,
-                               distribution = c(
-                                 "weibull", "lognormal", "loglogistic",
-                                 "normal", "logistic", "sev"
-                               ),
-                               title_main = "Probability Plot",
-                               title_x = "Characteristic",
-                               title_y = "Unreliability",
-                               title_trace = "Sample",
-                               plot_method = c("plotly", "ggplot2"),
-                               ...
-) {
-  NextMethod()
-}
-
-
-
-#' @rdname plot_prob
-#'
-#' @export
 plot_prob.wt_cdf_estimation <- function(x,
                                         distribution = c(
                                           "weibull", "lognormal", "loglogistic",
@@ -202,8 +185,24 @@ plot_prob.wt_cdf_estimation <- function(x,
 
 
 
+#' @rdname plot_prob
+#'
 #' @export
-plot_prob.wt_model_estimation <- function(x,
+plot_prob.wt_model <- function(x,
+                               title_main = "Probability Plot",
+                               title_x = "Characteristic",
+                               title_y = "Unreliability",
+                               title_trace = "Sample",
+                               plot_method = c("plotly", "ggplot2"),
+                               ...
+) {
+  NextMethod()
+}
+
+
+
+#' @export
+plot_prob.wt_rank_regression <- function(x,
                                           title_main = "Probability Plot",
                                           title_x = "Characteristic",
                                           title_y = "Unreliability",
@@ -217,7 +216,33 @@ plot_prob.wt_model_estimation <- function(x,
 
   plot_prob.wt_cdf_estimation(
     x = cdf_estimation,
-    distribution = x$distribution,
+    distribution = two_parametric(x$distribution),
+    title_main = title_main,
+    title_x = title_x,
+    title_y = title_y,
+    title_trace = title_trace,
+    plot_method = plot_method
+  )
+}
+
+
+
+#' @export
+plot_prob.wt_ml_estimation <- function(x,
+                                       title_main = "Probability Plot",
+                                       title_x = "Characteristic",
+                                       title_y = "Unreliability",
+                                       title_trace = "Sample",
+                                       plot_method = c("plotly", "ggplot2"),
+                                       ...
+) {
+  plot_method <- match.arg(plot_method)
+
+  cdf_estimation <- estimate_cdf(x$data, methods = "johnson")
+
+  plot_prob.wt_cdf_estimation(
+    x = cdf_estimation,
+    distribution = two_parametric(x$distribution),
     title_main = title_main,
     title_x = title_x,
     title_y = title_y,
@@ -341,7 +366,9 @@ plot_prob.wt_mixmod_regression_list <- function(x,
 
 #' Probability Plotting Method for Univariate Lifetime Distributions
 #'
-#' @inherit plot_prob description details return references
+#' This function is used to apply the graphical technique of probability plotting.
+#'
+#' @inherit plot_prob details return references
 #'
 #' @param x A numeric vector which consists of lifetime data. Lifetime
 #'   data could be every characteristic influencing the reliability of a product,

@@ -654,11 +654,7 @@ delta_method_ <- function(p,
       q <- predict_quantile(
         p = p,
         dist_params = dist_params[-3],
-        distribution = substr(
-          distribution,
-          start = 1,
-          stop = nchar(distribution) - 1
-        )
+        distribution = two_parametric(distribution)
       )
 
       dq_dmu <- q
