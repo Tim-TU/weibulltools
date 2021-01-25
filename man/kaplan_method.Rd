@@ -42,10 +42,6 @@ survival function \emph{S(t)} in terms of (multiple) right censored data, the
 complement is an estimate of the cumulative distribution function \emph{F(t)}.
 One modification is made in contrast to the original Kaplan-Meier estimator
 (see 'References').
-
-\strong{Note} : The \emph{Kaplan-Meier} estimator does not assign ranks to
-observations, so the beta-binomial confidence intervals \emph{cannot} be
-calculated using this method.
 }
 \examples{
 # Vectors:

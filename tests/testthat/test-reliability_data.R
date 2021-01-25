@@ -20,7 +20,7 @@ test_that("data-based approach works with and without NSE", {
 })
 
 test_that("data-based approach fails for meaningless input", {
-  expect_error(reliability_data(tbl, dplyr::all_of(c("a", "b")), b, c))
+  expect_error(reliability_data(tbl, dplyr::vars(c(a, b)), b, c))
 })
 
 test_that("vector-based approach recycles status and id", {

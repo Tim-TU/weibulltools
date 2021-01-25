@@ -423,12 +423,12 @@ confint_betabinom_ <- function(model_estimation,
 
   cdf_estimation_method <- model_estimation$data$cdf_estimation_method[1]
 
-  if (cdf_estimation_method %in% c("kaplan", "nelson")) {
-    stop(
-      "The beta binomial confidence intervals cannot be calculated for method '",
-      cdf_estimation_method, "'. Use method 'mr' or 'johnson' in estimate_cdf()."
-    )
-  }
+  # if (cdf_estimation_method %in% c("kaplan", "nelson")) {
+  #   stop(
+  #     "The beta binomial confidence intervals cannot be calculated for method '",
+  #     cdf_estimation_method, "'. Use method 'mr' or 'johnson' in estimate_cdf()."
+  #   )
+  # }
 
   x <- model_estimation$data$x
   status <- model_estimation$data$status
