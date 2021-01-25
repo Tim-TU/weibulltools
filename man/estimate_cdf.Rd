@@ -71,18 +71,10 @@ One or multiple techniques can be used for the \code{methods} argument:
     right censored data. The complement of \emph{S(t)}, i.e. \emph{F(t)}, is
     returned. In contrast to the original \emph{Kaplan-Meier} estimator, one
     modification is made (see 'References').
-
-    \strong{Note} : The \emph{Kaplan-Meier} estimator does not assign ranks to
-    observations, so the beta-binomial confidence intervals \emph{cannot} be
-    calculated using this method.
   \item \code{"nelson"} : The \emph{Nelson-Aalen} estimator models the cumulative
     hazard rate function in case of (multiple) right censored data. Equating the
     formal definition of the hazard rate with that according to \emph{Nelson-Aalen}
     results in a formula for the calculation of failure probabilities.
-
-    \strong{Note} : The \emph{Nelson-Aalen} estimator does not assign ranks to
-    observations, so the beta-binomial confidence intervals \emph{cannot} be
-    calculated using this method.
 }
 }
 \section{Options}{

@@ -41,10 +41,6 @@ This non-parametric approach estimates the cumulative hazard rate in
 terms of (multiple) right censored data. By equating the definition of the
 hazard rate with the hazard rate according to Nelson-Aalen one can calculate
 the failure probabilities.
-
-\strong{Note} : The \emph{Nelson-Aalen} estimator does not assign ranks to
-observations, so the beta-binomial confidence intervals \emph{cannot} be
-calculated using this method.
 }
 \examples{
 # Vectors:
