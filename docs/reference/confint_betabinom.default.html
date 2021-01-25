@@ -226,12 +226,16 @@ columns:</p><ul>
 <li><p><code>upper_bound</code> : Provided, if <code>bounds</code> is one of
       <code>"two_sided"</code> or <code>"upper"</code>. Upper limit of the confidence region
       with respect to <code>direction</code>, i.e. quantiles or probabilities.</p></li>
-<li><p><code>distribution</code> : Specified distribution.</p></li>
-<li><p><code>bounds</code> : Specified bound(s).</p></li>
-<li><p><code>direction</code> : Specified direction.</p></li>
 <li><p><code>cdf_estimation_method</code> : A character that is always
       <code>NA_character</code>. Due to the generic visualization functions this
       column has to be provided.</p></li>
+</ul>
+
+<p>Further information is stored in the attributes of this tibble:</p><ul>
+<li><p><code>distribution</code> : Specified distribution (determined when calling
+      <code><a href='rank_regression.html'>rank_regression</a></code>).</p></li>
+<li><p><code>bounds</code> : Specified bound(s).</p></li>
+<li><p><code>direction</code> : Specified direction.</p></li>
 </ul>
 
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
