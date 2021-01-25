@@ -78,6 +78,12 @@
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
+  <a href="../index.html">
+    <span class="fas fa-home fa-lg"></span>
+     
+  </a>
+</li>
+<li>
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
@@ -130,13 +136,21 @@
 <h1 class="page-header" data-toc-text="development version">
 <a href="#weibulltools-development-version" class="anchor"></a>weibulltools (development version)<small> Unreleased </small>
 </h1>
+<div id="new-features" class="section level2">
+<h2 class="hasAnchor">
+<a href="#new-features" class="anchor"></a>New Features</h2>
+<ul>
+<li>
+<code><a href="../reference/confint_betabinom.html">confint_betabinom()</a></code>: Methods <code>"kaplan"</code> and <code>"nelson"</code> of <code><a href="../reference/estimate_cdf.html">estimate_cdf()</a></code> can be used for beta-binomial confidence bounds.</li>
+</ul>
+</div>
 <div id="minor-improvements-and-bug-fixes" class="section level2">
 <h2 class="hasAnchor">
 <a href="#minor-improvements-and-bug-fixes" class="anchor"></a>Minor Improvements and bug fixes</h2>
 <ul>
-<li>Fixed bug in <code><a href="../reference/plot_conf.html">plot_conf()</a></code>: wrong confidence bounds were displayed for <code>direction = "x"</code> (<a href='https://github.com/Tim-TU/weibulltools/issues/181'>#181</a>).</li>
+<li>Fixed bug in <code><a href="../reference/plot_conf.html">plot_conf()</a></code>: Wrong confidence bounds were displayed for <code>direction = "x"</code> (<a href='https://github.com/Tim-TU/weibulltools/issues/181'>#181</a>).</li>
 <li>Fixed bug in <code><a href="../reference/plot_conf.html">plot_conf()</a></code>: <code>plot_method = "ggplot2"</code> and exactly one method in <code><a href="../reference/estimate_cdf.html">estimate_cdf()</a></code> resulted in an error (<a href='https://github.com/Tim-TU/weibulltools/issues/182'>#182</a>).</li>
-<li>Fixed bug in <code><a href="../reference/reliability_data.html">reliability_data()</a></code>: using <code>!!</code> syntax with arguments <code>x</code> and <code>status</code> resulted in an error.</li>
+<li>Fixed bug in <code><a href="../reference/reliability_data.html">reliability_data()</a></code>: Using <code>!!</code> syntax with arguments <code>x</code> and <code>status</code> resulted in an error.</li>
 </ul>
 </div>
 </div>
@@ -229,9 +243,9 @@
 </ul>
 </div>
 </div>
-<div id="new-features" class="section level2">
+<div id="new-features-1" class="section level2">
 <h2 class="hasAnchor">
-<a href="#new-features" class="anchor"></a>New Features</h2>
+<a href="#new-features-1" class="anchor"></a>New Features</h2>
 <ul>
 <li>Added support for ggplot2 in all plot functions. Plot method can be selected in <code><a href="../reference/plot_prob.html">plot_prob()</a></code> or <code><a href="../reference/plot_pop.html">plot_pop()</a></code> via argument <code>plot_method</code>.</li>
 <li>Added <code><a href="../reference/reliability_data.html">reliability_data()</a></code>: Create consistent reliability data.</li>
@@ -375,7 +389,7 @@
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.9000.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

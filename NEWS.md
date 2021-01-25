@@ -1,9 +1,12 @@
 # weibulltools (development version)
 
+## New Features
+* `confint_betabinom()`: Methods `"kaplan"` and `"nelson"` of `estimate_cdf()` can be used for beta-binomial confidence bounds. 
+
 ## Minor Improvements and bug fixes
-* Fixed bug in `plot_conf()`: wrong confidence bounds were displayed for `direction = "x"` (#181). 
+* Fixed bug in `plot_conf()`: Wrong confidence bounds were displayed for `direction = "x"` (#181). 
 * Fixed bug in `plot_conf()`: `plot_method = "ggplot2"` and exactly one method in `estimate_cdf()` resulted in an error (#182).
-* Fixed bug in `reliability_data()`: using `!!` syntax with arguments `x` and `status` resulted in an error.
+* Fixed bug in `reliability_data()`: Using `!!` syntax with arguments `x` and `status` resulted in an error.
 
 # weibulltools v2.0.0
 ## Breaking Changes

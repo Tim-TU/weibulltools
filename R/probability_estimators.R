@@ -502,10 +502,6 @@ johnson_method_ <- function(data) {
 #' One modification is made in contrast to the original Kaplan-Meier estimator
 #' (see 'References').
 #'
-#' \strong{Note} : The \emph{Kaplan-Meier} estimator does not assign ranks to
-#' observations, so the beta-binomial confidence intervals \emph{cannot} be
-#' calculated using this method.
-#'
 #' @inheritParams johnson_method
 #'
 #' @return A tibble containing the following columns:
@@ -645,10 +641,6 @@ kaplan_method_ <- function(data) {
 #' terms of (multiple) right censored data. By equating the definition of the
 #' hazard rate with the hazard rate according to Nelson-Aalen one can calculate
 #' the failure probabilities.
-#'
-#' \strong{Note} : The \emph{Nelson-Aalen} estimator does not assign ranks to
-#' observations, so the beta-binomial confidence intervals \emph{cannot} be
-#' calculated using this method.
 #'
 #' @inheritParams johnson_method
 #'
