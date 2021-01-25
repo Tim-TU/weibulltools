@@ -39,13 +39,18 @@
 #'     \item \code{upper_bound} : Provided, if \code{bounds} is one of
 #'       \code{"two_sided"} or \code{"upper"}. Upper limit of the confidence region
 #'       with respect to \code{direction}, i.e. quantiles or probabilities.
+#'     \item \code{cdf_estimation_method} : Specified method for the estimation
+#'       of failure probabilities (determined when calling
+#'       \code{\link{estimate_cdf}}).
+#'   }
+#'
+#'   Further information is stored in the attributes of this tibble:
+#'   \itemize{
 #'     \item \code{distribution} : Specified distribution (determined when calling
 #'       \code{\link{rank_regression}}).
 #'     \item \code{bounds} : Specified bound(s).
 #'     \item \code{direction} : Specified direction.
-#'     \item \code{cdf_estimation_method} : Specified method for the estimation
-#'       of failure probabilities (determined when calling
-#'       \code{\link{estimate_cdf}}).
+#'     \item \code{model_estimation} : Specified object of class \code{wt_model}.
 #'   }
 #'
 #' @examples
@@ -262,12 +267,17 @@ confint_betabinom.wt_model_estimation_list <- function(
 #'     \item \code{upper_bound} : Provided, if \code{bounds} is one of
 #'       \code{"two_sided"} or \code{"upper"}. Upper limit of the confidence region
 #'       with respect to \code{direction}, i.e. quantiles or probabilities.
-#'     \item \code{distribution} : Specified distribution.
-#'     \item \code{bounds} : Specified bound(s).
-#'     \item \code{direction} : Specified direction.
 #'     \item \code{cdf_estimation_method} : A character that is always
 #'       \code{NA_character}. Due to the generic visualization functions this
 #'       column has to be provided.
+#'   }
+#'
+#'   Further information is stored in the attributes of this tibble:
+#'   \itemize{
+#'     \item \code{distribution} : Specified distribution (determined when calling
+#'       \code{\link{rank_regression}}).
+#'     \item \code{bounds} : Specified bound(s).
+#'     \item \code{direction} : Specified direction.
 #'   }
 #'
 #' @seealso \code{\link{confint_betabinom}}
@@ -476,13 +486,16 @@ confint_betabinom_ <- function(model_estimation,
     tbl_out <- tibble::as_tibble(list_output)
   }
 
-  tbl_out <- tbl_out %>%
-    dplyr::mutate(
-      distribution = distribution,
-      bounds = bounds,
-      direction = direction,
-      cdf_estimation_method = cdf_estimation_method
-    )
+  # cdf_estimation_method must remain a column so that comparison of
+  # different cdf_estimation_methods is supported
+  tbl_out$cdf_estimation_method <- cdf_estimation_method
+
+  tbl_out <- structure(
+    tbl_out,
+    distribution = distribution,
+    bounds = bounds,
+    direction = direction
+  )
 
   if (inherits(model_estimation, "wt_model_estimation")) {
     # Only add model_estimation if not faked by .default
@@ -739,13 +752,18 @@ delta_method_ <- function(p,
 #'     \item \code{upper_bound} : Provided, if \code{bounds} is one of
 #'       \code{"two_sided"} or \code{"upper"}. Upper limit of the confidence region
 #'       with respect to \code{direction}, i.e. quantiles or probabilities.
-#'     \item \code{distribution} : Specified distribution (determined when calling
-#'     \code{\link{ml_estimation}}).
-#'     \item \code{bounds} : Specified bound(s).
-#'     \item \code{direction} : Specified direction.
 #'     \item \code{cdf_estimation_method} : A character that is always
 #'       \code{NA_character}. For the generic visualization functions this
 #'       column has to be provided.
+#'   }
+#'
+#'   Further information is stored in the attributes of this tibble:
+#'   \itemize{
+#'     \item \code{distribution} : Specified distribution (determined when calling
+#'       \code{\link{rank_regression}}).
+#'     \item \code{bounds} : Specified bound(s).
+#'     \item \code{direction} : Specified direction.
+#'     \item \code{model_estimation} : Specified object of class \code{wt_model}.
 #'   }
 #'
 #' @encoding UTF-8
@@ -901,13 +919,17 @@ confint_fisher.wt_ml_estimation <- function(x,
 #'     \item \code{upper_bound} : Provided, if \code{bounds} is one of
 #'       \code{"two_sided"} or \code{"upper"}. Upper limit of the confidence region
 #'       with respect to \code{direction}, i.e. quantiles or probabilities.
-#'     \item \code{distribution} : Specified distribution (determined when calling
-#'     \code{\link{ml_estimation}}).
-#'     \item \code{bounds} : Specified bound(s).
-#'     \item \code{direction} : Specified direction.
 #'     \item \code{cdf_estimation_method} : A character that is always
 #'       \code{NA_character}. For the generic visualization functions this
 #'       column has to be provided.
+#'   }
+#'
+#'   Further information is stored in the attributes of this tibble:
+#'   \itemize{
+#'     \item \code{distribution} : Specified distribution (determined when calling
+#'       \code{\link{rank_regression}}).
+#'     \item \code{bounds} : Specified bound(s).
+#'     \item \code{direction} : Specified direction.
 #'   }
 #'
 #' @seealso \code{\link{confint_fisher}}
@@ -1159,13 +1181,16 @@ confint_fisher_ <- function(model_estimation,
     tbl_out <- tibble::as_tibble(list_output)
   }
 
-  tbl_out <- tbl_out %>%
-    dplyr::mutate(
-      distribution = distribution,
-      bounds = bounds,
-      direction = direction,
-      cdf_estimation_method = NA_character_
-    )
+  # cdf_estimation_method must remain a column so that confint_fisher's table
+  # has same colnames as confint_betabinom's table
+  tbl_out$cdf_estimation_method <- NA_character_
+
+  tbl_out <- structure(
+    tbl_out,
+    distribution = distribution,
+    bounds = bounds,
+    direction = direction
+  )
 
   if (inherits(model_estimation, "wt_model_estimation")) {
     # Only add model_estimation if not faked by .default

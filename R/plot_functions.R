@@ -1131,7 +1131,10 @@ plot_conf.wt_confint <- function(p_obj,
     # ml_estimation$data has no cdf_estimation_method column
     cdf_estimation_method <- if (hasName(mod$data, "method")) {
       mod$data$cdf_estimation_method[1]
-    } else NA_character_
+    } else {
+      NA_character_
+    }
+
     mod <- list(mod)
     names(mod) <- cdf_estimation_method
   }
@@ -1159,9 +1162,8 @@ plot_conf.wt_confint <- function(p_obj,
   )
 
   # Perform plot_conf
-  distribution <- x$distribution[1]
   tbl_p <- plot_conf_helper_2(
-    x, distribution
+    x
   )
 
   plot_conf_vis(

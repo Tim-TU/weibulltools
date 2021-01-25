@@ -1,5 +1,8 @@
 # weibulltools (development version)
 
+## Breaking Changes
+* `confint_betabinom()` and `confint_fisher()`: Removed constant features `distribution`, `bounds` and `direction` from the output tibble and added them as attributes instead.
+
 ## Minor Improvements and bug fixes
 * Fixed bug in `plot_conf()`: wrong confidence bounds were displayed for `direction = "x"` (#181). 
 * Fixed bug in `plot_conf()`: `plot_method = "ggplot2"` and exactly one method in `estimate_cdf()` resulted in an error (#182).
