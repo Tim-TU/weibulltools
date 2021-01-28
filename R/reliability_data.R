@@ -69,6 +69,7 @@ reliability_data <- function(data = NULL,
 ) {
 
   if (purrr::is_null(data)) {
+    # Vector based approach ----------------------------------------------------
     if (!is_characteristic(x)) {
       stop("'x' must be numeric!")
     }
@@ -83,6 +84,7 @@ reliability_data <- function(data = NULL,
 
     tbl <- tibble::tibble(x = x, status = status, id = id)
   } else {
+    # Data based approach -----------------------------------------------------
     if (!is_characteristic(dplyr::select(data, x = {{x}})[[1]])) {
       stop("'x' must be numeric!")
     }

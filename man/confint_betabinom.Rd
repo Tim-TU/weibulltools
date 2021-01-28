@@ -53,13 +53,18 @@ A tibble with class \code{wt_confint} containing the following columns:
     \item \code{upper_bound} : Provided, if \code{bounds} is one of
       \code{"two_sided"} or \code{"upper"}. Upper limit of the confidence region
       with respect to \code{direction}, i.e. quantiles or probabilities.
+    \item \code{cdf_estimation_method} : Specified method for the estimation
+      of failure probabilities (determined when calling
+      \code{\link{estimate_cdf}}).
+  }
+
+  Further information is stored in the attributes of this tibble:
+  \itemize{
     \item \code{distribution} : Specified distribution (determined when calling
       \code{\link{rank_regression}}).
     \item \code{bounds} : Specified bound(s).
     \item \code{direction} : Specified direction.
-    \item \code{cdf_estimation_method} : Specified method for the estimation
-      of failure probabilities (determined when calling
-      \code{\link{estimate_cdf}}).
+    \item \code{model_estimation} : Specified object of class \code{wt_model}.
   }
 }
 \description{

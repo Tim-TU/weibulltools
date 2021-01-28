@@ -62,7 +62,7 @@ is used for the estimation [^note1]. This skewness is visualized in _Figure 1_.
 [^note1]: Kapur, K. C.; Lamberson, L. R.: _Reliability in Engineering Design_, 
           _New York: Wiley_, 1977, pp. 297-301  
 
-```{r rank_densities, fig.cap = "Figure 1: Densities for different ranks i in samples of size n = 10.", message = FALSE}
+```{r rank_densities, fig.cap = "Figure 1: Densities for different ranks i in samples of size n = 10.", message = FALSE, warning = FALSE}
 library(dplyr) # data manipulation 
 library(ggplot2) # visualization
 
