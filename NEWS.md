@@ -1,6 +1,7 @@
 # weibulltools (development version)
 
 ## New Features
+* Added `mcs_mileage_data()`: Create consistent MCS data for `mcs_mileage()`.
 * `confint_betabinom()`: Methods `"kaplan"` and `"nelson"` of `estimate_cdf()` can be used for beta-binomial confidence bounds. 
 
 ## Minor Improvements and bug fixes
