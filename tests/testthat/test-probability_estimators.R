@@ -69,4 +69,22 @@ test_that("snapshots: input with repeating characteristics", {
   expect_snapshot_output(nelson_method_(tbl))
 })
 
+test_that(".keep_all keeps additional columns", {
+  rel_tbl <- reliability_data(shock, distance, status, .keep_all = TRUE)
+  mr <- suppressMessages(mr_method_(rel_tbl))
+  johnson <- johnson_method_(rel_tbl)
+  kaplan <- kaplan_method_(rel_tbl)
+  nelson <- nelson_method_(rel_tbl)
+
+  expect_snapshot_output(mr)
+  expect_snapshot_output(johnson)
+  expect_snapshot_output(kaplan)
+  expect_snapshot_output(nelson)
+
+  expect_true(hasName(mr, "failure_mode"))
+  expect_true(hasName(johnson, "failure_mode"))
+  expect_true(hasName(kaplan, "failure_mode"))
+  expect_true(hasName(nelson, "failure_mode"))
+})
+
 options(testthat.progress.max_fails = 20)

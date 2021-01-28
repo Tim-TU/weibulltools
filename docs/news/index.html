@@ -161,6 +161,8 @@
 <li>Fixed bug in <code><a href="../reference/plot_conf.html">plot_conf()</a></code>: Wrong confidence bounds were displayed for <code>direction = "x"</code> (<a href='https://github.com/Tim-TU/weibulltools/issues/181'>#181</a>).</li>
 <li>Fixed bug in <code><a href="../reference/plot_conf.html">plot_conf()</a></code>: <code>plot_method = "ggplot2"</code> and exactly one method in <code><a href="../reference/estimate_cdf.html">estimate_cdf()</a></code> resulted in an error (<a href='https://github.com/Tim-TU/weibulltools/issues/182'>#182</a>).</li>
 <li>Fixed bug in <code><a href="../reference/reliability_data.html">reliability_data()</a></code>: Using <code>!!</code> syntax with arguments <code>x</code> and <code>status</code> resulted in an error.</li>
+<li>
+<code><a href="../reference/estimate_cdf.html">estimate_cdf()</a></code> preserves additional columns, that were returned from <code><a href="../reference/reliability_data.html">reliability_data(..., .keep_all = TRUE)</a></code>.</li>
 </ul>
 </div>
 <div id="documentation-improvements" class="section level2">
