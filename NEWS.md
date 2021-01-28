@@ -11,6 +11,7 @@
 * Fixed bug in `plot_conf()`: Wrong confidence bounds were displayed for `direction = "x"` (#181). 
 * Fixed bug in `plot_conf()`: `plot_method = "ggplot2"` and exactly one method in `estimate_cdf()` resulted in an error (#182).
 * Fixed bug in `reliability_data()`: Using `!!` syntax with arguments `x` and `status` resulted in an error.
+* `estimate_cdf()` preserves additional columns, that were returned from `reliability_data(..., .keep_all = TRUE)`.
 
 ## Documentation improvements
 * `plot_prob()`: Better work out the distinction between `plot_prob.wt_cdf_estimation()` and `plot_prob.wt_model()`. The former is applied to a CDF estimation whereas the latter is applied to a mixture model.

@@ -133,3 +133,71 @@
     3 X         1      0    NA    NA nelson               
     4 X         1      1    NA     0 nelson               
 
+# .keep_all keeps additional columns
+
+    # A tibble: 11 x 7
+       id        x status  rank   prob cdf_estimation_method failure_mode
+       <chr> <int>  <dbl> <int>  <dbl> <chr>                 <chr>       
+     1 ID1    6700      1     1 0.0614 mr                    mode_1      
+     2 ID5    9120      1     2 0.149  mr                    mode_2      
+     3 ID13  12200      1     3 0.237  mr                    mode_1      
+     4 ID15  13150      1     4 0.325  mr                    mode_2      
+     5 ID19  14300      1     5 0.412  mr                    mode_1      
+     6 ID20  17520      1     6 0.5    mr                    mode_1      
+     7 ID27  20100      1     7 0.588  mr                    mode_2      
+     8 ID31  20900      1     8 0.675  mr                    mode_2      
+     9 ID32  22700      1     9 0.763  mr                    mode_1      
+    10 ID34  26510      1    10 0.851  mr                    mode_1      
+    11 ID36  27490      1    11 0.939  mr                    mode_1      
+
+---
+
+    # A tibble: 38 x 7
+       id        x status  rank    prob cdf_estimation_method failure_mode
+       <chr> <int>  <dbl> <dbl>   <dbl> <chr>                 <chr>       
+     1 ID1    6700      1  1     0.0182 johnson               mode_1      
+     2 ID2    6950      0 NA    NA      johnson               censored    
+     3 ID3    7820      0 NA    NA      johnson               censored    
+     4 ID4    8790      0 NA    NA      johnson               censored    
+     5 ID5    9120      1  2.09  0.0465 johnson               mode_2      
+     6 ID6    9660      0 NA    NA      johnson               censored    
+     7 ID7    9820      0 NA    NA      johnson               censored    
+     8 ID8   11310      0 NA    NA      johnson               censored    
+     9 ID9   11690      0 NA    NA      johnson               censored    
+    10 ID10  11850      0 NA    NA      johnson               censored    
+    # ... with 28 more rows
+
+---
+
+    # A tibble: 38 x 7
+       id        x status  rank    prob cdf_estimation_method failure_mode
+       <chr> <int>  <dbl> <dbl>   <dbl> <chr>                 <chr>       
+     1 ID1    6700      1    NA  0.0263 kaplan                mode_1      
+     2 ID2    6950      0    NA NA      kaplan                censored    
+     3 ID3    7820      0    NA NA      kaplan                censored    
+     4 ID4    8790      0    NA NA      kaplan                censored    
+     5 ID5    9120      1    NA  0.0550 kaplan                mode_2      
+     6 ID6    9660      0    NA NA      kaplan                censored    
+     7 ID7    9820      0    NA NA      kaplan                censored    
+     8 ID8   11310      0    NA NA      kaplan                censored    
+     9 ID9   11690      0    NA NA      kaplan                censored    
+    10 ID10  11850      0    NA NA      kaplan                censored    
+    # ... with 28 more rows
+
+---
+
+    # A tibble: 38 x 7
+       id        x status  rank    prob cdf_estimation_method failure_mode
+       <chr> <int>  <dbl> <dbl>   <dbl> <chr>                 <chr>       
+     1 ID1    6700      1    NA  0.0260 nelson                mode_1      
+     2 ID2    6950      0    NA NA      nelson                censored    
+     3 ID3    7820      0    NA NA      nelson                censored    
+     4 ID4    8790      0    NA NA      nelson                censored    
+     5 ID5    9120      1    NA  0.0542 nelson                mode_2      
+     6 ID6    9660      0    NA NA      nelson                censored    
+     7 ID7    9820      0    NA NA      nelson                censored    
+     8 ID8   11310      0    NA NA      nelson                censored    
+     9 ID9   11690      0    NA NA      nelson                censored    
+    10 ID10  11850      0    NA NA      nelson                censored    
+    # ... with 28 more rows
+
