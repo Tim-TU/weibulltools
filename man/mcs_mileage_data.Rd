@@ -55,84 +55,38 @@ Create consistent \emph{mcs_mileage_data} based on an existing \code{data.frame}
 (preferred) or on multiple equal length vectors.
 }
 \examples{
-# Data for examples:
-date_of_registration <- c("2014-08-17", "2014-03-29", "2014-12-06",
-                          "2014-09-09", "2014-05-14", "2014-07-01",
-                          "2014-06-16", "2014-04-03", "2014-05-23",
-                          "2014-05-09", "2014-05-31", "2014-08-12",
-                          "2014-04-13", "2014-02-15", "2014-07-07",
-                          "2014-03-12", "2014-05-27", "2014-06-02",
-                          "2014-05-20", "2014-03-21", "2014-06-19",
-                          "2014-02-12", "2014-03-27")
-date_of_repair       <- c(NA, "2014-09-15", "2015-07-04", "2015-04-10", NA,
-                          NA, "2015-04-24", NA, "2015-04-25", "2015-04-24",
-                          "2015-06-12", NA, "2015-05-04", NA, NA, "2015-05-22",
-                          NA, "2015-09-17", NA, "2015-08-15", "2015-11-26",
-                          NA, NA)
-date_of_analysis     <- "2015-12-31"
-
-## Assume that mileage is only known for units that have failed (date_of_repair != NA).
-mileage              <- c(NA, 15655, 13629, 18292, NA, NA, 33555, NA, 21737,
-                          29870, 21068, NA, 122283, NA, NA, 36088, NA, 11153,
-                          NA, 122842, 20349, NA, NA)
-
-## time in service is the difference between repair and registration for failed
-## items and the difference between date of analysis and date of registration
-## for intact units.
-time_in_service <- difftime(
-  as.Date(date_of_repair, format = "\%Y-\%m-\%d"),
-  as.Date(date_of_registration, format = "\%Y-\%m-\%d"),
-  units = "days"
-)
-time_in_service[is.na(time_in_service)] <- difftime(
-  as.Date(date_of_analysis, format = "\%Y-\%m-\%d"),
-  as.Date(date_of_registration[is.na(time_in_service)], format = "\%Y-\%m-\%d"),
-  units = "days"
-)
-time_in_service <- as.numeric(time_in_service)
-
-status <- ifelse(!is.na(date_of_repair), 1, 0)
-
-mcs_df <- data.frame(
-  date_of_registration,
-  date_of_repair,
-  mileage,
-  time_in_service,
-  status,
-  id = seq_along(mileage)
-)
-
 # Example 1 -  Based on an existing data.frame/tibble and column names:
 mcs_tbl <- mcs_mileage_data(
-  data = mcs_df,
+  data = field_data,
   mileage = mileage,
-  time = time_in_service,
+  time = dis,
   status = status
 )
 
 # Example 2 - Based on an existing data.frame/tibble and column positions:
 mcs_tbl_2 <- mcs_mileage_data(
-  data = mcs_df,
+  data = field_data,
   mileage = 3,
-  time = 4,
-  id = 6
+  time = 2,
+  id = 1
 )
 
 # Example 3 - Keep all variables of the tibble/data.frame entered to argument data:
 mcs_tbl_3 <- mcs_mileage_data(
-  data = mcs_df,
+  data = field_data,
   mileage = mileage,
-  time = time_in_service,
+  time = dis,
   status = status,
+  id = vin,
   .keep_all = TRUE
 )
 
 # Example 4 - Based on vectors:
 mcs_tbl_4 <- mcs_mileage_data(
-  mileage = mcs_df$mileage,
-  time = mcs_df$time_in_service,
-  status = mcs_df$status,
-  id = mcs_df$id
+  mileage = field_data$mileage,
+  time = field_data$dis,
+  status = field_data$status,
+  id = field_data$vin
 )
 
 }

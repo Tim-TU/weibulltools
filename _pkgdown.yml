@@ -3,6 +3,10 @@ reference:
   desc: "Function for converting data into reliability data"
 - contents:
   - reliability_data
+- title: "MCS Data"
+  desc: "Functions for converting data into MCS data"
+- contents:
+  - mcs_mileage_data
 - title: "Non-Parametric Failure Probabilities"
   desc: "Functions for estimation and visualization of failure probabilities"
 - contents:
