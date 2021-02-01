@@ -12,7 +12,7 @@
 
 # mcs_mileage remains stable by defining the seed
 
-    Reliability Data with Characteristic x: 'mileage':
+    Reliability Data with characteristic x: 'mileage':
     # A tibble: 23 x 4
             x  time status id   
         <dbl> <dbl>  <dbl> <chr>
