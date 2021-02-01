@@ -70,7 +70,7 @@ A list containing the following elements:
           and the corresponding values of the earlier dates are used.
         \item \code{date_2} : Later dates. In the case of a list with length greater
           than 1, the routine described above is used.
-        \item \code{time} : Adjusted operating times for incomplete observations
+        \item \code{x} : Adjusted operating times for incomplete observations
           and input operating times for the complete observations.
         \item \code{status} (\strong{optional}) :
           \itemize{

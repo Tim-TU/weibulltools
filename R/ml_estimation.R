@@ -159,8 +159,7 @@ ml_estimation_ <- function(data,
                            conf_level
 ) {
 
-  x <- if (inherits(data, "wt_reliability_data")) get_characteristic(data) else
-    data$x
+  x <- data$x
   status <- data$status
   id <- data$id
 

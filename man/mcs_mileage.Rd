@@ -43,7 +43,7 @@ A list containing the following elements:
 
       The tibble contains the following columns:
       \itemize{
-        \item \code{mileage} : Simulated distances for unknown \code{mileage} and
+        \item \code{x} : Simulated distances for unknown \code{mileage} and
           input distances for known \code{mileage}.
         \item \code{time} : Input operating times.
         \item \code{status} (\strong{optional}) :

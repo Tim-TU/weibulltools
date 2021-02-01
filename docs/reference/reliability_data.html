@@ -179,9 +179,13 @@ censored observation (= 0) or a failure (= 1).</p></td>
 columns (if <code>.keep_all = FALSE</code>):</p><ul>
 <li><p><code>x</code> : Lifetime characteristic.</p></li>
 <li><p><code>status</code> : Binary data (0 or 1) indicating whether a unit is a right
-    censored observation (= 0) or a failure (= 1).</p></li>
+censored observation (= 0) or a failure (= 1).</p></li>
 <li><p><code>id</code> : Identification for every unit.</p></li>
-</ul><p>If <code>.keep_all = TRUE</code>, the remaining columns of <code>data</code> are also preserved.</p>
+</ul>
+
+<p>If <code>.keep_all = TRUE</code>, the remaining columns of <code>data</code> are also preserved.</p>
+<p>If <code>!is.null(data)</code> the attribute <code>characteristic</code> holds the name of the
+characteristic described by <code>x</code>. Otherwise it is set to <code>"x"</code>.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='co'># Example 1 -  Based on an existing data.frame/tibble and column names:</span>

@@ -325,7 +325,6 @@ mr_method_ <- function(data,
   }
 
   tbl_in <- data %>%
-    dplyr::rename(x = attr(data, "characteristic")) %>%
     # Remove additional classes
     tibble::as_tibble()
 
@@ -436,7 +435,6 @@ johnson_method <- function(x,
 johnson_method_ <- function(data) {
 
   tbl_in <- data %>%
-    dplyr::rename(x = attr(data, "characteristic")) %>%
     # Remove additional classes
     tibble::as_tibble()
 
@@ -573,7 +571,6 @@ kaplan_method_ <- function(data) {
   }
 
   tbl_in <- data %>%
-    dplyr::rename(x = attr(data, "characteristic")) %>%
     # Remove additional classes
     tibble::as_tibble()
 
@@ -701,7 +698,6 @@ nelson_method_ <- function(data) {
   }
 
   tbl_in <- data %>%
-    dplyr::rename(x = attr(data, "characteristic")) %>%
     # Remove additional classes
     tibble::as_tibble()
 

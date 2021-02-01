@@ -144,6 +144,10 @@
 <code><a href="../reference/confint_betabinom.html">confint_betabinom()</a></code> and <code><a href="../reference/confint_fisher.html">confint_fisher()</a></code>: Removed constant features <code>distribution</code>, <code>bounds</code> and <code>direction</code> from the tibble output and added them as attributes instead.</li>
 <li>
 <code><a href="../reference/plot_prob.html">plot_prob.wt_model()</a></code>: Removed dysfunctional argument <code>distribution</code>. The distribution is inferred using the model <code>x</code>.</li>
+<li>
+<code><a href="../reference/mcs_mileage.html">mcs_mileage()</a></code>: Changed name of output column <code>mileage</code> to <code>x</code> (in accordance with <code><a href="../reference/reliability_data.html">reliability_data()</a></code>).</li>
+<li>
+<code><a href="../reference/mcs_delay.html">mcs_delay()</a></code>: Changed name of output column <code>time</code> to <code>x</code> (in accordance with <code><a href="../reference/reliability_data.html">reliability_data()</a></code>).</li>
 </ul>
 </div>
 <div id="new-features" class="section level2">
@@ -163,6 +167,7 @@
 <li>Fixed bug in <code><a href="../reference/reliability_data.html">reliability_data()</a></code>: Using <code>!!</code> syntax with arguments <code>x</code> and <code>status</code> resulted in an error.</li>
 <li>
 <code><a href="../reference/estimate_cdf.html">estimate_cdf()</a></code> preserves additional columns, that were returned from <code><a href="../reference/reliability_data.html">reliability_data(..., .keep_all = TRUE)</a></code>.</li>
+<li>Improved <code>print.wt_reliability_data()</code>.</li>
 </ul>
 </div>
 <div id="documentation-improvements" class="section level2">
