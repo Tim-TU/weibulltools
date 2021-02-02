@@ -173,7 +173,6 @@ dist_mileage <- function(mileage,
 #'                 3500.25 km * (200 d / 365 d) = 1917.945 km}
 #'
 #' @inheritParams dist_mileage
-#'
 #' @param status Optional argument. If used it has to be a vector of binary data
 #'   (0 or 1) indicating whether unit i is a right censored observation (= 0) or
 #'   a failure (= 1). The effect of status on the return is described in 'Value'.
@@ -194,7 +193,7 @@ dist_mileage <- function(mileage,
 #'
 #'       The tibble contains the following columns:
 #'       \itemize{
-#'         \item \code{mileage} : Simulated distances for unknown \code{mileage} and
+#'         \item \code{x} : Simulated distances for unknown \code{mileage} and
 #'           input distances for known \code{mileage}.
 #'         \item \code{time} : Input operating times.
 #'         \item \code{status} (\strong{optional}) :
@@ -320,7 +319,7 @@ mcs_mileage <- function(mileage,
   # Defining data_tbl with class "wt_mcs_data" and/or "wt_reliability_data":
   if (purrr::is_null(status)) {
     data_tbl <- tibble::tibble(
-      mileage = mileage,
+      x = mileage,
       time = time,
       id = id
     )
@@ -333,7 +332,7 @@ mcs_mileage <- function(mileage,
     }
 
     data_tbl <- tibble::tibble(
-      mileage = mileage,
+      x = mileage,
       time = time,
       status = status,
       id = id

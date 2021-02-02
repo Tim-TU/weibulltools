@@ -198,7 +198,7 @@ a failure (= 1). The effect of status on the return is described in 'Value'.</p>
 <p>If <code>status = NULL</code> class is <code>wt_mcs_data</code>, which is not
       supported by <code>estimate_cdf</code> due to missing <code>status</code>.</p>
 <p>The tibble contains the following columns:</p><ul>
-<li><p><code>mileage</code> : Simulated distances for unknown <code>mileage</code> and
+<li><p><code>x</code> : Simulated distances for unknown <code>mileage</code> and
           input distances for known <code>mileage</code>.</p></li>
 <li><p><code>time</code> : Input operating times.</p></li>
 <li><p><code>status</code> (<strong>optional</strong>) :</p><ul>
@@ -292,9 +292,9 @@ distance of this vehicle is $$3500.25 km \cdot (\frac{200 d} {365 d}) = 1917.945
   x <span class='op'>=</span> <span class='va'>mcs_distances_3</span><span class='op'>$</span><span class='va'>data</span>,
   methods <span class='op'>=</span> <span class='st'>"kaplan"</span>
 <span class='op'>)</span>
-
+</div><div class='output co'>#&gt; <span class='error'>Error: </span></div><div class='input'>
 <span class='va'>plot_prob_estimation</span> <span class='op'>&lt;-</span> <span class='fu'><a href='plot_prob.html'>plot_prob</a></span><span class='op'>(</span><span class='va'>prob_estimation</span><span class='op'>)</span>
-
+</div><div class='output co'>#&gt; <span class='error'>Error in plot_prob(prob_estimation): Objekt 'prob_estimation' nicht gefunden</span></div><div class='input'>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

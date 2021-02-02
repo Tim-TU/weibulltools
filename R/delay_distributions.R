@@ -232,7 +232,7 @@ dist_delay <- function(date_1,
 #'           and the corresponding values of the earlier dates are used.
 #'         \item \code{date_2} : Later dates. In the case of a list with length greater
 #'           than 1, the routine described above is used.
-#'         \item \code{time} : Adjusted operating times for incomplete observations
+#'         \item \code{x} : Adjusted operating times for incomplete observations
 #'           and input operating times for the complete observations.
 #'         \item \code{status} (\strong{optional}) :
 #'           \itemize{
@@ -418,10 +418,10 @@ mcs_delay <- function(date_1,
   names(par_list) <- par_list_names
 
   if (purrr::is_null(status)) {
-    names(data_list) <- c(data_list_names, "time", "id")
+    names(data_list) <- c(data_list_names, "x", "id")
     class_assign <- "wt_mcs_data"
   } else {
-    names(data_list) <- c(data_list_names, "time", "status", "id")
+    names(data_list) <- c(data_list_names, "x", "status", "id")
     class_assign <- c("wt_mcs_data", "wt_reliability_data")
   }
 

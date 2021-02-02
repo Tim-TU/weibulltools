@@ -651,7 +651,7 @@ mixmod_em_ <- function(data,
                        drop_id
 ) {
 
-  x <- get_characteristic(data)
+  x <- data$x
   status <- data$status
 
   # Providing initial random a-posteriors (see references, blog post Mr. Gelissen):

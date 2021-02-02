@@ -1,12 +1,12 @@
 #' Reliability Data
 #'
 #' @description
-#' Create consistent reliability data based on an existing \code{data.frame}
+#' Create consistent reliability data based on an existing `data.frame`
 #' (preferred) or on multiple equal length vectors.
 #'
-#' @param data Either \code{NULL} or a \code{data.frame}. If data is \code{NULL},
-#' \code{x}, \code{status} and \code{id} must be vectors containing
-#' the data. Otherwise \code{x}, \code{status} and \code{id} can be either column
+#' @param data Either `NULL` or a `data.frame`. If data is `NULL`,
+#' `x`, `status` and `id` must be vectors containing
+#' the data. Otherwise `x`, `status` and `id` can be either column
 #' names or column positions.
 #' @param x Lifetime data, that means any characteristic influencing the reliability
 #' of a product, e.g. operating time (days/months in service), mileage (km, miles),
@@ -14,17 +14,20 @@
 #' @param status Binary data (0 or 1) indicating whether a unit is a right
 #' censored observation (= 0) or a failure (= 1).
 #' @param id Identification of every unit.
-#' @param .keep_all If \code{TRUE} keep remaining variables in \code{data}.
+#' @param .keep_all If `TRUE` keep remaining variables in `data`.
 #'
-#' @return A tibble with class \code{wt_reliability_data} containing the following
-#' columns (if \code{.keep_all = FALSE}):
-#' \itemize{
-#'   \item \code{x} : Lifetime characteristic.
-#'   \item \code{status} : Binary data (0 or 1) indicating whether a unit is a right
+#' @return A tibble with class `wt_reliability_data` containing the following
+#' columns (if `.keep_all = FALSE`):
+#'
+#' * `x` : Lifetime characteristic.
+#' * `status` : Binary data (0 or 1) indicating whether a unit is a right
 #'     censored observation (= 0) or a failure (= 1).
-#'   \item \code{id} : Identification for every unit.
-#' }
-#' If \code{.keep_all = TRUE}, the remaining columns of \code{data} are also preserved.
+#' * `id` : Identification for every unit.
+#'
+#' If `.keep_all = TRUE`, the remaining columns of `data` are also preserved.
+#'
+#' If `!is.null(data)` the attribute `characteristic` holds the name of the
+#' characteristic described by `x`. Otherwise it is set to `"x"`.
 #'
 #'
 #' @examples
@@ -66,6 +69,7 @@
 #'   id = id
 #' )
 #'
+#' @md
 #' @export
 reliability_data <- function(data = NULL,
                              x,
@@ -89,6 +93,8 @@ reliability_data <- function(data = NULL,
     }
 
     tbl <- tibble::tibble(x = x, status = status, id = id)
+
+    characteristic <- "x"
   } else {
     # Data based approach -----------------------------------------------------
     if (!is_characteristic(dplyr::select(data, x = {{x}})[[1]])) {
@@ -97,6 +103,15 @@ reliability_data <- function(data = NULL,
 
     if (!is_status(dplyr::select(data, status = {{status}})[[1]])) {
       stop("'status' must be numeric with elements 0 or 1!")
+    }
+
+    x_def <- dplyr::enexpr(x)
+    characteristic <- if (is.numeric(x_def)) {
+      # Column index
+      names(data)[x_def]
+    } else {
+      # Column name
+      as.character(x_def)
     }
 
     data <- tibble::as_tibble(data)
@@ -116,7 +131,7 @@ reliability_data <- function(data = NULL,
 
   class(tbl) <- c("wt_reliability_data", class(tbl))
   # Mark column x as characteristic
-  attr(tbl, "characteristic") <- "x"
+  attr(tbl, "characteristic") <- characteristic
 
   tbl
 }
@@ -129,7 +144,7 @@ print.wt_reliability_data <- function(x, ...) {
     cat("Reliability Data:\n")
   } else {
     cat(
-      "Reliability data with characteristic '",
+      "Reliability Data with characteristic x: '",
       attr(x, "characteristic"),
       "':\n",
       sep = ""
@@ -148,11 +163,4 @@ is_characteristic <- function(x) {
 
 is_status <- function(x) {
   is.numeric(x) && all(x %in% c(0, 1))
-}
-
-
-
-get_characteristic <- function(x) {
-  # x is reliability_data
-  x[[attr(x, "characteristic")]]
 }
