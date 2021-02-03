@@ -364,7 +364,7 @@ mcs_delay <- function(date_1,
   ## Check for different length in date_1 and date_2:
   purrr::walk2(date_1, date_2, function(e1, e2) {
     if (length(e1) != length(e2)) {
-      stop("Elements of 'date_1' and 'date_2' differ in lengths!")
+      stop("Elements of 'date_1' and 'date_2' differ in length!")
     }
   })
 

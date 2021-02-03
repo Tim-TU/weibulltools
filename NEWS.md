@@ -5,6 +5,8 @@
 * `plot_prob.wt_model()`: Removed dysfunctional argument `distribution`. The distribution is inferred using the model `x`.
 
 ## New Features
+* Added `print.wt_mcs_delay_data()` and `print.wt_mcs_mileage_data()`.
+* Added `mcs_delay_data()`: Create consistent MCS data for `mcs_delay()`.
 * Added `mcs_mileage_data()`: Create consistent MCS data for `mcs_mileage()`.
 * `confint_betabinom()`: Methods `"kaplan"` and `"nelson"` of `estimate_cdf()` can be used for beta-binomial confidence bounds. 
 

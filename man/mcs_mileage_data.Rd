@@ -14,45 +14,49 @@ mcs_mileage_data(
 )
 }
 \arguments{
-\item{data}{Either \code{NULL} or a \code{data.frame}. If data is \code{NULL},
-\code{mileage} and \code{time} (and if available, \code{status} and \code{id})
-must be vectors containing the data. Otherwise \code{mileage} and \code{time}
-(and \code{status} and \code{id}) can be either column names or column positions.}
+\item{data}{Either \code{NULL} or a \code{data.frame}. If data is \code{NULL}, \code{mileage}, \code{time},
+\code{status} and \code{id} must be vectors containing the data. Otherwise \code{mileage}, \code{time},
+\code{status} and \code{id} can be either column names or column positions.}
 
-\item{mileage}{Covered distances. For missing elements \code{NA} has to be used.}
+\item{mileage}{Covered distances. Use \code{NA} for missing elements.}
 
-\item{time}{Operating times. For missing elements \code{NA} has to be used.}
+\item{time}{Operating times. Use \code{NA} for missing elements.}
 
-\item{status}{Optional argument. If used it has to be a vector of binary data
-(0 or 1) indicating whether unit i is a right censored observation (= 0) or a
-failure (= 1).}
+\item{status}{Optional argument. If used, it must contain binary data
+(0 or 1) indicating whether a unit is a right censored observation (= 0) or a
+failure (= 1).
+
+If \code{status} is provided, class \code{wt_reliability_data} is assigned to the
+output of \link{mcs_mileage}, which enables the direct application of \link{estimate_cdf}
+on distances.}
 
 \item{id}{Identification of every unit.}
 
 \item{.keep_all}{If \code{TRUE} keep remaining variables in \code{data}.}
 }
 \value{
-A tibble with class \code{wt_mcs_mileage_data} that is formed for the
-downstream Monte Carlo Simulation of unknown covered distances
-(see \code{\link{mcs_mileage}}. It contains the following columns (if
-\code{.keep_all = FALSE}):
+A tibble with class \code{wt_mcs_mileage_data} that is formed for the downstream
+Monte Carlo method with respect to unknown covered distances. It contains the
+following columns (if \code{.keep_all = FALSE}):
 \itemize{
-  \item \code{mileage} : Input mileages labeled as \emph{MCS characteristic}.
-   \item \code{time} : Input operating times.
-        \item \code{status} (\strong{optional}) :
-          \itemize{
-            \item If argument \code{status = NULL} column \code{status} does
-              not exist.
-            \item If argument \code{status} is provided the column contains
-              the entered binary data (0 or 1).
-          }
-  \item \code{id} : Identification for every unit.
+\item \code{mileage} : Input mileages.
+\item \code{time} : Input operating times.
+\item \code{status} (\strong{optional}) :
+\itemize{
+\item If argument \code{status = NULL} column \code{status} does not exist.
+\item If argument \code{status} is provided the column contains the entered binary
+data (0 or 1).
 }
+\item \code{id} : Identification for every unit.
+}
+
 If \code{.keep_all = TRUE}, the remaining columns of \code{data} are also preserved.
+
+The attribute \code{mcs_characteristic} is set to \code{"mileage"}.
 }
 \description{
-Create consistent \emph{mcs_mileage_data} based on an existing \code{data.frame}
-(preferred) or on multiple equal length vectors.
+Create consistent \code{mcs_mileage_data} based on an existing \code{data.frame} (preferred)
+or on multiple equal length vectors
 }
 \examples{
 # Example 1 -  Based on an existing data.frame/tibble and column names:
@@ -89,4 +93,9 @@ mcs_tbl_4 <- mcs_mileage_data(
   id = field_data$vin
 )
 
+}
+\seealso{
+\link{dist_mileage} for the determination of a parametric annual mileage
+distribution and \link{mcs_mileage} for the Monte Carlo method with respect to
+unknown distances.
 }
