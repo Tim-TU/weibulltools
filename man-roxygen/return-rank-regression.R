@@ -1,6 +1,6 @@
 #' @return
-#' Returns a list with classes \code{wt_model}, \code{wt_rank_regression} and
-#' \code{wt_model_estimation} containing the following elements:
+#' A list with classes \code{wt_model}, \code{wt_rank_regression} and
+#' \code{wt_model_estimation} which contains:
 #' \itemize{
 #'   \item \code{coefficients} : A named vector of estimated coefficients
 #'     (parameters of the assumed distribution). \strong{Note}: The parameters
