@@ -52,32 +52,29 @@ and the input operating times for the failed units if
 \code{details = FALSE}. If \code{details = TRUE} the output is a list which
 consists of the following elements:
 \itemize{
-\item \code{time} : Numerical vector of corrected operating times for the
-censored observations and input operating times for failed units.
-\item \code{x_sim_regist} : Simulated random numbers of specified
-distribution with estimated parameters for delay in registration.
-The length of \code{x_sim_regist} is equal to the number of censored
-observations.
-\item \code{x_sim_report} : Simulated random numbers of specified
-distribution with estimated parameters for delay in report.
-The length of \code{x_sim_report} is equal to the number of censored
-observations.
-\item \code{coefficients_regist} : Estimated coefficients of supposed
-distribution for delay in registration.
-\item \code{coefficients_report} : Estimated coefficients of supposed
-distribution for delay in report
+\item \code{time} : A numeric vector of corrected operating times for the censored
+observations and input operating times for failed units.
+\item \code{x_sim_regist} : Simulated random numbers of specified distribution with
+estimated parameters for delay in registration. The length of \code{x_sim_regist}
+is equal to the number of censored observations.
+\item \code{x_sim_report} : Simulated random numbers of specified distribution with
+estimated parameters for delay in report. The length of \code{x_sim_report} is
+equal to the number of censored observations.
+\item \code{coefficients_regist} : Estimated coefficients of supposed distribution for
+delay in registration.
+\item \code{coefficients_report} : Estimated coefficients of supposed distribution for
+delay in report
 }
 }
 \description{
 \ifelse{html}{\figure{lifecycle-soft-deprecated.svg}{options: alt='Soft-deprecated lifecycle'}}{\strong{Soft-deprecated}}
 
-\code{mcs_delays()} is no longer under active development, switching
-to \code{\link{mcs_delay}} is recommended.
+\code{mcs_delays()} is no longer under active development, switching to \link{mcs_delay}
+is recommended.
 }
 \details{
-This function is a wrapper that combines both, the
-\code{\link{mcs_delay_register}} and \code{\link{mcs_delay_report}} function
-for adjusting the operation times of censored units.
+This function is a wrapper that combines both, \link{mcs_delay_register} and
+\link{mcs_delay_report} functions for the adjustment of operating times of censored units.
 }
 \examples{
 date_of_production   <- c("2014-07-28", "2014-02-17", "2014-07-14",

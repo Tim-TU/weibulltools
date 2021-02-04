@@ -64,6 +64,7 @@
 #' )
 #'
 #' @md
+#'
 #' @export
 reliability_data <- function(data = NULL,
                              x,

@@ -198,8 +198,10 @@ mcs_delay_data <- function(data = NULL,
       tbl <- tibble::as_tibble(tbl_list)
     }
 
-    ## Set characteristic:
-    characteristic <- names_dates_list
+    ## Preparation of 'mcs_start_dates' and 'mcs_end_dates':
+    n <- length(names_dates_list)
+    characteristic_1 <- names_dates_list[1:(n / 2)]
+    characteristic_2 <- names_dates_list[((n / 2) + 1):n]
 
   } else {
     # Data based approach ------------------------------------------------------
@@ -216,8 +218,9 @@ mcs_delay_data <- function(data = NULL,
       }
     )
 
-    ## Preparation for 'mcs_characteristic':
-    characteristic <- dplyr::select(data, {{date_1}}, {{date_2}}) %>% names()
+    ## Preparation of 'mcs_start_dates' and 'mcs_end_dates':
+    characteristic_1 <- dplyr::select(data, {{date_1}}) %>% names()
+    characteristic_2 <- dplyr::select(data, {{date_2}}) %>% names()
 
     data <- tibble::as_tibble(data)
 
@@ -230,8 +233,8 @@ mcs_delay_data <- function(data = NULL,
       )
     } else {
       tbl <- dplyr::select(data,
-                           {{date_1}},
-                           {{date_2}},
+                           {{characteristic_1}},
+                           {{characteristic_2}},
                            time = {{time}},
                            status = {{status}},
                            id = {{id}}
@@ -249,14 +252,15 @@ mcs_delay_data <- function(data = NULL,
     }
 
     ## For col positions relocate() should use names, since locations may no longer exist:
-    names_tbl <- names(tbl)[!(names(tbl) %in% characteristic)]
+    names_tbl <- names(tbl)[!(names(tbl) %in% c(characteristic_1, characteristic_2))]
     ## MCS characteristics should have the first column positions:
-    tbl <- dplyr::relocate(tbl, characteristic, names_tbl)
+    tbl <- dplyr::relocate(tbl, {{characteristic_1}}, {{characteristic_2}}, {{names_tbl}})
   }
 
   class(tbl) <- c("wt_mcs_delay_data", class(tbl))
   # Mark date columns as characteristic
-  attr(tbl, "mcs_characteristic") <- characteristic
+  attr(tbl, "mcs_start_dates") <- characteristic_1
+  attr(tbl, "mcs_end_dates") <- characteristic_2
 
   tbl
 }
@@ -418,9 +422,11 @@ mcs_mileage_data <- function(data = NULL,
       if (!is_status(tbl$status)) {
         stop("'status' must be numeric with elements 0 or 1!")
       }
-    }
 
-    tbl <- dplyr::relocate(tbl, mileage, time, status, id)
+      tbl <- dplyr::relocate(tbl, "mileage", "time", "status", "id")
+    } else {
+      tbl <- dplyr::relocate(tbl, "mileage", "time", "id")
+    }
   }
 
   class(tbl) <- c("wt_mcs_mileage_data", class(tbl))
@@ -447,10 +453,19 @@ print.wt_mcs_mileage_data <- function(x, ...) {
 
 #' @export
 print.wt_mcs_delay_data <- function(x, ...) {
+  if (length(attr(x, "mcs_start_dates")) == 1L) {
+    start <- "start date: "
+    end <- "end date: "
+  } else {
+    start <- "start dates: "
+    end <- "end dates: "
+  }
   cat(
-    "MCS Delay Data with characteristics ",
-    paste0("'", attr(x, "mcs_characteristic"), "'", collapse = ", "),
-    ":\n",
+    "MCS Delay Data with characteristics\n",
+    start, paste0("'", attr(x, "mcs_start_dates"), "'", collapse = ", "),
+    "\tand\n", # 1 tab!
+    end, paste0("'", attr(x, "mcs_end_dates"), "'", collapse = ", "),
+    "\n",
     sep = ""
   )
   NextMethod()

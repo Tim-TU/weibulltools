@@ -2,83 +2,100 @@
 % Please edit documentation in R/delay_distributions.R
 \name{dist_delay}
 \alias{dist_delay}
+\alias{dist_delay.wt_mcs_delay_data}
 \title{Parameter Estimation of a Delay Distribution}
 \usage{
-dist_delay(date_1, date_2, distribution = c("lognormal", "exponential"))
+dist_delay(mcs_data, distribution, ...)
+
+\method{dist_delay}{wt_mcs_delay_data}(mcs_data, distribution = c("lognormal", "exponential"), ...)
 }
 \arguments{
-\item{date_1}{A vector of class \code{character} or \code{Date}, in the
-format "yyyy-mm-dd", indicating the earlier of the two dates. Use \code{NA}
-for missing elements.}
-
-\item{date_2}{A vector of class \code{character} or \code{Date}, in the
-format "yyyy-mm-dd", indicating the later of the two dates. Use \code{NA}
-for missing elements.}
+\item{mcs_data}{A \code{tibble} returned by \link{mcs_delay_data}.}
 
 \item{distribution}{Supposed distribution of the random variable.}
+
+\item{...}{Further arguments passed to or from other methods. Currently not used.}
 }
 \value{
-A list of class \code{delay_estimation} which contains:
-  \itemize{
-    \item \code{coefficients} : A named vector of estimated parameter(s).
-    \item \code{delay} : A numeric vector of element-wise computed differences
-      in days.
-    \item \code{distribution} : Specified distribution.
-  }
+A list of class \code{wt_delay_estimation} which contains:
+\itemize{
+\item \code{coefficients} : A named vector of estimated parameter(s).
+\item \code{delay} : A numeric vector of element-wise computed differences in days.
+\item \code{distribution} : Specified distribution.
+}
+
+If more than one delay was considered in \link{mcs_delay_data}, the resulting output
+is a list with class \code{wt_delay_estimation_list}. In this case each list element
+has class \code{wt_delay_estimation} and the items listed above, are included.
 }
 \description{
+\ifelse{html}{\out{<a href='https://www.tidyverse.org/lifecycle/#experimental'><img src='figures/lifecycle-experimental.svg' alt='Experimental lifecycle'></a>}}{\strong{Experimental}}
+
 This function models a delay (in days) random variable (e.g. in logistic,
 registration, report) using a supposed continuous distribution. First, the
-element-wise differences in days of both vectors \code{date_1} and
-\code{date_2} are calculated and then the parameter(s) of the assumed
-distribution are estimated with maximum likelihood. See 'Details' for more
-information.
+row-wise differences in days of the related date columns are calculated and then
+the parameter(s) of the assumed distribution is (are) estimated with maximum
+likelihood. See 'Details' for more information.
 }
 \details{
-The distribution parameter(s) are determined on the basis of complete cases,
-i.e. there is no \code{NA} in one of the related vector elements
-\code{c(date_1[i], date_2[i])}. Time differences less than or equal to zero are
-not considered as well.
+The distribution parameter(s) is (are) determined on the basis of complete
+cases, i.e. there is no \code{NA} (row-wise) in one of the related date columns.
+Time differences less than or equal to zero are not considered as well.
 }
 \examples{
-# Example 1 - Delay in registration:
-date_of_production   <- c("2014-07-28", "2014-02-17", "2014-07-14",
-                          "2014-06-26", "2014-03-10", "2014-05-14",
-                          "2014-05-06", "2014-03-07", "2014-03-09",
-                          "2014-04-13", "2014-05-20", "2014-07-07",
-                          "2014-01-27", "2014-01-30", "2014-03-17",
-                          "2014-02-09", "2014-04-14", "2014-04-20",
-                          "2014-03-13", "2014-02-23", "2014-04-03",
-                          "2014-01-08", "2014-01-08")
-date_of_registration <- c(NA, "2014-03-29", "2014-12-06", "2014-09-09",
-                          NA, NA, "2014-06-16", NA, "2014-05-23",
-                          "2014-05-09", "2014-05-31", NA, "2014-04-13",
-                          NA, NA, "2014-03-12", NA, "2014-06-02",
-                          NA, "2014-03-21", "2014-06-19", NA, NA)
+# MCS data preparation:
+## Data for delay in registration:
+mcs_tbl_1 <- mcs_delay_data(
+  data = field_data,
+  date_1 = production_date,
+  date_2 = registration_date,
+  time = dis,
+  status = status,
+  id = vin
+)
 
+## Data for delay in report:
+mcs_tbl_2 <- mcs_delay_data(
+  data = field_data,
+  date_1 = repair_date,
+  date_2 = report_date,
+  time = dis,
+  status = status,
+  id = vin
+)
+
+## Data for both delays:
+mcs_tbl_both <- mcs_delay_data(
+  data = field_data,
+  date_1 = c(production_date, repair_date),
+  date_2 = c(registration_date, report_date),
+  time = dis,
+  status = status,
+  id = vin
+)
+
+# Example 1 - Delay in registration:
 params_delay_regist  <- dist_delay(
-  date_1 = date_of_production,
-  date_2 = date_of_registration,
+  mcs_data = mcs_tbl_1,
   distribution = "lognormal"
 )
 
 # Example 2 - Delay in report:
-date_of_repair <- c(NA, "2014-09-15", "2015-07-04", "2015-04-10", NA,
-                    NA, "2015-04-24", NA, "2015-04-25", "2015-04-24",
-                    "2015-06-12", NA, "2015-05-04", NA, NA,
-                    "2015-05-22", NA, "2015-09-17", NA, "2015-08-15",
-                    "2015-11-26", NA, NA)
-
-date_of_report <- c(NA, "2014-10-09", "2015-08-28", "2015-04-15", NA,
-                    NA, "2015-05-16", NA, "2015-05-28", "2015-05-15",
-                    "2015-07-11", NA, "2015-08-14", NA, NA,
-                    "2015-06-05", NA, "2015-10-17", NA, "2015-08-21",
-                    "2015-12-02", NA, NA)
-
 params_delay_report  <- dist_delay(
-  date_1 = date_of_repair,
-  date_2 = date_of_report,
+  mcs_data = mcs_tbl_2,
   distribution = "exponential"
+)
+
+# Example 3 - Delays in registration and report with same distribution:
+params_delays  <- dist_delay(
+  mcs_data = mcs_tbl_both,
+  distribution = "lognormal"
+)
+
+# Example 4 - Delays in registration and report with different distributions:
+params_delays_2  <- dist_delay(
+  mcs_data = mcs_tbl_both,
+  distribution = c("lognormal", "exponential")
 )
 
 }

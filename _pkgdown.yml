@@ -53,6 +53,7 @@ reference:
     adjustment of operating time
 - contents:
   - dist_delay
+  - dist_delay.default
   - mcs_delay
   - dist_mileage
   - mcs_mileage
