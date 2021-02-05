@@ -49,7 +49,7 @@
 #' If `.keep_all = TRUE`, the remaining columns of `data` are also preserved.
 #'
 #' The attributes `mcs_start_dates` and `mcs_end_dates` hold the name(s) of the
-#' column(s) that preserve the input of `date_1`and `date_2`.
+#' column(s) that preserve the input of `date_1` and `date_2`.
 #'
 #' @seealso [dist_delay] for the determination of a parametric delay distribution
 #' and [mcs_delay] for the Monte Carlo method with respect to delays.

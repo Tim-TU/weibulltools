@@ -36,8 +36,8 @@
 #' @templateVar data A `tibble` with class `wt_cdf_estimation` returned by [estimate_cdf].
 #' @return
 #'   If more than one method was specified in [estimate_cdf], the resulting output
-#'   is a list with class `wt_model_estimation_list`. In this case each list element
-#'   has classes `wt_rank_regression` and `wt_model_estimation` and the items listed
+#'   is a list with class `wt_model_estimation_list`. In this case, each list element
+#'   has classes `wt_rank_regression` and `wt_model_estimation`, and the items listed
 #'   above, are included.
 #'
 #' @encoding UTF-8
