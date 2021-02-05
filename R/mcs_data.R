@@ -7,7 +7,7 @@
 #' @param data Either `NULL` or a `data.frame`. If data is `NULL`, `date_1`, `date_2`,
 #' `time`, `status` and `id` must be vectors containing the data. Otherwise `date_1`,
 #' `date_2`, `time`, `status` and `id` can be either column names or column positions.
-#' @param date_1 A date input of class `character` or `Date` in the format "yyyy-mm-dd",
+#' @param date_1 A date of class `character` or `Date` in the format "yyyy-mm-dd",
 #' representing the earlier of the two dates belonging to a particular delay.
 #' Use `NA` for missing elements.
 #'
@@ -15,7 +15,7 @@
 #' approach and a vector of column names or positions for the data-based approach.
 #' The first element is the earlier date of the first delay, the second element is the
 #' earlier date of the second delay, and so forth (see 'Examples').
-#' @param date_2 A date input of class `character` or `Date` in the format "yyyy-mm-dd".
+#' @param date_2 A date of class `character` or `Date` in the format "yyyy-mm-dd".
 #' `date_2` is the counterpart of `date_1` and is used the same as `date_1`, just with
 #' the later date(s) of the particular delay(s). Use `NA` for missing elements.
 #' @param time Operating times. Use `NA` for missing elements.
@@ -29,8 +29,8 @@
 #' @param id Identification of every unit.
 #' @param .keep_all If `TRUE` keep remaining variables in `data`.
 #'
-#' @return A tibble with class `wt_mcs_delay_data` that is formed for the downstream
-#' Monte Carlo method with respect to delays.
+#' @return A `tibble` with class `wt_mcs_delay_data` that is formed for the downstream
+#' Monte Carlo method [mcs_delay].
 #' It contains the following columns (if `.keep_all = FALSE`):
 #'
 #' * Column(s) preserving the input of `date_1`. For the vector-based approach
@@ -48,8 +48,8 @@
 #'
 #' If `.keep_all = TRUE`, the remaining columns of `data` are also preserved.
 #'
-#' The attribute `mcs_characteristic` holds the names of the columns that preserve
-#' the input of `date_1` and `date_2`.
+#' The attributes `mcs_start_dates` and `mcs_end_dates` hold the name(s) of the
+#' column(s) that preserve the input of `date_1`and `date_2`.
 #'
 #' @seealso [dist_delay] for the determination of a parametric delay distribution
 #' and [mcs_delay] for the Monte Carlo method with respect to delays.
@@ -178,9 +178,10 @@ mcs_delay_data <- function(data = NULL,
       if (length(dates_list) == 2L) {
         names_dates_list <- c("date_1", "date_2")
       } else {
+        index <- seq_along(date_1)
         names_dates_list <- c(
-          paste0("date_1.", seq_along(date_1)),
-          paste0("date_2.", seq_along(date_2))
+          paste0("date_1.", index),
+          paste0("date_2.", index)
         )
       }
     }
@@ -212,9 +213,11 @@ mcs_delay_data <- function(data = NULL,
 
     purrr::walk(
       dplyr::select(data, {{date_1}}, {{date_2}}),
-      ~ if (!(class(.x) %in% c("Date", "character"))) {
-        stop("Columns specified in 'date_1' and 'date_2' must be of class",
-             " 'Date' or 'character'!")
+      ~ if (!(class(.) %in% c("Date", "character"))) {
+        stop(
+          "Columns specified in 'date_1' and 'date_2' must be of class",
+          " 'Date' or 'character'!"
+        )
       }
     )
 
@@ -226,18 +229,20 @@ mcs_delay_data <- function(data = NULL,
 
     if (.keep_all) {
       ## If date_1 and date_2 are col positions rename() fails since cols must be named:
-      tbl <- dplyr::rename(data,
-                           time = {{time}},
-                           status = {{status}},
-                           id = {{id}}
+      tbl <- dplyr::rename(
+        data,
+        time = {{time}},
+        status = {{status}},
+        id = {{id}}
       )
     } else {
-      tbl <- dplyr::select(data,
-                           {{characteristic_1}},
-                           {{characteristic_2}},
-                           time = {{time}},
-                           status = {{status}},
-                           id = {{id}}
+      tbl <- dplyr::select(
+        data,
+        {{characteristic_1}},
+        {{characteristic_2}},
+        time = {{time}},
+        status = {{status}},
+        id = {{id}}
       )
     }
 
@@ -288,9 +293,9 @@ mcs_delay_data <- function(data = NULL,
 #' @param id Identification of every unit.
 #' @param .keep_all If `TRUE` keep remaining variables in `data`.
 #'
-#' @return A tibble with class `wt_mcs_mileage_data` that is formed for the downstream
-#' Monte Carlo method with respect to unknown covered distances. It contains the
-#' following columns (if `.keep_all = FALSE`):
+#' @return A `tibble` with class `wt_mcs_mileage_data` that is formed for the downstream
+#' Monte Carlo method [mcs_mileage].
+#' It contains the following columns (if `.keep_all = FALSE`):
 #'
 #' * `mileage` : Input mileages.
 #' * `time` : Input operating times.
@@ -399,18 +404,20 @@ mcs_mileage_data <- function(data = NULL,
     data <- tibble::as_tibble(data)
 
     if (.keep_all) {
-      tbl <- dplyr::rename(data,
-                           mileage = {{mileage}},
-                           time = {{time}},
-                           status = {{status}},
-                           id = {{id}}
+      tbl <- dplyr::rename(
+        data,
+        mileage = {{mileage}},
+        time = {{time}},
+        status = {{status}},
+        id = {{id}}
       )
     } else {
-      tbl <- dplyr::select(data,
-                           mileage = {{mileage}},
-                           time = {{time}},
-                           status = {{status}},
-                           id = {{id}}
+      tbl <- dplyr::select(
+        data,
+        mileage = {{mileage}},
+        time = {{time}},
+        status = {{status}},
+        id = {{id}}
       )
     }
 

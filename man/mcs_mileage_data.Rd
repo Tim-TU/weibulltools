@@ -35,9 +35,9 @@ on distances.}
 \item{.keep_all}{If \code{TRUE} keep remaining variables in \code{data}.}
 }
 \value{
-A tibble with class \code{wt_mcs_mileage_data} that is formed for the downstream
-Monte Carlo method with respect to unknown covered distances. It contains the
-following columns (if \code{.keep_all = FALSE}):
+A \code{tibble} with class \code{wt_mcs_mileage_data} that is formed for the downstream
+Monte Carlo method \link{mcs_mileage}.
+It contains the following columns (if \code{.keep_all = FALSE}):
 \itemize{
 \item \code{mileage} : Input mileages.
 \item \code{time} : Input operating times.

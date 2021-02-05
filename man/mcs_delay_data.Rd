@@ -19,7 +19,7 @@ mcs_delay_data(
 \code{time}, \code{status} and \code{id} must be vectors containing the data. Otherwise \code{date_1},
 \code{date_2}, \code{time}, \code{status} and \code{id} can be either column names or column positions.}
 
-\item{date_1}{A date input of class \code{character} or \code{Date} in the format "yyyy-mm-dd",
+\item{date_1}{A date of class \code{character} or \code{Date} in the format "yyyy-mm-dd",
 representing the earlier of the two dates belonging to a particular delay.
 Use \code{NA} for missing elements.
 
@@ -28,7 +28,7 @@ approach and a vector of column names or positions for the data-based approach.
 The first element is the earlier date of the first delay, the second element is the
 earlier date of the second delay, and so forth (see 'Examples').}
 
-\item{date_2}{A date input of class \code{character} or \code{Date} in the format "yyyy-mm-dd".
+\item{date_2}{A date of class \code{character} or \code{Date} in the format "yyyy-mm-dd".
 \code{date_2} is the counterpart of \code{date_1} and is used the same as \code{date_1}, just with
 the later date(s) of the particular delay(s). Use \code{NA} for missing elements.}
 
@@ -47,8 +47,8 @@ on operating times.}
 \item{.keep_all}{If \code{TRUE} keep remaining variables in \code{data}.}
 }
 \value{
-A tibble with class \code{wt_mcs_delay_data} that is formed for the downstream
-Monte Carlo method with respect to delays.
+A \code{tibble} with class \code{wt_mcs_delay_data} that is formed for the downstream
+Monte Carlo method \link{mcs_delay}.
 It contains the following columns (if \code{.keep_all = FALSE}):
 \itemize{
 \item Column(s) preserving the input of \code{date_1}. For the vector-based approach
@@ -69,8 +69,8 @@ data (0 or 1).
 
 If \code{.keep_all = TRUE}, the remaining columns of \code{data} are also preserved.
 
-The attribute \code{mcs_characteristic} holds the names of the columns that preserve
-the input of \code{date_1} and \code{date_2}.
+The attributes \code{mcs_start_dates} and \code{mcs_end_dates} hold the name(s) of the
+column(s) that preserve the input of \code{date_1}and \code{date_2}.
 }
 \description{
 Create consistent \code{mcs_delay_data} based on an existing \code{data.frame} (preferred)

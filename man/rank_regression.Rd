@@ -17,8 +17,7 @@ rank_regression(x, ...)
 )
 }
 \arguments{
-\item{x}{Object of class \code{wt_cdf_estimation} returned from
-\code{\link{estimate_cdf}}.}
+\item{x}{A \code{tibble} of class \code{wt_cdf_estimation} returned by \link{estimate_cdf}.}
 
 \item{...}{Further arguments passed to or from other methods. Currently not used.}
 
@@ -48,14 +47,14 @@ Returns a list with classes \code{wt_model}, \code{wt_rank_regression} and
     for scale \eqn{\eta} and shape \eqn{\beta} (and threshold \eqn{\gamma})
     if \code{distribution} is \code{"weibull3"}.
   \item \code{r_squared} : Coefficient of determination.
-  \item \code{data} : A tibble with class \code{wt_cdf_estimation} returned from \code{\link{estimate_cdf}}.
+  \item \code{data} : A \code{tibble} with class \code{wt_cdf_estimation} returned by \link{estimate_cdf}.
   \item \code{distribution} : Specified distribution.
 }
 
-If more than one method was specified in \code{\link{estimate_cdf}},
-  the resulting output is a list with class \code{wt_model_estimation_list}.
-  In this case each list element has classes \code{wt_rank_regression} and
-  \code{wt_model_estimation} and the items listed above, are included.
+If more than one method was specified in \link{estimate_cdf}, the resulting output
+is a list with class \code{wt_model_estimation_list}. In this case each list element
+has classes \code{wt_rank_regression} and \code{wt_model_estimation} and the items listed
+above, are included.
 }
 \description{
 This function fits an \strong{x on y} regression to a linearized two- or
@@ -65,16 +64,16 @@ censored data. The parameters are determined in the frequently used
 
 For the Weibull, estimates are additionally transformed such that they are in
 line with the parameterization provided by the \emph{stats} package
-(see \link[stats]{Weibull}).
+(see \link[stats:Weibull]{Weibull}).
 }
 \details{
 If \code{distribution} is \code{"weibull"} or \code{"weibull3"}, the approximated
 confidence intervals for the parameters can only be estimated on the following
 confidence levels (see 'References' \emph{(Mock, 1995)}):
 \itemize{
-  \item \code{conf_level} = 0.90,
-  \item \code{conf_level} = 0.95,
-  \item \code{conf_level} = 0.99.
+\item \code{conf_level = 0.90}
+\item \code{conf_level = 0.95}
+\item \code{conf_level = 0.99}
 }
 
 If the distribution is not the Weibull, the confidence intervals of the
@@ -140,8 +139,9 @@ rr_lists <- rank_regression(
 }
 \references{
 \itemize{
-    \item Mock, R., Methoden zur Datenhandhabung in
-  Zuverlässigkeitsanalysen, vdf Hochschulverlag AG an der ETH Zürich, 1995
-    \item Meeker, William Q; Escobar, Luis A., Statistical methods for
-  reliability data, New York: Wiley series in probability and statistics, 1998}
+\item Mock, R., Methoden zur Datenhandhabung in Zuverlässigkeitsanalysen,
+vdf Hochschulverlag AG an der ETH Zürich, 1995
+\item Meeker, William Q; Escobar, Luis A., Statistical methods for reliability data,
+New York: Wiley series in probability and statistics, 1998
+}
 }

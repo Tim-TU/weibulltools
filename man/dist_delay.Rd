@@ -5,12 +5,12 @@
 \alias{dist_delay.wt_mcs_delay_data}
 \title{Parameter Estimation of a Delay Distribution}
 \usage{
-dist_delay(mcs_data, distribution, ...)
+dist_delay(x, distribution, ...)
 
-\method{dist_delay}{wt_mcs_delay_data}(mcs_data, distribution = c("lognormal", "exponential"), ...)
+\method{dist_delay}{wt_mcs_delay_data}(x, distribution = c("lognormal", "exponential"), ...)
 }
 \arguments{
-\item{mcs_data}{A \code{tibble} returned by \link{mcs_delay_data}.}
+\item{x}{A \code{tibble} of class \code{wt_mcs_delay_data} returned by \link{mcs_delay_data}.}
 
 \item{distribution}{Supposed distribution of the random variable.}
 
@@ -46,7 +46,7 @@ Time differences less than or equal to zero are not considered as well.
 # MCS data preparation:
 ## Data for delay in registration:
 mcs_tbl_1 <- mcs_delay_data(
-  data = field_data,
+  field_data,
   date_1 = production_date,
   date_2 = registration_date,
   time = dis,
@@ -56,7 +56,7 @@ mcs_tbl_1 <- mcs_delay_data(
 
 ## Data for delay in report:
 mcs_tbl_2 <- mcs_delay_data(
-  data = field_data,
+  field_data,
   date_1 = repair_date,
   date_2 = report_date,
   time = dis,
@@ -66,7 +66,7 @@ mcs_tbl_2 <- mcs_delay_data(
 
 ## Data for both delays:
 mcs_tbl_both <- mcs_delay_data(
-  data = field_data,
+  field_data,
   date_1 = c(production_date, repair_date),
   date_2 = c(registration_date, report_date),
   time = dis,
@@ -76,25 +76,25 @@ mcs_tbl_both <- mcs_delay_data(
 
 # Example 1 - Delay in registration:
 params_delay_regist  <- dist_delay(
-  mcs_data = mcs_tbl_1,
+  x = mcs_tbl_1,
   distribution = "lognormal"
 )
 
 # Example 2 - Delay in report:
 params_delay_report  <- dist_delay(
-  mcs_data = mcs_tbl_2,
+  x = mcs_tbl_2,
   distribution = "exponential"
 )
 
 # Example 3 - Delays in registration and report with same distribution:
 params_delays  <- dist_delay(
-  mcs_data = mcs_tbl_both,
+  x = mcs_tbl_both,
   distribution = "lognormal"
 )
 
 # Example 4 - Delays in registration and report with different distributions:
 params_delays_2  <- dist_delay(
-  mcs_data = mcs_tbl_both,
+  x = mcs_tbl_both,
   distribution = c("lognormal", "exponential")
 )
 

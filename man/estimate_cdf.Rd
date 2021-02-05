@@ -15,29 +15,27 @@ estimate_cdf(x, ...)
 )
 }
 \arguments{
-\item{x}{A tibble returned by \link{reliability_data}.}
+\item{x}{A tibble of class \code{wt_reliability_data} returned by \link{reliability_data}.}
 
 \item{...}{Further arguments passed to or from other methods. Currently not used.}
 
-\item{methods}{One or multiple methods of \code{"mr"}, \code{"johnson"},
-\code{"kaplan"} or \code{"nelson"} used for the estimation of failure
-probabilities. See 'Details'.}
+\item{methods}{One or multiple methods of \code{"mr"}, \code{"johnson"}, \code{"kaplan"} or
+\code{"nelson"} used for the estimation of failure probabilities. See 'Details'.}
 
 \item{options}{A list of named options. See 'Options'.}
 }
 \value{
-A tibble containing the following columns:
+A tibble with class \code{wt_cdf_estimation} containing the following columns:
 \itemize{
-  \item \code{id} : Identification for every unit.
-  \item \code{x} : Lifetime characteristic.
-  \item \code{status} : Binary data (0 or 1) indicating whether a unit is a
-    right censored observation (= 0) or a failure (= 1).
-  \item \code{rank} : The (computed) ranks. Determined for methods \code{"mr"}
-    and \code{"johnson"}, filled with \code{NA} for other methods or if
-    \code{status = 0}.
-  \item \code{prob} : Estimated failure probabilities, \code{NA} if \code{status = 0}.
-  \item \code{cdf_estimation_method} : Specified method for the estimation of
-    failure probabilities.
+\item \code{id} : Identification for every unit.
+\item \code{x} : Lifetime characteristic.
+\item \code{status} : Binary data (0 or 1) indicating whether a unit is a right
+censored observation (= 0) or a failure (= 1).
+\item \code{rank} : The (computed) ranks. Determined for methods \code{"mr"} and \code{"johnson"},
+filled with \code{NA} for other methods or if \code{status = 0}.
+\item \code{prob} : Estimated failure probabilities, \code{NA} if \code{status = 0}.
+\item \code{cdf_estimation_method} : Specified method for the estimation of failure
+probabilities.
 }
 }
 \description{
@@ -81,8 +79,8 @@ One or multiple techniques can be used for the \code{methods} argument:
 
 The listed options can only be applied for method \code{"mr"}:
 \itemize{
-  \item \code{mr_method} : \code{"benard"} (default) or \code{"invbeta"}.
-  \item \code{mr_ties.method} : \code{"max"} (default), \code{"min"} or \code{"average"}.
+\item \code{mr_method} : \code{"benard"} (default) or \code{"invbeta"}.
+\item \code{mr_ties.method} : \code{"max"} (default), \code{"min"} or \code{"average"}.
 }
 }
 

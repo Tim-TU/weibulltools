@@ -14,7 +14,7 @@
 #' cases, i.e. there is no `NA` (row-wise) in one of the related date columns.
 #' Time differences less than or equal to zero are not considered as well.
 #'
-#' @param mcs_data A `tibble` returned by [mcs_delay_data].
+#' @param x A `tibble` of class `wt_mcs_delay_data` returned by [mcs_delay_data].
 #' @param distribution Supposed distribution of the random variable.
 #' @template dots
 #'
@@ -32,7 +32,7 @@
 #' # MCS data preparation:
 #' ## Data for delay in registration:
 #' mcs_tbl_1 <- mcs_delay_data(
-#'   data = field_data,
+#'   field_data,
 #'   date_1 = production_date,
 #'   date_2 = registration_date,
 #'   time = dis,
@@ -42,7 +42,7 @@
 #'
 #' ## Data for delay in report:
 #' mcs_tbl_2 <- mcs_delay_data(
-#'   data = field_data,
+#'   field_data,
 #'   date_1 = repair_date,
 #'   date_2 = report_date,
 #'   time = dis,
@@ -52,7 +52,7 @@
 #'
 #' ## Data for both delays:
 #' mcs_tbl_both <- mcs_delay_data(
-#'   data = field_data,
+#'   field_data,
 #'   date_1 = c(production_date, repair_date),
 #'   date_2 = c(registration_date, report_date),
 #'   time = dis,
@@ -62,32 +62,32 @@
 #'
 #' # Example 1 - Delay in registration:
 #' params_delay_regist  <- dist_delay(
-#'   mcs_data = mcs_tbl_1,
+#'   x = mcs_tbl_1,
 #'   distribution = "lognormal"
 #' )
 #'
 #' # Example 2 - Delay in report:
 #' params_delay_report  <- dist_delay(
-#'   mcs_data = mcs_tbl_2,
+#'   x = mcs_tbl_2,
 #'   distribution = "exponential"
 #' )
 #'
 #' # Example 3 - Delays in registration and report with same distribution:
 #' params_delays  <- dist_delay(
-#'   mcs_data = mcs_tbl_both,
+#'   x = mcs_tbl_both,
 #'   distribution = "lognormal"
 #' )
 #'
 #' # Example 4 - Delays in registration and report with different distributions:
 #' params_delays_2  <- dist_delay(
-#'   mcs_data = mcs_tbl_both,
+#'   x = mcs_tbl_both,
 #'   distribution = c("lognormal", "exponential")
 #' )
 #'
 #' @md
 #'
 #' @export
-dist_delay <- function(mcs_data, distribution, ...) {
+dist_delay <- function(x, distribution, ...) {
   UseMethod("dist_delay")
 }
 
@@ -96,20 +96,18 @@ dist_delay <- function(mcs_data, distribution, ...) {
 #' @rdname dist_delay
 #'
 #' @export
-dist_delay.wt_mcs_delay_data <- function(mcs_data,
+dist_delay.wt_mcs_delay_data <- function(x,
                                          distribution = c("lognormal", "exponential"),
                                          ...
 
 ) {
 
   # Extract 'mcs_start_dates' and 'mcs_end_dates' columns as list:
-  date_1_names <- attr(mcs_data, "mcs_start_dates")
-  date_2_names <- attr(mcs_data, "mcs_end_dates")
+  date_1_names <- attr(x, "mcs_start_dates")
+  date_2_names <- attr(x, "mcs_end_dates")
 
-  date_1 <- dplyr::select(mcs_data, {{date_1_names}}) %>%
-    as.list()
-  date_2 <- dplyr::select(mcs_data, {{date_2_names}}) %>%
-    as.list()
+  date_1 <- dplyr::select(x, {{date_1_names}})
+  date_2 <- dplyr::select(x, {{date_2_names}})
 
   # Use default method:
   dist_delay.default(
@@ -118,6 +116,8 @@ dist_delay.wt_mcs_delay_data <- function(mcs_data,
     distribution = distribution
   )
 }
+
+
 
 #' Parameter Estimation of a Delay Distribution
 #'
@@ -210,16 +210,15 @@ dist_delay.default <- function(date_1,
   ## Check for (multiple) distributions:
   distribution <- match.arg(distribution, several.ok = TRUE)
 
+  ## Compare length of date_1 and distribution:
+  if (!(length(distribution) == length(date_1) || length(distribution) == 1L)) {
+    stop("'distribution' must be either length one or 'length(date_1)'")
+  }
+
   ## Check for different length in date_1 and date_2:
-  purrr::walk2(
-    date_1,
-    date_2,
-    function(e1, e2) {
-      if (length(e1) != length(e2)) {
-        stop("Elements of 'date_1' and 'date_2' differ in length!")
-      }
-    }
-  )
+  if (length(unique(lengths(c(date_1, date_2)))) != 1L) {
+    stop("All elements of 'date_1' and 'date_2' must have the same length!")
+  }
 
   # Do dist_delay_() with respect to the number of delays:
   if (length(date_1) == 1L) {
@@ -228,7 +227,7 @@ dist_delay.default <- function(date_1,
     dist_estimation_list <- dist_delay_(
       purrr::reduce(date_1, "c"),
       purrr::reduce(date_2, "c"),
-      distribution = distribution[1]
+      distribution = distribution
     )
   } else {
     ## Multiple delays are to be considered:
