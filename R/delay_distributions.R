@@ -1,83 +1,261 @@
 #' Parameter Estimation of a Delay Distribution
 #'
 #' @description
+#' `r lifecycle::badge("experimental")`
+#'
 #' This function models a delay (in days) random variable (e.g. in logistic,
 #' registration, report) using a supposed continuous distribution. First, the
-#' element-wise differences in days of both vectors \code{date_1} and
-#' \code{date_2} are calculated and then the parameter(s) of the assumed
-#' distribution are estimated with maximum likelihood. See 'Details' for more
-#' information.
+#' row-wise differences in days of the related date columns are calculated and then
+#' the parameter(s) of the assumed distribution is (are) estimated with maximum
+#' likelihood. See 'Details' for more information.
 #'
 #' @details
-#' The distribution parameter(s) are determined on the basis of complete cases,
-#' i.e. there is no \code{NA} in one of the related vector elements
-#' \code{c(date_1[i], date_2[i])}. Time differences less than or equal to zero are
-#' not considered as well.
+#' The distribution parameter(s) is (are) determined on the basis of complete
+#' cases, i.e. there is no `NA` (row-wise) in one of the related date columns.
+#' Time differences less than or equal to zero are not considered as well.
 #'
-#' @param date_1 A vector of class \code{character} or \code{Date}, in the
-#'   format "yyyy-mm-dd", indicating the earlier of the two dates. Use \code{NA}
-#'   for missing elements.
-#' @param date_2 A vector of class \code{character} or \code{Date}, in the
-#'   format "yyyy-mm-dd", indicating the later of the two dates. Use \code{NA}
-#'   for missing elements.
+#' @param x A `tibble` of class `wt_mcs_delay_data` returned by [mcs_delay_data].
 #' @param distribution Supposed distribution of the random variable.
+#' @template dots
 #'
-#' @return A list of class \code{delay_estimation} which contains:
-#'   \itemize{
-#'     \item \code{coefficients} : A named vector of estimated parameter(s).
-#'     \item \code{delay} : A numeric vector of element-wise computed differences
-#'       in days.
-#'     \item \code{distribution} : Specified distribution.
-#'   }
+#' @return A list of class `wt_delay_estimation` which contains:
+#'
+#' * `coefficients` : A named vector of estimated parameter(s).
+#' * `delay` : A numeric vector of element-wise computed differences in days.
+#' * `distribution` : Specified distribution.
+#'
+#' If more than one delay was considered in [mcs_delay_data], the resulting output
+#' is a list with class `wt_delay_estimation_list`. In this case each list element
+#' has class `wt_delay_estimation` and the items listed above, are included.
 #'
 #' @examples
-#' # Example 1 - Delay in registration:
-#' date_of_production   <- c("2014-07-28", "2014-02-17", "2014-07-14",
-#'                           "2014-06-26", "2014-03-10", "2014-05-14",
-#'                           "2014-05-06", "2014-03-07", "2014-03-09",
-#'                           "2014-04-13", "2014-05-20", "2014-07-07",
-#'                           "2014-01-27", "2014-01-30", "2014-03-17",
-#'                           "2014-02-09", "2014-04-14", "2014-04-20",
-#'                           "2014-03-13", "2014-02-23", "2014-04-03",
-#'                           "2014-01-08", "2014-01-08")
-#' date_of_registration <- c(NA, "2014-03-29", "2014-12-06", "2014-09-09",
-#'                           NA, NA, "2014-06-16", NA, "2014-05-23",
-#'                           "2014-05-09", "2014-05-31", NA, "2014-04-13",
-#'                           NA, NA, "2014-03-12", NA, "2014-06-02",
-#'                           NA, "2014-03-21", "2014-06-19", NA, NA)
+#' # MCS data preparation:
+#' ## Data for delay in registration:
+#' mcs_tbl_1 <- mcs_delay_data(
+#'   field_data,
+#'   date_1 = production_date,
+#'   date_2 = registration_date,
+#'   time = dis,
+#'   status = status,
+#'   id = vin
+#' )
 #'
+#' ## Data for delay in report:
+#' mcs_tbl_2 <- mcs_delay_data(
+#'   field_data,
+#'   date_1 = repair_date,
+#'   date_2 = report_date,
+#'   time = dis,
+#'   status = status,
+#'   id = vin
+#' )
+#'
+#' ## Data for both delays:
+#' mcs_tbl_both <- mcs_delay_data(
+#'   field_data,
+#'   date_1 = c(production_date, repair_date),
+#'   date_2 = c(registration_date, report_date),
+#'   time = dis,
+#'   status = status,
+#'   id = vin
+#' )
+#'
+#' # Example 1 - Delay in registration:
 #' params_delay_regist  <- dist_delay(
-#'   date_1 = date_of_production,
-#'   date_2 = date_of_registration,
+#'   x = mcs_tbl_1,
 #'   distribution = "lognormal"
 #' )
 #'
 #' # Example 2 - Delay in report:
-#' date_of_repair <- c(NA, "2014-09-15", "2015-07-04", "2015-04-10", NA,
-#'                     NA, "2015-04-24", NA, "2015-04-25", "2015-04-24",
-#'                     "2015-06-12", NA, "2015-05-04", NA, NA,
-#'                     "2015-05-22", NA, "2015-09-17", NA, "2015-08-15",
-#'                     "2015-11-26", NA, NA)
-#'
-#' date_of_report <- c(NA, "2014-10-09", "2015-08-28", "2015-04-15", NA,
-#'                     NA, "2015-05-16", NA, "2015-05-28", "2015-05-15",
-#'                     "2015-07-11", NA, "2015-08-14", NA, NA,
-#'                     "2015-06-05", NA, "2015-10-17", NA, "2015-08-21",
-#'                     "2015-12-02", NA, NA)
-#'
 #' params_delay_report  <- dist_delay(
-#'   date_1 = date_of_repair,
-#'   date_2 = date_of_report,
+#'   x = mcs_tbl_2,
 #'   distribution = "exponential"
 #' )
 #'
+#' # Example 3 - Delays in registration and report with same distribution:
+#' params_delays  <- dist_delay(
+#'   x = mcs_tbl_both,
+#'   distribution = "lognormal"
+#' )
+#'
+#' # Example 4 - Delays in registration and report with different distributions:
+#' params_delays_2  <- dist_delay(
+#'   x = mcs_tbl_both,
+#'   distribution = c("lognormal", "exponential")
+#' )
+#'
+#' @md
+#'
 #' @export
-dist_delay <- function(date_1,
-                       date_2,
-                       distribution = c("lognormal", "exponential")
+dist_delay <- function(x, distribution, ...) {
+  UseMethod("dist_delay")
+}
+
+
+
+#' @rdname dist_delay
+#'
+#' @export
+dist_delay.wt_mcs_delay_data <- function(x,
+                                         distribution = c("lognormal", "exponential"),
+                                         ...
+
 ) {
 
-  distribution <- match.arg(distribution)
+  # Extract 'mcs_start_dates' and 'mcs_end_dates' columns as list:
+  date_1_names <- attr(x, "mcs_start_dates")
+  date_2_names <- attr(x, "mcs_end_dates")
+
+  date_1 <- dplyr::select(x, {{date_1_names}})
+  date_2 <- dplyr::select(x, {{date_2_names}})
+
+  # Use default method:
+  dist_delay.default(
+    date_1 = date_1,
+    date_2 = date_2,
+    distribution = distribution
+  )
+}
+
+
+
+#' Parameter Estimation of a Delay Distribution
+#'
+#' @description
+#' This function models a delay (in days) random variable (e.g. in logistic,
+#' registration, report) using a supposed continuous distribution. First, the
+#' element-wise differences in days of both vectors `date_1` and `date_2` are
+#' calculated and then the parameter(s) of the assumed
+#' distribution is (are) estimated with maximum likelihood. See 'Details' for
+#' more information.
+#'
+#' @details
+#' The distribution parameter(s) is (are) determined on the basis of complete
+#' cases, i.e. there is no `NA` in one of the related vector elements
+#' `c(date_1[i], date_2[i])`. Time differences less than or equal to zero are
+#' not considered as well.
+#'
+#' @param date_1 A vector of class `character` or `Date`, in the format "yyyy-mm-dd",
+#' representing the earlier of the two dates belonging to a particular delay.
+#' Use `NA` for missing elements.
+#'
+#' If more than one delay is to be considered, use a list where the first element
+#' is the earlier date of the first delay, the second element is the earlier date
+#' of the second delay, and so forth (see 'Examples').
+#' @param date_2 A vector of class `character` or `Date` in the format "yyyy-mm-dd".
+#' `date_2` is the counterpart of `date_1` and is used the same as `date_1`, just with
+#' the later date(s) of the particular delay(s). Use `NA` for missing elements.
+#' @inheritParams dist_delay
+#'
+#' @return A list of class `wt_delay_estimation` which contains:
+#'
+#' * `coefficients` : A named vector of estimated parameter(s).
+#' * `delay` : A numeric vector of element-wise computed differences in days.
+#' * `distribution` : Specified distribution.
+#'
+#' If more than one delay was considered, the resulting output is a list with class
+#' `wt_delay_estimation_list`. In this case each list element has class
+#' `wt_delay_estimation` and the items listed above, are included.
+#'
+#' @seealso [dist_delay]
+#'
+#' @examples
+#' # Example 1 - Delay in registration:
+#' params_delay_regist  <- dist_delay(
+#'   date_1 = field_data$production_date,
+#'   date_2 = field_data$registration_date,
+#'   distribution = "lognormal"
+#' )
+#'
+#' # Example 2 - Delay in report:
+#' params_delay_report  <- dist_delay(
+#'   date_1 = field_data$repair_date,
+#'   date_2 = field_data$report_date,
+#'   distribution = "exponential"
+#' )
+#'
+#' # Example 3 - Delays in registration and report with same distribution:
+#' params_delays  <- dist_delay(
+#'   date_1 = list(field_data$production_date, field_data$repair_date),
+#'   date_2 = list(field_data$registration_date, field_data$report_date),
+#'   distribution = "lognormal"
+#' )
+#'
+#' # Example 4 - Delays in registration and report with different distributions:
+#' params_delays_2  <- dist_delay(
+#'   date_1 = list(field_data$production_date, field_data$repair_date),
+#'   date_2 = list(field_data$registration_date, field_data$report_date),
+#'   distribution = c("lognormal", "exponential")
+#' )
+#'
+#' @md
+#'
+#' @export
+dist_delay.default <- function(date_1,
+                               date_2,
+                               distribution = c("lognormal", "exponential"),
+                               ...
+) {
+
+  # Convert date_1 and date_2 to lists if they are vectors:
+  if (!is.list(date_1)) date_1 <- list(date_1)
+  if (!is.list(date_2)) date_2 <- list(date_2)
+
+  # Default for distribution if not specified:
+  if (missing(distribution)) {
+    distribution <- "lognormal"
+  }
+
+  # Checks:
+  ## Check for (multiple) distributions:
+  distribution <- match.arg(distribution, several.ok = TRUE)
+
+  ## Compare length of date_1 and distribution:
+  if (!(length(distribution) == length(date_1) || length(distribution) == 1L)) {
+    stop("'distribution' must be either length one or 'length(date_1)'")
+  }
+
+  ## Check for different length in date_1 and date_2:
+  if (length(unique(lengths(c(date_1, date_2)))) != 1L) {
+    stop("All elements of 'date_1' and 'date_2' must have the same length!")
+  }
+
+  # Do dist_delay_() with respect to the number of delays:
+  if (length(date_1) == 1L) {
+    ## One delay is to be considered:
+    ### unlist kills class "Date" -> purrr::reduce(., "c")
+    dist_estimation_list <- dist_delay_(
+      purrr::reduce(date_1, "c"),
+      purrr::reduce(date_2, "c"),
+      distribution = distribution
+    )
+  } else {
+    ## Multiple delays are to be considered:
+    ### map over dates and distribution(s):
+    dist_estimation_list <- purrr::pmap(
+      list(
+        date_1,
+        date_2,
+        distribution
+      ),
+      dist_delay_
+    )
+
+    # Prepare output with respect to multiple delays:
+    names(dist_estimation_list) <- paste0("delay_", seq_along(dist_estimation_list))
+    class(dist_estimation_list) <- c("wt_delay_estimation_list",
+                                     class(dist_estimation_list))
+  }
+
+  dist_estimation_list
+}
+
+
+
+dist_delay_ <- function(date_1,
+                        date_2,
+                        distribution = c("lognormal", "exponential")
+) {
 
   # Defining delay variable (for estimation) and origin variable (output):
   t_delay <- t_delay_origin <- as.numeric(
@@ -127,9 +305,43 @@ dist_delay <- function(date_1,
     distribution = distribution
   )
 
-  class(dist_output) <- c("delay_estimation", class(dist_output))
-
+  class(dist_output) <- c("wt_delay_estimation", class(dist_output))
   return(dist_output)
+}
+
+
+
+#' @export
+print.wt_delay_estimation <- function(x,
+                                      digits = max(
+                                        3L,
+                                        getOption("digits") - 3L
+                                      ),
+                                      ...
+) {
+  cat("Coefficients:\n")
+  print(format(stats::coef(x), digits = digits), print.gap = 2L, quote = FALSE)
+  invisible(x)
+}
+
+
+
+#' @export
+print.wt_delay_estimation_list <- function(x,
+                                           digits = max(
+                                             3L,
+                                             getOption("digits") - 3L
+                                           ),
+                                           ...
+) {
+  cat(paste("List of", length(x), "delay estimations:\n"))
+  cat("\n")
+  purrr::walk2(x, seq_along(x), function(x, y) {
+    cat(paste0("Delay distribution ", y, ": ", "'", x$distribution, "'", "\n"))
+    print(x)
+    cat("\n")
+  })
+  invisible(x)
 }
 
 
@@ -232,7 +444,7 @@ dist_delay <- function(date_1,
 #'           and the corresponding values of the earlier dates are used.
 #'         \item \code{date_2} : Later dates. In the case of a list with length greater
 #'           than 1, the routine described above is used.
-#'         \item \code{time} : Adjusted operating times for incomplete observations
+#'         \item \code{x} : Adjusted operating times for incomplete observations
 #'           and input operating times for the complete observations.
 #'         \item \code{status} (\strong{optional}) :
 #'           \itemize{
@@ -364,7 +576,7 @@ mcs_delay <- function(date_1,
   ## Check for different length in date_1 and date_2:
   purrr::walk2(date_1, date_2, function(e1, e2) {
     if (length(e1) != length(e2)) {
-      stop("Elements of 'date_1' and 'date_2' differ in lengths!")
+      stop("Elements of 'date_1' and 'date_2' differ in length!")
     }
   })
 
@@ -375,7 +587,7 @@ mcs_delay <- function(date_1,
       date_2,
       distribution
     ),
-    dist_delay
+    dist_delay_
   )
 
   # Step 2: Simulation of random numbers:
@@ -418,10 +630,10 @@ mcs_delay <- function(date_1,
   names(par_list) <- par_list_names
 
   if (purrr::is_null(status)) {
-    names(data_list) <- c(data_list_names, "time", "id")
+    names(data_list) <- c(data_list_names, "x", "id")
     class_assign <- "wt_mcs_data"
   } else {
-    names(data_list) <- c(data_list_names, "time", "status", "id")
+    names(data_list) <- c(data_list_names, "x", "status", "id")
     class_assign <- c("wt_mcs_data", "wt_reliability_data")
   }
 
@@ -916,37 +1128,33 @@ mcs_delay_report <- function(date_repair,
 #' @description
 #' `r lifecycle::badge("soft-deprecated")`
 #'
-#' \code{mcs_delays()} is no longer under active development, switching
-#' to \code{\link{mcs_delay}} is recommended.
+#' `mcs_delays()` is no longer under active development, switching to [mcs_delay]
+#' is recommended.
 #'
 #' @details
-#' This function is a wrapper that combines both, the
-#' \code{\link{mcs_delay_register}} and \code{\link{mcs_delay_report}} function
-#' for adjusting the operation times of censored units.
+#' This function is a wrapper that combines both, [mcs_delay_register] and
+#' [mcs_delay_report] functions for the adjustment of operating times of censored units.
 #'
 #' @inheritParams mcs_delay_register
 #' @inheritParams dist_delay_report
 #'
 #' @return A numerical vector of corrected operating times for the censored units
 #'   and the input operating times for the failed units if
-#'   \code{details = FALSE}. If \code{details = TRUE} the output is a list which
+#'   `details = FALSE`. If `details = TRUE` the output is a list which
 #'   consists of the following elements:
-#'   \itemize{
-#'   \item \code{time} : Numerical vector of corrected operating times for the
-#'     censored observations and input operating times for failed units.
-#'   \item \code{x_sim_regist} : Simulated random numbers of specified
-#'     distribution with estimated parameters for delay in registration.
-#'     The length of \code{x_sim_regist} is equal to the number of censored
-#'     observations.
-#'   \item \code{x_sim_report} : Simulated random numbers of specified
-#'     distribution with estimated parameters for delay in report.
-#'     The length of \code{x_sim_report} is equal to the number of censored
-#'     observations.
-#'   \item \code{coefficients_regist} : Estimated coefficients of supposed
-#'     distribution for delay in registration.
-#'   \item \code{coefficients_report} : Estimated coefficients of supposed
-#'     distribution for delay in report
-#'   }
+#'
+#' * `time` : A numeric vector of corrected operating times for the censored
+#'   observations and input operating times for failed units.
+#' * `x_sim_regist` : Simulated random numbers of specified distribution with
+#'   estimated parameters for delay in registration. The length of `x_sim_regist`
+#'   is equal to the number of censored observations.
+#' * `x_sim_report` : Simulated random numbers of specified distribution with
+#'   estimated parameters for delay in report. The length of `x_sim_report` is
+#'   equal to the number of censored observations.
+#' * `coefficients_regist` : Estimated coefficients of supposed distribution for
+#'   delay in registration.
+#' * `coefficients_report` : Estimated coefficients of supposed distribution for
+#'   delay in report
 #'
 #' @examples
 #' date_of_production   <- c("2014-07-28", "2014-02-17", "2014-07-14",

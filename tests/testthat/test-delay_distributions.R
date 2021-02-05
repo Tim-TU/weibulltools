@@ -149,7 +149,7 @@ test_that("mcs_delay stops if date_1 and date_2 differ in lengths; vector case",
       status = status,
       distribution = "lognormal"
     ),
-    "Elements of 'date_1' and 'date_2' differ in lengths!"
+    "Elements of 'date_1' and 'date_2' differ in length!"
   )
 })
 

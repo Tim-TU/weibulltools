@@ -27,12 +27,16 @@ censored observation (= 0) or a failure (= 1).}
 A tibble with class \code{wt_reliability_data} containing the following
 columns (if \code{.keep_all = FALSE}):
 \itemize{
-  \item \code{x} : Lifetime characteristic.
-  \item \code{status} : Binary data (0 or 1) indicating whether a unit is a right
-    censored observation (= 0) or a failure (= 1).
-  \item \code{id} : Identification for every unit.
+\item \code{x} : Lifetime characteristic.
+\item \code{status} : Binary data (0 or 1) indicating whether a unit is a right
+censored observation (= 0) or a failure (= 1).
+\item \code{id} : Identification for every unit.
 }
+
 If \code{.keep_all = TRUE}, the remaining columns of \code{data} are also preserved.
+
+If \code{!is.null(data)} the attribute \code{characteristic} holds the name of the
+characteristic described by \code{x}. Otherwise it is set to \code{"x"}.
 }
 \description{
 Create consistent reliability data based on an existing \code{data.frame}
@@ -62,13 +66,8 @@ data_3 <- reliability_data(
 )
 
 # Example 4 - Based on vectors:
-cycles   <- c(300, 300, 300, 300, 300, 291, 274, 271, 269, 257, 256, 227, 226,
-              224, 213, 211, 205, 203, 197, 196, 190, 189, 188, 187, 184, 180,
-              180, 177, 176, 173, 172, 171, 170, 170, 169, 168, 168, 162, 159,
-              159, 159, 159, 152, 152, 149, 149, 144, 143, 141, 141, 140, 139,
-              139, 136, 135, 133, 131, 129, 123, 121, 121, 118, 117, 117, 114,
-              112, 108, 104, 99, 99, 96, 94)
-state <- c(rep(0, 5), rep(1, 67))
+cycles <- alloy$cycles
+state <- alloy$status
 id <- "XXXXXX"
 
 data_4 <- reliability_data(

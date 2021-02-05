@@ -10,9 +10,9 @@
 
 # mcs_delay remains stable by defining the seed
 
-    Reliability data with characteristic 'time':
+    Reliability Data with characteristic x: 'time':
     # A tibble: 23 x 7
-       date_1.1   date_1.2   date_2.1   date_2.2    time status id   
+       date_1.1   date_1.2   date_2.1   date_2.2       x status id   
        <chr>      <chr>      <chr>      <chr>      <dbl>  <dbl> <chr>
      1 2014-07-28 <NA>       <NA>       <NA>        969.      0 ID1  
      2 2014-02-17 2014-09-15 2014-03-29 2014-10-09 1000       1 ID2  

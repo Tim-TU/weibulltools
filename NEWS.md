@@ -3,15 +3,25 @@
 ## Breaking Changes
 * `confint_betabinom()` and `confint_fisher()`: Removed constant features `distribution`, `bounds` and `direction` from the tibble output and added them as attributes instead.
 * `plot_prob.wt_model()`: Removed dysfunctional argument `distribution`. The distribution is inferred using the model `x`.
+* `mcs_mileage()`: Changed name of output column `mileage` to `x` (in accordance with `reliability_data()`).
+* `mcs_delay()`: Changed name of output column `time` to `x` (in accordance with `reliability_data()`). 
 
 ## New Features
+* `dist_delay()` is now an S3 generic. `dist_delay()` becomes `dist_delay.default()`. Added `dist_delay.wt_mcs_delay_data()`.
+* Added `print.wt_delay_estimation()` for one delay and and `print.wt_delay_estimation_list()` for multiple delays.
+* `dist_delay()` now supports the estimation of multiple delay distributions at once. 
+* Added `print.wt_mcs_delay_data()` and `print.wt_mcs_mileage_data()`.
+* Added `mcs_delay_data()`: Create consistent MCS data for `mcs_delay()`.
+* Added `mcs_mileage_data()`: Create consistent MCS data for `mcs_mileage()`.
 * `confint_betabinom()`: Methods `"kaplan"` and `"nelson"` of `estimate_cdf()` can be used for beta-binomial confidence bounds. 
 
 ## Minor Improvements and bug fixes
+* The object returned by `dist_delay()` now has class `wt_delay_estimation` or `wt_delay_estimation_list`. 
 * Fixed bug in `plot_conf()`: Wrong confidence bounds were displayed for `direction = "x"` (#181). 
 * Fixed bug in `plot_conf()`: `plot_method = "ggplot2"` and exactly one method in `estimate_cdf()` resulted in an error (#182).
 * Fixed bug in `reliability_data()`: Using `!!` syntax with arguments `x` and `status` resulted in an error.
 * `estimate_cdf()` preserves additional columns, that were returned from `reliability_data(..., .keep_all = TRUE)`.
+* Improved `print.wt_reliability_data()`.
 
 ## Documentation improvements
 * `plot_prob()`: Better work out the distinction between `plot_prob.wt_cdf_estimation()` and `plot_prob.wt_model()`. The former is applied to a CDF estimation whereas the latter is applied to a mixture model.

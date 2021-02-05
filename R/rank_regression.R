@@ -1,55 +1,53 @@
 #' Rank Regression for Parametric Lifetime Distributions
 #'
 #' @description
-#' This function fits an \strong{x on y} regression to a linearized two- or
+#' This function fits an **x on y** regression to a linearized two- or
 #' three-parameter lifetime distribution for complete and (multiple) right
 #' censored data. The parameters are determined in the frequently used
 #' (log-)location-scale parameterization.
 #'
 #' For the Weibull, estimates are additionally transformed such that they are in
-#' line with the parameterization provided by the \emph{stats} package
-#' (see \link[stats]{Weibull}).
+#' line with the parameterization provided by the *stats* package
+#' (see [Weibull][stats::Weibull]).
 #'
 #' @details
-#' If \code{distribution} is \code{"weibull"} or \code{"weibull3"}, the approximated
+#' If `distribution` is `"weibull"` or `"weibull3"`, the approximated
 #' confidence intervals for the parameters can only be estimated on the following
-#' confidence levels (see 'References' \emph{(Mock, 1995)}):
-#' \itemize{
-#'   \item \code{conf_level} = 0.90,
-#'   \item \code{conf_level} = 0.95,
-#'   \item \code{conf_level} = 0.99.
-#' }
+#' confidence levels (see 'References' *(Mock, 1995)*):
+#'
+#' * `conf_level = 0.90`
+#' * `conf_level = 0.95`
+#' * `conf_level = 0.99`
 #'
 #' If the distribution is not the Weibull, the confidence intervals of the
 #' parameters are computed on the basis of a heteroscedasticity-consistent
 #' covariance matrix. Here it should be said that there is no statistical foundation
-#' to determine the standard errors of the parameters using \emph{Least Squares}
-#' in context of \emph{Rank Regression}. For an accepted statistical method use
-#' \link[=ml_estimation]{maximum likelihood}.
+#' to determine the standard errors of the parameters using *Least Squares*
+#' in context of *Rank Regression*. For an accepted statistical method use
+#' [maximum likelihood][ml_estimation].
 #'
-#' @param x Object of class \code{wt_cdf_estimation} returned from
-#'  \code{\link{estimate_cdf}}.
+#' @param x A `tibble` of class `wt_cdf_estimation` returned by [estimate_cdf].
 #' @param distribution Supposed distribution of the random variable.
-#' @param conf_level Confidence level of the interval. If \code{distribution} is
-#'   \code{"weibull"} this must be one of \code{0.9}, \code{0.95} or \code{0.99}.
+#' @param conf_level Confidence level of the interval. If `distribution` is
+#'   `"weibull"` this must be one of `0.9`, `0.95` or `0.99`.
 #' @template dots
 #'
 #' @template return-rank-regression
-#' @templateVar data A tibble with class \code{wt_cdf_estimation} returned from \code{\link{estimate_cdf}}.
+#' @templateVar data A `tibble` with class `wt_cdf_estimation` returned by [estimate_cdf].
 #' @return
-#'   If more than one method was specified in \code{\link{estimate_cdf}},
-#'   the resulting output is a list with class \code{wt_model_estimation_list}.
-#'   In this case each list element has classes \code{wt_rank_regression} and
-#'   \code{wt_model_estimation} and the items listed above, are included.
+#'   If more than one method was specified in [estimate_cdf], the resulting output
+#'   is a list with class `wt_model_estimation_list`. In this case, each list element
+#'   has classes `wt_rank_regression` and `wt_model_estimation`, and the items listed
+#'   above, are included.
 #'
 #' @encoding UTF-8
 #'
 #' @references
-#'   \itemize{
-#'     \item Mock, R., Methoden zur Datenhandhabung in
-#'   Zuverlässigkeitsanalysen, vdf Hochschulverlag AG an der ETH Zürich, 1995
-#'     \item Meeker, William Q; Escobar, Luis A., Statistical methods for
-#'   reliability data, New York: Wiley series in probability and statistics, 1998}
+#'
+#' * Mock, R., Methoden zur Datenhandhabung in Zuverlässigkeitsanalysen,
+#'   vdf Hochschulverlag AG an der ETH Zürich, 1995
+#' * Meeker, William Q; Escobar, Luis A., Statistical methods for reliability data,
+#'   New York: Wiley series in probability and statistics, 1998
 #'
 #' @examples
 #' # Reliability data preparation:
@@ -103,6 +101,8 @@
 #'   distribution = "loglogistic3",
 #'   conf_level = 0.90
 #' )
+#'
+#' @md
 #'
 #' @export
 rank_regression <- function(x, ...) {
@@ -167,14 +167,14 @@ rank_regression.wt_cdf_estimation <- function(x,
 #'   e.g. operating time (days/months in service), mileage (km, miles), load
 #'   cycles.
 #' @param y A numeric vector which consists of estimated failure probabilities
-#'   regarding the lifetime data in \code{x}.
+#'   regarding the lifetime data in `x`.
 #' @param status A vector of binary data (0 or 1) indicating whether a unit is
 #'   a right censored observation (= 0) or a failure (= 1).
 #'
 #' @template return-rank-regression
-#' @templateVar data A tibble with columns \code{x}, \code{status} and \code{prob}.
+#' @templateVar data A `tibble` with columns `x`, `status` and `prob`.
 #'
-#' @seealso \code{\link{rank_regression}}
+#' @seealso [rank_regression]
 #'
 #' @examples
 #' # Vectors:
@@ -212,6 +212,8 @@ rank_regression.wt_cdf_estimation <- function(x,
 #'   status = tbl_kaplan$status,
 #'   distribution = "lognormal3"
 #' )
+#'
+#' @md
 #'
 #' @export
 rank_regression.default <- function(x,
