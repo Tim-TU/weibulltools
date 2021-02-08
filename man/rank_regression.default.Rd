@@ -54,7 +54,7 @@ Returns a list with classes \code{wt_model}, \code{wt_rank_regression} and
     for scale \eqn{\eta} and shape \eqn{\beta} (and threshold \eqn{\gamma})
     if \code{distribution} is \code{"weibull3"}.
   \item \code{r_squared} : Coefficient of determination.
-  \item \code{data} : A tibble with columns \code{x}, \code{status} and \code{prob}.
+  \item \code{data} : A \code{tibble} with columns \code{x}, \code{status} and \code{prob}.
   \item \code{distribution} : Specified distribution.
 }
 }
@@ -66,16 +66,16 @@ censored data. The parameters are determined in the frequently used
 
 For the Weibull, estimates are additionally transformed such that they are in
 line with the parameterization provided by the \emph{stats} package
-(see \link[stats]{Weibull}).
+(see \link[stats:Weibull]{Weibull}).
 }
 \details{
 If \code{distribution} is \code{"weibull"} or \code{"weibull3"}, the approximated
 confidence intervals for the parameters can only be estimated on the following
 confidence levels (see 'References' \emph{(Mock, 1995)}):
 \itemize{
-  \item \code{conf_level} = 0.90,
-  \item \code{conf_level} = 0.95,
-  \item \code{conf_level} = 0.99.
+\item \code{conf_level = 0.90}
+\item \code{conf_level = 0.95}
+\item \code{conf_level = 0.99}
 }
 
 If the distribution is not the Weibull, the confidence intervals of the
@@ -125,11 +125,12 @@ rr_2 <- rank_regression(
 }
 \references{
 \itemize{
-    \item Mock, R., Methoden zur Datenhandhabung in
-  Zuverlässigkeitsanalysen, vdf Hochschulverlag AG an der ETH Zürich, 1995
-    \item Meeker, William Q; Escobar, Luis A., Statistical methods for
-  reliability data, New York: Wiley series in probability and statistics, 1998}
+\item Mock, R., Methoden zur Datenhandhabung in Zuverlässigkeitsanalysen,
+vdf Hochschulverlag AG an der ETH Zürich, 1995
+\item Meeker, William Q; Escobar, Luis A., Statistical methods for reliability data,
+New York: Wiley series in probability and statistics, 1998
+}
 }
 \seealso{
-\code{\link{rank_regression}}
+\link{rank_regression}
 }

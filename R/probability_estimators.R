@@ -6,39 +6,35 @@
 #' into account.
 #'
 #' @template details-estimate-cdf
-#' @templateVar header One or multiple techniques can be used for the \code{methods} argument:
+#' @templateVar header One or multiple techniques can be used for the `methods` argument:
 #'
-#' @param x A tibble returned by \link{reliability_data}.
-#' @param methods One or multiple methods of \code{"mr"}, \code{"johnson"},
-#'   \code{"kaplan"} or \code{"nelson"} used for the estimation of failure
-#'   probabilities. See 'Details'.
+#' @param x A tibble of class `wt_reliability_data` returned by [reliability_data].
+#' @param methods One or multiple methods of `"mr"`, `"johnson"`, `"kaplan"` or
+#' `"nelson"` used for the estimation of failure probabilities. See 'Details'.
 #' @param options A list of named options. See 'Options'.
 #' @template dots
 #'
-#' @return A tibble containing the following columns:
-#' \itemize{
-#'   \item \code{id} : Identification for every unit.
-#'   \item \code{x} : Lifetime characteristic.
-#'   \item \code{status} : Binary data (0 or 1) indicating whether a unit is a
-#'     right censored observation (= 0) or a failure (= 1).
-#'   \item \code{rank} : The (computed) ranks. Determined for methods \code{"mr"}
-#'     and \code{"johnson"}, filled with \code{NA} for other methods or if
-#'     \code{status = 0}.
-#'   \item \code{prob} : Estimated failure probabilities, \code{NA} if \code{status = 0}.
-#'   \item \code{cdf_estimation_method} : Specified method for the estimation of
-#'     failure probabilities.
-#' }
+#' @return A tibble with class `wt_cdf_estimation` containing the following columns:
+#'
+#' * `id` : Identification for every unit.
+#' * `x` : Lifetime characteristic.
+#' * `status` : Binary data (0 or 1) indicating whether a unit is a right
+#'   censored observation (= 0) or a failure (= 1).
+#' * `rank` : The (computed) ranks. Determined for methods `"mr"` and `"johnson"`,
+#'   filled with `NA` for other methods or if `status = 0`.
+#' * `prob` : Estimated failure probabilities, `NA` if `status = 0`.
+#' * `cdf_estimation_method` : Specified method for the estimation of failure
+#'   probabilities.
 #'
 #' @section Options:
-#' The listed options can only be applied for method \code{"mr"}:
-#' \itemize{
-#'   \item \code{mr_method} : \code{"benard"} (default) or \code{"invbeta"}.
-#'   \item \code{mr_ties.method} : \code{"max"} (default), \code{"min"} or \code{"average"}.
-#' }
+#' The listed options can only be applied for method `"mr"`:
 #'
-#' @references \emph{NIST/SEMATECH e-Handbook of Statistical Methods},
-#' \emph{8.2.1.5. Empirical model fitting - distribution free (Kaplan-Meier) approach},
-#' \href{https://www.itl.nist.gov/div898/handbook/apr/section2/apr215.htm}{NIST SEMATECH},
+#' * `mr_method` : `"benard"` (default) or `"invbeta"`.
+#' * `mr_ties.method` : `"max"` (default), `"min"` or `"average"`.
+#'
+#' @references *NIST/SEMATECH e-Handbook of Statistical Methods*,
+#' *8.2.1.5. Empirical model fitting - distribution free (Kaplan-Meier) approach*,
+#' [NIST SEMATECH](https://www.itl.nist.gov/div898/handbook/apr/section2/apr215.htm),
 #' December 3, 2020
 #'
 #' @examples
@@ -79,6 +75,8 @@
 #'     mr_ties.method = "max"
 #'   )
 #' )
+#'
+#' @md
 #'
 #' @export
 estimate_cdf <- function(x, ...) {
@@ -138,22 +136,22 @@ estimate_cdf.wt_reliability_data <- function(x,
 #' @inherit estimate_cdf description return references
 #'
 #' @template details-estimate-cdf
-#' @templateVar header The following techniques can be used for the \code{method} argument:
+#' @templateVar header The following techniques can be used for the `method` argument:
 #'
 #' @inheritParams estimate_cdf
 #' @param x A numeric vector which consists of lifetime data. Lifetime
 #'   data could be every characteristic influencing the reliability of a product,
 #'   e.g. operating time (days/months in service), mileage (km, miles), load
 #'   cycles.
-#' @param status A vector of binary data (0 or 1) indicating whether unit \emph{i}
+#' @param status A vector of binary data (0 or 1) indicating whether unit *i*
 #'   is a right censored observation (= 0) or a failure (= 1).
-#' @param id A vector for the identification of every unit. Default is \code{NULL}.
+#' @param id A vector for the identification of every unit. Default is `NULL`.
 #' @param method Method used for the estimation of failure probabilities. See
 #'   'Details'.
 #'
 #' @inheritSection estimate_cdf Options
 #'
-#' @seealso \code{\link{estimate_cdf}}
+#' @seealso [estimate_cdf]
 #'
 #' @examples
 #' # Vectors:
@@ -178,6 +176,8 @@ estimate_cdf.wt_reliability_data <- function(x,
 #'     mr_ties.method = "average"
 #'   )
 #' )
+#'
+#' @md
 #'
 #' @export
 estimate_cdf.default <- function(x,

@@ -5,12 +5,12 @@ test_that("dist_mileage supports missing distances and times using NA entries", 
   mileage <- c(NA, 15655, 13629, NA, 24291, 34455, NA, 21659, 21737,
                NA, 21068, 22986, NA, 31592, 49050, NA, 10918, 11153,
                NA, 122842, 20349, NA, 40777)
-  expect_type(
+  expect_s3_class(
     dist_mileage(
-      mileage = mileage,
-      time = op_time
+    x = mileage,
+    time = op_time
     ),
-    "list"
+    "wt_mileage_estimation"
   )
 })
 
@@ -23,7 +23,7 @@ test_that("dist_mileage warns if any computed annual distances is smaller or equ
 
   expect_warning(
     dist_mileage(
-      mileage = mileage,
+      x = mileage,
       time = op_time
     ),
     "At least one computed annual distance*"
@@ -36,20 +36,20 @@ test_that("dist_mileage stops if at least one distance is smaller than zero", {
 
   expect_error(
     dist_mileage(
-      mileage = mileage,
+      x = mileage,
       time = op_time
     ),
-    "There is at least one negative element in argument 'mileage'!"
+    "Elements with negative distances are not meaningful and must be removed!"
   )
 })
 
 test_that("dist_mileage stops if all computed annual distances are NAs", {
   expect_error(
     dist_mileage(
-      mileage = NA,
+      x = NA,
       time = NA
     ),
-    "All computed annual distances are NA*"
+    "All computed annual distances are 'NA'*"
   )
 })
 
@@ -77,7 +77,7 @@ test_that("dist_mileage remains stable", {
   )
 
     params_mileage_annual <- dist_mileage(
-      mileage = mileage,
+      x = mileage,
       time = op_time,
       distribution = "lognormal"
     )
@@ -86,7 +86,7 @@ test_that("dist_mileage remains stable", {
 })
 
 ## mcs_mileage():
-test_that("mcs_mileage stops if time and mileage differ in lengths; vector case", {
+test_that("mcs_mileage stops if time and mileage differ in length; vector case", {
   mileage <- c(NA, 15655, 13629, 18292, NA, NA, 33555, NA, 21737,
                             29870, 21068, NA, 122283, NA, NA, 36088, NA, 11153,
                             NA, 122842, 20349, NA, NA)
@@ -95,10 +95,10 @@ test_that("mcs_mileage stops if time and mileage differ in lengths; vector case"
 
   expect_error(
     mcs_mileage(
-      mileage = mileage,
+      x = mileage,
       time = time_in_service
     ),
-    "Elements of 'mileage' and 'time' differ in lengths!"
+    "Elements of 'x' and 'time' differ in length!"
   )
 })
 
@@ -111,7 +111,7 @@ test_that("mcs_mileage stops if status is not a binary (0 or 1)", {
 
   expect_error(
     mcs_mileage(
-      mileage = mileage,
+      x = mileage,
       time = time_in_service,
       status = letters[seq_along(time_in_service)]
     ),
@@ -132,7 +132,7 @@ test_that("mcs_mileage remains stable by defining the seed", {
   set.seed(1234)
 
   mcs_distances <- mcs_mileage(
-    mileage = mileage,
+    x = mileage,
     time = time_in_service,
     status = status,
     distribution = "lognormal"

@@ -32,18 +32,17 @@ is a right censored observation (= 0) or a failure (= 1).}
 \item{...}{Further arguments passed to or from other methods. Currently not used.}
 }
 \value{
-A tibble containing the following columns:
+A tibble with class \code{wt_cdf_estimation} containing the following columns:
 \itemize{
-  \item \code{id} : Identification for every unit.
-  \item \code{x} : Lifetime characteristic.
-  \item \code{status} : Binary data (0 or 1) indicating whether a unit is a
-    right censored observation (= 0) or a failure (= 1).
-  \item \code{rank} : The (computed) ranks. Determined for methods \code{"mr"}
-    and \code{"johnson"}, filled with \code{NA} for other methods or if
-    \code{status = 0}.
-  \item \code{prob} : Estimated failure probabilities, \code{NA} if \code{status = 0}.
-  \item \code{cdf_estimation_method} : Specified method for the estimation of
-    failure probabilities.
+\item \code{id} : Identification for every unit.
+\item \code{x} : Lifetime characteristic.
+\item \code{status} : Binary data (0 or 1) indicating whether a unit is a right
+censored observation (= 0) or a failure (= 1).
+\item \code{rank} : The (computed) ranks. Determined for methods \code{"mr"} and \code{"johnson"},
+filled with \code{NA} for other methods or if \code{status = 0}.
+\item \code{prob} : Estimated failure probabilities, \code{NA} if \code{status = 0}.
+\item \code{cdf_estimation_method} : Specified method for the estimation of failure
+probabilities.
 }
 }
 \description{
@@ -87,8 +86,8 @@ The following techniques can be used for the \code{method} argument:
 
 The listed options can only be applied for method \code{"mr"}:
 \itemize{
-  \item \code{mr_method} : \code{"benard"} (default) or \code{"invbeta"}.
-  \item \code{mr_ties.method} : \code{"max"} (default), \code{"min"} or \code{"average"}.
+\item \code{mr_method} : \code{"benard"} (default) or \code{"invbeta"}.
+\item \code{mr_ties.method} : \code{"max"} (default), \code{"min"} or \code{"average"}.
 }
 }
 
@@ -124,5 +123,5 @@ prob_tbl_2 <- estimate_cdf(
 December 3, 2020
 }
 \seealso{
-\code{\link{estimate_cdf}}
+\link{estimate_cdf}
 }

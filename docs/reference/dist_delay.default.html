@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Parameter Estimation of a Delay Distribution — dist_delay • weibulltools</title>
+<title>Parameter Estimation of a Delay Distribution — dist_delay.default • weibulltools</title>
 
 
 <!-- jquery -->
@@ -39,12 +39,13 @@
 
 
 
-<meta property="og:title" content="Parameter Estimation of a Delay Distribution — dist_delay" />
+<meta property="og:title" content="Parameter Estimation of a Delay Distribution — dist_delay.default" />
 <meta property="og:description" content="This function models a delay (in days) random variable (e.g. in logistic,
 registration, report) using a supposed continuous distribution. First, the
-row-wise differences in days of the related date columns are calculated and then
-the parameter(s) of the assumed distribution is (are) estimated with maximum
-likelihood. See 'Details' for more information." />
+element-wise differences in days of both vectors date_1 and date_2 are
+calculated and then the parameter(s) of the assumed
+distribution is (are) estimated with maximum likelihood. See 'Details' for
+more information." />
 
 
 
@@ -135,21 +136,20 @@ likelihood. See 'Details' for more information." />
     <div class="page-header">
     <h1>Parameter Estimation of a Delay Distribution</h1>
     <small class="dont-index">Source: <a href='https://github.com/Tim-TU/weibulltools/blob/master/R/delay_distributions.R'><code>R/delay_distributions.R</code></a></small>
-    <div class="hidden name"><code>dist_delay.Rd</code></div>
+    <div class="hidden name"><code>dist_delay.default.Rd</code></div>
     </div>
 
     <div class="ref-description">
     <p>This function models a delay (in days) random variable (e.g. in logistic,
 registration, report) using a supposed continuous distribution. First, the
-row-wise differences in days of the related date columns are calculated and then
-the parameter(s) of the assumed distribution is (are) estimated with maximum
-likelihood. See 'Details' for more information.</p>
+element-wise differences in days of both vectors <code>date_1</code> and <code>date_2</code> are
+calculated and then the parameter(s) of the assumed
+distribution is (are) estimated with maximum likelihood. See 'Details' for
+more information.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>dist_delay</span><span class='op'>(</span><span class='va'>...</span><span class='op'>)</span>
-
-<span class='co'># S3 method for wt_mcs_delay_data</span>
-<span class='fu'>dist_delay</span><span class='op'>(</span><span class='va'>...</span>, <span class='va'>x</span>, distribution <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"lognormal"</span>, <span class='st'>"exponential"</span><span class='op'>)</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='co'># S3 method for default</span>
+<span class='fu'><a href='dist_delay.html'>dist_delay</a></span><span class='op'>(</span><span class='va'>...</span>, <span class='va'>date_1</span>, <span class='va'>date_2</span>, distribution <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"lognormal"</span>, <span class='st'>"exponential"</span><span class='op'>)</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -159,8 +159,19 @@ likelihood. See 'Details' for more information.</p>
       <td><p>Further arguments passed to or from other methods. Currently not used.</p></td>
     </tr>
     <tr>
-      <th>x</th>
-      <td><p>A <code>tibble</code> of class <code>wt_mcs_delay_data</code> returned by <a href='mcs_delay_data.html'>mcs_delay_data</a>.</p></td>
+      <th>date_1</th>
+      <td><p>A vector of class <code>character</code> or <code>Date</code>, in the format "yyyy-mm-dd",
+representing the earlier of the two dates belonging to a particular delay.
+Use <code>NA</code> for missing elements.</p>
+<p>If more than one delay is to be considered, use a list where the first element
+is the earlier date of the first delay, the second element is the earlier date
+of the second delay, and so forth (see 'Examples').</p></td>
+    </tr>
+    <tr>
+      <th>date_2</th>
+      <td><p>A vector of class <code>character</code> or <code>Date</code> in the format "yyyy-mm-dd".
+<code>date_2</code> is the counterpart of <code>date_1</code> and is used the same as <code>date_1</code>, just with
+the later date(s) of the particular delay(s). Use <code>NA</code> for missing elements.</p></td>
     </tr>
     <tr>
       <th>distribution</th>
@@ -176,68 +187,45 @@ likelihood. See 'Details' for more information.</p>
 <li><p><code>distribution</code> : Specified distribution.</p></li>
 </ul>
 
-<p>If more than one delay was considered in <a href='mcs_delay_data.html'>mcs_delay_data</a>, the resulting output
-is a list with class <code>wt_delay_estimation_list</code>. In this case each list element
-has class <code>wt_delay_estimation</code> and the items listed above, are included.</p>
+<p>If more than one delay was considered, the resulting output is a list with class
+<code>wt_delay_estimation_list</code>. In this case each list element has class
+<code>wt_delay_estimation</code> and the items listed above, are included.</p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
     <p>The distribution parameter(s) is (are) determined on the basis of complete
-cases, i.e. there is no <code>NA</code> (row-wise) in one of the related date columns.
-Time differences less than or equal to zero are not considered as well.</p>
+cases, i.e. there is no <code>NA</code> in one of the related vector elements
+<code><a href='https://rdrr.io/r/base/c.html'>c(date_1[i], date_2[i])</a></code>. Time differences less than or equal to zero are
+not considered as well.</p>
+    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
+
+    <div class='dont-index'><p><a href='dist_delay.html'>dist_delay</a></p></div>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='co'># MCS data preparation:</span>
-<span class='co'>## Data for delay in registration:</span>
-<span class='va'>mcs_tbl_1</span> <span class='op'>&lt;-</span> <span class='fu'><a href='mcs_delay_data.html'>mcs_delay_data</a></span><span class='op'>(</span>
-  <span class='va'>field_data</span>,
-  date_1 <span class='op'>=</span> <span class='va'>production_date</span>,
-  date_2 <span class='op'>=</span> <span class='va'>registration_date</span>,
-  time <span class='op'>=</span> <span class='va'>dis</span>,
-  status <span class='op'>=</span> <span class='va'>status</span>,
-  id <span class='op'>=</span> <span class='va'>vin</span>
-<span class='op'>)</span>
-
-<span class='co'>## Data for delay in report:</span>
-<span class='va'>mcs_tbl_2</span> <span class='op'>&lt;-</span> <span class='fu'><a href='mcs_delay_data.html'>mcs_delay_data</a></span><span class='op'>(</span>
-  <span class='va'>field_data</span>,
-  date_1 <span class='op'>=</span> <span class='va'>repair_date</span>,
-  date_2 <span class='op'>=</span> <span class='va'>report_date</span>,
-  time <span class='op'>=</span> <span class='va'>dis</span>,
-  status <span class='op'>=</span> <span class='va'>status</span>,
-  id <span class='op'>=</span> <span class='va'>vin</span>
-<span class='op'>)</span>
-
-<span class='co'>## Data for both delays:</span>
-<span class='va'>mcs_tbl_both</span> <span class='op'>&lt;-</span> <span class='fu'><a href='mcs_delay_data.html'>mcs_delay_data</a></span><span class='op'>(</span>
-  <span class='va'>field_data</span>,
-  date_1 <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='va'>production_date</span>, <span class='va'>repair_date</span><span class='op'>)</span>,
-  date_2 <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='va'>registration_date</span>, <span class='va'>report_date</span><span class='op'>)</span>,
-  time <span class='op'>=</span> <span class='va'>dis</span>,
-  status <span class='op'>=</span> <span class='va'>status</span>,
-  id <span class='op'>=</span> <span class='va'>vin</span>
-<span class='op'>)</span>
-
-<span class='co'># Example 1 - Delay in registration:</span>
-<span class='va'>params_delay_regist</span>  <span class='op'>&lt;-</span> <span class='fu'>dist_delay</span><span class='op'>(</span>
-  x <span class='op'>=</span> <span class='va'>mcs_tbl_1</span>,
+    <pre class="examples"><div class='input'><span class='co'># Example 1 - Delay in registration:</span>
+<span class='va'>params_delay_regist</span>  <span class='op'>&lt;-</span> <span class='fu'><a href='dist_delay.html'>dist_delay</a></span><span class='op'>(</span>
+  date_1 <span class='op'>=</span> <span class='va'>field_data</span><span class='op'>$</span><span class='va'>production_date</span>,
+  date_2 <span class='op'>=</span> <span class='va'>field_data</span><span class='op'>$</span><span class='va'>registration_date</span>,
   distribution <span class='op'>=</span> <span class='st'>"lognormal"</span>
 <span class='op'>)</span>
 
 <span class='co'># Example 2 - Delay in report:</span>
-<span class='va'>params_delay_report</span>  <span class='op'>&lt;-</span> <span class='fu'>dist_delay</span><span class='op'>(</span>
-  x <span class='op'>=</span> <span class='va'>mcs_tbl_2</span>,
+<span class='va'>params_delay_report</span>  <span class='op'>&lt;-</span> <span class='fu'><a href='dist_delay.html'>dist_delay</a></span><span class='op'>(</span>
+  date_1 <span class='op'>=</span> <span class='va'>field_data</span><span class='op'>$</span><span class='va'>repair_date</span>,
+  date_2 <span class='op'>=</span> <span class='va'>field_data</span><span class='op'>$</span><span class='va'>report_date</span>,
   distribution <span class='op'>=</span> <span class='st'>"exponential"</span>
 <span class='op'>)</span>
 </div><div class='output co'>#&gt; <span class='warning'>Warning: At least one of the date differences is smaller or equal to 0 and is ignored for the estimation step!</span></div><div class='input'>
 <span class='co'># Example 3 - Delays in registration and report with same distribution:</span>
-<span class='va'>params_delays</span>  <span class='op'>&lt;-</span> <span class='fu'>dist_delay</span><span class='op'>(</span>
-  x <span class='op'>=</span> <span class='va'>mcs_tbl_both</span>,
+<span class='va'>params_delays</span>  <span class='op'>&lt;-</span> <span class='fu'><a href='dist_delay.html'>dist_delay</a></span><span class='op'>(</span>
+  date_1 <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='va'>field_data</span><span class='op'>$</span><span class='va'>production_date</span>, <span class='va'>field_data</span><span class='op'>$</span><span class='va'>repair_date</span><span class='op'>)</span>,
+  date_2 <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='va'>field_data</span><span class='op'>$</span><span class='va'>registration_date</span>, <span class='va'>field_data</span><span class='op'>$</span><span class='va'>report_date</span><span class='op'>)</span>,
   distribution <span class='op'>=</span> <span class='st'>"lognormal"</span>
 <span class='op'>)</span>
 </div><div class='output co'>#&gt; <span class='warning'>Warning: At least one of the date differences is smaller or equal to 0 and is ignored for the estimation step!</span></div><div class='input'>
 <span class='co'># Example 4 - Delays in registration and report with different distributions:</span>
-<span class='va'>params_delays_2</span>  <span class='op'>&lt;-</span> <span class='fu'>dist_delay</span><span class='op'>(</span>
-  x <span class='op'>=</span> <span class='va'>mcs_tbl_both</span>,
+<span class='va'>params_delays_2</span>  <span class='op'>&lt;-</span> <span class='fu'><a href='dist_delay.html'>dist_delay</a></span><span class='op'>(</span>
+  date_1 <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='va'>field_data</span><span class='op'>$</span><span class='va'>production_date</span>, <span class='va'>field_data</span><span class='op'>$</span><span class='va'>repair_date</span><span class='op'>)</span>,
+  date_2 <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='va'>field_data</span><span class='op'>$</span><span class='va'>registration_date</span>, <span class='va'>field_data</span><span class='op'>$</span><span class='va'>report_date</span><span class='op'>)</span>,
   distribution <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"lognormal"</span>, <span class='st'>"exponential"</span><span class='op'>)</span>
 <span class='op'>)</span>
 </div><div class='output co'>#&gt; <span class='warning'>Warning: At least one of the date differences is smaller or equal to 0 and is ignored for the estimation step!</span></div><div class='input'>

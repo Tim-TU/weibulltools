@@ -146,94 +146,66 @@ operating time. Second, the parameter(s) of the assumed distribution are
 estimated with maximum likelihood. See 'Details' for more information.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>dist_mileage</span><span class='op'>(</span><span class='va'>mileage</span>, <span class='va'>time</span>, distribution <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"lognormal"</span>, <span class='st'>"exponential"</span><span class='op'>)</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>dist_mileage</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>distribution</span>, <span class='va'>...</span><span class='op'>)</span>
+
+<span class='co'># S3 method for wt_mcs_mileage_data</span>
+<span class='fu'>dist_mileage</span><span class='op'>(</span><span class='va'>x</span>, distribution <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"lognormal"</span>, <span class='st'>"exponential"</span><span class='op'>)</span>, <span class='va'>...</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>mileage</th>
-      <td><p>A numeric vector of distances covered. Use <code>NA</code> for missing
-elements.</p></td>
-    </tr>
-    <tr>
-      <th>time</th>
-      <td><p>A numeric vector of operating times. Use <code>NA</code> for missing
-elements.</p></td>
+      <th>x</th>
+      <td><p>A <code>tibble</code> of class <code>wt_mcs_mileage_data</code> returned by <a href='mcs_mileage_data.html'>mcs_mileage_data</a>.</p></td>
     </tr>
     <tr>
       <th>distribution</th>
-      <td><p>Supposed distribution of the random variable.</p></td>
+      <td><p>Supposed distribution of the annual mileage.</p></td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td><p>Further arguments passed to or from other methods. Currently not used.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A list of class <code>mileage_estimation</code> which contains:</p><ul>
+    <p>A list with class <code>wt_mileage_estimation</code> which contains:</p><ul>
 <li><p><code>coefficients</code> : A named vector of estimated parameter(s).</p></li>
-<li><p><code>miles_annual</code> : A numeric vector of element-wise computed annual
-      distances using the linear relationship described in 'Details'.</p></li>
+<li><p><code>miles_annual</code> : A numeric vector of element-wise computed annual distances
+using the linear relationship described in 'Details'.</p></li>
 <li><p><code>distribution</code> : Specified distribution.</p></li>
 </ul>
 
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>The distribution parameter(s) are determined on the basis of complete cases,
-i.e. there is no <code>NA</code> in one of the related vector elements
-<code><a href='https://rdrr.io/r/base/c.html'>c(mileage[i], time[i])</a></code>. Distances and operating times less than or equal
-to zero are not considered as well.</p>
+    <p>The distribution parameter(s) is (are) determined on the basis of complete
+cases, i.e. there is no <code>NA</code> (row-wise) in one of the related columns <code>mileage</code>
+and <code>time</code>. Distances and operating times less than or equal to zero are not
+considered as well.</p>
 <p><strong>Assumption of linear relationship</strong>: Imagine a component in a vehicle
-  has endured a distance of 25000 kilometers (km) in 500 days (d), the annual
-  distance of this unit is $$25000 km \cdot (\frac{365 d} {500 d}) = 18250 km$$</p>
+has endured a distance of 25000 kilometers (km) in 500 days (d), the annual
+distance of this unit is $$25000 km \cdot (\frac{365 d} {500 d}) = 18250 km$$</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='co'># Data for examples:</span>
-<span class='va'>date_of_registration</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"2014-08-17"</span>, <span class='st'>"2014-03-29"</span>, <span class='st'>"2014-12-06"</span>,
-                          <span class='st'>"2014-09-09"</span>, <span class='st'>"2014-05-14"</span>, <span class='st'>"2014-07-01"</span>,
-                          <span class='st'>"2014-06-16"</span>, <span class='st'>"2014-04-03"</span>, <span class='st'>"2014-05-23"</span>,
-                          <span class='st'>"2014-05-09"</span>, <span class='st'>"2014-05-31"</span>, <span class='st'>"2014-08-12"</span>,
-                          <span class='st'>"2014-04-13"</span>, <span class='st'>"2014-02-15"</span>, <span class='st'>"2014-07-07"</span>,
-                          <span class='st'>"2014-03-12"</span>, <span class='st'>"2014-05-27"</span>, <span class='st'>"2014-06-02"</span>,
-                          <span class='st'>"2014-05-20"</span>, <span class='st'>"2014-03-21"</span>, <span class='st'>"2014-06-19"</span>,
-                          <span class='st'>"2014-02-12"</span>, <span class='st'>"2014-03-27"</span><span class='op'>)</span>
-<span class='va'>date_of_repair</span>       <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='cn'>NA</span>, <span class='st'>"2014-09-15"</span>, <span class='st'>"2015-07-04"</span>, <span class='st'>"2015-04-10"</span>, <span class='cn'>NA</span>,
-                          <span class='cn'>NA</span>, <span class='st'>"2015-04-24"</span>, <span class='cn'>NA</span>, <span class='st'>"2015-04-25"</span>, <span class='st'>"2015-04-24"</span>,
-                          <span class='st'>"2015-06-12"</span>, <span class='cn'>NA</span>, <span class='st'>"2015-05-04"</span>, <span class='cn'>NA</span>, <span class='cn'>NA</span>, <span class='st'>"2015-05-22"</span>,
-                          <span class='cn'>NA</span>, <span class='st'>"2015-09-17"</span>, <span class='cn'>NA</span>, <span class='st'>"2015-08-15"</span>, <span class='st'>"2015-11-26"</span>,
-                          <span class='cn'>NA</span>, <span class='cn'>NA</span><span class='op'>)</span>
-<span class='va'>date_of_analysis</span>     <span class='op'>&lt;-</span> <span class='st'>"2015-12-31"</span>
-
-<span class='co'>## Assume that mileage is only known for units that have failed (date_of_repair != NA).</span>
-<span class='va'>mileage</span>              <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='cn'>NA</span>, <span class='fl'>15655</span>, <span class='fl'>13629</span>, <span class='fl'>18292</span>, <span class='cn'>NA</span>, <span class='cn'>NA</span>, <span class='fl'>33555</span>, <span class='cn'>NA</span>, <span class='fl'>21737</span>,
-                          <span class='fl'>29870</span>, <span class='fl'>21068</span>, <span class='cn'>NA</span>, <span class='fl'>122283</span>, <span class='cn'>NA</span>, <span class='cn'>NA</span>, <span class='fl'>36088</span>, <span class='cn'>NA</span>, <span class='fl'>11153</span>,
-                          <span class='cn'>NA</span>, <span class='fl'>122842</span>, <span class='fl'>20349</span>, <span class='cn'>NA</span>, <span class='cn'>NA</span><span class='op'>)</span>
-
-<span class='co'>## time in service is the difference between repair and registration for failed</span>
-<span class='co'>## items and the difference between date of analysis and date of registration</span>
-<span class='co'>## for intact units.</span>
-<span class='va'>time_in_service</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/difftime.html'>difftime</a></span><span class='op'>(</span>
-  <span class='fu'><a href='https://rdrr.io/r/base/as.Date.html'>as.Date</a></span><span class='op'>(</span><span class='va'>date_of_repair</span>, format <span class='op'>=</span> <span class='st'>"%Y-%m-%d"</span><span class='op'>)</span>,
-  <span class='fu'><a href='https://rdrr.io/r/base/as.Date.html'>as.Date</a></span><span class='op'>(</span><span class='va'>date_of_registration</span>, format <span class='op'>=</span> <span class='st'>"%Y-%m-%d"</span><span class='op'>)</span>,
-  units <span class='op'>=</span> <span class='st'>"days"</span>
+    <pre class="examples"><div class='input'><span class='co'># MCS data preparation:</span>
+<span class='va'>mcs_tbl</span> <span class='op'>&lt;-</span> <span class='fu'><a href='mcs_mileage_data.html'>mcs_mileage_data</a></span><span class='op'>(</span>
+  <span class='va'>field_data</span>,
+  mileage <span class='op'>=</span> <span class='va'>mileage</span>,
+  time <span class='op'>=</span> <span class='va'>dis</span>,
+  status <span class='op'>=</span> <span class='va'>status</span>,
+  id <span class='op'>=</span> <span class='va'>vin</span>
 <span class='op'>)</span>
-<span class='va'>time_in_service</span><span class='op'>[</span><span class='fu'><a href='https://rdrr.io/r/base/NA.html'>is.na</a></span><span class='op'>(</span><span class='va'>time_in_service</span><span class='op'>)</span><span class='op'>]</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/difftime.html'>difftime</a></span><span class='op'>(</span>
-  <span class='fu'><a href='https://rdrr.io/r/base/as.Date.html'>as.Date</a></span><span class='op'>(</span><span class='va'>date_of_analysis</span>, format <span class='op'>=</span> <span class='st'>"%Y-%m-%d"</span><span class='op'>)</span>,
-  <span class='fu'><a href='https://rdrr.io/r/base/as.Date.html'>as.Date</a></span><span class='op'>(</span><span class='va'>date_of_registration</span><span class='op'>[</span><span class='fu'><a href='https://rdrr.io/r/base/NA.html'>is.na</a></span><span class='op'>(</span><span class='va'>time_in_service</span><span class='op'>)</span><span class='op'>]</span>, format <span class='op'>=</span> <span class='st'>"%Y-%m-%d"</span><span class='op'>)</span>,
-  units <span class='op'>=</span> <span class='st'>"days"</span>
-<span class='op'>)</span>
-<span class='va'>time_in_service</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/numeric.html'>as.numeric</a></span><span class='op'>(</span><span class='va'>time_in_service</span><span class='op'>)</span>
 
 <span class='co'># Example 1 - Assuming lognormal annual mileage distribution:</span>
 <span class='va'>params_mileage_annual</span> <span class='op'>&lt;-</span> <span class='fu'>dist_mileage</span><span class='op'>(</span>
-  mileage <span class='op'>=</span> <span class='va'>mileage</span>,
-  time <span class='op'>=</span> <span class='va'>time_in_service</span>,
+  x <span class='op'>=</span> <span class='va'>mcs_tbl</span>,
   distribution <span class='op'>=</span> <span class='st'>"lognormal"</span>
 <span class='op'>)</span>
 
 <span class='co'># Example 2 - Assuming exponential annual mileage distribution:</span>
 <span class='va'>params_mileage_annual_2</span> <span class='op'>&lt;-</span> <span class='fu'>dist_mileage</span><span class='op'>(</span>
-  mileage <span class='op'>=</span> <span class='va'>mileage</span>,
-  time <span class='op'>=</span> <span class='va'>time_in_service</span>,
+  x <span class='op'>=</span> <span class='va'>mcs_tbl</span>,
   distribution <span class='op'>=</span> <span class='st'>"exponential"</span>
 <span class='op'>)</span>
 

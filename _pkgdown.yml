@@ -3,6 +3,11 @@ reference:
   desc: "Function for converting data into reliability data"
 - contents:
   - reliability_data
+- title: "MCS Data"
+  desc: "Functions for converting data into MCS data"
+- contents:
+  - mcs_delay_data
+  - mcs_mileage_data
 - title: "Non-Parametric Failure Probabilities"
   desc: "Functions for estimation and visualization of failure probabilities"
 - contents:
@@ -48,15 +53,20 @@ reference:
     adjustment of operating time
 - contents:
   - dist_delay
+  - dist_delay.default
   - mcs_delay
+  - mcs_delay.default
   - dist_mileage
+  - dist_mileage.default
   - mcs_mileage
+  - mcs_mileage.default
 - title: "Data Sets"
   desc: "Data sets used in the examples"
 - contents:
   - alloy
   - shock
   - voltage
+  - field_data
 - title: "Deprecated"
   desc: >
     The following functions are deprecated and will be removed in a future

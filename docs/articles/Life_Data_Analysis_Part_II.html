@@ -93,7 +93,7 @@
                         <h4 class="author">Tim-Gunnar Hensel</h4>
                         <h4 class="author">David Barkemeyer</h4>
             
-            <h4 class="date">2021-02-01</h4>
+            <h4 class="date">2021-02-08</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/Tim-TU/weibulltools/blob/master/vignettes/Life_Data_Analysis_Part_II.Rmd"><code>vignettes/Life_Data_Analysis_Part_II.Rmd</code></a></small>
       <div class="hidden name"><code>Life_Data_Analysis_Part_II.Rmd</code></div>
@@ -157,7 +157,7 @@ The estimates of the intercept and slope are equal to the Weibull parameters <sp
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">shock_tbl</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/reliability_data.html">reliability_data</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">shock</span>, x <span class="op">=</span> <span class="va">distance</span>, status <span class="op">=</span> <span class="va">status</span><span class="op">)</span>
 <span class="va">shock_tbl</span>
-<span class="co">#&gt; Reliability Data:</span>
+<span class="co">#&gt; Reliability Data with characteristic x: 'distance':</span>
 <span class="co">#&gt; # A tibble: 38 x 3</span>
 <span class="co">#&gt;        x status id   </span>
 <span class="co">#&gt;    &lt;int&gt;  &lt;dbl&gt; &lt;chr&gt;</span>
@@ -182,7 +182,7 @@ The estimates of the intercept and slope are equal to the Weibull parameters <sp
 <code class="sourceCode R"><span class="co"># Data: </span>
 <span class="va">alloy_tbl</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/reliability_data.html">reliability_data</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">alloy</span>, x <span class="op">=</span> <span class="va">cycles</span>, status <span class="op">=</span> <span class="va">status</span><span class="op">)</span>
 <span class="va">alloy_tbl</span>
-<span class="co">#&gt; Reliability Data:</span>
+<span class="co">#&gt; Reliability Data with characteristic x: 'cycles':</span>
 <span class="co">#&gt; # A tibble: 72 x 3</span>
 <span class="co">#&gt;        x status id   </span>
 <span class="co">#&gt;    &lt;dbl&gt;  &lt;dbl&gt; &lt;chr&gt;</span>
