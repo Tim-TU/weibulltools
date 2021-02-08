@@ -72,7 +72,7 @@
 #' @md
 #'
 #' @export
-mcs_mileage <- function(x, distribution, ...) {
+mcs_mileage <- function(x, ...) {
   UseMethod("mcs_mileage")
 }
 
@@ -105,8 +105,6 @@ mcs_mileage.wt_mcs_mileage_data <- function(
 
 
 #' Simulation of Unknown Covered Distances using a Monte Carlo Approach
-#'
-#' @description
 #'
 #' @inherit mcs_mileage description details return seealso
 #'
@@ -214,7 +212,7 @@ mcs_mileage_ <- function(data = NULL,
     data_tbl <- dplyr::mutate(data, mileage = x)
   }
 
-  data_tbl <- dplyr::rename(data_tbl, x = mileage)
+  data_tbl <- dplyr::rename(data_tbl, x = .data$mileage)
 
   ## Set class and attribute w.r.t status; remove class "wt_mcs_mileage_data":
   if ("status" %in% names(data_tbl)) {

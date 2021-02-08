@@ -51,7 +51,12 @@ distances for incomplete cases and \code{0} for complete cases.
 }
 }
 \description{
+This function simulates distances for units where these are unknown.
 
+First, random numbers of the annual mileage distribution, estimated by
+\link{dist_mileage}, are drawn. Second, the drawn annual distances are
+converted with respect to the actual operating times (in days) using a linear
+relationship. See 'Details'.
 }
 \details{
 \strong{Assumption of linear relationship}: Imagine the distance of the vehicle

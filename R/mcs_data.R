@@ -225,6 +225,11 @@ mcs_delay_data <- function(data = NULL,
     characteristic_1 <- dplyr::select(data, {{date_1}}) %>% names()
     characteristic_2 <- dplyr::select(data, {{date_2}}) %>% names()
 
+    ## Check for same length in 'date_1' and 'date_2':
+    if (length(characteristic_1) != length(characteristic_2)) {
+      stop("The same number of columns must be specified in 'date_1' and 'date_2'!")
+    }
+
     data <- tibble::as_tibble(data)
 
     if (.keep_all) {

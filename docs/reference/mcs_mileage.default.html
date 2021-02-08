@@ -40,9 +40,11 @@
 
 
 <meta property="og:title" content="Simulation of Unknown Covered Distances using a Monte Carlo Approach — mcs_mileage.default" />
-<meta property="og:description" content="
-
-" />
+<meta property="og:description" content="This function simulates distances for units where these are unknown.
+First, random numbers of the annual mileage distribution, estimated by
+dist_mileage, are drawn. Second, the drawn annual distances are
+converted with respect to the actual operating times (in days) using a linear
+relationship. See 'Details'." />
 
 
 
@@ -137,9 +139,11 @@
     </div>
 
     <div class="ref-description">
-    
-
-
+    <p>This function simulates distances for units where these are unknown.</p>
+<p>First, random numbers of the annual mileage distribution, estimated by
+<a href='dist_mileage.html'>dist_mileage</a>, are drawn. Second, the drawn annual distances are
+converted with respect to the actual operating times (in days) using a linear
+relationship. See 'Details'.</p>
     </div>
 
     <pre class="usage"><span class='co'># S3 method for default</span>
