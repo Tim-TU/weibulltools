@@ -14,3 +14,13 @@ check_dots <- function(...) {
     )
   }
 }
+
+
+check_dates <- function(x,
+                        date.format = "%Y-%m-%d"
+){
+  tryCatch(
+    !is.na(as.Date(x, date.format)),
+    error = function(e) {FALSE}
+  )
+}
