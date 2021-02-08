@@ -76,7 +76,7 @@ test_that("dist_delay warns if any time difference is smaller or equal to zero",
       date_1 = date_of_production,
       date_2 = date_of_registration
     ),
-    "At least one of the time differences is smaller or equal to 0*"
+    "At least one of the date differences is smaller or equal to 0*"
   )
 })
 
@@ -89,7 +89,7 @@ test_that("dist_delay stops if all time difference are smaller or equal to zero"
       date_1 = date_of_production,
       date_2 = date_of_registration
     ),
-    "All differences are smaller or equal to 0*"
+    "All date differences are smaller or equal to 0*"
   )
 })
 
@@ -99,7 +99,7 @@ test_that("dist_delay stops if all time differences are NAs", {
       date_1 = NA,
       date_2 = NA
     ),
-    "All differences are NA*"
+    "All date differences are 'NA'*"
   )
 })
 
@@ -149,7 +149,7 @@ test_that("mcs_delay stops if date_1 and date_2 differ in lengths; vector case",
       status = status,
       distribution = "lognormal"
     ),
-    "Elements of 'date_1' and 'date_2' differ in length!"
+    "All elements of 'date_1' and 'date_2' must have the same length!"
   )
 })
 

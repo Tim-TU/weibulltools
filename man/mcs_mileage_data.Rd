@@ -43,8 +43,8 @@ It contains the following columns (if \code{.keep_all = FALSE}):
 \item \code{time} : Input operating times.
 \item \code{status} (\strong{optional}) :
 \itemize{
-\item If argument \code{status = NULL} column \code{status} does not exist.
-\item If argument \code{status} is provided the column contains the entered binary
+\item If \code{is.null(status)} column \code{status} does not exist.
+\item If \code{status} is provided the column contains the entered binary
 data (0 or 1).
 }
 \item \code{id} : Identification for every unit.

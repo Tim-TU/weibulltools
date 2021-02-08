@@ -55,14 +55,18 @@ reference:
   - dist_delay
   - dist_delay.default
   - mcs_delay
+  - mcs_delay.default
   - dist_mileage
+  - dist_mileage.default
   - mcs_mileage
+  - mcs_mileage.default
 - title: "Data Sets"
   desc: "Data sets used in the examples"
 - contents:
   - alloy
   - shock
   - voltage
+  - field_data
 - title: "Deprecated"
   desc: >
     The following functions are deprecated and will be removed in a future

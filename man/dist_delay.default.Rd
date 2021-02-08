@@ -4,9 +4,11 @@
 \alias{dist_delay.default}
 \title{Parameter Estimation of a Delay Distribution}
 \usage{
-\method{dist_delay}{default}(date_1, date_2, distribution = c("lognormal", "exponential"), ...)
+\method{dist_delay}{default}(..., date_1, date_2, distribution = c("lognormal", "exponential"))
 }
 \arguments{
+\item{...}{Further arguments passed to or from other methods. Currently not used.}
+
 \item{date_1}{A vector of class \code{character} or \code{Date}, in the format "yyyy-mm-dd",
 representing the earlier of the two dates belonging to a particular delay.
 Use \code{NA} for missing elements.
@@ -19,12 +21,10 @@ of the second delay, and so forth (see 'Examples').}
 \code{date_2} is the counterpart of \code{date_1} and is used the same as \code{date_1}, just with
 the later date(s) of the particular delay(s). Use \code{NA} for missing elements.}
 
-\item{distribution}{Supposed distribution of the random variable.}
-
-\item{...}{Further arguments passed to or from other methods. Currently not used.}
+\item{distribution}{Supposed distribution of the respective delay.}
 }
 \value{
-A list of class \code{wt_delay_estimation} which contains:
+A list with class \code{wt_delay_estimation} which contains:
 \itemize{
 \item \code{coefficients} : A named vector of estimated parameter(s).
 \item \code{delay} : A numeric vector of element-wise computed differences in days.

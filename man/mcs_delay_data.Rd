@@ -60,8 +60,8 @@ with unnamed input, column name(s) is (are) \code{date_2}
 \item \code{time} : Input operating times.
 \item \code{status} (\strong{optional}) :
 \itemize{
-\item If argument \code{status = NULL} column \code{status} does not exist.
-\item If argument \code{status} is provided the column contains the entered binary
+\item If \code{is.null(status)} column \code{status} does not exist.
+\item If \code{status} is provided the column contains the entered binary
 data (0 or 1).
 }
 \item \code{id} : Identification for every unit.
@@ -70,7 +70,7 @@ data (0 or 1).
 If \code{.keep_all = TRUE}, the remaining columns of \code{data} are also preserved.
 
 The attributes \code{mcs_start_dates} and \code{mcs_end_dates} hold the name(s) of the
-column(s) that preserve the input of \code{date_1}and \code{date_2}.
+column(s) that preserve the input of \code{date_1} and \code{date_2}.
 }
 \description{
 Create consistent \code{mcs_delay_data} based on an existing \code{data.frame} (preferred)
