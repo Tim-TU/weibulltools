@@ -7,17 +7,10 @@ two_parametric <- function(distribution) {
 check_dots <- function(...) {
   dots <- list(...)
 
-  if (length(dots) > 1) {
+  if (length(dots) > 0) {
     stop(
       "'...' is not used. Arguments must be matched by name!",
       call. = FALSE
     )
   }
-}
-
-check_dates <- function(mydate,
-                        date.format = "%Y-%m-%d"
-){
-  tryCatch(!is.na(as.Date(mydate, date.format)),
-           error = function(err) {FALSE})
 }
