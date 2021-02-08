@@ -5,16 +5,16 @@
 \alias{dist_mileage.wt_mcs_mileage_data}
 \title{Parameter Estimation of an Annual Mileage Distribution}
 \usage{
-dist_mileage(x, distribution, ...)
+dist_mileage(x, ...)
 
 \method{dist_mileage}{wt_mcs_mileage_data}(x, distribution = c("lognormal", "exponential"), ...)
 }
 \arguments{
 \item{x}{A \code{tibble} of class \code{wt_mcs_mileage_data} returned by \link{mcs_mileage_data}.}
 
-\item{distribution}{Supposed distribution of the annual mileage.}
-
 \item{...}{Further arguments passed to or from other methods. Currently not used.}
+
+\item{distribution}{Supposed distribution of the annual mileage.}
 }
 \value{
 A list with class \code{wt_mileage_estimation} which contains:

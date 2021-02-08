@@ -54,7 +54,7 @@
 #' @md
 #'
 #' @export
-dist_mileage <- function(x, distribution, ...) {
+dist_mileage <- function(x, ...) {
   UseMethod("dist_mileage")
 }
 
