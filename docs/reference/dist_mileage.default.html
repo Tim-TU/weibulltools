@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Parameter Estimation of the Delay in Registration Distribution — dist_delay_register • weibulltools</title>
+<title>Parameter Estimation of an Annual Mileage Distribution — dist_mileage.default • weibulltools</title>
 
 
 <!-- jquery -->
@@ -39,10 +39,12 @@
 
 
 
-<meta property="og:title" content="Parameter Estimation of the Delay in Registration Distribution — dist_delay_register" />
-<meta property="og:description" content="
-dist_delay_register() is no longer under active development, switching to
-dist_delay is recommended." />
+<meta property="og:title" content="Parameter Estimation of an Annual Mileage Distribution — dist_mileage.default" />
+<meta property="og:description" content="This function models a mileage random variable on an annual basis with respect
+to a supposed continuous distribution. First, the distances are calculated for
+one year (365 days) using a linear relationship between the distance and
+operating time. Second, the parameter(s) of the assumed distribution are
+estimated with maximum likelihood. See 'Details' for more information." />
 
 
 
@@ -131,77 +133,81 @@ dist_delay is recommended." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Parameter Estimation of the Delay in Registration Distribution</h1>
-    <small class="dont-index">Source: <a href='https://github.com/Tim-TU/weibulltools/blob/master/R/delay_distributions.R'><code>R/delay_distributions.R</code></a></small>
-    <div class="hidden name"><code>dist_delay_register.Rd</code></div>
+    <h1>Parameter Estimation of an Annual Mileage Distribution</h1>
+    <small class="dont-index">Source: <a href='https://github.com/Tim-TU/weibulltools/blob/master/R/mileage_distribution.R'><code>R/mileage_distribution.R</code></a></small>
+    <div class="hidden name"><code>dist_mileage.default.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p><img src='figures/lifecycle-soft-deprecated.svg' alt='Soft-deprecated lifecycle' /></p>
-<p><code>dist_delay_register()</code> is no longer under active development, switching to
-<a href='dist_delay.html'>dist_delay</a> is recommended.</p>
+    <p>This function models a mileage random variable on an annual basis with respect
+to a supposed continuous distribution. First, the distances are calculated for
+one year (365 days) using a linear relationship between the distance and
+operating time. Second, the parameter(s) of the assumed distribution are
+estimated with maximum likelihood. See 'Details' for more information.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>dist_delay_register</span><span class='op'>(</span><span class='va'>date_prod</span>, <span class='va'>date_register</span>, distribution <span class='op'>=</span> <span class='st'>"lognormal"</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='co'># S3 method for default</span>
+<span class='fu'><a href='dist_mileage.html'>dist_mileage</a></span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>time</span>, distribution <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"lognormal"</span>, <span class='st'>"exponential"</span><span class='op'>)</span>, <span class='va'>...</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>date_prod</th>
-      <td><p>A vector of class <code>character</code> or <code>Date</code>, in the
-format "yyyy-mm-dd", indicating the date of production of a unit.
-Use <code>NA</code> for missing elements.</p></td>
+      <th>x</th>
+      <td><p>A numeric vector of distances covered. Use <code>NA</code> for missing elements.</p></td>
     </tr>
     <tr>
-      <th>date_register</th>
-      <td><p>A vector of class <code>character</code> or <code>Date</code>, in
-the format "yyyy-mm-dd", indicating the date of registration of a unit.
-Use <code>NA</code> for missing elements.</p></td>
+      <th>time</th>
+      <td><p>A numeric vector of operating times. Use <code>NA</code> for missing elements.</p></td>
     </tr>
     <tr>
       <th>distribution</th>
-      <td><p>Supposed distribution of the random variable. Only
-<code>"lognormal"</code>is implemented.</p></td>
+      <td><p>Supposed distribution of the annual mileage.</p></td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td><p>Further arguments passed to or from other methods. Currently not used.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A named vector of estimated parameters for the specified
-distribution.</p>
+    <p>A list with class <code>wt_mileage_estimation</code> which contains:</p><ul>
+<li><p><code>coefficients</code> : A named vector of estimated parameter(s).</p></li>
+<li><p><code>miles_annual</code> : A numeric vector of element-wise computed annual distances
+using the linear relationship described in 'Details'.</p></li>
+<li><p><code>distribution</code> : Specified distribution.</p></li>
+</ul>
+
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>This function introduces a delay random variable by calculating the time
-difference between the registration and production date for the sample units
-and afterwards estimates the parameter(s) of a supposed distribution,
-using maximum likelihood.</p>
+    <p>The distribution parameter(s) is (are) determined on the basis of complete cases,
+i.e. there is no <code>NA</code> in one of the related vector elements
+<code><a href='https://rdrr.io/r/base/c.html'>c(mileage[i], time[i])</a></code>. Distances and operating times less than or equal
+to zero are not considered as well.</p>
+<p><strong>Assumption of linear relationship</strong>: Imagine a component in a vehicle
+has endured a distance of 25000 kilometers (km) in 500 days (d), the annual
+distance of this unit is $$25000 km \cdot (\frac{365 d} {500 d}) = 18250 km$$</p>
+    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
+
+    <div class='dont-index'><p><a href='dist_mileage.html'>dist_mileage</a></p></div>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='va'>date_of_production</span>   <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"2014-07-28"</span>, <span class='st'>"2014-02-17"</span>, <span class='st'>"2014-07-14"</span>,
-                          <span class='st'>"2014-06-26"</span>, <span class='st'>"2014-03-10"</span>, <span class='st'>"2014-05-14"</span>,
-                          <span class='st'>"2014-05-06"</span>, <span class='st'>"2014-03-07"</span>, <span class='st'>"2014-03-09"</span>,
-                          <span class='st'>"2014-04-13"</span>, <span class='st'>"2014-05-20"</span>, <span class='st'>"2014-07-07"</span>,
-                          <span class='st'>"2014-01-27"</span>, <span class='st'>"2014-01-30"</span>, <span class='st'>"2014-03-17"</span>,
-                          <span class='st'>"2014-02-09"</span>, <span class='st'>"2014-04-14"</span>, <span class='st'>"2014-04-20"</span>,
-                          <span class='st'>"2014-03-13"</span>, <span class='st'>"2014-02-23"</span>, <span class='st'>"2014-04-03"</span>,
-                          <span class='st'>"2014-01-08"</span>, <span class='st'>"2014-01-08"</span><span class='op'>)</span>
-<span class='va'>date_of_registration</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='cn'>NA</span>, <span class='st'>"2014-03-29"</span>, <span class='st'>"2014-12-06"</span>, <span class='st'>"2014-09-09"</span>,
-                          <span class='cn'>NA</span>, <span class='cn'>NA</span>, <span class='st'>"2014-06-16"</span>, <span class='cn'>NA</span>, <span class='st'>"2014-05-23"</span>,
-                          <span class='st'>"2014-05-09"</span>, <span class='st'>"2014-05-31"</span>, <span class='cn'>NA</span>, <span class='st'>"2014-04-13"</span>,
-                          <span class='cn'>NA</span>, <span class='cn'>NA</span>, <span class='st'>"2014-03-12"</span>, <span class='cn'>NA</span>, <span class='st'>"2014-06-02"</span>,
-                          <span class='cn'>NA</span>, <span class='st'>"2014-03-21"</span>, <span class='st'>"2014-06-19"</span>, <span class='cn'>NA</span>, <span class='cn'>NA</span><span class='op'>)</span>
-
-<span class='va'>params_delay_regist</span>  <span class='op'>&lt;-</span> <span class='fu'>dist_delay_register</span><span class='op'>(</span>
-  date_prod <span class='op'>=</span> <span class='va'>date_of_production</span>,
-  date_register <span class='op'>=</span> <span class='va'>date_of_registration</span>,
+    <pre class="examples"><div class='input'><span class='co'># Example 1 - Assuming lognormal annual mileage distribution:</span>
+<span class='va'>params_mileage_annual</span> <span class='op'>&lt;-</span> <span class='fu'><a href='dist_mileage.html'>dist_mileage</a></span><span class='op'>(</span>
+  x <span class='op'>=</span> <span class='va'>field_data</span><span class='op'>$</span><span class='va'>mileage</span>,
+  time <span class='op'>=</span> <span class='va'>field_data</span><span class='op'>$</span><span class='va'>dis</span>,
   distribution <span class='op'>=</span> <span class='st'>"lognormal"</span>
 <span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='warning'>Warning: `dist_delay_register()` is deprecated as of lifecycle 2.0.0.</span>
-#&gt; <span class='warning'>Please use `dist_delay()` instead.</span>
-#&gt; <span class='warning'><span style='color: #555555;'>This warning is displayed once every 8 hours.</span><span></span>
-#&gt; <span class='warning'></span><span style='color: #555555;'>Call `lifecycle::last_warnings()` to see where this warning was generated.</span><span></span></div><div class='input'>
-</div></span></pre>
+
+<span class='co'># Example 2 - Assuming exponential annual mileage distribution:</span>
+<span class='va'>params_mileage_annual_2</span> <span class='op'>&lt;-</span> <span class='fu'><a href='dist_mileage.html'>dist_mileage</a></span><span class='op'>(</span>
+  x <span class='op'>=</span> <span class='va'>field_data</span><span class='op'>$</span><span class='va'>mileage</span>,
+  time <span class='op'>=</span> <span class='va'>field_data</span><span class='op'>$</span><span class='va'>dis</span>,
+  distribution <span class='op'>=</span> <span class='st'>"exponential"</span>
+<span class='op'>)</span>
+
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

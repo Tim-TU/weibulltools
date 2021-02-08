@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Simulation of Unknown Covered Distances using a Monte Carlo Approach — mcs_mileage • weibulltools</title>
+<title>MCS Mileage Data — mcs_mileage_data • weibulltools</title>
 
 
 <!-- jquery -->
@@ -39,12 +39,9 @@
 
 
 
-<meta property="og:title" content="Simulation of Unknown Covered Distances using a Monte Carlo Approach — mcs_mileage" />
-<meta property="og:description" content="This function simulates distances for units where these are unknown.
-First, random numbers of the annual mileage distribution, estimated by
-dist_mileage, are drawn. Second, the drawn annual distances are
-converted with respect to the actual operating times (in days) using a linear
-relationship. See 'Details'." />
+<meta property="og:title" content="MCS Mileage Data — mcs_mileage_data" />
+<meta property="og:description" content="Create consistent mcs_mileage_data based on an existing data.frame (preferred)
+or on multiple equal length vectors" />
 
 
 
@@ -133,102 +130,118 @@ relationship. See 'Details'." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Simulation of Unknown Covered Distances using a Monte Carlo Approach</h1>
-    <small class="dont-index">Source: <a href='https://github.com/Tim-TU/weibulltools/blob/master/R/mcs_mileage.R'><code>R/mcs_mileage.R</code></a></small>
-    <div class="hidden name"><code>mcs_mileage.Rd</code></div>
+    <h1>MCS Mileage Data</h1>
+    <small class="dont-index">Source: <a href='https://github.com/Tim-TU/weibulltools/blob/master/R/mcs_data.R'><code>R/mcs_data.R</code></a></small>
+    <div class="hidden name"><code>mcs_mileage_data.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>This function simulates distances for units where these are unknown.</p>
-<p>First, random numbers of the annual mileage distribution, estimated by
-<a href='dist_mileage.html'>dist_mileage</a>, are drawn. Second, the drawn annual distances are
-converted with respect to the actual operating times (in days) using a linear
-relationship. See 'Details'.</p>
+    <p>Create consistent <code>mcs_mileage_data</code> based on an existing <code>data.frame</code> (preferred)
+or on multiple equal length vectors</p>
     </div>
 
-    <pre class="usage"><span class='fu'>mcs_mileage</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>distribution</span>, <span class='va'>...</span><span class='op'>)</span>
-
-<span class='co'># S3 method for wt_mcs_mileage_data</span>
-<span class='fu'>mcs_mileage</span><span class='op'>(</span><span class='va'>x</span>, distribution <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"lognormal"</span>, <span class='st'>"exponential"</span><span class='op'>)</span>, <span class='va'>...</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>mcs_mileage_data</span><span class='op'>(</span>
+  data <span class='op'>=</span> <span class='cn'>NULL</span>,
+  <span class='va'>mileage</span>,
+  <span class='va'>time</span>,
+  status <span class='op'>=</span> <span class='cn'>NULL</span>,
+  id <span class='op'>=</span> <span class='cn'>NULL</span>,
+  .keep_all <span class='op'>=</span> <span class='cn'>FALSE</span>
+<span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>x</th>
-      <td><p>A <code>tibble</code> of class <code>wt_mcs_mileage_data</code> returned by <a href='mcs_mileage_data.html'>mcs_mileage_data</a>.</p></td>
+      <th>data</th>
+      <td><p>Either <code>NULL</code> or a <code>data.frame</code>. If data is <code>NULL</code>, <code>mileage</code>, <code>time</code>,
+<code>status</code> and <code>id</code> must be vectors containing the data. Otherwise <code>mileage</code>, <code>time</code>,
+<code>status</code> and <code>id</code> can be either column names or column positions.</p></td>
     </tr>
     <tr>
-      <th>distribution</th>
-      <td><p>Supposed distribution of the annual mileage.</p></td>
+      <th>mileage</th>
+      <td><p>Covered distances. Use <code>NA</code> for missing elements.</p></td>
     </tr>
     <tr>
-      <th>...</th>
-      <td><p>Further arguments passed to or from other methods. Currently not used.</p></td>
+      <th>time</th>
+      <td><p>Operating times. Use <code>NA</code> for missing elements.</p></td>
+    </tr>
+    <tr>
+      <th>status</th>
+      <td><p>Optional argument. If used, it must contain binary data
+(0 or 1) indicating whether a unit is a right censored observation (= 0) or a
+failure (= 1).</p>
+<p>If <code>status</code> is provided, class <code>wt_reliability_data</code> is assigned to the
+output of <a href='mcs_mileage.html'>mcs_mileage</a>, which enables the direct application of <a href='estimate_cdf.html'>estimate_cdf</a>
+on distances.</p></td>
+    </tr>
+    <tr>
+      <th>id</th>
+      <td><p>Identification of every unit.</p></td>
+    </tr>
+    <tr>
+      <th>.keep_all</th>
+      <td><p>If <code>TRUE</code> keep remaining variables in <code>data</code>.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A list with class <code>wt_mcs_mileage</code> containing the following elements:</p><ul>
-<li><p><code>data</code> : A <code>tibble</code> returned by <a href='mcs_mileage_data.html'>mcs_mileage_data</a> where two modifications
-has been made:</p><ul>
-<li><p>If the column <code>status</code> exists, the <code>tibble</code> has additional classes
-<code>wt_mcs_data</code> and <code>wt_reliability_data</code>. Otherwise, the <code>tibble</code> only has
-the additional class <code>wt_mcs_data</code> (which is not supported by <a href='estimate_cdf.html'>estimate_cdf</a>).</p></li>
-<li><p>The column <code>mileage</code> is renamed to <code>x</code> (to be in accordance with
-<a href='reliability_data.html'>reliability_data</a>) and contains simulated distances for incomplete
-observations and input distances for the complete observations.</p></li>
+    <p>A <code>tibble</code> with class <code>wt_mcs_mileage_data</code> that is formed for the downstream
+Monte Carlo method <a href='mcs_mileage.html'>mcs_mileage</a>.
+It contains the following columns (if <code>.keep_all = FALSE</code>):</p><ul>
+<li><p><code>mileage</code> : Input mileages.</p></li>
+<li><p><code>time</code> : Input operating times.</p></li>
+<li><p><code>status</code> (<strong>optional</strong>) :</p><ul>
+<li><p>If <code><a href='https://rdrr.io/r/base/NULL.html'>is.null(status)</a></code> column <code>status</code> does not exist.</p></li>
+<li><p>If <code>status</code> is provided the column contains the entered binary
+data (0 or 1).</p></li>
 </ul></li>
-<li><p><code>sim_data</code> : A <code>tibble</code> with column <code>sim_mileage</code> that holds the simulated
-distances for incomplete cases and <code>0</code> for complete cases.</p></li>
-<li><p><code>model_estimation</code> : A list returned by <a href='dist_mileage.html'>dist_mileage</a>.</p></li>
+<li><p><code>id</code> : Identification for every unit.</p></li>
 </ul>
 
-    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
-
-    <p><strong>Assumption of linear relationship</strong>: Imagine the distance of the vehicle
-is unknown. A distance of 3500.25 kilometers (km) was drawn from the annual
-distribution and the known operating time is 200 days (d). So the resulting
-distance of this vehicle is
-$$3500.25 km \cdot (\frac{200 d} {365 d}) = 1917.945 km$$</p>
+<p>If <code>.keep_all = TRUE</code>, the remaining columns of <code>data</code> are also preserved.</p>
+<p>The attribute <code>mcs_characteristic</code> is set to <code>"mileage"</code>.</p>
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
     <div class='dont-index'><p><a href='dist_mileage.html'>dist_mileage</a> for the determination of a parametric annual mileage
-distribution and <a href='estimate_cdf.html'>estimate_cdf</a> for the estimation of failure probabilities.</p></div>
+distribution and <a href='mcs_mileage.html'>mcs_mileage</a> for the Monte Carlo method with respect to
+unknown distances.</p></div>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='co'># MCS data preparation:</span>
-<span class='va'>mcs_tbl</span> <span class='op'>&lt;-</span> <span class='fu'><a href='mcs_mileage_data.html'>mcs_mileage_data</a></span><span class='op'>(</span>
-  <span class='va'>field_data</span>,
+    <pre class="examples"><div class='input'><span class='co'># Example 1 -  Based on an existing data.frame/tibble and column names:</span>
+<span class='va'>mcs_tbl</span> <span class='op'>&lt;-</span> <span class='fu'>mcs_mileage_data</span><span class='op'>(</span>
+  data <span class='op'>=</span> <span class='va'>field_data</span>,
+  mileage <span class='op'>=</span> <span class='va'>mileage</span>,
+  time <span class='op'>=</span> <span class='va'>dis</span>,
+  status <span class='op'>=</span> <span class='va'>status</span>
+<span class='op'>)</span>
+
+<span class='co'># Example 2 - Based on an existing data.frame/tibble and column positions:</span>
+<span class='va'>mcs_tbl_2</span> <span class='op'>&lt;-</span> <span class='fu'>mcs_mileage_data</span><span class='op'>(</span>
+  data <span class='op'>=</span> <span class='va'>field_data</span>,
+  mileage <span class='op'>=</span> <span class='fl'>3</span>,
+  time <span class='op'>=</span> <span class='fl'>2</span>,
+  id <span class='op'>=</span> <span class='fl'>1</span>
+<span class='op'>)</span>
+
+<span class='co'># Example 3 - Keep all variables of the tibble/data.frame entered to argument data:</span>
+<span class='va'>mcs_tbl_3</span> <span class='op'>&lt;-</span> <span class='fu'>mcs_mileage_data</span><span class='op'>(</span>
+  data <span class='op'>=</span> <span class='va'>field_data</span>,
   mileage <span class='op'>=</span> <span class='va'>mileage</span>,
   time <span class='op'>=</span> <span class='va'>dis</span>,
   status <span class='op'>=</span> <span class='va'>status</span>,
-  id <span class='op'>=</span> <span class='va'>vin</span>
+  id <span class='op'>=</span> <span class='va'>vin</span>,
+  .keep_all <span class='op'>=</span> <span class='cn'>TRUE</span>
 <span class='op'>)</span>
 
-<span class='co'># Example 1 - Reproducibility of drawn random numbers:</span>
-<span class='fu'><a href='https://rdrr.io/r/base/Random.html'>set.seed</a></span><span class='op'>(</span><span class='fl'>1234</span><span class='op'>)</span>
-<span class='va'>mcs_distances</span> <span class='op'>&lt;-</span> <span class='fu'>mcs_mileage</span><span class='op'>(</span>
-  x <span class='op'>=</span> <span class='va'>mcs_tbl</span>,
-  distribution <span class='op'>=</span> <span class='st'>"lognormal"</span>
+<span class='co'># Example 4 - Based on vectors:</span>
+<span class='va'>mcs_tbl_4</span> <span class='op'>&lt;-</span> <span class='fu'>mcs_mileage_data</span><span class='op'>(</span>
+  mileage <span class='op'>=</span> <span class='va'>field_data</span><span class='op'>$</span><span class='va'>mileage</span>,
+  time <span class='op'>=</span> <span class='va'>field_data</span><span class='op'>$</span><span class='va'>dis</span>,
+  status <span class='op'>=</span> <span class='va'>field_data</span><span class='op'>$</span><span class='va'>status</span>,
+  id <span class='op'>=</span> <span class='va'>field_data</span><span class='op'>$</span><span class='va'>vin</span>
 <span class='op'>)</span>
-
-<span class='co'># Example 2 - MCS for distances with exponential annual mileage distribution:</span>
-<span class='va'>mcs_distances_2</span> <span class='op'>&lt;-</span> <span class='fu'>mcs_mileage</span><span class='op'>(</span>
-  x <span class='op'>=</span> <span class='va'>mcs_tbl</span>,
-  distribution <span class='op'>=</span> <span class='st'>"exponential"</span>
-<span class='op'>)</span>
-
-<span class='co'># Example 3 - MCS for distances with downstream probability estimation:</span>
-<span class='co'>## Apply 'estimate_cdf()' to *$data:</span>
-<span class='va'>prob_estimation</span> <span class='op'>&lt;-</span> <span class='fu'><a href='estimate_cdf.html'>estimate_cdf</a></span><span class='op'>(</span>
-  x <span class='op'>=</span> <span class='va'>mcs_distances</span><span class='op'>$</span><span class='va'>data</span>,
-  methods <span class='op'>=</span> <span class='st'>"kaplan"</span>
-<span class='op'>)</span>
-
-<span class='co'>## Apply 'plot_prob()':</span>
-<span class='va'>plot_prob_estimation</span> <span class='op'>&lt;-</span> <span class='fu'><a href='plot_prob.html'>plot_prob</a></span><span class='op'>(</span><span class='va'>prob_estimation</span><span class='op'>)</span>
 
 </div></pre>
   </div>

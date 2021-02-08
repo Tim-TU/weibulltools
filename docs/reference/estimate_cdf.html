@@ -157,7 +157,7 @@ into account.</p>
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>x</th>
-      <td><p>A tibble returned by <a href='reliability_data.html'>reliability_data</a>.</p></td>
+      <td><p>A tibble of class <code>wt_reliability_data</code> returned by <a href='reliability_data.html'>reliability_data</a>.</p></td>
     </tr>
     <tr>
       <th>...</th>
@@ -165,9 +165,8 @@ into account.</p>
     </tr>
     <tr>
       <th>methods</th>
-      <td><p>One or multiple methods of <code>"mr"</code>, <code>"johnson"</code>,
-<code>"kaplan"</code> or <code>"nelson"</code> used for the estimation of failure
-probabilities. See 'Details'.</p></td>
+      <td><p>One or multiple methods of <code>"mr"</code>, <code>"johnson"</code>, <code>"kaplan"</code> or
+<code>"nelson"</code> used for the estimation of failure probabilities. See 'Details'.</p></td>
     </tr>
     <tr>
       <th>options</th>
@@ -177,17 +176,16 @@ probabilities. See 'Details'.</p></td>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A tibble containing the following columns:</p><ul>
+    <p>A tibble with class <code>wt_cdf_estimation</code> containing the following columns:</p><ul>
 <li><p><code>id</code> : Identification for every unit.</p></li>
 <li><p><code>x</code> : Lifetime characteristic.</p></li>
-<li><p><code>status</code> : Binary data (0 or 1) indicating whether a unit is a
-    right censored observation (= 0) or a failure (= 1).</p></li>
-<li><p><code>rank</code> : The (computed) ranks. Determined for methods <code>"mr"</code>
-    and <code>"johnson"</code>, filled with <code>NA</code> for other methods or if
-    <code>status = 0</code>.</p></li>
+<li><p><code>status</code> : Binary data (0 or 1) indicating whether a unit is a right
+censored observation (= 0) or a failure (= 1).</p></li>
+<li><p><code>rank</code> : The (computed) ranks. Determined for methods <code>"mr"</code> and <code>"johnson"</code>,
+filled with <code>NA</code> for other methods or if <code>status = 0</code>.</p></li>
 <li><p><code>prob</code> : Estimated failure probabilities, <code>NA</code> if <code>status = 0</code>.</p></li>
-<li><p><code>cdf_estimation_method</code> : Specified method for the estimation of
-    failure probabilities.</p></li>
+<li><p><code>cdf_estimation_method</code> : Specified method for the estimation of failure
+probabilities.</p></li>
 </ul>
 
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>

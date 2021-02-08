@@ -52,8 +52,8 @@ Returns a list with classes \code{wt_model}, \code{wt_rank_regression} and
 }
 
 If more than one method was specified in \link{estimate_cdf}, the resulting output
-is a list with class \code{wt_model_estimation_list}. In this case each list element
-has classes \code{wt_rank_regression} and \code{wt_model_estimation} and the items listed
+is a list with class \code{wt_model_estimation_list}. In this case, each list element
+has classes \code{wt_rank_regression} and \code{wt_model_estimation}, and the items listed
 above, are included.
 }
 \description{

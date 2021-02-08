@@ -41,8 +41,8 @@
 
 <meta property="og:title" content="Adjustment of Operating Times by Delays in Report using a Monte Carlo Approach — mcs_delay_report" />
 <meta property="og:description" content="
-mcs_delay_report() is no longer under active development, switching
-to mcs_delay is recommended." />
+mcs_delay_report() is no longer under active development, switching to
+mcs_delay is recommended." />
 
 
 
@@ -132,14 +132,14 @@ to mcs_delay is recommended." />
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Adjustment of Operating Times by Delays in Report using a Monte Carlo Approach</h1>
-    <small class="dont-index">Source: <a href='https://github.com/Tim-TU/weibulltools/blob/master/R/delay_distributions.R'><code>R/delay_distributions.R</code></a></small>
+    <small class="dont-index">Source: <a href='https://github.com/Tim-TU/weibulltools/blob/master/R/mcs_delay.R'><code>R/mcs_delay.R</code></a></small>
     <div class="hidden name"><code>mcs_delay_report.Rd</code></div>
     </div>
 
     <div class="ref-description">
     <p><img src='figures/lifecycle-soft-deprecated.svg' alt='Soft-deprecated lifecycle' /></p>
-<p><code>mcs_delay_report()</code> is no longer under active development, switching
-to <code><a href='mcs_delay.html'>mcs_delay</a></code> is recommended.</p>
+<p><code>mcs_delay_report()</code> is no longer under active development, switching to
+<a href='mcs_delay.html'>mcs_delay</a> is recommended.</p>
     </div>
 
     <pre class="usage"><span class='fu'>mcs_delay_report</span><span class='op'>(</span>
@@ -172,13 +172,13 @@ Use <code>NA</code> for missing elements.</p></td>
     </tr>
     <tr>
       <th>status</th>
-      <td><p>A vector of binary data (0 or 1) indicating whether unit <em>i</em>
-is a right censored observation (= 0) or a failure (= 1).</p></td>
+      <td><p>A vector of binary data (0 or 1) indicating whether unit <em>i</em> is
+a right censored observation (= 0) or a failure (= 1).</p></td>
     </tr>
     <tr>
       <th>distribution</th>
       <td><p>Supposed distribution of the random variable. Only
-<code>"lognormal"</code> is implemented.</p></td>
+<code>"lognormal"</code>is implemented.</p></td>
     </tr>
     <tr>
       <th>details</th>
@@ -193,16 +193,15 @@ estimated distribution parameters.</p></td>
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>A numeric vector of corrected operating times for the censored units
-and the input operating times for the failed units if
-<code>details = FALSE</code>. If <code>details = TRUE</code> the output is a list which
-consists of the following elements:</p><ul>
-<li><p><code>time</code> : Numeric vector of corrected operating times for the
-censored observations and input operating times for failed units.</p></li>
+and the input operating times for the failed units if <code>details = FALSE</code>.
+If <code>details = TRUE</code> the output is a list which consists of the following
+elements:</p><ul>
+<li><p><code>time</code> : Numeric vector of corrected operating times for the censored
+observations and input operating times for failed units.</p></li>
 <li><p><code>x_sim</code> : Simulated random numbers of specified distribution with
 estimated parameters. The length of <code>x_sim</code> is equal to the number of
 censored observations.</p></li>
-<li><p><code>coefficients</code> : Estimated coefficients of supposed
-distribution.</p></li>
+<li><p><code>coefficients</code> : Estimated coefficients of supposed distribution.</p></li>
 </ul>
 
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
@@ -214,7 +213,7 @@ database and therefore treated as censored units. To overcome this problem
 this function uses a Monte Carlo approach for simulating the operating
 times of (multiple) right censored observations, taking account of reporting
 delays. The simulation is based on the distribution of operating times that were
-calculated from complete data, i.e. failed items (see <code><a href='dist_delay_report.html'>dist_delay_report</a></code>).</p>
+calculated from complete data, i.e. failed items (see <a href='dist_delay_report.html'>dist_delay_report</a>).</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='va'>date_of_repair</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='cn'>NA</span>, <span class='st'>"2014-09-15"</span>, <span class='st'>"2015-07-04"</span>, <span class='st'>"2015-04-10"</span>, <span class='cn'>NA</span>,

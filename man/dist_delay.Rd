@@ -5,19 +5,19 @@
 \alias{dist_delay.wt_mcs_delay_data}
 \title{Parameter Estimation of a Delay Distribution}
 \usage{
-dist_delay(x, distribution, ...)
+dist_delay(...)
 
-\method{dist_delay}{wt_mcs_delay_data}(x, distribution = c("lognormal", "exponential"), ...)
+\method{dist_delay}{wt_mcs_delay_data}(..., x, distribution = c("lognormal", "exponential"))
 }
 \arguments{
+\item{...}{Further arguments passed to or from other methods. Currently not used.}
+
 \item{x}{A \code{tibble} of class \code{wt_mcs_delay_data} returned by \link{mcs_delay_data}.}
 
-\item{distribution}{Supposed distribution of the random variable.}
-
-\item{...}{Further arguments passed to or from other methods. Currently not used.}
+\item{distribution}{Supposed distribution of the respective delay.}
 }
 \value{
-A list of class \code{wt_delay_estimation} which contains:
+A list with class \code{wt_delay_estimation} which contains:
 \itemize{
 \item \code{coefficients} : A named vector of estimated parameter(s).
 \item \code{delay} : A numeric vector of element-wise computed differences in days.
@@ -29,8 +29,6 @@ is a list with class \code{wt_delay_estimation_list}. In this case each list ele
 has class \code{wt_delay_estimation} and the items listed above, are included.
 }
 \description{
-\ifelse{html}{\out{<a href='https://www.tidyverse.org/lifecycle/#experimental'><img src='figures/lifecycle-experimental.svg' alt='Experimental lifecycle'></a>}}{\strong{Experimental}}
-
 This function models a delay (in days) random variable (e.g. in logistic,
 registration, report) using a supposed continuous distribution. First, the
 row-wise differences in days of the related date columns are calculated and then

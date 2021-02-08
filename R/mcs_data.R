@@ -41,8 +41,8 @@
 #'     (`date_2.1`, `date_2.2`, `...`, `date_2.i`).
 #' * `time` : Input operating times.
 #' * `status` (**optional**) :
-#'   * If argument `status = NULL` column `status` does not exist.
-#'   * If argument `status` is provided the column contains the entered binary
+#'   * If `is.null(status)` column `status` does not exist.
+#'   * If `status` is provided the column contains the entered binary
 #'     data (0 or 1).
 #' * `id` : Identification for every unit.
 #'
@@ -300,8 +300,8 @@ mcs_delay_data <- function(data = NULL,
 #' * `mileage` : Input mileages.
 #' * `time` : Input operating times.
 #' * `status` (**optional**) :
-#'   * If argument `status = NULL` column `status` does not exist.
-#'   * If argument `status` is provided the column contains the entered binary
+#'   * If `is.null(status)` column `status` does not exist.
+#'   * If `status` is provided the column contains the entered binary
 #'     data (0 or 1).
 #' * `id` : Identification for every unit.
 #'

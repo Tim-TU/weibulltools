@@ -166,8 +166,7 @@ line with the parameterization provided by the <em>stats</em> package
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>x</th>
-      <td><p>Object of class <code>wt_cdf_estimation</code> returned from
-<code><a href='estimate_cdf.html'>estimate_cdf</a></code>.</p></td>
+      <td><p>A <code>tibble</code> of class <code>wt_cdf_estimation</code> returned by <a href='estimate_cdf.html'>estimate_cdf</a>.</p></td>
     </tr>
     <tr>
       <th>...</th>
@@ -205,22 +204,22 @@ line with the parameterization provided by the <em>stats</em> package
     for scale \(\eta\) and shape \(\beta\) (and threshold \(\gamma\))
     if <code>distribution</code> is <code>"weibull3"</code>.</p></li>
 <li><p><code>r_squared</code> : Coefficient of determination.</p></li>
-<li><p><code>data</code> : A tibble with class <code>wt_cdf_estimation</code> returned from <code><a href='estimate_cdf.html'>estimate_cdf</a></code>.</p></li>
+<li><p><code>data</code> : A <code>tibble</code> with class <code>wt_cdf_estimation</code> returned by <a href='estimate_cdf.html'>estimate_cdf</a>.</p></li>
 <li><p><code>distribution</code> : Specified distribution.</p></li>
 </ul>
 
-<p>If more than one method was specified in <code><a href='estimate_cdf.html'>estimate_cdf</a></code>,
-  the resulting output is a list with class <code>wt_model_estimation_list</code>.
-  In this case each list element has classes <code>wt_rank_regression</code> and
-  <code>wt_model_estimation</code> and the items listed above, are included.</p>
+<p>If more than one method was specified in <a href='estimate_cdf.html'>estimate_cdf</a>, the resulting output
+is a list with class <code>wt_model_estimation_list</code>. In this case, each list element
+has classes <code>wt_rank_regression</code> and <code>wt_model_estimation</code>, and the items listed
+above, are included.</p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
     <p>If <code>distribution</code> is <code>"weibull"</code> or <code>"weibull3"</code>, the approximated
 confidence intervals for the parameters can only be estimated on the following
 confidence levels (see 'References' <em>(Mock, 1995)</em>):</p><ul>
-<li><p><code>conf_level</code> = 0.90,</p></li>
-<li><p><code>conf_level</code> = 0.95,</p></li>
-<li><p><code>conf_level</code> = 0.99.</p></li>
+<li><p><code>conf_level = 0.90</code></p></li>
+<li><p><code>conf_level = 0.95</code></p></li>
+<li><p><code>conf_level = 0.99</code></p></li>
 </ul>
 
 <p>If the distribution is not the Weibull, the confidence intervals of the
@@ -233,10 +232,10 @@ in context of <em>Rank Regression</em>. For an accepted statistical method use
 
     
 <ul>
-<li><p>Mock, R., Methoden zur Datenhandhabung in
-  Zuverlässigkeitsanalysen, vdf Hochschulverlag AG an der ETH Zürich, 1995</p></li>
-<li><p>Meeker, William Q; Escobar, Luis A., Statistical methods for
-  reliability data, New York: Wiley series in probability and statistics, 1998</p></li>
+<li><p>Mock, R., Methoden zur Datenhandhabung in Zuverlässigkeitsanalysen,
+vdf Hochschulverlag AG an der ETH Zürich, 1995</p></li>
+<li><p>Meeker, William Q; Escobar, Luis A., Statistical methods for reliability data,
+New York: Wiley series in probability and statistics, 1998</p></li>
 </ul>
 
 

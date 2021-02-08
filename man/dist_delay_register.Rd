@@ -16,7 +16,7 @@ the format "yyyy-mm-dd", indicating the date of registration of a unit.
 Use \code{NA} for missing elements.}
 
 \item{distribution}{Supposed distribution of the random variable. Only
-\code{"lognormal"} is implemented.}
+\code{"lognormal"}is implemented.}
 }
 \value{
 A named vector of estimated parameters for the specified
@@ -25,8 +25,8 @@ distribution.
 \description{
 \ifelse{html}{\figure{lifecycle-soft-deprecated.svg}{options: alt='Soft-deprecated lifecycle'}}{\strong{Soft-deprecated}}
 
-\code{dist_delay_register()} is no longer under active development, switching
-to \code{\link{dist_delay}} is recommended.
+\code{dist_delay_register()} is no longer under active development, switching to
+\link{dist_delay} is recommended.
 }
 \details{
 This function introduces a delay random variable by calculating the time
