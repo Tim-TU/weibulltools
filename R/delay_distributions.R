@@ -216,12 +216,18 @@ dist_delay.default <- function(...,
 
   ## Compare length of date_1 and distribution:
   if (!(length(distribution) == length(date_1) || length(distribution) == 1L)) {
-    stop("'distribution' must be either length one or 'length(date_1)'")
+    stop(
+      "'distribution' must be either length one or 'length(date_1)'",
+      call. = FALSE
+    )
   }
 
   ## Check for different length in date_1 and date_2:
   if (length(unique(lengths(c(date_1, date_2)))) != 1L) {
-    stop("All elements of 'date_1' and 'date_2' must have the same length!")
+    stop(
+      "All elements of 'date_1' and 'date_2' must have the same length!",
+      call. = FALSE
+    )
   }
 
   # Do dist_delay_() with respect to the number of delays:
@@ -431,16 +437,25 @@ dist_delay_register <- function(date_prod,
   # test for delays: all NA and smaller or equal to 0.
   # all NA:
   if (all(is.na(t_regist))) {
-    stop("All differences are NA. No parameters can be estimated!")
+    stop(
+      "All differences are NA. No parameters can be estimated!",
+      call. = FALSE
+    )
   }
   # all smaller or equal to zero:
   if (all(t_regist <= 0, na.rm = TRUE)) {
-    stop("All differences are smaller or equal to 0. No parameters can be estimated!")
+    stop(
+      "All differences are smaller or equal to 0. No parameters can be estimated!",
+      call. = FALSE
+    )
   }
   # any smaller or equal to zero:
   if (!all(t_regist <= 0, na.rm = TRUE) && any(t_regist <= 0, na.rm = TRUE)) {
-    warning("At least one of the time differences is smaller or equal to 0 and is",
-            " ignored for the estimation step!")
+    warning(
+      "At least one of the time differences is smaller or equal to 0 and is",
+      " ignored for the estimation step!",
+      call. = FALSE
+    )
 
     t_regist <- t_regist[t_regist > 0]
   }
@@ -525,16 +540,25 @@ dist_delay_report <- function(date_repair,
   # test for delays: all NA and smaller or equal to 0.
   # all NA:
   if (all(is.na(t_report))) {
-    stop("All differences are NA. No parameters can be estimated!")
+    stop(
+      "All differences are NA. No parameters can be estimated!",
+      call. = FALSE
+    )
   }
   # all smaller or equal to zero:
   if (all(t_report <= 0, na.rm = TRUE)) {
-    stop("All differences are smaller or equal to 0. No parameters can be estimated!")
+    stop(
+      "All differences are smaller or equal to 0. No parameters can be estimated!",
+      call. = FALSE
+    )
   }
   # any smaller or equal to zero:
   if (!all(t_report <= 0, na.rm = TRUE) && any(t_report <= 0, na.rm = TRUE)) {
-    warning("At least one of the time differences is smaller or equal to 0 and is",
-            " ignored for the estimation step!")
+    warning(
+      "At least one of the time differences is smaller or equal to 0 and is",
+      " ignored for the estimation step!",
+      call. = FALSE
+    )
 
     t_report <- t_report[t_report > 0]
   }

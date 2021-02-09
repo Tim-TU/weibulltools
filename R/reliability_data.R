@@ -76,11 +76,11 @@ reliability_data <- function(data = NULL,
   if (purrr::is_null(data)) {
     # Vector based approach ----------------------------------------------------
     if (!is_characteristic(x)) {
-      stop("'x' must be numeric!")
+      stop("'x' must be numeric!", call. = FALSE)
     }
 
     if (!is_status(status)) {
-      stop("'status' must be numeric with elements 0 or 1!")
+      stop("'status' must be numeric with elements 0 or 1!", call. = FALSE)
     }
 
     if (purrr::is_null(id)) {
@@ -93,11 +93,11 @@ reliability_data <- function(data = NULL,
   } else {
     # Data based approach -----------------------------------------------------
     if (!is_characteristic(dplyr::select(data, x = {{x}})[[1]])) {
-      stop("'x' must be numeric!")
+      stop("'x' must be numeric!", call. = FALSE)
     }
 
     if (!is_status(dplyr::select(data, status = {{status}})[[1]])) {
-      stop("'status' must be numeric with elements 0 or 1!")
+      stop("'status' must be numeric with elements 0 or 1!", call. = FALSE)
     }
 
     x_def <- dplyr::enexpr(x)

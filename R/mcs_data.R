@@ -135,7 +135,7 @@ mcs_delay_data <- function(data = NULL,
   if (purrr::is_null(data)) {
     # Vector based approach ----------------------------------------------------
     if (!is_characteristic(time)) {
-      stop("'time' must be numeric!")
+      stop("'time' must be numeric!", call. = FALSE)
     }
 
     if (purrr::is_null(id)) {
@@ -153,15 +153,24 @@ mcs_delay_data <- function(data = NULL,
       function(e1, e2) {
         ### Check for different length in date_1 and date_2:
         if (length(e1) != length(e2)) {
-          stop("Elements of 'date_1' and 'date_2' differ in length!")
+          stop(
+            "Elements of 'date_1' and 'date_2' differ in length!",
+            call. = FALSE
+          )
         }
         ### Check for class of date_1:
         if (!(class(e1) %in% c("Date", "character"))) {
-          stop("'date_1' must be of class 'Date' or 'character'!")
+          stop(
+            "'date_1' must be of class 'Date' or 'character'!",
+            call. = FALSE
+          )
         }
         ### Check for class date_2:
         if (!(class(e2) %in% c("Date", "character"))) {
-          stop("'date_2' must be of class 'Date' or 'character'!")
+          stop(
+            "'date_2' must be of class 'Date' or 'character'!",
+            call. = FALSE
+          )
         }
       }
     )
@@ -171,7 +180,10 @@ mcs_delay_data <- function(data = NULL,
     names_dates_list <- names(dates_list)
 
     if (any(trimws(names_dates_list) == "")) {
-      stop("Either all or no elements of 'date_1' and 'date_2' must have names!")
+      stop(
+        "Either all or no elements of 'date_1' and 'date_2' must have names!",
+        call. = FALSE
+      )
     }
 
     if (purrr::is_null(names_dates_list)) {
@@ -188,7 +200,7 @@ mcs_delay_data <- function(data = NULL,
 
     if (!purrr::is_null(status)) {
       if (!is_status(status)) {
-        stop("'status' must be numeric with elements 0 or 1!")
+        stop("'status' must be numeric with elements 0 or 1!", call. = FALSE)
       }
       tbl_list <- c(dates_list, list(time, status, id))
       names(tbl_list) <- c(names_dates_list, "time", "status", "id")
@@ -208,7 +220,7 @@ mcs_delay_data <- function(data = NULL,
     # Data based approach ------------------------------------------------------
     ## Checks:
     if (!is_characteristic(dplyr::select(data, {{time}})[[1]])) {
-      stop("'time' must be numeric!")
+      stop("'time' must be numeric!", call. = FALSE)
     }
 
     purrr::walk(
@@ -216,7 +228,8 @@ mcs_delay_data <- function(data = NULL,
       ~ if (!(class(.) %in% c("Date", "character"))) {
         stop(
           "Columns specified in 'date_1' and 'date_2' must be of class",
-          " 'Date' or 'character'!"
+          " 'Date' or 'character'!",
+          call. = FALSE
         )
       }
     )
@@ -227,7 +240,10 @@ mcs_delay_data <- function(data = NULL,
 
     ## Check for same length in 'date_1' and 'date_2':
     if (length(characteristic_1) != length(characteristic_2)) {
-      stop("The same number of columns must be specified in 'date_1' and 'date_2'!")
+      stop(
+        "The same number of columns must be specified in 'date_1' and 'date_2'!",
+        call. = FALSE
+      )
     }
 
     data <- tibble::as_tibble(data)
@@ -257,7 +273,7 @@ mcs_delay_data <- function(data = NULL,
 
     if ("status" %in% names(tbl)) {
       if (!is_status(tbl$status)) {
-        stop("'status' must be numeric with elements 0 or 1!")
+        stop("'status' must be numeric with elements 0 or 1!", call. = FALSE)
       }
     }
 
@@ -367,11 +383,11 @@ mcs_mileage_data <- function(data = NULL,
   if (purrr::is_null(data)) {
     # Vector based approach ----------------------------------------------------
     if (!is_characteristic(mileage)) {
-      stop("'mileage' must be numeric!")
+      stop("'mileage' must be numeric!", call. = FALSE)
     }
 
     if (!is_characteristic(time)) {
-      stop("'time' must be numeric!")
+      stop("'time' must be numeric!", call. = FALSE)
     }
 
     if (purrr::is_null(id)) {
@@ -380,7 +396,7 @@ mcs_mileage_data <- function(data = NULL,
 
     if (!purrr::is_null(status)) {
       if (!is_status(status)) {
-        stop("'status' must be numeric with elements 0 or 1!")
+        stop("'status' must be numeric with elements 0 or 1!", call. = FALSE)
       }
       tbl <- tibble::tibble(
         mileage = mileage,
@@ -399,11 +415,11 @@ mcs_mileage_data <- function(data = NULL,
   } else {
     # Data based approach ------------------------------------------------------
     if (!is_characteristic(dplyr::select(data, {{mileage}})[[1]])) {
-      stop("'mileage' must be numeric!")
+      stop("'mileage' must be numeric!", call. = FALSE)
     }
 
     if (!is_characteristic(dplyr::select(data, {{time}})[[1]])) {
-      stop("'time' must be numeric!")
+      stop("'time' must be numeric!", call. = FALSE)
     }
 
     data <- tibble::as_tibble(data)
@@ -432,7 +448,7 @@ mcs_mileage_data <- function(data = NULL,
 
     if ("status" %in% names(tbl)) {
       if (!is_status(tbl$status)) {
-        stop("'status' must be numeric with elements 0 or 1!")
+        stop("'status' must be numeric with elements 0 or 1!", call. = FALSE)
       }
 
       tbl <- dplyr::relocate(tbl, "mileage", "time", "status", "id")

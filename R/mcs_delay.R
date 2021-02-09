@@ -340,7 +340,9 @@ mcs_delay_ <- function(data = NULL,
   mcs_output <- list(
     data = data_tbl,
     sim_data = tibble::as_tibble(sim_list),
-    model_estimation = par_list
+    model_estimation = list(
+      delay_distribution = par_list
+    )
   )
 
   class(mcs_output) <- c("wt_mcs_delay", class(mcs_output))
@@ -489,7 +491,7 @@ mcs_delay_register <- function(date_prod,
 
     x_sim <- stats::rlnorm(n = n_rand, meanlog = params[[1]], sdlog = params[[2]])
   } else {
-    stop("No valid distribution!")
+    stop("No valid distribution!", call. = FALSE)
   }
 
   time[is.na(date_register)] <- time[is.na(date_register)] - x_sim
@@ -605,7 +607,7 @@ mcs_delay_report <- function(date_repair,
 
     x_sim <- stats::rlnorm(n = n_rand, meanlog = params[[1]], sdlog = params[[2]])
   } else {
-    stop("No valid distribution!")
+    stop("No valid distribution!", call. = FALSE)
   }
 
   time[status == 0] <- time[status == 0] - x_sim
@@ -761,7 +763,7 @@ mcs_delays <- function(date_prod,
     x_sim_report <- stats::rlnorm(n = n_rand_report, meanlog = params_report[[1]],
                                   sdlog = params_report[[2]])
   } else {
-    stop("No valid distribution!")
+    stop("No valid distribution!", call. = FALSE)
   }
 
   time[is.na(date_register)] <- time[is.na(date_register)] - x_sim_regist
