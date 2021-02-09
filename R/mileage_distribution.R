@@ -134,7 +134,8 @@ dist_mileage.default <- function(x,
   ## Check for negative mileage, stop if TRUE:
   if (any(x < 0, na.rm = TRUE)) {
     stop(
-      "Elements with negative distances are not meaningful and must be removed!"
+      "Elements with negative distances are not meaningful and must be removed!",
+      call. = FALSE
     )
   }
 
@@ -164,6 +165,7 @@ dist_mileage_ <- function(x,
     warning(
       "At least one computed annual distance is infinite and is ignored ",
       "for the estimation step!",
+      call. = FALSE
     )
 
     miles_annual <- miles_annual[!is.infinite(miles_annual)]
@@ -172,7 +174,8 @@ dist_mileage_ <- function(x,
   ## all NA:
   if (all(is.na(miles_annual))) {
     stop(
-      "All computed annual distances are 'NA'. No parameters can be estimated!"
+      "All computed annual distances are 'NA'. No parameters can be estimated!",
+      call. = FALSE
     )
   }
 
@@ -183,13 +186,15 @@ dist_mileage_ <- function(x,
       ### all:
       stop(
         "All computed annual distances are smaller or equal to 0. ",
-        "No parameters can be estimated!"
+        "No parameters can be estimated!",
+        call. = FALSE
       )
     } else {
       ### any:
       warning(
         "At least one computed annual distance is smaller or equal to 0 ",
-        "and is ignored for the estimation step!"
+        "and is ignored for the estimation step!",
+        call. = FALSE
       )
 
       miles_annual <- miles_annual[miles_annual > 0]

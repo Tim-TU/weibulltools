@@ -158,7 +158,7 @@ mcs_mileage.default <- function(x,
 
   ## Check for different length in time and x:
   if (length(x) != length(time)) {
-    stop("Elements of 'x' and 'time' differ in length!")
+    stop("Elements of 'x' and 'time' differ in length!", call. = FALSE)
   }
 
   mcs_mileage_(
