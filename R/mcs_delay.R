@@ -335,6 +335,7 @@ mcs_delay_ <- function(data = NULL,
     names(sim_list) <- paste0("sim_delay_", seq_along(sim_list))
   } else {
     names(sim_list) <- "sim_delay"
+    par_list <- par_list[[1]]
   }
 
   mcs_output <- list(

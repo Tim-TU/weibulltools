@@ -58,7 +58,7 @@ test_that("dist_delay supports missing dates using NA entries", {
   )
 })
 
-test_that("dist_delay warns if any time difference is smaller or equal to zero", {
+test_that("dist_delay warns if any time difference is less than or equal to zero", {
   date_of_production   <- c("2014-02-17", "2014-12-02", NA, "2014-03-10",
                             "2014-05-14", NA, "2014-03-07", "2014-03-09",
                             "2014-04-13", "2014-05-20", "2014-07-07", "2014-01-27",
@@ -76,11 +76,11 @@ test_that("dist_delay warns if any time difference is smaller or equal to zero",
       date_1 = date_of_production,
       date_2 = date_of_registration
     ),
-    "At least one of the date differences is smaller or equal to 0*"
+    "At least one of the date differences is less than or equal to 0*"
   )
 })
 
-test_that("dist_delay stops if all time difference are smaller or equal to zero", {
+test_that("dist_delay stops if all time difference are less than or equal to zero", {
   date_of_production   <- c("2014-02-17", "2014-12-06", "2014-09-09", "2014-01-08")
   date_of_registration <- c("2014-02-17", "2014-12-02", "2014-09-09", "2013-05-08")
 
@@ -89,7 +89,7 @@ test_that("dist_delay stops if all time difference are smaller or equal to zero"
       date_1 = date_of_production,
       date_2 = date_of_registration
     ),
-    "All date differences are smaller or equal to 0*"
+    "All date differences are less than or equal to 0*"
   )
 })
 
@@ -230,7 +230,7 @@ test_that("mcs_delay remains stable by defining the seed", {
 })
 
 ## dist_delay_register():
-test_that("dist_delay_register warns if any time difference is smaller or equal to zero", {
+test_that("dist_delay_register warns if any time difference is less than or equal to zero", {
   date_of_production   <- c("2014-02-17", "2014-12-02", NA, "2014-03-10",
                             "2014-05-14", NA, "2014-03-07", "2014-03-09",
                             "2014-04-13", "2014-05-20", "2014-07-07", "2014-01-27",
@@ -249,12 +249,12 @@ test_that("dist_delay_register warns if any time difference is smaller or equal 
         date_prod = date_of_production,
         date_register = date_of_registration
       ),
-      "At least one of the time differences is smaller or equal to 0*"
+      "At least one of the time differences is less than or equal to 0*"
     )
   )
 })
 
-test_that("dist_delay_register stops if all time difference are smaller or equal to zero", {
+test_that("dist_delay_register stops if all time difference are less than or equal to zero", {
   date_of_production   <- c("2014-02-17", "2014-12-06", "2014-09-09", "2014-01-08")
   date_of_registration <- c("2014-02-17", "2014-12-02", "2014-09-09", "2013-05-08")
 
@@ -264,7 +264,7 @@ test_that("dist_delay_register stops if all time difference are smaller or equal
         date_prod = date_of_production,
         date_register = date_of_registration
       ),
-      "All differences are smaller or equal to 0*"
+      "All differences are less than or equal to 0*"
     )
   )
 })
@@ -307,7 +307,7 @@ test_that("dist_delay_register remains stable", {
 })
 
 ## dist_delay_report():
-test_that("dist_delay_report warns if any time difference is smaller or equal to zero", {
+test_that("dist_delay_report warns if any time difference is less than or equal to zero", {
   date_of_repair <- c(NA, NA, "2050-07-04", "2015-04-10", NA,
                       NA, "2100-04-24", NA, "2015-04-25", "2015-04-24",
                       "2015-06-12", NA, "2015-05-04", NA, NA,
@@ -326,12 +326,12 @@ test_that("dist_delay_report warns if any time difference is smaller or equal to
         date_repair = date_of_repair,
         date_report = date_of_report
       ),
-      "At least one of the time differences is smaller or equal to 0*"
+      "At least one of the time differences is less than or equal to 0*"
     )
   )
 })
 
-test_that("dist_delay_report stops if all time difference are smaller or equal to zero", {
+test_that("dist_delay_report stops if all time difference are less than or equal to zero", {
   date_of_repair <- c("2015-04-10", "2015-04-25", "2015-04-24", "2015-06-12")
 
   date_of_report <- c("2015-04-10", "2015-04-25", "2015-04-24", "2015-06-12")
@@ -342,7 +342,7 @@ test_that("dist_delay_report stops if all time difference are smaller or equal t
         date_repair = date_of_repair,
         date_report = date_of_report
       ),
-      "All differences are smaller or equal to 0*"
+      "All differences are less than or equal to 0*"
     )
   )
 })
