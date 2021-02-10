@@ -118,7 +118,7 @@ conf_mock <- function(dist_params, # loc-scale-parameters
 
 
 
-# Confidence intervals for parameters using a heteroscedastic vcov-matrix:
+# Confidence intervals for parameters using a HC standard errors:
 conf_sandwich <- function(dist_params, # loc-scale-parameters
                           dist_varcov, # loc-scale-var-cov
                           conf_level,
@@ -138,8 +138,8 @@ conf_sandwich <- function(dist_params, # loc-scale-parameters
     df = n - 2
   )
 
-  conf_mu <- dist_params[["mu"]] + q_t * dist_se[[1]] / sqrt(n)
-  conf_sigma <- dist_params[["sigma"]] + q_t * dist_se[[2]] / sqrt(n)
+  conf_mu <- dist_params[["mu"]] + q_t * dist_se[[1]]
+  conf_sigma <- dist_params[["sigma"]] + q_t * dist_se[[2]]
 
   # Consider direction:
   if (direction == "y_on_x") {

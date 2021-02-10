@@ -340,8 +340,8 @@ rank_regression_ <- function(cdf_estimation,
       direction = direction
     )
   } else {
-    ## Confidence intervals with het-const. vcov-matrix for any other distribution:
-    ### Estimating heteroscedastic-consistent covariance matrix:
+    ## Confidence intervals with HC standard errors for any other distribution:
+    ### Estimating HC covariance matrix:
     dist_varcov <- sandwich::vcovHC(x = rr, type = "HC1")
 
     output <- conf_sandwich(
