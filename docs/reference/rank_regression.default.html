@@ -40,9 +40,9 @@
 
 
 <meta property="og:title" content="Rank Regression for Parametric Lifetime Distributions — rank_regression.default" />
-<meta property="og:description" content="This function fits an x on y regression to a linearized two- or
-three-parameter lifetime distribution for complete and (multiple) right
-censored data. The parameters are determined in the frequently used
+<meta property="og:description" content="This function fits a regression model to a linearized two- or three-parameter
+lifetime distribution for complete and (multiple) right-censored data.
+The parameters are determined in the frequently used
 (log-)location-scale parameterization.
 For the Weibull, estimates are additionally transformed such that they are in
 line with the parameterization provided by the stats package
@@ -141,9 +141,9 @@ line with the parameterization provided by the stats package
     </div>
 
     <div class="ref-description">
-    <p>This function fits an <strong>x on y</strong> regression to a linearized two- or
-three-parameter lifetime distribution for complete and (multiple) right
-censored data. The parameters are determined in the frequently used
+    <p>This function fits a regression model to a linearized two- or three-parameter
+lifetime distribution for complete and (multiple) right-censored data.
+The parameters are determined in the frequently used
 (log-)location-scale parameterization.</p>
 <p>For the Weibull, estimates are additionally transformed such that they are in
 line with the parameterization provided by the <em>stats</em> package
@@ -158,6 +158,8 @@ line with the parameterization provided by the <em>stats</em> package
   distribution <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"weibull"</span>, <span class='st'>"lognormal"</span>, <span class='st'>"loglogistic"</span>, <span class='st'>"normal"</span>, <span class='st'>"logistic"</span>, <span class='st'>"sev"</span>,
     <span class='st'>"weibull3"</span>, <span class='st'>"lognormal3"</span>, <span class='st'>"loglogistic3"</span><span class='op'>)</span>,
   conf_level <span class='op'>=</span> <span class='fl'>0.95</span>,
+  direction <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"x_on_y"</span>, <span class='st'>"y_on_x"</span><span class='op'>)</span>,
+  control <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='op'>)</span>,
   <span class='va'>...</span>
 <span class='op'>)</span></pre>
 
@@ -191,6 +193,18 @@ a right censored observation (= 0) or a failure (= 1).</p></td>
 <code>"weibull"</code> this must be one of <code>0.9</code>, <code>0.95</code> or <code>0.99</code>.</p></td>
     </tr>
     <tr>
+      <th>direction</th>
+      <td><p>Direction of the dependence in the regression model.</p></td>
+    </tr>
+    <tr>
+      <th>control</th>
+      <td><p>A list of control parameters (see <a href='https://rdrr.io/r/stats/optim.html'>optim</a>).</p>
+<p><code>control</code> only is in use if a three-parametric distribution was specified.
+If this is the case, <code>optim</code> (always with <code>method = "L-BFGS-B"</code> and
+<code>control$fnscale = -1</code>) is called to determine the threshold parameter
+(see <a href='r_squared_profiling.html'>r_squared_profiling</a>).</p></td>
+    </tr>
+    <tr>
       <th>...</th>
       <td><p>Further arguments passed to or from other methods. Currently not used.</p></td>
     </tr>
@@ -219,6 +233,7 @@ a right censored observation (= 0) or a failure (= 1).</p></td>
 <li><p><code>r_squared</code> : Coefficient of determination.</p></li>
 <li><p><code>data</code> : A <code>tibble</code> with columns <code>x</code>, <code>status</code> and <code>prob</code>.</p></li>
 <li><p><code>distribution</code> : Specified distribution.</p></li>
+<li><p><code>direction</code> : Specified direction.</p></li>
 </ul>
 
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>

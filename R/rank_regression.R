@@ -321,7 +321,7 @@ rank_regression_ <- function(cdf_estimation,
   )
 
   ## Parameters:
-  dist_params <- coef(rr)
+  dist_params <- stats::coef(rr)
   names(dist_params) <- c("mu", "sigma")
 
   ### Three-parametric:

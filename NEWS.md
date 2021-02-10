@@ -16,6 +16,10 @@
 
 ## New Features
 
+### Parametric Models
+* `rank_regression()`: New arguments `direction` (specifies direction of dependency in the model) and `control` (enables access to control parameters in `optim`).  
+* `r_squared_profiling()`: New argument `direction`. 
+
 ### Confidence Intervals
 * `confint_betabinom()`: Methods `"kaplan"` and `"nelson"` of `estimate_cdf()` can be used for beta-binomial confidence bounds.
 
