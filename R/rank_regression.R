@@ -1,9 +1,9 @@
 #' Rank Regression for Parametric Lifetime Distributions
 #'
 #' @description
-#' This function fits an **x on y** regression to a linearized two- or
-#' three-parameter lifetime distribution for complete and (multiple) right
-#' censored data. The parameters are determined in the frequently used
+#' This function fits a regression model to a linearized two- or three-parameter
+#' lifetime distribution for complete and (multiple) right-censored data.
+#' The parameters are determined in the frequently used
 #' (log-)location-scale parameterization.
 #'
 #' For the Weibull, estimates are additionally transformed such that they are in
@@ -30,6 +30,13 @@
 #' @param distribution Supposed distribution of the random variable.
 #' @param conf_level Confidence level of the interval. If `distribution` is
 #'   `"weibull"` this must be one of `0.9`, `0.95` or `0.99`.
+#' @param direction Direction of the dependence in the regression model.
+#' @param control A list of control parameters (see [optim][stats::optim]).
+#'
+#' `control` only is in use if a three-parametric distribution was specified.
+#' If this is the case, `optim` (always with `method = "L-BFGS-B"` and
+#' `control$fnscale = -1`) is called to determine the threshold parameter
+#' (see [r_squared_profiling]).
 #' @template dots
 #'
 #' @template return-rank-regression
@@ -94,7 +101,17 @@
 #'   conf_level = 0.99
 #' )
 #'
-#' # Example 3 - Fitting a three-parametric loglogistic distribution if multiple
+#' # Example 3 - Fitting a three-parametric lognormal distribution using
+#' # direction and control arguments:
+#' rr_3p_control <- rank_regression(
+#'   x = prob_tbl_3p,
+#'   distribution = "lognormal3",
+#'   conf_level = 0.99,
+#'   direction = "y_on_x",
+#'   control = list(trace = TRUE, REPORT = 1)
+#' )
+#'
+#' # Example 4 - Fitting a three-parametric loglogistic distribution if multiple
 #' # methods in estimate_cdf were specified:
 #' rr_lists <- rank_regression(
 #'   x = prob_tbl_mult,
@@ -122,16 +139,21 @@ rank_regression.wt_cdf_estimation <- function(x,
                                                 "lognormal3", "loglogistic3"
                                               ),
                                               conf_level = 0.95,
+                                              direction = c("x_on_y", "y_on_x"),
+                                              control = list(),
                                               ...
 ) {
 
   distribution <- match.arg(distribution)
+  direction <- match.arg(direction)
 
   if (length(unique(x$cdf_estimation_method)) == 1) {
     rank_regression_(
       cdf_estimation = x,
       distribution = distribution,
-      conf_level = conf_level
+      conf_level = conf_level,
+      direction = direction,
+      control = control
     )
   } else {
     # Apply rank_regression to each cdf estimation method separately
@@ -141,7 +163,9 @@ rank_regression.wt_cdf_estimation <- function(x,
       rank_regression_(
         cdf_estimation = cdf_estimation,
         distribution = distribution,
-        conf_level = conf_level
+        conf_level = conf_level,
+        direction = direction,
+        control = control
       )
     })
 
@@ -225,278 +249,128 @@ rank_regression.default <- function(x,
                                                      "weibull3", "lognormal3",
                                                      "loglogistic3"),
                                     conf_level = 0.95,
+                                    direction = c("x_on_y", "y_on_x"),
+                                    control = list(),
                                     ...
 ) {
 
   distribution <- match.arg(distribution)
+  direction <- match.arg(direction)
 
   cdf_estimation <- tibble::tibble(x = x, status = status, prob = y)
 
-  rank_regression_(cdf_estimation, distribution, conf_level)
+  rank_regression_(
+    cdf_estimation = cdf_estimation,
+    distribution = distribution,
+    conf_level = conf_level,
+    direction = direction,
+    control = control
+  )
 }
 
 
 
+# Function that performs the parameter estimation:
 rank_regression_ <- function(cdf_estimation,
                              distribution,
-                             conf_level
+                             conf_level,
+                             direction,
+                             control
 ) {
 
-  # In terms of MRR only failed items can be used:
+  # In terms of RR only failed items can be used:
   cdf_failed <- cdf_estimation %>% dplyr::filter(.data$status == 1)
 
   x_f <- cdf_failed$x
   y_f <- cdf_failed$prob
 
-  # Median-Rank-Regression Weibull:
-  if (distribution == "weibull") {
-    # Log-Location-Scale
-    mrr <- stats::lm(log(x_f) ~ SPREDA::qsev(y_f))
-    estimates_loc_sc <- c(stats::coef(mrr)[[1]], stats::coef(mrr)[[2]])
-    names(estimates_loc_sc) <- c("mu", "sigma")
-
-    # Alternative Parameterization:
-    estimates <- c(exp(stats::coef(mrr)[[1]]), 1 / stats::coef(mrr)[[2]])
-    names(estimates) <- c("eta", "beta")
-
-    if (conf_level == 0.90) {
-      mock_val <- 1.4
-    } else if (conf_level == 0.95) {
-      mock_val <- 2
-    } else if (conf_level == 0.99) {
-      mock_val <- 3.4
-    } else {
-      stop("'conf_level' must be 0.90, 0.95 or 0.99")
-    }
-
-    conf_beta <- c(
-      estimates[[2]] * 1 / (1 + sqrt(mock_val / length(x_f))),
-      estimates[[2]] * (1 + sqrt(mock_val / length(x_f)))
-    )
-    conf_eta <- c(
-      estimates[[1]] * (2 * length(x_f) / stats::qchisq(p = (1 + conf_level) / 2,
-                                                        df = 2 * length(x_f) + 2)) ^ (1 / estimates[[2]]),
-      estimates[[1]] * (2 * length(x_f) / stats::qchisq(p = (1 - conf_level) / 2,
-                                                        df = 2 * length(x_f) + 2)) ^ (1 / estimates[[2]])
-    )
-
-    conf_ints <- matrix(c(conf_eta, conf_beta), byrow = TRUE, ncol = 2)
-    colnames(conf_ints) <- c(paste(((1 - conf_level) / 2) * 100, "%"),
-                             paste(((1 + conf_level) / 2) * 100, "%"))
-    rownames(conf_ints) <- names(estimates)
-
-    conf_ints_loc_sc <- matrix(c(log(conf_eta), rev(1 / conf_beta)),
-                               byrow = TRUE, ncol = 2)
-    colnames(conf_ints_loc_sc) <- colnames(conf_ints)
-    rownames(conf_ints_loc_sc) <- names(estimates_loc_sc)
-
-    r_sq <- summary(mrr)$r.squared
-
-    mrr_output <- list(
-      coefficients = estimates_loc_sc,
-      confint = conf_ints_loc_sc,
-      shape_scale_coefficients = estimates,
-      shape_scale_confint = conf_ints,
-      r_squared = r_sq
-    )
-  }
+  # Pre-Step: Three-parametric models must be profiled w.r.t to threshold:
   if (distribution %in% c("weibull3", "lognormal3", "loglogistic3")) {
-    # Log-Location-Scale with threshold:
-    ## Optimization of profile function:
-    optim_gamma <- stats::optim(
+
+    ## Force maximization:
+    control$fnscale <- -1
+
+    ## Optimization using `r_squared_profiling`:
+    opt_thres <- stats::optim(
       par = 0,
       fn = r_squared_profiling,
       method = "L-BFGS-B",
       upper = (1 - (1 / 1e+5)) * min(x_f),
       lower = 0,
-      control = list(fnscale = -1),
+      control = control,
       x = x_f,
       y = y_f,
       distribution = distribution
     )
 
-    ## Estimate of Threshold:
-    estimate_gamma <- optim_gamma$par
+    opt_thres <- opt_thres$par
 
-    ## Subtracting Threshold and Estimation of Location-Scale:
-    x_gamma <- x_f - estimate_gamma
-
-    ### Defining subset for unusual case of x_gamma being smaller or equal to 0:
-    subs <- x_gamma > 0
-
-    if (distribution == "weibull3") {
-
-      mrr <- stats::lm(log(x_gamma[subs]) ~ SPREDA::qsev(y_f[subs]))
-      estimates_loc_sc <- c(stats::coef(mrr)[[1]], stats::coef(mrr)[[2]], estimate_gamma)
-      names(estimates_loc_sc) <- c("mu", "sigma", "gamma")
-
-      # Alternative Parameterization
-      estimates <- c(exp(stats::coef(mrr)[[1]]), 1 / stats::coef(mrr)[[2]], estimate_gamma)
-      names(estimates) <- c("eta", "beta", "gamma")
-
-      if (conf_level == 0.90) {
-        mock_val <- 1.4
-      } else if (conf_level == 0.95) {
-        mock_val <- 2
-      } else if (conf_level == 0.99) {
-        mock_val <- 3.4
-      } else {
-        stop("'conf_level' must be 0.90, 0.95 or 0.99")
-      }
-
-      conf_beta <- c(
-        estimates[[2]] * 1 / (1 + sqrt(mock_val / length(x_gamma[subs]))),
-        estimates[[2]] * (1 + sqrt(mock_val / length(x_gamma[subs])))
-      )
-      conf_eta <- c(
-        estimates[[1]] * (2 * length(x_gamma[subs]) / stats::qchisq(p = (1 + conf_level) / 2,
-                                                                    df = 2 * length(x_gamma[subs]))) ^ (1 / estimates[[2]]),
-        estimates[[1]] * (2 * length(x_gamma[subs]) / stats::qchisq(p = (1 - conf_level) / 2,
-                                                                    df = 2 * length(x_gamma[subs]))) ^ (1 / estimates[[2]])
-      )
-      conf_gamma <- c(
-        estimates[[3]] * (2 * length(x_gamma[subs]) / stats::qchisq(p = (1 + conf_level) / 2,
-                                                                    df = 2 * length(x_gamma[subs]))) ^ (1 / estimates[[2]]),
-        estimates[[3]] * (2 * length(x_gamma[subs]) / stats::qchisq(p = (1 - conf_level) / 2,
-                                                                    df = 2 * length(x_gamma[subs]))) ^ (1 / estimates[[2]])
-      )
-
-      conf_ints <- matrix(c(conf_eta, conf_beta, conf_gamma), byrow = TRUE, ncol = 2)
-      colnames(conf_ints) <- c(paste(((1 - conf_level) / 2) * 100, "%"),
-                               paste(((1 + conf_level) / 2) * 100, "%"))
-      rownames(conf_ints) <- names(estimates)
-
-      conf_ints_loc_sc <- matrix(c(log(conf_eta), rev(1 / conf_beta), conf_gamma),
-                                 byrow = TRUE, ncol = 2)
-      colnames(conf_ints_loc_sc) <- colnames(conf_ints)
-      rownames(conf_ints_loc_sc) <- names(estimates_loc_sc)
-
-      r_sq <- summary(mrr)$r.squared
-
-      mrr_output <- list(
-        coefficients = estimates_loc_sc,
-        shape_scale_coefficients = estimates,
-        shape_scale_confint = conf_ints,
-        confint = conf_ints_loc_sc,
-        r_squared = r_sq
-      )
-
-    } else if (distribution %in% c("lognormal3", "loglogistic3")) {
-
-      if (distribution == "lognormal3") {
-        mrr <- stats::lm(log(x_gamma[subs]) ~ stats::qnorm(y_f[subs]))
-      }
-
-      if (distribution == "loglogistic3") {
-        mrr <- stats::lm(log(x_gamma[subs]) ~ stats::qlogis(y_f[subs]))
-      }
-
-      estimates_loc_sc <- c(stats::coef(mrr)[[1]], stats::coef(mrr)[[2]], estimate_gamma)
-      names(estimates_loc_sc) <- c("mu", "sigma", "gamma")
-
-
-      # Estimating a heteroscedasticity-consistent covariance matrix:
-      vcov_loc_sc <- sandwich::vcovHC(x = mrr, type = "HC1")
-      colnames(vcov_loc_sc) <- names(estimates_loc_sc)[-3]
-      rownames(vcov_loc_sc) <- names(estimates_loc_sc)[-3]
-      se <- sqrt(diag(vcov_loc_sc))
-
-      # Confidence Intervals Location-Scale-Parameterization:
-      conf_mu <- c(
-        estimates_loc_sc[[1]] - stats::qt((1 + conf_level) / 2,
-                                          df = length(x_gamma[subs]) - 2) * se[[1]] / sqrt(length(x_gamma[subs])),
-        estimates_loc_sc[[1]] + stats::qt((1 + conf_level) / 2,
-                                          df = length(x_gamma[subs]) - 2) * se[[1]] / sqrt(length(x_gamma[subs])))
-
-      conf_sig <- c(
-        estimates_loc_sc[[2]] - stats::qt((1 + conf_level) / 2,
-                                          df = length(x_gamma[subs]) - 2) * se[[2]] / sqrt(length(x_gamma[subs])),
-        estimates_loc_sc[[2]] + stats::qt((1 + conf_level) / 2,
-                                          df = length(x_gamma[subs]) - 2) * se[[2]] / sqrt(length(x_gamma[subs])))
-
-      conf_ints_loc_sc <- matrix(c(conf_mu, conf_sig, NA, NA), byrow = TRUE,
-                                 ncol = 2)
-      colnames(conf_ints_loc_sc) <- c(paste(((1 - conf_level) / 2) * 100, "%"),
-                                      paste(((1 + conf_level) / 2) * 100, "%"))
-      rownames(conf_ints_loc_sc) <- names(estimates_loc_sc)
-
-      r_sq <- summary(mrr)$r.squared
-
-      mrr_output <- list(
-        coefficients = estimates_loc_sc,
-        confint = conf_ints_loc_sc,
-        varcov = vcov_loc_sc,
-        r_squared = r_sq
-      )
-    }
+    ## Preparation for lm:
+    x_thres <- x_f - opt_thres
+    subs <- x_thres > 0
+    x_f <- x_thres[subs]
+    y_f <- y_f[subs]
   }
 
-  if (distribution %in% c("lognormal", "loglogistic", "normal", "logistic", "sev")) {
+  # Step 1: Model estimation using RR:
+  rr <- lm_(
+    x = x_f,
+    y = y_f,
+    distribution = distribution,
+    direction = direction
+  )
 
-    if (distribution == "lognormal") {
-      mrr <- stats::lm(log(x_f) ~ stats::qnorm(y_f))
-    }
-    if (distribution == "loglogistic") {
-      mrr <- stats::lm(log(x_f) ~ stats::qlogis(y_f))
-    }
-    if (distribution == "normal") {
-      mrr <- stats::lm(x_f ~ stats::qnorm(y_f))
-    }
-    if (distribution == "logistic") {
-      mrr <- stats::lm(x_f ~ stats::qlogis(y_f))
-    }
-    if (distribution == "sev") {
-      mrr <- stats::lm(x_f ~ SPREDA::qsev(y_f))
-    }
+  ## Parameters:
+  dist_params <- coef(rr)
+  names(dist_params) <- c("mu", "sigma")
 
-    estimates_loc_sc <- c(stats::coef(mrr)[[1]], stats::coef(mrr)[[2]])
-    names(estimates_loc_sc) <- c("mu", "sigma")
+  ### Three-parametric:
+  if (exists("opt_thres")) {
+    dist_params <- c(dist_params, opt_thres)
+    names(dist_params)[3] <- "gamma"
+  }
 
-    # Estimating a heteroscedasticity-consistent covariance matrix:
-    vcov_loc_sc <- sandwich::vcovHC(x = mrr, type = "HC1")
-    colnames(vcov_loc_sc) <- names(estimates_loc_sc)
-    rownames(vcov_loc_sc) <- names(estimates_loc_sc)
-    se <- sqrt(diag(vcov_loc_sc))
+  # Step 2: Confidence intervals and return preparation:
+  ## Confidence intervals according to Mock for 'weibull' and 'weibull3':
+  if (distribution %in% c("weibull", "weibull3")) {
+    output <- conf_mock(
+      dist_params = dist_params,
+      conf_level = conf_level,
+      n = length(x_f),
+      direction = direction
+    )
+  } else {
+    ## Confidence intervals with het-const. vcov-matrix for any other distribution:
+    ### Estimating heteroscedastic-consistent covariance matrix:
+    dist_varcov <- sandwich::vcovHC(x = rr, type = "HC1")
 
-    # Confidence Intervals Location-Scale-Parameterization:
-    conf_mu <- c(
-      estimates_loc_sc[[1]] - stats::qt((1 + conf_level) / 2,
-                                        df = length(x_f) - 2) * se[[1]] / sqrt(length(x_f)),
-      estimates_loc_sc[[1]] + stats::qt((1 + conf_level) / 2,
-                                        df = length(x_f) - 2) * se[[1]] / sqrt(length(x_f)))
-
-    conf_sig <- c(
-      estimates_loc_sc[[2]] - stats::qt((1 + conf_level) / 2,
-                                        df = length(x_f) - 2) * se[[2]] / sqrt(length(x_f)),
-      estimates_loc_sc[[2]] + stats::qt((1 + conf_level) / 2,
-                                        df = length(x_f) - 2) * se[[2]] / sqrt(length(x_f)))
-
-    conf_ints_loc_sc <- matrix(c(conf_mu, conf_sig), byrow = TRUE,
-                               ncol = 2)
-    colnames(conf_ints_loc_sc) <- c(paste(((1 - conf_level) / 2) * 100, "%"),
-                                    paste(((1 + conf_level) / 2) * 100, "%"))
-    rownames(conf_ints_loc_sc) <- names(estimates_loc_sc)
-
-    r_sq <- summary(mrr)$r.squared
-
-    mrr_output <- list(
-      coefficients = estimates_loc_sc,
-      confint = conf_ints_loc_sc,
-      varcov = vcov_loc_sc,
-      r_squared = r_sq
+    output <- conf_sandwich(
+      dist_params = dist_params,
+      dist_varcov = dist_varcov,
+      conf_level = conf_level,
+      n = length(x_f),
+      direction = direction
     )
   }
 
-  mrr_output$data <- cdf_estimation
+  # Step 3: Form output:
+  r_sq <- summary(rr)$r.squared
 
-  mrr_output$distribution <- distribution
-
-  class(mrr_output) <- c(
-    "wt_model", "wt_rank_regression", "wt_model_estimation",
-    class(mrr_output)
+  rr_output <- c(
+    output,
+    r_squared = r_sq
   )
 
-  return(mrr_output)
+  rr_output$data = cdf_estimation
+  rr_output$distribution = distribution
+  rr_output$direction = direction
+
+  class(rr_output) <- c(
+    "wt_model", "wt_rank_regression", "wt_model_estimation",
+    class(rr_output)
+  )
+
+  rr_output
 }
 
 
@@ -517,23 +391,18 @@ print.wt_rank_regression <- function(x,
 #' @description
 #' This function evaluates the coefficient of determination with respect to a
 #' given threshold parameter of a three-parametric lifetime distribution.
-#' In terms of \emph{Rank Regression} this function can be optimized
-#' (\code{\link{optim}}) to estimate the threshold parameter.
+#' In terms of *Rank Regression* this function can be optimized
+#' ([optim][stats::optim]) to estimate the threshold parameter.
 #'
-#' @param x Object of class \code{wt_cdf_estimation} returned from
-#'   \code{\link{estimate_cdf}}.
+#' @inheritParams rank_regression
 #' @param thres A numeric value for the threshold parameter.
 #' @param distribution Supposed three-parametric distribution of the random variable.
-#' @template dots
 #'
 #' @return
 #' Returns the coefficient of determination with respect to the threshold parameter
-#' \code{thres}.
+#' `thres`.
 #'
 #' @encoding UTF-8
-#'
-#' @references Meeker, William Q; Escobar, Luis A., Statistical methods for
-#'   reliability data, New York: Wiley series in probability and statistics, 1998
 #'
 #' @examples
 #' # Data:
@@ -591,6 +460,8 @@ print.wt_rank_regression <- function(x,
 #'   col = "red"
 #' )
 #'
+#' @md
+#'
 #' @export
 r_squared_profiling <- function(x, ...) {
   UseMethod("r_squared_profiling")
@@ -607,15 +478,19 @@ r_squared_profiling.wt_cdf_estimation <- function(x,
                                                     "weibull3", "lognormal3",
                                                     "loglogistic3"
                                                   ),
+                                                  direction = c("x_on_y", "y_on_x"),
                                                   ...
 ) {
+
   distribution <- match.arg(distribution)
+  direction <- match.arg(direction)
 
   r_squared_profiling.default(
     x = x$x,
     y = x$prob,
     thres = thres,
-    distribution = distribution
+    distribution = distribution,
+    direction = direction
   )
 }
 
@@ -623,7 +498,7 @@ r_squared_profiling.wt_cdf_estimation <- function(x,
 
 #' R-Squared-Profile Function for Parametric Lifetime Distributions with Threshold
 #'
-#' @inherit r_squared_profiling description details return references
+#' @inherit r_squared_profiling description details return
 #'
 #' @inheritParams r_squared_profiling
 #'
@@ -634,7 +509,7 @@ r_squared_profiling.wt_cdf_estimation <- function(x,
 #' @param y A numeric vector which consists of estimated failure probabilities
 #'   regarding the lifetime data in x.
 #'
-#' @seealso \code{\link{r_squared_profiling}}
+#' @seealso [r_squared_profiling]
 #'
 #' @examples
 #' # Vectors:
@@ -680,6 +555,8 @@ r_squared_profiling.wt_cdf_estimation <- function(x,
 #'   col = "red"
 #' )
 #'
+#' @md
+#'
 #' @export
 r_squared_profiling.default <- function(x,
                                         y,
@@ -687,14 +564,19 @@ r_squared_profiling.default <- function(x,
                                         distribution = c("weibull3",
                                                          "lognormal3",
                                                          "loglogistic3"),
+                                        direction = c("x_on_y", "y_on_x"),
                                         ...
 ) {
 
   if (any(is.na(y))) {
-    stop("At least one of the failure probabilities ('y') is NA!")
+    stop(
+      "At least one of the failure probabilities ('y') is NA!",
+      .call = FALSE
+    )
   }
 
   distribution <- match.arg(distribution)
+  direction <- match.arg(direction)
 
   r_sq_prof_vectorized <- Vectorize(
     FUN = r_squared_profiling_,
@@ -705,7 +587,8 @@ r_squared_profiling.default <- function(x,
     x = x,
     y = y,
     thres = thres,
-    distribution = distribution
+    distribution = distribution,
+    direction = direction
   )
 }
 
@@ -714,25 +597,21 @@ r_squared_profiling.default <- function(x,
 r_squared_profiling_ <- function(x,
                                  y,
                                  thres,
-                                 distribution = c("weibull3",
-                                                  "lognormal3",
-                                                  "loglogistic3")
+                                 distribution,
+                                 direction
 
 ) {
 
   # Subtracting value of threshold, i.e. influence of threshold is eliminated:
   x_thres <- x - thres
 
-  # Rank Regression adjusted x on y:
-  if (distribution == "weibull3") {
-    mrr_thres <- stats::lm(log(x_thres) ~ SPREDA::qsev(y))
-  }
-  if (distribution == "lognormal3") {
-    mrr_thres <- stats::lm(log(x_thres) ~ stats::qnorm(y))
-  }
-  if (distribution == "loglogistic3") {
-    mrr_thres <- stats::lm(log(x_thres) ~ stats::qlogis(y))
-  }
+  # Rank Regression:
+  rr <- lm_(
+    x = x_thres,
+    y = y,
+    distribution = distribution,
+    direction = direction
+  )
 
-  summary(mrr_thres)$r.squared
+  summary(rr)$r.squared
 }

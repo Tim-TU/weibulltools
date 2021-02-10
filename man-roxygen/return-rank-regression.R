@@ -21,4 +21,5 @@
 #'   \item \code{r_squared} : Coefficient of determination.
 #'   \item \code{data} : <%=data%>
 #'   \item \code{distribution} : Specified distribution.
+#'   \item \code{direction} : Specified direction.
 #' }

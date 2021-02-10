@@ -11,6 +11,8 @@
   distribution = c("weibull", "lognormal", "loglogistic", "normal", "logistic", "sev",
     "weibull3", "lognormal3", "loglogistic3"),
   conf_level = 0.95,
+  direction = c("x_on_y", "y_on_x"),
+  control = list(),
   ...
 )
 }
@@ -30,6 +32,15 @@ a right censored observation (= 0) or a failure (= 1).}
 
 \item{conf_level}{Confidence level of the interval. If \code{distribution} is
 \code{"weibull"} this must be one of \code{0.9}, \code{0.95} or \code{0.99}.}
+
+\item{direction}{Direction of the dependence in the regression model.}
+
+\item{control}{A list of control parameters (see \link[stats:optim]{optim}).
+
+\code{control} only is in use if a three-parametric distribution was specified.
+If this is the case, \code{optim} (always with \code{method = "L-BFGS-B"} and
+\code{control$fnscale = -1}) is called to determine the threshold parameter
+(see \link{r_squared_profiling}).}
 
 \item{...}{Further arguments passed to or from other methods. Currently not used.}
 }
@@ -56,12 +67,13 @@ A list with classes \code{wt_model}, \code{wt_rank_regression} and
   \item \code{r_squared} : Coefficient of determination.
   \item \code{data} : A \code{tibble} with columns \code{x}, \code{status} and \code{prob}.
   \item \code{distribution} : Specified distribution.
+  \item \code{direction} : Specified direction.
 }
 }
 \description{
-This function fits an \strong{x on y} regression to a linearized two- or
-three-parameter lifetime distribution for complete and (multiple) right
-censored data. The parameters are determined in the frequently used
+This function fits a regression model to a linearized two- or three-parameter
+lifetime distribution for complete and (multiple) right-censored data.
+The parameters are determined in the frequently used
 (log-)location-scale parameterization.
 
 For the Weibull, estimates are additionally transformed such that they are in
