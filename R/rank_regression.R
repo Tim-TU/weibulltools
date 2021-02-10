@@ -344,7 +344,7 @@ rank_regression_ <- function(cdf_estimation,
     ### Estimating HC covariance matrix:
     dist_varcov <- sandwich::vcovHC(x = rr, type = "HC1")
 
-    output <- conf_sandwich(
+    output <- conf_HC(
       dist_params = dist_params,
       dist_varcov = dist_varcov,
       conf_level = conf_level,

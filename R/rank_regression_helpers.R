@@ -119,11 +119,11 @@ conf_mock <- function(dist_params, # loc-scale-parameters
 
 
 # Confidence intervals for parameters using a HC standard errors:
-conf_sandwich <- function(dist_params, # loc-scale-parameters
-                          dist_varcov, # loc-scale-var-cov
-                          conf_level,
-                          n, # sample size
-                          direction
+conf_HC <- function(dist_params, # loc-scale-parameters
+                    dist_varcov, # loc-scale-var-cov
+                    conf_level,
+                    n, # sample size
+                    direction
 ) {
 
   colnames(dist_varcov) <- rownames(dist_varcov) <- names(dist_params)[1:2]
