@@ -37,7 +37,7 @@ a right censored observation (= 0) or a failure (= 1).}
 
 \item{control}{A list of control parameters (see \link[stats:optim]{optim}).
 
-\code{control} only is in use if a three-parametric distribution was specified.
+\code{control} is in use only if a three-parametric distribution was specified.
 If this is the case, \code{optim} (always with \code{method = "L-BFGS-B"} and
 \code{control$fnscale = -1}) is called to determine the threshold parameter
 (see \link{r_squared_profiling}).}

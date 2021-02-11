@@ -33,7 +33,7 @@
 #' @param direction Direction of the dependence in the regression model.
 #' @param control A list of control parameters (see [optim][stats::optim]).
 #'
-#' `control` only is in use if a three-parametric distribution was specified.
+#' `control` is in use only if a three-parametric distribution was specified.
 #' If this is the case, `optim` (always with `method = "L-BFGS-B"` and
 #' `control$fnscale = -1`) is called to determine the threshold parameter
 #' (see [r_squared_profiling]).
