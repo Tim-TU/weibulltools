@@ -186,7 +186,9 @@ mixmod_regression.wt_cdf_estimation <- function(
 #'
 #' @inheritParams rank_regression.default
 #' @inheritParams mixmod_regression.wt_cdf_estimation
-#'
+#' @param control Output of the call to \code{\link[segmented]{seg.control}}, which
+#'   is passed to \code{\link[segmented:segmented]{segmented.lm}}.
+#'   See 'Examples' for usage.
 #'
 #' @return Returns a list of class \code{wt_rank_regression} if no breakpoint
 #' was detected. See \code{\link{rank_regression}}. The tibble \code{data} is

@@ -141,7 +141,7 @@ In terms of Rank Regression this function can be optimized
     <p>This function evaluates the coefficient of determination with respect to a
 given threshold parameter of a three-parametric lifetime distribution.
 In terms of <em>Rank Regression</em> this function can be optimized
-(<code><a href='https://rdrr.io/r/stats/optim.html'>optim</a></code>) to estimate the threshold parameter.</p>
+(<a href='https://rdrr.io/r/stats/optim.html'>optim</a>) to estimate the threshold parameter.</p>
     </div>
 
     <pre class="usage"><span class='fu'>r_squared_profiling</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>...</span><span class='op'>)</span>
@@ -151,6 +151,7 @@ In terms of <em>Rank Regression</em> this function can be optimized
   <span class='va'>x</span>,
   <span class='va'>thres</span>,
   distribution <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"weibull3"</span>, <span class='st'>"lognormal3"</span>, <span class='st'>"loglogistic3"</span><span class='op'>)</span>,
+  direction <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"x_on_y"</span>, <span class='st'>"y_on_x"</span><span class='op'>)</span>,
   <span class='va'>...</span>
 <span class='op'>)</span></pre>
 
@@ -159,8 +160,7 @@ In terms of <em>Rank Regression</em> this function can be optimized
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>x</th>
-      <td><p>Object of class <code>wt_cdf_estimation</code> returned from
-<code><a href='estimate_cdf.html'>estimate_cdf</a></code>.</p></td>
+      <td><p>A <code>tibble</code> of class <code>wt_cdf_estimation</code> returned by <a href='estimate_cdf.html'>estimate_cdf</a>.</p></td>
     </tr>
     <tr>
       <th>...</th>
@@ -174,16 +174,16 @@ In terms of <em>Rank Regression</em> this function can be optimized
       <th>distribution</th>
       <td><p>Supposed three-parametric distribution of the random variable.</p></td>
     </tr>
+    <tr>
+      <th>direction</th>
+      <td><p>Direction of the dependence in the regression model.</p></td>
+    </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>Returns the coefficient of determination with respect to the threshold parameter
 <code>thres</code>.</p>
-    <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
-
-    <p>Meeker, William Q; Escobar, Luis A., Statistical methods for
-  reliability data, New York: Wiley series in probability and statistics, 1998</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='co'># Data:</span>

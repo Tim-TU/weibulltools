@@ -40,9 +40,9 @@
 
 
 <meta property="og:title" content="Rank Regression for Parametric Lifetime Distributions — rank_regression" />
-<meta property="og:description" content="This function fits an x on y regression to a linearized two- or
-three-parameter lifetime distribution for complete and (multiple) right
-censored data. The parameters are determined in the frequently used
+<meta property="og:description" content="This function fits a regression model to a linearized two- or three-parameter
+lifetime distribution for complete and (multiple) right-censored data.
+The parameters are determined in the frequently used
 (log-)location-scale parameterization.
 For the Weibull, estimates are additionally transformed such that they are in
 line with the parameterization provided by the stats package
@@ -141,9 +141,9 @@ line with the parameterization provided by the stats package
     </div>
 
     <div class="ref-description">
-    <p>This function fits an <strong>x on y</strong> regression to a linearized two- or
-three-parameter lifetime distribution for complete and (multiple) right
-censored data. The parameters are determined in the frequently used
+    <p>This function fits a regression model to a linearized two- or three-parameter
+lifetime distribution for complete and (multiple) right-censored data.
+The parameters are determined in the frequently used
 (log-)location-scale parameterization.</p>
 <p>For the Weibull, estimates are additionally transformed such that they are in
 line with the parameterization provided by the <em>stats</em> package
@@ -158,6 +158,8 @@ line with the parameterization provided by the <em>stats</em> package
   distribution <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"weibull"</span>, <span class='st'>"lognormal"</span>, <span class='st'>"loglogistic"</span>, <span class='st'>"normal"</span>, <span class='st'>"logistic"</span>, <span class='st'>"sev"</span>,
     <span class='st'>"weibull3"</span>, <span class='st'>"lognormal3"</span>, <span class='st'>"loglogistic3"</span><span class='op'>)</span>,
   conf_level <span class='op'>=</span> <span class='fl'>0.95</span>,
+  direction <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"x_on_y"</span>, <span class='st'>"y_on_x"</span><span class='op'>)</span>,
+  control <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='op'>)</span>,
   <span class='va'>...</span>
 <span class='op'>)</span></pre>
 
@@ -180,6 +182,18 @@ line with the parameterization provided by the <em>stats</em> package
       <th>conf_level</th>
       <td><p>Confidence level of the interval. If <code>distribution</code> is
 <code>"weibull"</code> this must be one of <code>0.9</code>, <code>0.95</code> or <code>0.99</code>.</p></td>
+    </tr>
+    <tr>
+      <th>direction</th>
+      <td><p>Direction of the dependence in the regression model.</p></td>
+    </tr>
+    <tr>
+      <th>control</th>
+      <td><p>A list of control parameters (see <a href='https://rdrr.io/r/stats/optim.html'>optim</a>).</p>
+<p><code>control</code> is in use only if a three-parametric distribution was specified.
+If this is the case, <code>optim</code> (always with <code>method = "L-BFGS-B"</code> and
+<code>control$fnscale = -1</code>) is called to determine the threshold parameter
+(see <a href='r_squared_profiling.html'>r_squared_profiling</a>).</p></td>
     </tr>
     </table>
 
@@ -206,6 +220,7 @@ line with the parameterization provided by the <em>stats</em> package
 <li><p><code>r_squared</code> : Coefficient of determination.</p></li>
 <li><p><code>data</code> : A <code>tibble</code> with class <code>wt_cdf_estimation</code> returned by <a href='estimate_cdf.html'>estimate_cdf</a>.</p></li>
 <li><p><code>distribution</code> : Specified distribution.</p></li>
+<li><p><code>direction</code> : Specified direction.</p></li>
 </ul>
 
 <p>If more than one method was specified in <a href='estimate_cdf.html'>estimate_cdf</a>, the resulting output
@@ -284,7 +299,25 @@ New York: Wiley series in probability and statistics, 1998</p></li>
   conf_level <span class='op'>=</span> <span class='fl'>0.99</span>
 <span class='op'>)</span>
 
-<span class='co'># Example 3 - Fitting a three-parametric loglogistic distribution if multiple</span>
+<span class='co'># Example 3 - Fitting a three-parametric lognormal distribution using</span>
+<span class='co'># direction and control arguments:</span>
+<span class='va'>rr_3p_control</span> <span class='op'>&lt;-</span> <span class='fu'>rank_regression</span><span class='op'>(</span>
+  x <span class='op'>=</span> <span class='va'>prob_tbl_3p</span>,
+  distribution <span class='op'>=</span> <span class='st'>"lognormal3"</span>,
+  conf_level <span class='op'>=</span> <span class='fl'>0.99</span>,
+  direction <span class='op'>=</span> <span class='st'>"y_on_x"</span>,
+  control <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>trace <span class='op'>=</span> <span class='cn'>TRUE</span>, REPORT <span class='op'>=</span> <span class='fl'>1</span><span class='op'>)</span>
+<span class='op'>)</span>
+</div><div class='output co'>#&gt; iter    1 value -0.976393
+#&gt; iter    2 value -0.989504
+#&gt; iter    3 value -0.991362
+#&gt; iter    4 value -0.991368
+#&gt; iter    5 value -0.991383
+#&gt; iter    6 value -0.991383
+#&gt; iter    7 value -0.991383
+#&gt; final  value -0.991383 
+#&gt; converged</div><div class='input'>
+<span class='co'># Example 4 - Fitting a three-parametric loglogistic distribution if multiple</span>
 <span class='co'># methods in estimate_cdf were specified:</span>
 <span class='va'>rr_lists</span> <span class='op'>&lt;-</span> <span class='fu'>rank_regression</span><span class='op'>(</span>
   x <span class='op'>=</span> <span class='va'>prob_tbl_mult</span>,

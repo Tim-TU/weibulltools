@@ -13,6 +13,8 @@ rank_regression(x, ...)
   distribution = c("weibull", "lognormal", "loglogistic", "normal", "logistic", "sev",
     "weibull3", "lognormal3", "loglogistic3"),
   conf_level = 0.95,
+  direction = c("x_on_y", "y_on_x"),
+  control = list(),
   ...
 )
 }
@@ -25,6 +27,15 @@ rank_regression(x, ...)
 
 \item{conf_level}{Confidence level of the interval. If \code{distribution} is
 \code{"weibull"} this must be one of \code{0.9}, \code{0.95} or \code{0.99}.}
+
+\item{direction}{Direction of the dependence in the regression model.}
+
+\item{control}{A list of control parameters (see \link[stats:optim]{optim}).
+
+\code{control} is in use only if a three-parametric distribution was specified.
+If this is the case, \code{optim} (always with \code{method = "L-BFGS-B"} and
+\code{control$fnscale = -1}) is called to determine the threshold parameter
+(see \link{r_squared_profiling}).}
 }
 \value{
 A list with classes \code{wt_model}, \code{wt_rank_regression} and
@@ -49,6 +60,7 @@ A list with classes \code{wt_model}, \code{wt_rank_regression} and
   \item \code{r_squared} : Coefficient of determination.
   \item \code{data} : A \code{tibble} with class \code{wt_cdf_estimation} returned by \link{estimate_cdf}.
   \item \code{distribution} : Specified distribution.
+  \item \code{direction} : Specified direction.
 }
 
 If more than one method was specified in \link{estimate_cdf}, the resulting output
@@ -57,9 +69,9 @@ has classes \code{wt_rank_regression} and \code{wt_model_estimation}, and the it
 above, are included.
 }
 \description{
-This function fits an \strong{x on y} regression to a linearized two- or
-three-parameter lifetime distribution for complete and (multiple) right
-censored data. The parameters are determined in the frequently used
+This function fits a regression model to a linearized two- or three-parameter
+lifetime distribution for complete and (multiple) right-censored data.
+The parameters are determined in the frequently used
 (log-)location-scale parameterization.
 
 For the Weibull, estimates are additionally transformed such that they are in
@@ -128,7 +140,17 @@ rr_3p <- rank_regression(
   conf_level = 0.99
 )
 
-# Example 3 - Fitting a three-parametric loglogistic distribution if multiple
+# Example 3 - Fitting a three-parametric lognormal distribution using
+# direction and control arguments:
+rr_3p_control <- rank_regression(
+  x = prob_tbl_3p,
+  distribution = "lognormal3",
+  conf_level = 0.99,
+  direction = "y_on_x",
+  control = list(trace = TRUE, REPORT = 1)
+)
+
+# Example 4 - Fitting a three-parametric loglogistic distribution if multiple
 # methods in estimate_cdf were specified:
 rr_lists <- rank_regression(
   x = prob_tbl_mult,

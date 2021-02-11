@@ -141,7 +141,7 @@ In terms of Rank Regression this function can be optimized
     <p>This function evaluates the coefficient of determination with respect to a
 given threshold parameter of a three-parametric lifetime distribution.
 In terms of <em>Rank Regression</em> this function can be optimized
-(<code><a href='https://rdrr.io/r/stats/optim.html'>optim</a></code>) to estimate the threshold parameter.</p>
+(<a href='https://rdrr.io/r/stats/optim.html'>optim</a>) to estimate the threshold parameter.</p>
     </div>
 
     <pre class="usage"><span class='co'># S3 method for default</span>
@@ -150,6 +150,7 @@ In terms of <em>Rank Regression</em> this function can be optimized
   <span class='va'>y</span>,
   <span class='va'>thres</span>,
   distribution <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"weibull3"</span>, <span class='st'>"lognormal3"</span>, <span class='st'>"loglogistic3"</span><span class='op'>)</span>,
+  direction <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"x_on_y"</span>, <span class='st'>"y_on_x"</span><span class='op'>)</span>,
   <span class='va'>...</span>
 <span class='op'>)</span></pre>
 
@@ -177,6 +178,10 @@ regarding the lifetime data in x.</p></td>
       <td><p>Supposed three-parametric distribution of the random variable.</p></td>
     </tr>
     <tr>
+      <th>direction</th>
+      <td><p>Direction of the dependence in the regression model.</p></td>
+    </tr>
+    <tr>
       <th>...</th>
       <td><p>Further arguments passed to or from other methods. Currently not used.</p></td>
     </tr>
@@ -186,13 +191,9 @@ regarding the lifetime data in x.</p></td>
 
     <p>Returns the coefficient of determination with respect to the threshold parameter
 <code>thres</code>.</p>
-    <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
-
-    <p>Meeker, William Q; Escobar, Luis A., Statistical methods for
-  reliability data, New York: Wiley series in probability and statistics, 1998</p>
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
-    <div class='dont-index'><p><code><a href='r_squared_profiling.html'>r_squared_profiling</a></code></p></div>
+    <div class='dont-index'><p><a href='r_squared_profiling.html'>r_squared_profiling</a></p></div>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='co'># Vectors:</span>
