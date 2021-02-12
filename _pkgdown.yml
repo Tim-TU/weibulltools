@@ -23,6 +23,7 @@ reference:
   - ml_estimation
   - ml_estimation.default
   - loglik_function
+  - loglik_function.default
   - loglik_profiling
   - rank_regression
   - rank_regression.default

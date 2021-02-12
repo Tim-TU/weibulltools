@@ -3,6 +3,7 @@
 ## Breaking Changes
 
 ### Parametric Models
+* `loglik_profiling()`: Added argument `wts`. 
 * `plot_prob.wt_model()`: Removed dysfunctional argument `distribution`. The distribution is inferred using the model `x`.
 
 ### Confidence Intervals
@@ -17,6 +18,7 @@
 ## New Features
 
 ### Parametric Models
+* `loglik_function()` is now an S3 generic. `loglik_function()` becomes `loglik_function.default()`. Added `loglik_function.wt_reliability_data()`.
 * `rank_regression()`: New arguments `direction` (specifies direction of dependency in the model) and `control` (enables access to argument `control` in `optim()`).  
 * `r_squared_profiling()`: New argument `direction`. 
 
