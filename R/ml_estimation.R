@@ -1,29 +1,29 @@
 #' ML Estimation for Parametric Lifetime Distributions
 #'
 #' @description
-#' This function estimates the parameters of a two- or three-parametric lifetime
-#' distribution for complete and (multiple) right censored data. The parameters
+#' This function estimates the parameters of a two- or three-parameter lifetime
+#' distribution for complete and (multiple) right-censored data. The parameters
 #' are determined in the frequently used (log-)location-scale parameterization.
 #'
 #' For the Weibull, estimates are additionally transformed such that they are in
-#' line with the parameterization provided by the \emph{stats} package
-#' (see \link[stats]{Weibull}).
+#' line with the parameterization provided by the *stats* package
+#' (see [Weibull][stats::Weibull]).
 #'
 #' @details
-#' \code{ml_estimation} calls \code{\link[SPREDA:lifedata.MLE]{Lifedata.MLE}},
-#' which is implemented in \emph{SPREDA}, to obtain the estimates. Normal
-#' approximation confidence intervals for the parameters are computed as well.
+#' To obtain the estimates, `ml_estimation` calls [Lifedata.MLE][SPREDA::Lifedata.MLE]
+#' which is implemented in package *SPREDA*. Normal approximation confidence
+#' intervals for the parameters are computed as well.
 #'
-#' @param x Object of class \code{wt_reliability_data} returned by
-#'   \code{\link{reliability_data}}.
+#' @param x A `tibble` of class `wt_reliability_data` returned by [reliability_data].
 #' @param distribution Supposed distribution of the random variable.
-#' @param wts Optional vector of case weights. The length of \code{wts} must be the
-#'   same as the number of observations in \code{x}.
+#' @param wts Optional vector of case weights. The length of `wts` must be equal
+#' to the number of observations in `x`.
 #' @param conf_level Confidence level of the interval.
 #' @template dots
 #'
 #' @template return-ml-estimation
-#' @templateVar data A tibble with class \code{wt_reliability_data} returned from \code{\link{reliability_data}}.
+#' @templateVar data A `tibble` with class `wt_reliability_data` returned by
+#' [reliability_data].
 #'
 #' @encoding UTF-8
 #'
@@ -58,6 +58,8 @@
 #'   distribution = "lognormal3",
 #'   conf_level = 0.99
 #' )
+#'
+#' @md
 #'
 #' @export
 ml_estimation <- function(x, ...) {
@@ -98,14 +100,14 @@ ml_estimation.wt_reliability_data <- function(x,
 #' @inherit ml_estimation description details return references
 #'
 #' @inheritParams ml_estimation
-#' @param x A numeric vector which consists of lifetime data. Lifetime
-#'   data could be every characteristic influencing the reliability of a product,
+#' @param x A numeric vector which consists of lifetime data. Lifetime data
+#'   could be every characteristic influencing the reliability of a product,
 #'   e.g. operating time (days/months in service), mileage (km, miles), load
 #'   cycles.
-#' @param status A vector of binary data (0 or 1) indicating whether unit \emph{i}
-#'   is a right censored observation (= 0) or a failure (= 1).
+#' @param status A vector of binary data (0 or 1) indicating whether a unit is
+#'   a right censored observation (= 0) or a failure (= 1).
 #'
-#' @seealso \code{\link{ml_estimation}}
+#' @seealso [ml_estimation]
 #'
 #' @examples
 #' # Vectors:
@@ -131,6 +133,8 @@ ml_estimation.wt_reliability_data <- function(x,
 #'   distribution = "lognormal3"
 #' )
 #'
+#' @md
+#'
 #' @export
 ml_estimation.default <- function(x,
                                   status,
@@ -153,6 +157,7 @@ ml_estimation.default <- function(x,
 
 
 
+# Function that performs the parameter estimation:
 ml_estimation_ <- function(data,
                            distribution,
                            wts,
@@ -593,58 +598,11 @@ loglik_function <- function(x,
 
   check_dist_params(dist_params, distribution)
 
-  d <- status
-  mu <- dist_params[1]
-  sig <- dist_params[2]
-  thres <- dist_params[3]
-
-  if (is.na(thres)) {
-    # Log- and Location-Scale Models:
-    if (distribution == "weibull") {
-      logL <- sum(wts * (log(((1 / (sig * x)) * SPREDA::dsev((log(x) - mu) / sig)) ^ d *
-                               (1 - SPREDA::psev((log(x) - mu) / sig)) ^ (1 - d))))
-    }
-    if (distribution == "lognormal") {
-      logL <- sum(wts * (log(((1 / (sig * x)) * stats::dnorm((log(x) - mu) / sig)) ^ d *
-                               (1 - stats::pnorm((log(x) - mu) / sig)) ^ (1 - d))))
-    }
-    if (distribution == "loglogistic") {
-      logL <- sum(wts * (log(((1 / (sig * x)) * stats::dlogis((log(x) - mu) / sig)) ^ d *
-                               (1 - stats::plogis((log(x) - mu) / sig)) ^ (1 - d))))
-    }
-    if (distribution == "sev") {
-      logL <- sum(wts * (log(((1 / sig) * SPREDA::dsev((x - mu) / sig)) ^ d *
-                               (1 - SPREDA::psev((x - mu) / sig)) ^ (1 - d))))
-    }
-    if (distribution == "normal") {
-      logL <- sum(wts * (log(((1 / sig) * stats::dnorm((x - mu) / sig)) ^ d *
-                               (1 - stats::pnorm((x - mu) / sig)) ^ (1 - d))))
-    }
-    if (distribution == "logistic") {
-      logL <- sum(wts * (log(((1 / sig) * stats::dlogis((x - mu) / sig)) ^ d *
-                               (1 - stats::plogis((x - mu) / sig)) ^ (1 - d))))
-    }
-  } else {
-    # Log-Location-Scale Models with threshold parameter:
-
-    ### Defining subset for unusual case that difference between x and thres is smaller or equal to 0:
-    subs <- (x - thres) > 0
-    xs <- x[subs]
-    d <- d[subs]
-    wts <- wts[subs]
-
-    if (distribution == "weibull3") {
-      logL <- sum(wts * (log(((1 / (sig * (xs - thres))) * SPREDA::dsev((log(xs - thres) - mu) / sig)) ^ d *
-                               (1 - SPREDA::psev((log(xs - thres) - mu) / sig)) ^ (1 - d))))
-    }
-    if (distribution == "lognormal3") {
-      logL <- sum(wts * (log(((1 / (sig * (xs - thres))) * stats::dnorm((log(xs - thres) - mu) / sig)) ^ d *
-                               (1 - stats::pnorm((log(xs - thres) - mu) / sig)) ^ (1 - d))))
-    }
-    if (distribution == "loglogistic3") {
-      logL <- sum(wts * (log(((1 / (sig * (xs - thres))) * stats::dlogis((log(xs - thres) - mu) / sig)) ^ d *
-                               (1 - stats::plogis((log(xs - thres) - mu) / sig)) ^ (1 - d))))
-    }
-  }
-  logL
+  loglik_function_(
+    x = x,
+    status = status,
+    wts = wts,
+    dist_params = dist_params,
+    distribution = distribution
+  )
 }

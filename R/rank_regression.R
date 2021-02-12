@@ -3,8 +3,8 @@
 #' @description
 #' This function fits a regression model to a linearized two- or three-parameter
 #' lifetime distribution for complete and (multiple) right-censored data.
-#' The parameters are determined in the frequently used
-#' (log-)location-scale parameterization.
+#' The parameters are determined in the frequently used (log-)location-scale
+#' parameterization.
 #'
 #' For the Weibull, estimates are additionally transformed such that they are in
 #' line with the parameterization provided by the *stats* package
@@ -185,7 +185,6 @@ rank_regression.wt_cdf_estimation <- function(x,
 #' @inherit rank_regression description details references
 #'
 #' @inheritParams rank_regression
-#'
 #' @param x A numeric vector which consists of lifetime data. Lifetime data
 #'   could be every characteristic influencing the reliability of a product,
 #'   e.g. operating time (days/months in service), mileage (km, miles), load
@@ -290,7 +289,7 @@ rank_regression_ <- function(cdf_estimation,
     ## Force maximization:
     control$fnscale <- -1
 
-    ## Optimization using `r_squared_profiling`:
+    ## Optimization using `r_squared_profiling()`:
     opt_thres <- stats::optim(
       par = 0,
       fn = r_squared_profiling,

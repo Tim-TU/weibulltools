@@ -15,16 +15,16 @@ loglik_function(
 )
 }
 \arguments{
-\item{x}{A numeric vector which consists of lifetime data. Lifetime
-data could be every characteristic influencing the reliability of a product,
+\item{x}{A numeric vector which consists of lifetime data. Lifetime data
+could be every characteristic influencing the reliability of a product,
 e.g. operating time (days/months in service), mileage (km, miles), load
 cycles.}
 
-\item{status}{A vector of binary data (0 or 1) indicating whether unit \emph{i}
-is a right censored observation (= 0) or a failure (= 1).}
+\item{status}{A vector of binary data (0 or 1) indicating whether a unit is
+a right censored observation (= 0) or a failure (= 1).}
 
-\item{wts}{Optional vector of case weights. The length of \code{wts} must be the
-same as the number of observations in \code{x}.}
+\item{wts}{Optional vector of case weights. The length of \code{wts} must be equal
+to the number of observations in \code{x}.}
 
 \item{dist_params}{A (named) numeric vector of (log-)location-scale parameters
 in the order of location (\eqn{\mu}) and scale (\eqn{\sigma}). If a

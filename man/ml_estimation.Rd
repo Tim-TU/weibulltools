@@ -18,55 +18,51 @@ ml_estimation(x, ...)
 )
 }
 \arguments{
-\item{x}{Object of class \code{wt_reliability_data} returned by
-\code{\link{reliability_data}}.}
+\item{x}{A \code{tibble} of class \code{wt_reliability_data} returned by \link{reliability_data}.}
 
 \item{...}{Further arguments passed to or from other methods. Currently not used.}
 
 \item{distribution}{Supposed distribution of the random variable.}
 
-\item{wts}{Optional vector of case weights. The length of \code{wts} must be the
-same as the number of observations in \code{x}.}
+\item{wts}{Optional vector of case weights. The length of \code{wts} must be equal
+to the number of observations in \code{x}.}
 
 \item{conf_level}{Confidence level of the interval.}
 }
 \value{
-A list with classes \code{wt_model}, \code{wt_ml_estimation} and
-\code{wt_model_estimation} which contains:
+A list with classes \code{wt_model}, \code{wt_ml_estimation} and \code{wt_model_estimation}
+which contains:
 \itemize{
-  \item \code{coefficients} : A named vector of estimated coefficients
-    (parameters of the assumed distribution). \strong{Note}: The parameters
-    are given in location-scale-parameterization.
-  \item \code{confint} : Confidence intervals for parameters.
-  \item \code{varcov} : Estimated variance-covariance matrix for the
-    parameters.
-  \item \code{shape_scale_coefficients} : Only included if
-    \code{distribution} is \code{"weibull"} or \code{"weibull3"}
-    (parameterization used in \code{\link[stats:Weibull]{stats::Weibull}}).
-  \item \code{shape_scale_confint} : Only included if \code{distribution} is
-    \code{"weibull"} or \code{"weibull3"}. Confidence intervals
-    for scale \eqn{\eta} and shape \eqn{\beta} (and threshold \eqn{\gamma})
-    if \code{distribution} is \code{"weibull3"}.
-  \item \code{logL} : The log-likelihood value.
-  \item \code{aic} : Akaike Information Criterion.
-  \item \code{bic} : Bayesian Information Criterion.
-  \item \code{data} : A tibble with class \code{wt_reliability_data} returned from \code{\link{reliability_data}}.
-  \item \code{distribution} : Specified distribution.
+\item \code{coefficients} : A named vector of estimated coefficients (parameters of the
+assumed distribution). \strong{Note}: The parameters are given in the
+(log-)location-scale-parameterization.
+\item \code{confint} : Confidence intervals for (log-)location-scale parameters.
+\item \code{shape_scale_coefficients} : Only included if \code{distribution} is \code{"weibull"}
+or \code{"weibull3"} (parameterization used in \link[stats:Weibull]{Weibull}).
+\item \code{shape_scale_confint} : Only included if \code{distribution} is \code{"weibull"}
+or \code{"weibull3"}. Confidence intervals for scale \eqn{\eta} and shape \eqn{\beta}
+(and threshold \eqn{\gamma} if \code{distribution = "weibull3"}).
+\item \code{varcov} : Estimated variance-covariance matrix of (log-)location-scale parameters.
+\item \code{logL} : The log-likelihood value.
+\item \code{aic} : Akaike Information Criterion.
+\item \code{bic} : Bayesian Information Criterion.
+\item \code{data} : A \code{tibble} with class \code{wt_reliability_data} returned by
+\item \code{distribution} : Specified distribution.
 }
 }
 \description{
-This function estimates the parameters of a two- or three-parametric lifetime
-distribution for complete and (multiple) right censored data. The parameters
+This function estimates the parameters of a two- or three-parameter lifetime
+distribution for complete and (multiple) right-censored data. The parameters
 are determined in the frequently used (log-)location-scale parameterization.
 
 For the Weibull, estimates are additionally transformed such that they are in
 line with the parameterization provided by the \emph{stats} package
-(see \link[stats]{Weibull}).
+(see \link[stats:Weibull]{Weibull}).
 }
 \details{
-\code{ml_estimation} calls \code{\link[SPREDA:lifedata.MLE]{Lifedata.MLE}},
-which is implemented in \emph{SPREDA}, to obtain the estimates. Normal
-approximation confidence intervals for the parameters are computed as well.
+To obtain the estimates, \code{ml_estimation} calls \link[SPREDA:lifedata.MLE]{Lifedata.MLE}
+which is implemented in package \emph{SPREDA}. Normal approximation confidence
+intervals for the parameters are computed as well.
 }
 \examples{
 # Reliability data preparation:
@@ -100,5 +96,5 @@ ml_3p <- ml_estimation(
 }
 \references{
 Meeker, William Q; Escobar, Luis A., Statistical methods for
-  reliability data, New York: Wiley series in probability and statistics, 1998
+reliability data, New York: Wiley series in probability and statistics, 1998
 }

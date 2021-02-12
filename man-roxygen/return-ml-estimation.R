@@ -1,23 +1,21 @@
 #' @return
-#' A list with classes \code{wt_model}, \code{wt_ml_estimation} and
-#' \code{wt_model_estimation} which contains:
-#' \itemize{
-#'   \item \code{coefficients} : A named vector of estimated coefficients
-#'     (parameters of the assumed distribution). \strong{Note}: The parameters
-#'     are given in location-scale-parameterization.
-#'   \item \code{confint} : Confidence intervals for parameters.
-#'   \item \code{varcov} : Estimated variance-covariance matrix for the
-#'     parameters.
-#'   \item \code{shape_scale_coefficients} : Only included if
-#'     \code{distribution} is \code{"weibull"} or \code{"weibull3"}
-#'     (parameterization used in \code{\link[stats:Weibull]{stats::Weibull}}).
-#'   \item \code{shape_scale_confint} : Only included if \code{distribution} is
-#'     \code{"weibull"} or \code{"weibull3"}. Confidence intervals
-#'     for scale \eqn{\eta} and shape \eqn{\beta} (and threshold \eqn{\gamma})
-#'     if \code{distribution} is \code{"weibull3"}.
-#'   \item \code{logL} : The log-likelihood value.
-#'   \item \code{aic} : Akaike Information Criterion.
-#'   \item \code{bic} : Bayesian Information Criterion.
-#'   \item \code{data} : <%=data%>
-#'   \item \code{distribution} : Specified distribution.
-#' }
+#' A list with classes `wt_model`, `wt_ml_estimation` and `wt_model_estimation`
+#' which contains:
+#'
+#' * `coefficients` : A named vector of estimated coefficients (parameters of the
+#'   assumed distribution). **Note**: The parameters are given in the
+#'   (log-)location-scale-parameterization.
+#' * `confint` : Confidence intervals for (log-)location-scale parameters.
+#' * `shape_scale_coefficients` : Only included if `distribution` is `"weibull"`
+#'   or `"weibull3"` (parameterization used in [Weibull][stats::Weibull]).
+#' * `shape_scale_confint` : Only included if `distribution` is `"weibull"`
+#'   or `"weibull3"`. Confidence intervals for scale \eqn{\eta} and shape \eqn{\beta}
+#'   (and threshold \eqn{\gamma} if `distribution = "weibull3"`).
+#' * `varcov` : Estimated variance-covariance matrix of (log-)location-scale parameters.
+#' * `logL` : The log-likelihood value.
+#' * `aic` : Akaike Information Criterion.
+#' * `bic` : Bayesian Information Criterion.
+#' * `data` : <%=data%>
+#' * `distribution` : Specified distribution.
+#'
+#' @md
