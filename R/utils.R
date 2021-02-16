@@ -4,6 +4,27 @@ two_parametric <- function(distribution) {
 
 
 
+check_compatible_distributions <- function(p_obj_dist, model_dist) {
+  if (p_obj_dist != two_parametric(model_dist)) {
+    msg <- paste0(
+      "Incompatible distributions! Probability plot has distribution '",
+      p_obj_dist,
+      "' whereas model has distribution '",
+      model_dist,
+      "'."
+    )
+
+    stop(
+      errorCondition(
+        message = msg,
+        class = "incompatible_distributions"
+      )
+    )
+  }
+}
+
+
+
 check_dots <- function(...) {
   dots <- list(...)
 
