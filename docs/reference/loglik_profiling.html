@@ -42,8 +42,8 @@
 <meta property="og:title" content="Log-Likelihood Profile Function for Parametric Lifetime Distributions with Threshold — loglik_profiling" />
 <meta property="og:description" content="This function evaluates the log-likelihood with respect to a given threshold
 parameter of a three-parametric lifetime distribution. In terms of
-Maximum Likelihood Estimation this function can be optimized (optim)
-to estimate the threshold parameter." />
+Maximum Likelihood Estimation this function can be optimized
+(optim) to estimate the threshold parameter." />
 
 
 
@@ -83,7 +83,7 @@ to estimate the threshold parameter." />
       <ul class="nav navbar-nav">
         <li>
   <a href="../index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
+    <span class="fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -115,7 +115,7 @@ to estimate the threshold parameter." />
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="https://github.com/Tim-TU/weibulltools/">
-    <span class="fab fa fab fa-github fa-lg"></span>
+    <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -133,22 +133,26 @@ to estimate the threshold parameter." />
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Log-Likelihood Profile Function for Parametric Lifetime Distributions with Threshold</h1>
-    <small class="dont-index">Source: <a href='https://github.com/Tim-TU/weibulltools/blob/master/R/ml_estimation.R'><code>R/ml_estimation.R</code></a></small>
+    <small class="dont-index">Source: <a href='https://github.com/Tim-TU/weibulltools/blob/master/R/likelihood_functions.R'><code>R/likelihood_functions.R</code></a></small>
     <div class="hidden name"><code>loglik_profiling.Rd</code></div>
     </div>
 
     <div class="ref-description">
     <p>This function evaluates the log-likelihood with respect to a given threshold
 parameter of a three-parametric lifetime distribution. In terms of
-<em>Maximum Likelihood Estimation</em> this function can be optimized (<code><a href='https://rdrr.io/r/stats/optim.html'>optim</a></code>)
-to estimate the threshold parameter.</p>
+<em>Maximum Likelihood Estimation</em> this function can be optimized
+(<a href='https://rdrr.io/r/stats/optim.html'>optim</a>) to estimate the threshold parameter.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>loglik_profiling</span><span class='op'>(</span>
+    <pre class="usage"><span class='fu'>loglik_profiling</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>...</span><span class='op'>)</span>
+
+<span class='co'># S3 method for wt_reliability_data</span>
+<span class='fu'>loglik_profiling</span><span class='op'>(</span>
   <span class='va'>x</span>,
-  <span class='va'>status</span>,
+  wts <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/rep.html'>rep</a></span><span class='op'>(</span><span class='fl'>1</span>, <span class='fu'><a href='https://rdrr.io/r/base/nrow.html'>nrow</a></span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span><span class='op'>)</span>,
   <span class='va'>thres</span>,
-  distribution <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"weibull3"</span>, <span class='st'>"lognormal3"</span>, <span class='st'>"loglogistic3"</span><span class='op'>)</span>
+  distribution <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"weibull3"</span>, <span class='st'>"lognormal3"</span>, <span class='st'>"loglogistic3"</span><span class='op'>)</span>,
+  <span class='va'>...</span>
 <span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -156,15 +160,16 @@ to estimate the threshold parameter.</p>
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>x</th>
-      <td><p>A numeric vector which consists of lifetime data. Lifetime data
-could be every characteristic influencing the reliability of a product,
-e.g. operating time (days/months in service), mileage (km, miles), load
-cycles.</p></td>
+      <td><p>A <code>tibble</code> of class <code>wt_reliability_data</code> returned by <a href='reliability_data.html'>reliability_data</a>.</p></td>
     </tr>
     <tr>
-      <th>status</th>
-      <td><p>A vector of binary data (0 or 1) indicating whether unit <em>i</em>
-is a right censored observation (= 0) or a failure (= 1).</p></td>
+      <th>...</th>
+      <td><p>Further arguments passed to or from other methods. Currently not used.</p></td>
+    </tr>
+    <tr>
+      <th>wts</th>
+      <td><p>Optional vector of case weights. The length of <code>wts</code> must be equal
+to the number of observations in <code>x</code>.</p></td>
     </tr>
     <tr>
       <th>thres</th>
@@ -178,30 +183,32 @@ is a right censored observation (= 0) or a failure (= 1).</p></td>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>Returns the log-likelihood value for the data with respect to the threshold
-parameter <code>thres</code>.</p>
+    <p>Returns the log-likelihood value for the threshold parameter <code>thres</code> given
+the data.</p>
     <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
 
     <p>Meeker, William Q; Escobar, Luis A., Statistical methods for
-  reliability data, New York: Wiley series in probability and statistics, 1998</p>
+reliability data, New York: Wiley series in probability and statistics, 1998</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='co'># Vectors:</span>
-<span class='va'>cycles</span> <span class='op'>&lt;-</span> <span class='va'>alloy</span><span class='op'>$</span><span class='va'>cycles</span>
-<span class='va'>status</span> <span class='op'>&lt;-</span> <span class='va'>alloy</span><span class='op'>$</span><span class='va'>status</span>
+    <pre class="examples"><div class='input'><span class='co'># Reliability data preparation:</span>
+<span class='va'>data</span> <span class='op'>&lt;-</span> <span class='fu'><a href='reliability_data.html'>reliability_data</a></span><span class='op'>(</span>
+  <span class='va'>alloy</span>,
+  x <span class='op'>=</span> <span class='va'>cycles</span>,
+  status <span class='op'>=</span> <span class='va'>status</span>
+<span class='op'>)</span>
 
 <span class='co'># Determining the optimal loglikelihood value:</span>
 <span class='co'>## Range of threshold parameter must be smaller than the first failure:</span>
 <span class='va'>threshold</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span>
   <span class='fl'>0</span>,
-  <span class='fu'><a href='https://rdrr.io/r/base/Extremes.html'>min</a></span><span class='op'>(</span><span class='va'>cycles</span><span class='op'>[</span><span class='va'>status</span> <span class='op'>==</span> <span class='fl'>1</span><span class='op'>]</span><span class='op'>)</span> <span class='op'>-</span> <span class='fl'>0.1</span>,
+  <span class='fu'><a href='https://rdrr.io/r/base/Extremes.html'>min</a></span><span class='op'>(</span><span class='va'>data</span><span class='op'>$</span><span class='va'>x</span><span class='op'>[</span><span class='va'>data</span><span class='op'>$</span><span class='va'>status</span> <span class='op'>==</span> <span class='fl'>1</span><span class='op'>]</span><span class='op'>)</span> <span class='op'>-</span> <span class='fl'>0.1</span>,
   length.out <span class='op'>=</span> <span class='fl'>50</span>
 <span class='op'>)</span>
 
 <span class='co'>## loglikelihood value with respect to threshold values:</span>
 <span class='va'>profile_logL</span> <span class='op'>&lt;-</span> <span class='fu'>loglik_profiling</span><span class='op'>(</span>
-  x <span class='op'>=</span> <span class='va'>cycles</span>,
-  status <span class='op'>=</span> <span class='va'>status</span>,
+  x <span class='op'>=</span> <span class='va'>data</span>,
   thres <span class='op'>=</span> <span class='va'>threshold</span>,
   distribution <span class='op'>=</span> <span class='st'>"weibull3"</span>
 <span class='op'>)</span>

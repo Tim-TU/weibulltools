@@ -17,6 +17,10 @@
 ## New Features
 
 ### Parametric Models
+* `ml_estimation()`: New arguments `start_dist_params` (optional vector with initial values of the parameters) and `control` (enables access to argument `control` in `optim()`).
+* `loglik_profiling()`: New argument `wts`. 
+* `loglik_profiling()` is now an S3 generic. `loglik_profiling()` becomes `loglik_profiling.default()`. Added `loglik_profiling.wt_reliability_data()`.
+* `loglik_function()` is now an S3 generic. `loglik_function()` becomes `loglik_function.default()`. Added `loglik_function.wt_reliability_data()`.
 * `rank_regression()`: New arguments `direction` (specifies direction of dependency in the model) and `control` (enables access to argument `control` in `optim()`).  
 * `r_squared_profiling()`: New argument `direction`. 
 

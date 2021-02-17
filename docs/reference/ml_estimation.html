@@ -40,8 +40,8 @@
 
 
 <meta property="og:title" content="ML Estimation for Parametric Lifetime Distributions — ml_estimation" />
-<meta property="og:description" content="This function estimates the parameters of a two- or three-parametric lifetime
-distribution for complete and (multiple) right censored data. The parameters
+<meta property="og:description" content="This function estimates the parameters of a two- or three-parameter lifetime
+distribution for complete and (multiple) right-censored data. The parameters
 are determined in the frequently used (log-)location-scale parameterization.
 For the Weibull, estimates are additionally transformed such that they are in
 line with the parameterization provided by the stats package
@@ -85,7 +85,7 @@ line with the parameterization provided by the stats package
       <ul class="nav navbar-nav">
         <li>
   <a href="../index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
+    <span class="fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -117,7 +117,7 @@ line with the parameterization provided by the stats package
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="https://github.com/Tim-TU/weibulltools/">
-    <span class="fab fa fab fa-github fa-lg"></span>
+    <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -140,8 +140,8 @@ line with the parameterization provided by the stats package
     </div>
 
     <div class="ref-description">
-    <p>This function estimates the parameters of a two- or three-parametric lifetime
-distribution for complete and (multiple) right censored data. The parameters
+    <p>This function estimates the parameters of a two- or three-parameter lifetime
+distribution for complete and (multiple) right-censored data. The parameters
 are determined in the frequently used (log-)location-scale parameterization.</p>
 <p>For the Weibull, estimates are additionally transformed such that they are in
 line with the parameterization provided by the <em>stats</em> package
@@ -157,6 +157,8 @@ line with the parameterization provided by the <em>stats</em> package
     <span class='st'>"weibull3"</span>, <span class='st'>"lognormal3"</span>, <span class='st'>"loglogistic3"</span><span class='op'>)</span>,
   wts <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/rep.html'>rep</a></span><span class='op'>(</span><span class='fl'>1</span>, <span class='fu'><a href='https://rdrr.io/r/base/nrow.html'>nrow</a></span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span><span class='op'>)</span>,
   conf_level <span class='op'>=</span> <span class='fl'>0.95</span>,
+  start_dist_params <span class='op'>=</span> <span class='cn'>NULL</span>,
+  control <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='op'>)</span>,
   <span class='va'>...</span>
 <span class='op'>)</span></pre>
 
@@ -165,8 +167,7 @@ line with the parameterization provided by the <em>stats</em> package
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>x</th>
-      <td><p>Object of class <code>wt_reliability_data</code> returned by
-<code><a href='reliability_data.html'>reliability_data</a></code>.</p></td>
+      <td><p>A <code>tibble</code> of class <code>wt_reliability_data</code> returned by <a href='reliability_data.html'>reliability_data</a>.</p></td>
     </tr>
     <tr>
       <th>...</th>
@@ -178,48 +179,60 @@ line with the parameterization provided by the <em>stats</em> package
     </tr>
     <tr>
       <th>wts</th>
-      <td><p>Optional vector of case weights. The length of <code>wts</code> must be the
-same as the number of observations in <code>x</code>.</p></td>
+      <td><p>Optional vector of case weights. The length of <code>wts</code> must be equal
+to the number of observations in <code>x</code>.</p></td>
     </tr>
     <tr>
       <th>conf_level</th>
       <td><p>Confidence level of the interval.</p></td>
     </tr>
+    <tr>
+      <th>start_dist_params</th>
+      <td><p>Optional vector with initial values of the
+(log-)location-scale parameters.</p></td>
+    </tr>
+    <tr>
+      <th>control</th>
+      <td><p>A list of control parameters (see 'Details' and
+<a href='https://rdrr.io/r/stats/optim.html'>optim</a>).</p></td>
+    </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A list with classes <code>wt_model</code>, <code>wt_ml_estimation</code> and
-<code>wt_model_estimation</code> which contains:</p><ul>
-<li><p><code>coefficients</code> : A named vector of estimated coefficients
-    (parameters of the assumed distribution). <strong>Note</strong>: The parameters
-    are given in location-scale-parameterization.</p></li>
-<li><p><code>confint</code> : Confidence intervals for parameters.</p></li>
-<li><p><code>varcov</code> : Estimated variance-covariance matrix for the
-    parameters.</p></li>
-<li><p><code>shape_scale_coefficients</code> : Only included if
-    <code>distribution</code> is <code>"weibull"</code> or <code>"weibull3"</code>
-    (parameterization used in <code><a href='https://rdrr.io/r/stats/Weibull.html'>stats::Weibull</a></code>).</p></li>
-<li><p><code>shape_scale_confint</code> : Only included if <code>distribution</code> is
-    <code>"weibull"</code> or <code>"weibull3"</code>. Confidence intervals
-    for scale \(\eta\) and shape \(\beta\) (and threshold \(\gamma\))
-    if <code>distribution</code> is <code>"weibull3"</code>.</p></li>
+    <p>A list with classes <code>wt_model</code>, <code>wt_ml_estimation</code> and <code>wt_model_estimation</code>
+which contains:</p><ul>
+<li><p><code>coefficients</code> : A named vector of estimated coefficients (parameters of the
+assumed distribution). <strong>Note</strong>: The parameters are given in the
+(log-)location-scale-parameterization.</p></li>
+<li><p><code>confint</code> : Confidence intervals for the (log-)location-scale parameters.</p></li>
+<li><p><code>shape_scale_coefficients</code> : Only included if <code>distribution</code> is <code>"weibull"</code>
+or <code>"weibull3"</code> (parameterization used in <a href='https://rdrr.io/r/stats/Weibull.html'>Weibull</a>).</p></li>
+<li><p><code>shape_scale_confint</code> : Only included if <code>distribution</code> is <code>"weibull"</code>
+or <code>"weibull3"</code>. Confidence intervals for scale \(\eta\) and shape \(\beta\)
+(and threshold \(\gamma\) if <code>distribution = "weibull3"</code>).</p></li>
+<li><p><code>varcov</code> : Estimated variance-covariance matrix of (log-)location-scale parameters.</p></li>
 <li><p><code>logL</code> : The log-likelihood value.</p></li>
 <li><p><code>aic</code> : Akaike Information Criterion.</p></li>
 <li><p><code>bic</code> : Bayesian Information Criterion.</p></li>
-<li><p><code>data</code> : A tibble with class <code>wt_reliability_data</code> returned from <code><a href='reliability_data.html'>reliability_data</a></code>.</p></li>
+<li><p><code>data</code> : A <code>tibble</code> with class <code>wt_reliability_data</code> returned by</p></li>
 <li><p><code>distribution</code> : Specified distribution.</p></li>
 </ul>
 
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p><code>ml_estimation</code> calls <code>Lifedata.MLE</code>,
-which is implemented in <em>SPREDA</em>, to obtain the estimates. Normal
-approximation confidence intervals for the parameters are computed as well.</p>
+    <p>Within <code>ml_estimation</code>, <a href='https://rdrr.io/r/stats/optim.html'>optim</a> is called with <code>method = "BFGS"</code>
+and <code>control$fnscale = -1</code> to estimate the parameters that maximize the
+log-likelihood (see <a href='loglik_function.html'>loglik_function</a>). For three-parametric distributions,
+the profile log-likelihood is maximized in advance (see <a href='loglik_profiling.html'>loglik_profiling</a>).
+Once the threshold parameter is determined, the three-parametric model is
+treated like two-parametric (reduced lifetime by threshold) and the general
+optimization routine is applied.</p>
+<p>Normal approximation confidence intervals for the parameters are computed as well.</p>
     <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
 
     <p>Meeker, William Q; Escobar, Luis A., Statistical methods for
-  reliability data, New York: Wiley series in probability and statistics, 1998</p>
+reliability data, New York: Wiley series in probability and statistics, 1998</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='co'># Reliability data preparation:</span>

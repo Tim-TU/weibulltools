@@ -1,9 +1,3 @@
-two_parametric <- function(distribution) {
-  sub("3", "", distribution)
-}
-
-
-
 check_compatible_distributions <- function(p_obj_dist, model_dist) {
   if (p_obj_dist != two_parametric(model_dist)) {
     msg <- paste0(
@@ -37,6 +31,7 @@ check_dots <- function(...) {
 }
 
 
+
 check_dates <- function(x,
                         date.format = "%Y-%m-%d"
 ){
@@ -48,25 +43,4 @@ check_dates <- function(x,
 
 
 
-# Distributional helper functions throughout the package:
-## qsev
-qsev <- function(p) {
-  p <- ifelse(p >= 0.9999999999999999, 0.9999999999999999, p)
-  p <- ifelse(p <= 1 - 0.9999999999999999, 1 - 0.9999999999999999, p)
-
-  log(-log(1 - p))
-}
-
-
-
-## psev
-psev <- function(q) {
-  1 - exp(-exp(q))
-}
-
-
-
-## dsev
-dsev <- function(x) {
-  exp(x - exp(x))
-}
+`%||%` <- function(x, y) if (!is.null(x)) x else y
