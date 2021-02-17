@@ -480,7 +480,7 @@ plot_prob_ <- function(
     plot_method = plot_method
   )
 
-  plot_prob_vis(
+  p_obj <- plot_prob_vis(
     p_obj = p_obj,
     tbl_prob = tbl_prob,
     distribution = distribution,
@@ -489,6 +489,11 @@ plot_prob_ <- function(
     title_y = title_y,
     title_trace = title_trace
   )
+
+  # Store distribution for compatibility checks
+  attr(p_obj, "distribution") <- distribution
+
+  p_obj
 }
 
 
@@ -705,6 +710,11 @@ plot_mod.wt_model <- function(p_obj, x, title_trace = "Fit", ...) {
 #' @export
 plot_mod.wt_model_estimation <- function(p_obj, x, title_trace = "Fit", ...) {
 
+  check_compatible_distributions(
+    attr(p_obj, "distribution"),
+    x$distribution
+  )
+
   failed_data <- dplyr::filter(x$data, .data$status == 1)
 
   plot_mod.default(
@@ -725,6 +735,11 @@ plot_mod.wt_model_estimation_list <- function(p_obj, x, title_trace = "Fit", ...
   tbl_pred <- purrr::map2_dfr(
     x, cdf_estimation_methods,
     function(model_estimation, cdf_estimation_method) {
+      check_compatible_distributions(
+        attr(p_obj, "distribution"),
+        model_estimation$distribution
+      )
+
       failed_data <- dplyr::filter(model_estimation$data, .data$status == 1)
 
       plot_mod_helper(
@@ -748,6 +763,12 @@ plot_mod.wt_model_estimation_list <- function(p_obj, x, title_trace = "Fit", ...
 #' @export
 plot_mod.wt_mixmod_regression <- function(p_obj, x, title_trace = "Fit", ...) {
   tbl_pred <- purrr::map2_dfr(x, seq_along(x), function(model_estimation, index) {
+    check_compatible_distributions(
+      attr(p_obj, "distribution"),
+      model_estimation$distribution
+    )
+
+    # Extract cdf_estimation_method from model_estimation
     cdf_estimation_method <- if (
       !tibble::has_name(model_estimation$data, "cdf_estimation_method")
     ) {
@@ -787,6 +808,11 @@ plot_mod.wt_mixmod_regression_list <- function(p_obj,
         mixmod_regression,
         seq_along(mixmod_regression),
         function(model_estimation, index) {
+          check_compatible_distributions(
+            attr(p_obj, "distribution"),
+            model_estimation$distribution
+          )
+
           plot_mod_mix_helper(
             model_estimation = model_estimation,
             cdf_estimation_method = cdf_estimation_method,
@@ -927,6 +953,11 @@ plot_mod.default <- function(p_obj,
 ) {
 
   distribution <- match.arg(distribution)
+
+  check_compatible_distributions(
+    attr(p_obj, "distribution"),
+    distribution
+  )
 
   tbl_pred <- plot_mod_helper(
     x, dist_params, distribution
@@ -1171,6 +1202,11 @@ plot_conf.wt_confint <- function(p_obj,
   tbl_pred <- purrr::map2_dfr(
     mod, cdf_estimation_methods,
     function(model_estimation, cdf_estimation_method) {
+      check_compatible_distributions(
+        attr(p_obj, "distribution"),
+        model_estimation$distribution
+      )
+
       plot_mod_helper(
         # Take x coordinates from confint. This guarantees consideration of
         # b lives
@@ -1331,6 +1367,11 @@ plot_conf.default <- function(
 
   direction <- match.arg(direction)
   distribution <- match.arg(distribution)
+
+  check_compatible_distributions(
+    attr(p_obj, "distribution"),
+    distribution
+  )
 
   # Extracting tbl_mod
   plot_method <- if (inherits(p_obj, "plotly")) {
