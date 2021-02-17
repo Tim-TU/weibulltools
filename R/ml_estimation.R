@@ -276,7 +276,7 @@ ml_estimation_ <- function(data,
       control = control,
       hessian = TRUE,
       x = x_origin,
-      status = d,
+      status = status,
       wts = wts,
       distribution = distribution,
       log_scale = TRUE
@@ -333,7 +333,7 @@ ml_estimation_ <- function(data,
   }
 
   # Step 3: Form output:
-  n <- length(xx) # sample size
+  n <- length(x_origin) # sample size
   k <- length(dist_params) # number of parameters
 
   ml_output <- c(

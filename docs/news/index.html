@@ -144,8 +144,6 @@
 <a href="#parametric-models" class="anchor"></a>Parametric Models</h3>
 <ul>
 <li>
-<code><a href="../reference/loglik_profiling.html">loglik_profiling()</a></code>: Added argument <code>wts</code>.</li>
-<li>
 <code><a href="../reference/plot_prob.html">plot_prob.wt_model()</a></code>: Removed dysfunctional argument <code>distribution</code>. The distribution is inferred using the model <code>x</code>.</li>
 </ul>
 </div>
@@ -179,6 +177,10 @@
 <h3 class="hasAnchor">
 <a href="#parametric-models-1" class="anchor"></a>Parametric Models</h3>
 <ul>
+<li>
+<code><a href="../reference/ml_estimation.html">ml_estimation()</a></code>: New arguments <code>start_dist_params</code> (optional vector with initial values of the parameters) and <code>control</code> (enables access to argument <code>control</code> in <code><a href="https://rdrr.io/r/stats/optim.html">optim()</a></code>).</li>
+<li>
+<code><a href="../reference/loglik_profiling.html">loglik_profiling()</a></code>: New argument <code>wts</code>.</li>
 <li>
 <code><a href="../reference/loglik_profiling.html">loglik_profiling()</a></code> is now an S3 generic. <code><a href="../reference/loglik_profiling.html">loglik_profiling()</a></code> becomes <code><a href="../reference/loglik_profiling.default.html">loglik_profiling.default()</a></code>. Added <code><a href="../reference/loglik_profiling.html">loglik_profiling.wt_reliability_data()</a></code>.</li>
 <li>

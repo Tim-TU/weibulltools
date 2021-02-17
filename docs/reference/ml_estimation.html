@@ -188,7 +188,8 @@ to the number of observations in <code>x</code>.</p></td>
     </tr>
     <tr>
       <th>start_dist_params</th>
-      <td><p>Optional vector with initial values of the parameters.</p></td>
+      <td><p>Optional vector with initial values of the
+(log-)location-scale parameters.</p></td>
     </tr>
     <tr>
       <th>control</th>
@@ -224,9 +225,9 @@ or <code>"weibull3"</code>. Confidence intervals for scale \(\eta\) and shape \(
 and <code>control$fnscale = -1</code> to estimate the parameters that maximize the
 log-likelihood (see <a href='loglik_function.html'>loglik_function</a>). For three-parametric distributions,
 the profile log-likelihood is maximized in advance (see <a href='loglik_profiling.html'>loglik_profiling</a>).
-Once threshold parameter is determined, the three-parametric model is treated
-like two-parametric (reduced lifetime by threshold) and the general optimization
-routine is applied.</p>
+Once the threshold parameter is determined, the three-parametric model is
+treated like two-parametric (reduced lifetime by threshold) and the general
+optimization routine is applied.</p>
 <p>Normal approximation confidence intervals for the parameters are computed as well.</p>
     <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
 

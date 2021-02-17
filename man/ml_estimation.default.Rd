@@ -32,7 +32,8 @@ to the number of observations in \code{x}.}
 
 \item{conf_level}{Confidence level of the interval.}
 
-\item{start_dist_params}{Optional vector with initial values of the parameters.}
+\item{start_dist_params}{Optional vector with initial values of the
+(log-)location-scale parameters.}
 
 \item{control}{A list of control parameters (see 'Details' and
 \link[stats:optim]{optim}).}
@@ -74,9 +75,9 @@ Within \code{ml_estimation}, \link[stats:optim]{optim} is called with \code{meth
 and \code{control$fnscale = -1} to estimate the parameters that maximize the
 log-likelihood (see \link{loglik_function}). For three-parametric distributions,
 the profile log-likelihood is maximized in advance (see \link{loglik_profiling}).
-Once threshold parameter is determined, the three-parametric model is treated
-like two-parametric (reduced lifetime by threshold) and the general optimization
-routine is applied.
+Once the threshold parameter is determined, the three-parametric model is
+treated like two-parametric (reduced lifetime by threshold) and the general
+optimization routine is applied.
 
 Normal approximation confidence intervals for the parameters are computed as well.
 }
