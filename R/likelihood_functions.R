@@ -67,13 +67,10 @@ loglik_function.wt_reliability_data <- function(
                                       ...
 ) {
 
-  # Prepare input for `loglik_function.default()`:
-  xx <- x$x
-  status <- x$status
-
+  # Call `loglik_function.default()`:
   loglik_function.default(
-    x = xx,
-    status = status,
+    x = x$x,
+    status = x$status,
     wts = wts,
     dist_params = dist_params,
     distribution = distribution
@@ -207,7 +204,6 @@ loglik_function_ <- function(x,
 
   # Compute log-likelihood:
   logL_i <- d * log(ds) + (1 - d) * log(1 - ps)
-  # logL_i <- log(ds ^ d * (1 - ps) ^ (1 - d))
   logL <- sum(wts * logL_i)
   logL
 }
@@ -297,13 +293,10 @@ loglik_profiling.wt_reliability_data <- function(
                                       ...
 ) {
 
-  # Prepare input for `loglik_profiling.default()`:
-  xx <- x$x
-  d <- x$status
-
+  # Call `loglik_profiling.default()`:
   loglik_profiling.default(
-    x = xx,
-    status = d,
+    x = x$x,
+    status = x$status,
     wts = wts,
     thres = thres,
     distribution = distribution

@@ -14,9 +14,9 @@
 #' and `control$fnscale = -1` to estimate the parameters that maximize the
 #' log-likelihood (see [loglik_function]). For three-parametric distributions,
 #' the profile log-likelihood is maximized in advance (see [loglik_profiling]).
-#' Once threshold parameter is determined, the three-parametric model is treated
-#' like two-parametric (reduced lifetime by threshold) and the general optimization
-#' routine is applied.
+#' Once the threshold parameter is determined, the three-parametric model is
+#' treated like two-parametric (reduced lifetime by threshold) and the general
+#' optimization routine is applied.
 #'
 #' Normal approximation confidence intervals for the parameters are computed as well.
 #'
@@ -25,7 +25,8 @@
 #' @param wts Optional vector of case weights. The length of `wts` must be equal
 #' to the number of observations in `x`.
 #' @param conf_level Confidence level of the interval.
-#' @param start_dist_params Optional vector with initial values of the parameters.
+#' @param start_dist_params Optional vector with initial values of the
+#' (log-)location-scale parameters.
 #' @param control A list of control parameters (see 'Details' and
 #' [optim][stats::optim]).
 #' @template dots
@@ -192,8 +193,8 @@ ml_estimation_ <- function(data,
 ) {
 
   # Prepare function inputs:
-  x <- xx <- data$x # xx and d to compute the var-cov-matrix if three-parametric:
-  status <- d <- data$status
+  x <- x_origin <- data$x # x_origin to compute the var-cov-matrix if three-parametric:
+  status <- data$status
 
   # Set initial values:
   if (purrr::is_null(start_dist_params)) {
@@ -274,7 +275,7 @@ ml_estimation_ <- function(data,
       method = "BFGS",
       control = control,
       hessian = TRUE,
-      x = xx,
+      x = x_origin,
       status = d,
       wts = wts,
       distribution = distribution,
@@ -289,7 +290,7 @@ ml_estimation_ <- function(data,
   ## Value of the log-likelihood at optimum:
   logL <- ml$value
 
-  ## Variance-covariance matrix on log scale:
+  ## Variance-covariance matrix on log scale which is the inverse of the hessian:
   dist_varcov_logsigma <- solve(-ml$hessian)
 
   ## scale parameter on original scale:
