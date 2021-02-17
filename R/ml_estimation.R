@@ -10,15 +10,24 @@
 #' (see [Weibull][stats::Weibull]).
 #'
 #' @details
-#' To obtain the estimates, `ml_estimation` calls [Lifedata.MLE][SPREDA::Lifedata.MLE]
-#' which is implemented in package *SPREDA*. Normal approximation confidence
-#' intervals for the parameters are computed as well.
+#' Within `ml_estimation`, [optim][stats::optim] is called with `method = "BFGS"`
+#' and `control$fnscale = -1` to estimate the parameters that maximize the
+#' log-likelihood (see [loglik_function]). For three-parametric distributions,
+#' the profile log-likelihood is maximized in advance (see [loglik_profiling]).
+#' Once threshold parameter is determined, the three-parametric model is treated
+#' like two-parametric (reduced lifetime by threshold) and the general optimization
+#' routine is applied.
+#'
+#' Normal approximation confidence intervals for the parameters are computed as well.
 #'
 #' @param x A `tibble` of class `wt_reliability_data` returned by [reliability_data].
 #' @param distribution Supposed distribution of the random variable.
 #' @param wts Optional vector of case weights. The length of `wts` must be equal
 #' to the number of observations in `x`.
 #' @param conf_level Confidence level of the interval.
+#' @param start_dist_params Optional vector with initial values of the parameters.
+#' @param control A list of control parameters (see 'Details' and
+#' [optim][stats::optim]).
 #' @template dots
 #'
 #' @template return-ml-estimation
@@ -80,6 +89,8 @@ ml_estimation.wt_reliability_data <- function(x,
                                               ),
                                               wts = rep(1, nrow(x)),
                                               conf_level = 0.95,
+                                              start_dist_params = NULL,
+                                              control = list(),
                                               ...
 ) {
 
@@ -89,7 +100,9 @@ ml_estimation.wt_reliability_data <- function(x,
     x,
     distribution = distribution,
     wts = wts,
-    conf_level = conf_level
+    conf_level = conf_level,
+    start_dist_params = start_dist_params,
+    control = control
   )
 }
 
@@ -97,7 +110,7 @@ ml_estimation.wt_reliability_data <- function(x,
 
 #' ML Estimation for Parametric Lifetime Distributions
 #'
-#' @inherit ml_estimation description details return references
+#' @inherit ml_estimation description details references
 #'
 #' @inheritParams ml_estimation
 #' @param x A numeric vector which consists of lifetime data. Lifetime data
@@ -106,6 +119,9 @@ ml_estimation.wt_reliability_data <- function(x,
 #'   cycles.
 #' @param status A vector of binary data (0 or 1) indicating whether a unit is
 #'   a right censored observation (= 0) or a failure (= 1).
+#'
+#' @template return-ml-estimation
+#' @templateVar data A `tibble` with columns `x` and `status`.
 #'
 #' @seealso [ml_estimation]
 #'
@@ -145,14 +161,23 @@ ml_estimation.default <- function(x,
                                   ),
                                   wts = rep(1, length(x)),
                                   conf_level = 0.95,
+                                  start_dist_params = NULL,
+                                  control = list(),
                                   ...
 ) {
 
   distribution <- match.arg(distribution)
 
-  data <- reliability_data(x = x, status = status, id = "")
+  data <- tibble::tibble(x = x, status = status)
 
-  ml_estimation_(data, distribution, wts, conf_level)
+  ml_estimation_(
+    data = data,
+    distribution = distribution,
+    wts = wts,
+    conf_level = conf_level,
+    start_dist_params = start_dist_params,
+    control = control
+  )
 }
 
 
@@ -161,264 +186,177 @@ ml_estimation.default <- function(x,
 ml_estimation_ <- function(data,
                            distribution,
                            wts,
-                           conf_level
+                           conf_level,
+                           start_dist_params, # initial parameter vector
+                           control # control of optims control argument
 ) {
 
-  x <- data$x
-  status <- data$status
-  id <- data$id
+  # Prepare function inputs:
+  x <- xx <- data$x # xx and d to compute the var-cov-matrix if three-parametric:
+  status <- d <- data$status
 
-  # Log-Location-Scale Models:
-  if (distribution %in% c("weibull", "lognormal", "loglogistic")) {
-    # ML - Estimation: Location-Scale Parameters
-    ml <- SPREDA::Lifedata.MLE(survival::Surv(x, status) ~ 1, dist = distribution,
-                               weights = wts)
-    estimates_loc_sc <- c(SPREDA::coef.Lifedata.MLE(ml)[[1]],
-                          SPREDA::coef.Lifedata.MLE(ml)[[2]])
-    names(estimates_loc_sc) <- c("mu", "sigma")
-
-    # ML-Estimation: Var-Cov-Matrix of Location-Scale-Parameters
-    vcov_loc_sc <- SPREDA::summary.Lifedata.MLE(ml)$vcov
-    colnames(vcov_loc_sc) <- names(estimates_loc_sc)
-    rownames(vcov_loc_sc) <- names(estimates_loc_sc)
-
-    # Standard Error
-    se_loc_sc <- sqrt(diag(vcov_loc_sc))
-
-    # Confidence Intervals: Location and Scale
-    conf_mu <- c(
-      estimates_loc_sc[[1]] + stats::qnorm((1 - conf_level) / 2) * se_loc_sc[[1]],
-      estimates_loc_sc[[1]] + stats::qnorm((1 + conf_level) / 2) * se_loc_sc[[1]])
-
-    w <- exp(
-      (stats::qnorm((1 + conf_level) / 2) * se_loc_sc[[2]]) / estimates_loc_sc[[2]])
-    conf_sig <- c(estimates_loc_sc[[2]] /  w, estimates_loc_sc[[2]] * w)
-
-    conf_ints_loc_sc <- matrix(c(conf_mu, conf_sig), byrow = TRUE, ncol = 2)
-    colnames(conf_ints_loc_sc) <- c(paste(((1 - conf_level) / 2) * 100,"%"),
-                                    paste(((1 + conf_level) / 2) * 100, "%"))
-    rownames(conf_ints_loc_sc) <- names(estimates_loc_sc)
-
-    if (distribution == "weibull") {
-      # Alternative Parameterization, only for Weibull:
-      estimates <- c(exp(estimates_loc_sc[[1]]), 1 / estimates_loc_sc[[2]])
-      names(estimates) <- c("eta", "beta")
-
-      conf_ints <- matrix(c(exp(conf_mu), rev(1 / conf_sig)), byrow = TRUE,
-                          ncol = 2)
-      colnames(conf_ints) <- colnames(conf_ints_loc_sc)
-      rownames(conf_ints) <- names(estimates)
-
-      ml_output <- list(
-        coefficients = estimates_loc_sc,
-        confint = conf_ints_loc_sc,
-        varcov = vcov_loc_sc,
-        shape_scale_coefficients = estimates,
-        shape_scale_confint = conf_ints,
-        logL = -ml$min,
-        aic = -2 * (-ml$min) + 2 * length(estimates_loc_sc),
-        bic = (-2 * (-ml$min) + log(length(x)) * length(estimates_loc_sc))
-      )
-    } else {
-      ml_output <- list(
-        coefficients = estimates_loc_sc,
-        confint = conf_ints_loc_sc,
-        varcov = vcov_loc_sc,
-        logL = -ml$min,
-        aic = -2 * (-ml$min) + 2 * length(estimates_loc_sc),
-        bic = (-2 * (-ml$min) + log(length(x)) * length(estimates_loc_sc))
-      )
-    }
+  # Set initial values:
+  if (purrr::is_null(start_dist_params)) {
+    ## Length two vector with log scale parameter:
+    start_dist_params <- start_params(
+      x = x,
+      status = status,
+      distribution = distribution
+    )
+  } else {
+    check_dist_params(start_dist_params, distribution)
   }
 
-  # Log-Location-Scale Models with threshold parameter:
+  # Pre-Step: Three-parametric models must be profiled w.r.t threshold:
   if (distribution %in% c("weibull3", "lognormal3", "loglogistic3")) {
 
-    # Log-Location-Scale with threshold:
-    ## Problem:  With functions SPREDA::Lifedata.MLE and survival::survreg it is
-    ##           not possible to estimate var-cov-matrix of log-location scale parameters and
-    ##           threshold.
-    ## Solution: A preliminary parameter estimation is done with likelihood profiling for
-    ##           threshold and MLE (using Lifedata.MLE) for location and scale parameters.
-    ##           These estimates will be used as initial values to maximize the log-likelihood of
-    ##           log-location scale distributions with threshold.
-
-    ## Optimization of profile log-likelihood function:
-    optim_gamma <- stats::optim(par = 0, fn = loglik_profiling, method = "L-BFGS-B",
-                                upper = (1 - (1 / 1e+5)) * min(x), lower = 0, control = list(fnscale = -1),
-                                x = x, status = status, wts = wts, distribution = distribution)
-
-    ## Estimate of Threshold:
-    estimate_gamma <- optim_gamma$par
-
-    ## Subtracting Threshold
-    x_gamma <- x - estimate_gamma
-
-    ## Defining subset for unusual case of x_gamma being smaller or equal to 0:
-    subs <- x_gamma > 0
-
-    ml_init <- SPREDA::Lifedata.MLE(survival::Surv(x_gamma[subs], status[subs]) ~ 1,
-                                    dist = two_parametric(distribution),
-                                    weights = wts)
-
-    ## Initial parameters:
-    estimates_init <- c(SPREDA::coef.Lifedata.MLE(ml_init)[[1]],
-                        SPREDA::coef.Lifedata.MLE(ml_init)[[2]], estimate_gamma)
-
-    ## Optimization of log-likelihood function with threshold:
-    ml <- stats::optim(par = c(estimates_init[[1]], estimates_init[[2]],
-                               estimates_init[[3]]), fn = loglik_function, method = "L-BFGS-B",
-                       lower = c(0, 0, 0), upper = c(Inf, Inf, (1 - (1 / 1e+5)) * min(x[status == 1])),
-                       control = list(fnscale = -1), x = x, status = status, wts = wts,
-                       distribution = distribution, hessian = TRUE)
-
-    ## Estimated parameters:
-    estimates_loc_sc <- ml$par
-    names(estimates_loc_sc) <- c("mu", "sigma", "gamma")
-
-    # ML-Estimation: Var-Cov-Matrix of Log-Location-Scale-Parameters and Threshold:
-    vcov_loc_sc <- solve(-ml$hessian)
-    colnames(vcov_loc_sc) <- names(estimates_loc_sc)
-    rownames(vcov_loc_sc) <- names(estimates_loc_sc)
-
-    # Standard Error:
-    se_loc_sc <- sqrt(diag(vcov_loc_sc))
-
-    # Confidence Intervals - Location, Scale and Threshold:
-    conf_mu <- c(
-      estimates_loc_sc[[1]] + stats::qnorm((1 - conf_level) / 2) * se_loc_sc[[1]],
-      estimates_loc_sc[[1]] + stats::qnorm((1 + conf_level) / 2) * se_loc_sc[[1]])
-
-    w <- exp(
-      (stats::qnorm((1 + conf_level) / 2) * se_loc_sc[[2]]) / estimates_loc_sc[[2]])
-    conf_sig <- c(estimates_loc_sc[[2]] /  w, estimates_loc_sc[[2]] * w)
-
-    conf_gamma <- c(
-      estimates_loc_sc[[3]] + stats::qnorm((1 - conf_level) / 2) * se_loc_sc[[3]],
-      estimates_loc_sc[[3]] + stats::qnorm((1 + conf_level) / 2) * se_loc_sc[[3]])
-
-    conf_ints_loc_sc <- matrix(c(conf_mu, conf_sig, conf_gamma), byrow = TRUE, ncol = 2)
-    colnames(conf_ints_loc_sc) <- c(paste(((1 - conf_level) / 2) * 100,"%"),
-                                    paste(((1 + conf_level) / 2) * 100, "%"))
-    rownames(conf_ints_loc_sc) <- names(estimates_loc_sc)
-
-    if (distribution == "weibull3") {
-      # Alternative Parameterization, only for Weibull:
-      estimates <- c(exp(estimates_loc_sc[[1]]), 1 / estimates_loc_sc[[2]],
-                     estimates_loc_sc[[3]])
-      names(estimates) <- c("eta", "beta", "gamma")
-
-      conf_ints <- matrix(c(exp(conf_mu), rev(1 / conf_sig), conf_gamma), byrow = TRUE,
-                          ncol = 2)
-      colnames(conf_ints) <- colnames(conf_ints_loc_sc)
-      rownames(conf_ints) <- names(estimates)
-
-      ml_output <- list(
-        coefficients = estimates_loc_sc,
-        confint = conf_ints_loc_sc,
-        varcov = vcov_loc_sc,
-        shape_scale_coefficients = estimates,
-        shape_scale_confint = conf_ints,
-        logL = ml$value,
-        aic = -2 * (ml$value) + 2 * length(estimates_loc_sc),
-        bic = (-2 * (ml$value) + log(length(x)) * length(estimates_loc_sc))
-      )
-
-    } else {
-      ml_output <- list(
-        coefficients = estimates_loc_sc,
-        confint = conf_ints_loc_sc,
-        varcov = vcov_loc_sc,
-        logL = ml$value,
-        aic = -2 * (ml$value) + 2 * length(estimates_loc_sc),
-        bic = (-2 * (ml$value) + log(length(x)) * length(estimates_loc_sc))
-      )
+    ## Initial value for threshold parameter:
+    t0 <- 0
+    if (length(start_dist_params) == 3L) {
+      t0 <- start_dist_params[[3]]
+      ### t0 will be included in x (see x - opt_thres):
+      start_dist_params <- start_dist_params[-3]
     }
+
+    ## Optimization of `loglik_profiling_()`:
+    opt_thres <- stats::optim(
+      par = t0,
+      fn = loglik_profiling_,
+      method = "L-BFGS-B",
+      lower = 0,
+      upper = (1 - (1 / 1e+5)) * min(x),
+      control = list(fnscale = -1), # no user input for profiling!
+      x = x,
+      status = status,
+      wts = wts,
+      distribution = distribution
+    )
+
+    opt_thres <- opt_thres$par
+
+    ## Preparation for ml:
+    x <- x - opt_thres
   }
-  # Location-Scale Models:
-  if (distribution %in% c("sev", "normal", "logistic")) {
-    # Location-Scale:
-    ## Problem:  With functions SPREDA::Lifedata.MLE it is not possible to estimate
-    ##           the parameters of a location-scale distribution and with survival::survreg it is
-    ##           not possible to estimate var-cov-matrix of location-scale parameters.
-    ## Solution: A preliminary parameter estimation is done with MLE (using survreg)
-    ##           for location-scale distributions.
-    ##           These estimates will be used as initial values to maximize the log-likelihood of
-    ##           location-scale distributions.
 
-    ## rename distributions:
-    if (distribution == "sev") {
-      distr = "extreme"
-    } else if (distribution == "normal") {
-      distr = "gaussian"
-    } else {
-      distr = distribution
-    }
-    ## Initial estimation step:
-    ml_init <- survival::survreg(survival::Surv(x, status) ~ 1, dist = distr,
-                                 weights = wts)
+  # Step 1: Estimation of a two-parametric model (x or x - thres) using ML:
 
-    ## Initial parameters:
-    estimates_init <- c(stats::coef(ml_init)[[1]], ml_init$scale)
+  ## Force maximization:
+  control$fnscale <- -1
 
-    ## Optimization of log-likelihood function:
-    ml <- stats::optim(par = c(estimates_init[[1]], estimates_init[[2]]),
-                       fn = loglik_function, method = "BFGS",
-                       control = list(fnscale = -1), x = x, status = status, wts = wts,
-                       distribution = distribution, hessian = TRUE)
+  ## Use log scale:
+  start_dist_params[2] <- log(start_dist_params[2])
 
-    ## Estimated parameters:
-    estimates_loc_sc <- ml$par
-    names(estimates_loc_sc) <- c("mu", "sigma")
+  ## Two-parametric model:
+  ml <- stats::optim(
+    par = start_dist_params,
+    fn = loglik_function_,
+    method = "BFGS",
+    control = control,
+    hessian = TRUE,
+    x = x,
+    status = status,
+    wts = wts,
+    distribution = distribution,
+    log_scale = TRUE
+  )
 
-    # ML-Estimation: Var-Cov-Matrix of Location-Scale-Parameters:
-    vcov_loc_sc <- solve(-ml$hessian)
-    colnames(vcov_loc_sc) <- names(estimates_loc_sc)
-    rownames(vcov_loc_sc) <- names(estimates_loc_sc)
+  ## Parameters:
+  dist_params <- ml$par
+  names(dist_params) <- c("mu", "sigma")
 
-    # Standard Error:
-    se_loc_sc <- sqrt(diag(vcov_loc_sc))
+  ### Three-parametric, needed for variance-covariance matrix:
+  if (exists("opt_thres")) {
+    dist_params <- c(dist_params, opt_thres)
 
-    # Confidence Intervals - Location and Scale:
-    conf_mu <- c(
-      estimates_loc_sc[[1]] + stats::qnorm((1 - conf_level) / 2) * se_loc_sc[[1]],
-      estimates_loc_sc[[1]] + stats::qnorm((1 + conf_level) / 2) * se_loc_sc[[1]])
+    ml <- stats::optim(
+      par = dist_params,
+      fn = loglik_function_,
+      method = "BFGS",
+      control = control,
+      hessian = TRUE,
+      x = xx,
+      status = d,
+      wts = wts,
+      distribution = distribution,
+      log_scale = TRUE
+    )
 
-    w <- exp(
-      (stats::qnorm((1 + conf_level) / 2) * se_loc_sc[[2]]) / estimates_loc_sc[[2]])
-    conf_sig <- c(estimates_loc_sc[[2]] /  w, estimates_loc_sc[[2]] * w)
+    #### Update parameters:
+    dist_params <- ml$par
+    names(dist_params) <- c("mu", "sigma", "gamma")
+  }
 
-    conf_ints_loc_sc <- matrix(c(conf_mu, conf_sig), byrow = TRUE, ncol = 2)
-    colnames(conf_ints_loc_sc) <- c(paste(((1 - conf_level) / 2) * 100,"%"),
-                                    paste(((1 + conf_level) / 2) * 100, "%"))
-    rownames(conf_ints_loc_sc) <- names(estimates_loc_sc)
+  ## Value of the log-likelihood at optimum:
+  logL <- ml$value
 
-    ml_output <- list(
-      coefficients = estimates_loc_sc,
-      confint = conf_ints_loc_sc,
-      varcov = vcov_loc_sc,
-      logL = ml$value,
-      aic = -2 * (ml$value) + 2 * length(estimates_loc_sc),
-      bic = (-2 * (ml$value) +
-               log(length(x)) * length(estimates_loc_sc))
+  ## Variance-covariance matrix on log scale:
+  dist_varcov_logsigma <- solve(-ml$hessian)
+
+  ## scale parameter on original scale:
+  dist_params[2] <- exp(dist_params[2])
+
+  ## Transformation to obtain variance-covariance matrix on original scale:
+  trans_mat <- diag(length(dist_params))
+  diag(trans_mat)[2] <- dist_params[2]
+
+  dist_varcov <- trans_mat %*% dist_varcov_logsigma %*% trans_mat
+  colnames(dist_varcov) <- rownames(dist_varcov) <- names(dist_params)
+
+  # Step 2: Normal approximation confidence intervals:
+  confint <- conf_normal_approx(
+    dist_params = dist_params,
+    dist_varcov = dist_varcov,
+    conf_level = conf_level
+  )
+
+
+  ## Alternative parameters and confidence intervals:
+  l_wb <- list()
+
+  if (distribution %in% c("weibull", "weibull3")) {
+    ### Parameters:
+    estimates <- dist_params
+    estimates[1:2] <- c(exp(estimates[[1]]), 1 / estimates[[2]])
+    names(estimates)[1:2] <- c("eta", "beta")
+
+    ### Confidence intervals:
+    conf_int <- confint
+    conf_int[1, ] <- exp(conf_int[1, ])
+    conf_int[2, ] <- rev(1 / conf_int[2, ])
+    rownames(conf_int) <- names(estimates)
+
+    l_wb <- list(
+      shape_scale_coefficients = estimates,
+      shape_scale_confint = conf_int
     )
   }
+
+  # Step 3: Form output:
+  n <- length(xx) # sample size
+  k <- length(dist_params) # number of parameters
+
+  ml_output <- c(
+    list(
+      coefficients = dist_params,
+      confint = confint
+    ),
+    l_wb, # Empty, if not Weibull!
+    list(
+      varcov = dist_varcov,
+      logL = logL,
+      aic = -2 * logL + 2 * k,
+      bic = -2 * logL + log(n) * k
+    )
+  )
+
+  ml_output$data <- data
+  ml_output$distribution <- distribution
 
   class(ml_output) <- c(
     "wt_model", "wt_ml_estimation", "wt_model_estimation", class(ml_output)
   )
 
-  if (all(id == "", na.rm = TRUE)) {
-    ml_output$data <- tibble::tibble(
-      x = x, status = status
-    )
-  } else {
-    ml_output$data <- data
-  }
-
-  ml_output$distribution <- distribution
-
-  return(ml_output)
+  ml_output
 }
 
 

@@ -46,7 +46,7 @@ additional threshold parameter has to be provided. In terms of
 matrix of the parameters.
 }
 \examples{
-Reliability data preparation:
+# Reliability data preparation:
 data <- reliability_data(
   alloy,
   x = cycles,

@@ -53,7 +53,6 @@ Imports:
     sandwich,
     segmented,
     SPREDA,
-    survival,
     tibble,
     tidyr
 LinkingTo: Rcpp (>= 0.12.18), RcppArmadillo

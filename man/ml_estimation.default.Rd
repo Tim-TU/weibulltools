@@ -11,6 +11,8 @@
     "weibull3", "lognormal3", "loglogistic3"),
   wts = rep(1, length(x)),
   conf_level = 0.95,
+  start_dist_params = NULL,
+  control = list(),
   ...
 )
 }
@@ -30,6 +32,11 @@ to the number of observations in \code{x}.}
 
 \item{conf_level}{Confidence level of the interval.}
 
+\item{start_dist_params}{Optional vector with initial values of the parameters.}
+
+\item{control}{A list of control parameters (see 'Details' and
+\link[stats:optim]{optim}).}
+
 \item{...}{Further arguments passed to or from other methods. Currently not used.}
 }
 \value{
@@ -39,7 +46,7 @@ which contains:
 \item \code{coefficients} : A named vector of estimated coefficients (parameters of the
 assumed distribution). \strong{Note}: The parameters are given in the
 (log-)location-scale-parameterization.
-\item \code{confint} : Confidence intervals for (log-)location-scale parameters.
+\item \code{confint} : Confidence intervals for the (log-)location-scale parameters.
 \item \code{shape_scale_coefficients} : Only included if \code{distribution} is \code{"weibull"}
 or \code{"weibull3"} (parameterization used in \link[stats:Weibull]{Weibull}).
 \item \code{shape_scale_confint} : Only included if \code{distribution} is \code{"weibull"}
@@ -49,7 +56,7 @@ or \code{"weibull3"}. Confidence intervals for scale \eqn{\eta} and shape \eqn{\
 \item \code{logL} : The log-likelihood value.
 \item \code{aic} : Akaike Information Criterion.
 \item \code{bic} : Bayesian Information Criterion.
-\item \code{data} : A \code{tibble} with class \code{wt_reliability_data} returned by
+\item \code{data} : A \code{tibble} with columns \code{x} and \code{status}.
 \item \code{distribution} : Specified distribution.
 }
 }
@@ -63,9 +70,15 @@ line with the parameterization provided by the \emph{stats} package
 (see \link[stats:Weibull]{Weibull}).
 }
 \details{
-To obtain the estimates, \code{ml_estimation} calls \link[SPREDA:lifedata.MLE]{Lifedata.MLE}
-which is implemented in package \emph{SPREDA}. Normal approximation confidence
-intervals for the parameters are computed as well.
+Within \code{ml_estimation}, \link[stats:optim]{optim} is called with \code{method = "BFGS"}
+and \code{control$fnscale = -1} to estimate the parameters that maximize the
+log-likelihood (see \link{loglik_function}). For three-parametric distributions,
+the profile log-likelihood is maximized in advance (see \link{loglik_profiling}).
+Once threshold parameter is determined, the three-parametric model is treated
+like two-parametric (reduced lifetime by threshold) and the general optimization
+routine is applied.
+
+Normal approximation confidence intervals for the parameters are computed as well.
 }
 \examples{
 # Vectors:

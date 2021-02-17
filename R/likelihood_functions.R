@@ -22,7 +22,7 @@
 #'   reliability data, New York: Wiley series in probability and statistics, 1998
 #'
 #' @examples
-#' Reliability data preparation:
+#' # Reliability data preparation:
 #' data <- reliability_data(
 #'   alloy,
 #'   x = cycles,
@@ -67,17 +67,13 @@ loglik_function.wt_reliability_data <- function(
                                       ...
 ) {
 
-  distribution <- match.arg(distribution)
-
-  check_dist_params(dist_params, distribution)
-
-  # Prepare input for `loglik_function_()`:
+  # Prepare input for `loglik_function.default()`:
   xx <- x$x
-  d <- x$status
+  status <- x$status
 
-  loglik_function(
+  loglik_function.default(
     x = xx,
-    status = d,
+    status = status,
     wts = wts,
     dist_params = dist_params,
     distribution = distribution
@@ -226,11 +222,10 @@ loglik_function_ <- function(x,
 #' *Maximum Likelihood Estimation* this function can be optimized
 #' ([optim][stats::optim]) to estimate the threshold parameter.
 #'
-#' @inheritParams r_squared_profiling.default
-#' @param status A vector of binary data (0 or 1) indicating whether a unit is
-#' a right censored observation (= 0) or a failure (= 1).
-#' @param wts Optional vector of case weights. The length of `wts` must be equal
-#' to the number of observations in `x`
+#'
+#' @inheritParams ml_estimation
+#' @param thres A numeric value for the threshold parameter.
+#' @param distribution Supposed three-parametric distribution of the random variable.
 #'
 #' @return
 #' Returns the log-likelihood value for the threshold parameter `thres` given
@@ -240,6 +235,94 @@ loglik_function_ <- function(x,
 #'
 #' @references Meeker, William Q; Escobar, Luis A., Statistical methods for
 #'   reliability data, New York: Wiley series in probability and statistics, 1998
+#'
+#' @examples
+#' # Reliability data preparation:
+#' data <- reliability_data(
+#'   alloy,
+#'   x = cycles,
+#'   status = status
+#' )
+#'
+#' # Determining the optimal loglikelihood value:
+#' ## Range of threshold parameter must be smaller than the first failure:
+#' threshold <- seq(
+#'   0,
+#'   min(data$x[data$status == 1]) - 0.1,
+#'   length.out = 50
+#' )
+#'
+#' ## loglikelihood value with respect to threshold values:
+#' profile_logL <- loglik_profiling(
+#'   x = data,
+#'   thres = threshold,
+#'   distribution = "weibull3"
+#' )
+#'
+#' ## Threshold value (among the candidates) that maximizes the
+#' ## loglikelihood:
+#' threshold[which.max(profile_logL)]
+#'
+#' ## plot:
+#' plot(
+#'   threshold,
+#'   profile_logL,
+#'   type = "l"
+#' )
+#' abline(
+#'   v = threshold[which.max(profile_logL)],
+#'   h = max(profile_logL),
+#'   col = "red"
+#' )
+#'
+#' @md
+#'
+#' @export
+loglik_profiling <- function(x, ...) {
+  UseMethod("loglik_profiling")
+}
+
+
+
+#' @rdname loglik_profiling
+#'
+#' @export
+loglik_profiling.wt_reliability_data <- function(
+                                      x,
+                                      wts = rep(1, nrow(x)),
+                                      thres,
+                                      distribution = c(
+                                        "weibull3", "lognormal3", "loglogistic3"
+                                      ),
+                                      ...
+) {
+
+  # Prepare input for `loglik_profiling.default()`:
+  xx <- x$x
+  d <- x$status
+
+  loglik_profiling.default(
+    x = xx,
+    status = d,
+    wts = wts,
+    thres = thres,
+    distribution = distribution
+  )
+}
+
+
+
+#' Log-Likelihood Profile Function for Parametric Lifetime Distributions with Threshold
+#'
+#' @inherit loglik_profiling description return references
+#'
+#' @inheritParams ml_estimation.default
+#' @param thres A numeric value for the threshold parameter.
+#' @param distribution Supposed three-parametric distribution of the random variable.
+#'
+#' @encoding UTF-8
+#'
+#' @seealso [loglik_profiling]
 #'
 #' @examples
 #' # Vectors:
@@ -281,13 +364,14 @@ loglik_function_ <- function(x,
 #' @md
 #'
 #' @export
-loglik_profiling <- function(x,
-                             status,
-                             wts = rep(1, length(x)),
-                             thres,
-                             distribution = c(
-                               "weibull3", "lognormal3", "loglogistic3"
-                             )
+loglik_profiling.default <- function(x,
+                                     status,
+                                     wts = rep(1, length(x)),
+                                     thres,
+                                     distribution = c(
+                                       "weibull3", "lognormal3", "loglogistic3"
+                                     ),
+                                     ...
 ) {
 
   distribution <- match.arg(distribution)
@@ -319,7 +403,7 @@ loglik_profiling_ <- function(x,
   d <- status
   x <- x - thres
 
-  # Restriction of three-parametric models, i.e. x > threshold parameter:
+  ## Restriction of three-parametric models, i.e. x > threshold parameter:
   subs <- x > 0
   x <- x[subs]
   d <- d[subs]
@@ -329,20 +413,23 @@ loglik_profiling_ <- function(x,
   distribution <- two_parametric(distribution)
 
   ## Initial parameters of two-parametric model:
-  start_vals <- start_dist_params(
+  start_dist_params <- start_params(
     x = x,
     status = d,
     distribution = distribution
   )
 
-  # Log-Likelihood profiling:
+  ## Use log scale:
+  start_dist_params[2] <- log(start_dist_params[2])
+
+  ## Log-Likelihood profiling:
   logL_profile <- stats::optim(
-    par = start_vals,
+    par = start_dist_params,
     fn = loglik_function_,
     method = "BFGS",
     control = list(fnscale = -1),
     x = x,
-    status = status,
+    status = d,
     wts = wts,
     distribution = distribution,
     log_scale = TRUE

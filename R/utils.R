@@ -18,3 +18,7 @@ check_dates <- function(x,
     error = function(e) {FALSE}
   )
 }
+
+
+
+`%||%` <- function(x, y) if (!is.null(x)) x else y

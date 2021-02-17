@@ -25,6 +25,7 @@ reference:
   - loglik_function
   - loglik_function.default
   - loglik_profiling
+  - loglik_profiling.default
   - rank_regression
   - rank_regression.default
   - r_squared_profiling

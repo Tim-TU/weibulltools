@@ -10,10 +10,12 @@ check_dist_params <- function(dist_params, distribution) {
   three_parametric <- distribution %in%
     c("weibull3", "lognormal3", "loglogistic3")
 
+  name_arg <- as.character(substitute(dist_params))
+
   if (three_parametric && length(dist_params) != 3) {
     stop(
-      "A three-parametric distribution needs three parameters but",
-      " 'dist_params' has length ", length(dist_params), ".",
+      "A three-parametric distribution needs three parameters but ",
+      sQuote(name_arg), " has length ", length(dist_params), ".",
       call. = FALSE
     )
   }

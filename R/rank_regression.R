@@ -283,7 +283,7 @@ rank_regression_ <- function(cdf_estimation,
   x_f <- cdf_failed$x
   y_f <- cdf_failed$prob
 
-  # Pre-Step: Three-parametric models must be profiled w.r.t to threshold:
+  # Pre-Step: Three-parametric models must be profiled w.r.t threshold:
   if (distribution %in% c("weibull3", "lognormal3", "loglogistic3")) {
 
     ## Force maximization:

@@ -94,9 +94,6 @@ r_squared_profiling.wt_cdf_estimation <- function(x,
                                                   ...
 ) {
 
-  distribution <- match.arg(distribution)
-  direction <- match.arg(direction)
-
   r_squared_profiling.default(
     x = x$x,
     y = x$prob,

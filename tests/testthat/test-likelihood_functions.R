@@ -1,10 +1,11 @@
 # Log-likelihood function:
 test_that("loglik_function remains stable", {
-  # Test with 'shock':
+  ## vector-based:
+  ### Test with 'shock':
   x <- shock$distance
   status <- shock$status
 
-  ## log-location scale distributions (two-parametric):
+  ### log-location scale distributions (two-parametric):
   dists <- c("weibull", "lognormal", "loglogistic")
 
   logL <- lapply(
@@ -18,7 +19,19 @@ test_that("loglik_function remains stable", {
 
   expect_snapshot_output(logL)
 
-  ## location-scale distributions (two-parametric):
+  ## data-based:
+  data <- reliability_data(data = shock, x = distance, status = status)
+  logL_data <- lapply(
+    dists,
+    loglik_function,
+    x = data,
+    wts = rep(1, nrow(data)),
+    dist_params = c(10.23, 0.35)
+  )
+
+  expect_equal(logL, logL_data)
+
+  ### location-scale distributions (two-parametric):
   dists <- c("sev", "normal", "logistic")
 
   logL <- lapply(
@@ -31,30 +44,11 @@ test_that("loglik_function remains stable", {
   )
 
   expect_snapshot_output(logL)
-
-  # Test with 'alloy':
-  x <- alloy$cycles
-  status <- alloy$status
-
-  ## log-location scale distributions (three-parametric):
-  dists <- c("weibull3", "lognormal3", "loglogistic3")
-
-  logL <- lapply(
-    dists,
-    loglik_function,
-    x = x,
-    status = status,
-    wts = rep(1, length(x)),
-    dist_params = c(4.54, 0.76, 93)
-  )
-
-  expect_snapshot_output(logL)
 })
 
-
-
 # Log-likelihood profile function:
-test_that("loglik_profiling remains stable", {
+## vector-based:
+test_that("loglik_profiling remains stable for vectors", {
   cycles <- alloy$cycles
   status <- alloy$status
 
@@ -67,4 +61,14 @@ test_that("loglik_profiling remains stable", {
   )
 
   expect_snapshot_output(profile_logL)
+
+  ## data-based:
+  data <- reliability_data(data = alloy, x = cycles, status = status)
+  profile_logL_data <- loglik_profiling(
+    x = data,
+    thres = threshold,
+    distribution = "weibull3"
+  )
+
+  expect_equal(profile_logL, profile_logL_data)
 })
