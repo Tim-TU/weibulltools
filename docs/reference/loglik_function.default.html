@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Add Estimated Population Line to a Probability Plot — plot_mod.default • weibulltools</title>
+<title>Log-Likelihood Function for Parametric Lifetime Distributions — loglik_function.default • weibulltools</title>
 
 
 <!-- jquery -->
@@ -39,9 +39,14 @@
 
 
 
-<meta property="og:title" content="Add Estimated Population Line to a Probability Plot — plot_mod.default" />
-<meta property="og:description" content="This function adds an estimated regression lines to an existing
-probability plot (plot_prob)." />
+<meta property="og:title" content="Log-Likelihood Function for Parametric Lifetime Distributions — loglik_function.default" />
+<meta property="og:description" content="This function computes the log-likelihood value with respect to a given set
+of parameters. For two-parametric models the location and scale parameters
+are required. If a three-parametric lifetime distribution is needed an
+additional threshold parameter has to be provided. In terms of
+Maximum Likelihood Estimation this function can be optimized
+(optim) to estimate the parameters and variance-covariance
+matrix of the parameters." />
 
 
 
@@ -130,24 +135,29 @@ probability plot (plot_prob)." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Add Estimated Population Line to a Probability Plot</h1>
-    <small class="dont-index">Source: <a href='https://github.com/Tim-TU/weibulltools/blob/master/R/plot_functions.R'><code>R/plot_functions.R</code></a></small>
-    <div class="hidden name"><code>plot_mod.default.Rd</code></div>
+    <h1>Log-Likelihood Function for Parametric Lifetime Distributions</h1>
+    <small class="dont-index">Source: <a href='https://github.com/Tim-TU/weibulltools/blob/master/R/likelihood_functions.R'><code>R/likelihood_functions.R</code></a></small>
+    <div class="hidden name"><code>loglik_function.default.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>This function adds an estimated regression lines to an existing
-probability plot (<code><a href='plot_prob.html'>plot_prob</a></code>).</p>
+    <p>This function computes the log-likelihood value with respect to a given set
+of parameters. For two-parametric models the location and scale parameters
+are required. If a three-parametric lifetime distribution is needed an
+additional threshold parameter has to be provided. In terms of
+<em>Maximum Likelihood Estimation</em> this function can be optimized
+(<a href='https://rdrr.io/r/stats/optim.html'>optim</a>) to estimate the parameters and variance-covariance
+matrix of the parameters.</p>
     </div>
 
     <pre class="usage"><span class='co'># S3 method for default</span>
-<span class='fu'><a href='plot_mod.html'>plot_mod</a></span><span class='op'>(</span>
-  <span class='va'>p_obj</span>,
+<span class='fu'><a href='loglik_function.html'>loglik_function</a></span><span class='op'>(</span>
   <span class='va'>x</span>,
+  <span class='va'>status</span>,
+  wts <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/rep.html'>rep</a></span><span class='op'>(</span><span class='fl'>1</span>, <span class='fu'><a href='https://rdrr.io/r/base/length.html'>length</a></span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span><span class='op'>)</span>,
   <span class='va'>dist_params</span>,
   distribution <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"weibull"</span>, <span class='st'>"lognormal"</span>, <span class='st'>"loglogistic"</span>, <span class='st'>"normal"</span>, <span class='st'>"logistic"</span>, <span class='st'>"sev"</span>,
     <span class='st'>"weibull3"</span>, <span class='st'>"lognormal3"</span>, <span class='st'>"loglogistic3"</span><span class='op'>)</span>,
-  title_trace <span class='op'>=</span> <span class='st'>"Fit"</span>,
   <span class='va'>...</span>
 <span class='op'>)</span></pre>
 
@@ -155,31 +165,32 @@ probability plot (<code><a href='plot_prob.html'>plot_prob</a></code>).</p>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>p_obj</th>
-      <td><p>A plot object returned from <code><a href='plot_prob.html'>plot_prob</a></code>.</p></td>
+      <th>x</th>
+      <td><p>A numeric vector which consists of lifetime data. Lifetime data
+could be every characteristic influencing the reliability of a product,
+e.g. operating time (days/months in service), mileage (km, miles), load
+cycles.</p></td>
     </tr>
     <tr>
-      <th>x</th>
-      <td><p>A numeric vector containing the x-coordinates of the respective
-regression line.</p></td>
+      <th>status</th>
+      <td><p>A vector of binary data (0 or 1) indicating whether a unit is
+a right censored observation (= 0) or a failure (= 1).</p></td>
+    </tr>
+    <tr>
+      <th>wts</th>
+      <td><p>Optional vector of case weights. The length of <code>wts</code> must be equal
+to the number of observations in <code>x</code>.</p></td>
     </tr>
     <tr>
       <th>dist_params</th>
-      <td><p>A (named) numeric vector of estimated location
-and scale parameters for a specified distribution. The order of
-elements is important. First entry needs to be the location
-parameter \(\mu\) and the second element needs to be the scale
-parameter \(\sigma\). If a three-parametric model is used the third element
-is the threshold parameter \(\gamma\).</p></td>
+      <td><p>A (named) numeric vector of (log-)location-scale parameters
+in the order of location (\(\mu\)) and scale (\(\sigma\)). If a
+three-parametric model is selected, the threshold parameter (\(\gamma\))
+has to be the third element.</p></td>
     </tr>
     <tr>
       <th>distribution</th>
       <td><p>Supposed distribution of the random variable.</p></td>
-    </tr>
-    <tr>
-      <th>title_trace</th>
-      <td><p>A character string which is assigned to the trace shown in
-the legend.</p></td>
     </tr>
     <tr>
       <th>...</th>
@@ -189,82 +200,35 @@ the legend.</p></td>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>Returns a plot object containing the probability plot with
-plotting positions and the estimated regression line(s).</p>
+    <p>Returns the log-likelihood value for the parameters in <code>dist_params</code> given
+the data.</p>
     <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
 
     <p>Meeker, William Q; Escobar, Luis A., Statistical methods for
-  reliability data, New York: Wiley series in probability and statistics, 1998</p>
+reliability data, New York: Wiley series in probability and statistics, 1998</p>
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
-    <div class='dont-index'><p><code><a href='plot_mod.html'>plot_mod</a></code></p></div>
+    <div class='dont-index'><p><a href='loglik_function.html'>loglik_function</a></p></div>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='co'># Vectors:</span>
 <span class='va'>cycles</span> <span class='op'>&lt;-</span> <span class='va'>alloy</span><span class='op'>$</span><span class='va'>cycles</span>
 <span class='va'>status</span> <span class='op'>&lt;-</span> <span class='va'>alloy</span><span class='op'>$</span><span class='va'>status</span>
 
-<span class='co'># Probability estimation</span>
-<span class='va'>prob_tbl</span> <span class='op'>&lt;-</span> <span class='fu'><a href='estimate_cdf.html'>estimate_cdf</a></span><span class='op'>(</span>x <span class='op'>=</span> <span class='va'>cycles</span>, status <span class='op'>=</span> <span class='va'>status</span>, method <span class='op'>=</span> <span class='st'>"johnson"</span><span class='op'>)</span>
-
-<span class='co'># Example 1: Probability Plot and Regression Line Three-Parameter-Weibull:</span>
-<span class='va'>plot_weibull</span> <span class='op'>&lt;-</span> <span class='fu'><a href='plot_prob.html'>plot_prob</a></span><span class='op'>(</span>
-  x <span class='op'>=</span> <span class='va'>prob_tbl</span><span class='op'>$</span><span class='va'>x</span>,
-  y <span class='op'>=</span> <span class='va'>prob_tbl</span><span class='op'>$</span><span class='va'>prob</span>,
-  status <span class='op'>=</span> <span class='va'>prob_tbl</span><span class='op'>$</span><span class='va'>status</span>,
-  id <span class='op'>=</span> <span class='va'>prob_tbl</span><span class='op'>$</span><span class='va'>id</span>,
+<span class='co'># Example 1 - Evaluating Log-Likelihood function of two-parametric weibull:</span>
+<span class='va'>loglik_weib</span> <span class='op'>&lt;-</span> <span class='fu'><a href='loglik_function.html'>loglik_function</a></span><span class='op'>(</span>
+  x <span class='op'>=</span> <span class='va'>cycles</span>,
+  status <span class='op'>=</span> <span class='va'>status</span>,
+  dist_params <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>5.29</span>, <span class='fl'>0.33</span><span class='op'>)</span>,
   distribution <span class='op'>=</span> <span class='st'>"weibull"</span>
 <span class='op'>)</span>
 
-<span class='va'>rr</span> <span class='op'>&lt;-</span> <span class='fu'><a href='rank_regression.html'>rank_regression</a></span><span class='op'>(</span>
-  x <span class='op'>=</span> <span class='va'>prob_tbl</span><span class='op'>$</span><span class='va'>x</span>,
-  y <span class='op'>=</span> <span class='va'>prob_tbl</span><span class='op'>$</span><span class='va'>prob</span>,
-  status <span class='op'>=</span> <span class='va'>prob_tbl</span><span class='op'>$</span><span class='va'>status</span>,
-  distribution <span class='op'>=</span> <span class='st'>"weibull3"</span>
-<span class='op'>)</span>
-
-<span class='va'>plot_reg_weibull</span> <span class='op'>&lt;-</span> <span class='fu'><a href='plot_mod.html'>plot_mod</a></span><span class='op'>(</span>
-  p_obj <span class='op'>=</span> <span class='va'>plot_weibull</span>,
-  x <span class='op'>=</span> <span class='va'>prob_tbl</span><span class='op'>$</span><span class='va'>x</span>,
-  dist_params <span class='op'>=</span> <span class='va'>rr</span><span class='op'>$</span><span class='va'>coefficients</span>,
-  distribution <span class='op'>=</span> <span class='st'>"weibull3"</span>
-<span class='op'>)</span>
-
-
-
-<span class='co'># Example 2: Probability Plot and Regression Line Three-Parameter-Lognormal:</span>
-<span class='va'>plot_lognormal</span> <span class='op'>&lt;-</span> <span class='fu'><a href='plot_prob.html'>plot_prob</a></span><span class='op'>(</span>
-  x <span class='op'>=</span> <span class='va'>prob_tbl</span><span class='op'>$</span><span class='va'>x</span>,
-  y <span class='op'>=</span> <span class='va'>prob_tbl</span><span class='op'>$</span><span class='va'>prob</span>,
-  status <span class='op'>=</span> <span class='va'>prob_tbl</span><span class='op'>$</span><span class='va'>status</span>,
-  id <span class='op'>=</span> <span class='va'>prob_tbl</span><span class='op'>$</span><span class='va'>id</span>,
-  distribution <span class='op'>=</span> <span class='st'>"lognormal"</span>
-<span class='op'>)</span>
-
-<span class='va'>rr_ln</span> <span class='op'>&lt;-</span> <span class='fu'><a href='rank_regression.html'>rank_regression</a></span><span class='op'>(</span>
-  x <span class='op'>=</span> <span class='va'>prob_tbl</span><span class='op'>$</span><span class='va'>x</span>,
-  y <span class='op'>=</span> <span class='va'>prob_tbl</span><span class='op'>$</span><span class='va'>prob</span>,
-  status <span class='op'>=</span> <span class='va'>prob_tbl</span><span class='op'>$</span><span class='va'>status</span>,
-  distribution <span class='op'>=</span> <span class='st'>"lognormal3"</span>
-<span class='op'>)</span>
-
-<span class='va'>plot_reg_lognormal</span> <span class='op'>&lt;-</span> <span class='fu'><a href='plot_mod.html'>plot_mod</a></span><span class='op'>(</span>
-  p_obj <span class='op'>=</span> <span class='va'>plot_lognormal</span>,
-  x <span class='op'>=</span> <span class='va'>prob_tbl</span><span class='op'>$</span><span class='va'>x</span>,
-  dist_params <span class='op'>=</span> <span class='va'>rr_ln</span><span class='op'>$</span><span class='va'>coefficients</span>,
-  distribution <span class='op'>=</span> <span class='st'>"lognormal3"</span>
-<span class='op'>)</span>
-
-<span class='co'>## Mixture Identification</span>
-<span class='co'># Vectors:</span>
-<span class='va'>hours</span> <span class='op'>&lt;-</span> <span class='va'>voltage</span><span class='op'>$</span><span class='va'>hours</span>
-<span class='va'>status</span> <span class='op'>&lt;-</span> <span class='va'>voltage</span><span class='op'>$</span><span class='va'>status</span>
-
-<span class='co'># Probability estimation:</span>
-<span class='va'>prob_mix</span> <span class='op'>&lt;-</span> <span class='fu'><a href='estimate_cdf.html'>estimate_cdf</a></span><span class='op'>(</span>
-  x <span class='op'>=</span> <span class='va'>hours</span>,
+<span class='co'># Example 2 - Evaluating Log-Likelihood function of three-parametric weibull:</span>
+<span class='va'>loglik_weib3</span> <span class='op'>&lt;-</span> <span class='fu'><a href='loglik_function.html'>loglik_function</a></span><span class='op'>(</span>
+  x <span class='op'>=</span> <span class='va'>cycles</span>,
   status <span class='op'>=</span> <span class='va'>status</span>,
-  method <span class='op'>=</span> <span class='st'>"johnson"</span>
+  dist_params <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>4.54</span>, <span class='fl'>0.76</span>, <span class='fl'>92.99</span><span class='op'>)</span>,
+  distribution <span class='op'>=</span> <span class='st'>"weibull3"</span>
 <span class='op'>)</span>
 
 </div></pre>

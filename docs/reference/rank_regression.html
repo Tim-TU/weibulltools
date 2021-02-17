@@ -42,8 +42,8 @@
 <meta property="og:title" content="Rank Regression for Parametric Lifetime Distributions — rank_regression" />
 <meta property="og:description" content="This function fits a regression model to a linearized two- or three-parameter
 lifetime distribution for complete and (multiple) right-censored data.
-The parameters are determined in the frequently used
-(log-)location-scale parameterization.
+The parameters are determined in the frequently used (log-)location-scale
+parameterization.
 For the Weibull, estimates are additionally transformed such that they are in
 line with the parameterization provided by the stats package
 (see Weibull)." />
@@ -86,7 +86,7 @@ line with the parameterization provided by the stats package
       <ul class="nav navbar-nav">
         <li>
   <a href="../index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
+    <span class="fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -118,7 +118,7 @@ line with the parameterization provided by the stats package
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="https://github.com/Tim-TU/weibulltools/">
-    <span class="fab fa fab fa-github fa-lg"></span>
+    <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -143,8 +143,8 @@ line with the parameterization provided by the stats package
     <div class="ref-description">
     <p>This function fits a regression model to a linearized two- or three-parameter
 lifetime distribution for complete and (multiple) right-censored data.
-The parameters are determined in the frequently used
-(log-)location-scale parameterization.</p>
+The parameters are determined in the frequently used (log-)location-scale
+parameterization.</p>
 <p>For the Weibull, estimates are additionally transformed such that they are in
 line with the parameterization provided by the <em>stats</em> package
 (see <a href='https://rdrr.io/r/stats/Weibull.html'>Weibull</a>).</p>
@@ -199,24 +199,23 @@ If this is the case, <code>optim</code> (always with <code>method = "L-BFGS-B"</
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A list with classes <code>wt_model</code>, <code>wt_rank_regression</code> and
-<code>wt_model_estimation</code> which contains:</p><ul>
-<li><p><code>coefficients</code> : A named vector of estimated coefficients
-    (parameters of the assumed distribution). <strong>Note</strong>: The parameters
-    are given in location-scale-parameterization.</p></li>
-<li><p><code>confint</code> : Confidence intervals for parameters. If
-    <code>distribution</code> is <code>"lognormal3"</code> or <code>"loglogistic3"</code> no
-    confidence interval for the threshold parameter is computed.</p></li>
-<li><p><code>varcov</code> : Provided, if <code>distribution</code> is not
-    <code>"weibull"</code> or <code>"weibull3"</code>. Estimated heteroscedasticity-consistent
-    variance-covariance matrix for the (log-)location-scale parameters.</p></li>
-<li><p><code>shape_scale_coefficients</code> : Only included if
-    <code>distribution</code> is <code>"weibull"</code> or <code>"weibull3"</code>
-    (parameterization used in <code><a href='https://rdrr.io/r/stats/Weibull.html'>stats::Weibull</a></code>).</p></li>
-<li><p><code>shape_scale_confint</code> : Only included if <code>distribution</code> is
-    <code>"weibull"</code> or <code>"weibull3"</code>. Approximated confidence intervals
-    for scale \(\eta\) and shape \(\beta\) (and threshold \(\gamma\))
-    if <code>distribution</code> is <code>"weibull3"</code>.</p></li>
+    <p>A list with classes <code>wt_model</code>, <code>wt_rank_regression</code> and <code>wt_model_estimation</code>
+which contains:</p><ul>
+<li><p><code>coefficients</code> : A named vector of estimated coefficients (parameters of the
+assumed distribution). <strong>Note</strong>: The parameters are given in the
+(log-)location-scale-parameterization.</p></li>
+<li><p><code>confint</code> : Confidence intervals for the (log-)location-scale parameters. If
+<code>distribution</code> is <code>"lognormal3"</code> or <code>"loglogistic3"</code> no confidence interval
+for the threshold parameter is computed. If <code>direction = "y_on_x"</code>,
+back-transformed confidence intervals are provided.</p></li>
+<li><p><code>shape_scale_coefficients</code> : Only included if <code>distribution</code> is <code>"weibull"</code>
+or <code>"weibull3"</code> (parameterization used in <a href='https://rdrr.io/r/stats/Weibull.html'>Weibull</a>).</p></li>
+<li><p><code>shape_scale_confint</code> : Only included if <code>distribution</code> is <code>"weibull"</code>
+or <code>"weibull3"</code>. Approximated confidence intervals for scale \(\eta\) and
+shape \(\beta\) (and threshold \(\gamma\) if <code>distribution = "weibull3"</code>).</p></li>
+<li><p><code>varcov</code> : Provided, if <code>distribution</code> is not <code>"weibull"</code> or <code>"weibull3"</code>.
+Estimated heteroscedasticity-consistent (<em>HC</em>) variance-covariance matrix for
+the (log-)location-scale parameters.</p></li>
 <li><p><code>r_squared</code> : Coefficient of determination.</p></li>
 <li><p><code>data</code> : A <code>tibble</code> with class <code>wt_cdf_estimation</code> returned by <a href='estimate_cdf.html'>estimate_cdf</a>.</p></li>
 <li><p><code>distribution</code> : Specified distribution.</p></li>

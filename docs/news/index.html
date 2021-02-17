@@ -79,7 +79,7 @@
       <ul class="nav navbar-nav">
         <li>
   <a href="../index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
+    <span class="fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -111,7 +111,7 @@
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="https://github.com/Tim-TU/weibulltools/">
-    <span class="fab fa fab fa-github fa-lg"></span>
+    <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -143,6 +143,8 @@
 <h3 class="hasAnchor">
 <a href="#parametric-models" class="anchor"></a>Parametric Models</h3>
 <ul>
+<li>
+<code><a href="../reference/loglik_profiling.html">loglik_profiling()</a></code>: Added argument <code>wts</code>.</li>
 <li>
 <code><a href="../reference/plot_prob.html">plot_prob.wt_model()</a></code>: Removed dysfunctional argument <code>distribution</code>. The distribution is inferred using the model <code>x</code>.</li>
 </ul>
@@ -177,6 +179,10 @@
 <h3 class="hasAnchor">
 <a href="#parametric-models-1" class="anchor"></a>Parametric Models</h3>
 <ul>
+<li>
+<code><a href="../reference/loglik_profiling.html">loglik_profiling()</a></code> is now an S3 generic. <code><a href="../reference/loglik_profiling.html">loglik_profiling()</a></code> becomes <code><a href="../reference/loglik_profiling.default.html">loglik_profiling.default()</a></code>. Added <code><a href="../reference/loglik_profiling.html">loglik_profiling.wt_reliability_data()</a></code>.</li>
+<li>
+<code><a href="../reference/loglik_function.html">loglik_function()</a></code> is now an S3 generic. <code><a href="../reference/loglik_function.html">loglik_function()</a></code> becomes <code><a href="../reference/loglik_function.default.html">loglik_function.default()</a></code>. Added <code><a href="../reference/loglik_function.html">loglik_function.wt_reliability_data()</a></code>.</li>
 <li>
 <code><a href="../reference/rank_regression.html">rank_regression()</a></code>: New arguments <code>direction</code> (specifies direction of dependency in the model) and <code>control</code> (enables access to argument <code>control</code> in <code><a href="https://rdrr.io/r/stats/optim.html">optim()</a></code>).<br>
 </li>
