@@ -7,17 +7,15 @@
 predict_prob(
   q,
   dist_params,
-  distribution = c("weibull", "lognormal", "loglogistic", "normal", "logistic", "sev",
+  distribution = c("weibull", "lognormal", "loglogistic", "sev", "normal", "logistic",
     "weibull3", "lognormal3", "loglogistic3")
 )
 }
 \arguments{
 \item{q}{A numeric vector of quantiles.}
 
-\item{dist_params}{A (named) numeric vector of (log-)location-scale parameters
-in the order of location (\eqn{\mu}) and scale (\eqn{\sigma}). If a
-three-parametric model is selected, the threshold parameter (\eqn{\gamma})
-has to be the third element.}
+\item{dist_params}{A vector of parameters. An overview of the
+distribution-specific parameters can be found in section 'Distributions'.}
 
 \item{distribution}{Supposed distribution of the random variable.}
 }
@@ -25,13 +23,38 @@ has to be the third element.}
 A vector with predicted (failure) probabilities.
 }
 \description{
-This function predicts the (failure) probabilities of two- or three-parametric
-lifetime distributions that belong to the (log-)location-scale family.
+This function predicts the (failure) probabilities of a two- or three-parameter
+lifetime distribution using the (log-)location-scale parameterization.
 }
 \details{
-For a given set of parameters and specified quantiles the (failure) probabilities
+For a given set of parameters and specified quantiles the probabilities
 of the chosen model are determined.
 }
+\section{Distributions}{
+
+The following table summarizes the available distributions and their parameters
+\itemize{
+\item \emph{location parameter} \eqn{\mu},
+\item \emph{scale parameter} \eqn{\sigma} and
+\item \emph{threshold parameter} \eqn{\gamma}.
+}
+
+The order within \code{dist_params} is given in the table header.
+
+\tabular{lccc}{
+\strong{\code{distribution}} \tab \strong{\code{dist_params[1]}} \tab \strong{\code{dist_params[2]}} \tab \strong{\code{dist_params[3]}}   \cr
+\code{"sev"}            \tab \eqn{\mu}            \tab \eqn{\sigma}         \tab -                      \cr
+\code{"weibull"}        \tab \eqn{\mu}            \tab \eqn{\sigma}         \tab -                      \cr
+\code{"weibull3"}       \tab \eqn{\mu}            \tab \eqn{\sigma}         \tab \eqn{\gamma}           \cr
+\code{"normal"}         \tab \eqn{\mu}            \tab \eqn{\sigma}         \tab -                      \cr
+\code{"lognormal"}      \tab \eqn{\mu}            \tab \eqn{\sigma}         \tab -                      \cr
+\code{"lognormal3"}     \tab \eqn{\mu}            \tab \eqn{\sigma}         \tab \eqn{\gamma}           \cr
+\code{"logistic"}       \tab \eqn{\mu}            \tab \eqn{\sigma}         \tab -                      \cr
+\code{"loglogistic"}    \tab \eqn{\mu}            \tab \eqn{\sigma}         \tab -                      \cr
+\code{"loglogistic3"}   \tab \eqn{\mu}            \tab \eqn{\sigma}         \tab \eqn{\gamma}
+}
+}
+
 \examples{
 # Example 1 - Predicted probabilities for a two-parameter weibull distribution:
 probs_weib2 <- predict_prob(

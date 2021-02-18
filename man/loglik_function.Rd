@@ -12,7 +12,7 @@ loglik_function(x, ...)
   x,
   wts = rep(1, nrow(x)),
   dist_params,
-  distribution = c("weibull", "lognormal", "loglogistic", "normal", "logistic", "sev",
+  distribution = c("weibull", "lognormal", "loglogistic", "sev", "normal", "logistic",
     "weibull3", "lognormal3", "loglogistic3"),
   ...
 )
@@ -25,10 +25,8 @@ loglik_function(x, ...)
 \item{wts}{Optional vector of case weights. The length of \code{wts} must be equal
 to the number of observations in \code{x}.}
 
-\item{dist_params}{A (named) numeric vector of (log-)location-scale parameters
-in the order of location (\eqn{\mu}) and scale (\eqn{\sigma}). If a
-three-parametric model is selected, the threshold parameter (\eqn{\gamma})
-has to be the third element.}
+\item{dist_params}{A vector of parameters. An overview of the
+distribution-specific parameters can be found in section 'Distributions'.}
 
 \item{distribution}{Supposed distribution of the random variable.}
 }
@@ -45,6 +43,31 @@ additional threshold parameter has to be provided. In terms of
 (\link[stats:optim]{optim}) to estimate the parameters and variance-covariance
 matrix of the parameters.
 }
+\section{Distributions}{
+
+The following table summarizes the available distributions and their parameters
+\itemize{
+\item \emph{location parameter} \eqn{\mu},
+\item \emph{scale parameter} \eqn{\sigma} and
+\item \emph{threshold parameter} \eqn{\gamma}.
+}
+
+The order within \code{dist_params} is given in the table header.
+
+\tabular{lccc}{
+\strong{\code{distribution}} \tab \strong{\code{dist_params[1]}} \tab \strong{\code{dist_params[2]}} \tab \strong{\code{dist_params[3]}}   \cr
+\code{"sev"}            \tab \eqn{\mu}            \tab \eqn{\sigma}         \tab -                      \cr
+\code{"weibull"}        \tab \eqn{\mu}            \tab \eqn{\sigma}         \tab -                      \cr
+\code{"weibull3"}       \tab \eqn{\mu}            \tab \eqn{\sigma}         \tab \eqn{\gamma}           \cr
+\code{"normal"}         \tab \eqn{\mu}            \tab \eqn{\sigma}         \tab -                      \cr
+\code{"lognormal"}      \tab \eqn{\mu}            \tab \eqn{\sigma}         \tab -                      \cr
+\code{"lognormal3"}     \tab \eqn{\mu}            \tab \eqn{\sigma}         \tab \eqn{\gamma}           \cr
+\code{"logistic"}       \tab \eqn{\mu}            \tab \eqn{\sigma}         \tab -                      \cr
+\code{"loglogistic"}    \tab \eqn{\mu}            \tab \eqn{\sigma}         \tab -                      \cr
+\code{"loglogistic3"}   \tab \eqn{\mu}            \tab \eqn{\sigma}         \tab \eqn{\gamma}
+}
+}
+
 \examples{
 # Reliability data preparation:
 data <- reliability_data(
