@@ -6,16 +6,17 @@
 \title{Delta Method for Parametric Lifetime Distributions}
 \usage{
 delta_method(
-  p,
+  x,
   dist_params,
   dist_varcov,
-  distribution = c("weibull", "lognormal", "loglogistic", "normal", "logistic", "sev",
+  distribution = c("weibull", "lognormal", "loglogistic", "sev", "normal", "logistic",
     "weibull3", "lognormal3", "loglogistic3"),
-  direction = c("y", "x")
+  direction = c("y", "x"),
+  p
 )
 }
 \arguments{
-\item{p}{A numeric vector of probabilities or quantiles. If the standard errors
+\item{x}{A numeric vector of probabilities or quantiles. If the standard errors
 of quantiles should be determined the corresponding probabilities have to be
 specified, and if the standard errors of standardized quantiles (z-values)
 should be computed corresponding quantiles are required.}
@@ -29,8 +30,9 @@ should be computed corresponding quantiles are required.}
 line with the specification made in \link{ml_estimation}.}
 
 \item{direction}{A character string specifying for which quantity the standard
-errors are calculated. One of \code{"y"} (if \code{p} are quantiles) or \code{"x"} (if \code{p}
-are probabilities).}
+errors are calculated. \code{"y"} if \code{x} are quantiles or \code{"x"} if \code{x} are probabilities.}
+
+\item{p}{\ifelse{html}{\figure{lifecycle-soft-deprecated.svg}{options: alt='Soft-deprecated lifecycle'}}{\strong{Soft-deprecated}}: Use \code{x} instead.}
 }
 \value{
 A numeric vector of estimated standard errors for quantiles or
@@ -70,7 +72,7 @@ mle <- ml_estimation(
 
 # Example 1 - Standard errors of standardized quantiles:
 delta_y <- delta_method(
-  p = shock$distance,
+  x = shock$distance,
   dist_params = mle$coefficients,
   dist_varcov = mle$varcov,
   distribution = "weibull",
@@ -79,7 +81,7 @@ delta_y <- delta_method(
 
 # Example 2 - Standard errors of quantiles:
 delta_x <- delta_method(
-  p = seq(0.01, 0.99, 0.01),
+  x = seq(0.01, 0.99, 0.01),
   dist_params = mle$coefficients,
   dist_varcov = mle$varcov,
   distribution = "weibull",

@@ -31,6 +31,33 @@ check_dist_params <- function(dist_params, distribution) {
 
 
 
+# Function that standardizes lifetime characteristic depending on distribution:
+standardize <- function(x, dist_params, distribution) {
+
+  # Three-parametric model:
+  if (length(dist_params) == 3L) {
+    x <- x - dist_params[[3]]
+  }
+
+  # Two-parametric model with q or q - threshold:
+  distribution <- two_parametric(distribution)
+
+  # (log-)location-scale:
+  x <- switch(
+    distribution,
+    "sev" = ,
+    "normal" = ,
+    "logistic" = x,
+    log(x) # alternative
+  )
+
+  # Standardize:
+  z <- (x - dist_params[[1]]) / dist_params[[2]]
+  z
+}
+
+
+
 # Quantile, probability and density functions of the smallest extreme value dist:
 ## quantile function:
 qsev <- function(p) {

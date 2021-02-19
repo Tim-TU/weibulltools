@@ -123,25 +123,12 @@ predict_prob <- function(q,
 
   check_dist_params(dist_params, distribution)
 
-  # Three-parametric model:
-  if (length(dist_params) == 3L) {
-    q <- q - dist_params[[3]]
-  }
-
-  # Two-parametric model with q or q - threshold:
-  distribution <- two_parametric(distribution)
-
-  # (log-)location-scale:
-  q <- switch(
-    distribution,
-    "sev" = ,
-    "normal" = ,
-    "logistic" = q,
-    log(q) # alternative
+  # Standardize:
+  z <- standardize(
+    x = q, dist_params = dist_params, distribution = distribution
   )
 
-  # Standardize:
-  z <- (q - dist_params[[1]]) / dist_params[[2]]
+  distribution <- two_parametric(distribution)
 
   # Determine p_q by switching between distributions:
   p_q <- switch(

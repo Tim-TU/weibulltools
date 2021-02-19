@@ -353,7 +353,7 @@ confint_betabinom.default <- function(x,
   direction <- match.arg(direction)
   distribution <- match.arg(distribution)
 
-  # Fake wt_model_estimation
+  # Construct fake wt_model_estimation:
   model_estimation <- list(
     data = tibble::tibble(
       x = x, status = status, cdf_estimation_method = NA_character_
@@ -380,67 +380,58 @@ confint_betabinom_ <- function(model_estimation,
                                direction
 ) {
 
-  cdf_estimation_method <- model_estimation$data$cdf_estimation_method[1]
-
+  # Prepare function inputs:
   x <- model_estimation$data$x
   status <- model_estimation$data$status
-
   distribution <- model_estimation$distribution
-  dist_params <- model_estimation$coefficients
 
+  ## Information of survived units are indirectly included in dist_params and n:
+  dist_params <- model_estimation$coefficients
   n <- length(x)
+
+  ## Only range of failed units is considered:
   x_ob <- x[status == 1]
 
+  # Step 1: Determine x-y ranges and add the appropriate B_p-lives:
   x_y_b_lives <- add_b_lives(x_ob, dist_params, distribution, b_lives)
 
   x_seq <- x_y_b_lives$x_seq
   y_seq <- x_y_b_lives$y_seq
 
-  # Calculating virtual ranks, i.e. interpolating between realizations using
-  # Benard's approximation:
+  # Step 2: Confidence intervals w.r.t 'direction' and 'bounds':
+  ## Obtain virtual ranks by interpolation using Benard's formula:
   virt_rank <- y_seq * (n + 0.4) + 0.3
 
+  ## Confidence intervals for 'direction = y' w.r.t 'bounds':
+  list_confint <- conf_bb_y(
+    y = y_seq,
+    n = n,
+    r = virt_rank,
+    bounds = bounds,
+    conf_level = conf_level
+  )
 
-  # Two-sided or one-sided bounds:
-  if (bounds == "two_sided") {
-    conf_up <- stats::qbeta((1 + conf_level) / 2, virt_rank, n - virt_rank + 1)
-    conf_low <- stats::qbeta((1 - conf_level) / 2, virt_rank, n - virt_rank + 1)
-    list_confint <- list(lower_bound = conf_low, upper_bound = conf_up)
-  } else if (bounds == "lower") {
-    conf_low <- stats::qbeta(1 - conf_level, virt_rank, n - virt_rank + 1)
-    list_confint <- list(lower_bound = conf_low)
-  } else {
-    conf_up <- stats::qbeta(conf_level, virt_rank, n - virt_rank + 1)
-    list_confint <- list(upper_bound = conf_up)
-  }
-
-  # Bounds for probability (y) or quantiles (x):
-  if (direction == "y") {
-    list_output <- c(
-      list(x = x_seq, rank = virt_rank, prob = y_seq),
-      list_confint
-    )
-
-    tbl_out <- tibble::as_tibble(list_output)
-  } else {
-    x_confint <- purrr::map(
+  ## Confidence intervals for 'direction = x' if needed:
+  if (direction == "x") {
+    list_confint <- purrr::map(
       list_confint,
       predict_quantile,
       dist_params = dist_params,
       distribution = distribution
     )
-
-    list_output <- c(
-      list(x = x_seq, rank = virt_rank, prob = y_seq),
-      x_confint
-    )
-
-    tbl_out <- tibble::as_tibble(list_output)
   }
 
-  # cdf_estimation_method must remain a column so that comparison of
-  # different cdf_estimation_methods is supported
-  tbl_out$cdf_estimation_method <- cdf_estimation_method
+  # Step 3: Form output:
+  list_output <- c(
+    list(x = x_seq, rank = virt_rank, prob = y_seq),
+    list_confint
+  )
+
+  tbl_out <- tibble::as_tibble(list_output)
+
+  ## Add cdf_estimation_method to support different cdf_estimation_methods:
+  cdf_estimation_method <- model_estimation$data$cdf_estimation_method[1]
+  tbl_out$cdf_estimation_method <- cdf_estimation_method # recycling!
 
   tbl_out <- structure(
     tbl_out,
@@ -449,14 +440,14 @@ confint_betabinom_ <- function(model_estimation,
     direction = direction
   )
 
+  ## Only add model_estimation if not faked by .default:
   if (inherits(model_estimation, "wt_model_estimation")) {
-    # Only add model_estimation if not faked by .default
     attr(tbl_out, "model_estimation") <- model_estimation
   }
 
   class(tbl_out) <- c("wt_confint", class(tbl_out))
 
-  return(tbl_out)
+  tbl_out
 }
 
 
@@ -619,6 +610,9 @@ confint_fisher.wt_ml_estimation <- function(x,
 #'
 #' @inheritParams delta_method
 #' @inheritParams confint_betabinom.default
+#' @param x A numeric vector which consists of lifetime data. Lifetime data
+#' could be every characteristic influencing the reliability of a product, e.g.
+#' operating time (days/months in service), mileage (km, miles), load cycles.
 #' @param direction A character string specifying the direction of the confidence
 #' interval. `"y"` for failure probabilities or `"x"` for quantiles.
 #'
@@ -766,6 +760,7 @@ confint_fisher_ <- function(model_estimation,
                             direction
 ) {
 
+  # Prepare function inputs:
   x <- model_estimation$data$x
   status <- model_estimation$data$status
   dist_params <- model_estimation$coefficients
@@ -773,45 +768,50 @@ confint_fisher_ <- function(model_estimation,
   distribution <- model_estimation$distribution
 
   n <- length(x)
+
+  ## Only range of failed units is considered:
   x_ob <- x[status == 1]
 
+  # Step 1: Determine x-y ranges and add the appropriate B_p-lives:
   x_y_b_lives <- add_b_lives(x_ob, dist_params, distribution, b_lives)
 
   x_seq <- x_y_b_lives$x_seq
   y_seq <- x_y_b_lives$y_seq
 
+  # Step 2: Normal approximation confidence intervals w.r.t 'direction' and 'bounds':
+  ## Quantiles of normal distribution regarding bounds:
+  q_n <- switch(
+    bounds,
+    "two_sided" = stats::qnorm((1 + conf_level) / 2),
+    stats::qnorm(conf_level)
+  )
+
+  ## Confidence intervals for quantiles:
   if (direction == "x") {
     se_delta <- delta_method(
-      p = y_seq,
+      x = y_seq,
       dist_params = dist_params,
       dist_varcov = dist_varcov,
       distribution = distribution,
       direction = direction
     )
 
-    if (bounds == "two_sided") {
-      w <- exp((stats::qnorm((1 + conf_level) / 2) * se_delta) / x_seq)
-      conf_up <- x_seq * w
-      conf_low <- x_seq / w
-      list_confint <- list(lower_bound = conf_low, upper_bound = conf_up)
-    } else if (bounds == "lower") {
-      w <- exp((stats::qnorm(conf_level) * se_delta) / x_seq)
-      conf_low <- x_seq / w
-      list_confint <- list(lower_bound = conf_low)
-    } else {
-      w <- exp((stats::qnorm(conf_level) * se_delta) / x_seq)
-      conf_up <- x_seq * w
-      list_confint <- list(upper_bound = conf_up)
-    }
+    w <- exp((q_n * se_delta) / x_seq)
 
-    list_output <- c(list(x = x_seq, prob = y_seq, std_err = se_delta),
-                     list_confint)
+    w <- switch(
+      bounds,
+      "two_sided" = list(lower_bound = 1 / w, upper_bound = w),
+      "lower" = list(lower_bound = 1 / w),
+      "upper" = list(upper_bound = w)
+    )
 
-    tbl_out <- tibble::as_tibble(list_output)
+    list_confint <- purrr::map(w, `*`, x_seq)
+    names(list_confint) <- names(w)
+
   } else {
     # Standard errors for z:
     se_delta <- delta_method(
-      p = x_seq,
+      x = x_seq,
       dist_params = dist_params,
       dist_varcov = dist_varcov,
       distribution = distribution,
@@ -819,67 +819,85 @@ confint_fisher_ <- function(model_estimation,
     )
 
     # Standardized Random Variable:
-    if (distribution %in% c("weibull", "lognormal", "loglogistic")) {
-      z <- (log(x_seq) - dist_params[[1]]) / dist_params[[2]]
-    }
-    if (distribution %in% c("weibull3", "lognormal3", "loglogistic3")) {
-      z <- (log(x_seq - dist_params[[3]]) - dist_params[[1]]) / dist_params[[2]]
-    }
-    if (distribution %in% c("sev", "normal", "logistic")) {
-      z <- (x_seq - dist_params[[1]]) / dist_params[[2]]
-    }
+    z <- standardize(
+      x = x_seq, dist_params = dist_params, distribution = distribution
+    )
 
-    # Calculating confidence intervals:
-    if (bounds == "two_sided") {
-      # Confidence Interval for z:
-      w <- stats::qnorm((1 + conf_level) / 2) * se_delta
-      if (distribution %in% c("weibull", "weibull3", "sev")) {
-        conf_up <- SPREDA::psev(z + w)
-        conf_low <- SPREDA::psev(z - w)
-      }
-      if (distribution %in% c("lognormal", "lognormal3", "normal")) {
-        conf_up <- stats::pnorm(z + w)
-        conf_low <- stats::pnorm(z - w)
-      }
-      if (distribution %in% c("loglogistic", "loglogistic3", "logistic")) {
-        conf_up <- stats::plogis(z + w)
-        conf_low <- stats::plogis(z - w)
-      }
-      list_confint <- list(lower_bound = conf_low, upper_bound = conf_up)
+    w <- q_n * se_delta
 
-    } else if (bounds == "lower") {
-      w <- stats::qnorm(conf_level) * se_delta
-      if (distribution %in% c("weibull", "weibull3", "sev")) {
-        conf_low <- SPREDA::psev(z - w)
-      }
-      if (distribution %in% c("lognormal", "lognormal3", "normal")) {
-        conf_low <- stats::pnorm(z - w)
-      }
-      if (distribution %in% c("loglogistic", "loglogistic3", "logistic")) {
-        conf_low <- stats::plogis(z - w)
-      }
-      list_confint <- list(lower_bound = conf_low)
+    zw <- switch(
+      bounds,
+      "two_sided" = list(lower_bound = z - w, upper_bound = z + w),
+      "lower" = list(lower_bound = z - w),
+      "upper" = list(upper_bound = z + w)
+    )
 
-    } else {
-      w <- stats::qnorm(conf_level) * se_delta
-      if (distribution %in% c("weibull", "weibull3", "sev")) {
-        conf_up <- SPREDA::psev(z + w)
-      }
-      if (distribution %in% c("lognormal", "lognormal3", "normal")) {
-        conf_up <- stats::pnorm(z + w)
-      }
-      if (distribution %in% c("loglogistic", "loglogistic3", "logistic")) {
-        conf_up <- stats::plogis(z + w)
-      }
-      list_confint <- list(upper_bound = conf_up)
+    list_quants <- purrr::map(
+      zw,
+      predict_quantile,
+      dist_params = dist_params,
+      distribution = distribution
+    )
 
-    }
+    list_confint <- purrr::map(
+      list_quants,
+      predict_prob,
+      dist_params = dist_params,
+      distribution = distribution
+    )
+    names(list_confint) <- names(zw)
 
-    list_output <- c(list(x = x_seq, prob = y_seq, std_err = se_delta),
-                     list_confint)
 
-    tbl_out <- tibble::as_tibble(list_output)
+    # # Calculating confidence intervals:
+    # if (bounds == "two_sided") {
+    #   # Confidence Interval for z:
+    #   w <- stats::qnorm((1 + conf_level) / 2) * se_delta
+    #   if (distribution %in% c("weibull", "weibull3", "sev")) {
+    #     conf_up <- SPREDA::psev(z + w)
+    #     conf_low <- SPREDA::psev(z - w)
+    #   }
+    #   if (distribution %in% c("lognormal", "lognormal3", "normal")) {
+    #     conf_up <- stats::pnorm(z + w)
+    #     conf_low <- stats::pnorm(z - w)
+    #   }
+    #   if (distribution %in% c("loglogistic", "loglogistic3", "logistic")) {
+    #     conf_up <- stats::plogis(z + w)
+    #     conf_low <- stats::plogis(z - w)
+    #   }
+    #   list_confint <- list(lower_bound = conf_low, upper_bound = conf_up)
+    #
+    # } else if (bounds == "lower") {
+    #   w <- stats::qnorm(conf_level) * se_delta
+    #   if (distribution %in% c("weibull", "weibull3", "sev")) {
+    #     conf_low <- SPREDA::psev(z - w)
+    #   }
+    #   if (distribution %in% c("lognormal", "lognormal3", "normal")) {
+    #     conf_low <- stats::pnorm(z - w)
+    #   }
+    #   if (distribution %in% c("loglogistic", "loglogistic3", "logistic")) {
+    #     conf_low <- stats::plogis(z - w)
+    #   }
+    #   list_confint <- list(lower_bound = conf_low)
+    #
+    # } else {
+    #   w <- stats::qnorm(conf_level) * se_delta
+    #   if (distribution %in% c("weibull", "weibull3", "sev")) {
+    #     conf_up <- SPREDA::psev(z + w)
+    #   }
+    #   if (distribution %in% c("lognormal", "lognormal3", "normal")) {
+    #     conf_up <- stats::pnorm(z + w)
+    #   }
+    #   if (distribution %in% c("loglogistic", "loglogistic3", "logistic")) {
+    #     conf_up <- stats::plogis(z + w)
+    #   }
+    #   list_confint <- list(upper_bound = conf_up)
+    #
+    # }
   }
+
+  list_output <- c(list(x = x_seq, prob = y_seq, std_err = se_delta),
+                   list_confint)
+  tbl_out <- tibble::as_tibble(list_output)
 
   # cdf_estimation_method must remain a column so that confint_fisher's table
   # has same colnames as confint_betabinom's table

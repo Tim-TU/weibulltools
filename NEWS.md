@@ -39,6 +39,11 @@
 * Added `print.wt_mileage_estimation()`. 
 * Added `print.wt_delay_estimation()` for one delay and `print.wt_delay_estimation_list()` for multiple delays.
 
+## Lifecycle changes
+
+### Deprecated
+* Argument `p` in `delta_method()`: Use `delta_method(x = )` instead. 
+
 ## Minor Improvements and bug fixes
 
 ### Reliability Data 
