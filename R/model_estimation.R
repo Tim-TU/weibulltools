@@ -40,7 +40,10 @@ vcov.wt_model_estimation <- function(object, ...) {
   if (hasName(object, "varcov")) {
     object$varcov
   } else {
-    stop("Variance-covariance matrix of location-scale parameters does not exist!")
+    stop(
+      "Variance-covariance matrix of location-scale parameters does not exist!",
+      call. = FALSE
+    )
   }
 }
 

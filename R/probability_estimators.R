@@ -301,11 +301,11 @@ mr_method <- function(x,
 
   if (!purrr::is_null(id)) {
     if (!((length(x) == length(status)) && (length(x) == length(id)))) {
-      stop("'x', 'status' and 'id' must be of same length!")
+      stop("'x', 'status' and 'id' must be of same length!", call. = FALSE)
     }
   } else {
     if (length(x) != length(status)) {
-      stop("'x' and 'status' must be of same length!")
+      stop("'x' and 'status' must be of same length!", call. = FALSE)
     }
   }
 
@@ -419,11 +419,11 @@ johnson_method <- function(x,
 
   if (!purrr::is_null(id)) {
     if (!((length(x) == length(status)) && (length(x) == length(id)))) {
-      stop("'x', 'status' and 'id' must be of same length!")
+      stop("'x', 'status' and 'id' must be of same length!", call. = FALSE)
     }
   } else {
     if (length(x) != length(status)) {
-      stop("'x' and 'status' must be of same length!")
+      stop("'x' and 'status' must be of same length!", call. = FALSE)
     }
   }
 
@@ -551,11 +551,11 @@ kaplan_method <- function(x,
 
   if (!purrr::is_null(id)) {
     if (!((length(x) == length(status)) && (length(x) == length(id)))) {
-      stop("'x', 'status' and 'id' must be of same length!")
+      stop("'x', 'status' and 'id' must be of same length!", call. = FALSE)
     }
   } else {
     if (length(x) != length(status)) {
-      stop("'x' and 'status' must be of same length!")
+      stop("'x' and 'status' must be of same length!", call. = FALSE)
     }
   }
 
@@ -567,7 +567,10 @@ kaplan_method <- function(x,
 kaplan_method_ <- function(data) {
 
   if (all(data$status == 1)) {
-    warning('Use methods = "mr" since there is no censored data problem!')
+    warning(
+      'Use methods = "mr" since there is no censored data problem!',
+      call. = FALSE
+    )
   }
 
   tbl_in <- data %>%
@@ -678,11 +681,11 @@ nelson_method <- function(x,
 
   if (!purrr::is_null(id)) {
     if (!((length(x) == length(status)) && (length(x) == length(id)))) {
-      stop("'x', 'status' and 'id' must be of same length!")
+      stop("'x', 'status' and 'id' must be of same length!", call. = FALSE)
     }
   } else {
     if (length(x) != length(status)) {
-      stop("'x' and 'status' must be of same length!")
+      stop("'x' and 'status' must be of same length!", call. = FALSE)
     }
   }
 
@@ -694,7 +697,10 @@ nelson_method <- function(x,
 nelson_method_ <- function(data) {
 
   if (all(data$status == 1)) {
-    warning('Use methods = "mr" since there is no censored data problem!')
+    warning(
+      'Use methods = "mr" since there is no censored data problem!',
+      call. = FALSE
+    )
   }
 
   tbl_in <- data %>%
