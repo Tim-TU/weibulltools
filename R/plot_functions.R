@@ -1379,7 +1379,10 @@ plot_conf.default <- function(
   } else if (inherits(p_obj, "ggplot")) {
     "ggplot2"
   } else {
-    stop("'p_obj' must be either a plotly or ggplot2 object!")
+    stop(
+      "'p_obj' must be either a {plotly} or {ggplot2} object!",
+      call. = FALSE
+    )
   }
 
   tbl_mod <- if (plot_method == "plotly") {

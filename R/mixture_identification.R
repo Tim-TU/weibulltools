@@ -324,7 +324,7 @@ mixmod_regression_ <- function(cdf_estimation,
 ) {
 
   if (!purrr::is_null(k) && k < 1) {
-    stop("'k' must be greater or equal than 1!")
+    stop("'k' must be greater or equal than 1!", call. = FALSE)
   }
 
   # Preparation for segmented regression:
@@ -384,7 +384,10 @@ mixmod_regression_ <- function(cdf_estimation,
   # Test for successful segmentation of all failed units:
   if (purrr::is_null(group_seg)) {
     # Not succeeded:
-    stop("Segmentation has not succeeded. Reduce 'k' in the function call!")
+    stop(
+      "Segmentation has not succeeded. Reduce 'k' in the function call!",
+      call. = FALSE
+    )
   }
 
   # Succeeded:
@@ -692,7 +695,8 @@ mixmod_em_ <- function(data,
         "\n Hint: Reduce k in function call and try again. If this does",
         "not succeed a mixture model seems not to be appropriate.",
         "\n Instead use k = 1 to perform ml_estimation()."
-      )
+      ),
+      call. = FALSE
     )
   }
 
@@ -709,7 +713,7 @@ mixmod_em_ <- function(data,
   # not valid anymore!!!!
 
   if (abs(logL_complete - mix_est$logL) > diff_loglik) {
-    stop("Parameter estimation was not successful!")
+    stop("Parameter estimation was not successful!", call. = FALSE)
   }
 
   # separate observations using maximum a-posteriori method (MAP):
