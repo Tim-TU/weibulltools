@@ -40,8 +40,8 @@
 
 
 <meta property="og:title" content="Prediction of Quantiles for Parametric Lifetime Distributions — predict_quantile" />
-<meta property="og:description" content="This function predicts the quantiles of two- or three-parametric lifetime
-distributions that belong to the (log-)location-scale family." />
+<meta property="og:description" content="This function predicts the quantiles of a two- or three-parameter lifetime
+distribution using the (log-)location-scale parameterization." />
 
 
 
@@ -136,14 +136,14 @@ distributions that belong to the (log-)location-scale family." />
     </div>
 
     <div class="ref-description">
-    <p>This function predicts the quantiles of two- or three-parametric lifetime
-distributions that belong to the (log-)location-scale family.</p>
+    <p>This function predicts the quantiles of a two- or three-parameter lifetime
+distribution using the (log-)location-scale parameterization.</p>
     </div>
 
     <pre class="usage"><span class='fu'>predict_quantile</span><span class='op'>(</span>
   <span class='va'>p</span>,
   <span class='va'>dist_params</span>,
-  distribution <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"weibull"</span>, <span class='st'>"lognormal"</span>, <span class='st'>"loglogistic"</span>, <span class='st'>"normal"</span>, <span class='st'>"logistic"</span>, <span class='st'>"sev"</span>,
+  distribution <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"weibull"</span>, <span class='st'>"lognormal"</span>, <span class='st'>"loglogistic"</span>, <span class='st'>"sev"</span>, <span class='st'>"normal"</span>, <span class='st'>"logistic"</span>,
     <span class='st'>"weibull3"</span>, <span class='st'>"lognormal3"</span>, <span class='st'>"loglogistic3"</span><span class='op'>)</span>
 <span class='op'>)</span></pre>
 
@@ -156,10 +156,8 @@ distributions that belong to the (log-)location-scale family.</p>
     </tr>
     <tr>
       <th>dist_params</th>
-      <td><p>A (named) numeric vector of (log-)location-scale parameters
-in the order of location (\(\mu\)) and scale (\(\sigma\)). If a
-three-parametric model is selected, the threshold parameter (\(\gamma\))
-has to be the third element.</p></td>
+      <td><p>A vector of parameters. An overview of the
+distribution-specific parameters can be found in section 'Distributions'.</p></td>
     </tr>
     <tr>
       <th>distribution</th>
@@ -174,6 +172,30 @@ has to be the third element.</p></td>
 
     <p>For a given set of parameters and specified probabilities the quantiles
 of the chosen model are determined.</p>
+    <h2 class="hasAnchor" id="distributions"><a class="anchor" href="#distributions"></a>Distributions</h2>
+
+    
+
+<p>The following table summarizes the available distributions and their parameters</p><ul>
+<li><p><em>location parameter</em> \(\mu\),</p></li>
+<li><p><em>scale parameter</em> \(\sigma\) and</p></li>
+<li><p><em>threshold parameter</em> \(\gamma\).</p></li>
+</ul>
+
+<p>The order within <code>dist_params</code> is given in the table header.</p><table class='table'>
+<tr><td><strong><code>distribution</code></strong></td><td><strong><code>dist_params[1]</code></strong></td><td><strong><code>dist_params[2]</code></strong></td><td><strong><code>dist_params[3]</code></strong></td></tr>
+<tr><td><code>"sev"</code></td><td>\(\mu\)</td><td>\(\sigma\)</td><td>-</td></tr>
+<tr><td><code>"weibull"</code></td><td>\(\mu\)</td><td>\(\sigma\)</td><td>-</td></tr>
+<tr><td><code>"weibull3"</code></td><td>\(\mu\)</td><td>\(\sigma\)</td><td>\(\gamma\)</td></tr>
+<tr><td><code>"normal"</code></td><td>\(\mu\)</td><td>\(\sigma\)</td><td>-</td></tr>
+<tr><td><code>"lognormal"</code></td><td>\(\mu\)</td><td>\(\sigma\)</td><td>-</td></tr>
+<tr><td><code>"lognormal3"</code></td><td>\(\mu\)</td><td>\(\sigma\)</td><td>\(\gamma\)</td></tr>
+<tr><td><code>"logistic"</code></td><td>\(\mu\)</td><td>\(\sigma\)</td><td>-</td></tr>
+<tr><td><code>"loglogistic"</code></td><td>\(\mu\)</td><td>\(\sigma\)</td><td>-</td></tr>
+<tr><td><code>"loglogistic3"</code></td><td>\(\mu\)</td><td>\(\sigma\)</td><td>\(\gamma\)</td></tr>
+</table>
+
+
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='co'># Example 1 - Predicted quantiles for a two-parameter weibull distribution:</span>

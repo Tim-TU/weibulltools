@@ -56,19 +56,17 @@ The following table summarizes the available distributions and their parameters
 \item \emph{threshold parameter} \eqn{\gamma}.
 }
 
-The order within \code{dist_params} is given in the table header.
-
-\tabular{lccc}{
-\strong{\code{distribution}} \tab \strong{\code{dist_params[1]}} \tab \strong{\code{dist_params[2]}} \tab \strong{\code{dist_params[3]}}   \cr
-\code{"sev"}            \tab \eqn{\mu}            \tab \eqn{\sigma}         \tab -                      \cr
-\code{"weibull"}        \tab \eqn{\mu}            \tab \eqn{\sigma}         \tab -                      \cr
-\code{"weibull3"}       \tab \eqn{\mu}            \tab \eqn{\sigma}         \tab \eqn{\gamma}           \cr
-\code{"normal"}         \tab \eqn{\mu}            \tab \eqn{\sigma}         \tab -                      \cr
-\code{"lognormal"}      \tab \eqn{\mu}            \tab \eqn{\sigma}         \tab -                      \cr
-\code{"lognormal3"}     \tab \eqn{\mu}            \tab \eqn{\sigma}         \tab \eqn{\gamma}           \cr
-\code{"logistic"}       \tab \eqn{\mu}            \tab \eqn{\sigma}         \tab -                      \cr
-\code{"loglogistic"}    \tab \eqn{\mu}            \tab \eqn{\sigma}         \tab -                      \cr
-\code{"loglogistic3"}   \tab \eqn{\mu}            \tab \eqn{\sigma}         \tab \eqn{\gamma}
+The order within \code{dist_params} is given in the table header.\tabular{lccc}{
+   \strong{\code{distribution}} \tab \strong{\code{dist_params[1]}} \tab \strong{\code{dist_params[2]}} \tab \strong{\code{dist_params[3]}} \cr
+   \code{"sev"} \tab \eqn{\mu} \tab \eqn{\sigma} \tab - \cr
+   \code{"weibull"} \tab \eqn{\mu} \tab \eqn{\sigma} \tab - \cr
+   \code{"weibull3"} \tab \eqn{\mu} \tab \eqn{\sigma} \tab \eqn{\gamma} \cr
+   \code{"normal"} \tab \eqn{\mu} \tab \eqn{\sigma} \tab - \cr
+   \code{"lognormal"} \tab \eqn{\mu} \tab \eqn{\sigma} \tab - \cr
+   \code{"lognormal3"} \tab \eqn{\mu} \tab \eqn{\sigma} \tab \eqn{\gamma} \cr
+   \code{"logistic"} \tab \eqn{\mu} \tab \eqn{\sigma} \tab - \cr
+   \code{"loglogistic"} \tab \eqn{\mu} \tab \eqn{\sigma} \tab - \cr
+   \code{"loglogistic3"} \tab \eqn{\mu} \tab \eqn{\sigma} \tab \eqn{\gamma} \cr
 }
 }
 

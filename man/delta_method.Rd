@@ -12,7 +12,7 @@ delta_method(
   distribution = c("weibull", "lognormal", "loglogistic", "sev", "normal", "logistic",
     "weibull3", "lognormal3", "loglogistic3"),
   direction = c("y", "x"),
-  p
+  p = deprecated()
 )
 }
 \arguments{
@@ -39,8 +39,8 @@ A numeric vector of estimated standard errors for quantiles or
 standardized quantiles (\emph{z-values}).
 }
 \description{
-This function applies the delta method to a two- or three-parameter lifetime
-distribution that belong to the (log-)location-scale family.
+This function applies the \emph{delta method} to a two- or three-parameter lifetime
+distribution.
 }
 \details{
 The delta method estimates the standard errors for quantities that can be

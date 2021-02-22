@@ -429,7 +429,7 @@ confint_betabinom_ <- function(model_estimation,
 
   tbl_out <- tibble::as_tibble(list_output)
 
-  ## Add cdf_estimation_method to support different cdf_estimation_methods:
+  ## Add cdf_estimation_method as column to support different cdf_estimation_methods:
   cdf_estimation_method <- model_estimation$data$cdf_estimation_method[1]
   tbl_out$cdf_estimation_method <- cdf_estimation_method # recycling!
 
@@ -445,6 +445,7 @@ confint_betabinom_ <- function(model_estimation,
     attr(tbl_out, "model_estimation") <- model_estimation
   }
 
+  ## Make output usable for generics:
   class(tbl_out) <- c("wt_confint", class(tbl_out))
 
   tbl_out
@@ -778,15 +779,16 @@ confint_fisher_ <- function(model_estimation,
   x_seq <- x_y_b_lives$x_seq
   y_seq <- x_y_b_lives$y_seq
 
-  # Step 2: Normal approximation confidence intervals w.r.t 'direction' and 'bounds':
-  ## Quantiles of normal distribution regarding bounds:
+  # Step 2: Normal approx. confidence intervals w.r.t 'direction' and 'bounds':
+
+  ## Quantiles of normal distribution for chosen bounds (two-sided or one-sided):
   q_n <- switch(
     bounds,
     "two_sided" = stats::qnorm((1 + conf_level) / 2),
     stats::qnorm(conf_level)
   )
 
-  ## Confidence intervals for quantiles:
+  ## Confidence intervals for 'direction = x':
   if (direction == "x") {
     se_delta <- delta_method(
       x = y_seq,
@@ -796,6 +798,7 @@ confint_fisher_ <- function(model_estimation,
       direction = direction
     )
 
+    ## Ensure that confidence intervals are strictly positive:
     w <- exp((q_n * se_delta) / x_seq)
 
     w <- switch(
@@ -809,7 +812,7 @@ confint_fisher_ <- function(model_estimation,
     names(list_confint) <- names(w)
 
   } else {
-    # Standard errors for z:
+    ## Confidence intervals for 'direction = y':
     se_delta <- delta_method(
       x = x_seq,
       dist_params = dist_params,
@@ -818,12 +821,12 @@ confint_fisher_ <- function(model_estimation,
       direction = direction
     )
 
-    # Standardized Random Variable:
+    w <- q_n * se_delta
+
+    ## Standardized random variable:
     z <- standardize(
       x = x_seq, dist_params = dist_params, distribution = distribution
     )
-
-    w <- q_n * se_delta
 
     zw <- switch(
       bounds,
@@ -832,75 +835,27 @@ confint_fisher_ <- function(model_estimation,
       "upper" = list(upper_bound = z + w)
     )
 
-    list_quants <- purrr::map(
-      zw,
-      predict_quantile,
-      dist_params = dist_params,
-      distribution = distribution
+    ## Model-specific standard distribution:
+    pfun <- switch(
+      two_parametric(distribution),
+      "sev" = , "weibull" = psev,
+      "normal" = , "lognormal" = stats::pnorm,
+      "logistic" = , "loglogistic" = stats::plogis
     )
 
-    list_confint <- purrr::map(
-      list_quants,
-      predict_prob,
-      dist_params = dist_params,
-      distribution = distribution
-    )
+    list_confint <- purrr::map(zw, pfun)
     names(list_confint) <- names(zw)
-
-
-    # # Calculating confidence intervals:
-    # if (bounds == "two_sided") {
-    #   # Confidence Interval for z:
-    #   w <- stats::qnorm((1 + conf_level) / 2) * se_delta
-    #   if (distribution %in% c("weibull", "weibull3", "sev")) {
-    #     conf_up <- SPREDA::psev(z + w)
-    #     conf_low <- SPREDA::psev(z - w)
-    #   }
-    #   if (distribution %in% c("lognormal", "lognormal3", "normal")) {
-    #     conf_up <- stats::pnorm(z + w)
-    #     conf_low <- stats::pnorm(z - w)
-    #   }
-    #   if (distribution %in% c("loglogistic", "loglogistic3", "logistic")) {
-    #     conf_up <- stats::plogis(z + w)
-    #     conf_low <- stats::plogis(z - w)
-    #   }
-    #   list_confint <- list(lower_bound = conf_low, upper_bound = conf_up)
-    #
-    # } else if (bounds == "lower") {
-    #   w <- stats::qnorm(conf_level) * se_delta
-    #   if (distribution %in% c("weibull", "weibull3", "sev")) {
-    #     conf_low <- SPREDA::psev(z - w)
-    #   }
-    #   if (distribution %in% c("lognormal", "lognormal3", "normal")) {
-    #     conf_low <- stats::pnorm(z - w)
-    #   }
-    #   if (distribution %in% c("loglogistic", "loglogistic3", "logistic")) {
-    #     conf_low <- stats::plogis(z - w)
-    #   }
-    #   list_confint <- list(lower_bound = conf_low)
-    #
-    # } else {
-    #   w <- stats::qnorm(conf_level) * se_delta
-    #   if (distribution %in% c("weibull", "weibull3", "sev")) {
-    #     conf_up <- SPREDA::psev(z + w)
-    #   }
-    #   if (distribution %in% c("lognormal", "lognormal3", "normal")) {
-    #     conf_up <- stats::pnorm(z + w)
-    #   }
-    #   if (distribution %in% c("loglogistic", "loglogistic3", "logistic")) {
-    #     conf_up <- stats::plogis(z + w)
-    #   }
-    #   list_confint <- list(upper_bound = conf_up)
-    #
-    # }
   }
 
-  list_output <- c(list(x = x_seq, prob = y_seq, std_err = se_delta),
-                   list_confint)
+  # Step 3: Form output:
+  list_output <- c(
+    list(x = x_seq, prob = y_seq, std_err = se_delta),
+    list_confint
+  )
+
   tbl_out <- tibble::as_tibble(list_output)
 
-  # cdf_estimation_method must remain a column so that confint_fisher's table
-  # has same colnames as confint_betabinom's table
+  ## Add cdf_estimation_method (same colnames as confint_betabinom's output):
   tbl_out$cdf_estimation_method <- NA_character_
 
   tbl_out <- structure(
@@ -910,13 +865,13 @@ confint_fisher_ <- function(model_estimation,
     direction = direction
   )
 
+  ## Only add model_estimation if not faked by .default:
   if (inherits(model_estimation, "wt_model_estimation")) {
-    # Only add model_estimation if not faked by .default
     attr(tbl_out, "model_estimation") <- model_estimation
   }
 
   # Make output usable for generics
   class(tbl_out) <- c("wt_confint", class(tbl_out))
 
-  return(tbl_out)
+  tbl_out
 }

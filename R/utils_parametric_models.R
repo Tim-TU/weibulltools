@@ -43,13 +43,9 @@ standardize <- function(x, dist_params, distribution) {
   distribution <- two_parametric(distribution)
 
   # (log-)location-scale:
-  x <- switch(
-    distribution,
-    "sev" = ,
-    "normal" = ,
-    "logistic" = x,
-    log(x) # alternative
-  )
+  if (distribution %in% c("weibull", "lognormal", "loglogistic")) {
+    x <- log(x)
+  }
 
   # Standardize:
   z <- (x - dist_params[[1]]) / dist_params[[2]]

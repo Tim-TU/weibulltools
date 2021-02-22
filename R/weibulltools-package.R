@@ -27,6 +27,7 @@
 #' @importFrom utils hasName
 #' @importFrom dplyr .data
 ## usethis namespace: start
+#' @importFrom lifecycle deprecated
 #' @importFrom lifecycle deprecate_soft
 #' @importFrom lifecycle deprecate_warn
 ## usethis namespace: end

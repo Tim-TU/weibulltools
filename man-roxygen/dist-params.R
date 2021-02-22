@@ -7,17 +7,16 @@
 #'
 #' The order within `dist_params` is given in the table header.
 #'
-#' \tabular{lccc}{
-#'   **`distribution`** \tab **`dist_params[1]`** \tab **`dist_params[2]`** \tab **`dist_params[3]`**   \cr
-#'   `"sev"`            \tab \eqn{\mu}            \tab \eqn{\sigma}         \tab -                      \cr
-#'   `"weibull"`        \tab \eqn{\mu}            \tab \eqn{\sigma}         \tab -                      \cr
-#'   `"weibull3"`       \tab \eqn{\mu}            \tab \eqn{\sigma}         \tab \eqn{\gamma}           \cr
-#'   `"normal"`         \tab \eqn{\mu}            \tab \eqn{\sigma}         \tab -                      \cr
-#'   `"lognormal"`      \tab \eqn{\mu}            \tab \eqn{\sigma}         \tab -                      \cr
-#'   `"lognormal3"`     \tab \eqn{\mu}            \tab \eqn{\sigma}         \tab \eqn{\gamma}           \cr
-#'   `"logistic"`       \tab \eqn{\mu}            \tab \eqn{\sigma}         \tab -                      \cr
-#'   `"loglogistic"`    \tab \eqn{\mu}            \tab \eqn{\sigma}         \tab -                      \cr
-#'   `"loglogistic3"`   \tab \eqn{\mu}            \tab \eqn{\sigma}         \tab \eqn{\gamma}
-#' }
+#' | **`distribution`**   | **`dist_params[1]`** | **`dist_params[2]`** | **`dist_params[3]`** |
+#' | :------------------- | :------------------: | :------------------: | :------------------: |
+#' | `"sev"`              | \eqn{\mu}            | \eqn{\sigma}         | -                    |
+#' | `"weibull"`          | \eqn{\mu}            | \eqn{\sigma}         | -                    |
+#' | `"weibull3"`         | \eqn{\mu}            | \eqn{\sigma}         | \eqn{\gamma}         |
+#' | `"normal"`           | \eqn{\mu}            | \eqn{\sigma}         | -                    |
+#' | `"lognormal"`        | \eqn{\mu}            | \eqn{\sigma}         | -                    |
+#' | `"lognormal3"`       | \eqn{\mu}            | \eqn{\sigma}         | \eqn{\gamma}         |
+#' | `"logistic"`         | \eqn{\mu}            | \eqn{\sigma}         | -                    |
+#' | `"loglogistic"`      | \eqn{\mu}            | \eqn{\sigma}         | -                    |
+#' | `"loglogistic3"`     | \eqn{\mu}            | \eqn{\sigma}         | \eqn{\gamma}         |
 #'
 #' @md

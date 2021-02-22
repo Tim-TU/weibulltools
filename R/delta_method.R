@@ -1,8 +1,8 @@
 #' Delta Method for Parametric Lifetime Distributions
 #'
 #' @description
-#' This function applies the delta method to a two- or three-parameter lifetime
-#' distribution that belong to the (log-)location-scale family.
+#' This function applies the *delta method* to a two- or three-parameter lifetime
+#' distribution.
 #'
 #' @details
 #' The delta method estimates the standard errors for quantities that can be
@@ -83,10 +83,10 @@ delta_method <- function(x,
                            "weibull3", "lognormal3", "loglogistic3"
                          ),
                          direction = c("y", "x"),
-                         p
+                         p = deprecated()
 ) {
 
-  if (!missing(p)) {
+  if (lifecycle::is_present(p)) {
     deprecate_warn("2.1.0", "delta_method(p = )", "delta_method(x = )")
     x <- p
   }
@@ -131,7 +131,7 @@ delta_method_ <- function(x,
       distribution = two_parametric(distribution)
     )
 
-    ### Inner derivation is often the standarized quantile function:
+    ### Inner derivation is often the standardized quantile function:
     z <- standardize(
       x = q,
       dist_params = dist_params[-3],
