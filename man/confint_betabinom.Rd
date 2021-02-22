@@ -17,65 +17,59 @@ confint_betabinom(x, ...)
 )
 }
 \arguments{
-\item{x}{Object with class \code{wt_model} and one of the classes
-\code{wt_model_estimation} or \code{wt_model_estimation_list} returned from
-\code{\link{rank_regression}}.}
+\item{x}{A list with class \code{wt_model} (and further classes) returned by
+\link{rank_regression}.}
 
 \item{...}{Further arguments passed to or from other methods. Currently not used.}
 
-\item{b_lives}{A numeric vector indicating the probabilities \emph{p} of the
+\item{b_lives}{A numeric vector indicating the probabilities \eqn{p} of the
 \eqn{B_p}-lives (quantiles) to be considered.}
 
-\item{bounds}{A character string specifying of which bounds have to be computed.
-One of \code{"two_sided"}, \code{"lower"} or \code{"upper"}.}
+\item{bounds}{A character string specifying the bound(s) to be computed.}
 
 \item{conf_level}{Confidence level of the interval.}
 
-\item{direction}{A character string specifying the direction of the
-confidence interval. One of \code{"y"} (failure probabilities) or \code{"x"}
-(quantiles).}
+\item{direction}{A character string specifying the direction of the confidence
+interval. \code{"y"} for failure probabilities or \code{"x"} for quantiles.}
 }
 \value{
 A tibble with class \code{wt_confint} containing the following columns:
-  \itemize{
-    \item \code{x} : An ordered sequence of the lifetime characteristic regarding
-      the failed units, starting at \code{min(x)} and ending up at \code{max(x)}.
-      With \code{b_lives = c(0.01, 0.1, 0.5)} the 1\%, 10\% and 50\% quantiles
-      are additionally included in \code{x}, but only if the specified
-      probabilities are in the range of the estimated probabilities.
-    \item \code{rank} : Interpolated ranks as a function of probabilities,
-      computed with the converted approximation formula of Benard.
-    \item \code{prob} : An ordered sequence of probabilities with specified
-      \code{b_lives} included.
-    \item \code{lower_bound} : Provided, if \code{bounds} is one of
-      \code{"two_sided"} or \code{"lower"}. Lower limit of the confidence region
-      with respect to \code{direction}, i.e. quantiles or probabilities.
-    \item \code{upper_bound} : Provided, if \code{bounds} is one of
-      \code{"two_sided"} or \code{"upper"}. Upper limit of the confidence region
-      with respect to \code{direction}, i.e. quantiles or probabilities.
-    \item \code{cdf_estimation_method} : Specified method for the estimation
-      of failure probabilities (determined when calling
-      \code{\link{estimate_cdf}}).
-  }
+\itemize{
+\item \code{x} : An ordered sequence of the lifetime characteristic regarding the
+failed units, starting at \code{min(x)} and ending up at \code{max(x)}. With
+\code{b_lives = c(0.01, 0.1, 0.5)} the 1\%, 10\% and 50\% quantiles are additionally
+included in \code{x}, but only if the specified probabilities are in the range of
+the estimated probabilities.
+\item \code{rank} : Interpolated ranks as a function of probabilities, computed with
+the converted approximation formula of \emph{Benard}.
+\item \code{prob} : An ordered sequence of probabilities with specified \code{b_lives}
+included.
+\item \code{lower_bound} : Provided, if \code{bounds} is one of \code{"two_sided"} or \code{"lower"}.
+Lower confidence limits with respect to \code{direction}, i.e. limits for
+quantiles or probabilities.
+\item \code{upper_bound} : Provided, if \code{bounds} is one of \code{"two_sided"} or \code{"upper"}.
+Upper confidence limits with respect to \code{direction}, i.e. limits for
+quantiles or probabilities.
+\item \code{cdf_estimation_method} : Method for the estimation of failure probabilities which was specified in \link{estimate_cdf}.
+}
 
-  Further information is stored in the attributes of this tibble:
-  \itemize{
-    \item \code{distribution} : Specified distribution (determined when calling
-      \code{\link{rank_regression}}).
-    \item \code{bounds} : Specified bound(s).
-    \item \code{direction} : Specified direction.
-    \item \code{model_estimation} : Specified object of class \code{wt_model}.
-  }
+Further information is stored in the attributes of this tibble:
+\itemize{
+\item \code{distribution} : Distribution which was specified in \link{rank_regression}.
+\item \code{bounds} : Specified bound(s).
+\item \code{direction} : Specified direction.
+\item \code{model_estimation} : Input list with class \code{wt_model}.
+}
 }
 \description{
-This non-parametric approach computes the beta binomial bounds (BB) for
-quantiles and failure probabilities using a procedure similar to the calculation
-of probabilities in terms of (\emph{Median Ranks}).
+This function computes the non-parametric beta binomial confidence bounds (BB)
+for quantiles and failure probabilities.
 }
 \details{
-The difference to \emph{Median Ranks}, i.e. finding the probability of
-rank \emph{j} at a 50\% level, is to determine the probability of rank \emph{j}
-on another level, the specified confidence level.
+The procedure is similar to the \emph{Median Ranks} method but with the
+difference that instead of finding the probability for the \emph{j}-th rank at the
+50\% level the probability (probabilities) has (have) to be found at the given
+confidence level.
 }
 \examples{
 # Reliability data preparation:

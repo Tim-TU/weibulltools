@@ -6,6 +6,7 @@
 * `plot_prob.wt_model()`: Removed dysfunctional argument `distribution`. The distribution is inferred using the model `x`.
 
 ### Confidence Intervals
+* `delta_method()`: Renamed argument `p` with `x`. 
 * `confint_betabinom()` and `confint_fisher()`: Removed constant features `distribution`, `bounds` and `direction` from the tibble output and added them as attributes instead.
 
 ### Monte Carlo Simulation
@@ -38,6 +39,8 @@
 * Added `print.wt_mcs_delay_data()` and `print.wt_mcs_mileage_data()`.
 * Added `print.wt_mileage_estimation()`. 
 * Added `print.wt_delay_estimation()` for one delay and `print.wt_delay_estimation_list()` for multiple delays.
+
+## Lifecycle changes
 
 ## Minor Improvements and bug fixes
 

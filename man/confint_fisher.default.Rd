@@ -9,7 +9,7 @@
   status,
   dist_params,
   dist_varcov,
-  distribution = c("weibull", "lognormal", "loglogistic", "normal", "logistic", "sev",
+  distribution = c("weibull", "lognormal", "loglogistic", "sev", "normal", "logistic",
     "weibull3", "lognormal3", "loglogistic3"),
   b_lives = c(0.01, 0.1, 0.5),
   bounds = c("two_sided", "lower", "upper"),
@@ -20,67 +20,59 @@
 }
 \arguments{
 \item{x}{A numeric vector which consists of lifetime data. Lifetime data
-could be every characteristic influencing the reliability of a product,
-e.g. operating time (days/months in service), mileage (km, miles), load
-cycles.}
+could be every characteristic influencing the reliability of a product, e.g.
+operating time (days/months in service), mileage (km, miles), load cycles.}
 
 \item{status}{A vector of binary data (0 or 1) indicating whether a unit is
 a right censored observation (= 0) or a failure (= 1).}
 
-\item{dist_params}{A (named) numeric vector of (log-)location-scale parameters
-returned from \code{\link{ml_estimation}}.}
+\item{dist_params}{The parameters (\code{coefficients}) returned by \link{ml_estimation}.}
 
-\item{dist_varcov}{A (named) numeric matrix of estimated variances and
-covariances returned from \code{\link{ml_estimation}}.}
+\item{dist_varcov}{The variance-covariance-matrix (\code{varcov}) returned by
+\link{ml_estimation}.}
 
 \item{distribution}{Supposed distribution of the random variable. Has to be in
-line with the specification made in \code{\link{ml_estimation}}.}
+line with the specification made in \link{ml_estimation}.}
 
-\item{b_lives}{A numeric vector indicating the probabilities \emph{p} of the
+\item{b_lives}{A numeric vector indicating the probabilities \eqn{p} of the
 \eqn{B_p}-lives (quantiles) to be considered.}
 
-\item{bounds}{A character string specifying of which bounds have to be computed.
-One of \code{"two_sided"}, \code{"lower"} or \code{"upper"}.}
+\item{bounds}{A character string specifying the bound(s) to be computed.}
 
 \item{conf_level}{Confidence level of the interval.}
 
-\item{direction}{A character string specifying the direction of the
-confidence interval. One of \code{"y"} (failure probabilities) or \code{"x"}
-(quantiles).}
+\item{direction}{A character string specifying the direction of the confidence
+interval. \code{"y"} for failure probabilities or \code{"x"} for quantiles.}
 
 \item{...}{Further arguments passed to or from other methods. Currently not used.}
 }
 \value{
-A tibble with class \code{wt_confint} containing the following
-columns:
-  \itemize{
-    \item \code{x} : An ordered sequence of the lifetime characteristic regarding
-      the failed units, starting at \code{min(x)} and ending up at \code{max(x)}.
-      With \code{b_lives = c(0.01, 0.1, 0.5)} the 1\%, 10\% and 50\% quantiles
-      are additionally included in \code{x}, but only if the specified
-      probabilities are in the range of the estimated probabilities.
-    \item \code{prob} : An ordered sequence of probabilities with specified
-      \code{b_lives} included.
-    \item \code{std_err} : Estimated standard errors with respect to
-      \code{direction}.
-    \item \code{lower_bound} : Provided, if \code{bounds} is one of
-      \code{"two_sided"} or \code{"lower"}. Lower limit of the confidence region
-      with respect to \code{direction}, i.e. quantiles or probabilities.
-    \item \code{upper_bound} : Provided, if \code{bounds} is one of
-      \code{"two_sided"} or \code{"upper"}. Upper limit of the confidence region
-      with respect to \code{direction}, i.e. quantiles or probabilities.
-    \item \code{cdf_estimation_method} : A character that is always
-      \code{NA_character}. For the generic visualization functions this
-      column has to be provided.
-  }
+A tibble with class \code{wt_confint} containing the following columns:
+\itemize{
+\item \code{x} : An ordered sequence of the lifetime characteristic regarding the
+failed units, starting at \code{min(x)} and ending up at \code{max(x)}. With
+\code{b_lives = c(0.01, 0.1, 0.5)} the 1\%, 10\% and 50\% quantiles are additionally
+included in \code{x}, but only if the specified probabilities are in the range of
+the estimated probabilities.
+\item \code{prob} : An ordered sequence of probabilities with specified \code{b_lives}
+included.
+\item \code{std_err} : Estimated standard errors with respect to \code{direction}.
+\item \code{lower_bound} : Provided, if \code{bounds} is one of \code{"two_sided"} or \code{"lower"}.
+Lower confidence limits with respect to \code{direction}, i.e. limits for
+quantiles or probabilities.
+\item \code{upper_bound} : Provided, if \code{bounds} is one of \code{"two_sided"} or \code{"upper"}.
+Upper confidence limits with respect to \code{direction}, i.e. limits for
+quantiles or probabilities.
+\item \code{cdf_estimation_method} : A character that is always \code{NA_character}. Only
+needed for internal use.
+}
 
-  Further information is stored in the attributes of this tibble:
-  \itemize{
-    \item \code{distribution} : Specified distribution (determined when calling
-      \code{\link{rank_regression}}).
-    \item \code{bounds} : Specified bound(s).
-    \item \code{direction} : Specified direction.
-  }
+Further information is stored in the attributes of this tibble:
+\itemize{
+\item \code{distribution} : Distribution which was specified in \link{ml_estimation}.
+\item \code{bounds} : Specified bound(s).
+\item \code{direction} : Specified direction.
+}
 }
 \description{
 This function computes normal-approximation confidence intervals for quantiles
@@ -88,9 +80,7 @@ and failure probabilities.
 }
 \details{
 The basis for the calculation of these confidence bounds are the standard errors
-determined by the \link[=delta_method]{delta method} and hence the required
-(log-)location-scale parameters as well as the variance-covariance matrix of
-these have to be estimated with \link[=ml_estimation]{maximum likelihood}.
+obtained by the \link[=delta_method]{delta method}.
 
 The bounds on the probability are determined by the \emph{z-procedure}. See
 'References' for more information on this approach.
@@ -181,8 +171,8 @@ conf_fisher_3_2 <- confint_fisher(
 }
 \references{
 Meeker, William Q; Escobar, Luis A., Statistical methods for
-  reliability data, New York: Wiley series in probability and statistics, 1998
+reliability data, New York: Wiley series in probability and statistics, 1998
 }
 \seealso{
-\code{\link{confint_fisher}}
+\link{confint_fisher}
 }

@@ -18,6 +18,8 @@
 #'
 #' @encoding UTF-8
 #'
+#' @template dist-params
+#'
 #' @references Meeker, William Q; Escobar, Luis A., Statistical methods for
 #'   reliability data, New York: Wiley series in probability and statistics, 1998
 #'
@@ -61,7 +63,7 @@ loglik_function.wt_reliability_data <- function(
                                       dist_params,
                                       distribution = c(
                                         "weibull", "lognormal", "loglogistic",
-                                        "normal", "logistic", "sev",
+                                        "sev", "normal", "logistic",
                                         "weibull3", "lognormal3", "loglogistic3"
                                       ),
                                       ...
@@ -85,6 +87,8 @@ loglik_function.wt_reliability_data <- function(
 #' @inheritParams predict_quantile
 #'
 #' @encoding UTF-8
+#'
+#' @template dist-params
 #'
 #' @seealso [loglik_function]
 #'
@@ -118,7 +122,7 @@ loglik_function.default <- function(x,
                                     dist_params,
                                     distribution = c(
                                       "weibull", "lognormal", "loglogistic",
-                                      "normal", "logistic", "sev",
+                                      "sev", "normal", "logistic",
                                       "weibull3", "lognormal3", "loglogistic3"
                                     ),
                                     ...

@@ -40,9 +40,8 @@
 
 
 <meta property="og:title" content="Beta Binomial Confidence Bounds for Quantiles and Probabilities — confint_betabinom" />
-<meta property="og:description" content="This non-parametric approach computes the beta binomial bounds (BB) for
-quantiles and failure probabilities using a procedure similar to the calculation
-of probabilities in terms of (Median Ranks)." />
+<meta property="og:description" content="This function computes the non-parametric beta binomial confidence bounds (BB)
+for quantiles and failure probabilities." />
 
 
 
@@ -137,9 +136,8 @@ of probabilities in terms of (Median Ranks)." />
     </div>
 
     <div class="ref-description">
-    <p>This non-parametric approach computes the beta binomial bounds (BB) for
-quantiles and failure probabilities using a procedure similar to the calculation
-of probabilities in terms of (<em>Median Ranks</em>).</p>
+    <p>This function computes the non-parametric beta binomial confidence bounds (BB)
+for quantiles and failure probabilities.</p>
     </div>
 
     <pre class="usage"><span class='fu'>confint_betabinom</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>...</span><span class='op'>)</span>
@@ -159,9 +157,8 @@ of probabilities in terms of (<em>Median Ranks</em>).</p>
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>x</th>
-      <td><p>Object with class <code>wt_model</code> and one of the classes
-<code>wt_model_estimation</code> or <code>wt_model_estimation_list</code> returned from
-<code><a href='rank_regression.html'>rank_regression</a></code>.</p></td>
+      <td><p>A list with class <code>wt_model</code> (and further classes) returned by
+<a href='rank_regression.html'>rank_regression</a>.</p></td>
     </tr>
     <tr>
       <th>...</th>
@@ -169,13 +166,12 @@ of probabilities in terms of (<em>Median Ranks</em>).</p>
     </tr>
     <tr>
       <th>b_lives</th>
-      <td><p>A numeric vector indicating the probabilities <em>p</em> of the
+      <td><p>A numeric vector indicating the probabilities \(p\) of the
 \(B_p\)-lives (quantiles) to be considered.</p></td>
     </tr>
     <tr>
       <th>bounds</th>
-      <td><p>A character string specifying of which bounds have to be computed.
-One of <code>"two_sided"</code>, <code>"lower"</code> or <code>"upper"</code>.</p></td>
+      <td><p>A character string specifying the bound(s) to be computed.</p></td>
     </tr>
     <tr>
       <th>conf_level</th>
@@ -183,48 +179,45 @@ One of <code>"two_sided"</code>, <code>"lower"</code> or <code>"upper"</code>.</
     </tr>
     <tr>
       <th>direction</th>
-      <td><p>A character string specifying the direction of the
-confidence interval. One of <code>"y"</code> (failure probabilities) or <code>"x"</code>
-(quantiles).</p></td>
+      <td><p>A character string specifying the direction of the confidence
+interval. <code>"y"</code> for failure probabilities or <code>"x"</code> for quantiles.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>A tibble with class <code>wt_confint</code> containing the following columns:</p><ul>
-<li><p><code>x</code> : An ordered sequence of the lifetime characteristic regarding
-      the failed units, starting at <code><a href='https://rdrr.io/r/base/Extremes.html'>min(x)</a></code> and ending up at <code><a href='https://rdrr.io/r/base/Extremes.html'>max(x)</a></code>.
-      With <code>b_lives = c(0.01, 0.1, 0.5)</code> the 1%, 10% and 50% quantiles
-      are additionally included in <code>x</code>, but only if the specified
-      probabilities are in the range of the estimated probabilities.</p></li>
-<li><p><code>rank</code> : Interpolated ranks as a function of probabilities,
-      computed with the converted approximation formula of Benard.</p></li>
-<li><p><code>prob</code> : An ordered sequence of probabilities with specified
-      <code>b_lives</code> included.</p></li>
-<li><p><code>lower_bound</code> : Provided, if <code>bounds</code> is one of
-      <code>"two_sided"</code> or <code>"lower"</code>. Lower limit of the confidence region
-      with respect to <code>direction</code>, i.e. quantiles or probabilities.</p></li>
-<li><p><code>upper_bound</code> : Provided, if <code>bounds</code> is one of
-      <code>"two_sided"</code> or <code>"upper"</code>. Upper limit of the confidence region
-      with respect to <code>direction</code>, i.e. quantiles or probabilities.</p></li>
-<li><p><code>cdf_estimation_method</code> : Specified method for the estimation
-      of failure probabilities (determined when calling
-      <code><a href='estimate_cdf.html'>estimate_cdf</a></code>).</p></li>
+<li><p><code>x</code> : An ordered sequence of the lifetime characteristic regarding the
+failed units, starting at <code><a href='https://rdrr.io/r/base/Extremes.html'>min(x)</a></code> and ending up at <code><a href='https://rdrr.io/r/base/Extremes.html'>max(x)</a></code>. With
+<code>b_lives = c(0.01, 0.1, 0.5)</code> the 1%, 10% and 50% quantiles are additionally
+included in <code>x</code>, but only if the specified probabilities are in the range of
+the estimated probabilities.</p></li>
+<li><p><code>rank</code> : Interpolated ranks as a function of probabilities, computed with
+the converted approximation formula of <em>Benard</em>.</p></li>
+<li><p><code>prob</code> : An ordered sequence of probabilities with specified <code>b_lives</code>
+included.</p></li>
+<li><p><code>lower_bound</code> : Provided, if <code>bounds</code> is one of <code>"two_sided"</code> or <code>"lower"</code>.
+Lower confidence limits with respect to <code>direction</code>, i.e. limits for
+quantiles or probabilities.</p></li>
+<li><p><code>upper_bound</code> : Provided, if <code>bounds</code> is one of <code>"two_sided"</code> or <code>"upper"</code>.
+Upper confidence limits with respect to <code>direction</code>, i.e. limits for
+quantiles or probabilities.</p></li>
+<li><p><code>cdf_estimation_method</code> : Method for the estimation of failure probabilities which was specified in <a href='estimate_cdf.html'>estimate_cdf</a>.</p></li>
 </ul>
 
 <p>Further information is stored in the attributes of this tibble:</p><ul>
-<li><p><code>distribution</code> : Specified distribution (determined when calling
-      <code><a href='rank_regression.html'>rank_regression</a></code>).</p></li>
+<li><p><code>distribution</code> : Distribution which was specified in <a href='rank_regression.html'>rank_regression</a>.</p></li>
 <li><p><code>bounds</code> : Specified bound(s).</p></li>
 <li><p><code>direction</code> : Specified direction.</p></li>
-<li><p><code>model_estimation</code> : Specified object of class <code>wt_model</code>.</p></li>
+<li><p><code>model_estimation</code> : Input list with class <code>wt_model</code>.</p></li>
 </ul>
 
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>The difference to <em>Median Ranks</em>, i.e. finding the probability of
-rank <em>j</em> at a 50% level, is to determine the probability of rank <em>j</em>
-on another level, the specified confidence level.</p>
+    <p>The procedure is similar to the <em>Median Ranks</em> method but with the
+difference that instead of finding the probability for the <em>j</em>-th rank at the
+50% level the probability (probabilities) has (have) to be found at the given
+confidence level.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='co'># Reliability data preparation:</span>

@@ -146,7 +146,7 @@ and failure probabilities.</p>
   <span class='va'>status</span>,
   <span class='va'>dist_params</span>,
   <span class='va'>dist_varcov</span>,
-  distribution <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"weibull"</span>, <span class='st'>"lognormal"</span>, <span class='st'>"loglogistic"</span>, <span class='st'>"normal"</span>, <span class='st'>"logistic"</span>, <span class='st'>"sev"</span>,
+  distribution <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"weibull"</span>, <span class='st'>"lognormal"</span>, <span class='st'>"loglogistic"</span>, <span class='st'>"sev"</span>, <span class='st'>"normal"</span>, <span class='st'>"logistic"</span>,
     <span class='st'>"weibull3"</span>, <span class='st'>"lognormal3"</span>, <span class='st'>"loglogistic3"</span><span class='op'>)</span>,
   b_lives <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.01</span>, <span class='fl'>0.1</span>, <span class='fl'>0.5</span><span class='op'>)</span>,
   bounds <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"two_sided"</span>, <span class='st'>"lower"</span>, <span class='st'>"upper"</span><span class='op'>)</span>,
@@ -161,9 +161,8 @@ and failure probabilities.</p>
     <tr>
       <th>x</th>
       <td><p>A numeric vector which consists of lifetime data. Lifetime data
-could be every characteristic influencing the reliability of a product,
-e.g. operating time (days/months in service), mileage (km, miles), load
-cycles.</p></td>
+could be every characteristic influencing the reliability of a product, e.g.
+operating time (days/months in service), mileage (km, miles), load cycles.</p></td>
     </tr>
     <tr>
       <th>status</th>
@@ -172,28 +171,26 @@ a right censored observation (= 0) or a failure (= 1).</p></td>
     </tr>
     <tr>
       <th>dist_params</th>
-      <td><p>A (named) numeric vector of (log-)location-scale parameters
-returned from <code><a href='ml_estimation.html'>ml_estimation</a></code>.</p></td>
+      <td><p>The parameters (<code>coefficients</code>) returned by <a href='ml_estimation.html'>ml_estimation</a>.</p></td>
     </tr>
     <tr>
       <th>dist_varcov</th>
-      <td><p>A (named) numeric matrix of estimated variances and
-covariances returned from <code><a href='ml_estimation.html'>ml_estimation</a></code>.</p></td>
+      <td><p>The variance-covariance-matrix (<code>varcov</code>) returned by
+<a href='ml_estimation.html'>ml_estimation</a>.</p></td>
     </tr>
     <tr>
       <th>distribution</th>
       <td><p>Supposed distribution of the random variable. Has to be in
-line with the specification made in <code><a href='ml_estimation.html'>ml_estimation</a></code>.</p></td>
+line with the specification made in <a href='ml_estimation.html'>ml_estimation</a>.</p></td>
     </tr>
     <tr>
       <th>b_lives</th>
-      <td><p>A numeric vector indicating the probabilities <em>p</em> of the
+      <td><p>A numeric vector indicating the probabilities \(p\) of the
 \(B_p\)-lives (quantiles) to be considered.</p></td>
     </tr>
     <tr>
       <th>bounds</th>
-      <td><p>A character string specifying of which bounds have to be computed.
-One of <code>"two_sided"</code>, <code>"lower"</code> or <code>"upper"</code>.</p></td>
+      <td><p>A character string specifying the bound(s) to be computed.</p></td>
     </tr>
     <tr>
       <th>conf_level</th>
@@ -201,9 +198,8 @@ One of <code>"two_sided"</code>, <code>"lower"</code> or <code>"upper"</code>.</
     </tr>
     <tr>
       <th>direction</th>
-      <td><p>A character string specifying the direction of the
-confidence interval. One of <code>"y"</code> (failure probabilities) or <code>"x"</code>
-(quantiles).</p></td>
+      <td><p>A character string specifying the direction of the confidence
+interval. <code>"y"</code> for failure probabilities or <code>"x"</code> for quantiles.</p></td>
     </tr>
     <tr>
       <th>...</th>
@@ -213,31 +209,27 @@ confidence interval. One of <code>"y"</code> (failure probabilities) or <code>"x
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A tibble with class <code>wt_confint</code> containing the following
-columns:</p><ul>
-<li><p><code>x</code> : An ordered sequence of the lifetime characteristic regarding
-      the failed units, starting at <code><a href='https://rdrr.io/r/base/Extremes.html'>min(x)</a></code> and ending up at <code><a href='https://rdrr.io/r/base/Extremes.html'>max(x)</a></code>.
-      With <code>b_lives = c(0.01, 0.1, 0.5)</code> the 1%, 10% and 50% quantiles
-      are additionally included in <code>x</code>, but only if the specified
-      probabilities are in the range of the estimated probabilities.</p></li>
-<li><p><code>prob</code> : An ordered sequence of probabilities with specified
-      <code>b_lives</code> included.</p></li>
-<li><p><code>std_err</code> : Estimated standard errors with respect to
-      <code>direction</code>.</p></li>
-<li><p><code>lower_bound</code> : Provided, if <code>bounds</code> is one of
-      <code>"two_sided"</code> or <code>"lower"</code>. Lower limit of the confidence region
-      with respect to <code>direction</code>, i.e. quantiles or probabilities.</p></li>
-<li><p><code>upper_bound</code> : Provided, if <code>bounds</code> is one of
-      <code>"two_sided"</code> or <code>"upper"</code>. Upper limit of the confidence region
-      with respect to <code>direction</code>, i.e. quantiles or probabilities.</p></li>
-<li><p><code>cdf_estimation_method</code> : A character that is always
-      <code>NA_character</code>. For the generic visualization functions this
-      column has to be provided.</p></li>
+    <p>A tibble with class <code>wt_confint</code> containing the following columns:</p><ul>
+<li><p><code>x</code> : An ordered sequence of the lifetime characteristic regarding the
+failed units, starting at <code><a href='https://rdrr.io/r/base/Extremes.html'>min(x)</a></code> and ending up at <code><a href='https://rdrr.io/r/base/Extremes.html'>max(x)</a></code>. With
+<code>b_lives = c(0.01, 0.1, 0.5)</code> the 1%, 10% and 50% quantiles are additionally
+included in <code>x</code>, but only if the specified probabilities are in the range of
+the estimated probabilities.</p></li>
+<li><p><code>prob</code> : An ordered sequence of probabilities with specified <code>b_lives</code>
+included.</p></li>
+<li><p><code>std_err</code> : Estimated standard errors with respect to <code>direction</code>.</p></li>
+<li><p><code>lower_bound</code> : Provided, if <code>bounds</code> is one of <code>"two_sided"</code> or <code>"lower"</code>.
+Lower confidence limits with respect to <code>direction</code>, i.e. limits for
+quantiles or probabilities.</p></li>
+<li><p><code>upper_bound</code> : Provided, if <code>bounds</code> is one of <code>"two_sided"</code> or <code>"upper"</code>.
+Upper confidence limits with respect to <code>direction</code>, i.e. limits for
+quantiles or probabilities.</p></li>
+<li><p><code>cdf_estimation_method</code> : A character that is always <code>NA_character</code>. Only
+needed for internal use.</p></li>
 </ul>
 
 <p>Further information is stored in the attributes of this tibble:</p><ul>
-<li><p><code>distribution</code> : Specified distribution (determined when calling
-      <code><a href='rank_regression.html'>rank_regression</a></code>).</p></li>
+<li><p><code>distribution</code> : Distribution which was specified in <a href='ml_estimation.html'>ml_estimation</a>.</p></li>
 <li><p><code>bounds</code> : Specified bound(s).</p></li>
 <li><p><code>direction</code> : Specified direction.</p></li>
 </ul>
@@ -245,18 +237,16 @@ columns:</p><ul>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
     <p>The basis for the calculation of these confidence bounds are the standard errors
-determined by the <a href='delta_method.html'>delta method</a> and hence the required
-(log-)location-scale parameters as well as the variance-covariance matrix of
-these have to be estimated with <a href='ml_estimation.html'>maximum likelihood</a>.</p>
+obtained by the <a href='delta_method.html'>delta method</a>.</p>
 <p>The bounds on the probability are determined by the <em>z-procedure</em>. See
 'References' for more information on this approach.</p>
     <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
 
     <p>Meeker, William Q; Escobar, Luis A., Statistical methods for
-  reliability data, New York: Wiley series in probability and statistics, 1998</p>
+reliability data, New York: Wiley series in probability and statistics, 1998</p>
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
-    <div class='dont-index'><p><code><a href='confint_fisher.html'>confint_fisher</a></code></p></div>
+    <div class='dont-index'><p><a href='confint_fisher.html'>confint_fisher</a></p></div>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='co'># Vectors:</span>
