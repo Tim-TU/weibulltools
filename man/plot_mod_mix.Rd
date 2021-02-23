@@ -41,7 +41,7 @@ Returns a plot object containing the probability plot with
 plotting positions and estimated regression line(s).
 }
 \description{
-\ifelse{html}{\figure{lifecycle-soft-deprecated.svg}{options: alt='Soft-deprecated lifecycle'}}{\strong{Soft-deprecated}}
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#soft-deprecated}{\figure{lifecycle-soft-deprecated.svg}{options: alt='[Soft-deprecated]'}}}{\strong{[Soft-deprecated]}}
 
 \code{plot_mod_mix()} is no longer under active development, switching to
 \code{\link{plot_mod}} is recommended.
