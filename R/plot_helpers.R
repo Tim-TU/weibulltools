@@ -282,8 +282,9 @@ plot_pop_helper <- function(x, dist_params_tbl, distribution, tol = 1e-6) {
 
   tbl_pop <- dist_params_tbl %>%
     dplyr::mutate(group = as.character(dplyr::row_number()))
-  # column x_y is list column that contains a tibble each
-  tbl_pop$x_y <- purrr::pmap(
+
+  # Map predict_prob over dist_params_tbl
+  tbl_x_y <- purrr::pmap(
     dist_params_tbl,
     x_s = x_s,
     distribution = distribution,
@@ -309,32 +310,31 @@ plot_pop_helper <- function(x, dist_params_tbl, distribution, tol = 1e-6) {
     }
   )
 
-  tbl_pop <- tbl_pop %>%
-    tidyr::unnest(cols = .data$x_y) %>%
+  tbl_pop <- dplyr::bind_cols(
+    tbl_pop,
+    tbl_x_y
+  ) %>%
     dplyr::filter(.data$y_s < 1, .data$y_s > 0)
 
-  if (distribution %in% c("weibull", "weibull3", "sev")) {
-    tbl_pop <- tbl_pop %>%
-      dplyr::mutate(q = SPREDA::qsev(.data$y_s))
-  }
-  if (distribution %in% c("lognormal", "lognormal3", "normal")) {
-    tbl_pop <- tbl_pop %>%
-      dplyr::mutate(q = stats::qnorm(.data$y_s))
-  }
-  if (distribution %in% c("loglogistic", "loglogistic3", "logistic")) {
-    tbl_pop <- tbl_pop %>%
-      dplyr::mutate(q = stats::qlogis(.data$y_s))
-  }
+  tbl_pop$q <- switch(
+    distribution,
+    "weibull" =,
+    "sev" = qsev(tbl_pop$y_s),
+    "lognormal" =,
+    "normal" = stats::qnorm(tbl_pop$y_s),
+    "loglogistic" =,
+    "logistic" = stats::qlogis(tbl_pop$y_s)
+  )
 
   # set values and labels for plotlys hoverinfo:
   tbl_pop <- tbl_pop %>%
     dplyr::mutate(
-      param_val_1 = format(tbl_pop$loc, digits = 3),
-      param_val_2 = format(tbl_pop$sc, digits = 3),
-      param_val_3 = ifelse(is.na(tbl_pop$thres), NA, format(tbl_pop$thres, digits = 3)),
+      param_val_1 = format(.data$loc, digits = 3),
+      param_val_2 = format(.data$sc, digits = 3),
+      param_val_3 = ifelse(is.na(.data$thres), NA, format(.data$thres, digits = 3)),
       param_label_1 = "\u03BC:",
       param_label_2 = "\u03C3:",
-      param_label_3 = ifelse(is.na(tbl_pop$thres), NA, "\u03B3:")
+      param_label_3 = ifelse(is.na(.data$thres), NA, "\u03B3:")
     ) %>%
     dplyr::rowwise() %>%
     dplyr::mutate(
