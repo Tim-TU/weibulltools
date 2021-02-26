@@ -19,6 +19,12 @@
 #'     failure probabilities of failed units, taking censored units into account.
 #'     Compared to complete data, correction of probabilities is done by the
 #'     computation of adjusted ranks.
+#'     Two formulas can be used to determine cumulative failure probabilities
+#'     \emph{F(t)} (See 'Options'):
+#'     \itemize{
+#'       \item \code{"benard"} : Benard's approximation for adjusted ranks.
+#'       \item \code{"invbeta"} : Exact adjusted ranks using the inverse beta distribution.
+#'     }
 #'   \item \code{"kaplan"} : The method of \emph{Kaplan} and \emph{Meier} is used
 #'     to estimate the survival function \emph{S(t)} with respect to (multiple)
 #'     right censored data. The complement of \emph{S(t)}, i.e. \emph{F(t)}, is
