@@ -177,34 +177,30 @@ loglik_function_ <- function(x,
          "weibull" = {
            z <- (log(x) - mu) / sig
            ds <- dsev(z) / (sig * x)
-           ps <- psev(z)
          },
          "lognormal" = {
            z <- (log(x) - mu) / sig
            ds <- stats::dnorm(z) / (sig * x)
-           ps <- stats::pnorm(z)
          },
          "loglogistic" = {
            z <- (log(x) - mu) / sig
            ds <- stats::dlogis(z) / (sig * x)
-           ps <- stats::plogis(z)
          },
          "sev" = {
            z <- (x - mu) / sig
            ds <- dsev(z) / sig
-           ps <- psev(z)
          },
          "normal" = {
            z <- (x - mu) / sig
            ds <- stats::dnorm(z) / sig
-           ps <- stats::pnorm(z)
          },
          "logistic" = {
            z <- (x - mu) / sig
            ds <- stats::dlogis(z) / sig
-           ps <- stats::plogis(z)
          }
   )
+
+  ps <- p_std(z, distribution)
 
   # Compute log-likelihood:
   logL_i <- d * log(ds) + (1 - d) * log(1 - ps)

@@ -131,15 +131,7 @@ predict_prob <- function(q,
   distribution <- two_parametric(distribution)
 
   # Determine p_q by switching between distributions:
-  p_q <- switch(
-    distribution,
-    "sev" = ,
-    "weibull" = psev(z),
-    "normal" = ,
-    "lognormal" = stats::pnorm(z),
-    "logistic" = ,
-    "loglogistic" = stats::plogis(z)
-  )
+  p_q <- p_std(z, distribution)
 
   p_q
 }
