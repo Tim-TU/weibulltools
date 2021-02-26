@@ -8,30 +8,11 @@ lm_ <- function(x,
   distribution <- two_parametric(distribution)
   direction <- match.arg(direction)
 
-  # Switch between distributions:
-  switch(distribution,
-         "weibull" = {
-           x <- log(x)
-           y <- qsev(y)
-         },
-         "sev" = {
-           y <- qsev(y)
-         },
-         "lognormal" = {
-           x <- log(x)
-           y <- stats::qnorm(y)
-         },
-         "normal" = {
-           y <- stats::qnorm(y)
-         },
-         "loglogistic" = {
-           x <- log(x)
-           y <- stats::qlogis(y)
-         },
-         "logistic" = {
-           y <- stats::qlogis(y)
-         }
-  )
+  y <- q_std(y, distribution)
+
+  if (distribution %in% c("weibull", "lognormal", "loglogistic")) {
+    x <- log(x)
+  }
 
   if (direction == "x_on_y") {
     stats::lm(x ~ y)
