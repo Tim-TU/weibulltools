@@ -44,3 +44,5 @@ check_dates <- function(x,
 
 
 `%||%` <- function(x, y) if (!is.null(x)) x else y
+
+`%NA%` <- function(x, y) if (!is.na(x)) x else y

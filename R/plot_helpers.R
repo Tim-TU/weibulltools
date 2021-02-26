@@ -283,16 +283,14 @@ plot_pop_helper <- function(x, dist_params_tbl, distribution, tol = 1e-6) {
   tbl_pop <- dist_params_tbl %>%
     dplyr::mutate(group = as.character(dplyr::row_number()))
 
-  # Map predict_prob over dist_params_tbl
-  tbl_x_y <- purrr::pmap(
-    dist_params_tbl,
+  # Map predict_prob over tbl_pop
+  tbl_pop <- purrr::pmap_dfr(
+    tbl_pop,
     x_s = x_s,
     distribution = distribution,
-    function(loc, sc, thres = NA, x_s, distribution) {
+    function(loc, sc, thres = NA, group, x_s, distribution) {
       # Replace NA with NULL, so that thres is ignored in c()
-      if (is.na(thres)) thres <- NULL
-
-      dist_params <- c(loc, sc, thres)
+      dist_params <- c(loc, sc, thres %NA% NULL)
 
       if (length(dist_params) == 3) {
         # Case three-parametric distribution
@@ -300,6 +298,10 @@ plot_pop_helper <- function(x, dist_params_tbl, distribution, tol = 1e-6) {
       }
 
       tibble::tibble(
+        loc = loc,
+        sc = sc,
+        thres = thres,
+        group = group,
         x_s = x_s,
         y_s = predict_prob(
           q = x_s,
@@ -310,10 +312,7 @@ plot_pop_helper <- function(x, dist_params_tbl, distribution, tol = 1e-6) {
     }
   )
 
-  tbl_pop <- dplyr::bind_cols(
-    tbl_pop,
-    tbl_x_y
-  ) %>%
+  tbl_pop <- tbl_pop %>%
     dplyr::filter(.data$y_s < 1, .data$y_s > 0)
 
   tbl_pop$q <- switch(
