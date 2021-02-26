@@ -76,3 +76,20 @@ psev <- function(q) {
 dsev <- function(x) {
   exp(x - exp(x))
 }
+
+
+
+# Funcation that simulates a sample of a 'Dirichlet' distribution:
+rdirichlet <- function(n, par) {
+  k <- length(par)
+  z <- matrix(0, nrow = n, ncol = k)
+  s <- matrix(0, nrow = n)
+  for (i in 1:k) {
+    z[, i] <- stats::rgamma(n, shape = par[i])
+    s <- s + z[, i]
+  }
+  for (i in 1:k) {
+    z[, i] <- z[, i]/s
+  }
+  return(z)
+}
