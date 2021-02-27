@@ -17,6 +17,9 @@
 
 ## New Features
 
+### Non-Parametric Failure Probabilities
+* `estimate_cdf()`: Added option `johnson_method` to specify the formula which is used for determining cumulative failure probabilities.
+
 ### Parametric Models
 * `ml_estimation()`: New arguments `start_dist_params` (optional vector with initial values of the parameters) and `control` (enables access to argument `control` in `optim()`).
 * `loglik_profiling()`: New argument `wts`. 
