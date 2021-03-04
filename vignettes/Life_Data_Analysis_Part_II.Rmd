@@ -35,7 +35,7 @@ _(CDF)_ can be computed and added to a probability plot.
 
 In the theoretical part of this vignette the focus is on the two-parameter Weibull 
 distribution. The second part is about the application of the provided estimation 
-methods in `weibulltools`. All implemented models can be found in the help pages 
+methods in {weibulltools}. All implemented models can be found in the help pages 
 of `rank_regression()` and `ml_estimation()`.
 
 ## The Weibull Distribution 
@@ -149,7 +149,7 @@ are reported. In addition to failed items the dataset also contains non-defectiv
 [^note4]: Meeker, W. Q.; Escobar, L. A.: _Statistical Methods for Reliability Data_, 
           _New York, Wiley series in probability and statistics_, 1998, p. 630  
           
-For consistent handling of the data, `weibulltools` introduces the function `reliability_data()` 
+For consistent handling of the data, {weibulltools} introduces the function `reliability_data()` 
 that converts the original dataset into a `wt_reliability_data` object. This formatted object 
 allows to easily apply the presented methods.  
 
@@ -174,7 +174,7 @@ alloy_tbl <- reliability_data(data = alloy, x = cycles, status = status)
 alloy_tbl
 ```
 
-## RR and ML with Package `weibulltools`
+## RR and ML with Package {weibulltools}
 
 `rank_regression()` and `ml_estimation()` can be applied to complete data as well 
 as failure and (multiple) right-censored data. Both methods can also deal with models 

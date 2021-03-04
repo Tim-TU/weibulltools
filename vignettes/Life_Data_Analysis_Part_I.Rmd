@@ -127,7 +127,7 @@ The sample size is $n$ and $n_i$ is the number of units that have a lower $t$ th
 the _i_-th unit. Once the adjusted ranks are calculated, the _CDF_ can be estimated 
 according to _Benard's_ approximation.  
 
-Other methods in `weibulltools` that can also handle (multiple) right-censored data 
+Other methods in {weibulltools} that can also handle (multiple) right-censored data 
 are the _Kaplan-Meier_ estimator (`estimate_cdf(methods = "kaplan", ...)`) and the 
 _Nelson-Aalen_ estimator (`estimate_cdf(methods = "nelson", ...)`). 
 
@@ -193,7 +193,7 @@ can be found in _Statistical Methods for Reliability Data_ [^note3].
 [^note3]: Meeker, W. Q.; Escobar, L. A.: _Statistical Methods for Reliability Data_, 
           _New York, Wiley series in probability and statistics_, 1998, p. 630
           
-For consistent handling of the data, `weibulltools` introduces the function 
+For consistent handling of the data, {weibulltools} introduces the function 
 `reliability_data()` that converts the original dataset into a `wt_reliability_data` 
 object. This formatted object allows to easily apply the presented methods.  
 
@@ -202,7 +202,7 @@ shock_tbl <- reliability_data(data = shock, x = distance, status = status)
 shock_tbl
 ```
 
-## Estimation of Failure Probabilities with Package `weibulltools`
+## Estimation of Failure Probabilities with Package {weibulltools}
 
 First, we are interested in how censored observations influence the estimation of 
 failure probabilities in comparison to the case where only failed units are considered. 
@@ -228,7 +228,7 @@ If we compare both outputs we can see that survivors reduce the probabilities.
 But this is just that what was expected since undamaged units with longer or equal 
 lifetime characteristic _x_ let us gain confidence in the product. 
 
-## Probability Plotting with Package `weibulltools`
+## Probability Plotting with Package {weibulltools}
 
 The estimated probabilities should now be presented in a probability plot. 
 With `plot_prob()` probability plots for several lifetime distributions can be constructed 
