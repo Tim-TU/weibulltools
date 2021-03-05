@@ -53,7 +53,7 @@ the legend.}
 \item{...}{Further arguments passed to or from other methods. Currently not used.}
 }
 \description{
-\ifelse{html}{\figure{lifecycle-soft-deprecated.svg}{options: alt='Soft-deprecated lifecycle'}}{\strong{Soft-deprecated}}
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#soft-deprecated}{\figure{lifecycle-soft-deprecated.svg}{options: alt='[Soft-deprecated]'}}}{\strong{[Soft-deprecated]}}
 
 \code{plot_prob_mix()} is no longer under active development, switching to
 \code{\link{plot_prob}} is recommended.

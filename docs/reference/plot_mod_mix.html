@@ -84,7 +84,7 @@ plot_mod is recommended." />
       <ul class="nav navbar-nav">
         <li>
   <a href="../index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
+    <span class="fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -116,7 +116,7 @@ plot_mod is recommended." />
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="https://github.com/Tim-TU/weibulltools/">
-    <span class="fab fa fab fa-github fa-lg"></span>
+    <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -140,7 +140,7 @@ Probability Plot</h1>
     </div>
 
     <div class="ref-description">
-    <p><img src='figures/lifecycle-soft-deprecated.svg' alt='Soft-deprecated lifecycle' /></p>
+    <p><a href='https://lifecycle.r-lib.org/articles/stages.html#soft-deprecated'><img src='figures/lifecycle-soft-deprecated.svg' alt='[Soft-deprecated]' /></a></p>
 <p><code>plot_mod_mix()</code> is no longer under active development, switching to
 <code><a href='plot_mod.html'>plot_mod</a></code> is recommended.</p>
     </div>
@@ -235,10 +235,8 @@ Failure Mode, Quality Progress, 35(6), 47-52, 2002</p>
   distribution <span class='op'>=</span> <span class='st'>"weibull"</span>,
   mix_output <span class='op'>=</span> <span class='va'>mix_mod_em</span>
 <span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='warning'>Warning: `plot_prob_mix()` is deprecated as of lifecycle 2.0.0.</span>
-#&gt; <span class='warning'>Please use `plot_prob()` instead.</span>
-#&gt; <span class='warning'><span style='color: #555555;'>This warning is displayed once every 8 hours.</span><span></span>
-#&gt; <span class='warning'></span><span style='color: #555555;'>Call `lifecycle::last_warnings()` to see where this warning was generated.</span><span></span></div><div class='input'>
+</div><div class='output co'>#&gt; <span class='warning'>Warning: `plot_prob_mix()` was deprecated in weibulltools 2.0.0.</span>
+#&gt; <span class='warning'>Please use `plot_prob()` instead.</span></div><div class='input'>
 <span class='va'>plot_weibull_emlines</span> <span class='op'>&lt;-</span> <span class='fu'>plot_mod_mix</span><span class='op'>(</span>
   p_obj <span class='op'>=</span> <span class='va'>plot_weibull_em</span>,
   x <span class='op'>=</span> <span class='va'>hours</span>,
@@ -246,13 +244,12 @@ Failure Mode, Quality Progress, 35(6), 47-52, 2002</p>
   mix_output <span class='op'>=</span> <span class='va'>mix_mod_em</span>,
   distribution <span class='op'>=</span> <span class='st'>"weibull"</span>
 <span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='warning'>Warning: `plot_mod_mix()` is deprecated as of lifecycle 2.0.0.</span>
-#&gt; <span class='warning'>Please use `plot_mod()` instead.</span>
-#&gt; <span class='warning'></span><span style='color: #555555;'>This warning is displayed once every 8 hours.</span><span></span>
-#&gt; <span class='warning'></span><span style='color: #555555;'>Call `lifecycle::last_warnings()` to see where this warning was generated.</span><span></span></div><div class='input'>
+</div><div class='output co'>#&gt; <span class='warning'>Warning: `plot_mod_mix()` was deprecated in weibulltools 2.0.0.</span>
+#&gt; <span class='warning'>Please use `plot_mod()` instead.</span></div><div class='input'>
 <span class='co'># Example 2 - Using result of mixmod_regression in mix_output:</span>
 <span class='va'>john</span> <span class='op'>&lt;-</span> <span class='fu'><a href='johnson_method.html'>johnson_method</a></span><span class='op'>(</span>x <span class='op'>=</span> <span class='va'>hours</span>, status <span class='op'>=</span> <span class='va'>status</span><span class='op'>)</span>
-<span class='va'>mix_mod_reg</span> <span class='op'>&lt;-</span> <span class='fu'><a href='mixmod_regression.html'>mixmod_regression</a></span><span class='op'>(</span>
+</div><div class='output co'>#&gt; <span class='warning'>Warning: `johnson_method()` was deprecated in weibulltools 2.0.0.</span>
+#&gt; <span class='warning'>Please use `estimate_cdf()` instead.</span></div><div class='input'><span class='va'>mix_mod_reg</span> <span class='op'>&lt;-</span> <span class='fu'><a href='mixmod_regression.html'>mixmod_regression</a></span><span class='op'>(</span>
   x <span class='op'>=</span> <span class='va'>john</span><span class='op'>$</span><span class='va'>x</span>,
   y <span class='op'>=</span> <span class='va'>john</span><span class='op'>$</span><span class='va'>prob</span>,
   status <span class='op'>=</span> <span class='va'>john</span><span class='op'>$</span><span class='va'>status</span>,
@@ -266,7 +263,8 @@ Failure Mode, Quality Progress, 35(6), 47-52, 2002</p>
   distribution <span class='op'>=</span> <span class='st'>"weibull"</span>,
   mix_output <span class='op'>=</span> <span class='va'>mix_mod_reg</span>,
 <span class='op'>)</span>
-
+</div><div class='output co'>#&gt; <span class='warning'>Warning: `plot_prob_mix()` was deprecated in weibulltools 2.0.0.</span>
+#&gt; <span class='warning'>Please use `plot_prob()` instead.</span></div><div class='input'>
 <span class='va'>plot_weibull_reglines</span> <span class='op'>&lt;-</span> <span class='fu'>plot_mod_mix</span><span class='op'>(</span>
   p_obj <span class='op'>=</span> <span class='va'>plot_weibull_reg</span>,
   x <span class='op'>=</span> <span class='va'>john</span><span class='op'>$</span><span class='va'>x</span>,
@@ -274,8 +272,9 @@ Failure Mode, Quality Progress, 35(6), 47-52, 2002</p>
   mix_output <span class='op'>=</span> <span class='va'>mix_mod_reg</span>,
   distribution <span class='op'>=</span> <span class='st'>"weibull"</span>
 <span class='op'>)</span>
-
-</div></span></pre>
+</div><div class='output co'>#&gt; <span class='warning'>Warning: `plot_mod_mix()` was deprecated in weibulltools 2.0.0.</span>
+#&gt; <span class='warning'>Please use `plot_mod()` instead.</span></div><div class='input'>
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

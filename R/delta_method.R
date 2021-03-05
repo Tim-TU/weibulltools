@@ -87,7 +87,7 @@ delta_method <- function(x,
 ) {
 
   if (lifecycle::is_present(p)) {
-    deprecate_warn("2.1.0", "delta_method(p = )", "delta_method(x = )")
+    deprecate_warn("2.1.0", "delta_method(p)", "delta_method(x)")
     x <- p
   }
 

@@ -81,7 +81,7 @@ parameters of a univariate Weibull mixture model. See 'Details'." />
       <ul class="nav navbar-nav">
         <li>
   <a href="../index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
+    <span class="fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -113,7 +113,7 @@ parameters of a univariate Weibull mixture model. See 'Details'." />
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="https://github.com/Tim-TU/weibulltools/">
-    <span class="fab fa fab fa-github fa-lg"></span>
+    <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -160,8 +160,7 @@ parameters of a univariate Weibull mixture model. See 'Details'.</p>
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>x</th>
-      <td><p>An object of class <code>wt_reliability_data</code> returned from
-<code><a href='reliability_data.html'>reliability_data</a></code>.</p></td>
+      <td><p>A tibble of class <code>wt_reliability_data</code> returned by <a href='reliability_data.html'>reliability_data</a>.</p></td>
     </tr>
     <tr>
       <th>...</th>
@@ -201,18 +200,16 @@ log-likelihood values, which seems permissible.</p></td>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>Returns a list with classes <code>wt_model</code> and <code>wt_mixmod_em</code>.
-The length of the list depends on the number of specified subgroups <em>k</em>.
-The first <code>k</code> lists contain information provided by
-<a href='ml_estimation.html'>ml_estimation</a>. The values of <code>logL</code>, <code>aic</code> and <code>bic</code>
-are the results of a weighted log-likelihood, where the weights are the
-posterior probabilities determined by the algorithm. The last list summarizes
-further results of the EM algorithm and is therefore called
-<code>em_results</code>. It contains the following elements:</p><ul>
+    <p>A list with classes <code>wt_model</code> and <code>wt_mixmod_em</code>. The length of the
+list depends on the number of specified subgroups <code>k</code>. The first <code>k</code> lists
+contain information provided by <a href='ml_estimation.html'>ml_estimation</a>. The values of <code>logL</code>, <code>aic</code>
+and <code>bic</code> are the results of a weighted log-likelihood, where the weights are
+the posterior probabilities determined by the algorithm. The last list summarizes
+further results of the EM algorithm and is therefore called <code>em_results</code>. It
+contains the following elements:</p><ul>
 <li><p><code>a_priori</code> : A vector with estimated prior probabilities.</p></li>
 <li><p><code>a_posteriori</code> : A matrix with estimated posterior probabilities.</p></li>
-<li><p><code>groups</code> : Numeric vector specifying the group membership of
-      every observation.</p></li>
+<li><p><code>groups</code> : Numeric vector specifying the group membership of every observation.</p></li>
 <li><p><code>logL</code> : The value of the complete log-likelihood.</p></li>
 <li><p><code>aic</code> : Akaike Information Criterion.</p></li>
 <li><p><code>bic</code> : Bayesian Information Criterion.</p></li>
@@ -224,7 +221,7 @@ further results of the EM algorithm and is therefore called
 defined. Starting values can be provided for the unknown parameter vector as
 well as for the posterior probabilities. This implementation employs initial
 values for the posterior probabilities. These are assigned randomly
-by using the dirichlet distribution, the conjugate prior of a multinomial
+by using the Dirichlet distribution, the conjugate prior of a multinomial
 distribution (see Mr. Gelissen's blog post listed under <em>references</em>).</p>
 <p><strong>M-Step</strong> : On the basis of the initial posterior probabilities, the
 parameter vector is estimated with <em>Newton-Raphson</em>.</p>
@@ -235,10 +232,11 @@ update of the posterior probabilities.</p>
 
     
 <ul>
-<li><p>Doganaksoy, N.; Hahn, G.; Meeker, W. Q., Reliability Analysis by
-      Failure Mode, Quality Progress, 35(6), 47-52, 2002</p></li>
-<li><p>Blog posts by Stefan Gelissen: <a href='https://blogs2.datall-analyse.nl/2016/02/18/rcode_mixture_distribution_censored/'>https://blogs2.datall-analyse.nl/2016/02/18/rcode_mixture_distribution_censored/</a>;
-      last accessed on 8th December 2020</p></li>
+<li><p>Doganaksoy, N.; Hahn, G.; Meeker, W. Q., Reliability Analysis by Failure Mode,
+Quality Progress, 35(6), 47-52, 2002</p></li>
+<li><p>Blog post by Stefan Gelissen:
+<a href='https://blogs2.datall-analyse.nl/2016/02/18/rcode_mixture_distribution_censored/'>R code for fitting a mixture distribution to censored data</a> ;
+last accessed on 8th December 2020</p></li>
 </ul>
 
 

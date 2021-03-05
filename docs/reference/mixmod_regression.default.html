@@ -81,7 +81,7 @@ subgroups. See 'Details'." />
       <ul class="nav navbar-nav">
         <li>
   <a href="../index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
+    <span class="fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -113,7 +113,7 @@ subgroups. See 'Details'." />
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="https://github.com/Tim-TU/weibulltools/">
-    <span class="fab fa fab fa-github fa-lg"></span>
+    <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -183,15 +183,14 @@ a right censored observation (= 0) or a failure (= 1).</p></td>
     </tr>
     <tr>
       <th>k</th>
-      <td><p>Number of mixture components. If the data should be split in an automated
-fashion, <code>k</code> must be set to <code>NULL</code>. The argument <code>fix.psi</code>
-of <code>control</code> is then set to <code>FALSE</code>.</p></td>
+      <td><p>Number of mixture components. If the data should be split in an
+automated fashion, <code>k</code> must be set to <code>NULL</code>. The argument <code>fix.psi</code> of
+<code>control</code> is then set to <code>FALSE</code>.</p></td>
     </tr>
     <tr>
       <th>control</th>
-      <td><p>Output of the call to <code><a href='https://rdrr.io/pkg/segmented/man/seg.control.html'>seg.control</a></code>, which
-is passed to <code><a href='https://rdrr.io/pkg/segmented/man/segmented.html'>segmented.lm</a></code>.
-See 'Examples' for usage.</p></td>
+      <td><p>Output of the call to <a href='https://rdrr.io/pkg/segmented/man/seg.control.html'>seg.control</a>,
+which is passed to <a href='https://rdrr.io/pkg/segmented/man/segmented.html'>segmented.lm</a>. See 'Examples' for usage.</p></td>
     </tr>
     <tr>
       <th>...</th>
@@ -201,25 +200,22 @@ See 'Examples' for usage.</p></td>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>Returns a list of class <code>wt_rank_regression</code> if no breakpoint
-was detected. See <code><a href='rank_regression.html'>rank_regression</a></code>. The tibble <code>data</code> is
-returned with class <code>wt_cdf_estimation</code> and contains the additional
-dummy columns <code>method</code> and <code>id</code>. The former is filled with
-<code>NA_character</code>, due to generic visualization functions and the latter is
-filled with <code>"XXXXXX"</code> to point out that unit identification is not
+    <p>A list with classes <code>wt_model</code> and <code>wt_rank_regression</code> if no breakpoint
+was detected. See <a href='rank_regression.html'>rank_regression</a>. The returned tibble <code>data</code> is of class
+<code>wt_cdf_estimation</code> and contains the dummy columns <code>cdf_estimation_method</code> and
+<code>id</code>. The former is filled with <code>NA_character</code>, due to internal usage and the
+latter is filled with <code>"XXXXXX"</code> to point out that unit identification is not
 possible when using the vector-based approach.</p>
-<p>Returns a list of class <code>wt_mixmod_regression</code> if at least one
+<p>A list with classes <code>wt_model</code> and <code>wt_mixmod_regression</code> if at least one
 breakpoint was determined. The length of the list depends on the number of
 identified subgroups. Each list contains the information provided by
-<code><a href='rank_regression.html'>rank_regression</a></code>. The returned tibble <code>data</code> of each list
-element only retains information on the failed units and has modified
-and additional columns:</p><ul>
-<li><p><code>id</code> : Modified id, overwritten with <code>"XXXXXX"</code> to point out
-    that unit identification is not possible when using the vector-based approach.</p></li>
-<li><p><code>method</code> : A character that is always <code>"_null"</code>. Due to generic
-    visualization functions column <code>method</code> has to be provided.</p></li>
-<li><p><code>q</code> : Quantiles of the standard distribution calculated from
-    column <code>prob</code>.</p></li>
+<a href='rank_regression.html'>rank_regression</a>. The returned tibble <code>data</code> of each list element only retains
+information on the failed units and has modified and additional columns:</p><ul>
+<li><p><code>id</code> : Modified id, overwritten with <code>"XXXXXX"</code> to point out that unit
+identification is not possible when using the vector-based approach.</p></li>
+<li><p><code>cdf_estimation_method</code> : A character that is always <code>NA_character</code>. Only
+needed for internal use.</p></li>
+<li><p><code>q</code> : Quantiles of the standard distribution calculated from column <code>prob</code>.</p></li>
 <li><p><code>group</code> : Membership to the respective segment.</p></li>
 </ul>
 
@@ -228,25 +224,27 @@ and additional columns:</p><ul>
     <p>The segmentation process is based on the lifetime realizations of failed
 units and their corresponding estimated failure probabilities for which intact
 items are taken into account. It is performed with the support of
-<code><a href='https://rdrr.io/pkg/segmented/man/segmented.html'>segmented.lm</a></code>.</p>
+<a href='https://rdrr.io/pkg/segmented/man/segmented.html'>segmented.lm</a>.</p>
 <p>Segmentation can be done with a specified number of subgroups or in an automated
-fashion (see argument <code>k</code>).
-The algorithm tends to overestimate the number of breakpoints when the separation
-is done automatically (see 'Warning' in <code><a href='https://rdrr.io/pkg/segmented/man/segmented.html'>segmented.lm</a></code>).</p>
+fashion (see argument <code>k</code>). The algorithm tends to overestimate the number of
+breakpoints when the separation is done automatically (see 'Warning' in
+<a href='https://rdrr.io/pkg/segmented/man/segmented.html'>segmented.lm</a>).</p>
 <p>In the context of reliability analysis it is important that the main types of
 failures can be identified and analyzed separately. These are</p><ul>
 <li><p>early failures,</p></li>
 <li><p>random failures and</p></li>
 <li><p>wear-out failures.</p></li>
-</ul><p>In order to reduce the risk of overestimation as well as being able to consider
+</ul>
+
+<p>In order to reduce the risk of overestimation as well as being able to consider
 the main types of failures, a maximum of three subgroups (<code>k = 3</code>) is recommended.</p>
     <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
 
     <p>Doganaksoy, N.; Hahn, G.; Meeker, W. Q., Reliability Analysis by
-  Failure Mode, Quality Progress, 35(6), 47-52, 2002</p>
+Failure Mode, Quality Progress, 35(6), 47-52, 2002</p>
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
-    <div class='dont-index'><p><code><a href='mixmod_regression.html'>mixmod_regression</a></code></p></div>
+    <div class='dont-index'><p><a href='mixmod_regression.html'>mixmod_regression</a></p></div>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='co'># Vectors:</span>

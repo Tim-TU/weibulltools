@@ -27,35 +27,30 @@ mixmod_regression(x, ...)
 \item{conf_level}{Confidence level of the interval. If \code{distribution} is
 \code{"weibull"} this must be one of \code{0.9}, \code{0.95} or \code{0.99}.}
 
-\item{k}{Number of mixture components. If the data should be split in an automated
-fashion, \code{k} must be set to \code{NULL}. The argument \code{fix.psi}
-of \code{control} is then set to \code{FALSE}.}
+\item{k}{Number of mixture components. If the data should be split in an
+automated fashion, \code{k} must be set to \code{NULL}. The argument \code{fix.psi} of
+\code{control} is then set to \code{FALSE}.}
 
-\item{control}{Output of the call to \code{\link[segmented]{seg.control}}, which
-is passed to \code{\link[segmented:segmented]{segmented.lm}}.
-See 'Examples' for usage.}
+\item{control}{Output of the call to \link[segmented:seg.control]{seg.control},
+which is passed to \link[segmented:segmented]{segmented.lm}. See 'Examples' for usage.}
 }
 \value{
-Returns a list with classes \code{wt_model} and
-\code{wt_rank_regression} if no breakpoint was detected. See
-\code{\link{rank_regression}}.
+A list with classes \code{wt_model} and \code{wt_rank_regression} if no breakpoint
+was detected. See \link{rank_regression}.
 
-Returns a list with classes \code{wt_model} and \code{wt_mixmod_regression}
-if at least one breakpoint was determined. The length of the list depends on
-the number of identified subgroups. Each list element contains the
-information provided by \code{\link{rank_regression}}. In addition, the
-returned tibble \code{data} of each list element only retains information on
-the failed units and has two more columns:
+A list with classes \code{wt_model} and \code{wt_mixmod_regression} if at least one
+breakpoint was determined. The length of the list depends on the number of
+identified subgroups. Each list element contains the information provided by
+\link{rank_regression}. In addition, the returned tibble \code{data} of each list element
+only retains information on the failed units and has two more columns:
 \itemize{
-  \item \code{q} : Quantiles of the standard distribution calculated from
-    column \code{prob}.
-  \item \code{group} : Membership to the respective segment.
+\item \code{q} : Quantiles of the standard distribution calculated from column \code{prob}.
+\item \code{group} : Membership to the respective segment.
 }
 
-If more than one method was specified in \code{\link{estimate_cdf}}, the
-resulting output is a list with classes \code{wt_model} and
-\code{wt_mixmod_regression_list} where each list element has class
-\code{wt_model} and \code{wt_mixmod_regression}.
+If more than one method was specified in \link{estimate_cdf}, the resulting output
+is a list with classes \code{wt_model} and \code{wt_mixmod_regression_list} where each
+list element has classes \code{wt_model} and \code{wt_mixmod_regression}.
 }
 \description{
 This function uses piecewise linear regression to divide the data into
@@ -65,20 +60,21 @@ subgroups. See 'Details'.
 The segmentation process is based on the lifetime realizations of failed
 units and their corresponding estimated failure probabilities for which intact
 items are taken into account. It is performed with the support of
-\code{\link[segmented:segmented]{segmented.lm}}.
+\link[segmented:segmented]{segmented.lm}.
 
 Segmentation can be done with a specified number of subgroups or in an automated
-fashion (see argument \code{k}).
-The algorithm tends to overestimate the number of breakpoints when the separation
-is done automatically (see 'Warning' in \code{\link[segmented:segmented]{segmented.lm}}).
+fashion (see argument \code{k}). The algorithm tends to overestimate the number of
+breakpoints when the separation is done automatically (see 'Warning' in
+\link[segmented:segmented]{segmented.lm}).
 
 In the context of reliability analysis it is important that the main types of
 failures can be identified and analyzed separately. These are
 \itemize{
-  \item early failures,
-  \item random failures and
-  \item wear-out failures.
+\item early failures,
+\item random failures and
+\item wear-out failures.
 }
+
 In order to reduce the risk of overestimation as well as being able to consider
 the main types of failures, a maximum of three subgroups (\code{k = 3}) is recommended.
 }
@@ -153,5 +149,5 @@ mod <- mixmod_regression(
 }
 \references{
 Doganaksoy, N.; Hahn, G.; Meeker, W. Q., Reliability Analysis by
-  Failure Mode, Quality Progress, 35(6), 47-52, 2002
+Failure Mode, Quality Progress, 35(6), 47-52, 2002
 }
