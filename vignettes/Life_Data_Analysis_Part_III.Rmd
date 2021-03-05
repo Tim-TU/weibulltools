@@ -12,21 +12,103 @@ output:
     fig_caption: yes
 vignette: >
   %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteIndexEntry{Life Data Analysis Part III - Mixture Models}
+  %\VignetteIndexEntry{Life Data Analysis Part III - Confidence Intervals}
   %\VignetteEncoding{UTF-8}
 ---
 
-```{r setup, echo = FALSE}
+```{r setup, echo=FALSE, message=FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
   screenshot.force = FALSE,
   comment = "#>"
 )
 library(weibulltools)
+library(plotly)
 ```
 
 Computing confidence intervals is a well-known measure to express the uncertainty associated with an estimation. They can be 
 
+## Fisher's confidence bounds
+
+Maximum Likelihood estimators are asymptotically normally distributed. Therefore confidence intervals can be approximated using the normal distribution. Let $\vartheta$ be an unknown distribution parameter and $\hat{\vartheta}_{\text{MLE}}$ be an Maximum Likelihood estimator for $\vartheta$ with estimated standard error $\sqrt{\hat{Var}(\hat{\vartheta})}$. Then 
+$$\bigg[\vartheta_{\text{lower}} = \hat{\vartheta}_{\text{MLE}} - z_{1 - \frac{\alpha}{2}} \sqrt{\hat{Var}(\hat{\vartheta}_{\text{MLE}})} \, ; \quad \vartheta_{\text{upper}} = \hat{\vartheta}_{\text{MLE}} + z_{1 - \frac{\alpha}{2}} \sqrt{\hat{Var}(\hat{\vartheta}_{\text{MLE}})} \bigg]$$
+is the approximated two-sided confidence interval for $\vartheta$, where $\alpha$ is the confidence level and $z_p$ is the $p$-quantile of the standard normal distribution. The standard error is estimated using the so-called *delta method*.
+
+## Data
+
+To calculate the introduced confidence intervals the `shock` datasets is used. In this dataset kilometer-dependent problems that have occurred on shock absorbers are reported. In addition to failed items the dataset also contains non-defectives (*censored*) observations. The data can be found in _Statistical Methods for Reliability Data_ [^note4]. 
+
+[^note4]: Meeker, W. Q.; Escobar, L. A.: _Statistical Methods for Reliability Data_, 
+          _New York, Wiley series in probability and statistics_, 1998, p. 630  
+          
+For consistent handling of the data, {weibulltools} introduces the function `reliability_data()` 
+that converts the original dataset into a `wt_reliability_data` object. This formatted object 
+allows to easily apply the presented methods.  
+
+```{r dataset_shock, message = FALSE}
+shock_tbl <- reliability_data(data = shock, x = distance, status = status)
+shock_tbl
+```       
+
 ## Confidence intervals with {weibulltools}
 
-`rank_regression()` and `ml_estimation()` can be used to estimate parameters of a lifetime distribution based on reliability data. Alongside
+Before calculating confidence intervals with {weibulltools} we need to conduct the basic steps of the Weibull analysis as described in the previous vignettes. 
+
+```{r}
+# Estimation of failure probabilities
+shock_cdf <- estimate_cdf(shock_tbl, methods = "johnson")
+
+# Rank Regression
+shock_rr <- rank_regression(shock_cdf, distribution = "weibull")
+
+# Maximum Likelihood Estimation 
+shock_mle <- ml_estimation(shock_tbl, distribution = "weibull")
+```
+
+### Confidence intervals for distribution parameters
+
+The confidence intervals for the estimated distribution parameters are included in the model output of `rank_regression()` and `ml_estimation()`, respectively.
+
+```{r}
+shock_rr$confint
+
+shock_mle$confint
+```
+
+The `confint` element of the model output is a matrix with the parameter names as row names and the confidence bounds as column names. Different confidence levels can be specified using the argument `conf_level`.
+
+```{r}
+shock_rr_99 <- rank_regression(shock_cdf, distribution = "weibull", conf_level = 0.99)
+shock_rr_99$confint
+```
+
+### Calculating confidence bounds for failure probabilities
+
+Confidence bounds for failure probabilities are calculated using either `confint_betabinom()` or `confint_fisher()`. As explained in the introduction of this vignette the betabinom confidence bounds are only applicable to the output of `rank_regression()` whereas the fisher confidence bounds are only applicable to the output of `ml_estimation()`.
+
+```{r}
+conf_bb <- confint_betabinom(shock_rr)
+conf_bb
+
+conf_fisher <- confint_fisher(shock_mle)
+conf_fisher
+```
+
+The outputs of both functions contain the calculated bounds for 100 equidistant quantiles ranging from the minimum to the maximum observed failure. In addition, confidence bounds for selected probabilities can be included by specifiying the argument `b_lives`.
+
+### Visualizing confidence bounds for failure probabilities
+
+Confidence bounds for failure probabilities can be added to a probability plot with `plot_conf()`.
+
+```{r}
+# Probability plot
+weibull_grid <- plot_prob(shock_cdf, distribution = "weibull")
+
+weibull_conf_bb <- plot_conf(weibull_grid, conf_bb)
+weibull_conf_bb
+
+weibull_conf_fisher <- plot_conf(weibull_grid, conf_fisher)
+weibull_conf_fisher
+```
+
+As you can see, `plot_conf()` not only adds the confidence limits to the probability plot, but also includes the estimated linearized CDF. There is no need to call `plot_mod()`. In fact, the same routines used by `plot_mod()` are called under the hood. This ensures that no confidence bounds are drawn without a model and model line is based on the same points as the confidence bounds.

@@ -12,11 +12,11 @@ output:
     fig_caption: yes
 vignette: >
   %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteIndexEntry{Life Data Analysis Part III - Mixture Models}
+  %\VignetteIndexEntry{Life Data Analysis Part IV - Mixture Models}
   %\VignetteEncoding{UTF-8}
 ---
 
-```{r setup, echo = FALSE}
+```{r setup, echo=FALSE, message=FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
   screenshot.force = FALSE,
