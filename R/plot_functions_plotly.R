@@ -165,31 +165,23 @@ plot_prob_vis.plotly <- function(
 
 #' @export
 plot_mod_vis.plotly <- function(
-  p_obj, tbl_pred, title_trace = "Fit"
+  p_obj, tbl_mod, title_trace = "Fit"
 ) {
 
   x_mark <- unlist(strsplit(p_obj$x$layoutAttrs[[2]]$xaxis$title$text, " "))[1]
   y_mark <- unlist(strsplit(p_obj$x$layoutAttrs[[2]]$yaxis$title$text, " "))[1]
 
-  # Defining hovertext regarding amount of parameters:
-  tbl_pred <- tbl_pred %>%
-    dplyr::rowwise() %>%
-    dplyr::mutate(hovertext = to_hovertext(
-      .data$x_p, .data$y_p, .data$param_val, .data$param_label, x_mark, y_mark
-    )) %>%
-    dplyr::ungroup()
-
-  n_method <- length(unique(tbl_pred$cdf_estimation_method))
-  n_group <- length(unique(tbl_pred$group))
+  n_method <- length(unique(tbl_mod$cdf_estimation_method))
+  n_group <- length(unique(tbl_mod$group))
 
   color <- if (n_method == 1) I("#CC2222") else ~cdf_estimation_method
 
   # Reminder: Splitting the line by group happens by using the name
-  name <- to_name(tbl_pred, n_method, n_group, title_trace)
+  name <- to_name(tbl_mod, n_method, n_group, title_trace)
 
   p_mod <- plotly::add_lines(
     p = p_obj,
-    data = tbl_pred,
+    data = tbl_mod,
     x = ~x_p,
     y = ~q,
     type = "scatter",
@@ -224,18 +216,13 @@ plot_conf_vis.plotly <- function(p_obj, tbl_p, title_trace) {
     data = tbl_p,
     x = ~x, y = ~q,
     type = "scatter", mode = "lines",
-    hoverinfo = "text",
+    # hoverinfo text is set in plot_mod
+    hoverinfo = "skip",
     line = list(dash = "dash", width = 1),
     color = color,
     colors = "Set2",
     name = name,
-    legendgroup = ~cdf_estimation_method,
-    text = paste(
-      paste0(x_mark, ":"),
-      format(tbl_p$x, digits = 3),
-      paste("<br>", paste0(y_mark, ":")),
-      format(tbl_p$y, digits = 6)
-    )
+    legendgroup = ~cdf_estimation_method
   )
 
   return(p_conf)
@@ -281,7 +268,7 @@ plot_pop_vis.plotly <- function(
 
 
 
-to_hovertext <- function(x, y, param_val, param_label, x_mark, y_mark) {
+mod_hovertext <- function(x, y, param_val, param_label, x_mark, y_mark) {
   param_val <- unlist(param_val)
   param_label <- unlist(param_label)
 

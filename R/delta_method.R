@@ -124,31 +124,31 @@ delta_method_ <- function(x,
   if (direction == "x") {
 
     ## Step 1: Determine first derivatives of the quantile function t_p:
-    ### Outer derivation is often the quantile function:
+    ### Outer derivative is often the quantile function:
     q <- predict_quantile(
       p = x,
-      dist_params = dist_params[-3],  # gamma is dropped out when deriving:
+      dist_params = dist_params[-3],  # gamma is dropped out when differentiating:
       distribution = two_parametric(distribution)
     )
 
-    ### Inner derivation is often the standardized quantile function:
+    ### Inner derivative is often the standardized quantile function:
     z <- standardize(
       x = q,
       dist_params = dist_params[-3],
       distribution = two_parametric(distribution)
     )
 
-    ### Derivations of location-scale distributions:
+    ### Derivatives of location-scale distributions:
     dt_dmu <- 1
     dt_dsc <- z
     dpar <- c(dt_dmu, dt_dsc)
 
-    ### Derivations of (log-)location-scale distributions:
+    ### Derivatives of (log-)location-scale distributions:
     if (!(distribution %in% c("sev", "normal", "logistic"))) {
       dpar <- dpar * q
     }
 
-    ### Derivation w.r.t threshold:
+    ### Derivative w.r.t threshold:
     if (length(dist_params) == 3L) {
       dpar <- c(dpar, 1)
     }
@@ -159,12 +159,12 @@ delta_method_ <- function(x,
     z <- standardize(x, dist_params = dist_params, distribution = distribution)
 
     ## Step 1: Determine first derivatives of the standardized quantile z:
-    ### Derivatives of w.r.t mu and sigma are the same:
+    ### Derivatives w.r.t mu and sigma are the same:
     dz_dmu <- (-1 / dist_params[[2]])
     dz_dsc <- (-1 / dist_params[[2]]) * z
     dpar <- c(dz_dmu, dz_dsc)
 
-    ### Derivation w.r.t threshold:
+    ### Derivative w.r.t threshold:
     if (length(dist_params) == 3L) {
       dz_dgam <- (1 / dist_params[[2]]) * (1 / (dist_params[[3]] - x))
       dpar <- c(dpar, dz_dgam)
