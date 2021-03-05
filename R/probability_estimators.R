@@ -27,10 +27,14 @@
 #'   probabilities.
 #'
 #' @section Options:
-#' The listed options can only be applied for method `"mr"`:
 #'
-#' * `mr_method` : `"benard"` (default) or `"invbeta"`.
-#' * `mr_ties.method` : `"max"` (default), `"min"` or `"average"`.
+#' Argument `options` is a named list of options:
+#'
+#' | Method    | Name             | Value                                     |
+#' | --------- | ---------------- | ----------------------------------------- |
+#' | `mr`      | `mr_method`      | `"benard"` (default) or `"invbeta"`       |
+#' | `mr`      | `mr_ties.method` | `"max"` (default), `"min"` or `"average"` |
+#' | `johnson` | `johnson_method` | `"benard"` (default) or `"invbeta"`       |
 #'
 #' @references *NIST/SEMATECH e-Handbook of Statistical Methods*,
 #' *8.2.1.5. Empirical model fitting - distribution free (Kaplan-Meier) approach*,
@@ -67,12 +71,13 @@
 #'   )
 #' )
 #'
-#' # Example 4 - Multiple methods and option for 'mr':
+#' # Example 4 - Multiple methods and options:
 #' prob_tbl_4 <- estimate_cdf(
 #'   x = data,
 #'   methods = c("mr", "johnson"),
 #'   options = list(
-#'     mr_ties.method = "max"
+#'     mr_ties.method = "max",
+#'     johnson_method = "invbeta"
 #'   )
 #' )
 #'
@@ -103,24 +108,24 @@ estimate_cdf.wt_reliability_data <- function(x,
     unique(match.arg(methods, several.ok = TRUE))
   }
 
-  method_funs <- list(
-    mr = mr_method_,
-    johnson = johnson_method_,
-    kaplan = kaplan_method_,
-    nelson = nelson_method_
-  )
-
   tbl_out <- purrr::map_dfr(methods, function(method) {
     if (method == "mr") {
-      method_funs[[method]](
+      mr_method_(
         data = x,
-        method = if (is.null(options$mr_method)) "benard" else
-          options$mr_method,
-        ties.method = if (is.null(options$mr_ties.method)) "max" else
-          options$mr_ties.method
+        method = options$mr_method %||% "benard",
+        ties.method = options$mr_ties.method %||% "max"
+      )
+    } else if (method == "johnson") {
+      johnson_method_(
+        data = x,
+        method = options$johnson_method %||% "benard"
       )
     } else {
-      method_funs[[method]](data = x)
+      switch(
+        method,
+        "kaplan" = kaplan_method_(data = x),
+        "nelson" = nelson_method_(data = x)
+      )
     }
   })
 
@@ -196,7 +201,7 @@ estimate_cdf.default <- function(x,
 
   data <- reliability_data(x = x, status = status, id = id)
 
-  method = match.arg(method)
+  method <- match.arg(method)
 
   estimate_cdf.wt_reliability_data(
     x = data,
@@ -314,6 +319,8 @@ mr_method <- function(x,
   mr_method_(data, method, ties.method)
 }
 
+
+
 mr_method_ <- function(data,
                        method = "benard",
                        ties.method = "max"
@@ -413,9 +420,12 @@ mr_method_ <- function(data,
 #' @export
 johnson_method <- function(x,
                            status,
-                           id = NULL
+                           id = NULL,
+                           method = c("benard", "invbeta")
 ) {
   deprecate_soft("2.0.0", "johnson_method()", "estimate_cdf()")
+
+  method <- match.arg(method)
 
   if (!purrr::is_null(id)) {
     if (!((length(x) == length(status)) && (length(x) == length(id)))) {
@@ -429,10 +439,12 @@ johnson_method <- function(x,
 
   data <- reliability_data(x = x, status = status, id = id)
 
-  johnson_method_(data)
+  johnson_method_(data, method)
 }
 
-johnson_method_ <- function(data) {
+
+
+johnson_method_ <- function(data, method = "benard") {
 
   tbl_in <- data %>%
     # Remove additional classes
@@ -457,8 +469,19 @@ johnson_method_ <- function(data) {
         n_out = .data$n_out,
         n = sum(.data$n_i)
       )
-    ) %>%
-    dplyr::mutate(prob = (.data$rank - .3) / (sum(.data$n_i) + .4))
+    )
+
+  if (method == "benard") {
+    tbl_calc <- dplyr::mutate(
+      tbl_calc,
+      prob = (.data$rank - .3) / (sum(.data$n_i) + .4)
+    )
+  } else {
+    tbl_calc <- dplyr::mutate(
+      tbl_calc,
+      prob = stats::qbeta(.5, .data$rank, sum(.data$n_i) - .data$rank + 1)
+    )
+  }
 
   tbl_out <- tbl_in %>%
     dplyr::arrange(.data$x) %>%
@@ -564,6 +587,8 @@ kaplan_method <- function(x,
   kaplan_method_(data)
 }
 
+
+
 kaplan_method_ <- function(data) {
 
   if (all(data$status == 1)) {
@@ -626,6 +651,7 @@ kaplan_method_ <- function(data) {
 
   tbl_out
 }
+
 
 
 #' Estimation of Failure Probabilities using the Nelson-Aalen Estimator
@@ -693,6 +719,8 @@ nelson_method <- function(x,
 
   nelson_method_(data)
 }
+
+
 
 nelson_method_ <- function(data) {
 

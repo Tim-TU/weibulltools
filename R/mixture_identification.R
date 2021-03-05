@@ -322,15 +322,7 @@ mixmod_regression_ <- function(cdf_estimation,
   # Preparation for segmented regression:
   cdf_failed <- dplyr::filter(cdf_estimation, .data$status == 1)
 
-  if (distribution == "weibull") {
-    cdf_failed$q <- SPREDA::qsev(cdf_failed$prob)
-  }
-  if (distribution == "lognormal") {
-    cdf_failed$q <- stats::qnorm(cdf_failed$prob)
-  }
-  if (distribution == "loglogistic") {
-    cdf_failed$q <- stats::qlogis(cdf_failed$prob)
-  }
+  cdf_failed$q <- q_std(cdf_failed$prob, distribution)
 
   mrr <- stats::lm(log(x) ~ q, cdf_failed)
 

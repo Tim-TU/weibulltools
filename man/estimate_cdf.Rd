@@ -64,6 +64,12 @@ One or multiple techniques can be used for the \code{methods} argument:
     failure probabilities of failed units, taking censored units into account.
     Compared to complete data, correction of probabilities is done by the
     computation of adjusted ranks.
+    Two formulas can be used to determine cumulative failure probabilities
+    \emph{F(t)} (See 'Options'):
+    \itemize{
+      \item \code{"benard"} : Benard's approximation for adjusted ranks.
+      \item \code{"invbeta"} : Exact adjusted ranks using the inverse beta distribution.
+    }
   \item \code{"kaplan"} : The method of \emph{Kaplan} and \emph{Meier} is used
     to estimate the survival function \emph{S(t)} with respect to (multiple)
     right censored data. The complement of \emph{S(t)}, i.e. \emph{F(t)}, is
@@ -77,10 +83,12 @@ One or multiple techniques can be used for the \code{methods} argument:
 }
 \section{Options}{
 
-The listed options can only be applied for method \code{"mr"}:
-\itemize{
-\item \code{mr_method} : \code{"benard"} (default) or \code{"invbeta"}.
-\item \code{mr_ties.method} : \code{"max"} (default), \code{"min"} or \code{"average"}.
+
+Argument \code{options} is a named list of options:\tabular{lll}{
+   Method \tab Name \tab Value \cr
+   \code{mr} \tab \code{mr_method} \tab \code{"benard"} (default) or \code{"invbeta"} \cr
+   \code{mr} \tab \code{mr_ties.method} \tab \code{"max"} (default), \code{"min"} or \code{"average"} \cr
+   \code{johnson} \tab \code{johnson_method} \tab \code{"benard"} (default) or \code{"invbeta"} \cr
 }
 }
 
@@ -114,12 +122,13 @@ prob_tbl_3 <- estimate_cdf(
   )
 )
 
-# Example 4 - Multiple methods and option for 'mr':
+# Example 4 - Multiple methods and options:
 prob_tbl_4 <- estimate_cdf(
   x = data,
   methods = c("mr", "johnson"),
   options = list(
-    mr_ties.method = "max"
+    mr_ties.method = "max",
+    johnson_method = "invbeta"
   )
 )
 

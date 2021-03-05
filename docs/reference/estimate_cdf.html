@@ -205,7 +205,12 @@ probabilities.</p></li>
 <li><p><code>"johnson"</code> : The <em>Johnson</em> method is used to estimate the
     failure probabilities of failed units, taking censored units into account.
     Compared to complete data, correction of probabilities is done by the
-    computation of adjusted ranks.</p></li>
+    computation of adjusted ranks.
+    Two formulas can be used to determine cumulative failure probabilities
+    <em>F(t)</em> (See 'Options'):</p><ul>
+<li><p><code>"benard"</code> : Benard's approximation for adjusted ranks.</p></li>
+<li><p><code>"invbeta"</code> : Exact adjusted ranks using the inverse beta distribution.</p></li>
+</ul></li>
 <li><p><code>"kaplan"</code> : The method of <em>Kaplan</em> and <em>Meier</em> is used
     to estimate the survival function <em>S(t)</em> with respect to (multiple)
     right censored data. The complement of <em>S(t)</em>, i.e. <em>F(t)</em>, is
@@ -221,10 +226,14 @@ probabilities.</p></li>
 
     
 
-<p>The listed options can only be applied for method <code>"mr"</code>:</p><ul>
-<li><p><code>mr_method</code> : <code>"benard"</code> (default) or <code>"invbeta"</code>.</p></li>
-<li><p><code>mr_ties.method</code> : <code>"max"</code> (default), <code>"min"</code> or <code>"average"</code>.</p></li>
-</ul>
+
+<p>Argument <code>options</code> is a named list of options:</p><table class='table'>
+<tr><td>Method</td><td>Name</td><td>Value</td></tr>
+<tr><td><code>mr</code></td><td><code>mr_method</code></td><td><code>"benard"</code> (default) or <code>"invbeta"</code></td></tr>
+<tr><td><code>mr</code></td><td><code>mr_ties.method</code></td><td><code>"max"</code> (default), <code>"min"</code> or <code>"average"</code></td></tr>
+<tr><td><code>johnson</code></td><td><code>johnson_method</code></td><td><code>"benard"</code> (default) or <code>"invbeta"</code></td></tr>
+</table>
+
 
     <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
 
@@ -263,12 +272,13 @@ December 3, 2020</p>
   <span class='op'>)</span>
 <span class='op'>)</span>
 </div><div class='output co'>#&gt; <span class='message'>The 'mr' method only considers failed units (status == 1) and does not retain intact units (status == 0).</span></div><div class='input'>
-<span class='co'># Example 4 - Multiple methods and option for 'mr':</span>
+<span class='co'># Example 4 - Multiple methods and options:</span>
 <span class='va'>prob_tbl_4</span> <span class='op'>&lt;-</span> <span class='fu'>estimate_cdf</span><span class='op'>(</span>
   x <span class='op'>=</span> <span class='va'>data</span>,
   methods <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"mr"</span>, <span class='st'>"johnson"</span><span class='op'>)</span>,
   options <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>
-    mr_ties.method <span class='op'>=</span> <span class='st'>"max"</span>
+    mr_ties.method <span class='op'>=</span> <span class='st'>"max"</span>,
+    johnson_method <span class='op'>=</span> <span class='st'>"invbeta"</span>
   <span class='op'>)</span>
 <span class='op'>)</span>
 </div><div class='output co'>#&gt; <span class='message'>The 'mr' method only considers failed units (status == 1) and does not retain intact units (status == 0).</span></div><div class='input'>

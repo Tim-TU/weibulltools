@@ -4,7 +4,7 @@
 \alias{johnson_method}
 \title{Estimation of Failure Probabilities using Johnson's Method}
 \usage{
-johnson_method(x, status, id = NULL)
+johnson_method(x, status, id = NULL, method = c("benard", "invbeta"))
 }
 \arguments{
 \item{x}{A numeric vector which consists of lifetime data. Lifetime
@@ -16,6 +16,9 @@ cycles.}
 is a right censored observation (= 0) or a failure (= 1).}
 
 \item{id}{A vector for the identification of every unit. Default is \code{NULL}.}
+
+\item{method}{Method for the estimation of the cdf. Can be "benard" (default)
+or "invbeta".}
 }
 \value{
 A tibble containing the following columns:

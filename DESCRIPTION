@@ -52,9 +52,7 @@ Imports:
     Rcpp,
     sandwich,
     segmented,
-    SPREDA,
-    tibble,
-    tidyr
+    tibble
 LinkingTo: Rcpp (>= 0.12.18), RcppArmadillo
 Depends: R (>= 3.5.0)
 Language: en-US
