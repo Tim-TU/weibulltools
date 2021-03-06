@@ -1222,11 +1222,22 @@ plot_conf.wt_confint <- function(p_obj,
     x
   )
 
-  if (inherits(p_obj, "plotly")) {
-    tbl_mod$hovertext <- hovertext_conf(
-      tbl_mod = tbl_mod,
-      tbl_conf = tbl_conf
-    )
+  # if (inherits(p_obj, "plotly")) {
+  #   tbl_mod$hovertext <- hovertext_conf(
+  #     tbl_mod = tbl_mod,
+  #     tbl_conf = tbl_conf
+  #   )
+  # }
+
+  bounds <- attr(x, "bounds", exact = TRUE)
+
+  if (bounds == "two_sided") {
+    tbl_mod$lower <- x$lower_bound
+    tbl_mod$upper <- x$upper_bound
+  } else if (bounds == "lower") {
+    tbl_mod$lower <- x$lower_bound
+  } else {
+    tbl_mod$upper <- x$upper_bound
   }
 
   p_mod <- plot_mod_vis(
@@ -1236,7 +1247,7 @@ plot_conf.wt_confint <- function(p_obj,
   )
 
   plot_conf_vis(
-    p_mod, tbl_p, title_trace_conf
+    p_mod, tbl_conf, title_trace_conf
   )
 }
 
@@ -1397,12 +1408,12 @@ plot_conf.default <- function(
     p_obj$layers[[2]]$data
   }
 
-  tbl_p <- plot_conf_helper(
+  tbl_conf <- plot_conf_helper(
     tbl_mod, x, y, direction, distribution
   )
 
   plot_conf_vis(
-    p_obj, tbl_p, title_trace
+    p_obj, tbl_conf, title_trace
   )
 }
 
