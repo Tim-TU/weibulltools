@@ -732,7 +732,7 @@ plot_mod.wt_model_estimation <- function(p_obj, x, title_trace = "Fit", ...) {
 plot_mod.wt_model_estimation_list <- function(p_obj, x, title_trace = "Fit", ...) {
   cdf_estimation_methods <- names(x)
 
-  tbl_pred <- purrr::map2_dfr(
+  tbl_mod <- purrr::map2_dfr(
     x, cdf_estimation_methods,
     function(model_estimation, cdf_estimation_method) {
       check_compatible_distributions(
@@ -753,7 +753,7 @@ plot_mod.wt_model_estimation_list <- function(p_obj, x, title_trace = "Fit", ...
 
   plot_mod_vis(
     p_obj = p_obj,
-    tbl_pred = tbl_pred,
+    tbl_mod = tbl_mod,
     title_trace = title_trace
   )
 }
@@ -762,7 +762,7 @@ plot_mod.wt_model_estimation_list <- function(p_obj, x, title_trace = "Fit", ...
 
 #' @export
 plot_mod.wt_mixmod_regression <- function(p_obj, x, title_trace = "Fit", ...) {
-  tbl_pred <- purrr::map2_dfr(x, seq_along(x), function(model_estimation, index) {
+  tbl_mod <- purrr::map2_dfr(x, seq_along(x), function(model_estimation, index) {
     check_compatible_distributions(
       attr(p_obj, "distribution"),
       model_estimation$distribution
@@ -788,7 +788,7 @@ plot_mod.wt_mixmod_regression <- function(p_obj, x, title_trace = "Fit", ...) {
 
   plot_mod_vis(
     p_obj = p_obj,
-    tbl_pred = tbl_pred,
+    tbl_mod = tbl_mod,
     title_trace = title_trace
   )
 }
@@ -801,7 +801,7 @@ plot_mod.wt_mixmod_regression_list <- function(p_obj,
                                                title_trace = "Fit",
                                                ...
 ) {
-  tbl_pred <- purrr::map2_dfr(
+  tbl_mod <- purrr::map2_dfr(
     x, names(x),
     function(mixmod_regression, cdf_estimation_method) {
       purrr::map2_dfr(
@@ -825,7 +825,7 @@ plot_mod.wt_mixmod_regression_list <- function(p_obj,
 
   plot_mod_vis(
     p_obj = p_obj,
-    tbl_pred = tbl_pred,
+    tbl_mod = tbl_mod,
     title_trace = title_trace
   )
 }
@@ -959,13 +959,13 @@ plot_mod.default <- function(p_obj,
     distribution
   )
 
-  tbl_pred <- plot_mod_helper(
+  tbl_mod <- plot_mod_helper(
     x, dist_params, distribution
   )
 
   plot_mod_vis(
     p_obj = p_obj,
-    tbl_pred = tbl_pred,
+    tbl_mod = tbl_mod,
     title_trace = title_trace
   )
 }
@@ -1199,7 +1199,7 @@ plot_conf.wt_confint <- function(p_obj,
 
   # Perform customised plot_mod on model_estimation_list
   cdf_estimation_methods <- names(mod)
-  tbl_pred <- purrr::map2_dfr(
+  tbl_mod <- purrr::map2_dfr(
     mod, cdf_estimation_methods,
     function(model_estimation, cdf_estimation_method) {
       check_compatible_distributions(
@@ -1218,19 +1218,36 @@ plot_conf.wt_confint <- function(p_obj,
     }
   )
 
-  p_mod <- plot_mod_vis(
-    p_obj = p_obj,
-    tbl_pred = tbl_pred,
-    title_trace = title_trace_mod
-  )
-
-  # Perform plot_conf
-  tbl_p <- plot_conf_helper_2(
+  tbl_conf <- plot_conf_helper_2(
     x
   )
 
+  # if (inherits(p_obj, "plotly")) {
+  #   tbl_mod$hovertext <- hovertext_conf(
+  #     tbl_mod = tbl_mod,
+  #     tbl_conf = tbl_conf
+  #   )
+  # }
+
+  bounds <- attr(x, "bounds", exact = TRUE)
+
+  if (bounds == "two_sided") {
+    tbl_mod$lower <- x$lower_bound
+    tbl_mod$upper <- x$upper_bound
+  } else if (bounds == "lower") {
+    tbl_mod$lower <- x$lower_bound
+  } else {
+    tbl_mod$upper <- x$upper_bound
+  }
+
+  p_mod <- plot_mod_vis(
+    p_obj = p_obj,
+    tbl_mod = tbl_mod,
+    title_trace = title_trace_mod
+  )
+
   plot_conf_vis(
-    p_mod, tbl_p, title_trace_conf
+    p_mod, tbl_conf, title_trace_conf
   )
 }
 
@@ -1391,12 +1408,12 @@ plot_conf.default <- function(
     p_obj$layers[[2]]$data
   }
 
-  tbl_p <- plot_conf_helper(
+  tbl_conf <- plot_conf_helper(
     tbl_mod, x, y, direction, distribution
   )
 
   plot_conf_vis(
-    p_obj, tbl_p, title_trace
+    p_obj, tbl_conf, title_trace
   )
 }
 

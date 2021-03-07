@@ -165,31 +165,50 @@ plot_prob_vis.plotly <- function(
 
 #' @export
 plot_mod_vis.plotly <- function(
-  p_obj, tbl_pred, title_trace = "Fit"
+  p_obj, tbl_mod, title_trace = "Fit"
 ) {
 
   x_mark <- unlist(strsplit(p_obj$x$layoutAttrs[[2]]$xaxis$title$text, " "))[1]
   y_mark <- unlist(strsplit(p_obj$x$layoutAttrs[[2]]$yaxis$title$text, " "))[1]
 
-  # Defining hovertext regarding amount of parameters:
-  tbl_pred <- tbl_pred %>%
-    dplyr::rowwise() %>%
-    dplyr::mutate(hovertext = to_hovertext(
-      .data$x_p, .data$y_p, .data$param_val, .data$param_label, x_mark, y_mark
-    )) %>%
-    dplyr::ungroup()
-
-  n_method <- length(unique(tbl_pred$cdf_estimation_method))
-  n_group <- length(unique(tbl_pred$group))
+  n_method <- length(unique(tbl_mod$cdf_estimation_method))
+  n_group <- length(unique(tbl_mod$group))
 
   color <- if (n_method == 1) I("#CC2222") else ~cdf_estimation_method
 
+  ## Creation of hovertext
+  arg_list <- list(
+    x = tbl_mod$x_p,
+    y = tbl_mod$y_p,
+    param_val = tbl_mod$param_val,
+    param_label = tbl_mod$param_label
+  )
+
+  # tbl_mod has names lower / upper if set in plot_conf()
+  if (hasName(tbl_mod, "lower")) {
+    arg_list$lower <- tbl_mod$lower
+  }
+
+  if (hasName(tbl_mod, "upper")) {
+    arg_list$upper <- tbl_mod$upper
+  }
+
+  tbl_mod <- tbl_mod %>%
+    dplyr::mutate(
+      hovertext = purrr::pmap_chr(
+        arg_list,
+        hovertext_mod,
+        x_mark = x_mark,
+        y_mark = y_mark
+      )
+    )
+
   # Reminder: Splitting the line by group happens by using the name
-  name <- to_name(tbl_pred, n_method, n_group, title_trace)
+  name <- to_name(tbl_mod, n_method, n_group, title_trace)
 
   p_mod <- plotly::add_lines(
     p = p_obj,
-    data = tbl_pred,
+    data = tbl_mod,
     x = ~x_p,
     y = ~q,
     type = "scatter",
@@ -224,18 +243,13 @@ plot_conf_vis.plotly <- function(p_obj, tbl_p, title_trace) {
     data = tbl_p,
     x = ~x, y = ~q,
     type = "scatter", mode = "lines",
-    hoverinfo = "text",
+    # hoverinfo text is set in plot_mod
+    hoverinfo = "skip",
     line = list(dash = "dash", width = 1),
     color = color,
     colors = "Set2",
     name = name,
-    legendgroup = ~cdf_estimation_method,
-    text = paste(
-      paste0(x_mark, ":"),
-      format(tbl_p$x, digits = 3),
-      paste("<br>", paste0(y_mark, ":")),
-      format(tbl_p$y, digits = 6)
-    )
+    legendgroup = ~cdf_estimation_method
   )
 
   return(p_conf)
@@ -251,16 +265,20 @@ plot_pop_vis.plotly <- function(
 
   # Hovertext and name
   tbl_pop <- tbl_pop %>%
-    dplyr::rowwise() %>%
     dplyr::mutate(
-      hovertext = to_hovertext(
-        .data$x_s, .data$y_s, .data$param_val, .data$param_label, x_mark, y_mark
+      hovertext = purrr::pmap_chr(
+        list(
+          x = .data$x_s,
+          y = .data$y_s,
+          param_val = .data$param_val,
+          param_label = .data$param_label
+        ),
+        hovertext_mod,
+        x_mark = x_mark,
+        y_mark = y_mark
       ),
-      name = to_name_pop(
-        .data$param_val, .data$param_label
-      )
-    ) %>%
-    dplyr::ungroup()
+      name = purrr::map2_chr(.data$param_val, .data$param_label, to_name_pop)
+    )
 
   p_pop <- plotly::add_lines(
     p = p_obj, data = tbl_pop,
@@ -281,53 +299,49 @@ plot_pop_vis.plotly <- function(
 
 
 
-to_hovertext <- function(x, y, param_val, param_label, x_mark, y_mark) {
-  param_val <- unlist(param_val)
-  param_label <- unlist(param_label)
+# Hover text for plot_mod() and plot_conf()
+hovertext_mod <- function(x,
+                          y,
+                          param_val,
+                          param_label,
+                          x_mark,
+                          y_mark,
+                          lower = NULL,
+                          upper = NULL
+) {
+  not_na <- !is.na(param_val)
 
-  text <- paste(
-    paste0(x_mark, ":"),
-    format(x, digits = 3),
-    paste("<br>", paste0(y_mark, ":")),
-    format(y, digits = 6),
-    "<br>",
-    paste(param_label[1], param_val[1]),
-    "<br>",
-    paste(param_label[2], param_val[2])
+  x_text <- paste0(x_mark, ": ", format(x, digits = 3))
+  y_text <- paste0(y_mark, ": ", format(x, digits = 3))
+
+  lower_text <- if (!is.null(lower))
+    paste("Lower Bound:", format(lower, digits = 3))
+  upper_text <- if (!is.null(upper))
+    paste("Upper Bound:", format(upper, digits = 3))
+
+  param_text <- paste(param_label[not_na], param_val[not_na], collapse = ", ")
+
+  paste(
+    x_text,
+    y_text,
+    lower_text,
+    upper_text,
+    param_text,
+    sep = "<br>"
   )
-
-  if (!is.na(param_val[3])) {
-    text <- paste(
-      text,
-      "<br>",
-      paste(param_label[3], param_val[3])
-    )
-  }
-  text
 }
 
+
+
+# Trace name for plot_pop()
 to_name_pop <- function(param_val, param_label) {
-  param_val <- unlist(param_val)
-  param_label <- unlist(param_label)
-
-  text <- paste0(
-    param_label[1], " ",
-    param_val[1], ", ",
-    param_label[2], " ",
-    param_val[2]
-  )
-
-  if (!is.na(param_val[3])) {
-    text <- paste0(
-      text, ", ",
-      param_label[3], " ",
-      param_val[3]
-    )
-  }
-
-  text
+  not_na <- !is.na(param_val)
+  paste(param_label[not_na], param_val[not_na], collapse = ", ")
 }
 
+
+
+# Trace name for plot_prob(), plot_mod() and plot_conf()
 to_name <- function(tbl, n_method, n_group, title_trace) {
   if (n_method <= 1) {
     if (n_group <= 1) {

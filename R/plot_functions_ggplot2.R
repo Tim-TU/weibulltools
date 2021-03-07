@@ -105,13 +105,13 @@ plot_prob_vis.ggplot <- function(
 
 #' @export
 plot_mod_vis.ggplot <- function(
-  p_obj, tbl_pred, title_trace = "Fit"
+  p_obj, tbl_mod, title_trace = "Fit"
 ) {
 
-  n_method <- length(unique(tbl_pred$cdf_estimation_method))
-  n_group <- length(unique(tbl_pred$group))
+  n_method <- length(unique(tbl_mod$cdf_estimation_method))
+  n_group <- length(unique(tbl_mod$group))
 
-  if (n_method == 1) tbl_pred$cdf_estimation_method <- ""
+  if (n_method == 1) tbl_mod$cdf_estimation_method <- ""
 
   mapping <- if (n_group == 1) {
     if (n_method == 1) {
@@ -144,7 +144,7 @@ plot_mod_vis.ggplot <- function(
 
   p_mod <- p_obj +
     ggplot2::geom_line(
-      data = tbl_pred, mapping = mapping
+      data = tbl_mod, mapping = mapping
     ) +
     ggplot2::labs(
       color = paste(p_obj$labels$colour, "+\n", title_trace)
