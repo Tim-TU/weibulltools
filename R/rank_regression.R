@@ -26,7 +26,7 @@
 #' in context of *Rank Regression*. For an accepted statistical method use
 #' [maximum likelihood][ml_estimation].
 #'
-#' @param x A `tibble` of class `wt_cdf_estimation` returned by [estimate_cdf].
+#' @param x A `tibble` with class `wt_cdf_estimation` returned by [estimate_cdf].
 #' @param distribution Supposed distribution of the random variable.
 #' @param conf_level Confidence level of the interval. If `distribution` is
 #'   `"weibull"` this must be one of `0.9`, `0.95` or `0.99`.

@@ -18,40 +18,41 @@ data could be every characteristic influencing the reliability of a product,
 e.g. operating time (days/months in service), mileage (km, miles), load
 cycles.}
 
-\item{status}{A vector of ones indicating that every unit \emph{i} has failed.}
+\item{status}{A vector of ones indicating that every unit has failed.}
 
 \item{id}{A vector for the identification of every unit. Default is \code{NULL}.}
 
-\item{method}{Method for the estimation of the cdf. Can be "benard" (default)
-or "invbeta".}
+\item{method}{Method for the estimation of the cdf. Can be \code{"benard"} (default)
+or \code{"invbeta"}.}
 
-\item{ties.method}{A character string specifying how ties are treated, default is "max".}
+\item{ties.method}{A character string specifying how ties are treated,
+default is \code{"max"}.}
 }
 \value{
-A tibble with failed units containing the following columns:
+A tibble with only failed units containing the following columns:
 \itemize{
 \item \code{id} : Identification for every unit.
 \item \code{x} : Lifetime characteristic.
 \item \code{status} : Status of failed units (always 1).
-\item \code{rank} : The assigned ranks.
+\item \code{rank} : Assigned ranks.
 \item \code{prob} : Estimated failure probabilities.
-\item \code{method} : Specified method for the estimation of failure
+\item \code{cdf_estimation_method} : Specified method for the estimation of failure
 probabilities (always 'mr').
 }
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#soft-deprecated}{\figure{lifecycle-soft-deprecated.svg}{options: alt='[Soft-deprecated]'}}}{\strong{[Soft-deprecated]}}
 
-\code{mr_method()} is no longer under active development, switching
-to \code{\link{estimate_cdf}} is recommended.
+\code{mr_method()} is no longer under active development, switching to \link{estimate_cdf}
+is recommended.
 }
 \details{
 This non-parametric approach (\emph{Median Ranks}) is used to estimate the
 failure probabilities in terms of complete data. Two methods are available to
 estimate the cumulative distribution function \emph{F(t)}:
 \itemize{
-\item "benard" : Benard's approximation for Median Ranks.
-\item "invbeta" : Exact Median Ranks using the inverse beta distribution.
+\item \code{"benard"} : Benard's approximation for Median Ranks.
+\item \code{"invbeta"} : Exact Median Ranks using the inverse beta distribution.
 }
 }
 \examples{

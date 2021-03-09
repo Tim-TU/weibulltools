@@ -20,7 +20,7 @@
 #'
 #' Normal approximation confidence intervals for the parameters are computed as well.
 #'
-#' @param x A `tibble` of class `wt_reliability_data` returned by [reliability_data].
+#' @param x A `tibble` with class `wt_reliability_data` returned by [reliability_data].
 #' @param distribution Supposed distribution of the random variable.
 #' @param wts Optional vector of case weights. The length of `wts` must be equal
 #' to the number of observations in `x`.

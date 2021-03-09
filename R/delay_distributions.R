@@ -12,7 +12,7 @@
 #' cases, i.e. there is no `NA` (row-wise) in one of the related date columns.
 #' Time differences less than or equal to zero are not considered as well.
 #'
-#' @param x A `tibble` of class `wt_mcs_delay_data` returned by [mcs_delay_data].
+#' @param x A `tibble` with class `wt_mcs_delay_data` returned by [mcs_delay_data].
 #' @param distribution Supposed distribution of the respective delay.
 #' @template dots
 #'
