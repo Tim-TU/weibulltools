@@ -19,7 +19,7 @@ rank_regression(x, ...)
 )
 }
 \arguments{
-\item{x}{A \code{tibble} of class \code{wt_cdf_estimation} returned by \link{estimate_cdf}.}
+\item{x}{A \code{tibble} with class \code{wt_cdf_estimation} returned by \link{estimate_cdf}.}
 
 \item{...}{Further arguments passed to or from other methods. Currently not used.}
 
