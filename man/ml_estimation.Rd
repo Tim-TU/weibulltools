@@ -20,7 +20,7 @@ ml_estimation(x, ...)
 )
 }
 \arguments{
-\item{x}{A \code{tibble} of class \code{wt_reliability_data} returned by \link{reliability_data}.}
+\item{x}{A \code{tibble} with class \code{wt_reliability_data} returned by \link{reliability_data}.}
 
 \item{...}{Further arguments passed to or from other methods. Currently not used.}
 

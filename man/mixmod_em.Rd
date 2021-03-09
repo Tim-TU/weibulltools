@@ -21,7 +21,7 @@ mixmod_em(x, ...)
 )
 }
 \arguments{
-\item{x}{A tibble of class \code{wt_reliability_data} returned by \link{reliability_data}.}
+\item{x}{A tibble with class \code{wt_reliability_data} returned by \link{reliability_data}.}
 
 \item{...}{Further arguments passed to or from other methods. Currently not used.}
 

@@ -453,7 +453,7 @@ print.wt_mixmod_regression_list <- function(x,
 #'
 #' This procedure is repeated until the complete log-likelihood has converged.
 #'
-#' @param x A tibble of class `wt_reliability_data` returned by [reliability_data].
+#' @param x A tibble with class `wt_reliability_data` returned by [reliability_data].
 #' @param distribution `"weibull"` until further distributions are implemented.
 #' @param conf_level Confidence level for the intervals of the Weibull parameters
 #' of every component `k`.
