@@ -29,8 +29,7 @@ is the threshold parameter \eqn{\gamma}.}
 
 \item{distribution}{Supposed distribution of the random variable.}
 
-\item{title_trace}{A character string which is assigned to the trace shown in
-the legend.}
+\item{title_trace}{A character string which is assigned to the legend trace.}
 
 \item{...}{Further arguments passed to or from other methods. Currently not used.}
 }

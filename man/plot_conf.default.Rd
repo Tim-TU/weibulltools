@@ -29,8 +29,7 @@ The list can be of length 1 or 2. For more information see \strong{Details}.}
 \item{direction}{A character string specifying the direction of the plotted
 interval(s). Must be either "y" (failure probabilities) or "x" (quantiles).}
 
-\item{title_trace}{A character string which is assigned to the trace shown in
-the legend.}
+\item{title_trace}{A character string which is assigned to the legend trace.}
 
 \item{...}{Further arguments passed to or from other methods. Currently not used.}
 }

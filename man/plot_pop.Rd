@@ -36,8 +36,7 @@ version of the respective distribution. The distinction is made via
 \eqn{[tol, 1 - tol]}. The default value is in accordance with the decimal
 places shown in the hover for \code{plot_method = "plotly"}.}
 
-\item{title_trace}{A character string which is assigned to the trace shown in
-the legend.}
+\item{title_trace}{A character string which is assigned to the legend trace.}
 
 \item{plot_method}{Plot package, which produces the visual output. Only
 used with \code{p_obj = NULL}, otherwise \code{p_obj} is used to determine

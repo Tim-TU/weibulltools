@@ -22,8 +22,8 @@ plot_mod_mix(
 \item{x}{A numeric vector containing the x-coordinates of the respective
 regression line.}
 
-\item{status}{A vector of binary data (0 or 1) indicating whether unit \emph{i}
-is a right censored observation (= 0) or a failure (= 1).}
+\item{status}{A vector of binary data (0 or 1) indicating whether a unit is a
+right censored observation (= 0) or a failure (= 1).}
 
 \item{mix_output}{A list provided by \code{\link{mixmod_regression}} or
 \code{\link{mixmod_em}}, which consists of elements necessary to visualize
@@ -31,8 +31,7 @@ the regression lines.}
 
 \item{distribution}{Supposed distribution of the random variable.}
 
-\item{title_trace}{A character string which is assigned to the trace shown in
-the legend.}
+\item{title_trace}{A character string which is assigned to the legend trace.}
 
 \item{...}{Further arguments passed to or from other methods. Currently not used.}
 }

@@ -1,16 +1,20 @@
-plot_layout_helper <- function(x, distribution, plot_method = c("plotly", "ggplot2")) {
+# Helper function to set the distribution-specific grid:
+plot_layout_helper <- function(x,
+                               distribution,
+                               plot_method
+) {
 
-  plot_method <- match.arg(plot_method)
-
-  # Define x-ticks of logarithm to the base of 10 for Log-Location-Scale Distributions:
+  # Define x-ticks as logarithm to the base of 10 for log-location-lcale distributions:
   if (distribution %in% c("weibull", "lognormal", "loglogistic")) {
 
-    # Layout dependent on data x, function to build helpful sequences:
+    # Layout depends on x, using a function to build helpful sequences:
     x_base <- function(xb) floor(log10(xb))
     xlog10_range <- (x_base(min(x)) - 1):x_base(max(x))
-    # x-ticks and x-labels
-    x_ticks <- sapply(xlog10_range, function(z) seq(10 ^ z, 10 ^ (z + 1), 10 ^ z),
-                      simplify = TRUE)
+    # x-ticks and x-labels:
+    x_ticks <- sapply(xlog10_range,
+                      function(z) seq(10 ^ z, 10 ^ (z + 1), 10 ^ z),
+                      simplify = TRUE
+    )
     x_ticks <- round(as.numeric(x_ticks), digits = 10)
     x_ticks <- x_ticks[!duplicated(x_ticks)]
     x_labels <- x_ticks
@@ -39,13 +43,14 @@ plot_layout_helper <- function(x, distribution, plot_method = c("plotly", "ggplo
     y_labels = y_labels
   )
 
-  return(l)
+  l
 }
 
 
 
-plot_prob_helper <- function(
-  tbl, distribution
+# Helper function to compute the distribution-specific plotting positions:
+plot_prob_helper <- function(tbl,
+                             distribution
 ) {
   tbl <- tbl %>%
     dplyr::filter(.data$status == 1) %>%

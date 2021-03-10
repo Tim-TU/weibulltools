@@ -17,8 +17,7 @@ plot_mod(p_obj, x, ...)
 
 \item{...}{Further arguments passed to or from other methods. Currently not used.}
 
-\item{title_trace}{A character string which is assigned to the trace shown in
-the legend.}
+\item{title_trace}{A character string which is assigned to the legend trace.}
 }
 \value{
 Returns a plot object containing the probability plot with
