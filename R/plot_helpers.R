@@ -11,9 +11,10 @@ plot_layout_helper <- function(x,
     x_base <- function(xb) floor(log10(xb))
     xlog10_range <- (x_base(min(x)) - 1):x_base(max(x))
     # x-ticks and x-labels:
-    x_ticks <- sapply(xlog10_range,
-                      function(z) seq(10 ^ z, 10 ^ (z + 1), 10 ^ z),
-                      simplify = TRUE
+    x_ticks <- sapply(
+      xlog10_range,
+      function(z) seq(10 ^ z, 10 ^ (z + 1), 10 ^ z),
+      simplify = TRUE
     )
     x_ticks <- round(as.numeric(x_ticks), digits = 10)
     x_ticks <- x_ticks[!duplicated(x_ticks)]

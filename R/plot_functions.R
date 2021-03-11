@@ -487,7 +487,7 @@ plot_prob_ <- function(cdf_estimation,
   # Call to helper function:
   tbl_prob <- plot_prob_helper(cdf_estimation, distribution)
 
-  # call to `plot_layout()` to determine the distribution-specific grid:
+  # Call to `plot_layout()` to determine the distribution-specific grid:
   p_obj <- plot_layout(
     x = tbl_prob$x,
     distribution = distribution,
@@ -1235,7 +1235,7 @@ plot_conf.wt_confint <- function(p_obj,
   # Extract models, could be either of class 'wt_model_estimation' or '*_list':
   mod <- attr(x, "model_estimation")
 
-  # if clause captures `ml_estimation()` or `rank_regression()` models, where
+  # If-clause captures `ml_estimation()` or `rank_regression()` models, where
   # the latter was performed with only one 'cdf_estimation_method':
   if (inherits(mod, "wt_model_estimation")) {
 
