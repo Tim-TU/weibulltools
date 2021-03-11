@@ -31,7 +31,7 @@ right censored observation (= 0) or a failure (= 1).}
 
 \item{distribution}{Supposed distribution of the random variable.}
 
-\item{mix_output}{A list provided by \link{mixmod_regression} or \link{mixmod_em}, which
+\item{mix_output}{A list returned by \link{mixmod_regression} or \link{mixmod_em}, which
 consists of values necessary to visualize the subgroups.The default value of
 \code{mix_output} is \code{NULL}.}
 

@@ -8,24 +8,23 @@
   p_obj,
   x,
   dist_params,
-  distribution = c("weibull", "lognormal", "loglogistic", "normal", "logistic", "sev",
+  distribution = c("weibull", "lognormal", "loglogistic", "sev", "normal", "logistic",
     "weibull3", "lognormal3", "loglogistic3"),
   title_trace = "Fit",
   ...
 )
 }
 \arguments{
-\item{p_obj}{A plot object returned from \code{\link{plot_prob}}.}
+\item{p_obj}{A plot object returned by \link{plot_prob}.}
 
 \item{x}{A numeric vector containing the x-coordinates of the respective
 regression line.}
 
-\item{dist_params}{A (named) numeric vector of estimated location
-and scale parameters for a specified distribution. The order of
-elements is important. First entry needs to be the location
-parameter \eqn{\mu} and the second element needs to be the scale
-parameter \eqn{\sigma}. If a three-parametric model is used the third element
-is the threshold parameter \eqn{\gamma}.}
+\item{dist_params}{A (named) numeric vector of estimated location and scale
+parameters for a specified distribution. The order of elements is important.
+First entry needs to be the location parameter \eqn{\mu} and the second
+element needs to be the scale parameter \eqn{\sigma}. If a three-parametric
+model is used the third element is the threshold parameter \eqn{\gamma}.}
 
 \item{distribution}{Supposed distribution of the random variable.}
 
@@ -34,12 +33,12 @@ is the threshold parameter \eqn{\gamma}.}
 \item{...}{Further arguments passed to or from other methods. Currently not used.}
 }
 \value{
-Returns a plot object containing the probability plot with
-plotting positions and the estimated regression line(s).
+A plot object containing the probability plot with plotting positions
+and the estimated regression line.
 }
 \description{
-This function adds an estimated regression lines to an existing
-probability plot (\code{\link{plot_prob}}).
+This function adds an estimated regression line to an existing probability
+plot (\link{plot_prob}).
 }
 \examples{
 # Vectors:
@@ -112,8 +111,8 @@ prob_mix <- estimate_cdf(
 }
 \references{
 Meeker, William Q; Escobar, Luis A., Statistical methods for
-  reliability data, New York: Wiley series in probability and statistics, 1998
+reliability data, New York: Wiley series in probability and statistics, 1998
 }
 \seealso{
-\code{\link{plot_mod}}
+\link{plot_mod}
 }

@@ -552,7 +552,7 @@ plot_prob_ <- function(cdf_estimation,
 #'   Failure Mode, Quality Progress, 35(6), 47-52, 2002
 #'
 #' @inheritParams plot_prob.default
-#' @param mix_output A list provided by [mixmod_regression] or [mixmod_em], which
+#' @param mix_output A list returned by [mixmod_regression] or [mixmod_em], which
 #' consists of values necessary to visualize the subgroups.The default value of
 #' `mix_output` is `NULL`.
 #'
@@ -634,28 +634,29 @@ plot_prob_mix <- function(
 
 #' Add Estimated Population Line(s) to a Probability Plot
 #'
+#' @description
 #' This function adds one or multiple estimated regression lines to an existing
-#' probability plot (\code{\link{plot_prob}}). Depending on the output of the
-#' functions \code{\link{rank_regression}}, \code{ml_estimation},
-#' \code{\link{mixmod_regression}} or \code{\link{mixmod_em}} one or
+#' probability plot ([plot_prob]). Depending on the output of the functions
+#' [rank_regression], [ml_estimation], [mixmod_regression] or [mixmod_em] one or
 #' multiple lines are plotted.
 #'
-#' The name of the legend entry is a combination of the \code{title_trace} and
-#' the number of determined subgroups from \code{\link{mixmod_regression}} or
-#' \code{\link{mixmod_em}}. If \code{title_trace = "Line"} and the
-#' data could be split in two groups, the legend entries would be "Line: 1"
-#' and "Line: 2".
+#' @details
+#' The name of the legend entry is a combination of the `title_trace` and the
+#' number of determined subgroups from [mixmod_regression] or [mixmod_em]. If
+#' `title_trace = "Line"` and the data could be split in two groups, the legend
+#' entries would be "Line: 1" and "Line: 2".
 #'
-#' @param p_obj A plot object returned from \code{\link{plot_prob}}.
-#' @param x An object of class \code{wt_model}.
 #' @inheritParams plot_prob.wt_cdf_estimation
+#' @param p_obj A plot object returned by [plot_prob].
+#' @param x A list with class `wt_model` returned by [rank_regression],
+#' [ml_estimation], [mixmod_regression] or [mixmod_em].
 #'
 #' @encoding UTF-8
 #' @references Meeker, William Q; Escobar, Luis A., Statistical methods for
-#'   reliability data, New York: Wiley series in probability and statistics, 1998
+#' reliability data, New York: Wiley series in probability and statistics, 1998
 #'
-#' @return Returns a plot object containing the probability plot with
-#'   plotting positions and the estimated regression line(s).
+#' @return A plot object containing the probability plot with plotting positions
+#' and the estimated regression line(s).
 #'
 #' @examples
 #' # Reliability data:
@@ -709,6 +710,8 @@ plot_prob_mix <- function(
 #'
 #' plot_reg_mix_mod_em <- plot_mod(p_obj = plot_weibull, x = mix_mod_em)
 #'
+#' @md
+#'
 #' @export
 plot_mod <- function(p_obj, x, ...) {
   UseMethod("plot_mod", x)
@@ -719,14 +722,22 @@ plot_mod <- function(p_obj, x, ...) {
 #' @rdname plot_mod
 #'
 #' @export
-plot_mod.wt_model <- function(p_obj, x, title_trace = "Fit", ...) {
+plot_mod.wt_model <- function(p_obj,
+                              x,
+                              title_trace = "Fit",
+                              ...
+) {
   NextMethod("plot_mod", x)
 }
 
 
 
 #' @export
-plot_mod.wt_model_estimation <- function(p_obj, x, title_trace = "Fit", ...) {
+plot_mod.wt_model_estimation <- function(p_obj,
+                                         x,
+                                         title_trace = "Fit",
+                                         ...
+) {
 
   check_compatible_distributions(
     attr(p_obj, "distribution"),
@@ -747,11 +758,17 @@ plot_mod.wt_model_estimation <- function(p_obj, x, title_trace = "Fit", ...) {
 
 
 #' @export
-plot_mod.wt_model_estimation_list <- function(p_obj, x, title_trace = "Fit", ...) {
+plot_mod.wt_model_estimation_list <- function(p_obj,
+                                              x,
+                                              title_trace = "Fit",
+                                              ...
+) {
+
   cdf_estimation_methods <- names(x)
 
   tbl_mod <- purrr::map2_dfr(
-    x, cdf_estimation_methods,
+    x,
+    cdf_estimation_methods,
     function(model_estimation, cdf_estimation_method) {
       check_compatible_distributions(
         attr(p_obj, "distribution"),
@@ -779,30 +796,39 @@ plot_mod.wt_model_estimation_list <- function(p_obj, x, title_trace = "Fit", ...
 
 
 #' @export
-plot_mod.wt_mixmod_regression <- function(p_obj, x, title_trace = "Fit", ...) {
-  tbl_mod <- purrr::map2_dfr(x, seq_along(x), function(model_estimation, index) {
-    check_compatible_distributions(
-      attr(p_obj, "distribution"),
-      model_estimation$distribution
-    )
+plot_mod.wt_mixmod_regression <- function(p_obj,
+                                          x,
+                                          title_trace = "Fit",
+                                          ...
+) {
 
-    # Extract cdf_estimation_method from model_estimation
-    cdf_estimation_method <- if (
-      !tibble::has_name(model_estimation$data, "cdf_estimation_method")
-    ) {
-      # Case mixmod_em (plot_mod.mixmod_em calls this method internally)
-      as.character(index)
-    } else {
-      # Case mixmod_regression
-      model_estimation$data$cdf_estimation_method[1]
+  tbl_mod <- purrr::map2_dfr(
+    x,
+    seq_along(x),
+    function(model_estimation, index) {
+      check_compatible_distributions(
+        attr(p_obj, "distribution"),
+        model_estimation$distribution
+      )
+
+      # Extract cdf_estimation_method from model_estimation
+      cdf_estimation_method <- if (
+        !tibble::has_name(model_estimation$data, "cdf_estimation_method")
+        ) {
+        # Case mixmod_em (plot_mod.mixmod_em calls this method internally)
+        as.character(index)
+      } else {
+        # Case mixmod_regression
+        model_estimation$data$cdf_estimation_method[1]
+      }
+
+      plot_mod_mix_helper(
+        model_estimation = model_estimation,
+        cdf_estimation_method = cdf_estimation_method,
+        group = as.character(index)
+      )
     }
-
-    plot_mod_mix_helper(
-      model_estimation = model_estimation,
-      cdf_estimation_method = cdf_estimation_method,
-      group = as.character(index)
-    )
-  })
+  )
 
   plot_mod_vis(
     p_obj = p_obj,
@@ -819,8 +845,10 @@ plot_mod.wt_mixmod_regression_list <- function(p_obj,
                                                title_trace = "Fit",
                                                ...
 ) {
+
   tbl_mod <- purrr::map2_dfr(
-    x, names(x),
+    x,
+    names(x),
     function(mixmod_regression, cdf_estimation_method) {
       purrr::map2_dfr(
         mixmod_regression,
@@ -851,7 +879,11 @@ plot_mod.wt_mixmod_regression_list <- function(p_obj,
 
 
 #' @export
-plot_mod.wt_mixmod_em <- function(p_obj, x, title_trace = "Fit", ...) {
+plot_mod.wt_mixmod_em <- function(p_obj,
+                                  x,
+                                  title_trace = "Fit",
+                                  ...
+) {
 
   # Remove em results to get model_estimation_list
   model_estimation_list <- x[-length(x)]
@@ -867,26 +899,26 @@ plot_mod.wt_mixmod_em <- function(p_obj, x, title_trace = "Fit", ...) {
 
 #' Add Estimated Population Line to a Probability Plot
 #'
-#' This function adds an estimated regression lines to an existing
-#' probability plot (\code{\link{plot_prob}}).
+#' @description
+#' This function adds an estimated regression line to an existing probability
+#' plot ([plot_prob]).
 #'
-#' @inherit plot_mod return references
+#' @inherit plot_mod references
 #'
-#' @param x A numeric vector containing the x-coordinates of the respective
-#'   regression line.
-#' @param dist_params A (named) numeric vector of estimated location
-#'   and scale parameters for a specified distribution. The order of
-#'   elements is important. First entry needs to be the location
-#'   parameter \eqn{\mu} and the second element needs to be the scale
-#'   parameter \eqn{\sigma}. If a three-parametric model is used the third element
-#'   is the threshold parameter \eqn{\gamma}.
 #' @inheritParams plot_mod
 #' @inheritParams plot_prob.default
+#' @param x A numeric vector containing the x-coordinates of the respective
+#' regression line.
+#' @param dist_params A (named) numeric vector of estimated location and scale
+#' parameters for a specified distribution. The order of elements is important.
+#' First entry needs to be the location parameter \eqn{\mu} and the second
+#' element needs to be the scale parameter \eqn{\sigma}. If a three-parametric
+#' model is used the third element is the threshold parameter \eqn{\gamma}.
 #'
-#' @return Returns a plot object containing the probability plot with
-#' plotting positions and the estimated regression line(s).
+#' @return A plot object containing the probability plot with plotting positions
+#' and the estimated regression line.
 #'
-#' @seealso \code{\link{plot_mod}}
+#' @seealso [plot_mod]
 #'
 #' @examples
 #' # Vectors:
@@ -956,14 +988,16 @@ plot_mod.wt_mixmod_em <- function(p_obj, x, title_trace = "Fit", ...) {
 #'   method = "johnson"
 #' )
 #'
+#' @md
+#'
 #' @export
 plot_mod.default <- function(p_obj,
                              x,
                              dist_params,
                              distribution = c(
-                              "weibull", "lognormal", "loglogistic", "normal",
-                              "logistic", "sev", "weibull3", "lognormal3",
-                              "loglogistic3"
+                               "weibull", "lognormal", "loglogistic",
+                               "sev", "normal", "logistic",
+                               "weibull3", "lognormal3", "loglogistic3"
                              ),
                              title_trace = "Fit",
                              ...
@@ -977,7 +1011,9 @@ plot_mod.default <- function(p_obj,
   )
 
   tbl_mod <- plot_mod_helper(
-    x, dist_params, distribution
+    x,
+    dist_params,
+    distribution
   )
 
   plot_mod_vis(
@@ -994,33 +1030,31 @@ plot_mod.default <- function(p_obj,
 #' @description
 #' `r lifecycle::badge("soft-deprecated")`
 #'
-#' \code{plot_mod_mix()} is no longer under active development, switching to
-#' \code{\link{plot_mod}} is recommended.
+#' `plot_mod_mix()` is no longer under active development, switching to
+#' [plot_mod] is recommended.
 #'
 #' @details
 #' This function adds one or multiple estimated regression lines to an existing
-#' probability plot (\code{\link{plot_prob}}). Depending on the output of the
-#' function \code{\link{mixmod_regression}} or \code{\link{mixmod_em}} one or
-#' multiple lines are plotted.
+#' probability plot [plot_prob]). Depending on the output of the function
+#' [mixmod_regression] or [mixmod_em] one or multiple lines are plotted.
 #'
-#' The name of the legend entry is a combination of the \code{title_trace} and
-#' the number of determined subgroups. If \code{title_trace = "Line"} and the
-#' data has been split in two groups, the legend entries would be
-#' \code{"Line: 1"} and \code{"Line: 2"}.
+#' The name of the legend entry is a combination of the `title_trace` and the
+#' number of determined subgroups. If `title_trace = "Line"` and the data has
+#' been split in two groups, the legend entries would be `"Line: 1"` and
+#' `"Line: 2"`.
 #'
 #' @encoding UTF-8
 #' @references Doganaksoy, N.; Hahn, G.; Meeker, W. Q., Reliability Analysis by
 #'   Failure Mode, Quality Progress, 35(6), 47-52, 2002
 #'
-#' @param p_obj A plot object provided by function \code{\link{plot_prob_mix}}.
-#' @param mix_output A list provided by \code{\link{mixmod_regression}} or
-#'   \code{\link{mixmod_em}}, which consists of elements necessary to visualize
-#'   the regression lines.
 #' @inheritParams plot_mod.default
 #' @inheritParams plot_prob.default
+#' @param p_obj A plot object returned by [plot_prob_mix].
+#' @param mix_output A list returned by [mixmod_regression] or [mixmod_em],
+#' which consists of elements necessary to visualize the regression lines.
 #'
-#' @return Returns a plot object containing the probability plot with
-#'   plotting positions and estimated regression line(s).
+#' @return A plot object containing the probability plot with plotting positions
+#' and estimated regression line(s).
 #'
 #' @examples
 #' # Vectors:
@@ -1111,23 +1145,21 @@ plot_mod_mix <- function(p_obj,
 #' probability plot. Since confidence regions are related to the estimated
 #' regression line, the latter is provided as well.
 #'
-#' @param p_obj A plot object returned from \code{\link{plot_prob}}.
-#' @param x Confidence interval as returned by \code{\link{confint_betabinom}}
-#'   or \code{\link{confint_fisher}}.
-#' @param title_trace_mod A character string which is assigned to the mod trace
-#'   in the legend.
-#' @param title_trace_conf A character string which is assigned to the conf trace
-#'   in the legend.
-#'
+#' @param p_obj A plot object returned by [plot_prob].
+#' @param x A tibble with class `wt_confint` returned by [confint_betabinom] or
+#' [confint_fisher].
+#' @param title_trace_mod A character string which is assigned to the model trace
+#' in the legend.
+#' @param title_trace_conf A character string which is assigned to the confidence
+#' trace in the legend.
 #' @template dots
 #'
 #' @encoding UTF-8
 #' @references Meeker, William Q; Escobar, Luis A., Statistical methods for
-#'   reliability data, New York: Wiley series in probability and statistics, 1998
+#' reliability data, New York: Wiley series in probability and statistics, 1998
 #'
-#' @return Returns a plot object containing the probability plot with
-#'   plotting positions, the estimated regression line and the estimated
-#'   confidence region(s).
+#' @return A plot object containing the probability plot with plotting positions,
+#' the estimated regression line and the estimated confidence region(s).
 #'
 #' @examples
 #' # Reliability data:
@@ -1181,8 +1213,9 @@ plot_mod_mix <- function(p_obj,
 #'   x = conf_fisher
 #' )
 #'
-#' @export
+#' @md
 #'
+#' @export
 plot_conf <- function(p_obj, x, ...) {
   UseMethod("plot_conf", x)
 }
@@ -1193,31 +1226,37 @@ plot_conf <- function(p_obj, x, ...) {
 #'
 #' @export
 plot_conf.wt_confint <- function(p_obj,
-                              x,
-                              title_trace_mod = "Fit",
-                              title_trace_conf = "Confidence Limit",
-                              ...
+                                 x,
+                                 title_trace_mod = "Fit",
+                                 title_trace_conf = "Confidence Limit",
+                                 ...
 ) {
 
+  # Extract models, could be either of class 'wt_model_estimation' or '*_list':
   mod <- attr(x, "model_estimation")
 
+  # if clause captures `ml_estimation()` or `rank_regression()` models, where
+  # the latter was performed with only one 'cdf_estimation_method':
   if (inherits(mod, "wt_model_estimation")) {
-    ## Fake model_estimation_list
-    # ml_estimation$data has no cdf_estimation_method column
-    cdf_estimation_method <- if (hasName(mod$data, "method")) {
-      mod$data$cdf_estimation_method[1]
+
+    ## Fake a 'model_estimation_list':
+    if (hasName(mod$data, "cdf_estimation_method")) {
+      ### `rank_regression()` with only one 'cdf_estimation_method':
+      cdf_estimation_method <- mod$data$cdf_estimation_method[1]
     } else {
-      NA_character_
+      ### `ml_estimation()` where 'data' has no 'cdf_estimation_method' column:
+      cdf_estimation_method <- NA_character_
     }
 
     mod <- list(mod)
     names(mod) <- cdf_estimation_method
   }
 
-  # Perform customised plot_mod on model_estimation_list
+  # Perform customized `plot_mod()` on 'model_estimation_list':
   cdf_estimation_methods <- names(mod)
   tbl_mod <- purrr::map2_dfr(
-    mod, cdf_estimation_methods,
+    mod,
+    cdf_estimation_methods,
     function(model_estimation, cdf_estimation_method) {
       check_compatible_distributions(
         attr(p_obj, "distribution"),
@@ -1225,9 +1264,7 @@ plot_conf.wt_confint <- function(p_obj,
       )
 
       plot_mod_helper(
-        # Take x coordinates from confint. This guarantees consideration of
-        # b lives
-        x = x$x,
+        x = x$x, # x coordinates of confint guarantees consideration of b lives.
         dist_params = model_estimation$coefficients,
         distribution = model_estimation$distribution,
         cdf_estimation_method = cdf_estimation_method
@@ -1235,9 +1272,7 @@ plot_conf.wt_confint <- function(p_obj,
     }
   )
 
-  tbl_conf <- plot_conf_helper_2(
-    x
-  )
+  tbl_conf <- plot_conf_helper_2(confint = x)
 
   # if (inherits(p_obj, "plotly")) {
   #   tbl_mod$hovertext <- hovertext_conf(
@@ -1248,6 +1283,7 @@ plot_conf.wt_confint <- function(p_obj,
 
   bounds <- attr(x, "bounds", exact = TRUE)
 
+  # Same x coordinates for `plot_mod()` and `plot_conf()`:
   if (bounds == "two_sided") {
     tbl_mod$lower <- x$lower_bound
     tbl_mod$upper <- x$upper_bound
@@ -1272,34 +1308,33 @@ plot_conf.wt_confint <- function(p_obj,
 
 #' Add Confidence Region(s) for Quantiles and Probabilities
 #'
+#' @inherit plot_conf return references
+#'
+#' @description
 #' This function is used to add estimated confidence region(s) to an existing
 #' probability plot which also includes the estimated regression line.
 #'
-#' It is important that the length of the vectors provided as lists in \code{x}
-#' and \code{y} match with the length of the vectors \code{x} and \code{y} in
-#' the function \code{\link{plot_mod}}. For this reason the following procedure
-#' is recommended:
-#' \itemize{
-#'   \item Calculate confidence intervals with the function
-#'     \code{\link{confint_betabinom}} or \code{\link{confint_fisher}} and store
-#'     it in a \code{data.frame}. For instance call it df.
-#'   \item Inside \code{\link{plot_mod}} use the output \code{df$x}
-#'     for \code{x} and \code{df$prob} for \code{y} of the function(s) named before.
-#'   \item In \strong{Examples} the described approach is shown with code.}
+#' @details
+#' It is important that the length of the vectors provided as lists in `x` and
+#' `y` match with the length of the vectors `x` and `y` in the function [plot_mod].
+#' For this reason the following procedure is recommended:
 #'
-#' @inherit plot_conf return references
+#' * Calculate confidence intervals with the function [confint_betabinom] or
+#'   [confint_fisher] and store it in a `data.frame`. For instance call it df.
+#' * Inside [plot_mod] use the output `df$x` for `x` and `df$prob` for `y` of
+#'   the function(s) named before.
+#' * In __Examples__ the described approach is shown with code.
 #'
-#' @param p_obj A plot object returned from \code{\link{plot_mod}}.
-#' @param x A list containing the x-coordinates of the confidence region(s).
-#'   The list can be of length 1 or 2. For more information see \strong{Details}.
-#' @param y A list containing the y-coordinates of the Confidence Region(s).
-#'   The list can be of length 1 or 2. For more information see \strong{Details}.
-#' @param direction A character string specifying the direction of the plotted
-#'   interval(s). Must be either "y" (failure probabilities) or "x" (quantiles).
 #' @inheritParams plot_prob.default
-#' @template dots
+#' @param p_obj A plot object returned by [plot_mod].
+#' @param x A list containing the x-coordinates of the confidence region(s). The
+#' list can be of length 1 or 2. For more information see **Details**.
+#' @param y A list containing the y-coordinates of the Confidence Region(s).
+#'   The list can be of length 1 or 2. For more information see **Details**.
+#' @param direction A character string specifying the direction of the plotted
+#'   interval(s). `"y"` for failure probabilities or `"x"` for quantiles.
 #'
-#' @seealso \code{\link{plot_conf}}
+#' @seealso [plot_conf]
 #'
 #' @examples
 #' # Vectors:
@@ -1386,17 +1421,20 @@ plot_conf.wt_confint <- function(p_obj,
 #'   distribution = "lognormal3"
 #' )
 #'
-#' @export
+#' @md
 #'
-plot_conf.default <- function(
-  p_obj, x, y,
-  distribution = c(
-    "weibull", "lognormal", "loglogistic", "normal", "logistic", "sev",
-    "weibull3", "lognormal3", "loglogistic3"
-  ),
-  direction = c("y", "x"),
-  title_trace = "Confidence Limit",
-  ...
+#' @export
+plot_conf.default <- function(p_obj,
+                              x,
+                              y,
+                              distribution = c(
+                                "weibull", "lognormal", "loglogistic",
+                                "sev", "normal", "logistic",
+                                "weibull3", "lognormal3", "loglogistic3"
+                              ),
+                              direction = c("y", "x"),
+                              title_trace = "Confidence Limit",
+                              ...
 ) {
 
   direction <- match.arg(direction)
@@ -1407,7 +1445,7 @@ plot_conf.default <- function(
     distribution
   )
 
-  # Extracting tbl_mod
+  # Extracting tbl_mod:
   plot_method <- if (inherits(p_obj, "plotly")) {
     "plotly"
   } else if (inherits(p_obj, "ggplot")) {

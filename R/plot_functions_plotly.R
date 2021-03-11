@@ -178,8 +178,9 @@ plot_prob_vis.plotly <- function(p_obj,
 
 
 #' @export
-plot_mod_vis.plotly <- function(
-  p_obj, tbl_mod, title_trace = "Fit"
+plot_mod_vis.plotly <- function(p_obj,
+                                tbl_mod,
+                                title_trace = "Fit"
 ) {
 
   x_mark <- unlist(strsplit(p_obj$x$layoutAttrs[[2]]$xaxis$title$text, " "))[1]
@@ -235,13 +236,17 @@ plot_mod_vis.plotly <- function(
     text = ~hovertext
   )
 
-  return(p_mod)
+  p_mod
 }
 
 
 
 #' @export
-plot_conf_vis.plotly <- function(p_obj, tbl_p, title_trace) {
+plot_conf_vis.plotly <- function(p_obj,
+                                 tbl_p,
+                                 title_trace
+) {
+
   # Get axis labels in hover:
   x_mark <- unlist(strsplit(p_obj$x$layoutAttrs[[2]]$xaxis$title$text,  " "))[1]
   y_mark <- unlist(strsplit(p_obj$x$layoutAttrs[[2]]$yaxis$title$text,  " "))[1]
@@ -268,15 +273,17 @@ plot_conf_vis.plotly <- function(p_obj, tbl_p, title_trace) {
     legendgroup = ~cdf_estimation_method
   )
 
-  return(p_conf)
+  p_conf
 }
 
 
 
 #' @export
-plot_pop_vis.plotly <- function(
-  p_obj, tbl_pop, title_trace
+plot_pop_vis.plotly <- function(p_obj,
+                                tbl_pop,
+                                title_trace
 ) {
+
   # Get axis labels in hover
   x_mark <- unlist(strsplit(p_obj$x$layoutAttrs[[2]]$xaxis$title$text,  " "))[1]
   y_mark <- unlist(strsplit(p_obj$x$layoutAttrs[[2]]$yaxis$title$text,  " "))[1]
@@ -312,12 +319,12 @@ plot_pop_vis.plotly <- function(
   ) %>%
     plotly::layout(showlegend = TRUE)
 
-  return(p_pop)
+  p_pop
 }
 
 
 
-# Hover text for plot_mod() and plot_conf()
+# Hover text for plot_mod() and plot_conf():
 hovertext_mod <- function(x,
                           y,
                           param_val,
@@ -327,6 +334,7 @@ hovertext_mod <- function(x,
                           lower = NULL,
                           upper = NULL
 ) {
+
   not_na <- !is.na(param_val)
 
   x_text <- paste0(x_mark, ": ", format(x, digits = 3))
@@ -351,16 +359,24 @@ hovertext_mod <- function(x,
 
 
 
-# Trace name for plot_pop()
-to_name_pop <- function(param_val, param_label) {
+# Trace name for plot_pop():
+to_name_pop <- function(param_val,
+                        param_label
+) {
+
   not_na <- !is.na(param_val)
   paste(param_label[not_na], param_val[not_na], collapse = ", ")
 }
 
 
 
-# Trace name for plot_prob(), plot_mod() and plot_conf()
-to_name <- function(tbl, n_method, n_group, title_trace) {
+# Trace name for plot_prob(), plot_mod() and plot_conf():
+to_name <- function(tbl,
+                    n_method,
+                    n_group,
+                    title_trace
+) {
+
   if (n_method <= 1) {
     if (n_group <= 1) {
       title_trace

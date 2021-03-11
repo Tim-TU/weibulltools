@@ -63,9 +63,13 @@ plot_prob_helper <- function(tbl,
 
 
 
-plot_mod_helper <- function(
-  x, dist_params, distribution, cdf_estimation_method = NA_character_
+# Helper function to compute distribution-specific points of the regression line:
+plot_mod_helper <- function(x,
+                            dist_params,
+                            distribution,
+                            cdf_estimation_method = NA_character_
 ) {
+
   if (length(x) == 2) {
     if (two_parametric(distribution) %in% c("weibull", "lognormal", "loglogistic")) {
       x_p <- 10 ^ seq(log10(x[1]), log10(x[2]), length.out = 100)
@@ -123,7 +127,12 @@ plot_mod_helper <- function(
 
 
 
-plot_mod_mix_helper <- function(model_estimation, cdf_estimation_method, group) {
+# Helper function to compute distribution-specific points of the regression line:
+plot_mod_mix_helper <- function(model_estimation,
+                                cdf_estimation_method,
+                                group
+) {
+
   distribution <- model_estimation$distribution
   data <- model_estimation$data %>%
     dplyr::filter(.data$status == 1)
@@ -159,7 +168,7 @@ plot_mod_mix_helper <- function(model_estimation, cdf_estimation_method, group) 
 
 
 
-# plot_conf.wt_confint
+# Helper function for S3 method plot_conf.wt_confint:
 plot_conf_helper_2 <- function(confint) {
   direction <- attr(confint, "direction", exact = TRUE)
   distribution <- attr(confint, "distribution", exact = TRUE)
@@ -206,13 +215,19 @@ plot_conf_helper_2 <- function(confint) {
 
   tbl_p <- dplyr::group_by(tbl_p, .data$bound)
 
-  return(tbl_p)
+  tbl_p
 }
 
 
 
-# plot_conf.default
-plot_conf_helper <- function(tbl_mod, x, y, direction, distribution) {
+# Helper function for S3 method plot_conf.default:
+plot_conf_helper <- function(tbl_mod,
+                             x,
+                             y,
+                             direction,
+                             distribution
+) {
+
   # Construct x, y from x/y, upper/lower bounds (depending on direction and bounds)
   lst <- Map(tibble::tibble, x = x, y = y)
   tbl_p <- dplyr::bind_rows(lst, .id = "bound")
@@ -228,7 +243,7 @@ plot_conf_helper <- function(tbl_mod, x, y, direction, distribution) {
   tbl_p <- dplyr::group_by(tbl_p, .data$bound)
   tbl_p$cdf_estimation_method <- NA_character_
 
-  return(tbl_p)
+  tbl_p
 }
 
 

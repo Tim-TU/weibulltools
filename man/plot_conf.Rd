@@ -17,23 +17,22 @@ plot_conf(p_obj, x, ...)
 )
 }
 \arguments{
-\item{p_obj}{A plot object returned from \code{\link{plot_prob}}.}
+\item{p_obj}{A plot object returned by \link{plot_prob}.}
 
-\item{x}{Confidence interval as returned by \code{\link{confint_betabinom}}
-or \code{\link{confint_fisher}}.}
+\item{x}{A tibble with class \code{wt_confint} returned by \link{confint_betabinom} or
+\link{confint_fisher}.}
 
 \item{...}{Further arguments passed to or from other methods. Currently not used.}
 
-\item{title_trace_mod}{A character string which is assigned to the mod trace
+\item{title_trace_mod}{A character string which is assigned to the model trace
 in the legend.}
 
-\item{title_trace_conf}{A character string which is assigned to the conf trace
-in the legend.}
+\item{title_trace_conf}{A character string which is assigned to the confidence
+trace in the legend.}
 }
 \value{
-Returns a plot object containing the probability plot with
-  plotting positions, the estimated regression line and the estimated
-  confidence region(s).
+A plot object containing the probability plot with plotting positions,
+the estimated regression line and the estimated confidence region(s).
 }
 \description{
 This function is used to add estimated confidence region(s) to an existing
@@ -95,5 +94,5 @@ plot_conf_fisher_weibull <- plot_conf(
 }
 \references{
 Meeker, William Q; Escobar, Luis A., Statistical methods for
-  reliability data, New York: Wiley series in probability and statistics, 1998
+reliability data, New York: Wiley series in probability and statistics, 1998
 }

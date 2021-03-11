@@ -112,8 +112,9 @@ plot_prob_vis.ggplot <- function(p_obj,
 
 
 #' @export
-plot_mod_vis.ggplot <- function(
-  p_obj, tbl_mod, title_trace = "Fit"
+plot_mod_vis.ggplot <- function(p_obj,
+                                tbl_mod,
+                                title_trace = "Fit"
 ) {
 
   n_method <- length(unique(tbl_mod$cdf_estimation_method))
@@ -158,13 +159,17 @@ plot_mod_vis.ggplot <- function(
       color = paste(p_obj$labels$colour, "+\n", title_trace)
     )
 
-  return(p_mod)
+  p_mod
 }
 
 
 
 #' @export
-plot_conf_vis.ggplot <- function(p_obj, tbl_p, title_trace) {
+plot_conf_vis.ggplot <- function(p_obj,
+                                 tbl_p,
+                                 title_trace
+) {
+
   n_method <- length(unique(tbl_p$cdf_estimation_method))
 
   mapping <- if (all(is.na(tbl_p$cdf_estimation_method)) || n_method == 1) {
@@ -190,15 +195,17 @@ plot_conf_vis.ggplot <- function(p_obj, tbl_p, title_trace) {
       color = paste(p_obj$labels$colour, "+\n", title_trace)
     )
 
-  return(p_conf)
+  p_conf
 }
 
 
 
 #' @export
-plot_pop_vis.ggplot <- function(
-  p_obj, tbl_pop, title_trace
+plot_pop_vis.ggplot <- function(p_obj,
+                                tbl_pop,
+                                title_trace
 ) {
+
   p_pop <- p_obj +
     ggplot2::geom_line(
       data = tbl_pop,
@@ -206,5 +213,5 @@ plot_pop_vis.ggplot <- function(
     ) +
     ggplot2::labs(color = title_trace)
 
-  return(p_pop)
+  p_pop
 }
