@@ -11,32 +11,30 @@ plot_mod(p_obj, x, ...)
 \method{plot_mod}{wt_model}(p_obj, x, title_trace = "Fit", ...)
 }
 \arguments{
-\item{p_obj}{A plot object returned from \code{\link{plot_prob}}.}
+\item{p_obj}{A plot object returned by \link{plot_prob}.}
 
-\item{x}{An object of class \code{wt_model}.}
+\item{x}{A list with class \code{wt_model} returned by \link{rank_regression},
+\link{ml_estimation}, \link{mixmod_regression} or \link{mixmod_em}.}
 
 \item{...}{Further arguments passed to or from other methods. Currently not used.}
 
-\item{title_trace}{A character string which is assigned to the trace shown in
-the legend.}
+\item{title_trace}{A character string which is assigned to the legend trace.}
 }
 \value{
-Returns a plot object containing the probability plot with
-  plotting positions and the estimated regression line(s).
+A plot object containing the probability plot with plotting positions
+and the estimated regression line(s).
 }
 \description{
 This function adds one or multiple estimated regression lines to an existing
-probability plot (\code{\link{plot_prob}}). Depending on the output of the
-functions \code{\link{rank_regression}}, \code{ml_estimation},
-\code{\link{mixmod_regression}} or \code{\link{mixmod_em}} one or
+probability plot (\link{plot_prob}). Depending on the output of the functions
+\link{rank_regression}, \link{ml_estimation}, \link{mixmod_regression} or \link{mixmod_em} one or
 multiple lines are plotted.
 }
 \details{
-The name of the legend entry is a combination of the \code{title_trace} and
-the number of determined subgroups from \code{\link{mixmod_regression}} or
-\code{\link{mixmod_em}}. If \code{title_trace = "Line"} and the
-data could be split in two groups, the legend entries would be "Line: 1"
-and "Line: 2".
+The name of the legend entry is a combination of the \code{title_trace} and the
+number of determined subgroups from \link{mixmod_regression} or \link{mixmod_em}. If
+\code{title_trace = "Line"} and the data could be split in two groups, the legend
+entries would be "Line: 1" and "Line: 2".
 }
 \examples{
 # Reliability data:
@@ -93,5 +91,5 @@ plot_reg_mix_mod_em <- plot_mod(p_obj = plot_weibull, x = mix_mod_em)
 }
 \references{
 Meeker, William Q; Escobar, Luis A., Statistical methods for
-  reliability data, New York: Wiley series in probability and statistics, 1998
+reliability data, New York: Wiley series in probability and statistics, 1998
 }

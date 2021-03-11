@@ -8,7 +8,7 @@
   p_obj,
   x,
   y,
-  distribution = c("weibull", "lognormal", "loglogistic", "normal", "logistic", "sev",
+  distribution = c("weibull", "lognormal", "loglogistic", "sev", "normal", "logistic",
     "weibull3", "lognormal3", "loglogistic3"),
   direction = c("y", "x"),
   title_trace = "Confidence Limit",
@@ -16,10 +16,10 @@
 )
 }
 \arguments{
-\item{p_obj}{A plot object returned from \code{\link{plot_mod}}.}
+\item{p_obj}{A plot object returned by \link{plot_mod}.}
 
-\item{x}{A list containing the x-coordinates of the confidence region(s).
-The list can be of length 1 or 2. For more information see \strong{Details}.}
+\item{x}{A list containing the x-coordinates of the confidence region(s). The
+list can be of length 1 or 2. For more information see \strong{Details}.}
 
 \item{y}{A list containing the y-coordinates of the Confidence Region(s).
 The list can be of length 1 or 2. For more information see \strong{Details}.}
@@ -27,34 +27,31 @@ The list can be of length 1 or 2. For more information see \strong{Details}.}
 \item{distribution}{Supposed distribution of the random variable.}
 
 \item{direction}{A character string specifying the direction of the plotted
-interval(s). Must be either "y" (failure probabilities) or "x" (quantiles).}
+interval(s). \code{"y"} for failure probabilities or \code{"x"} for quantiles.}
 
-\item{title_trace}{A character string which is assigned to the trace shown in
-the legend.}
+\item{title_trace}{A character string which is assigned to the legend trace.}
 
 \item{...}{Further arguments passed to or from other methods. Currently not used.}
 }
 \value{
-Returns a plot object containing the probability plot with
-  plotting positions, the estimated regression line and the estimated
-  confidence region(s).
+A plot object containing the probability plot with plotting positions,
+the estimated regression line and the estimated confidence region(s).
 }
 \description{
 This function is used to add estimated confidence region(s) to an existing
 probability plot which also includes the estimated regression line.
 }
 \details{
-It is important that the length of the vectors provided as lists in \code{x}
-and \code{y} match with the length of the vectors \code{x} and \code{y} in
-the function \code{\link{plot_mod}}. For this reason the following procedure
-is recommended:
+It is important that the length of the vectors provided as lists in \code{x} and
+\code{y} match with the length of the vectors \code{x} and \code{y} in the function \link{plot_mod}.
+For this reason the following procedure is recommended:
 \itemize{
-  \item Calculate confidence intervals with the function
-    \code{\link{confint_betabinom}} or \code{\link{confint_fisher}} and store
-    it in a \code{data.frame}. For instance call it df.
-  \item Inside \code{\link{plot_mod}} use the output \code{df$x}
-    for \code{x} and \code{df$prob} for \code{y} of the function(s) named before.
-  \item In \strong{Examples} the described approach is shown with code.}
+\item Calculate confidence intervals with the function \link{confint_betabinom} or
+\link{confint_fisher} and store it in a \code{data.frame}. For instance call it df.
+\item Inside \link{plot_mod} use the output \code{df$x} for \code{x} and \code{df$prob} for \code{y} of
+the function(s) named before.
+\item In \strong{Examples} the described approach is shown with code.
+}
 }
 \examples{
 # Vectors:
@@ -144,8 +141,8 @@ plot_conf_beta_ln <- plot_conf(
 }
 \references{
 Meeker, William Q; Escobar, Luis A., Statistical methods for
-  reliability data, New York: Wiley series in probability and statistics, 1998
+reliability data, New York: Wiley series in probability and statistics, 1998
 }
 \seealso{
-\code{\link{plot_conf}}
+\link{plot_conf}
 }

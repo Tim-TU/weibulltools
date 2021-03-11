@@ -1,16 +1,21 @@
-plot_layout_helper <- function(x, distribution, plot_method = c("plotly", "ggplot2")) {
+# Helper function to set the distribution-specific grid:
+plot_layout_helper <- function(x,
+                               distribution,
+                               plot_method
+) {
 
-  plot_method <- match.arg(plot_method)
-
-  # Define x-ticks of logarithm to the base of 10 for Log-Location-Scale Distributions:
+  # Define x-ticks as logarithm to the base of 10 for log-location-lcale distributions:
   if (distribution %in% c("weibull", "lognormal", "loglogistic")) {
 
-    # Layout dependent on data x, function to build helpful sequences:
+    # Layout depends on x, using a function to build helpful sequences:
     x_base <- function(xb) floor(log10(xb))
     xlog10_range <- (x_base(min(x)) - 1):x_base(max(x))
-    # x-ticks and x-labels
-    x_ticks <- sapply(xlog10_range, function(z) seq(10 ^ z, 10 ^ (z + 1), 10 ^ z),
-                      simplify = TRUE)
+    # x-ticks and x-labels:
+    x_ticks <- sapply(
+      xlog10_range,
+      function(z) seq(10 ^ z, 10 ^ (z + 1), 10 ^ z),
+      simplify = TRUE
+    )
     x_ticks <- round(as.numeric(x_ticks), digits = 10)
     x_ticks <- x_ticks[!duplicated(x_ticks)]
     x_labels <- x_ticks
@@ -39,13 +44,14 @@ plot_layout_helper <- function(x, distribution, plot_method = c("plotly", "ggplo
     y_labels = y_labels
   )
 
-  return(l)
+  l
 }
 
 
 
-plot_prob_helper <- function(
-  tbl, distribution
+# Helper function to compute the distribution-specific plotting positions:
+plot_prob_helper <- function(tbl,
+                             distribution
 ) {
   tbl <- tbl %>%
     dplyr::filter(.data$status == 1) %>%
@@ -58,9 +64,13 @@ plot_prob_helper <- function(
 
 
 
-plot_mod_helper <- function(
-  x, dist_params, distribution, cdf_estimation_method = NA_character_
+# Helper function to compute distribution-specific points of the regression line:
+plot_mod_helper <- function(x,
+                            dist_params,
+                            distribution,
+                            cdf_estimation_method = NA_character_
 ) {
+
   if (length(x) == 2) {
     if (two_parametric(distribution) %in% c("weibull", "lognormal", "loglogistic")) {
       x_p <- 10 ^ seq(log10(x[1]), log10(x[2]), length.out = 100)
@@ -118,7 +128,12 @@ plot_mod_helper <- function(
 
 
 
-plot_mod_mix_helper <- function(model_estimation, cdf_estimation_method, group) {
+# Helper function to compute distribution-specific points of the regression line:
+plot_mod_mix_helper <- function(model_estimation,
+                                cdf_estimation_method,
+                                group
+) {
+
   distribution <- model_estimation$distribution
   data <- model_estimation$data %>%
     dplyr::filter(.data$status == 1)
@@ -154,7 +169,7 @@ plot_mod_mix_helper <- function(model_estimation, cdf_estimation_method, group) 
 
 
 
-# plot_conf.wt_confint
+# Helper function for S3 method plot_conf.wt_confint:
 plot_conf_helper_2 <- function(confint) {
   direction <- attr(confint, "direction", exact = TRUE)
   distribution <- attr(confint, "distribution", exact = TRUE)
@@ -201,13 +216,19 @@ plot_conf_helper_2 <- function(confint) {
 
   tbl_p <- dplyr::group_by(tbl_p, .data$bound)
 
-  return(tbl_p)
+  tbl_p
 }
 
 
 
-# plot_conf.default
-plot_conf_helper <- function(tbl_mod, x, y, direction, distribution) {
+# Helper function for S3 method plot_conf.default:
+plot_conf_helper <- function(tbl_mod,
+                             x,
+                             y,
+                             direction,
+                             distribution
+) {
+
   # Construct x, y from x/y, upper/lower bounds (depending on direction and bounds)
   lst <- Map(tibble::tibble, x = x, y = y)
   tbl_p <- dplyr::bind_rows(lst, .id = "bound")
@@ -223,12 +244,18 @@ plot_conf_helper <- function(tbl_mod, x, y, direction, distribution) {
   tbl_p <- dplyr::group_by(tbl_p, .data$bound)
   tbl_p$cdf_estimation_method <- NA_character_
 
-  return(tbl_p)
+  tbl_p
 }
 
 
 
-plot_pop_helper <- function(x, dist_params_tbl, distribution, tol = 1e-6) {
+# Helper function for plot_pop:
+plot_pop_helper <- function(x,
+                            dist_params_tbl,
+                            distribution,
+                            tol = 1e-6
+) {
+
   x_s <- if (length(x) == 2) {
     10 ^ seq(log10(x[1]), log10(x[2]), length.out = 200)
   } else {
@@ -238,17 +265,17 @@ plot_pop_helper <- function(x, dist_params_tbl, distribution, tol = 1e-6) {
   tbl_pop <- dist_params_tbl %>%
     dplyr::mutate(group = as.character(dplyr::row_number()))
 
-  # Map predict_prob over tbl_pop
+  # Map predict_prob over tbl_pop:
   tbl_pop <- purrr::pmap_dfr(
     tbl_pop,
     x_s = x_s,
     distribution = distribution,
     function(loc, sc, thres = NA, group, x_s, distribution) {
-      # Replace NA with NULL, so that thres is ignored in c()
+      # Replace NA with NULL, so that thres is ignored in c():
       dist_params <- c(loc, sc, thres %NA% NULL)
 
       if (length(dist_params) == 3) {
-        # Case three-parametric distribution
+        # Case three-parametric distribution:
         distribution <- paste0(distribution, "3")
       }
 
@@ -298,5 +325,5 @@ plot_pop_helper <- function(x, dist_params_tbl, distribution, tol = 1e-6) {
     ) %>%
     dplyr::filter(.data$y_s <= 1 - tol, .data$y_s >= tol)
 
-  return(tbl_pop)
+  tbl_pop
 }

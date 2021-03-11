@@ -1,21 +1,29 @@
 #' @export
-plot_layout_vis.plotly <- function(
-  p_obj,
-  x,
-  distribution = c(
-    "weibull", "lognormal", "loglogistic", "normal", "logistic", "sev"
-  ),
-  title_main = "Probability Plot",
-  title_x = "Characteristic",
-  title_y = "Unreliability"
+plot_layout_vis.plotly <- function(p_obj, # An empty plotly object.
+                                   x,
+                                   distribution = c(
+                                     "weibull", "lognormal", "loglogistic",
+                                     "sev", "normal", "logistic"
+                                   ),
+                                   title_main = "Probability Plot",
+                                   title_x = "Characteristic",
+                                   title_y = "Unreliability"
 ) {
 
   distribution <- match.arg(distribution)
 
-  layout_helper <- plot_layout_helper(x, distribution, "plotly")
+  layout_helper <- plot_layout_helper(
+    x = x,
+    distribution = distribution,
+    plot_method = "plotly"
+  )
 
   ## Type of x axis:
-  x_axis_type <- if (distribution %in% c("sev", "normal", "logistic")) "-" else "log"
+  x_axis_type <- if (distribution %in% c("sev", "normal", "logistic")) {
+    "-"
+  } else {
+    "log"
+  }
 
   ## Configuration x axis:
   x_config <- list(
@@ -69,7 +77,7 @@ plot_layout_vis.plotly <- function(
     linecolor = "#a0a0a0"
   )
 
-  # configuration legend
+  # Configuration of legend:
   l <- list(
     title = list(
       font = list(
@@ -80,7 +88,7 @@ plot_layout_vis.plotly <- function(
     )
   )
 
-  # margins layout
+  # Layout margins:
   m <- list(
     l = 55,
     r = 10,
@@ -99,7 +107,7 @@ plot_layout_vis.plotly <- function(
   )
 
 
-  # create grid
+  # Create grid:
   p_obj <- p_obj %>%
     plotly::layout(
       title = title,
@@ -109,19 +117,23 @@ plot_layout_vis.plotly <- function(
       yaxis = y_config,
       margin = m
     )
-  return(p_obj)
+
+  p_obj
 }
 
+
+
 #' @export
-plot_prob_vis.plotly <- function(
-  p_obj, tbl_prob,
-  distribution = c(
-    "weibull", "lognormal", "loglogistic", "normal", "logistic", "sev"
-  ),
-  title_main = "Probability Plot",
-  title_x = "Characteristic",
-  title_y = "Unreliability",
-  title_trace = "Sample"
+plot_prob_vis.plotly <- function(p_obj,
+                                 tbl_prob,
+                                 distribution = c(
+                                   "weibull", "lognormal", "loglogistic",
+                                   "sev", "normal", "logistic"
+                                 ),
+                                 title_main = "Probability Plot",
+                                 title_x = "Characteristic",
+                                 title_y = "Unreliability",
+                                 title_trace = "Sample"
 ) {
 
   distribution <- match.arg(distribution)
@@ -129,7 +141,7 @@ plot_prob_vis.plotly <- function(
   mark_x <- unlist(strsplit(title_x, " "))[1]
   mark_y <- unlist(strsplit(title_y, " "))[1]
 
-  # Suppress warning by subsetting with character
+  # Suppress warning by subsetting with character:
   n_group <- length(unique(tbl_prob[["group"]]))
   n_method <- length(unique(tbl_prob$cdf_estimation_method))
 
@@ -160,12 +172,15 @@ plot_prob_vis.plotly <- function(
     ) %>%
     plotly::layout(showlegend = TRUE)
 
-  return(p_prob)
+  p_prob
 }
 
+
+
 #' @export
-plot_mod_vis.plotly <- function(
-  p_obj, tbl_mod, title_trace = "Fit"
+plot_mod_vis.plotly <- function(p_obj,
+                                tbl_mod,
+                                title_trace = "Fit"
 ) {
 
   x_mark <- unlist(strsplit(p_obj$x$layoutAttrs[[2]]$xaxis$title$text, " "))[1]
@@ -221,11 +236,17 @@ plot_mod_vis.plotly <- function(
     text = ~hovertext
   )
 
-  return(p_mod)
+  p_mod
 }
 
+
+
 #' @export
-plot_conf_vis.plotly <- function(p_obj, tbl_p, title_trace) {
+plot_conf_vis.plotly <- function(p_obj,
+                                 tbl_p,
+                                 title_trace
+) {
+
   # Get axis labels in hover:
   x_mark <- unlist(strsplit(p_obj$x$layoutAttrs[[2]]$xaxis$title$text,  " "))[1]
   y_mark <- unlist(strsplit(p_obj$x$layoutAttrs[[2]]$yaxis$title$text,  " "))[1]
@@ -252,13 +273,17 @@ plot_conf_vis.plotly <- function(p_obj, tbl_p, title_trace) {
     legendgroup = ~cdf_estimation_method
   )
 
-  return(p_conf)
+  p_conf
 }
 
+
+
 #' @export
-plot_pop_vis.plotly <- function(
-  p_obj, tbl_pop, title_trace
+plot_pop_vis.plotly <- function(p_obj,
+                                tbl_pop,
+                                title_trace
 ) {
+
   # Get axis labels in hover
   x_mark <- unlist(strsplit(p_obj$x$layoutAttrs[[2]]$xaxis$title$text,  " "))[1]
   y_mark <- unlist(strsplit(p_obj$x$layoutAttrs[[2]]$yaxis$title$text,  " "))[1]
@@ -294,12 +319,12 @@ plot_pop_vis.plotly <- function(
   ) %>%
     plotly::layout(showlegend = TRUE)
 
-  return(p_pop)
+  p_pop
 }
 
 
 
-# Hover text for plot_mod() and plot_conf()
+# Hover text for plot_mod() and plot_conf():
 hovertext_mod <- function(x,
                           y,
                           param_val,
@@ -309,6 +334,7 @@ hovertext_mod <- function(x,
                           lower = NULL,
                           upper = NULL
 ) {
+
   not_na <- !is.na(param_val)
 
   x_text <- paste0(x_mark, ": ", format(x, digits = 3))
@@ -333,16 +359,24 @@ hovertext_mod <- function(x,
 
 
 
-# Trace name for plot_pop()
-to_name_pop <- function(param_val, param_label) {
+# Trace name for plot_pop():
+to_name_pop <- function(param_val,
+                        param_label
+) {
+
   not_na <- !is.na(param_val)
   paste(param_label[not_na], param_val[not_na], collapse = ", ")
 }
 
 
 
-# Trace name for plot_prob(), plot_mod() and plot_conf()
-to_name <- function(tbl, n_method, n_group, title_trace) {
+# Trace name for plot_prob(), plot_mod() and plot_conf():
+to_name <- function(tbl,
+                    n_method,
+                    n_group,
+                    title_trace
+) {
+
   if (n_method <= 1) {
     if (n_group <= 1) {
       title_trace

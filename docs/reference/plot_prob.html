@@ -43,9 +43,9 @@
 <meta property="og:description" content="This function is used to apply the graphical technique of probability
 plotting. It is either applied to the output of estimate_cdf
 (plot_prob.wt_cdf_estimation) or to the output of a mixture model from
-mixmod_regression / mixmod_em
-(plot_prob.wt_model). Note that in the latter case no distribution
-has to be specified because it is inferred from the model." />
+mixmod_regression / mixmod_em (plot_prob.wt_model). Note that in the
+latter case no distribution has to be specified because it is inferred from
+the model." />
 
 
 
@@ -141,11 +141,11 @@ has to be specified because it is inferred from the model." />
 
     <div class="ref-description">
     <p>This function is used to apply the graphical technique of probability
-plotting. It is either applied to the output of <code><a href='estimate_cdf.html'>estimate_cdf</a></code>
+plotting. It is either applied to the output of <a href='estimate_cdf.html'>estimate_cdf</a>
 (<code>plot_prob.wt_cdf_estimation</code>) or to the output of a mixture model from
-<code><a href='mixmod_regression.html'>mixmod_regression</a></code> / <code><a href='mixmod_em.html'>mixmod_em</a></code>
-(<code>plot_prob.wt_model</code>). Note that in the latter case no distribution
-has to be specified because it is inferred from the model.</p>
+<a href='mixmod_regression.html'>mixmod_regression</a> / <a href='mixmod_em.html'>mixmod_em</a> (<code>plot_prob.wt_model</code>). Note that in the
+latter case no distribution has to be specified because it is inferred from
+the model.</p>
     </div>
 
     <pre class="usage"><span class='fu'>plot_prob</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>...</span><span class='op'>)</span>
@@ -153,7 +153,7 @@ has to be specified because it is inferred from the model.</p>
 <span class='co'># S3 method for wt_cdf_estimation</span>
 <span class='fu'>plot_prob</span><span class='op'>(</span>
   <span class='va'>x</span>,
-  distribution <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"weibull"</span>, <span class='st'>"lognormal"</span>, <span class='st'>"loglogistic"</span>, <span class='st'>"normal"</span>, <span class='st'>"logistic"</span>, <span class='st'>"sev"</span><span class='op'>)</span>,
+  distribution <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"weibull"</span>, <span class='st'>"lognormal"</span>, <span class='st'>"loglogistic"</span>, <span class='st'>"sev"</span>, <span class='st'>"normal"</span>, <span class='st'>"logistic"</span><span class='op'>)</span>,
   title_main <span class='op'>=</span> <span class='st'>"Probability Plot"</span>,
   title_x <span class='op'>=</span> <span class='st'>"Characteristic"</span>,
   title_y <span class='op'>=</span> <span class='st'>"Unreliability"</span>,
@@ -178,8 +178,9 @@ has to be specified because it is inferred from the model.</p>
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>x</th>
-      <td><p>An object of class <code>wt_cdf_estimation</code> or
-<code>wt_model</code>.</p></td>
+      <td><p>A tibble with class <code>wt_cdf_estimation</code> returned by <a href='estimate_cdf.html'>estimate_cdf</a>
+or a list with class <code>wt_model</code> returned by <a href='rank_regression.html'>rank_regression</a>, <a href='ml_estimation.html'>ml_estimation</a>,
+<a href='mixmod_regression.html'>mixmod_regression</a> or <a href='mixmod_em.html'>mixmod_em</a>.</p></td>
     </tr>
     <tr>
       <th>...</th>
@@ -191,23 +192,19 @@ has to be specified because it is inferred from the model.</p>
     </tr>
     <tr>
       <th>title_main</th>
-      <td><p>A character string which is assigned to the main title
-of the plot.</p></td>
+      <td><p>A character string which is assigned to the main title.</p></td>
     </tr>
     <tr>
       <th>title_x</th>
-      <td><p>A character string which is assigned to the title of the
-x axis.</p></td>
+      <td><p>A character string which is assigned to the title of the x axis.</p></td>
     </tr>
     <tr>
       <th>title_y</th>
-      <td><p>A character string which is assigned to the title of the
-y axis.</p></td>
+      <td><p>A character string which is assigned to the title of the y axis.</p></td>
     </tr>
     <tr>
       <th>title_trace</th>
-      <td><p>A character string which is assigned to the trace shown in
-the legend.</p></td>
+      <td><p>A character string which is assigned to the legend trace.</p></td>
     </tr>
     <tr>
       <th>plot_method</th>
@@ -217,28 +214,26 @@ the legend.</p></td>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>Returns a plot object containing the probability plot.</p>
+    <p>A plot object containing the probability plot.</p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>If <code>x</code> was split by <code><a href='mixmod_em.html'>mixmod_em</a></code>, <code><a href='estimate_cdf.html'>estimate_cdf</a></code> with
-method <code>"johnson"</code> is applied to subgroup-specific data. The
-calculated plotting positions are shaped according to the determined split in
-<code><a href='mixmod_em.html'>mixmod_em</a></code>.</p>
-<p>In <code><a href='mixmod_regression.html'>mixmod_regression</a></code> a maximum of three subgroups can be determined
-and thus being plotted. The intention of this function is to give the
-user a hint for the existence of a mixture model. An in-depth analysis should
-be done afterwards.</p>
-<p>For <code>plot_method == "plotly"</code> the marker label for x and y are
-determined by the first word provided in the argument <code>title_x</code> and
-<code>title_y</code> respectively, i.e. if <code>title_x = "Mileage in km"</code> the x
-label of the marker is "Mileage". The name of the legend entry is a
-combination of the <code>title_trace</code> and the number of determined subgroups
-(if any). If <code>title_trace = "Group"</code> and the data has been split in two
-groups, the legend entries are "Group: 1" and "Group: 2".</p>
+    <p>If <code>x</code> was split by <a href='mixmod_em.html'>mixmod_em</a>, <a href='estimate_cdf.html'>estimate_cdf</a> with method <code>"johnson"</code> is
+applied to subgroup-specific data. The calculated plotting positions are
+shaped according to the determined split in <a href='mixmod_em.html'>mixmod_em</a>.</p>
+<p>In <a href='mixmod_regression.html'>mixmod_regression</a> a maximum of three subgroups can be determined and thus
+being plotted. The intention of this function is to give the user a hint for
+the existence of a mixture model. An in-depth analysis should be done afterwards.</p>
+<p>For <code>plot_method == "plotly"</code> the marker label for x and y are determined by
+the first word provided in the argument <code>title_x</code> and <code>title_y</code> respectively,
+i.e. if <code>title_x = "Mileage in km"</code> the x label of the marker is "Mileage".
+The name of the legend entry is a combination of the <code>title_trace</code> and the
+number of determined subgroups (if any). If <code>title_trace = "Group"</code> and the
+data has been split in two groups, the legend entries are "Group: 1" and
+"Group: 2".</p>
     <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
 
     <p>Meeker, William Q; Escobar, Luis A., Statistical methods for
-  reliability data, New York: Wiley series in probability and statistics, 1998</p>
+reliability data, New York: Wiley series in probability and statistics, 1998</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='co'># Reliability data:</span>

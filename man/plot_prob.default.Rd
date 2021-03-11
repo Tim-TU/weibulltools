@@ -9,7 +9,7 @@
   y,
   status,
   id = rep("XXXXXX", length(x)),
-  distribution = c("weibull", "lognormal", "loglogistic", "normal", "logistic", "sev"),
+  distribution = c("weibull", "lognormal", "loglogistic", "sev", "normal", "logistic"),
   title_main = "Probability Plot",
   title_x = "Characteristic",
   title_y = "Unreliability",
@@ -19,61 +19,43 @@
 )
 }
 \arguments{
-\item{x}{A numeric vector which consists of lifetime data. Lifetime
-data could be every characteristic influencing the reliability of a product,
-e.g. operating time (days/months in service), mileage (km, miles), load
-cycles.}
+\item{x}{A numeric vector which consists of lifetime data. Lifetime data
+could be every characteristic influencing the reliability of a product, e.g.
+operating time (days/months in service), mileage (km, miles), load cycles.}
 
 \item{y}{A numeric vector which consists of estimated failure probabilities
 regarding the lifetime data in \code{x}.}
 
-\item{status}{A vector of binary data (0 or 1) indicating whether unit \emph{i}
-is a right censored observation (= 0) or a failure (= 1).}
+\item{status}{A vector of binary data (0 or 1) indicating whether a unit is a
+right censored observation (= 0) or a failure (= 1).}
 
-\item{id}{A character vector for the identification of every unit.}
+\item{id}{Identification for every unit.}
 
 \item{distribution}{Supposed distribution of the random variable.}
 
-\item{title_main}{A character string which is assigned to the main title
-of the plot.}
+\item{title_main}{A character string which is assigned to the main title.}
 
-\item{title_x}{A character string which is assigned to the title of the
-x axis.}
+\item{title_x}{A character string which is assigned to the title of the x axis.}
 
-\item{title_y}{A character string which is assigned to the title of the
-y axis.}
+\item{title_y}{A character string which is assigned to the title of the y axis.}
 
-\item{title_trace}{A character string which is assigned to the trace shown in
-the legend.}
+\item{title_trace}{A character string which is assigned to the legend trace.}
 
 \item{plot_method}{Package, which is used for generating the plot output.}
 
 \item{...}{Further arguments passed to or from other methods. Currently not used.}
 }
 \value{
-Returns a plot object containing the probability plot.
+A plot object containing the probability plot.
 }
 \description{
-This function is used to apply the graphical technique of probability plotting.
+This function is used to apply the graphical technique of probability
+plotting.
 }
 \details{
-If \code{x} was split by \code{\link{mixmod_em}}, \code{\link{estimate_cdf}} with
-method \code{"johnson"} is applied to subgroup-specific data. The
-calculated plotting positions are shaped according to the determined split in
-\code{\link{mixmod_em}}.
-
-In \code{\link{mixmod_regression}} a maximum of three subgroups can be determined
-and thus being plotted. The intention of this function is to give the
-user a hint for the existence of a mixture model. An in-depth analysis should
-be done afterwards.
-
-For \code{plot_method == "plotly"} the marker label for x and y are
-determined by the first word provided in the argument \code{title_x} and
-\code{title_y} respectively, i.e. if \code{title_x = "Mileage in km"} the x
-label of the marker is "Mileage". The name of the legend entry is a
-combination of the \code{title_trace} and the number of determined subgroups
-(if any). If \code{title_trace = "Group"} and the data has been split in two
-groups, the legend entries are "Group: 1" and "Group: 2".
+For \code{plot_method == "plotly"} the marker label for x and y are determined by
+the first word provided in the argument \code{title_x} and \code{title_y} respectively,
+i.e. if \code{title_x = "Mileage in km"} the x label of the marker is "Mileage".
 }
 \examples{
 # Vectors:
@@ -107,8 +89,8 @@ plot_lognormal <- plot_prob(
 }
 \references{
 Meeker, William Q; Escobar, Luis A., Statistical methods for
-  reliability data, New York: Wiley series in probability and statistics, 1998
+reliability data, New York: Wiley series in probability and statistics, 1998
 }
 \seealso{
-\code{\link{plot_prob}}
+\link{plot_prob}
 }
