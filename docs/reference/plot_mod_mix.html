@@ -142,7 +142,7 @@ Probability Plot</h1>
     <div class="ref-description">
     <p><a href='https://lifecycle.r-lib.org/articles/stages.html#soft-deprecated'><img src='figures/lifecycle-soft-deprecated.svg' alt='[Soft-deprecated]' /></a></p>
 <p><code>plot_mod_mix()</code> is no longer under active development, switching to
-<code><a href='plot_mod.html'>plot_mod</a></code> is recommended.</p>
+<a href='plot_mod.html'>plot_mod</a> is recommended.</p>
     </div>
 
     <pre class="usage"><span class='fu'>plot_mod_mix</span><span class='op'>(</span>
@@ -160,7 +160,7 @@ Probability Plot</h1>
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>p_obj</th>
-      <td><p>A plot object provided by function <code><a href='plot_prob_mix.html'>plot_prob_mix</a></code>.</p></td>
+      <td><p>A plot object returned by <a href='plot_prob_mix.html'>plot_prob_mix</a>.</p></td>
     </tr>
     <tr>
       <th>x</th>
@@ -169,14 +169,13 @@ regression line.</p></td>
     </tr>
     <tr>
       <th>status</th>
-      <td><p>A vector of binary data (0 or 1) indicating whether unit <em>i</em>
-is a right censored observation (= 0) or a failure (= 1).</p></td>
+      <td><p>A vector of binary data (0 or 1) indicating whether a unit is a
+right censored observation (= 0) or a failure (= 1).</p></td>
     </tr>
     <tr>
       <th>mix_output</th>
-      <td><p>A list provided by <code><a href='mixmod_regression.html'>mixmod_regression</a></code> or
-<code><a href='mixmod_em.html'>mixmod_em</a></code>, which consists of elements necessary to visualize
-the regression lines.</p></td>
+      <td><p>A list returned by <a href='mixmod_regression.html'>mixmod_regression</a> or <a href='mixmod_em.html'>mixmod_em</a>,
+which consists of elements necessary to visualize the regression lines.</p></td>
     </tr>
     <tr>
       <th>distribution</th>
@@ -184,8 +183,7 @@ the regression lines.</p></td>
     </tr>
     <tr>
       <th>title_trace</th>
-      <td><p>A character string which is assigned to the trace shown in
-the legend.</p></td>
+      <td><p>A character string which is assigned to the legend trace.</p></td>
     </tr>
     <tr>
       <th>...</th>
@@ -195,18 +193,17 @@ the legend.</p></td>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>Returns a plot object containing the probability plot with
-plotting positions and estimated regression line(s).</p>
+    <p>A plot object containing the probability plot with plotting positions
+and estimated regression line(s).</p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
     <p>This function adds one or multiple estimated regression lines to an existing
-probability plot (<code><a href='plot_prob.html'>plot_prob</a></code>). Depending on the output of the
-function <code><a href='mixmod_regression.html'>mixmod_regression</a></code> or <code><a href='mixmod_em.html'>mixmod_em</a></code> one or
-multiple lines are plotted.</p>
-<p>The name of the legend entry is a combination of the <code>title_trace</code> and
-the number of determined subgroups. If <code>title_trace = "Line"</code> and the
-data has been split in two groups, the legend entries would be
-<code>"Line: 1"</code> and <code>"Line: 2"</code>.</p>
+probability plot <a href='plot_prob.html'>plot_prob</a>). Depending on the output of the function
+<a href='mixmod_regression.html'>mixmod_regression</a> or <a href='mixmod_em.html'>mixmod_em</a> one or multiple lines are plotted.</p>
+<p>The name of the legend entry is a combination of the <code>title_trace</code> and the
+number of determined subgroups. If <code>title_trace = "Line"</code> and the data has
+been split in two groups, the legend entries would be <code>"Line: 1"</code> and
+<code>"Line: 2"</code>.</p>
     <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
 
     <p>Doganaksoy, N.; Hahn, G.; Meeker, W. Q., Reliability Analysis by

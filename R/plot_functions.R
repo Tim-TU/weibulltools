@@ -1480,36 +1480,35 @@ plot_conf.default <- function(p_obj,
 #' This function adds one or multiple linearized CDFs to an existing plot grid.
 #'
 #' @details
-#' \code{dist_params_tbl} is a data.frame with two or three columns. For
-#' location-scale distributions the first column contains the location parameter
+#' `dist_params_tbl` is a data.frame with two or three columns. For
+#' location-scale distributions, the first column contains the location parameter
 #' and the second column contains the scale parameter. For three-parametric
 #' distributions the third column contains the threshold parameter.
 #'
 #' If only one population line should be displayed, a numeric vector of length
-#' two or three is also supported (\code{c(loc, sc)} or \code{c(loc, sc, thres)}).
+#' 2 or 3 is also supported (`c(loc, sc)` or `c(loc, sc, thres)`).
 #'
-#' @param p_obj A plot object to which the population lines are added or
-#'   \code{NULL}. If \code{NULL} the population lines are plotted in an empty grid.
+#' @inheritParams plot_prob
+#' @param p_obj A plot object to which the population line(s) is (are) added or
+#' `NULL`. If `NULL` the population line(s) is (are) plotted in an empty grid.
 #' @param x A numeric vector of length two or greater used for the x coordinates
-#'   of the population line. If \code{length(x) == 2} a sequence of length 200
-#'   between \code{x[1]} and \code{x[2]} is created. This sequence is equidistant
-#'   with respect to the scale of the x axis. If \code{length(x) > 2} the elements
-#'   of \code{x} are the x coordinates of the population line.
+#' of the population line. If `length(x) == 2` a sequence of length 200 between
+#' `x[1]` and `x[2]` is created. This sequence is equidistant with respect to the
+#' scale of the x axis. If `length(x) > 2` the elements of `x` are the x
+#' coordinates of the population line.
 #' @param dist_params_tbl A tibble. See 'Details'.
 #' @param distribution Supposed distribution of the random variable. In the
-#'   context of this function \code{"weibull"}, \code{"lognormal"} and
-#'   \code{"loglogistic"} stand for the two- \strong{and} the three-parametric
-#'   version of the respective distribution. The distinction is made via
-#'   \code{dist_params_tbl}.
+#' context of this function `"weibull"`, `"lognormal"` and `"loglogistic"` can
+#' be the two- **and** three-parametric versions of the respective distribution.
+#' The distinction is made with `dist_params_tbl`.
 #' @param tol The failure probability is restricted to the interval
-#'   \eqn{[tol, 1 - tol]}. The default value is in accordance with the decimal
-#'   places shown in the hover for \code{plot_method = "plotly"}.
-#' @param plot_method Plot package, which produces the visual output. Only
-#'   used with \code{p_obj = NULL}, otherwise \code{p_obj} is used to determine
-#'   the plot method.
-#' @inheritParams plot_prob
+#' \eqn{[tol, 1 - tol]}. The default value is in accordance with the decimal
+#' places shown in the hover for `plot_method = "plotly"`.
+#' @param plot_method Package, which is used for generating the plot output. Only
+#' used when `p_obj = NULL`. If `p_obj != NULL` the plot object is used to
+#' determine the plot method.
 #'
-#' @return A plot object which contains the linearized CDF(s).
+#' @return A plot object containing the linearized CDF(s).
 #'
 #' @examples
 #' x <- rweibull(n = 100, shape = 1, scale = 20000)
@@ -1556,15 +1555,19 @@ plot_conf.default <- function(p_obj,
 #'   distribution = "weibull"
 #' )
 #'
+#' @md
+#'
 #' @export
-plot_pop <- function(
-  p_obj = NULL, x, dist_params_tbl,
-  distribution = c(
-    "weibull", "lognormal", "loglogistic", "normal", "logistic", "sev"
-  ),
-  tol = 1e-6,
-  title_trace = "Population",
-  plot_method = c("plotly", "ggplot2")
+plot_pop <- function(p_obj = NULL,
+                     x,
+                     dist_params_tbl,
+                     distribution = c(
+                       "weibull", "lognormal", "loglogistic",
+                       "sev", "normal", "logistic"
+                     ),
+                     tol = 1e-6,
+                     title_trace = "Population",
+                     plot_method = c("plotly", "ggplot2")
 ) {
 
   distribution <- match.arg(distribution)
@@ -1579,22 +1582,22 @@ plot_pop <- function(
     )
   }
 
-  # Support vector instead of tibble for ease of use in dist_params_tbl
+  # Support vector instead of tibble for ease of use in dist_params_tbl:
   if (!inherits(dist_params_tbl, "data.frame")) {
     dist_params_tbl <- tibble::tibble(
       loc = dist_params_tbl[1],
       sc = dist_params_tbl[2],
-      # NA if length 2
+      # thres is `NA` if `dist_params` is of length 2:
       thres = dist_params_tbl[3]
     )
   }
 
-  # Add thres column if not present
+  # Add thres column if not present:
   if (ncol(dist_params_tbl) == 2) {
     dist_params_tbl$thres <- NA_real_
   }
 
-  # Ensure correct naming
+  # Ensure correct naming:
   names(dist_params_tbl) <- c("loc", "sc", "thres")
 
   tbl_pop <- plot_pop_helper(x, dist_params_tbl, distribution, tol)

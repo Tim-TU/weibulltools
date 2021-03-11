@@ -248,7 +248,13 @@ plot_conf_helper <- function(tbl_mod,
 
 
 
-plot_pop_helper <- function(x, dist_params_tbl, distribution, tol = 1e-6) {
+# Helper function for plot_pop:
+plot_pop_helper <- function(x,
+                            dist_params_tbl,
+                            distribution,
+                            tol = 1e-6
+) {
+
   x_s <- if (length(x) == 2) {
     10 ^ seq(log10(x[1]), log10(x[2]), length.out = 200)
   } else {
@@ -258,17 +264,17 @@ plot_pop_helper <- function(x, dist_params_tbl, distribution, tol = 1e-6) {
   tbl_pop <- dist_params_tbl %>%
     dplyr::mutate(group = as.character(dplyr::row_number()))
 
-  # Map predict_prob over tbl_pop
+  # Map predict_prob over tbl_pop:
   tbl_pop <- purrr::pmap_dfr(
     tbl_pop,
     x_s = x_s,
     distribution = distribution,
     function(loc, sc, thres = NA, group, x_s, distribution) {
-      # Replace NA with NULL, so that thres is ignored in c()
+      # Replace NA with NULL, so that thres is ignored in c():
       dist_params <- c(loc, sc, thres %NA% NULL)
 
       if (length(dist_params) == 3) {
-        # Case three-parametric distribution
+        # Case three-parametric distribution:
         distribution <- paste0(distribution, "3")
       }
 
@@ -318,5 +324,5 @@ plot_pop_helper <- function(x, dist_params_tbl, distribution, tol = 1e-6) {
     ) %>%
     dplyr::filter(.data$y_s <= 1 - tol, .data$y_s >= tol)
 
-  return(tbl_pop)
+  tbl_pop
 }

@@ -145,7 +145,7 @@ probability plot which also includes the estimated regression line.</p>
   <span class='va'>p_obj</span>,
   <span class='va'>x</span>,
   <span class='va'>y</span>,
-  distribution <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"weibull"</span>, <span class='st'>"lognormal"</span>, <span class='st'>"loglogistic"</span>, <span class='st'>"normal"</span>, <span class='st'>"logistic"</span>, <span class='st'>"sev"</span>,
+  distribution <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"weibull"</span>, <span class='st'>"lognormal"</span>, <span class='st'>"loglogistic"</span>, <span class='st'>"sev"</span>, <span class='st'>"normal"</span>, <span class='st'>"logistic"</span>,
     <span class='st'>"weibull3"</span>, <span class='st'>"lognormal3"</span>, <span class='st'>"loglogistic3"</span><span class='op'>)</span>,
   direction <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"y"</span>, <span class='st'>"x"</span><span class='op'>)</span>,
   title_trace <span class='op'>=</span> <span class='st'>"Confidence Limit"</span>,
@@ -157,12 +157,12 @@ probability plot which also includes the estimated regression line.</p>
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>p_obj</th>
-      <td><p>A plot object returned from <code><a href='plot_mod.html'>plot_mod</a></code>.</p></td>
+      <td><p>A plot object returned by <a href='plot_mod.html'>plot_mod</a>.</p></td>
     </tr>
     <tr>
       <th>x</th>
-      <td><p>A list containing the x-coordinates of the confidence region(s).
-The list can be of length 1 or 2. For more information see <strong>Details</strong>.</p></td>
+      <td><p>A list containing the x-coordinates of the confidence region(s). The
+list can be of length 1 or 2. For more information see <strong>Details</strong>.</p></td>
     </tr>
     <tr>
       <th>y</th>
@@ -176,12 +176,11 @@ The list can be of length 1 or 2. For more information see <strong>Details</stro
     <tr>
       <th>direction</th>
       <td><p>A character string specifying the direction of the plotted
-interval(s). Must be either "y" (failure probabilities) or "x" (quantiles).</p></td>
+interval(s). <code>"y"</code> for failure probabilities or <code>"x"</code> for quantiles.</p></td>
     </tr>
     <tr>
       <th>title_trace</th>
-      <td><p>A character string which is assigned to the trace shown in
-the legend.</p></td>
+      <td><p>A character string which is assigned to the legend trace.</p></td>
     </tr>
     <tr>
       <th>...</th>
@@ -191,30 +190,27 @@ the legend.</p></td>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>Returns a plot object containing the probability plot with
-  plotting positions, the estimated regression line and the estimated
-  confidence region(s).</p>
+    <p>A plot object containing the probability plot with plotting positions,
+the estimated regression line and the estimated confidence region(s).</p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>It is important that the length of the vectors provided as lists in <code>x</code>
-and <code>y</code> match with the length of the vectors <code>x</code> and <code>y</code> in
-the function <code><a href='plot_mod.html'>plot_mod</a></code>. For this reason the following procedure
-is recommended:</p><ul>
-<li><p>Calculate confidence intervals with the function
-    <code><a href='confint_betabinom.html'>confint_betabinom</a></code> or <code><a href='confint_fisher.html'>confint_fisher</a></code> and store
-    it in a <code>data.frame</code>. For instance call it df.</p></li>
-<li><p>Inside <code><a href='plot_mod.html'>plot_mod</a></code> use the output <code>df$x</code>
-    for <code>x</code> and <code>df$prob</code> for <code>y</code> of the function(s) named before.</p></li>
+    <p>It is important that the length of the vectors provided as lists in <code>x</code> and
+<code>y</code> match with the length of the vectors <code>x</code> and <code>y</code> in the function <a href='plot_mod.html'>plot_mod</a>.
+For this reason the following procedure is recommended:</p><ul>
+<li><p>Calculate confidence intervals with the function <a href='confint_betabinom.html'>confint_betabinom</a> or
+<a href='confint_fisher.html'>confint_fisher</a> and store it in a <code>data.frame</code>. For instance call it df.</p></li>
+<li><p>Inside <a href='plot_mod.html'>plot_mod</a> use the output <code>df$x</code> for <code>x</code> and <code>df$prob</code> for <code>y</code> of
+the function(s) named before.</p></li>
 <li><p>In <strong>Examples</strong> the described approach is shown with code.</p></li>
 </ul>
 
     <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
 
     <p>Meeker, William Q; Escobar, Luis A., Statistical methods for
-  reliability data, New York: Wiley series in probability and statistics, 1998</p>
+reliability data, New York: Wiley series in probability and statistics, 1998</p>
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
-    <div class='dont-index'><p><code><a href='plot_conf.html'>plot_conf</a></code></p></div>
+    <div class='dont-index'><p><a href='plot_conf.html'>plot_conf</a></p></div>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='co'># Vectors:</span>

@@ -41,8 +41,8 @@
 
 <meta property="og:title" content="Estimation of Failure Probabilities using Johnson's Method — johnson_method" />
 <meta property="og:description" content="
-johnson_method() is no longer under active development, switching
-to estimate_cdf is recommended." />
+johnson_method() is no longer under active development, switching to
+estimate_cdf is recommended." />
 
 
 
@@ -138,8 +138,8 @@ to estimate_cdf is recommended." />
 
     <div class="ref-description">
     <p><a href='https://lifecycle.r-lib.org/articles/stages.html#soft-deprecated'><img src='figures/lifecycle-soft-deprecated.svg' alt='[Soft-deprecated]' /></a></p>
-<p><code>johnson_method()</code> is no longer under active development, switching
-to <code><a href='estimate_cdf.html'>estimate_cdf</a></code> is recommended.</p>
+<p><code>johnson_method()</code> is no longer under active development, switching to
+<a href='estimate_cdf.html'>estimate_cdf</a> is recommended.</p>
     </div>
 
     <pre class="usage"><span class='fu'>johnson_method</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>status</span>, id <span class='op'>=</span> <span class='cn'>NULL</span>, method <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"benard"</span>, <span class='st'>"invbeta"</span><span class='op'>)</span><span class='op'>)</span></pre>
@@ -156,8 +156,8 @@ cycles.</p></td>
     </tr>
     <tr>
       <th>status</th>
-      <td><p>A vector of binary data (0 or 1) indicating whether unit <em>i</em>
-is a right censored observation (= 0) or a failure (= 1).</p></td>
+      <td><p>A vector of binary data (0 or 1) indicating whether a unit is
+a right censored observation (= 0) or a failure (= 1).</p></td>
     </tr>
     <tr>
       <th>id</th>
@@ -165,8 +165,8 @@ is a right censored observation (= 0) or a failure (= 1).</p></td>
     </tr>
     <tr>
       <th>method</th>
-      <td><p>Method for the estimation of the cdf. Can be "benard" (default)
-or "invbeta".</p></td>
+      <td><p>Method for the estimation of the cdf. Can be <code>"benard"</code> (default)
+or <code>"invbeta"</code>.</p></td>
     </tr>
     </table>
 
@@ -175,20 +175,20 @@ or "invbeta".</p></td>
     <p>A tibble containing the following columns:</p><ul>
 <li><p><code>id</code> : Identification for every unit.</p></li>
 <li><p><code>x</code> : Lifetime characteristic.</p></li>
-<li><p><code>status</code> : Binary data (0 or 1) indicating whether a unit is a
-right censored observation (= 0) or a failure (= 1).</p></li>
-<li><p><code>rank</code> : The adjusted ranks.</p></li>
+<li><p><code>status</code> : Binary data (0 or 1) indicating whether a unit is a right
+censored observation (= 0) or a failure (= 1).</p></li>
+<li><p><code>rank</code> : Adjusted ranks, <code>NA</code> if <code>status = 0</code>.</p></li>
 <li><p><code>prob</code> : Estimated failure probabilities, <code>NA</code> if <code>status = 0</code>.</p></li>
-<li><p><code>cdf_estimation_method</code> : Specified method for the estimation of
-failure probabilities (always 'johnson').</p></li>
+<li><p><code>cdf_estimation_method</code> : Specified method for the estimation of failure
+probabilities (always 'johnson').</p></li>
 </ul>
 
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
     <p>This non-parametric approach is used to estimate the failure probabilities in
-terms of uncensored or (multiple) right censored data. Compared to complete data the
-correction is done by calculating adjusted ranks which takes non-defective
-units into account.</p>
+terms of uncensored or (multiple) right censored data. Compared to complete
+data the correction is done by calculating adjusted ranks which takes
+non-defective units into account.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='co'># Vectors:</span>
