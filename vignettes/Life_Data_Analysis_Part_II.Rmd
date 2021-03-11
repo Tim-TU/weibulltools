@@ -141,7 +141,7 @@ To apply the introduced parameter estimation methods the `shock` and `alloy` dat
 
 ### Shock Absorber
 
-In this dataset kilometer-dependent problems that have occurred on shock absorbers are reported. In addition to failed items the dataset also contains non-defectives (*censored*) observations. The data can be found in _Statistical Methods for Reliability Data_ [^note4]. 
+In this dataset kilometer-dependent problems that have occurred on shock absorbers are reported. In addition to failed items the dataset also contains non-defective (*censored*) observations. The data can be found in _Statistical Methods for Reliability Data_ [^note4]. 
 
 [^note4]: Meeker, W. Q.; Escobar, L. A.: _Statistical Methods for Reliability Data_, 
           _New York, Wiley series in probability and statistics_, 1998, p. 630  

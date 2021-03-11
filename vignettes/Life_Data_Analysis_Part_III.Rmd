@@ -36,7 +36,7 @@ is the approximated two-sided confidence interval for $\vartheta$, where $\alpha
 
 ## Data
 
-To calculate the introduced confidence intervals the `shock` datasets is used. In this dataset kilometer-dependent problems that have occurred on shock absorbers are reported. In addition to failed items the dataset also contains non-defectives (*censored*) observations. The data can be found in _Statistical Methods for Reliability Data_ [^note4]. 
+To calculate the introduced confidence intervals the `shock` dataset is used. In this dataset kilometer-dependent problems that have occurred on shock absorbers are reported. In addition to failed items the dataset also contains non-defective (*censored*) observations. The data can be found in _Statistical Methods for Reliability Data_ [^note4]. 
 
 [^note4]: Meeker, W. Q.; Escobar, L. A.: _Statistical Methods for Reliability Data_, 
           _New York, Wiley series in probability and statistics_, 1998, p. 630  
