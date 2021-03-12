@@ -26,13 +26,31 @@ library(weibulltools)
 library(plotly)
 ```
 
-Computing confidence intervals is a well-known measure to express the uncertainty associated with an estimation. They can be 
+Computing confidence intervals is a well-known measure to express the uncertainty associated with an estimation. In the context of the Weibull analysis, confidence intervals can be computed for the estimated parameters of the cumulative distribution function (*CDF*) and for the quantiles or failure probabilities of this respective *CDF*. 
 
-## Fisher's confidence bounds
+## Confidence intervals for estimated parameters
+
+For each estimated distribution parameter a confidence interval can be computed. The calculation formula depends on the estimation method.
+
+### Rank Regression
+
+Rank regression performs a linear regression model between the lifetime characteristic and the respective failure probabilities. For the Weibull and other (log)-location-scale distributions the location parameter $\mu$ corresponds to the intercept of the linear model, whereas the scale parameter $\sigma$ corresponds to the slope of the linear model. Confidence intervals for the estimated parameters $\hat{\mu}$ and $\hat{\sigma}$ can be calculated using the standard errors $\sigma_{\hat{\sigma}}$ and $\sigma_{\hat{\mu}}$:
+
+$$\mu_{\text{lower}/\text{upper}} = \hat{\mu} \pm z_{1 - \frac{\alpha}{2}} \sigma_{\hat{\mu}} \, , \qquad \sigma_{\text{lower}/\text{upper}} = \hat{\sigma} \pm z_{1 - \frac{\alpha}{2}} \sigma_{\hat{\sigma}}$$
+
+$\sigma_{\hat{\mu}}$ and $\sigma_{\hat{\sigma}}$ are unknown and need to be estimated as well. This estimation is systematically skewed, but can be adjusted by using the quantiles of Student's t-distribution:
+
+$$\mu_{\text{lower}/\text{upper}} = \hat{\mu} \pm t_{1 - \frac{\alpha}{2}, \, n - 2} \, \hat{\sigma}_{\mu} \, , \qquad \sigma_{\text{lower}/\text{upper}} = \hat{\sigma} \pm t_{1 - \frac{\alpha}{2}, \, n - 2} \, \hat{\sigma}_{\sigma}$$
+
+The estimated standard errors $\hat{\sigma}_{\mu}$ and $\hat{\sigma}_{\sigma}$ are taken from the covariance matrix. In the case of rank regression the heteroskedasticity-consistent estimation should be used.
+
+### Maximum Likelihood Estimation
 
 Maximum Likelihood estimators are asymptotically normally distributed. Therefore confidence intervals can be approximated using the normal distribution. Let $\vartheta$ be an unknown distribution parameter and $\hat{\vartheta}_{\text{MLE}}$ be an Maximum Likelihood estimator for $\vartheta$ with estimated standard error $\sqrt{\hat{Var}(\hat{\vartheta})}$. Then 
 $$\bigg[\vartheta_{\text{lower}} = \hat{\vartheta}_{\text{MLE}} - z_{1 - \frac{\alpha}{2}} \sqrt{\hat{Var}(\hat{\vartheta}_{\text{MLE}})} \, ; \quad \vartheta_{\text{upper}} = \hat{\vartheta}_{\text{MLE}} + z_{1 - \frac{\alpha}{2}} \sqrt{\hat{Var}(\hat{\vartheta}_{\text{MLE}})} \bigg]$$
-is the approximated two-sided confidence interval for $\vartheta$, where $\alpha$ is the confidence level and $z_p$ is the $p$-quantile of the standard normal distribution. The standard error is estimated using the so-called *delta method*.
+is the approximated two-sided confidence interval for $\vartheta$, where $\alpha$ is the confidence level and $z_p$ is the $p$-quantile of the standard normal distribution.
+
+## Confidence bounds for quantiles and failure probabilities
 
 ## Data
 
