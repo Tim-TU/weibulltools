@@ -11,7 +11,8 @@ plot_prob(x, ...)
 
 \method{plot_prob}{wt_cdf_estimation}(
   x,
-  distribution = c("weibull", "lognormal", "loglogistic", "sev", "normal", "logistic"),
+  distribution = c("weibull", "lognormal", "loglogistic", "sev", "normal", "logistic",
+    "exponential"),
   title_main = "Probability Plot",
   title_x = "Characteristic",
   title_y = "Unreliability",

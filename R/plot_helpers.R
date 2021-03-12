@@ -1,10 +1,9 @@
 # Helper function to set the distribution-specific grid:
 plot_layout_helper <- function(x,
-                               distribution,
-                               plot_method
+                               distribution
 ) {
 
-  # Define x-ticks as logarithm to the base of 10 for log-location-lcale distributions:
+  # Define x-ticks as logarithm to the base of 10 for log-location-scale distributions:
   if (distribution %in% c("weibull", "lognormal", "loglogistic")) {
 
     # Layout depends on x, using a function to build helpful sequences:
@@ -21,8 +20,7 @@ plot_layout_helper <- function(x,
     x_labels[c(rep(F, 3), rep(T, 6))] <- " "
   } else {
     # We don't need these values, therefore we return NULL
-    x_ticks <- if (plot_method == "plotly") NULL else ggplot2::waiver()
-    x_labels <- if (plot_method == "plotly") NULL else ggplot2::waiver()
+    x_ticks <- x_labels <- NULL
   }
 
   # y-ticks and y-labels

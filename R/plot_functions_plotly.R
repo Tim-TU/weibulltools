@@ -1,9 +1,11 @@
 #' @export
 plot_layout_vis.plotly <- function(p_obj, # An empty plotly object.
-                                   x,
+                                   x, # Named list with x_ticks and x_labels.
+                                   y, # Named list with y_ticks and y_labels.
                                    distribution = c(
                                      "weibull", "lognormal", "loglogistic",
-                                     "sev", "normal", "logistic"
+                                     "sev", "normal", "logistic",
+                                     "exponential"
                                    ),
                                    title_main = "Probability Plot",
                                    title_x = "Characteristic",
@@ -12,25 +14,11 @@ plot_layout_vis.plotly <- function(p_obj, # An empty plotly object.
 
   distribution <- match.arg(distribution)
 
-  layout_helper <- plot_layout_helper(
-    x = x,
-    distribution = distribution,
-    plot_method = "plotly"
-  )
-
-  ## Type of x axis:
-  x_axis_type <- if (distribution %in% c("sev", "normal", "logistic")) {
-    "-"
-  } else {
-    "log"
-  }
-
-  ## Configuration x axis:
+  # Configuration of x axis:
   x_config <- list(
     title = list(
       text = title_x
     ),
-    type = x_axis_type,
     autorange = TRUE,
     rangemode = "nonnegative",
     ticks = "inside",
@@ -47,12 +35,14 @@ plot_layout_vis.plotly <- function(p_obj, # An empty plotly object.
     linecolor = "#a0a0a0"
   )
 
+  # Distributions that need a log transformed x axis:
   if (distribution %in% c("weibull", "lognormal", "loglogistic")) {
     x_config <- c(
       x_config,
       list(
-        tickvals = layout_helper$x_ticks,
-        ticktext = layout_helper$x_labels
+        type = "log",
+        tickvals = x$x_ticks,
+        ticktext = x$x_labels
       )
     )
   }
@@ -63,8 +53,8 @@ plot_layout_vis.plotly <- function(p_obj, # An empty plotly object.
       text = title_y
     ),
     autorange = TRUE,
-    tickvals = layout_helper$y_ticks,
-    ticktext = layout_helper$y_labels,
+    tickvals = y$y_ticks,
+    ticktext = y$y_labels,
     ticks = "inside",
     tickwidth = 1,
     tickfont = list(family = 'Arial', size = 10),
@@ -128,7 +118,8 @@ plot_prob_vis.plotly <- function(p_obj,
                                  tbl_prob,
                                  distribution = c(
                                    "weibull", "lognormal", "loglogistic",
-                                   "sev", "normal", "logistic"
+                                   "sev", "normal", "logistic",
+                                   "exponential"
                                  ),
                                  title_main = "Probability Plot",
                                  title_x = "Characteristic",

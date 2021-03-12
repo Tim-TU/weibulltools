@@ -21,7 +21,8 @@
 plot_layout <- function(x,
                         distribution = c(
                           "weibull", "lognormal", "loglogistic",
-                          "sev", "normal", "logistic"
+                          "sev", "normal", "logistic",
+                          "exponential"
                         ),
                         title_main = "Probability Plot",
                         title_x = "Characteristic",
@@ -32,15 +33,27 @@ plot_layout <- function(x,
   distribution <- match.arg(distribution)
   plot_method <- match.arg(plot_method)
 
+  # Call to `plot_layout_helper()` to determine the grid:
+  layout_helper <- plot_layout_helper(
+    x = x,
+    distribution = distribution
+  )
+
+  # Prepare inputs for S3 plot_layout_vis:
+  x_list <- layout_helper[c("x_ticks", "x_labels")]
+  y_list <- layout_helper[c("y_ticks", "y_labels")]
+
   p_obj <- if (plot_method == "plotly") {
     plotly::plotly_empty(type = "scatter", mode = "markers", colors = "Set2")
   } else {
     ggplot2::ggplot()
   }
 
+  # Construct plot_method dependent grid:
   plot_layout_vis(
     p_obj = p_obj,
-    x = x,
+    x = x_list,
+    y = y_list,
     distribution = distribution,
     title_main = title_main,
     title_x = title_x,
@@ -154,7 +167,8 @@ plot_prob <- function(x, ...) {
 plot_prob.wt_cdf_estimation <- function(x,
                                         distribution = c(
                                           "weibull", "lognormal", "loglogistic",
-                                          "sev", "normal", "logistic"
+                                          "sev", "normal", "logistic",
+                                          "exponential"
                                         ),
                                         title_main = "Probability Plot",
                                         title_x = "Characteristic",
@@ -439,7 +453,8 @@ plot_prob.default <- function(x,
                               id = rep("XXXXXX", length(x)),
                               distribution = c(
                                 "weibull", "lognormal", "loglogistic",
-                                "sev", "normal", "logistic"
+                                "sev", "normal", "logistic",
+                                "exponential"
                               ),
                               title_main = "Probability Plot",
                               title_x = "Characteristic",
@@ -487,7 +502,7 @@ plot_prob_ <- function(cdf_estimation,
   # Call to helper function:
   tbl_prob <- plot_prob_helper(cdf_estimation, distribution)
 
-  # call to `plot_layout()` to determine the distribution-specific grid:
+  # Call to `plot_layout()` to determine the distribution-specific grid:
   p_obj <- plot_layout(
     x = tbl_prob$x,
     distribution = distribution,
@@ -497,7 +512,7 @@ plot_prob_ <- function(cdf_estimation,
     plot_method = plot_method
   )
 
-  # Dispatch based on `plot_method`:
+  # Dispatch based on 'plot_method':
   p_obj <- plot_prob_vis(
     p_obj = p_obj,
     tbl_prob = tbl_prob,
@@ -508,7 +523,7 @@ plot_prob_ <- function(cdf_estimation,
     title_trace = title_trace
   )
 
-  # Store distribution for compatibility checks
+  # Store distribution for compatibility checks:
   attr(p_obj, "distribution") <- distribution
 
   p_obj

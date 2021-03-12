@@ -118,7 +118,7 @@ rdirichlet <- function(n, par) {
 
 
 
-# Standard quantile function
+# Standard quantile function:
 q_std <- function(p, distribution) {
   switch(
     distribution,
@@ -127,13 +127,14 @@ q_std <- function(p, distribution) {
     "lognormal" =,
     "normal" = stats::qnorm(p),
     "loglogistic" =,
-    "logistic" = stats::qlogis(p)
+    "logistic" = stats::qlogis(p),
+    "exponential" = stats::qexp(p)
   )
 }
 
 
 
-# Standard probability function
+# Standard probability function:
 p_std <- function(q, distribution) {
   switch(
     distribution,
@@ -142,6 +143,7 @@ p_std <- function(q, distribution) {
     "lognormal" =,
     "normal" = stats::pnorm(q),
     "loglogistic" =,
-    "logistic" = stats::plogis(q)
+    "logistic" = stats::plogis(q),
+    "exponential" = stats::pexp(q)
   )
 }

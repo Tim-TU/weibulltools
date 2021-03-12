@@ -6,7 +6,8 @@
 \usage{
 plot_layout(
   x,
-  distribution = c("weibull", "lognormal", "loglogistic", "sev", "normal", "logistic"),
+  distribution = c("weibull", "lognormal", "loglogistic", "sev", "normal", "logistic",
+    "exponential"),
   title_main = "Probability Plot",
   title_x = "Characteristic",
   title_y = "Unreliability",
