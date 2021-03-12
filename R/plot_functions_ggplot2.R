@@ -35,6 +35,9 @@ plot_layout_vis.ggplot <- function(p_obj, # An empty ggplot object.
       breaks = y$y_ticks,
       minor_breaks = NULL,
       labels = y$y_labels,
+      guide = ggplot2::guide_axis( # experimental!
+        check.overlap = TRUE
+      )
     ) +
     ggplot2::theme_bw() +
     ggplot2::theme(

@@ -509,6 +509,7 @@ plot_prob_ <- function(cdf_estimation,
   # Call to `plot_layout()` to determine the distribution-specific grid:
   p_obj <- plot_layout(
     x = tbl_prob$x,
+    y = tbl_prob$prob, # experimental!
     distribution = distribution,
     title_main = title_main,
     title_x = title_x,
