@@ -6,6 +6,7 @@
 \usage{
 plot_layout(
   x,
+  y = NULL,
   distribution = c("weibull", "lognormal", "loglogistic", "sev", "normal", "logistic",
     "exponential"),
   title_main = "Probability Plot",
@@ -17,6 +18,9 @@ plot_layout(
 \arguments{
 \item{x}{A numeric vector which consists of lifetime data. \code{x} is used to
 specify the grid of the plot.}
+
+\item{y}{Optional argument. If used, it is a numeric vector which consists of
+failure probabilities with respect to \code{x}.}
 
 \item{distribution}{Supposed distribution of the random variable.}
 

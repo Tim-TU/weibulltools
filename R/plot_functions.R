@@ -7,6 +7,8 @@
 #'
 #' @param x A numeric vector which consists of lifetime data. `x` is used to
 #' specify the grid of the plot.
+#' @param y Optional argument. If used, it is a numeric vector which consists of
+#' failure probabilities with respect to `x`.
 #' @param distribution Supposed distribution of the random variable.
 #' @param title_main A character string which is assigned to the main title.
 #' @param title_x A character string which is assigned to the title of the x axis.
@@ -19,6 +21,7 @@
 #'
 #' @keywords internal
 plot_layout <- function(x,
+                        y = NULL,
                         distribution = c(
                           "weibull", "lognormal", "loglogistic",
                           "sev", "normal", "logistic",
@@ -36,6 +39,7 @@ plot_layout <- function(x,
   # Call to `plot_layout_helper()` to determine the grid:
   layout_helper <- plot_layout_helper(
     x = x,
+    y = y,
     distribution = distribution
   )
 

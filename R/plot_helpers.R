@@ -1,5 +1,6 @@
 # Helper function to set the distribution-specific grid:
 plot_layout_helper <- function(x,
+                               y = NULL,
                                distribution
 ) {
 
@@ -20,14 +21,27 @@ plot_layout_helper <- function(x,
     x_labels <- x_ticks
     x_labels[c(rep(F, 3), rep(T, 6))] <- " "
   } else {
-    # We don't need these values, therefore we return NULL
+    # We don't need these values, therefore we return NULL:
     x_ticks <- x_labels <- NULL
   }
 
-  # y-ticks and y-labels
-  # hard coded but it's okay since range is always between 0 and 1.
-  y_s <- c(.0000001, .000001, .00001, .0001, .001, .01, .05, .1, .2, .3, .5, .6,
-           .7, .8, .9, .95, .99, .999, .9999, .99999)
+  # y-ticks and y-labels:
+  ## Hard coded but it's okay since range is always between 0 and 1:
+  y_s <- c(.0000001, .000001, .00001, .0001, .001, .005, .01, .05, .1,
+           .2, .3, .5, .6, .7, .8, .9, .95, .99, .999, .9999, .99999)
+
+  ## If argument y is not `NULL` y is used to narrow down the range of y_s:
+  if (!purrr::is_null(y)) {
+    ### y range:
+    ymin <- min(y, na.rm = TRUE)
+    ymax <- max(y, na.rm = TRUE)
+
+    ### Determine adjacent indices, i.e. min(y)_(i-1) and max(y)_(i+1) if exist:
+    ind_min <- max(which(y_s < ymin), 1L)
+    ind_max <- min(which(y_s > ymax), length(y_s))
+
+    y_s <- y_s[ind_min:ind_max]
+  }
 
   y_ticks <- q_std(y_s, distribution)
 
