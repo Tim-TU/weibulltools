@@ -84,7 +84,7 @@ plot_mod_helper <- function(x,
 ) {
 
   if (length(x) == 2) {
-    if (two_parametric(distribution) %in% c("weibull", "lognormal", "loglogistic")) {
+    if (std_parametric(distribution) %in% c("weibull", "lognormal", "loglogistic")) {
       x_p <- 10 ^ seq(log10(x[1]), log10(x[2]), length.out = 100)
     } else {
       x_p <- seq(x[1], x[2], length.out = 100)
@@ -115,7 +115,7 @@ plot_mod_helper <- function(x,
 
   tbl_pred <- tibble::tibble(x_p = x_p, y_p = y_p)
 
-  q <- q_std(y_p, two_parametric(distribution))
+  q <- q_std(y_p, std_parametric(distribution))
 
   # preparation of plotly hovers:
   ## raises problems if one-parameter distributions like exponential will be implemented!
@@ -224,7 +224,7 @@ plot_conf_helper_2 <- function(confint) {
 
   tbl_p <- dplyr::bind_rows(tbl_upper, tbl_lower)
 
-  tbl_p$q <- q_std(tbl_p$y, two_parametric(distribution))
+  tbl_p$q <- q_std(tbl_p$y, std_parametric(distribution))
 
   tbl_p <- dplyr::group_by(tbl_p, .data$bound)
 
@@ -251,7 +251,7 @@ plot_conf_helper <- function(tbl_mod,
     tbl_p$bound <- ifelse(test = tbl_p$x < tbl_mod$x_p, yes = "Lower", no = "Upper")
   }
 
-  tbl_p$q <- q_std(tbl_p$y, two_parametric(distribution))
+  tbl_p$q <- q_std(tbl_p$y, std_parametric(distribution))
 
   tbl_p <- dplyr::group_by(tbl_p, .data$bound)
   tbl_p$cdf_estimation_method <- NA_character_

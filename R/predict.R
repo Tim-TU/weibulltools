@@ -48,7 +48,7 @@ predict_quantile <- function(p,
 
   check_dist_params(dist_params, distribution)
 
-  distribution <- two_parametric(distribution)
+  distribution <- std_parametric(distribution)
 
     # Determine q_p by switching between distributions:
     q_p <- switch(
@@ -128,7 +128,7 @@ predict_prob <- function(q,
     x = q, dist_params = dist_params, distribution = distribution
   )
 
-  distribution <- two_parametric(distribution)
+  distribution <- std_parametric(distribution)
 
   # Determine p_q by switching between distributions:
   p_q <- p_std(z, distribution)

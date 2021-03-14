@@ -170,7 +170,7 @@ loglik_function_ <- function(x,
     wts <- wts[subs]
   }
 
-  distribution <- two_parametric(distribution)
+  distribution <- std_parametric(distribution)
 
   # Switch between distributions:
   switch(distribution,
@@ -402,8 +402,8 @@ loglik_profiling_ <- function(x,
   d <- d[subs]
   wts <- wts[subs]
 
-  ## Set distribution to two-parametric version:
-  distribution <- two_parametric(distribution)
+  ## Set distribution to parametric version without threshold:
+  distribution <- std_parametric(distribution)
 
   ## Initial parameters of two-parametric model:
   start_dist_params <- start_params(

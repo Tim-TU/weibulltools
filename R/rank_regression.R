@@ -1,10 +1,9 @@
 #' Rank Regression for Parametric Lifetime Distributions
 #'
 #' @description
-#' This function fits a regression model to a linearized two- or three-parameter
-#' lifetime distribution for complete and (multiple) right-censored data.
-#' The parameters are determined in the frequently used (log-)location-scale
-#' parameterization.
+#' This function fits a regression model to a linearized parametric lifetime
+#' distribution for complete and (multiple) right-censored data. The parameters
+#' are determined in the frequently used (log-)location-scale parameterization.
 #'
 #' For the Weibull, estimates are additionally transformed such that they are in
 #' line with the parameterization provided by the *stats* package
@@ -131,17 +130,18 @@ rank_regression <- function(x, ...) {
 #' @rdname rank_regression
 #'
 #' @export
-rank_regression.wt_cdf_estimation <- function(x,
-                                              distribution = c(
-                                                "weibull", "lognormal",
-                                                "loglogistic", "normal",
-                                                "logistic", "sev", "weibull3",
-                                                "lognormal3", "loglogistic3"
-                                              ),
-                                              conf_level = 0.95,
-                                              direction = c("x_on_y", "y_on_x"),
-                                              control = list(),
-                                              ...
+rank_regression.wt_cdf_estimation <- function(
+                                     x,
+                                     distribution = c(
+                                       "weibull", "lognormal", "loglogistic",
+                                       "sev", "normal", "logistic",
+                                       "weibull3", "lognormal3", "loglogistic3",
+                                       "exponential", "exponential2"
+                                     ),
+                                     conf_level = 0.95,
+                                     direction = c("x_on_y", "y_on_x"),
+                                     control = list(),
+                                     ...
 ) {
 
   distribution <- match.arg(distribution)
@@ -242,11 +242,12 @@ rank_regression.wt_cdf_estimation <- function(x,
 rank_regression.default <- function(x,
                                     y,
                                     status,
-                                    distribution = c("weibull", "lognormal",
-                                                     "loglogistic", "normal",
-                                                     "logistic", "sev",
-                                                     "weibull3", "lognormal3",
-                                                     "loglogistic3"),
+                                    distribution = c(
+                                      "weibull", "lognormal", "loglogistic",
+                                      "sev", "normal", "logistic",
+                                      "weibull3", "lognormal3", "loglogistic3",
+                                      "exponential", "exponential2"
+                                    ),
                                     conf_level = 0.95,
                                     direction = c("x_on_y", "y_on_x"),
                                     control = list(),
@@ -321,7 +322,11 @@ rank_regression_ <- function(cdf_estimation,
 
   ## Parameters:
   dist_params <- stats::coef(rr)
-  names(dist_params) <- c("mu", "sigma")
+  if (distribution == "exponential") {
+    names(dist_params) <- "sigma"
+  } else {
+    names(dist_params) <- c("mu", "sigma")
+  }
 
   ### Three-parametric:
   if (exists("opt_thres")) {
@@ -346,6 +351,7 @@ rank_regression_ <- function(cdf_estimation,
     output <- conf_HC(
       dist_params = dist_params,
       dist_varcov = dist_varcov,
+      distribution = distribution,
       conf_level = conf_level,
       n = length(x_f),
       direction = direction

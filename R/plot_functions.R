@@ -230,7 +230,7 @@ plot_prob.wt_rank_regression <- function(x,
 
   plot_prob.wt_cdf_estimation(
     x = cdf_estimation,
-    distribution = two_parametric(x$distribution),
+    distribution = std_parametric(x$distribution),
     title_main = title_main,
     title_x = title_x,
     title_y = title_y,
@@ -257,7 +257,7 @@ plot_prob.wt_ml_estimation <- function(x,
 
   plot_prob.wt_cdf_estimation(
     x = cdf_estimation,
-    distribution = two_parametric(x$distribution),
+    distribution = std_parametric(x$distribution),
     title_main = title_main,
     title_x = title_x,
     title_y = title_y,

@@ -128,14 +128,14 @@ delta_method_ <- function(x,
     q <- predict_quantile(
       p = x,
       dist_params = dist_params[-3],  # gamma is dropped out when differentiating:
-      distribution = two_parametric(distribution)
+      distribution = std_parametric(distribution)
     )
 
     ### Inner derivative is often the standardized quantile function:
     z <- standardize(
       x = q,
       dist_params = dist_params[-3],
-      distribution = two_parametric(distribution)
+      distribution = std_parametric(distribution)
     )
 
     ### Derivatives of location-scale distributions:

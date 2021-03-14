@@ -837,7 +837,7 @@ confint_fisher_ <- function(model_estimation,
 
     ## Model-specific standard distribution:
     pfun <- switch(
-      two_parametric(distribution),
+      std_parametric(distribution),
       "sev" = , "weibull" = psev,
       "normal" = , "lognormal" = stats::pnorm,
       "logistic" = , "loglogistic" = stats::plogis
