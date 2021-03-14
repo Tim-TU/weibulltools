@@ -329,7 +329,7 @@ hovertext_mod <- function(x,
   not_na <- !is.na(param_val)
 
   x_text <- paste0(x_mark, ": ", format(x, digits = 3))
-  y_text <- paste0(y_mark, ": ", format(x, digits = 3))
+  y_text <- paste0(y_mark, ": ", format(y, digits = 3))
 
   lower_text <- if (!is.null(lower))
     paste("Lower Bound:", format(lower, digits = 3))

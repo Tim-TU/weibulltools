@@ -1,8 +1,8 @@
 #' Prediction of Quantiles for Parametric Lifetime Distributions
 #'
 #' @description
-#' This function predicts the quantiles of a two- or three-parameter lifetime
-#' distribution using the (log-)location-scale parameterization.
+#' This function predicts the quantiles of a parametric lifetime distribution
+#' using the (log-)location-scale parameterization.
 #'
 #' @details
 #' For a given set of parameters and specified probabilities the quantiles
@@ -40,7 +40,8 @@ predict_quantile <- function(p,
                              distribution = c(
                                "weibull", "lognormal", "loglogistic",
                                "sev", "normal", "logistic",
-                               "weibull3", "lognormal3", "loglogistic3"
+                               "weibull3", "lognormal3", "loglogistic3",
+                               "exponential", "exponential2"
                              )
 ) {
 
@@ -48,26 +49,27 @@ predict_quantile <- function(p,
 
   check_dist_params(dist_params, distribution)
 
-  distribution <- std_parametric(distribution)
+  n_par <- length(dist_params)
 
     # Determine q_p by switching between distributions:
     q_p <- switch(
-      distribution,
+      std_parametric(distribution),
       "weibull" = ,
       "sev" = qsev(p) * dist_params[[2]] + dist_params[[1]],
       "lognormal" = ,
       "normal" = stats::qnorm(p) * dist_params[[2]] + dist_params[[1]],
       "loglogistic" = ,
-      "logistic" = stats::qlogis(p) * dist_params[[2]] + dist_params[[1]]
+      "logistic" = stats::qlogis(p) * dist_params[[2]] + dist_params[[1]],
+      "exponential" = stats::qexp(p) * dist_params[[1]]
     )
 
-    if (distribution %in% c("weibull", "lognormal", "loglogistic")) {
+    if (std_parametric(distribution) %in% c("weibull", "lognormal", "loglogistic")) {
       q_p <- exp(q_p)
     }
 
-    # Three-parametric models:
-    if (length(dist_params) == 3L) {
-      q_p <- q_p + dist_params[[3]]
+    # Threshold models:
+    if (has_thres(distribution)) {
+      q_p <- q_p + dist_params[[n_par]]
     }
 
     q_p
@@ -78,8 +80,8 @@ predict_quantile <- function(p,
 #' Prediction of Failure Probabilities for Parametric Lifetime Distributions
 #'
 #' @description
-#' This function predicts the (failure) probabilities of a two- or three-parameter
-#' lifetime distribution using the (log-)location-scale parameterization.
+#' This function predicts the (failure) probabilities of a parametric lifetime
+#' distribution using the (log-)location-scale parameterization.
 #'
 #' @details
 #' For a given set of parameters and specified quantiles the probabilities
@@ -115,7 +117,8 @@ predict_prob <- function(q,
                          distribution = c(
                            "weibull", "lognormal", "loglogistic",
                            "sev", "normal", "logistic",
-                           "weibull3","lognormal3", "loglogistic3"
+                           "weibull3","lognormal3", "loglogistic3",
+                           "exponential", "exponential2"
                          )
 ) {
 

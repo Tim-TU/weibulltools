@@ -48,7 +48,7 @@ matrix of the parameters.
 The following table summarizes the available distributions and their parameters
 \itemize{
 \item \emph{location parameter} \eqn{\mu},
-\item \emph{scale parameter} \eqn{\sigma} and
+\item \emph{scale parameter} \eqn{\sigma} or \eqn{\theta} and
 \item \emph{threshold parameter} \eqn{\gamma}.
 }
 
@@ -63,6 +63,8 @@ The order within \code{dist_params} is given in the table header.\tabular{lccc}{
    \code{"logistic"} \tab \eqn{\mu} \tab \eqn{\sigma} \tab - \cr
    \code{"loglogistic"} \tab \eqn{\mu} \tab \eqn{\sigma} \tab - \cr
    \code{"loglogistic3"} \tab \eqn{\mu} \tab \eqn{\sigma} \tab \eqn{\gamma} \cr
+   \code{"exponential"} \tab \eqn{\theta} \tab - \tab - \cr
+   \code{"exponential2"} \tab \eqn{\theta} \tab \eqn{\gamma} \tab - \cr
 }
 }
 

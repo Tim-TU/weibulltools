@@ -8,7 +8,7 @@ predict_prob(
   q,
   dist_params,
   distribution = c("weibull", "lognormal", "loglogistic", "sev", "normal", "logistic",
-    "weibull3", "lognormal3", "loglogistic3")
+    "weibull3", "lognormal3", "loglogistic3", "exponential", "exponential2")
 )
 }
 \arguments{
@@ -23,8 +23,8 @@ distribution-specific parameters can be found in section 'Distributions'.}
 A vector with predicted (failure) probabilities.
 }
 \description{
-This function predicts the (failure) probabilities of a two- or three-parameter
-lifetime distribution using the (log-)location-scale parameterization.
+This function predicts the (failure) probabilities of a parametric lifetime
+distribution using the (log-)location-scale parameterization.
 }
 \details{
 For a given set of parameters and specified quantiles the probabilities
@@ -35,7 +35,7 @@ of the chosen model are determined.
 The following table summarizes the available distributions and their parameters
 \itemize{
 \item \emph{location parameter} \eqn{\mu},
-\item \emph{scale parameter} \eqn{\sigma} and
+\item \emph{scale parameter} \eqn{\sigma} or \eqn{\theta} and
 \item \emph{threshold parameter} \eqn{\gamma}.
 }
 
@@ -50,6 +50,8 @@ The order within \code{dist_params} is given in the table header.\tabular{lccc}{
    \code{"logistic"} \tab \eqn{\mu} \tab \eqn{\sigma} \tab - \cr
    \code{"loglogistic"} \tab \eqn{\mu} \tab \eqn{\sigma} \tab - \cr
    \code{"loglogistic3"} \tab \eqn{\mu} \tab \eqn{\sigma} \tab \eqn{\gamma} \cr
+   \code{"exponential"} \tab \eqn{\theta} \tab - \tab - \cr
+   \code{"exponential2"} \tab \eqn{\theta} \tab \eqn{\gamma} \tab - \cr
 }
 }
 

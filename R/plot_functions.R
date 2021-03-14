@@ -1017,7 +1017,8 @@ plot_mod.default <- function(p_obj,
                              distribution = c(
                                "weibull", "lognormal", "loglogistic",
                                "sev", "normal", "logistic",
-                               "weibull3", "lognormal3", "loglogistic3"
+                               "weibull3", "lognormal3", "loglogistic3",
+                               "exponential", "exponential2"
                              ),
                              title_trace = "Fit",
                              ...

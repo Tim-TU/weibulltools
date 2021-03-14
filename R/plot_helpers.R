@@ -117,15 +117,22 @@ plot_mod_helper <- function(x,
 
   q <- q_std(y_p, std_parametric(distribution))
 
-  # preparation of plotly hovers:
-  ## raises problems if one-parameter distributions like exponential will be implemented!
-  param_val <- format(dist_params, digits = 3)
-  # Enforce length 3
-  if (length(dist_params) == 2) param_val <- c(param_val, NA)
-  param_label <- if (length(dist_params) == 2) {
-    c("\u03BC:", "\u03C3:", NA)
+  # Preparation of plotly hovers:
+  n_par <- length(dist_params)
+  ## Values:
+  param_val <- rep(NA_character_, 3)
+  param_val[1:n_par] <- format(dist_params, digits = 3)
+
+  ## Labels:
+  ### Enforce length 3:
+  if (std_parametric(distribution) == "exponential") {
+    param_label <- c("\u03B8:", NA_character_, NA_character_)
   } else {
-    c("\u03BC:", "\u03C3:", "\u03B3:")
+    param_label <- c("\u03BC:", "\u03C3:", NA_character_)
+  }
+
+  if (has_thres(distribution)) {
+    param_label[n_par] <- "\u03B3:"
   }
 
   tbl_pred <- tbl_pred %>%
