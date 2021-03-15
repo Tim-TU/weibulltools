@@ -284,8 +284,8 @@ rank_regression_ <- function(cdf_estimation,
   x_f <- cdf_failed$x
   y_f <- cdf_failed$prob
 
-  # Pre-Step: Three-parametric models must be profiled w.r.t threshold:
-  if (distribution %in% c("weibull3", "lognormal3", "loglogistic3")) {
+  # Pre-Step: Threshold models must be profiled w.r.t threshold:
+  if (has_thres(distribution)) {
 
     ## Force maximization:
     control$fnscale <- -1
@@ -322,16 +322,16 @@ rank_regression_ <- function(cdf_estimation,
 
   ## Parameters:
   dist_params <- stats::coef(rr)
-  if (distribution == "exponential") {
+  if (std_parametric(distribution) == "exponential") {
     names(dist_params) <- "sigma"
   } else {
     names(dist_params) <- c("mu", "sigma")
   }
 
-  ### Three-parametric:
+  ### Threshold parameter:
   if (exists("opt_thres")) {
     dist_params <- c(dist_params, opt_thres)
-    names(dist_params)[3] <- "gamma"
+    names(dist_params)[length(dist_params)] <- "gamma"
   }
 
   # Step 2: Confidence intervals and return preparation:

@@ -6,6 +6,14 @@ lm_ <- function(x,
 ) {
 
   direction <- match.arg(direction)
+  distribution <- std_parametric(distribution)
+
+  # Prepare x and y for `lm()`:
+  y <- q_std(y, distribution)
+
+  if (distribution %in% c("weibull", "lognormal", "loglogistic")) {
+    x <- log(x)
+  }
 
   # Create formula to be more flexible w.r.t 'distribution' and 'direction':
   ## Replace everything between the two underscores:
@@ -19,17 +27,7 @@ lm_ <- function(x,
   ## Define formula:
   fm <- stats::formula(fm_chr)
 
-  # Prepare x and y for `lm()`:
-  distribution <- std_parametric(distribution)
-
-  y <- q_std(y, distribution)
-
-  if (distribution %in% c("weibull", "lognormal", "loglogistic")) {
-    x <- log(x)
-  }
-
-
-  # Apply `lm()` to defined formula:
+  ## Apply `lm()` to defined formula:
   stats::lm(fm)
 }
 
@@ -114,7 +112,7 @@ conf_mock <- function(dist_params, # loc-scale-parameters
 # Confidence intervals for parameters using a HC standard errors:
 conf_HC <- function(dist_params, # loc-scale-parameters (or scale-parameter).
                     dist_varcov, # loc-scale-var-cov (or scale-variance).
-                    distribution, # Setting the names for exponential.
+                    distribution, # Setting the parameter name for exponential.
                     conf_level,
                     n, # sample size
                     direction
@@ -153,7 +151,7 @@ conf_HC <- function(dist_params, # loc-scale-parameters (or scale-parameter).
   }
 
   # Prepare matrix with confidence intervals for output:
-  ## Force sorting of interval ("exponential2" can lead to conf_mu[1] > conf_mu[2])
+  ## Force sorting of interval (prevent case that conf_mu[1] > conf_mu[2])
   conf_int <- t(apply(conf_int, 2, sort))
 
   ## Set column names:
@@ -161,22 +159,17 @@ conf_HC <- function(dist_params, # loc-scale-parameters (or scale-parameter).
 
   ## Exponential distribution:
   if (std_parametric(distribution) == "exponential") {
-    names_exp <- c("theta", "gamma")
+    names_exp <- "theta"
 
-    ### Revert order:
-    dist_params <- rev(dist_params)
-    conf_int <- conf_int[n_par:1L, , drop = FALSE]
-    dist_varcov <- dist_varcov[n_par:1L, n_par:1L, drop = FALSE]
-
-    ### Set names:
-    names(dist_params) <- rownames(conf_int) <- names_exp[1:n_par]
-    dimnames(dist_varcov) <- rep(list(names(dist_params)), 2)
+    ### Set name:
+    names(dist_params)[n_par] <- rownames(conf_int) <- names_exp
+    dimnames(dist_varcov) <- rep(list(names_exp), 2)
   }
 
   ## Three-parametric case:
-  if (length(dist_params) > 2L) {
+  if (length(dist_params) > n_par) {
     conf_int <- rbind(conf_int, c(NA, NA))
-    rownames(conf_int)[3] <- names(dist_params[3])
+    rownames(conf_int)[n_par + 1] <- names(dist_params[n_par + 1])
   }
 
   # Return a list:

@@ -31,8 +31,8 @@ check_dist_params <- function(dist_params, distribution) {
 
   if (!three_parametric && !one_parametric && length(dist_params) != 2) {
     stop(
-      "A two-parametric distribution needs two parameters but",
-      " 'dist_params' has length ", length(dist_params), ".",
+      "A two-parametric distribution needs two parameters but ",
+      sQuote(name_arg), " has length ", length(dist_params), ".",
       call. = FALSE
     )
   }

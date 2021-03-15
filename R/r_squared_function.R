@@ -2,17 +2,17 @@
 #'
 #' @description
 #' This function evaluates the coefficient of determination with respect to a
-#' given threshold parameter of a three-parametric lifetime distribution.
-#' In terms of *Rank Regression* this function can be optimized
-#' ([optim][stats::optim]) to estimate the threshold parameter.
+#' given threshold parameter of a parametric lifetime distribution. In terms of
+#' *Rank Regression* this function can be optimized ([optim][stats::optim]) to
+#' estimate the threshold parameter.
 #'
 #' @inheritParams rank_regression
 #' @param thres A numeric value for the threshold parameter.
-#' @param distribution Supposed three-parametric distribution of the random variable.
+#' @param distribution Supposed parametric distribution of the random variable.
 #'
 #' @return
-#' Returns the coefficient of determination with respect to the threshold parameter
-#' `thres`.
+#' Returns the coefficient of determination with respect to the threshold
+#' parameter `thres`.
 #'
 #' @encoding UTF-8
 #'
@@ -87,8 +87,10 @@ r_squared_profiling <- function(x, ...) {
 r_squared_profiling.wt_cdf_estimation <- function(x,
                                                   thres,
                                                   distribution = c(
-                                                    "weibull3", "lognormal3",
-                                                    "loglogistic3"
+                                                    "weibull3",
+                                                    "lognormal3",
+                                                    "loglogistic3",
+                                                    "exponential2"
                                                   ),
                                                   direction = c("x_on_y", "y_on_x"),
                                                   ...
@@ -170,9 +172,12 @@ r_squared_profiling.wt_cdf_estimation <- function(x,
 r_squared_profiling.default <- function(x,
                                         y,
                                         thres,
-                                        distribution = c("weibull3",
-                                                         "lognormal3",
-                                                         "loglogistic3"),
+                                        distribution = c(
+                                          "weibull3",
+                                          "lognormal3",
+                                          "loglogistic3",
+                                          "exponential2"
+                                        ),
                                         direction = c("x_on_y", "y_on_x"),
                                         ...
 ) {
