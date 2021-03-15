@@ -1,6 +1,13 @@
-# Function that removes the trailing '3' of three-parameter distribution:
-two_parametric <- function(distribution) {
-  sub("3", "", distribution)
+# Function that checks if distribution has a threshold parameter:
+has_thres <- function(distribution) {
+  distribution %in% c("weibull3", "lognormal3", "loglogistic3", "exponential2")
+}
+
+
+
+# Function that removes the trailing number. Used for threshold distributions:
+std_parametric <- function(distribution) {
+  sub("[[:digit:]]$", "", distribution)
 }
 
 
@@ -9,6 +16,8 @@ two_parametric <- function(distribution) {
 check_dist_params <- function(dist_params, distribution) {
   three_parametric <- distribution %in%
     c("weibull3", "lognormal3", "loglogistic3")
+
+  one_parametric <- distribution == "exponential"
 
   name_arg <- as.character(substitute(dist_params))
 
@@ -20,10 +29,18 @@ check_dist_params <- function(dist_params, distribution) {
     )
   }
 
-  if (!three_parametric && length(dist_params) != 2) {
+  if (!three_parametric && !one_parametric && length(dist_params) != 2) {
     stop(
-      "A two-parametric distribution needs two parameters but",
-      " 'dist_params' has length ", length(dist_params), ".",
+      "A two-parametric distribution needs two parameters but ",
+      sQuote(name_arg), " has length ", length(dist_params), ".",
+      call. = FALSE
+    )
+  }
+
+  if (one_parametric && length(dist_params) != 1) {
+    stop(
+      "A one-parametric distribution needs one parameter but ",
+      sQuote(name_arg), " has length ", length(dist_params), ".",
       call. = FALSE
     )
   }
@@ -33,7 +50,7 @@ check_dist_params <- function(dist_params, distribution) {
 
 # Function that checks compatibility of plotting grid and model
 check_compatible_distributions <- function(p_obj_dist, model_dist) {
-  if (p_obj_dist != two_parametric(model_dist)) {
+  if (p_obj_dist != std_parametric(model_dist)) {
     msg <- paste0(
       "Incompatible distributions! Probability plot has distribution '",
       p_obj_dist,
@@ -56,13 +73,18 @@ check_compatible_distributions <- function(p_obj_dist, model_dist) {
 # Function that standardizes lifetime characteristic depending on distribution:
 standardize <- function(x, dist_params, distribution) {
 
-  # Three-parametric model:
-  if (length(dist_params) == 3L) {
-    x <- x - dist_params[[3]]
+  # Length dist_params:
+  n <- length(dist_params)
+
+  # Threshold model:
+  if (has_thres(distribution)) {
+    x <- x - dist_params[[n]]
+
+    n <- n - 1
   }
 
-  # Two-parametric model with q or q - threshold:
-  distribution <- two_parametric(distribution)
+  # Standard-parametric model with q or q - threshold:
+  distribution <- std_parametric(distribution)
 
   # (log-)location-scale:
   if (distribution %in% c("weibull", "lognormal", "loglogistic")) {
@@ -70,7 +92,14 @@ standardize <- function(x, dist_params, distribution) {
   }
 
   # Standardize:
-  z <- (x - dist_params[[1]]) / dist_params[[2]]
+  z <- if (distribution != "exponential") {
+    ## Location-scale:
+    (x - dist_params[[1]]) / dist_params[[n]]
+  } else {
+    ## Scale:
+    z <- x / dist_params[[1]]
+  }
+
   z
 }
 
@@ -118,7 +147,7 @@ rdirichlet <- function(n, par) {
 
 
 
-# Standard quantile function
+# Standard quantile function:
 q_std <- function(p, distribution) {
   switch(
     distribution,
@@ -127,13 +156,14 @@ q_std <- function(p, distribution) {
     "lognormal" =,
     "normal" = stats::qnorm(p),
     "loglogistic" =,
-    "logistic" = stats::qlogis(p)
+    "logistic" = stats::qlogis(p),
+    "exponential" = stats::qexp(p)
   )
 }
 
 
 
-# Standard probability function
+# Standard probability function:
 p_std <- function(q, distribution) {
   switch(
     distribution,
@@ -142,6 +172,7 @@ p_std <- function(q, distribution) {
     "lognormal" =,
     "normal" = stats::pnorm(q),
     "loglogistic" =,
-    "logistic" = stats::plogis(q)
+    "logistic" = stats::plogis(q),
+    "exponential" = stats::pexp(q)
   )
 }

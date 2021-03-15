@@ -1,9 +1,11 @@
 #' @export
 plot_layout_vis.ggplot <- function(p_obj, # An empty ggplot object.
-                                   x,
+                                   x, # Named list with x_ticks and x_labels.
+                                   y, # Named list with y_ticks and y_labels.
                                    distribution = c(
                                      "weibull", "lognormal", "loglogistic",
-                                     "sev", "normal", "logistic"
+                                     "sev", "normal", "logistic",
+                                     "exponential"
                                    ),
                                    title_main = "Probability Plot",
                                    title_x = "Characteristic",
@@ -12,33 +14,30 @@ plot_layout_vis.ggplot <- function(p_obj, # An empty ggplot object.
 
   distribution <- match.arg(distribution)
 
-  layout_helper <- plot_layout_helper(
-    x = x,
-    distribution = distribution,
-    plot_method = "ggplot2"
-  )
-
-  p_obj <- if (distribution %in% c("sev", "normal", "logistic")) {
+  p_obj <- if (distribution %in% c("weibull", "lognormal", "loglogistic")) {
     p_obj +
-      ggplot2::scale_x_continuous(
-        breaks = layout_helper$x_ticks,
+      ggplot2::scale_x_log10(
+        breaks = x$x_ticks,
         minor_breaks = NULL,
-        labels = layout_helper$x_labels
+        labels = x$x_labels
       )
   } else {
     p_obj +
-      ggplot2::scale_x_log10(
-        breaks = layout_helper$x_ticks,
+      ggplot2::scale_x_continuous(
+        breaks = ggplot2::waiver(),
         minor_breaks = NULL,
-        labels = layout_helper$x_labels
+        labels = ggplot2::waiver()
       )
   }
 
   p_obj <- p_obj +
     ggplot2::scale_y_continuous(
-      breaks = layout_helper$y_ticks,
+      breaks = y$y_ticks,
       minor_breaks = NULL,
-      labels = layout_helper$y_labels,
+      labels = y$y_labels,
+      guide = ggplot2::guide_axis( # experimental!
+        check.overlap = TRUE
+      )
     ) +
     ggplot2::theme_bw() +
     ggplot2::theme(
@@ -59,7 +58,8 @@ plot_prob_vis.ggplot <- function(p_obj,
                                  tbl_prob,
                                  distribution = c(
                                    "weibull", "lognormal", "loglogistic",
-                                   "sev", "normal", "logistic"
+                                   "sev", "normal", "logistic",
+                                   "exponential"
                                  ),
                                  title_main = "Probability Plot",
                                  title_x = "Characteristic",

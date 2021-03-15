@@ -1,10 +1,10 @@
 # Helper function to set the distribution-specific grid:
 plot_layout_helper <- function(x,
-                               distribution,
-                               plot_method
+                               y = NULL,
+                               distribution
 ) {
 
-  # Define x-ticks as logarithm to the base of 10 for log-location-lcale distributions:
+  # Define x-ticks as logarithm to the base of 10 for log-location-scale distributions:
   if (distribution %in% c("weibull", "lognormal", "loglogistic")) {
 
     # Layout depends on x, using a function to build helpful sequences:
@@ -21,15 +21,27 @@ plot_layout_helper <- function(x,
     x_labels <- x_ticks
     x_labels[c(rep(F, 3), rep(T, 6))] <- " "
   } else {
-    # We don't need these values, therefore we return NULL
-    x_ticks <- if (plot_method == "plotly") NULL else ggplot2::waiver()
-    x_labels <- if (plot_method == "plotly") NULL else ggplot2::waiver()
+    # We don't need these values, therefore we return NULL:
+    x_ticks <- x_labels <- NULL
   }
 
-  # y-ticks and y-labels
-  # hard coded but it's okay since range is always between 0 and 1.
-  y_s <- c(.0000001, .000001, .00001, .0001, .001, .01, .05, .1, .2, .3, .5, .6,
-           .7, .8, .9, .95, .99, .999, .9999, .99999)
+  # y-ticks and y-labels:
+  ## Hard coded but it's okay since range is always between 0 and 1:
+  y_s <- c(.0000001, .000001, .00001, .0001, .001, .005, .01, .05, .1,
+           .2, .3, .5, .6, .7, .8, .9, .95, .99, .999, .9999, .99999)
+
+  ## If argument y is not `NULL` y is used to narrow down the range of y_s:
+  if (!purrr::is_null(y)) {
+    ### y range:
+    ymin <- min(y, na.rm = TRUE)
+    ymax <- max(y, na.rm = TRUE)
+
+    ### Determine adjacent indices, i.e. min(y)_(i-1) and max(y)_(i+1) if exist:
+    ind_min <- max(which(y_s < ymin), 1L)
+    ind_max <- min(which(y_s > ymax), length(y_s))
+
+    y_s <- y_s[ind_min:ind_max]
+  }
 
   y_ticks <- q_std(y_s, distribution)
 
@@ -72,7 +84,7 @@ plot_mod_helper <- function(x,
 ) {
 
   if (length(x) == 2) {
-    if (two_parametric(distribution) %in% c("weibull", "lognormal", "loglogistic")) {
+    if (std_parametric(distribution) %in% c("weibull", "lognormal", "loglogistic")) {
       x_p <- 10 ^ seq(log10(x[1]), log10(x[2]), length.out = 100)
     } else {
       x_p <- seq(x[1], x[2], length.out = 100)
@@ -103,17 +115,24 @@ plot_mod_helper <- function(x,
 
   tbl_pred <- tibble::tibble(x_p = x_p, y_p = y_p)
 
-  q <- q_std(y_p, two_parametric(distribution))
+  q <- q_std(y_p, std_parametric(distribution))
 
-  # preparation of plotly hovers:
-  ## raises problems if one-parameter distributions like exponential will be implemented!
-  param_val <- format(dist_params, digits = 3)
-  # Enforce length 3
-  if (length(dist_params) == 2) param_val <- c(param_val, NA)
-  param_label <- if (length(dist_params) == 2) {
-    c("\u03BC:", "\u03C3:", NA)
+  # Preparation of plotly hovers:
+  n_par <- length(dist_params)
+  ## Values:
+  param_val <- rep(NA_character_, 3)
+  param_val[1:n_par] <- format(dist_params, digits = 3)
+
+  ## Labels:
+  ### Enforce length 3:
+  if (std_parametric(distribution) == "exponential") {
+    param_label <- c("\u03B8:", NA_character_, NA_character_)
   } else {
-    c("\u03BC:", "\u03C3:", "\u03B3:")
+    param_label <- c("\u03BC:", "\u03C3:", NA_character_)
+  }
+
+  if (has_thres(distribution)) {
+    param_label[n_par] <- "\u03B3:"
   }
 
   tbl_pred <- tbl_pred %>%
@@ -212,7 +231,7 @@ plot_conf_helper_2 <- function(confint) {
 
   tbl_p <- dplyr::bind_rows(tbl_upper, tbl_lower)
 
-  tbl_p$q <- q_std(tbl_p$y, two_parametric(distribution))
+  tbl_p$q <- q_std(tbl_p$y, std_parametric(distribution))
 
   tbl_p <- dplyr::group_by(tbl_p, .data$bound)
 
@@ -239,7 +258,7 @@ plot_conf_helper <- function(tbl_mod,
     tbl_p$bound <- ifelse(test = tbl_p$x < tbl_mod$x_p, yes = "Lower", no = "Upper")
   }
 
-  tbl_p$q <- q_std(tbl_p$y, two_parametric(distribution))
+  tbl_p$q <- q_std(tbl_p$y, std_parametric(distribution))
 
   tbl_p <- dplyr::group_by(tbl_p, .data$bound)
   tbl_p$cdf_estimation_method <- NA_character_

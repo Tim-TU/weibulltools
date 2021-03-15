@@ -10,8 +10,8 @@ rank_regression(x, ...)
 
 \method{rank_regression}{wt_cdf_estimation}(
   x,
-  distribution = c("weibull", "lognormal", "loglogistic", "normal", "logistic", "sev",
-    "weibull3", "lognormal3", "loglogistic3"),
+  distribution = c("weibull", "lognormal", "loglogistic", "sev", "normal", "logistic",
+    "weibull3", "lognormal3", "loglogistic3", "exponential", "exponential2"),
   conf_level = 0.95,
   direction = c("x_on_y", "y_on_x"),
   control = list(),
@@ -68,10 +68,9 @@ has classes \code{wt_rank_regression} and \code{wt_model_estimation}, and the it
 above, are included.
 }
 \description{
-This function fits a regression model to a linearized two- or three-parameter
-lifetime distribution for complete and (multiple) right-censored data.
-The parameters are determined in the frequently used (log-)location-scale
-parameterization.
+This function fits a regression model to a linearized parametric lifetime
+distribution for complete and (multiple) right-censored data. The parameters
+are determined in the frequently used (log-)location-scale parameterization.
 
 For the Weibull, estimates are additionally transformed such that they are in
 line with the parameterization provided by the \emph{stats} package
