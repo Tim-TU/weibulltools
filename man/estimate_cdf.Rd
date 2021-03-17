@@ -82,7 +82,6 @@ in a formula for the calculation of failure probabilities.
 }
 \section{Options}{
 
-
 Argument \code{options} is a named list of options:\tabular{lll}{
    Method \tab Name \tab Value \cr
    \code{mr} \tab \code{mr_method} \tab \code{"benard"} (default) or \code{"invbeta"} \cr

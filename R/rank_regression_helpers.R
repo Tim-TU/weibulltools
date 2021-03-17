@@ -172,10 +172,27 @@ conf_HC <- function(dist_params, # loc-scale-parameters (or scale-parameter).
     rownames(conf_int)[n_par + 1] <- names(dist_params[n_par + 1])
   }
 
+  ## Alternative parameters and confidence intervals for Weibull:
+  l_wb <- list()
+
+  ## Weibull distribution; providing shape-scale coefficients and confint:
+  if (distribution %in% c("weibull", "weibull3")) {
+    estimates <- to_shape_scale_params(dist_params)
+    confint  <- to_shape_scale_confint(conf_int)
+
+    l_wb <- list(
+      shape_scale_coefficients = estimates,
+      shape_scale_confint = confint
+    )
+  }
+
   # Return a list:
-  list(
-    coefficients = dist_params,
-    confint = conf_int,
-    varcov = dist_varcov
+  c(
+    list(
+      coefficients = dist_params,
+      confint = conf_int
+    ),
+    l_wb, # Empty, if not Weibull!
+    list(varcov = dist_varcov)
   )
 }

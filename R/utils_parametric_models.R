@@ -70,6 +70,68 @@ check_compatible_distributions <- function(p_obj_dist, model_dist) {
 
 
 
+# Function that converts Weibull loc-sc parameters to shape and scale:
+to_shape_scale_params <- function(loc_sc_params) {
+
+  # Coefficients:
+  wb_params <- c(
+    eta = exp(loc_sc_params[[1]]),
+    beta = 1 / loc_sc_params[[2]],
+    gamma = if (length(loc_sc_params) == 3L) loc_sc_params[[3]] else NULL
+  )
+
+  wb_params
+}
+
+
+
+# Function that converts Weibull location-scale confint to shape-scale confint:
+to_shape_scale_confint <- function(loc_sc_confint) {
+
+  # Confidence intervals:
+  wb_confint <- loc_sc_confint
+  wb_confint[1, ] <- exp(wb_confint[1, ])
+  wb_confint[2, ] <- rev(1 / wb_confint[2, ])
+
+  # Names:
+  rownames(wb_confint)[1:2] <- c("eta", "beta")
+
+  wb_confint
+}
+
+
+
+# Function that converts Weibull shape-scale parameters to location and scale:
+to_location_scale_params <- function(shape_scale_params) {
+
+  # Coefficients:
+  wb_params <- c(
+    mu = log(shape_scale_params[[1]]),
+    sigma = 1 / shape_scale_params[[2]],
+    gamma = if (length(shape_scale_params) == 3L) shape_scale_params[[3]] else NULL
+  )
+
+  wb_params
+}
+
+
+
+# Function that converts Weibull shape-scale confint to location and scale confint:
+to_location_scale_confint <- function(shape_scale_confint) {
+
+  # Confidence intervals:
+  wb_confint <- shape_scale_confint
+  wb_confint[1, ] <- log(wb_confint[1, ])
+  wb_confint[2, ] <- rev(1 / wb_confint[2, ])
+
+  # Names:
+  rownames(wb_confint)[1:2] <- c("mu", "sigma")
+
+  wb_confint
+}
+
+
+
 # Function that standardizes lifetime characteristic depending on distribution:
 standardize <- function(x, dist_params, distribution) {
 
