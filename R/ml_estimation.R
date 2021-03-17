@@ -86,7 +86,8 @@ ml_estimation.wt_reliability_data <- function(x,
                                                 "weibull", "lognormal",
                                                 "loglogistic", "normal",
                                                 "logistic", "sev", "weibull3",
-                                                "lognormal3", "loglogistic3"
+                                                "lognormal3", "loglogistic3",
+                                                "exponential", "exponential2"
                                               ),
                                               wts = rep(1, nrow(x)),
                                               conf_level = 0.95,
@@ -158,7 +159,8 @@ ml_estimation.default <- function(x,
                                   distribution = c(
                                     "weibull", "lognormal", "loglogistic",
                                     "normal", "logistic", "sev",
-                                    "weibull3", "lognormal3", "loglogistic3"
+                                    "weibull3", "lognormal3", "loglogistic3",
+                                    "exponential", "exponential2"
                                   ),
                                   wts = rep(1, length(x)),
                                   conf_level = 0.95,
@@ -193,31 +195,32 @@ ml_estimation_ <- function(data,
 ) {
 
   # Prepare function inputs:
-  x <- x_origin <- data$x # x_origin to compute the var-cov-matrix if three-parametric:
+  x <- x_origin <- data$x # Used to compute the vcov-matrix for threshold models:
   status <- data$status
 
-  # Set initial values:
+  ## Set initial values:
   if (purrr::is_null(start_dist_params)) {
-    ## Length two vector with log scale parameter:
+    ### Vector of length 1 or 2 with scale or log-scale parameter(s):
     start_dist_params <- start_params(
       x = x,
       status = status,
       distribution = distribution
     )
+    ### Add 'NA' for better handling, 'start_dist_params' now has length 2 or 3:
+    start_dist_params <- c(start_dist_params, NA_real_)
   } else {
+    ### In this case 'start_dist_params' always has length 2 or 3:
     check_dist_params(start_dist_params, distribution)
   }
 
-  # Pre-Step: Three-parametric models must be profiled w.r.t threshold:
-  if (distribution %in% c("weibull3", "lognormal3", "loglogistic3")) {
+  ## Number of parameters, could be either 2 or 3:
+  n_par <- length(start_dist_params)
+
+  # Pre-Step: Threshold models must be profiled w.r.t threshold:
+  if (has_thres(distribution)) {
 
     ## Initial value for threshold parameter:
-    t0 <- 0
-    if (length(start_dist_params) == 3L) {
-      t0 <- start_dist_params[[3]]
-      ### t0 will be included in x (see x - opt_thres):
-      start_dist_params <- start_dist_params[-3]
-    }
+    t0 <- start_dist_params[n_par] %NA% 0
 
     ## Optimization of `loglik_profiling_()`:
     opt_thres <- stats::optim(
@@ -235,19 +238,25 @@ ml_estimation_ <- function(data,
 
     opt_thres <- opt_thres$par
 
-    ## Preparation for ml:
+    ## Preparation for ML:
     x <- x - opt_thres
   }
 
-  # Step 1: Estimation of a two-parametric model (x or x - thres) using ML:
+  # Step 1: Estimation of one or two-parametric model (x or x - thres) using ML:
+  ## Preparation:
+  ### 'n_par' is 2 or 3 and must be reduced by 1L:
+  n_par <- n_par - 1L
 
-  ## Force maximization:
+  ### Remove 'NA' or t0 since the latter (if exists) is included (x - opt_thres):
+  start_dist_params <- start_dist_params[1:n_par]
+
+  ### Force maximization:
   control$fnscale <- -1
 
-  ## Use log scale:
-  start_dist_params[2] <- log(start_dist_params[2])
+  ### Use log scale (sigma is the last element of 'start_dist_params'):
+  start_dist_params[n_par] <- log(start_dist_params[n_par])
 
-  ## Two-parametric model:
+  ## Optimization of one or two-parametric model:
   ml <- stats::optim(
     par = start_dist_params,
     fn = loglik_function_,
@@ -263,9 +272,16 @@ ml_estimation_ <- function(data,
 
   ## Parameters:
   dist_params <- ml$par
-  names(dist_params) <- c("mu", "sigma")
 
-  ### Three-parametric, needed for variance-covariance matrix:
+  ## Names:
+  if (std_parametric(distribution) == "exponential") {
+    names_par <- "sigma"
+  } else {
+    names_par <- c("mu", "sigma")
+  }
+  name_gamma <- c()
+
+  ### Threshold parameter needed for variance-covariance matrix:
   if (exists("opt_thres")) {
     dist_params <- c(dist_params, opt_thres)
 
@@ -284,8 +300,11 @@ ml_estimation_ <- function(data,
 
     #### Update parameters:
     dist_params <- ml$par
-    names(dist_params) <- c("mu", "sigma", "gamma")
+    name_gamma <- "gamma"
   }
+
+  ## Set parameter names:
+  names(dist_params) <- c(names_par, name_gamma)
 
   ## Value of the log-likelihood at optimum:
   logL <- ml$value
@@ -294,11 +313,11 @@ ml_estimation_ <- function(data,
   dist_varcov_logsigma <- solve(-ml$hessian)
 
   ## scale parameter on original scale:
-  dist_params[2] <- exp(dist_params[2])
+  dist_params[n_par] <- exp(dist_params[n_par])
 
   ## Transformation to obtain variance-covariance matrix on original scale:
   trans_mat <- diag(length(dist_params))
-  diag(trans_mat)[2] <- dist_params[2]
+  diag(trans_mat)[n_par] <- dist_params[n_par]
 
   dist_varcov <- trans_mat %*% dist_varcov_logsigma %*% trans_mat
   colnames(dist_varcov) <- rownames(dist_varcov) <- names(dist_params)
@@ -310,21 +329,14 @@ ml_estimation_ <- function(data,
     conf_level = conf_level
   )
 
-
-  ## Alternative parameters and confidence intervals:
+  # Step 3: Form output:
+  ## Alternative parameters and confidence intervals for Weibull:
   l_wb <- list()
 
+  ## Weibull distribution; providing shape-scale coefficients and confint:
   if (distribution %in% c("weibull", "weibull3")) {
-    ### Parameters:
-    estimates <- dist_params
-    estimates[1:2] <- c(exp(estimates[[1]]), 1 / estimates[[2]])
-    names(estimates)[1:2] <- c("eta", "beta")
-
-    ### Confidence intervals:
-    conf_int <- confint
-    conf_int[1, ] <- exp(conf_int[1, ])
-    conf_int[2, ] <- rev(1 / conf_int[2, ])
-    rownames(conf_int) <- names(estimates)
+    estimates <- to_shape_scale_params(dist_params)
+    conf_int  <- to_shape_scale_confint(confint)
 
     l_wb <- list(
       shape_scale_coefficients = estimates,
@@ -332,7 +344,6 @@ ml_estimation_ <- function(data,
     )
   }
 
-  # Step 3: Form output:
   n <- length(x_origin) # sample size
   k <- length(dist_params) # number of parameters
 

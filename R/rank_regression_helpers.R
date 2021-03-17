@@ -178,7 +178,7 @@ conf_HC <- function(dist_params, # loc-scale-parameters (or scale-parameter).
   ## Weibull distribution; providing shape-scale coefficients and confint:
   if (distribution %in% c("weibull", "weibull3")) {
     estimates <- to_shape_scale_params(dist_params)
-    confint  <- to_shape_scale_confint(conf_int)
+    confint <- to_shape_scale_confint(conf_int)
 
     l_wb <- list(
       shape_scale_coefficients = estimates,

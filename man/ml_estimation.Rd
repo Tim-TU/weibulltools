@@ -11,7 +11,7 @@ ml_estimation(x, ...)
 \method{ml_estimation}{wt_reliability_data}(
   x,
   distribution = c("weibull", "lognormal", "loglogistic", "normal", "logistic", "sev",
-    "weibull3", "lognormal3", "loglogistic3"),
+    "weibull3", "lognormal3", "loglogistic3", "exponential", "exponential2"),
   wts = rep(1, nrow(x)),
   conf_level = 0.95,
   start_dist_params = NULL,

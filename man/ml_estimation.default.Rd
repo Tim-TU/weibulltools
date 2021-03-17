@@ -8,7 +8,7 @@
   x,
   status,
   distribution = c("weibull", "lognormal", "loglogistic", "normal", "logistic", "sev",
-    "weibull3", "lognormal3", "loglogistic3"),
+    "weibull3", "lognormal3", "loglogistic3", "exponential", "exponential2"),
   wts = rep(1, length(x)),
   conf_level = 0.95,
   start_dist_params = NULL,
