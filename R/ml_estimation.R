@@ -211,6 +211,9 @@ ml_estimation_ <- function(data,
   } else {
     ### In this case 'start_dist_params' always has length 2 or 3:
     check_dist_params(start_dist_params, distribution)
+    if (length(start_dist_params) == 1L) {
+      start_dist_params <- c(start_dist_params, NA_real_)
+    }
   }
 
   ## Number of parameters, could be either 2 or 3:
