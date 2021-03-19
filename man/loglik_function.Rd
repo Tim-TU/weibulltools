@@ -13,7 +13,7 @@ loglik_function(x, ...)
   wts = rep(1, nrow(x)),
   dist_params,
   distribution = c("weibull", "lognormal", "loglogistic", "sev", "normal", "logistic",
-    "weibull3", "lognormal3", "loglogistic3"),
+    "weibull3", "lognormal3", "loglogistic3", "exponential", "exponential2"),
   ...
 )
 }

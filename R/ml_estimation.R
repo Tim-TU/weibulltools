@@ -206,7 +206,7 @@ ml_estimation_ <- function(data,
       status = status,
       distribution = distribution
     )
-    ### Add 'NA' for better handling, 'start_dist_params' now has length 2 or 3:
+    ### Add 'NA' for general handling of 'start_dist_params' (length 2 or 3):
     start_dist_params <- c(start_dist_params, NA_real_)
   } else {
     ### In this case 'start_dist_params' always has length 2 or 3:
@@ -228,7 +228,7 @@ ml_estimation_ <- function(data,
       fn = loglik_profiling_,
       method = "L-BFGS-B",
       lower = 0,
-      upper = (1 - (1 / 1e+5)) * min(x),
+      upper = (1 - (1 / 1e+5)) * min(x[status == 1]),
       control = list(fnscale = -1), # no user input for profiling!
       x = x,
       status = status,
@@ -274,12 +274,11 @@ ml_estimation_ <- function(data,
   dist_params <- ml$par
 
   ## Names:
-  if (std_parametric(distribution) == "exponential") {
+  if (n_par == 1L) {
     names_par <- "sigma"
   } else {
     names_par <- c("mu", "sigma")
   }
-  name_gamma <- c()
 
   ### Threshold parameter needed for variance-covariance matrix:
   if (exists("opt_thres")) {
@@ -300,11 +299,11 @@ ml_estimation_ <- function(data,
 
     #### Update parameters:
     dist_params <- ml$par
-    name_gamma <- "gamma"
+    names_par[n_par + 1] <- "gamma"
   }
 
   ## Set parameter names:
-  names(dist_params) <- c(names_par, name_gamma)
+  names(dist_params) <- names_par
 
   ## Value of the log-likelihood at optimum:
   logL <- ml$value
@@ -336,12 +335,18 @@ ml_estimation_ <- function(data,
   ## Weibull distribution; providing shape-scale coefficients and confint:
   if (distribution %in% c("weibull", "weibull3")) {
     estimates <- to_shape_scale_params(dist_params)
-    conf_int  <- to_shape_scale_confint(confint)
+    conf_int <- to_shape_scale_confint(confint)
 
     l_wb <- list(
       shape_scale_coefficients = estimates,
       shape_scale_confint = conf_int
     )
+  }
+
+  ## Exponential distribution; renaming 'sigma' with 'theta':
+  if (std_parametric(distribution) == "exponential") {
+    names(dist_params)[1] <- rownames(confint)[1] <- "theta"
+    rownames(dist_varcov)[1] <- colnames(dist_varcov)[1] <- "theta"
   }
 
   n <- length(x_origin) # sample size
