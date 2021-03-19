@@ -35,7 +35,7 @@ plot_layout_vis.plotly <- function(p_obj, # An empty plotly object.
     linecolor = "#a0a0a0"
   )
 
-  # Distributions that need a log transformed x axis:
+  ## Distributions that need a log transformed x axis:
   if (distribution %in% c("weibull", "lognormal", "loglogistic")) {
     x_config <- c(
       x_config,
@@ -47,14 +47,28 @@ plot_layout_vis.plotly <- function(p_obj, # An empty plotly object.
     )
   }
 
-  ## Configuration y axis:
+
+  # Configuration y axis:
+  ## Adjust y values for exponential distribution (no overlapping):
+  if (distribution != "exponential") {
+   y_tickvals <- y$y_ticks
+   y_ticktext <- y$y_labels
+  } else {
+    ### Smarter values for exponential:
+    y_labs <- c(.01, .1, .2, .3, .5, .6, .7, .8, .9, .95, .99,
+                .999, .9999, .99999) * 100
+
+    ind <- y$y_labels %in% y_s
+    y_tickvals <- y$y_ticks[ind]
+    y_ticktext <- y$y_labels[ind]
+  }
   y_config <- list(
     title = list(
       text = title_y
     ),
     autorange = TRUE,
-    tickvals = y$y_ticks,
-    ticktext = y$y_labels,
+    tickvals = y_tickvals,
+    ticktext = y_ticktext,
     ticks = "inside",
     tickwidth = 1,
     tickfont = list(family = 'Arial', size = 10),
