@@ -27,7 +27,6 @@
 #'   probabilities.
 #'
 #' @section Options:
-#'
 #' Argument `options` is a named list of options:
 #'
 #' | Method    | Name             | Value                                     |

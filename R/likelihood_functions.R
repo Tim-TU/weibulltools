@@ -64,7 +64,8 @@ loglik_function.wt_reliability_data <- function(
                                       distribution = c(
                                         "weibull", "lognormal", "loglogistic",
                                         "sev", "normal", "logistic",
-                                        "weibull3", "lognormal3", "loglogistic3"
+                                        "weibull3", "lognormal3", "loglogistic3",
+                                        "exponential", "exponential2"
                                       ),
                                       ...
 ) {
@@ -123,7 +124,8 @@ loglik_function.default <- function(x,
                                     distribution = c(
                                       "weibull", "lognormal", "loglogistic",
                                       "sev", "normal", "logistic",
-                                      "weibull3", "lognormal3", "loglogistic3"
+                                      "weibull3", "lognormal3", "loglogistic3",
+                                      "exponential", "exponential2"
                                     ),
                                     ...
 ) {
@@ -154,50 +156,44 @@ loglik_function_ <- function(x,
 ) {
 
   d <- status
-  mu <- dist_params[1]
-  sig <- dist_params[2]
+
+  if (std_parametric(distribution) == "exponential") {
+    mu <- NULL
+    sig <- dist_params[1]
+    thres <- dist_params[2]
+  } else {
+    mu <- dist_params[1]
+    sig <- dist_params[2]
+    thres <- dist_params[3]
+  }
 
   if (log_scale) sig <- exp(sig)
 
-  # Three-parametric model:
-  if (length(dist_params) == 3L) {
-    thres <- dist_params[3]
+  # Threshold model:
+  if (!is.na(thres)) {
     x <- x - thres
-    ## Restriction of three-parametric models, i.e. x > threshold parameter:
+    ## Restriction of threshold models, i.e. x > threshold parameter:
     subs <- x > 0
     x <- x[subs]
     d <- d[subs]
     wts <- wts[subs]
   }
 
+  # Use distribution without threshold:
   distribution <- std_parametric(distribution)
 
-  # Switch between distributions:
+  ## Standardize x:
+  z <- standardize(x = x, dist_params = c(mu, sig), distribution = distribution)
+
+  ## Switch between distributions:
   switch(distribution,
-         "weibull" = {
-           z <- (log(x) - mu) / sig
-           ds <- dsev(z) / (sig * x)
-         },
-         "lognormal" = {
-           z <- (log(x) - mu) / sig
-           ds <- stats::dnorm(z) / (sig * x)
-         },
-         "loglogistic" = {
-           z <- (log(x) - mu) / sig
-           ds <- stats::dlogis(z) / (sig * x)
-         },
-         "sev" = {
-           z <- (x - mu) / sig
-           ds <- dsev(z) / sig
-         },
-         "normal" = {
-           z <- (x - mu) / sig
-           ds <- stats::dnorm(z) / sig
-         },
-         "logistic" = {
-           z <- (x - mu) / sig
-           ds <- stats::dlogis(z) / sig
-         }
+         "weibull" = ds <- dsev(z) / (sig * x),
+         "lognormal" = ds <- stats::dnorm(z) / (sig * x),
+         "loglogistic" = ds <- stats::dlogis(z) / (sig * x),
+         "sev" = ds <- dsev(z) / sig,
+         "normal" = ds <- stats::dnorm(z) / sig,
+         "logistic" = ds <- stats::dlogis(z) / sig,
+         "exponential" = ds <- stats::dexp(z) / sig
   )
 
   ps <- p_std(z, distribution)
@@ -214,14 +210,14 @@ loglik_function_ <- function(x,
 #'
 #' @description
 #' This function evaluates the log-likelihood with respect to a given threshold
-#' parameter of a three-parametric lifetime distribution. In terms of
+#' parameter of a parametric lifetime distribution. In terms of
 #' *Maximum Likelihood Estimation* this function can be optimized
 #' ([optim][stats::optim]) to estimate the threshold parameter.
 #'
 #'
 #' @inheritParams ml_estimation
 #' @param thres A numeric value for the threshold parameter.
-#' @param distribution Supposed three-parametric distribution of the random variable.
+#' @param distribution Supposed parametric distribution of the random variable.
 #'
 #' @return
 #' Returns the log-likelihood value for the threshold parameter `thres` given
@@ -288,7 +284,8 @@ loglik_profiling.wt_reliability_data <- function(
                                       wts = rep(1, nrow(x)),
                                       thres,
                                       distribution = c(
-                                        "weibull3", "lognormal3", "loglogistic3"
+                                        "weibull3", "lognormal3",
+                                        "loglogistic3", "exponential2"
                                       ),
                                       ...
 ) {
@@ -311,7 +308,7 @@ loglik_profiling.wt_reliability_data <- function(
 #'
 #' @inheritParams ml_estimation.default
 #' @param thres A numeric value for the threshold parameter.
-#' @param distribution Supposed three-parametric distribution of the random variable.
+#' @param distribution Supposed parametric distribution of the random variable.
 #'
 #' @encoding UTF-8
 #'
@@ -362,7 +359,8 @@ loglik_profiling.default <- function(x,
                                      wts = rep(1, length(x)),
                                      thres,
                                      distribution = c(
-                                       "weibull3", "lognormal3", "loglogistic3"
+                                       "weibull3", "lognormal3",
+                                       "loglogistic3", "exponential2"
                                      ),
                                      ...
 ) {
@@ -396,7 +394,7 @@ loglik_profiling_ <- function(x,
   d <- status
   x <- x - thres
 
-  ## Restriction of three-parametric models, i.e. x > threshold parameter:
+  ## Restriction of threshold models, i.e. x > threshold parameter:
   subs <- x > 0
   x <- x[subs]
   d <- d[subs]
@@ -413,7 +411,8 @@ loglik_profiling_ <- function(x,
   )
 
   ## Use log scale:
-  start_dist_params[2] <- log(start_dist_params[2])
+  n_par <- length(start_dist_params)
+  start_dist_params[n_par] <- log(start_dist_params[n_par])
 
   ## Log-Likelihood profiling:
   logL_profile <- stats::optim(

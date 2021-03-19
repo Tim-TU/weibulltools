@@ -24,8 +24,7 @@ mixmod_regression(x, ...)
 
 \item{distribution}{Supposed distribution of the random variable.}
 
-\item{conf_level}{Confidence level of the interval. If \code{distribution} is
-\code{"weibull"} this must be one of \code{0.9}, \code{0.95} or \code{0.99}.}
+\item{conf_level}{Confidence level of the interval.}
 
 \item{k}{Number of mixture components. If the data should be split in an
 automated fashion, \code{k} must be set to \code{NULL}. The argument \code{fix.psi} of
