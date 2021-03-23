@@ -17,8 +17,8 @@ test_that("ml_estimation remains stable", {
   expect_snapshot_output(purrr::map(ml, "varcov"))
   expect_snapshot_output(purrr::map(ml, "logL"))
 
-  ## log-location scale distributions (two-parametric):
-  dists <- c("sev", "normal", "logistic")
+  ## location-scale or scale distributions:
+  dists <- c("sev", "normal", "logistic", "exponential")
 
   ml <- purrr::map(
     dists,
@@ -35,8 +35,8 @@ test_that("ml_estimation remains stable", {
   # Test with 'alloy':
   data <- reliability_data(data = alloy, x = cycles, status = status)
 
-  ## log-location scale distributions (three-parametric):
-  dists <- c("weibull3", "lognormal3", "loglogistic3")
+  ## log-location scale or scale distributions with threshold:
+  dists <- c("weibull3", "lognormal3", "loglogistic3", "exponential2")
 
   ml <- purrr::map(
     dists,

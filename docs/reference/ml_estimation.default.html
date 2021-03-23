@@ -40,8 +40,8 @@
 
 
 <meta property="og:title" content="ML Estimation for Parametric Lifetime Distributions — ml_estimation.default" />
-<meta property="og:description" content="This function estimates the parameters of a two- or three-parameter lifetime
-distribution for complete and (multiple) right-censored data. The parameters
+<meta property="og:description" content="This function estimates the parameters of a parametric lifetime distribution
+for complete and (multiple) right-censored data. The parameters
 are determined in the frequently used (log-)location-scale parameterization.
 For the Weibull, estimates are additionally transformed such that they are in
 line with the parameterization provided by the stats package
@@ -140,8 +140,8 @@ line with the parameterization provided by the stats package
     </div>
 
     <div class="ref-description">
-    <p>This function estimates the parameters of a two- or three-parameter lifetime
-distribution for complete and (multiple) right-censored data. The parameters
+    <p>This function estimates the parameters of a parametric lifetime distribution
+for complete and (multiple) right-censored data. The parameters
 are determined in the frequently used (log-)location-scale parameterization.</p>
 <p>For the Weibull, estimates are additionally transformed such that they are in
 line with the parameterization provided by the <em>stats</em> package
@@ -152,8 +152,8 @@ line with the parameterization provided by the <em>stats</em> package
 <span class='fu'><a href='ml_estimation.html'>ml_estimation</a></span><span class='op'>(</span>
   <span class='va'>x</span>,
   <span class='va'>status</span>,
-  distribution <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"weibull"</span>, <span class='st'>"lognormal"</span>, <span class='st'>"loglogistic"</span>, <span class='st'>"normal"</span>, <span class='st'>"logistic"</span>, <span class='st'>"sev"</span>,
-    <span class='st'>"weibull3"</span>, <span class='st'>"lognormal3"</span>, <span class='st'>"loglogistic3"</span><span class='op'>)</span>,
+  distribution <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"weibull"</span>, <span class='st'>"lognormal"</span>, <span class='st'>"loglogistic"</span>, <span class='st'>"sev"</span>, <span class='st'>"normal"</span>, <span class='st'>"logistic"</span>,
+    <span class='st'>"weibull3"</span>, <span class='st'>"lognormal3"</span>, <span class='st'>"loglogistic3"</span>, <span class='st'>"exponential"</span>, <span class='st'>"exponential2"</span><span class='op'>)</span>,
   wts <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/rep.html'>rep</a></span><span class='op'>(</span><span class='fl'>1</span>, <span class='fu'><a href='https://rdrr.io/r/base/length.html'>length</a></span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span><span class='op'>)</span>,
   conf_level <span class='op'>=</span> <span class='fl'>0.95</span>,
   start_dist_params <span class='op'>=</span> <span class='cn'>NULL</span>,
@@ -230,11 +230,11 @@ or <code>"weibull3"</code>. Confidence intervals for scale \(\eta\) and shape \(
 
     <p>Within <code>ml_estimation</code>, <a href='https://rdrr.io/r/stats/optim.html'>optim</a> is called with <code>method = "BFGS"</code>
 and <code>control$fnscale = -1</code> to estimate the parameters that maximize the
-log-likelihood (see <a href='loglik_function.html'>loglik_function</a>). For three-parametric distributions,
-the profile log-likelihood is maximized in advance (see <a href='loglik_profiling.html'>loglik_profiling</a>).
-Once the threshold parameter is determined, the three-parametric model is
-treated like two-parametric (reduced lifetime by threshold) and the general
-optimization routine is applied.</p>
+log-likelihood (see <a href='loglik_function.html'>loglik_function</a>). For threshold models, the profile
+log-likelihood is maximized in advance (see <a href='loglik_profiling.html'>loglik_profiling</a>). Once the
+threshold parameter is determined, the threshold model is treated like a
+distribution without threshold (lifetime is reduced by threshold estimate)
+and the general optimization routine is applied.</p>
 <p>Normal approximation confidence intervals for the parameters are computed as well.</p>
     <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
 

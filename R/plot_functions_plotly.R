@@ -47,7 +47,6 @@ plot_layout_vis.plotly <- function(p_obj, # An empty plotly object.
     )
   }
 
-
   # Configuration y axis:
   ## Adjust y values for exponential distribution (no overlapping):
   if (distribution != "exponential") {
@@ -58,10 +57,11 @@ plot_layout_vis.plotly <- function(p_obj, # An empty plotly object.
     y_labs <- c(.01, .1, .2, .3, .5, .6, .7, .8, .9, .95, .99,
                 .999, .9999, .99999) * 100
 
-    ind <- y$y_labels %in% y_s
+    ind <- y$y_labels %in% y_labs
     y_tickvals <- y$y_ticks[ind]
     y_ticktext <- y$y_labels[ind]
   }
+
   y_config <- list(
     title = list(
       text = title_y

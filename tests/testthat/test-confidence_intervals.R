@@ -5,9 +5,10 @@ test_that("confint_betabinom remains stable", {
   ## Probability tbl:
   prob_tbl <- estimate_cdf(x = data, methods = "johnson")
 
-  ## two-parametric:
+  ## Distributions without threshold:
   dists <- c(
-    "weibull", "lognormal", "loglogistic", "sev", "normal", "logistic"
+    "weibull", "lognormal", "loglogistic",
+    "sev", "normal", "logistic", "exponential"
   )
 
   ## Rank Regression:
@@ -37,8 +38,8 @@ test_that("confint_betabinom remains stable", {
   ## Probability tbl:
   prob_tbl <- estimate_cdf(x = data, methods = "johnson")
 
-  ## three-parametric:
-  dists <- c("weibull3", "lognormal3", "loglogistic3")
+  ## Distributions with threshold:
+  dists <- c("weibull3", "lognormal3", "loglogistic3", "exponential2")
 
   ## Rank Regression:
   rr <- lapply(dists, rank_regression, x = prob_tbl)
@@ -66,9 +67,10 @@ test_that("confint_fisher remains stable", {
   # Test with 'shock':
   data <- reliability_data(data = shock, x = distance, status = status)
 
-  ## two-parametric:
+  ## Distributions without threshold:
   dists <- c(
-    "weibull", "lognormal", "loglogistic", "sev", "normal", "logistic"
+    "weibull", "lognormal", "loglogistic",
+    "sev", "normal", "logistic"
   )
 
   ## ML estimation:
@@ -94,7 +96,7 @@ test_that("confint_fisher remains stable", {
   # Test with 'alloy':
   data <- reliability_data(data = alloy, x = cycles, status = status)
 
-  ## three-parametric:
+  ## Distributions with threshold:
   dists <- c("weibull3", "lognormal3", "loglogistic3")
 
   ## ML estimation:

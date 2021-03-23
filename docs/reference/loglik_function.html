@@ -41,12 +41,9 @@
 
 <meta property="og:title" content="Log-Likelihood Function for Parametric Lifetime Distributions — loglik_function" />
 <meta property="og:description" content="This function computes the log-likelihood value with respect to a given set
-of parameters. For two-parametric models the location and scale parameters
-are required. If a three-parametric lifetime distribution is needed an
-additional threshold parameter has to be provided. In terms of
-Maximum Likelihood Estimation this function can be optimized
-(optim) to estimate the parameters and variance-covariance
-matrix of the parameters." />
+of parameters. In terms of Maximum Likelihood Estimation this function can
+be optimized (optim) to estimate the parameters and
+variance-covariance matrix of the parameters." />
 
 
 
@@ -142,12 +139,9 @@ matrix of the parameters." />
 
     <div class="ref-description">
     <p>This function computes the log-likelihood value with respect to a given set
-of parameters. For two-parametric models the location and scale parameters
-are required. If a three-parametric lifetime distribution is needed an
-additional threshold parameter has to be provided. In terms of
-<em>Maximum Likelihood Estimation</em> this function can be optimized
-(<a href='https://rdrr.io/r/stats/optim.html'>optim</a>) to estimate the parameters and variance-covariance
-matrix of the parameters.</p>
+of parameters. In terms of <em>Maximum Likelihood Estimation</em> this function can
+be optimized (<a href='https://rdrr.io/r/stats/optim.html'>optim</a>) to estimate the parameters and
+variance-covariance matrix of the parameters.</p>
     </div>
 
     <pre class="usage"><span class='fu'>loglik_function</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>...</span><span class='op'>)</span>
@@ -158,7 +152,7 @@ matrix of the parameters.</p>
   wts <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/rep.html'>rep</a></span><span class='op'>(</span><span class='fl'>1</span>, <span class='fu'><a href='https://rdrr.io/r/base/nrow.html'>nrow</a></span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span><span class='op'>)</span>,
   <span class='va'>dist_params</span>,
   distribution <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"weibull"</span>, <span class='st'>"lognormal"</span>, <span class='st'>"loglogistic"</span>, <span class='st'>"sev"</span>, <span class='st'>"normal"</span>, <span class='st'>"logistic"</span>,
-    <span class='st'>"weibull3"</span>, <span class='st'>"lognormal3"</span>, <span class='st'>"loglogistic3"</span><span class='op'>)</span>,
+    <span class='st'>"weibull3"</span>, <span class='st'>"lognormal3"</span>, <span class='st'>"loglogistic3"</span>, <span class='st'>"exponential"</span>, <span class='st'>"exponential2"</span><span class='op'>)</span>,
   <span class='va'>...</span>
 <span class='op'>)</span></pre>
 
@@ -199,7 +193,7 @@ the data.</p>
 
 <p>The following table summarizes the available distributions and their parameters</p><ul>
 <li><p><em>location parameter</em> \(\mu\),</p></li>
-<li><p><em>scale parameter</em> \(\sigma\) and</p></li>
+<li><p><em>scale parameter</em> \(\sigma\) or \(\theta\) and</p></li>
 <li><p><em>threshold parameter</em> \(\gamma\).</p></li>
 </ul>
 
@@ -214,6 +208,8 @@ the data.</p>
 <tr><td><code>"logistic"</code></td><td>\(\mu\)</td><td>\(\sigma\)</td><td>-</td></tr>
 <tr><td><code>"loglogistic"</code></td><td>\(\mu\)</td><td>\(\sigma\)</td><td>-</td></tr>
 <tr><td><code>"loglogistic3"</code></td><td>\(\mu\)</td><td>\(\sigma\)</td><td>\(\gamma\)</td></tr>
+<tr><td><code>"exponential"</code></td><td>\(\theta\)</td><td>-</td><td>-</td></tr>
+<tr><td><code>"exponential2"</code></td><td>\(\theta\)</td><td>\(\gamma\)</td><td>-</td></tr>
 </table>
 
 
