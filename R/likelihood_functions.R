@@ -2,12 +2,9 @@
 #'
 #' @description
 #' This function computes the log-likelihood value with respect to a given set
-#' of parameters. For two-parametric models the location and scale parameters
-#' are required. If a three-parametric lifetime distribution is needed an
-#' additional threshold parameter has to be provided. In terms of
-#' *Maximum Likelihood Estimation* this function can be optimized
-#' ([optim][stats::optim]) to estimate the parameters and variance-covariance
-#' matrix of the parameters.
+#' of parameters. In terms of *Maximum Likelihood Estimation* this function can
+#' be optimized ([optim][stats::optim]) to estimate the parameters and
+#' variance-covariance matrix of the parameters.
 #'
 #' @inheritParams ml_estimation
 #' @inheritParams predict_quantile

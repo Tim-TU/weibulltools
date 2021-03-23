@@ -344,7 +344,7 @@ rank_regression_ <- function(cdf_estimation,
   }
 
   ### Threshold parameter:
-  if (exists("opt_thres")) {
+  if (exists("opt_thres", inherits = FALSE)) {
     dist_params <- c(dist_params, opt_thres)
     names(dist_params)[length(dist_params)] <- "gamma"
   }

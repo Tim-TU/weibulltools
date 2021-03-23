@@ -1,8 +1,8 @@
 #' ML Estimation for Parametric Lifetime Distributions
 #'
 #' @description
-#' This function estimates the parameters of a two- or three-parameter lifetime
-#' distribution for complete and (multiple) right-censored data. The parameters
+#' This function estimates the parameters of a parametric lifetime distribution
+#' for complete and (multiple) right-censored data. The parameters
 #' are determined in the frequently used (log-)location-scale parameterization.
 #'
 #' For the Weibull, estimates are additionally transformed such that they are in
@@ -12,11 +12,11 @@
 #' @details
 #' Within `ml_estimation`, [optim][stats::optim] is called with `method = "BFGS"`
 #' and `control$fnscale = -1` to estimate the parameters that maximize the
-#' log-likelihood (see [loglik_function]). For three-parametric distributions,
-#' the profile log-likelihood is maximized in advance (see [loglik_profiling]).
-#' Once the threshold parameter is determined, the three-parametric model is
-#' treated like two-parametric (reduced lifetime by threshold) and the general
-#' optimization routine is applied.
+#' log-likelihood (see [loglik_function]). For threshold models, the profile
+#' log-likelihood is maximized in advance (see [loglik_profiling]). Once the
+#' threshold parameter is determined, the threshold model is treated like a
+#' distribution without threshold (lifetime is reduced by threshold estimate)
+#' and the general optimization routine is applied.
 #'
 #' Normal approximation confidence intervals for the parameters are computed as well.
 #'
@@ -84,8 +84,8 @@ ml_estimation <- function(x, ...) {
 ml_estimation.wt_reliability_data <- function(x,
                                               distribution = c(
                                                 "weibull", "lognormal",
-                                                "loglogistic", "normal",
-                                                "logistic", "sev", "weibull3",
+                                                "loglogistic", "sev", "normal",
+                                                "logistic", "weibull3",
                                                 "lognormal3", "loglogistic3",
                                                 "exponential", "exponential2"
                                               ),
@@ -158,7 +158,7 @@ ml_estimation.default <- function(x,
                                   status,
                                   distribution = c(
                                     "weibull", "lognormal", "loglogistic",
-                                    "normal", "logistic", "sev",
+                                    "sev", "normal", "logistic",
                                     "weibull3", "lognormal3", "loglogistic3",
                                     "exponential", "exponential2"
                                   ),
@@ -195,12 +195,12 @@ ml_estimation_ <- function(data,
 ) {
 
   # Prepare function inputs:
-  x <- x_origin <- data$x # Used to compute the vcov-matrix for threshold models:
+  x <- x_origin <- data$x # Used to compute the hessian for threshold models:
   status <- data$status
 
   ## Set initial values:
   if (purrr::is_null(start_dist_params)) {
-    ### Vector of length 1 or 2 with scale or log-scale parameter(s):
+    ### Vector of length 1 (scale) or 2 (location-scale) parameter(s):
     start_dist_params <- start_params(
       x = x,
       status = status,
@@ -209,9 +209,9 @@ ml_estimation_ <- function(data,
     ### Add 'NA' for general handling of 'start_dist_params' (length 2 or 3):
     start_dist_params <- c(start_dist_params, NA_real_)
   } else {
-    ### In this case 'start_dist_params' always has length 2 or 3:
     check_dist_params(start_dist_params, distribution)
     if (length(start_dist_params) == 1L) {
+      ### Add 'NA' in case of 'exponential' distribution to ensure length 2:
       start_dist_params <- c(start_dist_params, NA_real_)
     }
   }
@@ -222,6 +222,15 @@ ml_estimation_ <- function(data,
   # Pre-Step: Threshold models must be profiled w.r.t threshold:
   if (has_thres(distribution)) {
 
+    ## Define upper bound for constraint optimization:
+    ### For 'exponential2' gamma is smaller or equal to t_min:
+    upper <- min(x[status == 1])
+
+    ### For other threshold distributions gamma is smaller than t_min:
+    if (distribution != "exponential2") {
+      upper <- (1 - (1 / 1e+5)) * upper
+    }
+
     ## Initial value for threshold parameter:
     t0 <- start_dist_params[n_par] %NA% 0
 
@@ -231,8 +240,9 @@ ml_estimation_ <- function(data,
       fn = loglik_profiling_,
       method = "L-BFGS-B",
       lower = 0,
-      upper = (1 - (1 / 1e+5)) * min(x[status == 1]),
+      upper = upper,
       control = list(fnscale = -1), # no user input for profiling!
+      hessian = FALSE,
       x = x,
       status = status,
       wts = wts,
@@ -283,16 +293,18 @@ ml_estimation_ <- function(data,
     names_par <- c("mu", "sigma")
   }
 
-  ### Threshold parameter needed for variance-covariance matrix:
-  if (exists("opt_thres")) {
-    dist_params <- c(dist_params, opt_thres)
+  ### Determine the hessian matrix for threshold distributions:
+  if (exists("opt_thres", inherits = FALSE)) {
 
-    ml <- stats::optim(
+    #### Concatenate parameters:
+    dist_params <- c(dist_params, opt_thres)
+    names_par[n_par + 1] <- "gamma"
+
+    #### Compute hessian w.r.t to 'dist_params' and original 'x':
+    ml$hessian <- stats::optimHess(
       par = dist_params,
       fn = loglik_function_,
-      method = "BFGS",
       control = control,
-      hessian = TRUE,
       x = x_origin,
       status = status,
       wts = wts,
@@ -300,9 +312,6 @@ ml_estimation_ <- function(data,
       log_scale = TRUE
     )
 
-    #### Update parameters:
-    dist_params <- ml$par
-    names_par[n_par + 1] <- "gamma"
   }
 
   ## Set parameter names:

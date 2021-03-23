@@ -92,7 +92,9 @@ r_squared_profiling.wt_cdf_estimation <- function(x,
                                                     "loglogistic3",
                                                     "exponential2"
                                                   ),
-                                                  direction = c("x_on_y", "y_on_x"),
+                                                  direction = c(
+                                                    "x_on_y", "y_on_x"
+                                                  ),
                                                   ...
 ) {
 

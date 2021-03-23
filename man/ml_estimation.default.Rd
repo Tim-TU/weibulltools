@@ -7,7 +7,7 @@
 \method{ml_estimation}{default}(
   x,
   status,
-  distribution = c("weibull", "lognormal", "loglogistic", "normal", "logistic", "sev",
+  distribution = c("weibull", "lognormal", "loglogistic", "sev", "normal", "logistic",
     "weibull3", "lognormal3", "loglogistic3", "exponential", "exponential2"),
   wts = rep(1, length(x)),
   conf_level = 0.95,
@@ -62,8 +62,8 @@ or \code{"weibull3"}. Confidence intervals for scale \eqn{\eta} and shape \eqn{\
 }
 }
 \description{
-This function estimates the parameters of a two- or three-parameter lifetime
-distribution for complete and (multiple) right-censored data. The parameters
+This function estimates the parameters of a parametric lifetime distribution
+for complete and (multiple) right-censored data. The parameters
 are determined in the frequently used (log-)location-scale parameterization.
 
 For the Weibull, estimates are additionally transformed such that they are in
@@ -73,11 +73,11 @@ line with the parameterization provided by the \emph{stats} package
 \details{
 Within \code{ml_estimation}, \link[stats:optim]{optim} is called with \code{method = "BFGS"}
 and \code{control$fnscale = -1} to estimate the parameters that maximize the
-log-likelihood (see \link{loglik_function}). For three-parametric distributions,
-the profile log-likelihood is maximized in advance (see \link{loglik_profiling}).
-Once the threshold parameter is determined, the three-parametric model is
-treated like two-parametric (reduced lifetime by threshold) and the general
-optimization routine is applied.
+log-likelihood (see \link{loglik_function}). For threshold models, the profile
+log-likelihood is maximized in advance (see \link{loglik_profiling}). Once the
+threshold parameter is determined, the threshold model is treated like a
+distribution without threshold (lifetime is reduced by threshold estimate)
+and the general optimization routine is applied.
 
 Normal approximation confidence intervals for the parameters are computed as well.
 }

@@ -96,6 +96,22 @@
     10 8590   1.79 0.0389     0.00480       0.129 johnson              
     # ... with 92 more rows
     
+    [[7]]
+    # A tibble: 101 x 6
+           x  rank  prob lower_bound upper_bound cdf_estimation_method
+     * <dbl> <dbl> <dbl>       <dbl>       <dbl> <chr>                
+     1 6700.  6.71 0.167      0.0723       0.303 johnson              
+     2 6910   6.89 0.172      0.0755       0.309 johnson              
+     3 7120.  7.07 0.176      0.0787       0.315 johnson              
+     4 7330   7.25 0.181      0.0819       0.320 johnson              
+     5 7540.  7.43 0.186      0.0852       0.326 johnson              
+     6 7750   7.61 0.190      0.0884       0.331 johnson              
+     7 7960.  7.79 0.195      0.0917       0.337 johnson              
+     8 8170   7.97 0.200      0.0949       0.342 johnson              
+     9 8380   8.14 0.204      0.0982       0.348 johnson              
+    10 8590   8.32 0.209      0.101        0.353 johnson              
+    # ... with 91 more rows
+    
 
 ---
 
@@ -195,6 +211,22 @@
     10 8590   1.79 0.0389      -1819.      14962. johnson              
     # ... with 92 more rows
     
+    [[7]]
+    # A tibble: 101 x 6
+           x  rank  prob lower_bound upper_bound cdf_estimation_method
+     * <dbl> <dbl> <dbl>       <dbl>       <dbl> <chr>                
+     1 6700.  6.71 0.167       2754.      13267. johnson              
+     2 6910   6.89 0.172       2881.      13570. johnson              
+     3 7120.  7.07 0.176       3008.      13872. johnson              
+     4 7330   7.25 0.181       3137.      14173. johnson              
+     5 7540.  7.43 0.186       3266.      14473. johnson              
+     6 7750   7.61 0.190       3396.      14772. johnson              
+     7 7960.  7.79 0.195       3527.      15071. johnson              
+     8 8170   7.97 0.200       3659.      15369. johnson              
+     9 8380   8.14 0.204       3791.      15666. johnson              
+    10 8590   8.32 0.209       3924.      15963. johnson              
+    # ... with 91 more rows
+    
 
 ---
 
@@ -246,6 +278,22 @@
     10 112.   7.11 0.0941     0.0410       0.175  johnson              
     # ... with 92 more rows
     
+    [[4]]
+    # A tibble: 103 x 6
+           x   rank      prob  lower_bound upper_bound cdf_estimation_method
+     * <dbl>  <dbl>     <dbl>        <dbl>       <dbl> <chr>                
+     1  94    0.301 0.0000114 0.0000000456      0.0260 johnson              
+     2  94.8  1.02  0.01      0.000388          0.0506 johnson              
+     3  96.0  2.03  0.0239    0.00351           0.0757 johnson              
+     4  98.0  3.72  0.0472    0.0134            0.111  johnson              
+     5 100.   5.37  0.0700    0.0259            0.143  johnson              
+     6 102.   6.97  0.0922    0.0398            0.172  johnson              
+     7 103.   7.54  0.1       0.0449            0.182  johnson              
+     8 104.   8.54  0.114     0.0544            0.199  johnson              
+     9 106.  10.1   0.135     0.0694            0.225  johnson              
+    10 108.  11.6   0.156     0.0847            0.250  johnson              
+    # ... with 93 more rows
+    
 
 ---
 
@@ -296,6 +344,22 @@
      9 110.   6.27 0.0824        99.2        121. johnson              
     10 112.   7.11 0.0941       101.         123. johnson              
     # ... with 92 more rows
+    
+    [[4]]
+    # A tibble: 103 x 6
+           x   rank      prob lower_bound upper_bound cdf_estimation_method
+     * <dbl>  <dbl>     <dbl>       <dbl>       <dbl> <chr>                
+     1  94    0.301 0.0000114        94.0        96.2 johnson              
+     2  94.8  1.02  0.01             94.0        98.3 johnson              
+     3  96.0  2.03  0.0239           94.3       100.  johnson              
+     4  98.0  3.72  0.0472           95.1       104.  johnson              
+     5 100.   5.37  0.0700           96.2       107.  johnson              
+     6 102.   6.97  0.0922           97.3       110.  johnson              
+     7 103.   7.54  0.1              97.8       111.  johnson              
+     8 104.   8.54  0.114            98.6       112.  johnson              
+     9 106.  10.1   0.135            99.9       115.  johnson              
+    10 108.  11.6   0.156           101.        118.  johnson              
+    # ... with 93 more rows
     
 
 # confint_fisher remains stable
@@ -502,7 +566,7 @@
     # A tibble: 103 x 6
            x    prob std_err lower_bound upper_bound cdf_estimation_method
      * <dbl>   <dbl>   <dbl>       <dbl>       <dbl> <chr>                
-     1  94   0.00253   2.22    0.0000327      0.178  <NA>                 
+     1  94.0 0.00253   2.22    0.0000327      0.178  <NA>                 
      2  95.9 0.01      0.748   0.00232        0.0426 <NA>                 
      3  96.0 0.0106    0.716   0.00262        0.0426 <NA>                 
      4  98.0 0.0207    0.482   0.00811        0.0525 <NA>                 
@@ -534,10 +598,10 @@
     # A tibble: 102 x 6
            x   prob std_err lower_bound upper_bound cdf_estimation_method
      * <dbl>  <dbl>   <dbl>       <dbl>       <dbl> <chr>                
-     1  94   0.0109   1.04      0.00143      0.0780 <NA>                 
+     1  94   0.0109   1.04      0.00143      0.0781 <NA>                 
      2  96.0 0.0153   0.844     0.00295      0.0750 <NA>                 
      3  98.0 0.0205   0.702     0.00527      0.0766 <NA>                 
-     4 100.  0.0267   0.597     0.00844      0.0812 <NA>                 
+     4 100.  0.0267   0.597     0.00844      0.0813 <NA>                 
      5 102.  0.0338   0.519     0.0125       0.0882 <NA>                 
      6 104.  0.0419   0.459     0.0175       0.0971 <NA>                 
      7 106.  0.0509   0.414     0.0233       0.108  <NA>                 
@@ -553,7 +617,7 @@
     # A tibble: 103 x 6
            x    prob std_err lower_bound upper_bound cdf_estimation_method
      * <dbl>   <dbl>   <dbl>       <dbl>       <dbl> <chr>                
-     1  94   0.00253    1.69        90.7        97.4 <NA>                 
+     1  94.0 0.00253    1.69        90.7        97.4 <NA>                 
      2  95.9 0.01       1.62        92.7        99.1 <NA>                 
      3  96.0 0.0106     1.62        92.9        99.2 <NA>                 
      4  98.0 0.0207     1.82        94.5       102.  <NA>                 
@@ -586,7 +650,7 @@
            x   prob std_err lower_bound upper_bound cdf_estimation_method
      * <dbl>  <dbl>   <dbl>       <dbl>       <dbl> <chr>                
      1  94   0.0109    5.64        83.6        106. <NA>                 
-     2  96.0 0.0153    5.24        86.3        107. <NA>                 
+     2  96.0 0.0153    5.24        86.2        107. <NA>                 
      3  98.0 0.0205    4.91        88.8        108. <NA>                 
      4 100.  0.0267    4.65        91.3        110. <NA>                 
      5 102.  0.0338    4.44        93.6        111. <NA>                 
