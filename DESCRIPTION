@@ -45,14 +45,13 @@ BugReports: https://github.com/Tim-TU/weibulltools/issues
 Imports:
     dplyr,
     ggplot2,
-    lifecycle, 
+    lifecycle (>= 1.0.0), 
     magrittr,
     plotly,
     purrr,
     Rcpp,
     sandwich,
     segmented,
-    SPREDA,
     tibble
 LinkingTo: Rcpp (>= 0.12.18), RcppArmadillo
 Depends: R (>= 3.5.0)

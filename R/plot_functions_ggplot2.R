@@ -1,64 +1,70 @@
 #' @export
-plot_layout_vis.ggplot <- function(
-  # An empty ggplot object
-  p_obj,
-  x,
-  distribution = c(
-    "weibull", "lognormal", "loglogistic", "normal", "logistic", "sev"
-  ),
-  title_main = "Probability Plot",
-  title_x = "Characteristic",
-  title_y = "Unreliability"
+plot_layout_vis.ggplot <- function(p_obj, # An empty ggplot object.
+                                   x, # Named list with x_ticks and x_labels.
+                                   y, # Named list with y_ticks and y_labels.
+                                   distribution = c(
+                                     "weibull", "lognormal", "loglogistic",
+                                     "sev", "normal", "logistic",
+                                     "exponential"
+                                   ),
+                                   title_main = "Probability Plot",
+                                   title_x = "Characteristic",
+                                   title_y = "Unreliability"
 ) {
 
   distribution <- match.arg(distribution)
 
-  layout_helper <- plot_layout_helper(x, distribution, "ggplot2")
-
-  p_obj <- if (distribution %in% c("sev", "normal", "logistic")) {
+  p_obj <- if (distribution %in% c("weibull", "lognormal", "loglogistic")) {
     p_obj +
-      ggplot2::scale_x_continuous(
-        breaks = layout_helper$x_ticks,
+      ggplot2::scale_x_log10(
+        breaks = x$x_ticks,
         minor_breaks = NULL,
-        labels = layout_helper$x_labels
+        labels = x$x_labels
       )
   } else {
     p_obj +
-      ggplot2::scale_x_log10(
-        breaks = layout_helper$x_ticks,
+      ggplot2::scale_x_continuous(
+        breaks = ggplot2::waiver(),
         minor_breaks = NULL,
-        labels = layout_helper$x_labels
+        labels = ggplot2::waiver()
       )
   }
 
   p_obj <- p_obj +
     ggplot2::scale_y_continuous(
-      breaks = layout_helper$y_ticks,
+      breaks = y$y_ticks,
       minor_breaks = NULL,
-      labels = layout_helper$y_labels,
+      labels = y$y_labels,
+      guide = ggplot2::guide_axis( # experimental!
+        check.overlap = TRUE
+      )
     ) +
     ggplot2::theme_bw() +
     ggplot2::theme(
-      # Rotate x axis labels
+      # Rotate x axis labels:
       axis.text.x = ggplot2::element_text(angle = 90, vjust = 0.5, hjust = 1),
-      # Center titel
+      # Center title:
       plot.title = ggplot2::element_text(hjust = 0.5)
     ) +
     ggplot2::labs(title = title_main, x = title_x, y = title_y)
 
-  return(p_obj)
+  p_obj
 }
 
+
+
 #' @export
-plot_prob_vis.ggplot <- function(
-  p_obj, tbl_prob,
-  distribution = c(
-    "weibull", "lognormal", "loglogistic", "normal", "logistic", "sev"
-  ),
-  title_main = "Probability Plot",
-  title_x = "Characteristic",
-  title_y = "Unreliability",
-  title_trace = "Sample"
+plot_prob_vis.ggplot <- function(p_obj,
+                                 tbl_prob,
+                                 distribution = c(
+                                   "weibull", "lognormal", "loglogistic",
+                                   "sev", "normal", "logistic",
+                                   "exponential"
+                                 ),
+                                 title_main = "Probability Plot",
+                                 title_x = "Characteristic",
+                                 title_y = "Unreliability",
+                                 title_trace = "Sample"
 ) {
 
   distribution <- match.arg(distribution)
@@ -100,12 +106,15 @@ plot_prob_vis.ggplot <- function(
     ) +
     labs
 
-  return(p_prob)
+  p_prob
 }
 
+
+
 #' @export
-plot_mod_vis.ggplot <- function(
-  p_obj, tbl_mod, title_trace = "Fit"
+plot_mod_vis.ggplot <- function(p_obj,
+                                tbl_mod,
+                                title_trace = "Fit"
 ) {
 
   n_method <- length(unique(tbl_mod$cdf_estimation_method))
@@ -150,11 +159,17 @@ plot_mod_vis.ggplot <- function(
       color = paste(p_obj$labels$colour, "+\n", title_trace)
     )
 
-  return(p_mod)
+  p_mod
 }
 
+
+
 #' @export
-plot_conf_vis.ggplot <- function(p_obj, tbl_p, title_trace) {
+plot_conf_vis.ggplot <- function(p_obj,
+                                 tbl_p,
+                                 title_trace
+) {
+
   n_method <- length(unique(tbl_p$cdf_estimation_method))
 
   mapping <- if (all(is.na(tbl_p$cdf_estimation_method)) || n_method == 1) {
@@ -180,12 +195,15 @@ plot_conf_vis.ggplot <- function(p_obj, tbl_p, title_trace) {
       color = paste(p_obj$labels$colour, "+\n", title_trace)
     )
 
-  return(p_conf)
+  p_conf
 }
 
+
+
 #' @export
-plot_pop_vis.ggplot <- function(
-  p_obj, tbl_pop, title_trace
+plot_pop_vis.ggplot <- function(p_obj,
+                                tbl_pop,
+                                title_trace
 ) {
   tbl_pop <- tbl_pop %>%
     dplyr::mutate(
@@ -199,5 +217,5 @@ plot_pop_vis.ggplot <- function(
     ) +
     ggplot2::labs(color = title_trace)
 
-  return(p_pop)
+  p_pop
 }

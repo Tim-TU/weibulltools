@@ -402,7 +402,7 @@ confint_betabinom_ <- function(model_estimation,
   ## Obtain virtual ranks by interpolation using Benard's formula:
   virt_rank <- y_seq * (n + 0.4) + 0.3
 
-  ## Confidence intervals for 'direction = y' w.r.t 'bounds':
+  ## Confidence intervals for direction = "y" w.r.t 'bounds':
   list_confint <- conf_bb_y(
     y = y_seq,
     n = n,
@@ -411,7 +411,7 @@ confint_betabinom_ <- function(model_estimation,
     conf_level = conf_level
   )
 
-  ## Confidence intervals for 'direction = x' if needed:
+  ## Confidence intervals for direction = "x" if needed:
   if (direction == "x") {
     list_confint <- purrr::map(
       list_confint,
@@ -788,7 +788,7 @@ confint_fisher_ <- function(model_estimation,
     stats::qnorm(conf_level)
   )
 
-  ## Confidence intervals for 'direction = x':
+  ## Confidence intervals for direction = "x":
   if (direction == "x") {
     se_delta <- delta_method(
       x = y_seq,
@@ -812,7 +812,7 @@ confint_fisher_ <- function(model_estimation,
     names(list_confint) <- names(w)
 
   } else {
-    ## Confidence intervals for 'direction = y':
+    ## Confidence intervals for direction = "y":
     se_delta <- delta_method(
       x = x_seq,
       dist_params = dist_params,
@@ -837,7 +837,7 @@ confint_fisher_ <- function(model_estimation,
 
     ## Model-specific standard distribution:
     pfun <- switch(
-      two_parametric(distribution),
+      std_parametric(distribution),
       "sev" = , "weibull" = psev,
       "normal" = , "lognormal" = stats::pnorm,
       "logistic" = , "loglogistic" = stats::plogis

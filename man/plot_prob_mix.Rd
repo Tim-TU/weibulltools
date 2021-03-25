@@ -20,68 +20,64 @@ plot_prob_mix(
 )
 }
 \arguments{
-\item{x}{A numeric vector which consists of lifetime data. Lifetime
-data could be every characteristic influencing the reliability of a product,
-e.g. operating time (days/months in service), mileage (km, miles), load
-cycles.}
+\item{x}{A numeric vector which consists of lifetime data. Lifetime data
+could be every characteristic influencing the reliability of a product, e.g.
+operating time (days/months in service), mileage (km, miles), load cycles.}
 
-\item{status}{A vector of binary data (0 or 1) indicating whether unit \emph{i}
-is a right censored observation (= 0) or a failure (= 1).}
+\item{status}{A vector of binary data (0 or 1) indicating whether a unit is a
+right censored observation (= 0) or a failure (= 1).}
 
-\item{id}{A character vector for the identification of every unit.}
+\item{id}{Identification for every unit.}
 
 \item{distribution}{Supposed distribution of the random variable.}
 
-\item{mix_output}{A list provided by \code{\link{mixmod_regression}} or
-\code{\link{mixmod_em}}, which consists of values necessary to visualize the
-subgroups.The default value of \code{mix_output} is \code{NULL}.}
+\item{mix_output}{A list returned by \link{mixmod_regression} or \link{mixmod_em}, which
+consists of values necessary to visualize the subgroups.The default value of
+\code{mix_output} is \code{NULL}.}
 
-\item{title_main}{A character string which is assigned to the main title
-of the plot.}
+\item{title_main}{A character string which is assigned to the main title.}
 
-\item{title_x}{A character string which is assigned to the title of the
-x axis.}
+\item{title_x}{A character string which is assigned to the title of the x axis.}
 
-\item{title_y}{A character string which is assigned to the title of the
-y axis.}
+\item{title_y}{A character string which is assigned to the title of the y axis.}
 
-\item{title_trace}{A character string which is assigned to the trace shown in
-the legend.}
+\item{title_trace}{A character string which is assigned to the legend trace.}
 
 \item{plot_method}{Package, which is used for generating the plot output.}
 
 \item{...}{Further arguments passed to or from other methods. Currently not used.}
 }
 \description{
-\ifelse{html}{\figure{lifecycle-soft-deprecated.svg}{options: alt='Soft-deprecated lifecycle'}}{\strong{Soft-deprecated}}
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#soft-deprecated}{\figure{lifecycle-soft-deprecated.svg}{options: alt='[Soft-deprecated]'}}}{\strong{[Soft-deprecated]}}
 
 \code{plot_prob_mix()} is no longer under active development, switching to
-\code{\link{plot_prob}} is recommended.
+\link{plot_prob} is recommended.
 }
 \details{
 This function is used to apply the graphical technique of probability
 plotting to univariate mixture models that have been separated with functions
-\code{\link{mixmod_regression}} or \code{\link{mixmod_em}}.
+\link{mixmod_regression} or \link{mixmod_em}.
 
-If data has been split by \code{mixmod_em} the function \code{johnson_method}
-is applied to subgroup-specific data. The calculated plotting positions are
-shaped regarding the obtained split of the used splitting function.
+If data has been split by \code{mixmod_em} the function \code{johnson_method} is applied
+to subgroup-specific data. The calculated plotting positions are shaped
+regarding the obtained split of the used splitting function.
 
-In \code{\link{mixmod_regression}} a maximum of three subgroups can be determined
-and thus being plotted. The intention of this function is to give the
-user a hint for the existence of a mixture model. An in-depth analysis should
-be done afterwards.
+In \link{mixmod_regression} a maximum of three subgroups can be determined and thus
+being plotted. The intention of this function is to give the user a hint for
+the existence of a mixture model. An in-depth analysis should be done
+afterwards.
 
 The marker label for x and y are determined by the first word provided in the
-argument \code{title_x} respective \code{title_y}, i.e. if
+argument \code{title_x} and \code{title_y} respectively, i.e. if
 \code{title_x = "Mileage in km"} the x label of the marker is "Mileage".
 
 The name of the legend entry is a combination of the \code{title_trace} and the
-number of determined subgroups. If \code{title_trace = "Group"} and the data
-could be split in two groups, the legend entries would be "Group 1" and "Group 2".
+number of determined subgroups (if any). If \code{title_trace = "Group"} and the
+data has been split in two groups, the legend entries are "Group: 1" and
+"Group: 2".
 }
 \examples{
-# Vectors
+# Vectors:
 hours <- voltage$hours
 status <- voltage$status
 
@@ -125,5 +121,5 @@ Doganaksoy, N.; Hahn, G.; Meeker, W. Q., Reliability Analysis by
 Failure Mode, Quality Progress, 35(6), 47-52, 2002
 }
 \seealso{
-\code{\link{plot_prob}}
+\link{plot_prob}
 }

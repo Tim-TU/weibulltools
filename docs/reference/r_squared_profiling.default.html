@@ -41,9 +41,9 @@
 
 <meta property="og:title" content="R-Squared-Profile Function for Parametric Lifetime Distributions with Threshold — r_squared_profiling.default" />
 <meta property="og:description" content="This function evaluates the coefficient of determination with respect to a
-given threshold parameter of a three-parametric lifetime distribution.
-In terms of Rank Regression this function can be optimized
-(optim) to estimate the threshold parameter." />
+given threshold parameter of a parametric lifetime distribution. In terms of
+Rank Regression this function can be optimized (optim) to
+estimate the threshold parameter." />
 
 
 
@@ -83,7 +83,7 @@ In terms of Rank Regression this function can be optimized
       <ul class="nav navbar-nav">
         <li>
   <a href="../index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
+    <span class="fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -115,7 +115,7 @@ In terms of Rank Regression this function can be optimized
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="https://github.com/Tim-TU/weibulltools/">
-    <span class="fab fa fab fa-github fa-lg"></span>
+    <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -139,9 +139,9 @@ In terms of Rank Regression this function can be optimized
 
     <div class="ref-description">
     <p>This function evaluates the coefficient of determination with respect to a
-given threshold parameter of a three-parametric lifetime distribution.
-In terms of <em>Rank Regression</em> this function can be optimized
-(<a href='https://rdrr.io/r/stats/optim.html'>optim</a>) to estimate the threshold parameter.</p>
+given threshold parameter of a parametric lifetime distribution. In terms of
+<em>Rank Regression</em> this function can be optimized (<a href='https://rdrr.io/r/stats/optim.html'>optim</a>) to
+estimate the threshold parameter.</p>
     </div>
 
     <pre class="usage"><span class='co'># S3 method for default</span>
@@ -149,7 +149,7 @@ In terms of <em>Rank Regression</em> this function can be optimized
   <span class='va'>x</span>,
   <span class='va'>y</span>,
   <span class='va'>thres</span>,
-  distribution <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"weibull3"</span>, <span class='st'>"lognormal3"</span>, <span class='st'>"loglogistic3"</span><span class='op'>)</span>,
+  distribution <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"weibull3"</span>, <span class='st'>"lognormal3"</span>, <span class='st'>"loglogistic3"</span>, <span class='st'>"exponential2"</span><span class='op'>)</span>,
   direction <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"x_on_y"</span>, <span class='st'>"y_on_x"</span><span class='op'>)</span>,
   <span class='va'>...</span>
 <span class='op'>)</span></pre>
@@ -175,7 +175,7 @@ regarding the lifetime data in x.</p></td>
     </tr>
     <tr>
       <th>distribution</th>
-      <td><p>Supposed three-parametric distribution of the random variable.</p></td>
+      <td><p>Supposed parametric distribution of the random variable.</p></td>
     </tr>
     <tr>
       <th>direction</th>
@@ -189,8 +189,8 @@ regarding the lifetime data in x.</p></td>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>Returns the coefficient of determination with respect to the threshold parameter
-<code>thres</code>.</p>
+    <p>Returns the coefficient of determination with respect to the threshold
+parameter <code>thres</code>.</p>
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
     <div class='dont-index'><p><a href='r_squared_profiling.html'>r_squared_profiling</a></p></div>

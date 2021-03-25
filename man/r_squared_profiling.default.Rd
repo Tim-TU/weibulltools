@@ -8,7 +8,7 @@
   x,
   y,
   thres,
-  distribution = c("weibull3", "lognormal3", "loglogistic3"),
+  distribution = c("weibull3", "lognormal3", "loglogistic3", "exponential2"),
   direction = c("x_on_y", "y_on_x"),
   ...
 )
@@ -24,21 +24,21 @@ regarding the lifetime data in x.}
 
 \item{thres}{A numeric value for the threshold parameter.}
 
-\item{distribution}{Supposed three-parametric distribution of the random variable.}
+\item{distribution}{Supposed parametric distribution of the random variable.}
 
 \item{direction}{Direction of the dependence in the regression model.}
 
 \item{...}{Further arguments passed to or from other methods. Currently not used.}
 }
 \value{
-Returns the coefficient of determination with respect to the threshold parameter
-\code{thres}.
+Returns the coefficient of determination with respect to the threshold
+parameter \code{thres}.
 }
 \description{
 This function evaluates the coefficient of determination with respect to a
-given threshold parameter of a three-parametric lifetime distribution.
-In terms of \emph{Rank Regression} this function can be optimized
-(\link[stats:optim]{optim}) to estimate the threshold parameter.
+given threshold parameter of a parametric lifetime distribution. In terms of
+\emph{Rank Regression} this function can be optimized (\link[stats:optim]{optim}) to
+estimate the threshold parameter.
 }
 \examples{
 # Vectors:

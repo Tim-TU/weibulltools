@@ -8,7 +8,7 @@
 #' @template details-estimate-cdf
 #' @templateVar header One or multiple techniques can be used for the `methods` argument:
 #'
-#' @param x A tibble of class `wt_reliability_data` returned by [reliability_data].
+#' @param x A tibble with class `wt_reliability_data` returned by [reliability_data].
 #' @param methods One or multiple methods of `"mr"`, `"johnson"`, `"kaplan"` or
 #' `"nelson"` used for the estimation of failure probabilities. See 'Details'.
 #' @param options A list of named options. See 'Options'.
@@ -27,7 +27,6 @@
 #'   probabilities.
 #'
 #' @section Options:
-#'
 #' Argument `options` is a named list of options:
 #'
 #' | Method    | Name             | Value                                     |
@@ -238,35 +237,33 @@ print.wt_cdf_estimation <- function(x, ...) {
 #' @description
 #' `r lifecycle::badge("soft-deprecated")`
 #'
-#' \code{mr_method()} is no longer under active development, switching
-#' to \code{\link{estimate_cdf}} is recommended.
+#' `mr_method()` is no longer under active development, switching to [estimate_cdf]
+#' is recommended.
 #'
 #' @details
-#' This non-parametric approach (\emph{Median Ranks}) is used to estimate the
+#' This non-parametric approach (*Median Ranks*) is used to estimate the
 #' failure probabilities in terms of complete data. Two methods are available to
-#' estimate the cumulative distribution function \emph{F(t)}:
-#' \itemize{
-#'   \item "benard" : Benard's approximation for Median Ranks.
-#'   \item "invbeta" : Exact Median Ranks using the inverse beta distribution.
-#' }
+#' estimate the cumulative distribution function *F(t)*:
+#'
+#' * `"benard"` : Benard's approximation for Median Ranks.
+#' * `"invbeta"` : Exact Median Ranks using the inverse beta distribution.
 #'
 #' @inheritParams estimate_cdf.default
+#' @param status A vector of ones indicating that every unit has failed.
+#' @param method Method for the estimation of the cdf. Can be `"benard"` (default)
+#' or `"invbeta"`.
+#' @param ties.method A character string specifying how ties are treated,
+#' default is `"max"`.
 #'
-#' @param status A vector of ones indicating that every unit \emph{i} has failed.
-#' @param method Method for the estimation of the cdf. Can be "benard" (default)
-#' or "invbeta".
-#' @param ties.method A character string specifying how ties are treated, default is "max".
+#' @return A tibble with only failed units containing the following columns:
 #'
-#' @return A tibble with failed units containing the following columns:
-#' \itemize{
-#'   \item \code{id} : Identification for every unit.
-#'   \item \code{x} : Lifetime characteristic.
-#'   \item \code{status} : Status of failed units (always 1).
-#'   \item \code{rank} : The assigned ranks.
-#'   \item \code{prob} : Estimated failure probabilities.
-#'   \item \code{method} : Specified method for the estimation of failure
-#'     probabilities (always 'mr').
-#' }
+#' * `id` : Identification for every unit.
+#' * `x` : Lifetime characteristic.
+#' * `status` : Status of failed units (always 1).
+#' * `rank` : Assigned ranks.
+#' * `prob` : Estimated failure probabilities.
+#' * `cdf_estimation_method` : Specified method for the estimation of failure
+#'    probabilities (always 'mr').
 #'
 #' @examples
 #' # Vectors:
@@ -369,31 +366,29 @@ mr_method_ <- function(data,
 #' @description
 #' `r lifecycle::badge("soft-deprecated")`
 #'
-#' \code{johnson_method()} is no longer under active development, switching
-#' to \code{\link{estimate_cdf}} is recommended.
+#' `johnson_method()` is no longer under active development, switching to
+#' [estimate_cdf] is recommended.
 #'
 #' @details
 #' This non-parametric approach is used to estimate the failure probabilities in
-#' terms of uncensored or (multiple) right censored data. Compared to complete data the
-#' correction is done by calculating adjusted ranks which takes non-defective
-#' units into account.
+#' terms of uncensored or (multiple) right censored data. Compared to complete
+#' data the correction is done by calculating adjusted ranks which takes
+#' non-defective units into account.
 #'
 #' @inheritParams mr_method
-#'
-#' @param status A vector of binary data (0 or 1) indicating whether unit \emph{i}
-#'   is a right censored observation (= 0) or a failure (= 1).
+#' @param status A vector of binary data (0 or 1) indicating whether a unit is
+#' a right censored observation (= 0) or a failure (= 1).
 #'
 #' @return A tibble containing the following columns:
-#' \itemize{
-#'   \item \code{id} : Identification for every unit.
-#'   \item \code{x} : Lifetime characteristic.
-#'   \item \code{status} : Binary data (0 or 1) indicating whether a unit is a
-#'     right censored observation (= 0) or a failure (= 1).
-#'   \item \code{rank} : The adjusted ranks.
-#'   \item \code{prob} : Estimated failure probabilities, \code{NA} if \code{status = 0}.
-#'   \item \code{cdf_estimation_method} : Specified method for the estimation of
-#'     failure probabilities (always 'johnson').
-#' }
+#'
+#' * `id` : Identification for every unit.
+#' * `x` : Lifetime characteristic.
+#' * `status` : Binary data (0 or 1) indicating whether a unit is a right
+#'   censored observation (= 0) or a failure (= 1).
+#' * `rank` : Adjusted ranks, `NA` if `status = 0`.
+#' * `prob` : Estimated failure probabilities, `NA` if `status = 0`.
+#' * `cdf_estimation_method` : Specified method for the estimation of failure
+#'   probabilities (always 'johnson').
 #'
 #' @examples
 #' # Vectors:
@@ -513,33 +508,32 @@ johnson_method_ <- function(data, method = "benard") {
 #' @description
 #' `r lifecycle::badge("soft-deprecated")`
 #'
-#' \code{kaplan_method()} is no longer under active development, switching
-#' to \code{\link{estimate_cdf}} is recommended.
+#' `kaplan_method()` is no longer under active development, switching to
+#' [estimate_cdf] is recommended.
 #'
 #' @details
 #' Whereas the non-parametric Kaplan-Meier estimator is used to estimate the
-#' survival function \emph{S(t)} in terms of (multiple) right censored data, the
-#' complement is an estimate of the cumulative distribution function \emph{F(t)}.
+#' survival function *S(t)* in terms of (multiple) right censored data, the
+#' complement is an estimate of the cumulative distribution function *F(t)*.
 #' One modification is made in contrast to the original Kaplan-Meier estimator
 #' (see 'References').
 #'
 #' @inheritParams johnson_method
 #'
 #' @return A tibble containing the following columns:
-#' \itemize{
-#'   \item \code{id} : Identification for every unit.
-#'   \item \code{x} : Lifetime characteristic.
-#'   \item \code{status} : Binary data (0 or 1) indicating whether a unit is a
-#'     right censored observation (= 0) or a failure (= 1).
-#'   \item \code{rank} : Filled with \code{NA}.
-#'   \item \code{prob} : Estimated failure probabilities, \code{NA} if \code{status = 0}.
-#'   \item \code{cdf_estimation_method} : Specified method for the estimation of
-#'     failure probabilities (always 'kaplan').
-#' }
 #'
-#' @references \emph{NIST/SEMATECH e-Handbook of Statistical Methods},
-#' \emph{8.2.1.5. Empirical model fitting - distribution free (Kaplan-Meier) approach},
-#' \href{https://www.itl.nist.gov/div898/handbook/apr/section2/apr215.htm}{NIST SEMATECH},
+#' * `id` : Identification for every unit.
+#' * `x` : Lifetime characteristic.
+#' * `status` : Binary data (0 or 1) indicating whether a unit is a right
+#'   censored observation (= 0) or a failure (= 1).
+#' * `rank` : Filled with `NA`.
+#' * `prob` : Estimated failure probabilities, `NA` if `status = 0`.
+#' * `cdf_estimation_method` : Specified method for the estimation of failure
+#'   probabilities (always 'kaplan').
+#'
+#' @references *NIST/SEMATECH e-Handbook of Statistical Methods*,
+#' *8.2.1.5. Empirical model fitting - distribution free (Kaplan-Meier) approach*,
+#' [NIST SEMATECH](https://www.itl.nist.gov/div898/handbook/apr/section2/apr215.htm),
 #' December 3, 2020
 #'
 #' @examples
@@ -659,8 +653,8 @@ kaplan_method_ <- function(data) {
 #' @description
 #' `r lifecycle::badge("soft-deprecated")`
 #'
-#' \code{nelson_method()} is no longer under active development, switching
-#' to \code{\link{estimate_cdf}} is recommended.
+#' `nelson_method()` is no longer under active development, switching to
+#' [estimate_cdf] is recommended.
 #'
 #' @details
 #' This non-parametric approach estimates the cumulative hazard rate in
@@ -671,16 +665,15 @@ kaplan_method_ <- function(data) {
 #' @inheritParams johnson_method
 #'
 #' @return A tibble containing the following columns:
-#' \itemize{
-#'   \item \code{id} : Identification for every unit.
-#'   \item \code{x} : Lifetime characteristic.
-#'   \item \code{status} : Binary data (0 or 1) indicating whether a unit is a
-#'     right censored observation (= 0) or a failure (= 1).
-#'   \item \code{rank} : Filled with \code{NA}.
-#'   \item \code{prob} : Estimated failure probabilities, \code{NA} if \code{status = 0}.
-#'   \item \code{cdf_estimation_method} : Specified method for the estimation of
-#'     failure probabilities (always 'nelson').
-#' }
+#'
+#' * `id` : Identification for every unit.
+#' * `x` : Lifetime characteristic.
+#' * `status` : Binary data (0 or 1) indicating whether a unit is a right
+#'   censored observation (= 0) or a failure (= 1).
+#' * `rank` : Filled with `NA`.
+#' * `prob` : Estimated failure probabilities, `NA` if `status = 0`.
+#' * `cdf_estimation_method` : Specified method for the estimation of failure
+#'   probabilities (always 'nelson').
 #'
 #' @examples
 #' # Vectors:

@@ -2,7 +2,7 @@
 #' The following table summarizes the available distributions and their parameters
 #'
 #' * *location parameter* \eqn{\mu},
-#' * *scale parameter* \eqn{\sigma} and
+#' * *scale parameter* \eqn{\sigma} or \eqn{\theta} and
 #' * *threshold parameter* \eqn{\gamma}.
 #'
 #' The order within `dist_params` is given in the table header.
@@ -18,5 +18,7 @@
 #' | `"logistic"`         | \eqn{\mu}            | \eqn{\sigma}         | -                    |
 #' | `"loglogistic"`      | \eqn{\mu}            | \eqn{\sigma}         | -                    |
 #' | `"loglogistic3"`     | \eqn{\mu}            | \eqn{\sigma}         | \eqn{\gamma}         |
+#' | `"exponential"`      | \eqn{\theta}         | -                    | -                    |
+#' | `"exponential2"`     | \eqn{\theta}         | \eqn{\gamma}         | -                    |
 #'
 #' @md

@@ -8,55 +8,53 @@ plot_pop(
   p_obj = NULL,
   x,
   dist_params_tbl,
-  distribution = c("weibull", "lognormal", "loglogistic", "normal", "logistic", "sev"),
+  distribution = c("weibull", "lognormal", "loglogistic", "sev", "normal", "logistic"),
   tol = 1e-06,
   title_trace = "Population",
   plot_method = c("plotly", "ggplot2")
 )
 }
 \arguments{
-\item{p_obj}{A plot object to which the population lines are added or
-\code{NULL}. If \code{NULL} the population lines are plotted in an empty grid.}
+\item{p_obj}{A plot object to which the population line(s) is (are) added or
+\code{NULL}. If \code{NULL} the population line(s) is (are) plotted in an empty grid.}
 
 \item{x}{A numeric vector of length two or greater used for the x coordinates
-of the population line. If \code{length(x) == 2} a sequence of length 200
-between \code{x[1]} and \code{x[2]} is created. This sequence is equidistant
-with respect to the scale of the x axis. If \code{length(x) > 2} the elements
-of \code{x} are the x coordinates of the population line.}
+of the population line. If \code{length(x) == 2} a sequence of length 200 between
+\code{x[1]} and \code{x[2]} is created. This sequence is equidistant with respect to the
+scale of the x axis. If \code{length(x) > 2} the elements of \code{x} are the x
+coordinates of the population line.}
 
 \item{dist_params_tbl}{A tibble. See 'Details'.}
 
 \item{distribution}{Supposed distribution of the random variable. In the
-context of this function \code{"weibull"}, \code{"lognormal"} and
-\code{"loglogistic"} stand for the two- \strong{and} the three-parametric
-version of the respective distribution. The distinction is made via
-\code{dist_params_tbl}.}
+context of this function \code{"weibull"}, \code{"lognormal"} and \code{"loglogistic"} can
+be the two- \strong{and} three-parametric versions of the respective distribution.
+The distinction is made with \code{dist_params_tbl}.}
 
 \item{tol}{The failure probability is restricted to the interval
 \eqn{[tol, 1 - tol]}. The default value is in accordance with the decimal
 places shown in the hover for \code{plot_method = "plotly"}.}
 
-\item{title_trace}{A character string which is assigned to the trace shown in
-the legend.}
+\item{title_trace}{A character string which is assigned to the legend trace.}
 
-\item{plot_method}{Plot package, which produces the visual output. Only
-used with \code{p_obj = NULL}, otherwise \code{p_obj} is used to determine
-the plot method.}
+\item{plot_method}{Package, which is used for generating the plot output. Only
+used when \code{p_obj = NULL}. If \code{p_obj != NULL} the plot object is used to
+determine the plot method.}
 }
 \value{
-A plot object which contains the linearized CDF(s).
+A plot object containing the linearized CDF(s).
 }
 \description{
 This function adds one or multiple linearized CDFs to an existing plot grid.
 }
 \details{
 \code{dist_params_tbl} is a data.frame with two or three columns. For
-location-scale distributions the first column contains the location parameter
+location-scale distributions, the first column contains the location parameter
 and the second column contains the scale parameter. For three-parametric
 distributions the third column contains the threshold parameter.
 
 If only one population line should be displayed, a numeric vector of length
-two or three is also supported (\code{c(loc, sc)} or \code{c(loc, sc, thres)}).
+2 or 3 is also supported (\code{c(loc, sc)} or \code{c(loc, sc, thres)}).
 }
 \examples{
 x <- rweibull(n = 100, shape = 1, scale = 20000)

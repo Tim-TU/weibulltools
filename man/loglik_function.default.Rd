@@ -11,7 +11,7 @@
   wts = rep(1, length(x)),
   dist_params,
   distribution = c("weibull", "lognormal", "loglogistic", "sev", "normal", "logistic",
-    "weibull3", "lognormal3", "loglogistic3"),
+    "weibull3", "lognormal3", "loglogistic3", "exponential", "exponential2"),
   ...
 )
 }
@@ -40,19 +40,16 @@ the data.
 }
 \description{
 This function computes the log-likelihood value with respect to a given set
-of parameters. For two-parametric models the location and scale parameters
-are required. If a three-parametric lifetime distribution is needed an
-additional threshold parameter has to be provided. In terms of
-\emph{Maximum Likelihood Estimation} this function can be optimized
-(\link[stats:optim]{optim}) to estimate the parameters and variance-covariance
-matrix of the parameters.
+of parameters. In terms of \emph{Maximum Likelihood Estimation} this function can
+be optimized (\link[stats:optim]{optim}) to estimate the parameters and
+variance-covariance matrix of the parameters.
 }
 \section{Distributions}{
 
 The following table summarizes the available distributions and their parameters
 \itemize{
 \item \emph{location parameter} \eqn{\mu},
-\item \emph{scale parameter} \eqn{\sigma} and
+\item \emph{scale parameter} \eqn{\sigma} or \eqn{\theta} and
 \item \emph{threshold parameter} \eqn{\gamma}.
 }
 
@@ -67,6 +64,8 @@ The order within \code{dist_params} is given in the table header.\tabular{lccc}{
    \code{"logistic"} \tab \eqn{\mu} \tab \eqn{\sigma} \tab - \cr
    \code{"loglogistic"} \tab \eqn{\mu} \tab \eqn{\sigma} \tab - \cr
    \code{"loglogistic3"} \tab \eqn{\mu} \tab \eqn{\sigma} \tab \eqn{\gamma} \cr
+   \code{"exponential"} \tab \eqn{\theta} \tab - \tab - \cr
+   \code{"exponential2"} \tab \eqn{\theta} \tab \eqn{\gamma} \tab - \cr
 }
 }
 

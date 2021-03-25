@@ -12,12 +12,12 @@ loglik_profiling(x, ...)
   x,
   wts = rep(1, nrow(x)),
   thres,
-  distribution = c("weibull3", "lognormal3", "loglogistic3"),
+  distribution = c("weibull3", "lognormal3", "loglogistic3", "exponential2"),
   ...
 )
 }
 \arguments{
-\item{x}{A \code{tibble} of class \code{wt_reliability_data} returned by \link{reliability_data}.}
+\item{x}{A \code{tibble} with class \code{wt_reliability_data} returned by \link{reliability_data}.}
 
 \item{...}{Further arguments passed to or from other methods. Currently not used.}
 
@@ -26,7 +26,7 @@ to the number of observations in \code{x}.}
 
 \item{thres}{A numeric value for the threshold parameter.}
 
-\item{distribution}{Supposed three-parametric distribution of the random variable.}
+\item{distribution}{Supposed parametric distribution of the random variable.}
 }
 \value{
 Returns the log-likelihood value for the threshold parameter \code{thres} given
@@ -34,7 +34,7 @@ the data.
 }
 \description{
 This function evaluates the log-likelihood with respect to a given threshold
-parameter of a three-parametric lifetime distribution. In terms of
+parameter of a parametric lifetime distribution. In terms of
 \emph{Maximum Likelihood Estimation} this function can be optimized
 (\link[stats:optim]{optim}) to estimate the threshold parameter.
 }

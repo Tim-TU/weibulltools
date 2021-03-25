@@ -12,38 +12,38 @@ data could be every characteristic influencing the reliability of a product,
 e.g. operating time (days/months in service), mileage (km, miles), load
 cycles.}
 
-\item{status}{A vector of binary data (0 or 1) indicating whether unit \emph{i}
-is a right censored observation (= 0) or a failure (= 1).}
+\item{status}{A vector of binary data (0 or 1) indicating whether a unit is
+a right censored observation (= 0) or a failure (= 1).}
 
 \item{id}{A vector for the identification of every unit. Default is \code{NULL}.}
 
-\item{method}{Method for the estimation of the cdf. Can be "benard" (default)
-or "invbeta".}
+\item{method}{Method for the estimation of the cdf. Can be \code{"benard"} (default)
+or \code{"invbeta"}.}
 }
 \value{
 A tibble containing the following columns:
 \itemize{
 \item \code{id} : Identification for every unit.
 \item \code{x} : Lifetime characteristic.
-\item \code{status} : Binary data (0 or 1) indicating whether a unit is a
-right censored observation (= 0) or a failure (= 1).
-\item \code{rank} : The adjusted ranks.
+\item \code{status} : Binary data (0 or 1) indicating whether a unit is a right
+censored observation (= 0) or a failure (= 1).
+\item \code{rank} : Adjusted ranks, \code{NA} if \code{status = 0}.
 \item \code{prob} : Estimated failure probabilities, \code{NA} if \code{status = 0}.
-\item \code{cdf_estimation_method} : Specified method for the estimation of
-failure probabilities (always 'johnson').
+\item \code{cdf_estimation_method} : Specified method for the estimation of failure
+probabilities (always 'johnson').
 }
 }
 \description{
-\ifelse{html}{\figure{lifecycle-soft-deprecated.svg}{options: alt='Soft-deprecated lifecycle'}}{\strong{Soft-deprecated}}
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#soft-deprecated}{\figure{lifecycle-soft-deprecated.svg}{options: alt='[Soft-deprecated]'}}}{\strong{[Soft-deprecated]}}
 
-\code{johnson_method()} is no longer under active development, switching
-to \code{\link{estimate_cdf}} is recommended.
+\code{johnson_method()} is no longer under active development, switching to
+\link{estimate_cdf} is recommended.
 }
 \details{
 This non-parametric approach is used to estimate the failure probabilities in
-terms of uncensored or (multiple) right censored data. Compared to complete data the
-correction is done by calculating adjusted ranks which takes non-defective
-units into account.
+terms of uncensored or (multiple) right censored data. Compared to complete
+data the correction is done by calculating adjusted ranks which takes
+non-defective units into account.
 }
 \examples{
 # Vectors:

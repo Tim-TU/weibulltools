@@ -32,7 +32,7 @@ line with the specification made in \link{ml_estimation}.}
 \item{direction}{A character string specifying for which quantity the standard
 errors are calculated. \code{"y"} if \code{x} are quantiles or \code{"x"} if \code{x} are probabilities.}
 
-\item{p}{\ifelse{html}{\figure{lifecycle-soft-deprecated.svg}{options: alt='Soft-deprecated lifecycle'}}{\strong{Soft-deprecated}}: Use \code{x} instead.}
+\item{p}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#soft-deprecated}{\figure{lifecycle-soft-deprecated.svg}{options: alt='[Soft-deprecated]'}}}{\strong{[Soft-deprecated]}}: Use \code{x} instead.}
 }
 \value{
 A numeric vector of estimated standard errors for quantiles or

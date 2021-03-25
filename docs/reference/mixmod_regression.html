@@ -81,7 +81,7 @@ subgroups. See 'Details'." />
       <ul class="nav navbar-nav">
         <li>
   <a href="../index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
+    <span class="fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -113,7 +113,7 @@ subgroups. See 'Details'." />
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="https://github.com/Tim-TU/weibulltools/">
-    <span class="fab fa fab fa-github fa-lg"></span>
+    <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -157,7 +157,7 @@ subgroups. See 'Details'.</p>
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>x</th>
-      <td><p>A <code>tibble</code> of class <code>wt_cdf_estimation</code> returned by <a href='estimate_cdf.html'>estimate_cdf</a>.</p></td>
+      <td><p>A <code>tibble</code> with class <code>wt_cdf_estimation</code> returned by <a href='estimate_cdf.html'>estimate_cdf</a>.</p></td>
     </tr>
     <tr>
       <th>...</th>
@@ -169,64 +169,60 @@ subgroups. See 'Details'.</p>
     </tr>
     <tr>
       <th>conf_level</th>
-      <td><p>Confidence level of the interval. If <code>distribution</code> is
-<code>"weibull"</code> this must be one of <code>0.9</code>, <code>0.95</code> or <code>0.99</code>.</p></td>
+      <td><p>Confidence level of the interval.</p></td>
     </tr>
     <tr>
       <th>k</th>
-      <td><p>Number of mixture components. If the data should be split in an automated
-fashion, <code>k</code> must be set to <code>NULL</code>. The argument <code>fix.psi</code>
-of <code>control</code> is then set to <code>FALSE</code>.</p></td>
+      <td><p>Number of mixture components. If the data should be split in an
+automated fashion, <code>k</code> must be set to <code>NULL</code>. The argument <code>fix.psi</code> of
+<code>control</code> is then set to <code>FALSE</code>.</p></td>
     </tr>
     <tr>
       <th>control</th>
-      <td><p>Output of the call to <code><a href='https://rdrr.io/pkg/segmented/man/seg.control.html'>seg.control</a></code>, which
-is passed to <code><a href='https://rdrr.io/pkg/segmented/man/segmented.html'>segmented.lm</a></code>.
-See 'Examples' for usage.</p></td>
+      <td><p>Output of the call to <a href='https://rdrr.io/pkg/segmented/man/seg.control.html'>seg.control</a>,
+which is passed to <a href='https://rdrr.io/pkg/segmented/man/segmented.html'>segmented.lm</a>. See 'Examples' for usage.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>Returns a list with classes <code>wt_model</code> and
-<code>wt_rank_regression</code> if no breakpoint was detected. See
-<code><a href='rank_regression.html'>rank_regression</a></code>.</p>
-<p>Returns a list with classes <code>wt_model</code> and <code>wt_mixmod_regression</code>
-if at least one breakpoint was determined. The length of the list depends on
-the number of identified subgroups. Each list element contains the
-information provided by <code><a href='rank_regression.html'>rank_regression</a></code>. In addition, the
-returned tibble <code>data</code> of each list element only retains information on
-the failed units and has two more columns:</p><ul>
-<li><p><code>q</code> : Quantiles of the standard distribution calculated from
-    column <code>prob</code>.</p></li>
+    <p>A list with classes <code>wt_model</code> and <code>wt_rank_regression</code> if no breakpoint
+was detected. See <a href='rank_regression.html'>rank_regression</a>.</p>
+<p>A list with classes <code>wt_model</code> and <code>wt_mixmod_regression</code> if at least one
+breakpoint was determined. The length of the list depends on the number of
+identified subgroups. Each list element contains the information provided by
+<a href='rank_regression.html'>rank_regression</a>. In addition, the returned tibble <code>data</code> of each list element
+only retains information on the failed units and has two more columns:</p><ul>
+<li><p><code>q</code> : Quantiles of the standard distribution calculated from column <code>prob</code>.</p></li>
 <li><p><code>group</code> : Membership to the respective segment.</p></li>
 </ul>
 
-<p>If more than one method was specified in <code><a href='estimate_cdf.html'>estimate_cdf</a></code>, the
-resulting output is a list with classes <code>wt_model</code> and
-<code>wt_mixmod_regression_list</code> where each list element has class
-<code>wt_model</code> and <code>wt_mixmod_regression</code>.</p>
+<p>If more than one method was specified in <a href='estimate_cdf.html'>estimate_cdf</a>, the resulting output
+is a list with classes <code>wt_model</code> and <code>wt_mixmod_regression_list</code> where each
+list element has classes <code>wt_model</code> and <code>wt_mixmod_regression</code>.</p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
     <p>The segmentation process is based on the lifetime realizations of failed
 units and their corresponding estimated failure probabilities for which intact
 items are taken into account. It is performed with the support of
-<code><a href='https://rdrr.io/pkg/segmented/man/segmented.html'>segmented.lm</a></code>.</p>
+<a href='https://rdrr.io/pkg/segmented/man/segmented.html'>segmented.lm</a>.</p>
 <p>Segmentation can be done with a specified number of subgroups or in an automated
-fashion (see argument <code>k</code>).
-The algorithm tends to overestimate the number of breakpoints when the separation
-is done automatically (see 'Warning' in <code><a href='https://rdrr.io/pkg/segmented/man/segmented.html'>segmented.lm</a></code>).</p>
+fashion (see argument <code>k</code>). The algorithm tends to overestimate the number of
+breakpoints when the separation is done automatically (see 'Warning' in
+<a href='https://rdrr.io/pkg/segmented/man/segmented.html'>segmented.lm</a>).</p>
 <p>In the context of reliability analysis it is important that the main types of
 failures can be identified and analyzed separately. These are</p><ul>
 <li><p>early failures,</p></li>
 <li><p>random failures and</p></li>
 <li><p>wear-out failures.</p></li>
-</ul><p>In order to reduce the risk of overestimation as well as being able to consider
+</ul>
+
+<p>In order to reduce the risk of overestimation as well as being able to consider
 the main types of failures, a maximum of three subgroups (<code>k = 3</code>) is recommended.</p>
     <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
 
     <p>Doganaksoy, N.; Hahn, G.; Meeker, W. Q., Reliability Analysis by
-  Failure Mode, Quality Progress, 35(6), 47-52, 2002</p>
+Failure Mode, Quality Progress, 35(6), 47-52, 2002</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='co'># Reliability data preparation:</span>

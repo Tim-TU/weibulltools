@@ -40,8 +40,8 @@
 
 
 <meta property="og:title" content="Prediction of Failure Probabilities for Parametric Lifetime Distributions — predict_prob" />
-<meta property="og:description" content="This function predicts the (failure) probabilities of a two- or three-parameter
-lifetime distribution using the (log-)location-scale parameterization." />
+<meta property="og:description" content="This function predicts the (failure) probabilities of a parametric lifetime
+distribution using the (log-)location-scale parameterization." />
 
 
 
@@ -81,7 +81,7 @@ lifetime distribution using the (log-)location-scale parameterization." />
       <ul class="nav navbar-nav">
         <li>
   <a href="../index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
+    <span class="fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -113,7 +113,7 @@ lifetime distribution using the (log-)location-scale parameterization." />
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="https://github.com/Tim-TU/weibulltools/">
-    <span class="fab fa fab fa-github fa-lg"></span>
+    <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -136,15 +136,15 @@ lifetime distribution using the (log-)location-scale parameterization." />
     </div>
 
     <div class="ref-description">
-    <p>This function predicts the (failure) probabilities of a two- or three-parameter
-lifetime distribution using the (log-)location-scale parameterization.</p>
+    <p>This function predicts the (failure) probabilities of a parametric lifetime
+distribution using the (log-)location-scale parameterization.</p>
     </div>
 
     <pre class="usage"><span class='fu'>predict_prob</span><span class='op'>(</span>
   <span class='va'>q</span>,
   <span class='va'>dist_params</span>,
   distribution <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"weibull"</span>, <span class='st'>"lognormal"</span>, <span class='st'>"loglogistic"</span>, <span class='st'>"sev"</span>, <span class='st'>"normal"</span>, <span class='st'>"logistic"</span>,
-    <span class='st'>"weibull3"</span>, <span class='st'>"lognormal3"</span>, <span class='st'>"loglogistic3"</span><span class='op'>)</span>
+    <span class='st'>"weibull3"</span>, <span class='st'>"lognormal3"</span>, <span class='st'>"loglogistic3"</span>, <span class='st'>"exponential"</span>, <span class='st'>"exponential2"</span><span class='op'>)</span>
 <span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -178,7 +178,7 @@ of the chosen model are determined.</p>
 
 <p>The following table summarizes the available distributions and their parameters</p><ul>
 <li><p><em>location parameter</em> \(\mu\),</p></li>
-<li><p><em>scale parameter</em> \(\sigma\) and</p></li>
+<li><p><em>scale parameter</em> \(\sigma\) or \(\theta\) and</p></li>
 <li><p><em>threshold parameter</em> \(\gamma\).</p></li>
 </ul>
 
@@ -193,6 +193,8 @@ of the chosen model are determined.</p>
 <tr><td><code>"logistic"</code></td><td>\(\mu\)</td><td>\(\sigma\)</td><td>-</td></tr>
 <tr><td><code>"loglogistic"</code></td><td>\(\mu\)</td><td>\(\sigma\)</td><td>-</td></tr>
 <tr><td><code>"loglogistic3"</code></td><td>\(\mu\)</td><td>\(\sigma\)</td><td>\(\gamma\)</td></tr>
+<tr><td><code>"exponential"</code></td><td>\(\theta\)</td><td>-</td><td>-</td></tr>
+<tr><td><code>"exponential2"</code></td><td>\(\theta\)</td><td>\(\gamma\)</td><td>-</td></tr>
 </table>
 
 
