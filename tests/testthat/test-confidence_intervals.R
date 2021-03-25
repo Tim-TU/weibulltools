@@ -12,10 +12,10 @@ test_that("confint_betabinom remains stable", {
   )
 
   ## Rank Regression:
-  rr <- lapply(dists, rank_regression, x = prob_tbl)
+  rr <- purrr::map(dists, rank_regression, x = prob_tbl)
 
   ## Direction 'y':
-  ci <- lapply(
+  ci <- purrr::map(
     rr,
     confint_betabinom,
     direction = "y"
@@ -24,7 +24,7 @@ test_that("confint_betabinom remains stable", {
   expect_snapshot_output(ci)
 
   ## Direction 'x':
-  ci <- lapply(
+  ci <- purrr::map(
     rr,
     confint_betabinom,
     direction = "x"
@@ -42,10 +42,10 @@ test_that("confint_betabinom remains stable", {
   dists <- c("weibull3", "lognormal3", "loglogistic3", "exponential2")
 
   ## Rank Regression:
-  rr <- lapply(dists, rank_regression, x = prob_tbl)
+  rr <- purrr::map(dists, rank_regression, x = prob_tbl)
 
   ## Direction 'y':
-  ci <- lapply(
+  ci <- purrr::map(
     rr,
     confint_betabinom,
     direction = "y"
@@ -54,7 +54,7 @@ test_that("confint_betabinom remains stable", {
   expect_snapshot_output(ci)
 
   ## Direction 'x':
-  ci <- lapply(
+  ci <- purrr::map(
     rr,
     confint_betabinom,
     direction = "x"
@@ -70,14 +70,14 @@ test_that("confint_fisher remains stable", {
   ## Distributions without threshold:
   dists <- c(
     "weibull", "lognormal", "loglogistic",
-    "sev", "normal", "logistic"
+    "sev", "normal", "logistic" , "exponential"
   )
 
   ## ML estimation:
-  ml <- lapply(dists, ml_estimation, x = data, conf_level = 0.90)
+  ml <- purrr::map(dists, ml_estimation, x = data, conf_level = 0.90)
 
   ## Direction 'y':
-  ci <- lapply(
+  ci <- purrr::map(
     ml,
     confint_fisher
   )
@@ -85,7 +85,7 @@ test_that("confint_fisher remains stable", {
   expect_snapshot_output(ci)
 
   ## Direction 'x':
-  ci <- lapply(
+  ci <- purrr::map(
     ml,
     confint_fisher,
     direction = "x"
@@ -97,13 +97,13 @@ test_that("confint_fisher remains stable", {
   data <- reliability_data(data = alloy, x = cycles, status = status)
 
   ## Distributions with threshold:
-  dists <- c("weibull3", "lognormal3", "loglogistic3")
+  dists <- c("weibull3", "lognormal3", "loglogistic3", "exponential2")
 
   ## ML estimation:
-  ml <- lapply(dists, ml_estimation, x = data, conf_level = 0.90)
+  ml <- purrr::map(dists, ml_estimation, x = data, conf_level = 0.90)
 
   ## Direction 'y':
-  ci <- lapply(
+  ci <- purrr::map(
     ml,
     confint_fisher
   )
@@ -111,7 +111,7 @@ test_that("confint_fisher remains stable", {
   expect_snapshot_output(ci)
 
   ## Direction 'x':
-  ci <- lapply(
+  ci <- purrr::map(
     ml,
     confint_fisher,
     direction = "x"

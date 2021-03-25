@@ -1,20 +1,19 @@
 #' Delta Method for Parametric Lifetime Distributions
 #'
 #' @description
-#' This function applies the *delta method* to a two- or three-parameter lifetime
-#' distribution.
+#' This function applies the *delta method* to a parametric lifetime distribution.
 #'
 #' @details
 #' The delta method estimates the standard errors for quantities that can be
-#' written as non-linear functions of ML estimators. Hence, (log-)location-scale
-#' parameters as well as the variance-covariance matrix of these have to be estimated
-#' with [maximum likelihood][ml_estimation].
+#' written as non-linear functions of ML estimators. Hence, the parameters as
+#' well as the variance-covariance matrix of these have to be estimated with
+#' [maximum likelihood][ml_estimation].
 #'
-#' The estimated standard errors are needed to calculate Fisher's (normal
+#' The estimated standard errors are used to calculate Fisher's (normal
 #' approximation) confidence intervals. For confidence bounds on the probability,
-#' standard errors of the standardized quantiles (`direction = "y"`)
-#' have to be computed (*z-procedure*) and for bounds on quantiles, standard errors
-#' of quantiles (`direction = "x"`) are required. For more information see
+#' standard errors of the standardized quantiles (`direction = "y"`) have to be
+#' computed (*z-procedure*) and for bounds on quantiles, standard errors of
+#' quantiles (`direction = "x"`) are required. For more information see
 #' [confint_fisher].
 #'
 #' @param x A numeric vector of probabilities or quantiles. If the standard errors
@@ -31,12 +30,12 @@
 #' @param p `r lifecycle::badge("soft-deprecated")`: Use `x` instead.
 #'
 #' @return A numeric vector of estimated standard errors for quantiles or
-#'   standardized quantiles (*z-values*).
+#' standardized quantiles (*z-values*).
 #'
 #' @encoding UTF-8
 #'
 #' @references Meeker, William Q; Escobar, Luis A., Statistical methods for
-#'   reliability data, New York: Wiley series in probability and statistics, 1998
+#' reliability data, New York: Wiley series in probability and statistics, 1998
 #'
 #' @examples
 #' # Reliability data preparation:
@@ -80,7 +79,8 @@ delta_method <- function(x,
                          distribution = c(
                            "weibull", "lognormal", "loglogistic",
                            "sev", "normal", "logistic",
-                           "weibull3", "lognormal3", "loglogistic3"
+                           "weibull3", "lognormal3", "loglogistic3",
+                           "exponential", "exponential2"
                          ),
                          direction = c("y", "x"),
                          p = deprecated()
@@ -115,10 +115,18 @@ delta_method_ <- function(x,
                           distribution = c(
                             "weibull", "lognormal", "loglogistic",
                             "sev", "normal", "logistic",
-                            "weibull3", "lognormal3", "loglogistic3"
+                            "weibull3", "lognormal3", "loglogistic3",
+                            "exponential", "exponential2"
                           ),
                           direction = c("y", "x")
 ) {
+
+  n_par <- length(dist_params)
+
+  # Only consider parameters of standard distribution:
+  if (has_thres(distribution)) {
+    n_par <- n_par - 1L
+  }
 
   # Standard Errors for quantiles:
   if (direction == "x") {
@@ -127,29 +135,29 @@ delta_method_ <- function(x,
     ### Outer derivative is often the quantile function:
     q <- predict_quantile(
       p = x,
-      dist_params = dist_params[-3],  # gamma is dropped out when differentiating:
+      dist_params = dist_params[1:n_par],
       distribution = std_parametric(distribution)
     )
 
     ### Inner derivative is often the standardized quantile function:
     z <- standardize(
       x = q,
-      dist_params = dist_params[-3],
+      dist_params = dist_params[1:n_par],
       distribution = std_parametric(distribution)
     )
 
-    ### Derivatives of location-scale distributions:
-    dt_dmu <- 1
+    ### Derivatives of scale or location-scale distributions:
+    dt_dmu <- if (std_parametric(distribution) != "exponential") 1 else NULL
     dt_dsc <- z
     dpar <- c(dt_dmu, dt_dsc)
 
     ### Derivatives of (log-)location-scale distributions:
-    if (!(distribution %in% c("sev", "normal", "logistic"))) {
+    if (std_parametric(distribution) %in% c("weibull", "lognormal", "loglogistic")) {
       dpar <- dpar * q
     }
 
     ### Derivative w.r.t threshold:
-    if (length(dist_params) == 3L) {
+    if (has_thres(distribution)) {
       dpar <- c(dpar, 1)
     }
 
@@ -159,15 +167,19 @@ delta_method_ <- function(x,
     z <- standardize(x, dist_params = dist_params, distribution = distribution)
 
     ## Step 1: Determine first derivatives of the standardized quantile z:
-    ### Derivatives w.r.t mu and sigma are the same:
-    dz_dmu <- (-1 / dist_params[[2]])
-    dz_dsc <- (-1 / dist_params[[2]]) * z
+    ### Derivative w.r.t scale or location-scale:
+    dz_dmu <- if (distribution != "exponential") (-1 / dist_params[n_par]) else NULL
+    dz_dsc <- (-1 / dist_params[n_par]) * z
     dpar <- c(dz_dmu, dz_dsc)
 
     ### Derivative w.r.t threshold:
-    if (length(dist_params) == 3L) {
-      dz_dgam <- (1 / dist_params[[2]]) * (1 / (dist_params[[3]] - x))
-      dpar <- c(dpar, dz_dgam)
+    if (has_thres(distribution)) {
+      if (distribution == "exponential2") {
+        dpar <- rev(dpar)
+      } else {
+        dz_dgam <- (1 / dist_params[n_par]) * (1 / (dist_params[n_par + 1] - x))
+        dpar <- c(dpar, dz_dgam)
+      }
     }
   }
 

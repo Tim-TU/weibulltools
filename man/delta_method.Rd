@@ -10,7 +10,7 @@ delta_method(
   dist_params,
   dist_varcov,
   distribution = c("weibull", "lognormal", "loglogistic", "sev", "normal", "logistic",
-    "weibull3", "lognormal3", "loglogistic3"),
+    "weibull3", "lognormal3", "loglogistic3", "exponential", "exponential2"),
   direction = c("y", "x"),
   p = deprecated()
 )
@@ -39,20 +39,19 @@ A numeric vector of estimated standard errors for quantiles or
 standardized quantiles (\emph{z-values}).
 }
 \description{
-This function applies the \emph{delta method} to a two- or three-parameter lifetime
-distribution.
+This function applies the \emph{delta method} to a parametric lifetime distribution.
 }
 \details{
 The delta method estimates the standard errors for quantities that can be
-written as non-linear functions of ML estimators. Hence, (log-)location-scale
-parameters as well as the variance-covariance matrix of these have to be estimated
-with \link[=ml_estimation]{maximum likelihood}.
+written as non-linear functions of ML estimators. Hence, the parameters as
+well as the variance-covariance matrix of these have to be estimated with
+\link[=ml_estimation]{maximum likelihood}.
 
-The estimated standard errors are needed to calculate Fisher's (normal
+The estimated standard errors are used to calculate Fisher's (normal
 approximation) confidence intervals. For confidence bounds on the probability,
-standard errors of the standardized quantiles (\code{direction = "y"})
-have to be computed (\emph{z-procedure}) and for bounds on quantiles, standard errors
-of quantiles (\code{direction = "x"}) are required. For more information see
+standard errors of the standardized quantiles (\code{direction = "y"}) have to be
+computed (\emph{z-procedure}) and for bounds on quantiles, standard errors of
+quantiles (\code{direction = "x"}) are required. For more information see
 \link{confint_fisher}.
 }
 \examples{

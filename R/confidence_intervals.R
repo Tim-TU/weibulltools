@@ -340,7 +340,8 @@ confint_betabinom.default <- function(x,
                                       distribution = c(
                                         "weibull", "lognormal", "loglogistic",
                                         "sev", "normal", "logistic",
-                                        "weibull3", "lognormal3", "loglogistic3"
+                                        "weibull3", "lognormal3", "loglogistic3",
+                                        "exponential", "exponential2"
                                       ),
                                       b_lives = c(0.01, 0.1, 0.50),
                                       bounds = c("two_sided", "lower", "upper"),
@@ -720,7 +721,8 @@ confint_fisher.default <- function(x,
                                    distribution = c(
                                      "weibull", "lognormal", "loglogistic",
                                      "sev", "normal", "logistic",
-                                     "weibull3", "lognormal3", "loglogistic3"
+                                     "weibull3", "lognormal3", "loglogistic3",
+                                     "exponential", "exponential2"
                                    ),
                                    b_lives = c(0.01, 0.1, 0.50),
                                    bounds = c("two_sided", "lower", "upper"),
@@ -840,7 +842,8 @@ confint_fisher_ <- function(model_estimation,
       std_parametric(distribution),
       "sev" = , "weibull" = psev,
       "normal" = , "lognormal" = stats::pnorm,
-      "logistic" = , "loglogistic" = stats::plogis
+      "logistic" = , "loglogistic" = stats::plogis,
+      "exponential" = stats::pexp
     )
 
     list_confint <- purrr::map(zw, pfun)

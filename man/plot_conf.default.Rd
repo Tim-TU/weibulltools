@@ -9,7 +9,7 @@
   x,
   y,
   distribution = c("weibull", "lognormal", "loglogistic", "sev", "normal", "logistic",
-    "weibull3", "lognormal3", "loglogistic3"),
+    "weibull3", "lognormal3", "loglogistic3", "exponential", "exponential2"),
   direction = c("y", "x"),
   title_trace = "Confidence Limit",
   ...
@@ -55,7 +55,7 @@ the function(s) named before.
 }
 \examples{
 # Vectors:
-cycles   <- alloy$cycles
+cycles <- alloy$cycles
 status <- alloy$status
 
 prob_tbl <- estimate_cdf(x = cycles, status = status, method = "johnson")

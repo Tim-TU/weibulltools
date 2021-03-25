@@ -268,19 +268,21 @@ plot_conf_helper <- function(tbl_mod,
 
 
 
-# Helper function for plot_pop:
+# Helper function for `plot_pop()`:
 plot_pop_helper <- function(x,
                             dist_params_tbl,
                             distribution,
                             tol = 1e-6
 ) {
 
+  # Determine equidistant x positions if needed:
   x_s <- if (length(x) == 2) {
     10 ^ seq(log10(x[1]), log10(x[2]), length.out = 200)
   } else {
     x
   }
 
+  # Set groups, since every row is its own distribution:
   tbl_pop <- dist_params_tbl %>%
     dplyr::mutate(group = as.character(dplyr::row_number()))
 
@@ -289,13 +291,13 @@ plot_pop_helper <- function(x,
     tbl_pop,
     x_s = x_s,
     distribution = distribution,
-    function(loc, sc, thres = NA, group, x_s, distribution) {
-      # Replace NA with NULL, so that thres is ignored in c():
-      dist_params <- c(loc, sc, thres %NA% NULL)
+    function(loc = NA, sc, thres = NA, group, x_s, distribution) {
+      # Replace NA with NULL, so that loc and thres are ignored in c():
+      dist_params <- c(loc %NA% NULL, sc, thres %NA% NULL)
 
-      if (length(dist_params) == 3) {
-        # Case three-parametric distribution:
-        distribution <- paste0(distribution, "3")
+      if (!is_std_parametric(distribution, dist_params)) {
+        # Threshold models:
+        distribution <- paste0(distribution, length(dist_params))
       }
 
       tibble::tibble(
@@ -317,15 +319,14 @@ plot_pop_helper <- function(x,
     dplyr::filter(.data$y_s < 1, .data$y_s > 0)
 
   tbl_pop$q <- q_std(tbl_pop$y_s, distribution)
-
-  # set values and labels for plotlys hoverinfo:
+  # Set values and labels for plotlys hoverinfo:
   tbl_pop <- tbl_pop %>%
     dplyr::mutate(
-      param_val_1 = format(.data$loc, digits = 3),
+      param_val_1 = ifelse(is.na(.data$loc), NA, format(.data$loc, digits = 3)),
       param_val_2 = format(.data$sc, digits = 3),
       param_val_3 = ifelse(is.na(.data$thres), NA, format(.data$thres, digits = 3)),
-      param_label_1 = "\u03BC:",
-      param_label_2 = "\u03C3:",
+      param_label_1 = ifelse(is.na(.data$loc), NA, "\u03BC:"),
+      param_label_2 = if (distribution == "exponential") "\u03B8:" else "\u03C3:",
       param_label_3 = ifelse(is.na(.data$thres), NA, "\u03B3:")
     ) %>%
     dplyr::rowwise() %>%
