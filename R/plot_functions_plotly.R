@@ -322,7 +322,14 @@ plot_pop_vis.plotly <- function(p_obj,
     line = list(width = 1),
     text = ~hovertext
   ) %>%
-    plotly::layout(showlegend = TRUE)
+    plotly::layout(
+      showlegend = TRUE,
+      legend = list(
+        title = list(
+          text = title_trace
+        )
+      )
+    )
 
   p_pop
 }
@@ -352,13 +359,21 @@ hovertext_mod <- function(x,
 
   param_text <- paste(param_label[not_na], param_val[not_na], collapse = ", ")
 
-  paste(
-    x_text,
-    y_text,
-    lower_text,
-    upper_text,
-    param_text,
-    sep = "<br>"
+  do.call(
+    paste,
+    c(
+      # Drop NULLs, otherwise paste will add one <br> per NULL
+      purrr::compact(
+        list(
+          x_text,
+          y_text,
+          lower_text,
+          upper_text,
+          param_text
+        )
+      ),
+      sep = "<br>"
+    )
   )
 }
 
