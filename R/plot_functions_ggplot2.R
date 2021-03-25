@@ -187,10 +187,15 @@ plot_conf_vis.ggplot <- function(p_obj, tbl_p, title_trace) {
 plot_pop_vis.ggplot <- function(
   p_obj, tbl_pop, title_trace
 ) {
+  tbl_pop <- tbl_pop %>%
+    dplyr::mutate(
+      name = purrr::map2_chr(.data$param_val, .data$param_label, to_name_pop)
+    )
+
   p_pop <- p_obj +
     ggplot2::geom_line(
       data = tbl_pop,
-      mapping = ggplot2::aes(x = .data$x_s, y = .data$q, color = .data$group)
+      mapping = ggplot2::aes(x = .data$x_s, y = .data$q, color = .data$name)
     ) +
     ggplot2::labs(color = title_trace)
 

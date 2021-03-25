@@ -292,7 +292,14 @@ plot_pop_vis.plotly <- function(
     line = list(width = 1),
     text = ~hovertext
   ) %>%
-    plotly::layout(showlegend = TRUE)
+    plotly::layout(
+      showlegend = TRUE,
+      legend = list(
+        title = list(
+          text = title_trace
+        )
+      )
+    )
 
   return(p_pop)
 }
