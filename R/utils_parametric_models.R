@@ -12,6 +12,19 @@ std_parametric <- function(distribution) {
 
 
 
+# Function that checks for standard variant of distribution (without threshold):
+is_std_parametric <- function(distribution, dist_params) {
+  n_par <- length(dist_params)
+
+  if (distribution == "exponential") {
+    n_par == 1L
+  } else {
+    n_par == 2L
+  }
+}
+
+
+
 # Function that checks the correctness between input distribution and parameters:
 check_dist_params <- function(dist_params, distribution) {
   three_parametric <- distribution %in%

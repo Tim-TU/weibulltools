@@ -19,11 +19,13 @@
 
 ## New Features
 
+### Distributions 
+* Implementation of one- and two-parametric exponential distribution (`'exponential'` and `'exponential2'`).
+
 ### Non-Parametric Failure Probabilities
 * `estimate_cdf()`: Added option `johnson_method` to specify the formula which is used for determining cumulative failure probabilities.
 
 ### Parametric Models
-* `rank_regression()`: Implementation of one- and two-parametric exponential distribution (`'exponential'` and `'exponential2'`). 
 * `rank_regression()`: New arguments `direction` (specifies direction of dependency in the model), `control` (enables access to argument `control` in `optim()`) and `options` (method used to calculate the confidence intervals for the parameters, default is "HC").  
 * `r_squared_profiling()`: New argument `direction`. 
 * `ml_estimation()`: New arguments `start_dist_params` (optional vector with initial values of the parameters) and `control` (enables access to argument `control` in `optim()`).

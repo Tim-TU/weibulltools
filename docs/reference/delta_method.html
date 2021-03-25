@@ -40,8 +40,7 @@
 
 
 <meta property="og:title" content="Delta Method for Parametric Lifetime Distributions — delta_method" />
-<meta property="og:description" content="This function applies the delta method to a two- or three-parameter lifetime
-distribution." />
+<meta property="og:description" content="This function applies the delta method to a parametric lifetime distribution." />
 
 
 
@@ -136,8 +135,7 @@ distribution." />
     </div>
 
     <div class="ref-description">
-    <p>This function applies the <em>delta method</em> to a two- or three-parameter lifetime
-distribution.</p>
+    <p>This function applies the <em>delta method</em> to a parametric lifetime distribution.</p>
     </div>
 
     <pre class="usage"><span class='fu'>delta_method</span><span class='op'>(</span>
@@ -145,7 +143,7 @@ distribution.</p>
   <span class='va'>dist_params</span>,
   <span class='va'>dist_varcov</span>,
   distribution <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"weibull"</span>, <span class='st'>"lognormal"</span>, <span class='st'>"loglogistic"</span>, <span class='st'>"sev"</span>, <span class='st'>"normal"</span>, <span class='st'>"logistic"</span>,
-    <span class='st'>"weibull3"</span>, <span class='st'>"lognormal3"</span>, <span class='st'>"loglogistic3"</span><span class='op'>)</span>,
+    <span class='st'>"weibull3"</span>, <span class='st'>"lognormal3"</span>, <span class='st'>"loglogistic3"</span>, <span class='st'>"exponential"</span>, <span class='st'>"exponential2"</span><span class='op'>)</span>,
   direction <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"y"</span>, <span class='st'>"x"</span><span class='op'>)</span>,
   p <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/Deprecated.html'>deprecated</a></span><span class='op'>(</span><span class='op'>)</span>
 <span class='op'>)</span></pre>
@@ -192,14 +190,14 @@ standardized quantiles (<em>z-values</em>).</p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
     <p>The delta method estimates the standard errors for quantities that can be
-written as non-linear functions of ML estimators. Hence, (log-)location-scale
-parameters as well as the variance-covariance matrix of these have to be estimated
+written as non-linear functions of ML estimators. Hence, the parameters as
+well as the variance-covariance matrix of these quantities have to be estimated
 with <a href='ml_estimation.html'>maximum likelihood</a>.</p>
-<p>The estimated standard errors are needed to calculate Fisher's (normal
+<p>The estimated standard errors are used to calculate Fisher's (normal
 approximation) confidence intervals. For confidence bounds on the probability,
-standard errors of the standardized quantiles (<code>direction = "y"</code>)
-have to be computed (<em>z-procedure</em>) and for bounds on quantiles, standard errors
-of quantiles (<code>direction = "x"</code>) are required. For more information see
+standard errors of the standardized quantiles (<code>direction = "y"</code>) have to be
+computed (<em>z-procedure</em>) and for bounds on quantiles, standard errors of
+quantiles (<code>direction = "x"</code>) are required. For more information see
 <a href='confint_fisher.html'>confint_fisher</a>.</p>
     <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
 

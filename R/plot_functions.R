@@ -1359,7 +1359,7 @@ plot_conf.wt_confint <- function(p_obj,
 #'
 #' @examples
 #' # Vectors:
-#' cycles   <- alloy$cycles
+#' cycles <- alloy$cycles
 #' status <- alloy$status
 #'
 #' prob_tbl <- estimate_cdf(x = cycles, status = status, method = "johnson")
@@ -1451,7 +1451,8 @@ plot_conf.default <- function(p_obj,
                               distribution = c(
                                 "weibull", "lognormal", "loglogistic",
                                 "sev", "normal", "logistic",
-                                "weibull3", "lognormal3", "loglogistic3"
+                                "weibull3", "lognormal3", "loglogistic3",
+                                "exponential", "exponential2"
                               ),
                               direction = c("y", "x"),
                               title_trace = "Confidence Limit",
@@ -1498,16 +1499,16 @@ plot_conf.default <- function(p_obj,
 #' Add Population Line(s) to an Existing Grid
 #'
 #' @description
-#' This function adds one or multiple linearized CDFs to an existing plot grid.
+#' This function adds one (or multiple) linearized CDF(s) to an existing plot grid.
 #'
 #' @details
-#' `dist_params_tbl` is a data.frame with two or three columns. For
-#' location-scale distributions, the first column contains the location parameter
-#' and the second column contains the scale parameter. For three-parametric
-#' distributions the third column contains the threshold parameter.
+#' `dist_params_tbl` is a `data.frame` with parameter columns. An overview of the
+#' distribution-specific parameters and their order can be found in section
+#' 'Distributions'.
 #'
-#' If only one population line should be displayed, a numeric vector of length
-#' 2 or 3 is also supported (`c(loc, sc)` or `c(loc, sc, thres)`).
+#' If only one population line should be displayed, a numeric vector is also
+#' supported. The order of the vector elements also corresponds to the table in
+#' section 'Distributions'.
 #'
 #' @inheritParams plot_prob
 #' @param p_obj A plot object to which the population line(s) is (are) added or
@@ -1517,11 +1518,10 @@ plot_conf.default <- function(p_obj,
 #' `x[1]` and `x[2]` is created. This sequence is equidistant with respect to the
 #' scale of the x axis. If `length(x) > 2` the elements of `x` are the x
 #' coordinates of the population line.
-#' @param dist_params_tbl A tibble. See 'Details'.
-#' @param distribution Supposed distribution of the random variable. In the
-#' context of this function `"weibull"`, `"lognormal"` and `"loglogistic"` can
-#' be the two- **and** three-parametric versions of the respective distribution.
-#' The distinction is made with `dist_params_tbl`.
+#' @param dist_params_tbl A `data.frame`. See 'Details'.
+#' @param distribution Supposed distribution of the random variable. The distinction
+#' between a threshold distribution and the respective standard variant is made with
+#' `dist_params_tbl`.
 #' @param tol The failure probability is restricted to the interval
 #' \eqn{[tol, 1 - tol]}. The default value is in accordance with the decimal
 #' places shown in the hover for `plot_method = "plotly"`.
@@ -1530,6 +1530,8 @@ plot_conf.default <- function(p_obj,
 #' determine the plot method.
 #'
 #' @return A plot object containing the linearized CDF(s).
+#'
+#' @template dist-params_tbl
 #'
 #' @examples
 #' x <- rweibull(n = 100, shape = 1, scale = 20000)
@@ -1584,7 +1586,7 @@ plot_pop <- function(p_obj = NULL,
                      dist_params_tbl,
                      distribution = c(
                        "weibull", "lognormal", "loglogistic",
-                       "sev", "normal", "logistic"
+                       "sev", "normal", "logistic", "exponential"
                      ),
                      tol = 1e-6,
                      title_trace = "Population",
@@ -1593,6 +1595,7 @@ plot_pop <- function(p_obj = NULL,
 
   distribution <- match.arg(distribution)
 
+  # Check if plot object is provided:
   if (purrr::is_null(p_obj)) {
     plot_method <- match.arg(plot_method)
 
@@ -1603,26 +1606,37 @@ plot_pop <- function(p_obj = NULL,
     )
   }
 
-  # Support vector instead of tibble for ease of use in dist_params_tbl:
+  # `dist_params_tbl` should be a data.frame with columns loc, sc, thres:
+  ## Check for threshold distribution:
+  if (is_std_parametric(distribution, dist_params_tbl)) {
+    ### thres must be set even if distribution has no threshold:
+    thres <- NA_real_
+  } else {
+    ### Extract `thres` as a vector with `[[`:
+    thres <- dist_params_tbl[[length(dist_params_tbl)]]
+  }
+
+  ## Support vector instead of tibble for ease of use in dist_params_tbl:
   if (!inherits(dist_params_tbl, "data.frame")) {
-    dist_params_tbl <- tibble::tibble(
-      loc = dist_params_tbl[1],
-      sc = dist_params_tbl[2],
-      # thres is `NA` if `dist_params` is of length 2:
-      thres = dist_params_tbl[3]
-    )
+    dist_params_tbl <- as.data.frame(t(dist_params_tbl))
   }
 
-  # Add thres column if not present:
-  if (ncol(dist_params_tbl) == 2) {
-    dist_params_tbl$thres <- NA_real_
+  ## Special case w.r.t the order of parameters for "exponential":
+  if (distribution == "exponential") {
+    ### Add never existing parameter column 'loc':
+    dist_params_tbl <- dplyr::bind_cols(loc = NA_real_, dist_params_tbl)
   }
 
-  # Ensure correct naming:
+  ## Set or overwrite the threshold column:
+  dist_params_tbl[3] <- thres
+
+  ## Ensure correct naming:
   names(dist_params_tbl) <- c("loc", "sc", "thres")
 
+  # Call `plot_pop_helper()` for line points and labels:
   tbl_pop <- plot_pop_helper(x, dist_params_tbl, distribution, tol)
 
+  # Call `plot_pop_vis.*` for the visualization:
   plot_pop_vis(
     p_obj, tbl_pop, title_trace
   )

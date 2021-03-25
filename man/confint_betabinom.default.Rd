@@ -9,7 +9,7 @@
   status,
   dist_params,
   distribution = c("weibull", "lognormal", "loglogistic", "sev", "normal", "logistic",
-    "weibull3", "lognormal3", "loglogistic3"),
+    "weibull3", "lognormal3", "loglogistic3", "exponential", "exponential2"),
   b_lives = c(0.01, 0.1, 0.5),
   bounds = c("two_sided", "lower", "upper"),
   conf_level = 0.95,
