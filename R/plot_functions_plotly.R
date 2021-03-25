@@ -321,13 +321,21 @@ hovertext_mod <- function(x,
 
   param_text <- paste(param_label[not_na], param_val[not_na], collapse = ", ")
 
-  paste(
-    x_text,
-    y_text,
-    lower_text,
-    upper_text,
-    param_text,
-    sep = "<br>"
+  do.call(
+    paste,
+    c(
+      # Drop NULLs, otherwise paste will add one <br> per NULL
+      purrr::compact(
+        list(
+          x_text,
+          y_text,
+          lower_text,
+          upper_text,
+          param_text
+        )
+      ),
+      sep = "<br>"
+    )
   )
 }
 
