@@ -70,7 +70,7 @@ test_that("confint_fisher remains stable", {
   ## Distributions without threshold:
   dists <- c(
     "weibull", "lognormal", "loglogistic",
-    "sev", "normal", "logistic" , "exponential"
+    "sev", "normal", "logistic", "exponential"
   )
 
   ## ML estimation:

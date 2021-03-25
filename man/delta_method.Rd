@@ -44,8 +44,8 @@ This function applies the \emph{delta method} to a parametric lifetime distribut
 \details{
 The delta method estimates the standard errors for quantities that can be
 written as non-linear functions of ML estimators. Hence, the parameters as
-well as the variance-covariance matrix of these have to be estimated with
-\link[=ml_estimation]{maximum likelihood}.
+well as the variance-covariance matrix of these quantities have to be estimated
+with \link[=ml_estimation]{maximum likelihood}.
 
 The estimated standard errors are used to calculate Fisher's (normal
 approximation) confidence intervals. For confidence bounds on the probability,
