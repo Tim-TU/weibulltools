@@ -70,7 +70,7 @@ test_that("confint_fisher remains stable", {
   ## Distributions without threshold:
   dists <- c(
     "weibull", "lognormal", "loglogistic",
-    "sev", "normal", "logistic", "exponential"
+    "sev", "normal", "logistic"#, "exponential"
   )
 
   ## ML estimation:
@@ -97,7 +97,9 @@ test_that("confint_fisher remains stable", {
   data <- reliability_data(data = alloy, x = cycles, status = status)
 
   ## Distributions with threshold:
-  dists <- c("weibull3", "lognormal3", "loglogistic3", "exponential2")
+  dists <- c(
+    "weibull3", "lognormal3", "loglogistic3", "exponential2"
+  )
 
   ## ML estimation:
   ml <- purrr::map(dists, ml_estimation, x = data, conf_level = 0.90)
