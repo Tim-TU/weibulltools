@@ -3,6 +3,8 @@
 ## Breaking Changes
 
 ### Parametric Models
+* `rank_regression()`: For all distributions, the confidence intervals of the parameters are now computed on the basis of a heteroscedasticity-consistent (HC) covariance matrix. If the confidence intervals for the Weibull parameters are to be calculated according to *Mock*, this must be specified via the new argument `options`.  
+* `mixmod_regression()`: Since this function uses `rank_regression()`, the changes regarding the confidence intervals also apply here. 
 * `plot_prob.wt_model()`: Removed dysfunctional argument `distribution`. The distribution is inferred using the model `x`.
 
 ### Confidence Intervals
@@ -17,16 +19,19 @@
 
 ## New Features
 
+### Distributions 
+* Implementation of one- and two-parametric exponential distribution (`'exponential'` and `'exponential2'`).
+
 ### Non-Parametric Failure Probabilities
 * `estimate_cdf()`: Added option `johnson_method` to specify the formula which is used for determining cumulative failure probabilities.
 
 ### Parametric Models
+* `rank_regression()`: New arguments `direction` (specifies direction of dependency in the model), `control` (enables access to argument `control` in `optim()`) and `options` (method used to calculate the confidence intervals for the parameters, default is "HC").  
+* `r_squared_profiling()`: New argument `direction`. 
 * `ml_estimation()`: New arguments `start_dist_params` (optional vector with initial values of the parameters) and `control` (enables access to argument `control` in `optim()`).
 * `loglik_profiling()`: New argument `wts`. 
 * `loglik_profiling()` is now an S3 generic. `loglik_profiling()` becomes `loglik_profiling.default()`. Added `loglik_profiling.wt_reliability_data()`.
 * `loglik_function()` is now an S3 generic. `loglik_function()` becomes `loglik_function.default()`. Added `loglik_function.wt_reliability_data()`.
-* `rank_regression()`: New arguments `direction` (specifies direction of dependency in the model) and `control` (enables access to argument `control` in `optim()`).  
-* `r_squared_profiling()`: New argument `direction`. 
 
 ### Confidence Intervals
 * `confint_betabinom()`: Methods `"kaplan"` and `"nelson"` of `estimate_cdf()` can be used for beta-binomial confidence bounds.

@@ -8,56 +8,75 @@ plot_pop(
   p_obj = NULL,
   x,
   dist_params_tbl,
-  distribution = c("weibull", "lognormal", "loglogistic", "normal", "logistic", "sev"),
+  distribution = c("weibull", "lognormal", "loglogistic", "sev", "normal", "logistic",
+    "exponential"),
   tol = 1e-06,
   title_trace = "Population",
   plot_method = c("plotly", "ggplot2")
 )
 }
 \arguments{
-\item{p_obj}{A plot object to which the population lines are added or
-\code{NULL}. If \code{NULL} the population lines are plotted in an empty grid.}
+\item{p_obj}{A plot object to which the population line(s) is (are) added or
+\code{NULL}. If \code{NULL} the population line(s) is (are) plotted in an empty grid.}
 
 \item{x}{A numeric vector of length two or greater used for the x coordinates
-of the population line. If \code{length(x) == 2} a sequence of length 200
-between \code{x[1]} and \code{x[2]} is created. This sequence is equidistant
-with respect to the scale of the x axis. If \code{length(x) > 2} the elements
-of \code{x} are the x coordinates of the population line.}
+of the population line. If \code{length(x) == 2} a sequence of length 200 between
+\code{x[1]} and \code{x[2]} is created. This sequence is equidistant with respect to the
+scale of the x axis. If \code{length(x) > 2} the elements of \code{x} are the x
+coordinates of the population line.}
 
-\item{dist_params_tbl}{A tibble. See 'Details'.}
+\item{dist_params_tbl}{A \code{data.frame}. See 'Details'.}
 
-\item{distribution}{Supposed distribution of the random variable. In the
-context of this function \code{"weibull"}, \code{"lognormal"} and
-\code{"loglogistic"} stand for the two- \strong{and} the three-parametric
-version of the respective distribution. The distinction is made via
+\item{distribution}{Supposed distribution of the random variable. The distinction
+between a threshold distribution and the respective standard variant is made with
 \code{dist_params_tbl}.}
 
 \item{tol}{The failure probability is restricted to the interval
 \eqn{[tol, 1 - tol]}. The default value is in accordance with the decimal
 places shown in the hover for \code{plot_method = "plotly"}.}
 
-\item{title_trace}{A character string which is assigned to the trace shown in
-the legend.}
+\item{title_trace}{A character string which is assigned to the legend trace.}
 
-\item{plot_method}{Plot package, which produces the visual output. Only
-used with \code{p_obj = NULL}, otherwise \code{p_obj} is used to determine
-the plot method.}
+\item{plot_method}{Package, which is used for generating the plot output. Only
+used when \code{p_obj = NULL}. If \code{p_obj != NULL} the plot object is used to
+determine the plot method.}
 }
 \value{
-A plot object which contains the linearized CDF(s).
+A plot object containing the linearized CDF(s).
 }
 \description{
-This function adds one or multiple linearized CDFs to an existing plot grid.
+This function adds one (or multiple) linearized CDF(s) to an existing plot grid.
 }
 \details{
-\code{dist_params_tbl} is a data.frame with two or three columns. For
-location-scale distributions the first column contains the location parameter
-and the second column contains the scale parameter. For three-parametric
-distributions the third column contains the threshold parameter.
+\code{dist_params_tbl} is a \code{data.frame} with parameter columns. An overview of the
+distribution-specific parameters and their order can be found in section
+'Distributions'.
 
-If only one population line should be displayed, a numeric vector of length
-two or three is also supported (\code{c(loc, sc)} or \code{c(loc, sc, thres)}).
+If only one population line should be displayed, a numeric vector is also
+supported. The order of the vector elements also corresponds to the table in
+section 'Distributions'.
 }
+\section{Distributions}{
+
+The following table summarizes the available distributions and their parameters
+\itemize{
+\item \emph{location parameter} \eqn{\mu},
+\item \emph{scale parameter} \eqn{\sigma} or \eqn{\theta} and
+\item \emph{threshold parameter} \eqn{\gamma}.
+}
+
+The column order within \code{dist_params_tbl} is given in the table header.\tabular{lccc}{
+   \strong{\code{distribution}} \tab \strong{\code{dist_params_tbl[1]}} \tab \strong{\code{dist_params_tbl[2]}} \tab \strong{\code{dist_params_tbl[3]}} \cr
+   \code{"sev"} \tab \eqn{\mu} \tab \eqn{\sigma} \tab - \cr
+   \code{"weibull"} \tab \eqn{\mu} \tab \eqn{\sigma} \tab (\eqn{\gamma}) \cr
+   \code{"normal"} \tab \eqn{\mu} \tab \eqn{\sigma} \tab - \cr
+   \code{"lognormal"} \tab \eqn{\mu} \tab \eqn{\sigma} \tab (\eqn{\gamma}) \cr
+   \code{"logistic"} \tab \eqn{\mu} \tab \eqn{\sigma} \tab - \cr
+   \code{"loglogistic"} \tab \eqn{\mu} \tab \eqn{\sigma} \tab (\eqn{\gamma}) \cr
+   \code{"exponential"} \tab \eqn{\theta} \tab (\eqn{\gamma}) \tab - \cr
+}
+}
+
 \examples{
 x <- rweibull(n = 100, shape = 1, scale = 20000)
 

@@ -41,8 +41,8 @@
 
 <meta property="og:title" content="Layout of the Probability Plot — plot_layout" />
 <meta property="og:description" content="This function is used to create the layout of a probability plot. It is
-called inside of plot_prob to determine the appearance of the
-grid with respect to the given characteristic x." />
+called inside of plot_prob to determine the appearance of the grid with
+respect to the given characteristic x." />
 
 
 
@@ -82,7 +82,7 @@ grid with respect to the given characteristic x." />
       <ul class="nav navbar-nav">
         <li>
   <a href="../index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
+    <span class="fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -114,7 +114,7 @@ grid with respect to the given characteristic x." />
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="https://github.com/Tim-TU/weibulltools/">
-    <span class="fab fa fab fa-github fa-lg"></span>
+    <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -138,13 +138,15 @@ grid with respect to the given characteristic x." />
 
     <div class="ref-description">
     <p>This function is used to create the layout of a probability plot. It is
-called inside of <code><a href='plot_prob.html'>plot_prob</a></code> to determine the appearance of the
-grid with respect to the given characteristic <code>x</code>.</p>
+called inside of <a href='plot_prob.html'>plot_prob</a> to determine the appearance of the grid with
+respect to the given characteristic <code>x</code>.</p>
     </div>
 
     <pre class="usage"><span class='fu'>plot_layout</span><span class='op'>(</span>
   <span class='va'>x</span>,
-  distribution <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"weibull"</span>, <span class='st'>"lognormal"</span>, <span class='st'>"loglogistic"</span>, <span class='st'>"normal"</span>, <span class='st'>"logistic"</span>, <span class='st'>"sev"</span><span class='op'>)</span>,
+  y <span class='op'>=</span> <span class='cn'>NULL</span>,
+  distribution <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"weibull"</span>, <span class='st'>"lognormal"</span>, <span class='st'>"loglogistic"</span>, <span class='st'>"sev"</span>, <span class='st'>"normal"</span>, <span class='st'>"logistic"</span>,
+    <span class='st'>"exponential"</span><span class='op'>)</span>,
   title_main <span class='op'>=</span> <span class='st'>"Probability Plot"</span>,
   title_x <span class='op'>=</span> <span class='st'>"Characteristic"</span>,
   title_y <span class='op'>=</span> <span class='st'>"Unreliability"</span>,
@@ -160,23 +162,25 @@ grid with respect to the given characteristic <code>x</code>.</p>
 specify the grid of the plot.</p></td>
     </tr>
     <tr>
+      <th>y</th>
+      <td><p>Optional argument. If used, it is a numeric vector which consists of
+failure probabilities with respect to <code>x</code>.</p></td>
+    </tr>
+    <tr>
       <th>distribution</th>
       <td><p>Supposed distribution of the random variable.</p></td>
     </tr>
     <tr>
       <th>title_main</th>
-      <td><p>A character string which is assigned to the main title
-of the plot.</p></td>
+      <td><p>A character string which is assigned to the main title.</p></td>
     </tr>
     <tr>
       <th>title_x</th>
-      <td><p>A character string which is assigned to the title of the
-x axis.</p></td>
+      <td><p>A character string which is assigned to the title of the x axis.</p></td>
     </tr>
     <tr>
       <th>title_y</th>
-      <td><p>A character string which is assigned to the title of the
-y axis.</p></td>
+      <td><p>A character string which is assigned to the title of the y axis.</p></td>
     </tr>
     <tr>
       <th>plot_method</th>
@@ -186,8 +190,7 @@ y axis.</p></td>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>Returns a plot object which contains the layout
-  that is used for probability plotting.</p>
+    <p>A plot object containing the layout of the probability plot.</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

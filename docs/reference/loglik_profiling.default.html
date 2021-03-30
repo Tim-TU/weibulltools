@@ -41,7 +41,7 @@
 
 <meta property="og:title" content="Log-Likelihood Profile Function for Parametric Lifetime Distributions with Threshold — loglik_profiling.default" />
 <meta property="og:description" content="This function evaluates the log-likelihood with respect to a given threshold
-parameter of a three-parametric lifetime distribution. In terms of
+parameter of a parametric lifetime distribution. In terms of
 Maximum Likelihood Estimation this function can be optimized
 (optim) to estimate the threshold parameter." />
 
@@ -83,7 +83,7 @@ Maximum Likelihood Estimation this function can be optimized
       <ul class="nav navbar-nav">
         <li>
   <a href="../index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
+    <span class="fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -115,7 +115,7 @@ Maximum Likelihood Estimation this function can be optimized
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="https://github.com/Tim-TU/weibulltools/">
-    <span class="fab fa fab fa-github fa-lg"></span>
+    <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -139,7 +139,7 @@ Maximum Likelihood Estimation this function can be optimized
 
     <div class="ref-description">
     <p>This function evaluates the log-likelihood with respect to a given threshold
-parameter of a three-parametric lifetime distribution. In terms of
+parameter of a parametric lifetime distribution. In terms of
 <em>Maximum Likelihood Estimation</em> this function can be optimized
 (<a href='https://rdrr.io/r/stats/optim.html'>optim</a>) to estimate the threshold parameter.</p>
     </div>
@@ -150,7 +150,7 @@ parameter of a three-parametric lifetime distribution. In terms of
   <span class='va'>status</span>,
   wts <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/rep.html'>rep</a></span><span class='op'>(</span><span class='fl'>1</span>, <span class='fu'><a href='https://rdrr.io/r/base/length.html'>length</a></span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span><span class='op'>)</span>,
   <span class='va'>thres</span>,
-  distribution <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"weibull3"</span>, <span class='st'>"lognormal3"</span>, <span class='st'>"loglogistic3"</span><span class='op'>)</span>,
+  distribution <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"weibull3"</span>, <span class='st'>"lognormal3"</span>, <span class='st'>"loglogistic3"</span>, <span class='st'>"exponential2"</span><span class='op'>)</span>,
   <span class='va'>...</span>
 <span class='op'>)</span></pre>
 
@@ -180,7 +180,7 @@ to the number of observations in <code>x</code>.</p></td>
     </tr>
     <tr>
       <th>distribution</th>
-      <td><p>Supposed three-parametric distribution of the random variable.</p></td>
+      <td><p>Supposed parametric distribution of the random variable.</p></td>
     </tr>
     <tr>
       <th>...</th>

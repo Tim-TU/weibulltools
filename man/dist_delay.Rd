@@ -12,7 +12,7 @@ dist_delay(...)
 \arguments{
 \item{...}{Further arguments passed to or from other methods. Currently not used.}
 
-\item{x}{A \code{tibble} of class \code{wt_mcs_delay_data} returned by \link{mcs_delay_data}.}
+\item{x}{A \code{tibble} with class \code{wt_mcs_delay_data} returned by \link{mcs_delay_data}.}
 
 \item{distribution}{Supposed distribution of the respective delay.}
 }

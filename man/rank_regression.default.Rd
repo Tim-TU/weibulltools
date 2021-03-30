@@ -8,11 +8,12 @@
   x,
   y,
   status,
-  distribution = c("weibull", "lognormal", "loglogistic", "normal", "logistic", "sev",
-    "weibull3", "lognormal3", "loglogistic3"),
+  distribution = c("weibull", "lognormal", "loglogistic", "sev", "normal", "logistic",
+    "weibull3", "lognormal3", "loglogistic3", "exponential", "exponential2"),
   conf_level = 0.95,
   direction = c("x_on_y", "y_on_x"),
   control = list(),
+  options = list(),
   ...
 )
 }
@@ -30,8 +31,7 @@ a right censored observation (= 0) or a failure (= 1).}
 
 \item{distribution}{Supposed distribution of the random variable.}
 
-\item{conf_level}{Confidence level of the interval. If \code{distribution} is
-\code{"weibull"} this must be one of \code{0.9}, \code{0.95} or \code{0.99}.}
+\item{conf_level}{Confidence level of the interval.}
 
 \item{direction}{Direction of the dependence in the regression model.}
 
@@ -42,6 +42,8 @@ If this is the case, \code{optim} (always with \code{method = "L-BFGS-B"} and
 \code{control$fnscale = -1}) is called to determine the threshold parameter
 (see \link{r_squared_profiling}).}
 
+\item{options}{A list of named options. See 'Options'.}
+
 \item{...}{Further arguments passed to or from other methods. Currently not used.}
 }
 \value{
@@ -51,18 +53,18 @@ which contains:
 \item \code{coefficients} : A named vector of estimated coefficients (parameters of the
 assumed distribution). \strong{Note}: The parameters are given in the
 (log-)location-scale-parameterization.
-\item \code{confint} : Confidence intervals for the (log-)location-scale parameters. If
-\code{distribution} is \code{"lognormal3"} or \code{"loglogistic3"} no confidence interval
-for the threshold parameter is computed. If \code{direction = "y_on_x"},
-back-transformed confidence intervals are provided.
+\item \code{confint} : Confidence intervals for the (log-)location-scale parameters.
+For threshold distributions no confidence interval for the threshold parameter
+can be computed. If \code{direction = "y_on_x"}, back-transformed confidence
+intervals are provided.
 \item \code{shape_scale_coefficients} : Only included if \code{distribution} is \code{"weibull"}
 or \code{"weibull3"} (parameterization used in \link[stats:Weibull]{Weibull}).
 \item \code{shape_scale_confint} : Only included if \code{distribution} is \code{"weibull"}
 or \code{"weibull3"}. Approximated confidence intervals for scale \eqn{\eta} and
 shape \eqn{\beta} (and threshold \eqn{\gamma} if \code{distribution = "weibull3"}).
-\item \code{varcov} : Provided, if \code{distribution} is not \code{"weibull"} or \code{"weibull3"}.
-Estimated heteroscedasticity-consistent (\emph{HC}) variance-covariance matrix for
-the (log-)location-scale parameters.
+\item \code{varcov} : Only provided if \code{options = list(conf_method = "HC")} (default).
+Estimated heteroscedasticity-consistent (\strong{HC}) variance-covariance matrix
+for the (log-)location-scale parameters.
 \item \code{r_squared} : Coefficient of determination.
 \item \code{data} : A \code{tibble} with columns \code{x}, \code{status} and \code{prob}.
 \item \code{distribution} : Specified distribution.
@@ -70,32 +72,39 @@ the (log-)location-scale parameters.
 }
 }
 \description{
-This function fits a regression model to a linearized two- or three-parameter
-lifetime distribution for complete and (multiple) right-censored data.
-The parameters are determined in the frequently used (log-)location-scale
-parameterization.
+This function fits a regression model to a linearized parametric lifetime
+distribution for complete and (multiple) right-censored data. The parameters
+are determined in the frequently used (log-)location-scale parameterization.
 
 For the Weibull, estimates are additionally transformed such that they are in
 line with the parameterization provided by the \emph{stats} package
 (see \link[stats:Weibull]{Weibull}).
 }
 \details{
-If \code{distribution} is \code{"weibull"} or \code{"weibull3"}, the approximated
-confidence intervals for the parameters can only be estimated on the following
+The confidence intervals of the parameters are computed on the basis of a
+heteroscedasticity-consistent (\strong{HC}) covariance matrix. Here it should be
+said that there is no statistical foundation to determine the standard errors
+of the parameters using \emph{Least Squares} in context of \emph{Rank Regression}.
+For an accepted statistical method use \link[=ml_estimation]{maximum likelihood}.
+
+If \code{options = list(conf_method = "Mock")}, the argument \code{distribution} must be
+one of \code{"weibull"} and \code{"weibull3"}. The approximated confidence intervals
+for the Weibull parameters can then only be estimated on the following
 confidence levels (see 'References' \emph{(Mock, 1995)}):
 \itemize{
 \item \code{conf_level = 0.90}
 \item \code{conf_level = 0.95}
 \item \code{conf_level = 0.99}
 }
-
-If the distribution is not the Weibull, the confidence intervals of the
-parameters are computed on the basis of a heteroscedasticity-consistent
-covariance matrix. Here it should be said that there is no statistical foundation
-to determine the standard errors of the parameters using \emph{Least Squares}
-in context of \emph{Rank Regression}. For an accepted statistical method use
-\link[=ml_estimation]{maximum likelihood}.
 }
+\section{Options}{
+
+Argument \code{options} is a named list of options:\tabular{ll}{
+   Name \tab Value \cr
+   \code{conf_method} \tab \code{"HC"} (default) or \code{"Mock"} \cr
+}
+}
+
 \examples{
 # Vectors:
 obs <- seq(10000, 100000, 10000)

@@ -1,35 +1,33 @@
 #' Rank Regression for Parametric Lifetime Distributions
 #'
 #' @description
-#' This function fits a regression model to a linearized two- or three-parameter
-#' lifetime distribution for complete and (multiple) right-censored data.
-#' The parameters are determined in the frequently used (log-)location-scale
-#' parameterization.
+#' This function fits a regression model to a linearized parametric lifetime
+#' distribution for complete and (multiple) right-censored data. The parameters
+#' are determined in the frequently used (log-)location-scale parameterization.
 #'
 #' For the Weibull, estimates are additionally transformed such that they are in
 #' line with the parameterization provided by the *stats* package
 #' (see [Weibull][stats::Weibull]).
 #'
 #' @details
-#' If `distribution` is `"weibull"` or `"weibull3"`, the approximated
-#' confidence intervals for the parameters can only be estimated on the following
+#' The confidence intervals of the parameters are computed on the basis of a
+#' heteroscedasticity-consistent (**HC**) covariance matrix. Here it should be
+#' said that there is no statistical foundation to determine the standard errors
+#' of the parameters using *Least Squares* in context of *Rank Regression*.
+#' For an accepted statistical method use [maximum likelihood][ml_estimation].
+#'
+#' If `options = list(conf_method = "Mock")`, the argument `distribution` must be
+#' one of `"weibull"` and `"weibull3"`. The approximated confidence intervals
+#' for the Weibull parameters can then only be estimated on the following
 #' confidence levels (see 'References' *(Mock, 1995)*):
 #'
 #' * `conf_level = 0.90`
 #' * `conf_level = 0.95`
 #' * `conf_level = 0.99`
 #'
-#' If the distribution is not the Weibull, the confidence intervals of the
-#' parameters are computed on the basis of a heteroscedasticity-consistent
-#' covariance matrix. Here it should be said that there is no statistical foundation
-#' to determine the standard errors of the parameters using *Least Squares*
-#' in context of *Rank Regression*. For an accepted statistical method use
-#' [maximum likelihood][ml_estimation].
-#'
-#' @param x A `tibble` of class `wt_cdf_estimation` returned by [estimate_cdf].
+#' @param x A `tibble` with class `wt_cdf_estimation` returned by [estimate_cdf].
 #' @param distribution Supposed distribution of the random variable.
-#' @param conf_level Confidence level of the interval. If `distribution` is
-#'   `"weibull"` this must be one of `0.9`, `0.95` or `0.99`.
+#' @param conf_level Confidence level of the interval.
 #' @param direction Direction of the dependence in the regression model.
 #' @param control A list of control parameters (see [optim][stats::optim]).
 #'
@@ -37,6 +35,8 @@
 #' If this is the case, `optim` (always with `method = "L-BFGS-B"` and
 #' `control$fnscale = -1`) is called to determine the threshold parameter
 #' (see [r_squared_profiling]).
+#'
+#' @param options A list of named options. See 'Options'.
 #' @template dots
 #'
 #' @template return-rank-regression
@@ -46,6 +46,13 @@
 #'   is a list with class `wt_model_estimation_list`. In this case, each list element
 #'   has classes `wt_rank_regression` and `wt_model_estimation`, and the items listed
 #'   above, are included.
+#'
+#' @section Options:
+#' Argument `options` is a named list of options:
+#'
+#' | Name             | Value                                     |
+#' | :--------------- | :---------------------------------------  |
+#' | `conf_method`    | `"HC"` (default) or `"Mock"`              |
 #'
 #' @encoding UTF-8
 #'
@@ -131,17 +138,19 @@ rank_regression <- function(x, ...) {
 #' @rdname rank_regression
 #'
 #' @export
-rank_regression.wt_cdf_estimation <- function(x,
-                                              distribution = c(
-                                                "weibull", "lognormal",
-                                                "loglogistic", "normal",
-                                                "logistic", "sev", "weibull3",
-                                                "lognormal3", "loglogistic3"
-                                              ),
-                                              conf_level = 0.95,
-                                              direction = c("x_on_y", "y_on_x"),
-                                              control = list(),
-                                              ...
+rank_regression.wt_cdf_estimation <- function(
+                                     x,
+                                     distribution = c(
+                                       "weibull", "lognormal", "loglogistic",
+                                       "sev", "normal", "logistic",
+                                       "weibull3", "lognormal3", "loglogistic3",
+                                       "exponential", "exponential2"
+                                     ),
+                                     conf_level = 0.95,
+                                     direction = c("x_on_y", "y_on_x"),
+                                     control = list(),
+                                     options = list(),
+                                     ...
 ) {
 
   distribution <- match.arg(distribution)
@@ -153,7 +162,8 @@ rank_regression.wt_cdf_estimation <- function(x,
       distribution = distribution,
       conf_level = conf_level,
       direction = direction,
-      control = control
+      control = control,
+      options = options
     )
   } else {
     # Apply rank_regression to each cdf estimation method separately
@@ -165,7 +175,8 @@ rank_regression.wt_cdf_estimation <- function(x,
         distribution = distribution,
         conf_level = conf_level,
         direction = direction,
-        control = control
+        control = control,
+        options = options
       )
     })
 
@@ -183,6 +194,7 @@ rank_regression.wt_cdf_estimation <- function(x,
 #' Rank Regression for Parametric Lifetime Distributions
 #'
 #' @inherit rank_regression description details references
+#' @inheritSection rank_regression Options
 #'
 #' @inheritParams rank_regression
 #' @param x A numeric vector which consists of lifetime data. Lifetime data
@@ -242,14 +254,16 @@ rank_regression.wt_cdf_estimation <- function(x,
 rank_regression.default <- function(x,
                                     y,
                                     status,
-                                    distribution = c("weibull", "lognormal",
-                                                     "loglogistic", "normal",
-                                                     "logistic", "sev",
-                                                     "weibull3", "lognormal3",
-                                                     "loglogistic3"),
+                                    distribution = c(
+                                      "weibull", "lognormal", "loglogistic",
+                                      "sev", "normal", "logistic",
+                                      "weibull3", "lognormal3", "loglogistic3",
+                                      "exponential", "exponential2"
+                                    ),
                                     conf_level = 0.95,
                                     direction = c("x_on_y", "y_on_x"),
                                     control = list(),
+                                    options = list(),
                                     ...
 ) {
 
@@ -263,7 +277,8 @@ rank_regression.default <- function(x,
     distribution = distribution,
     conf_level = conf_level,
     direction = direction,
-    control = control
+    control = control,
+    options = options
   )
 }
 
@@ -274,7 +289,8 @@ rank_regression_ <- function(cdf_estimation,
                              distribution,
                              conf_level,
                              direction,
-                             control
+                             control,
+                             options
 ) {
 
   # In terms of RR only failed items can be used:
@@ -283,8 +299,8 @@ rank_regression_ <- function(cdf_estimation,
   x_f <- cdf_failed$x
   y_f <- cdf_failed$prob
 
-  # Pre-Step: Three-parametric models must be profiled w.r.t threshold:
-  if (distribution %in% c("weibull3", "lognormal3", "loglogistic3")) {
+  # Pre-Step: Threshold models must be profiled w.r.t threshold:
+  if (has_thres(distribution)) {
 
     ## Force maximization:
     control$fnscale <- -1
@@ -321,35 +337,51 @@ rank_regression_ <- function(cdf_estimation,
 
   ## Parameters:
   dist_params <- stats::coef(rr)
-  names(dist_params) <- c("mu", "sigma")
-
-  ### Three-parametric:
-  if (exists("opt_thres")) {
-    dist_params <- c(dist_params, opt_thres)
-    names(dist_params)[3] <- "gamma"
+  if (std_parametric(distribution) == "exponential") {
+    names(dist_params) <- "sigma"
+  } else {
+    names(dist_params) <- c("mu", "sigma")
   }
 
-  # Step 2: Confidence intervals and return preparation:
-  ## Confidence intervals according to Mock for 'weibull' and 'weibull3':
-  if (distribution %in% c("weibull", "weibull3")) {
-    output <- conf_mock(
-      dist_params = dist_params,
-      conf_level = conf_level,
-      n = length(x_f),
-      direction = direction
-    )
-  } else {
-    ## Confidence intervals with HC standard errors for any other distribution:
+  ### Threshold parameter:
+  if (exists("opt_thres", inherits = FALSE)) {
+    dist_params <- c(dist_params, opt_thres)
+    names(dist_params)[length(dist_params)] <- "gamma"
+  }
+
+  # Step 2: Confidence intervals computation based on 'options':
+  ## Value of argument 'options':
+  conf_option <- options$conf_method %||% "HC"
+
+  ## Confidence intervals with HC standard errors:
+  if (conf_option == "HC") {
     ### Estimating HC covariance matrix:
     dist_varcov <- sandwich::vcovHC(x = rr, type = "HC1")
 
     output <- conf_HC(
       dist_params = dist_params,
       dist_varcov = dist_varcov,
+      distribution = distribution,
       conf_level = conf_level,
       n = length(x_f),
       direction = direction
     )
+  } else {
+    if (distribution %in% c("weibull", "weibull3")) {
+      ## Confidence intervals according to Mock for 'weibull' and 'weibull3':
+      output <- conf_mock(
+        dist_params = dist_params,
+        conf_level = conf_level,
+        n = length(x_f),
+        direction = direction
+      )
+    } else {
+      stop(
+        "For option conf_method = 'Mock', the distribution argument needs to be",
+        " 'weibull' or 'weibull3' but " , sQuote(distribution), " was used!",
+        call. = FALSE
+      )
+    }
   }
 
   # Step 3: Form output:

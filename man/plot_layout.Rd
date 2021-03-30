@@ -6,7 +6,9 @@
 \usage{
 plot_layout(
   x,
-  distribution = c("weibull", "lognormal", "loglogistic", "normal", "logistic", "sev"),
+  y = NULL,
+  distribution = c("weibull", "lognormal", "loglogistic", "sev", "normal", "logistic",
+    "exponential"),
   title_main = "Probability Plot",
   title_x = "Characteristic",
   title_y = "Unreliability",
@@ -17,26 +19,25 @@ plot_layout(
 \item{x}{A numeric vector which consists of lifetime data. \code{x} is used to
 specify the grid of the plot.}
 
+\item{y}{Optional argument. If used, it is a numeric vector which consists of
+failure probabilities with respect to \code{x}.}
+
 \item{distribution}{Supposed distribution of the random variable.}
 
-\item{title_main}{A character string which is assigned to the main title
-of the plot.}
+\item{title_main}{A character string which is assigned to the main title.}
 
-\item{title_x}{A character string which is assigned to the title of the
-x axis.}
+\item{title_x}{A character string which is assigned to the title of the x axis.}
 
-\item{title_y}{A character string which is assigned to the title of the
-y axis.}
+\item{title_y}{A character string which is assigned to the title of the y axis.}
 
 \item{plot_method}{Package, which is used for generating the plot output.}
 }
 \value{
-Returns a plot object which contains the layout
-  that is used for probability plotting.
+A plot object containing the layout of the probability plot.
 }
 \description{
 This function is used to create the layout of a probability plot. It is
-called inside of \code{\link{plot_prob}} to determine the appearance of the
-grid with respect to the given characteristic \code{x}.
+called inside of \link{plot_prob} to determine the appearance of the grid with
+respect to the given characteristic \code{x}.
 }
 \keyword{internal}

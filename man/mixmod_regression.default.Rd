@@ -30,42 +30,37 @@ a right censored observation (= 0) or a failure (= 1).}
 
 \item{distribution}{Supposed distribution of the random variable.}
 
-\item{conf_level}{Confidence level of the interval. If \code{distribution} is
-\code{"weibull"} this must be one of \code{0.9}, \code{0.95} or \code{0.99}.}
+\item{conf_level}{Confidence level of the interval.}
 
-\item{k}{Number of mixture components. If the data should be split in an automated
-fashion, \code{k} must be set to \code{NULL}. The argument \code{fix.psi}
-of \code{control} is then set to \code{FALSE}.}
+\item{k}{Number of mixture components. If the data should be split in an
+automated fashion, \code{k} must be set to \code{NULL}. The argument \code{fix.psi} of
+\code{control} is then set to \code{FALSE}.}
 
-\item{control}{Output of the call to \code{\link[segmented]{seg.control}}, which
-is passed to \code{\link[segmented:segmented]{segmented.lm}}.
-See 'Examples' for usage.}
+\item{control}{Output of the call to \link[segmented:seg.control]{seg.control},
+which is passed to \link[segmented:segmented]{segmented.lm}. See 'Examples' for usage.}
 
 \item{...}{Further arguments passed to or from other methods. Currently not used.}
 }
 \value{
-Returns a list of class \code{wt_rank_regression} if no breakpoint
-was detected. See \code{\link{rank_regression}}. The tibble \code{data} is
-returned with class \code{wt_cdf_estimation} and contains the additional
-dummy columns \code{method} and \code{id}. The former is filled with
-\code{NA_character}, due to generic visualization functions and the latter is
-filled with \code{"XXXXXX"} to point out that unit identification is not
+A list with classes \code{wt_model} and \code{wt_rank_regression} if no breakpoint
+was detected. See \link{rank_regression}. The returned tibble \code{data} is of class
+\code{wt_cdf_estimation} and contains the dummy columns \code{cdf_estimation_method} and
+\code{id}. The former is filled with \code{NA_character}, due to internal usage and the
+latter is filled with \code{"XXXXXX"} to point out that unit identification is not
 possible when using the vector-based approach.
 
-Returns a list of class \code{wt_mixmod_regression} if at least one
+A list with classes \code{wt_model} and \code{wt_mixmod_regression} if at least one
 breakpoint was determined. The length of the list depends on the number of
 identified subgroups. Each list contains the information provided by
-\code{\link{rank_regression}}. The returned tibble \code{data} of each list
-element only retains information on the failed units and has modified
-and additional columns:
+\link{rank_regression}. The returned tibble \code{data} of each list element only retains
+information on the failed units and has modified and additional columns:
 \itemize{
-  \item \code{id} : Modified id, overwritten with \code{"XXXXXX"} to point out
-    that unit identification is not possible when using the vector-based approach.
-  \item \code{method} : A character that is always \code{"_null"}. Due to generic
-    visualization functions column \code{method} has to be provided.
-  \item \code{q} : Quantiles of the standard distribution calculated from
-    column \code{prob}.
-  \item \code{group} : Membership to the respective segment.
+\item \code{id} : Modified id, overwritten with \code{"XXXXXX"} to point out that unit
+identification is not possible when using the vector-based approach.
+\item \code{cdf_estimation_method} : A character that is always \code{NA_character}. Only
+needed for internal use.
+\item \code{q} : Quantiles of the standard distribution calculated from column \code{prob}.
+\item \code{group} : Membership to the respective segment.
 }
 }
 \description{
@@ -76,20 +71,21 @@ subgroups. See 'Details'.
 The segmentation process is based on the lifetime realizations of failed
 units and their corresponding estimated failure probabilities for which intact
 items are taken into account. It is performed with the support of
-\code{\link[segmented:segmented]{segmented.lm}}.
+\link[segmented:segmented]{segmented.lm}.
 
 Segmentation can be done with a specified number of subgroups or in an automated
-fashion (see argument \code{k}).
-The algorithm tends to overestimate the number of breakpoints when the separation
-is done automatically (see 'Warning' in \code{\link[segmented:segmented]{segmented.lm}}).
+fashion (see argument \code{k}). The algorithm tends to overestimate the number of
+breakpoints when the separation is done automatically (see 'Warning' in
+\link[segmented:segmented]{segmented.lm}).
 
 In the context of reliability analysis it is important that the main types of
 failures can be identified and analyzed separately. These are
 \itemize{
-  \item early failures,
-  \item random failures and
-  \item wear-out failures.
+\item early failures,
+\item random failures and
+\item wear-out failures.
 }
+
 In order to reduce the risk of overestimation as well as being able to consider
 the main types of failures, a maximum of three subgroups (\code{k = 3}) is recommended.
 }
@@ -157,8 +153,8 @@ mod <- mixmod_regression(
 }
 \references{
 Doganaksoy, N.; Hahn, G.; Meeker, W. Q., Reliability Analysis by
-  Failure Mode, Quality Progress, 35(6), 47-52, 2002
+Failure Mode, Quality Progress, 35(6), 47-52, 2002
 }
 \seealso{
-\code{\link{mixmod_regression}}
+\link{mixmod_regression}
 }

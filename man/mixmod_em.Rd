@@ -21,8 +21,7 @@ mixmod_em(x, ...)
 )
 }
 \arguments{
-\item{x}{An object of class \code{wt_reliability_data} returned from
-\code{\link{reliability_data}}.}
+\item{x}{A tibble with class \code{wt_reliability_data} returned by \link{reliability_data}.}
 
 \item{...}{Further arguments passed to or from other methods. Currently not used.}
 
@@ -43,23 +42,21 @@ of every component \code{k}.}
 log-likelihood values, which seems permissible.}
 }
 \value{
-Returns a list with classes \code{wt_model} and \code{wt_mixmod_em}.
-The length of the list depends on the number of specified subgroups \emph{k}.
-The first \code{k} lists contain information provided by
-\link{ml_estimation}. The values of \code{logL}, \code{aic} and \code{bic}
-are the results of a weighted log-likelihood, where the weights are the
-posterior probabilities determined by the algorithm. The last list summarizes
-further results of the EM algorithm and is therefore called
-\code{em_results}. It contains the following elements:
-  \itemize{
-    \item \code{a_priori} : A vector with estimated prior probabilities.
-    \item \code{a_posteriori} : A matrix with estimated posterior probabilities.
-    \item \code{groups} : Numeric vector specifying the group membership of
-      every observation.
-    \item \code{logL} : The value of the complete log-likelihood.
-    \item \code{aic} : Akaike Information Criterion.
-    \item \code{bic} : Bayesian Information Criterion.
-  }
+A list with classes \code{wt_model} and \code{wt_mixmod_em}. The length of the
+list depends on the number of specified subgroups \code{k}. The first \code{k} lists
+contain information provided by \link{ml_estimation}. The values of \code{logL}, \code{aic}
+and \code{bic} are the results of a weighted log-likelihood, where the weights are
+the posterior probabilities determined by the algorithm. The last list summarizes
+further results of the EM algorithm and is therefore called \code{em_results}. It
+contains the following elements:
+\itemize{
+\item \code{a_priori} : A vector with estimated prior probabilities.
+\item \code{a_posteriori} : A matrix with estimated posterior probabilities.
+\item \code{groups} : Numeric vector specifying the group membership of every observation.
+\item \code{logL} : The value of the complete log-likelihood.
+\item \code{aic} : Akaike Information Criterion.
+\item \code{bic} : Bayesian Information Criterion.
+}
 }
 \description{
 This method applies the expectation-maximization (EM) algorithm to estimate the
@@ -70,7 +67,7 @@ The EM algorithm is an iterative algorithm for which starting values must be
 defined. Starting values can be provided for the unknown parameter vector as
 well as for the posterior probabilities. This implementation employs initial
 values for the posterior probabilities. These are assigned randomly
-by using the dirichlet distribution, the conjugate prior of a multinomial
+by using the Dirichlet distribution, the conjugate prior of a multinomial
 distribution (see Mr. Gelissen's blog post listed under \emph{references}).
 
 \strong{M-Step} : On the basis of the initial posterior probabilities, the
@@ -109,8 +106,10 @@ mix_mod_em_2 <- mixmod_em(
 }
 \references{
 \itemize{
-    \item Doganaksoy, N.; Hahn, G.; Meeker, W. Q., Reliability Analysis by
-      Failure Mode, Quality Progress, 35(6), 47-52, 2002
-    \item Blog posts by Stefan Gelissen: \url{https://blogs2.datall-analyse.nl/2016/02/18/rcode_mixture_distribution_censored/};
-      last accessed on 8th December 2020}
+\item Doganaksoy, N.; Hahn, G.; Meeker, W. Q., Reliability Analysis by Failure Mode,
+Quality Progress, 35(6), 47-52, 2002
+\item Blog post by Stefan Gelissen:
+\href{https://blogs2.datall-analyse.nl/2016/02/18/rcode_mixture_distribution_censored/}{R code for fitting a mixture distribution to censored data} ;
+last accessed on 8th December 2020
+}
 }

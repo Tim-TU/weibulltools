@@ -50,7 +50,7 @@ parameters. The length of \code{x_sim} is equal to the number of censored observ
 }
 }
 \description{
-\ifelse{html}{\figure{lifecycle-soft-deprecated.svg}{options: alt='Soft-deprecated lifecycle'}}{\strong{Soft-deprecated}}
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#soft-deprecated}{\figure{lifecycle-soft-deprecated.svg}{options: alt='[Soft-deprecated]'}}}{\strong{[Soft-deprecated]}}
 
 \code{mcs_delay_register()} is no longer under active development, switching
 to \link{mcs_delay} is recommended.

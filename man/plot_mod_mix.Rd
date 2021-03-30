@@ -17,45 +17,42 @@ plot_mod_mix(
 )
 }
 \arguments{
-\item{p_obj}{A plot object provided by function \code{\link{plot_prob_mix}}.}
+\item{p_obj}{A plot object returned by \link{plot_prob_mix}.}
 
 \item{x}{A numeric vector containing the x-coordinates of the respective
 regression line.}
 
-\item{status}{A vector of binary data (0 or 1) indicating whether unit \emph{i}
-is a right censored observation (= 0) or a failure (= 1).}
+\item{status}{A vector of binary data (0 or 1) indicating whether a unit is a
+right censored observation (= 0) or a failure (= 1).}
 
-\item{mix_output}{A list provided by \code{\link{mixmod_regression}} or
-\code{\link{mixmod_em}}, which consists of elements necessary to visualize
-the regression lines.}
+\item{mix_output}{A list returned by \link{mixmod_regression} or \link{mixmod_em},
+which consists of elements necessary to visualize the regression lines.}
 
 \item{distribution}{Supposed distribution of the random variable.}
 
-\item{title_trace}{A character string which is assigned to the trace shown in
-the legend.}
+\item{title_trace}{A character string which is assigned to the legend trace.}
 
 \item{...}{Further arguments passed to or from other methods. Currently not used.}
 }
 \value{
-Returns a plot object containing the probability plot with
-plotting positions and estimated regression line(s).
+A plot object containing the probability plot with plotting positions
+and estimated regression line(s).
 }
 \description{
-\ifelse{html}{\figure{lifecycle-soft-deprecated.svg}{options: alt='Soft-deprecated lifecycle'}}{\strong{Soft-deprecated}}
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#soft-deprecated}{\figure{lifecycle-soft-deprecated.svg}{options: alt='[Soft-deprecated]'}}}{\strong{[Soft-deprecated]}}
 
 \code{plot_mod_mix()} is no longer under active development, switching to
-\code{\link{plot_mod}} is recommended.
+\link{plot_mod} is recommended.
 }
 \details{
 This function adds one or multiple estimated regression lines to an existing
-probability plot (\code{\link{plot_prob}}). Depending on the output of the
-function \code{\link{mixmod_regression}} or \code{\link{mixmod_em}} one or
-multiple lines are plotted.
+probability plot \link{plot_prob}). Depending on the output of the function
+\link{mixmod_regression} or \link{mixmod_em} one or multiple lines are plotted.
 
-The name of the legend entry is a combination of the \code{title_trace} and
-the number of determined subgroups. If \code{title_trace = "Line"} and the
-data has been split in two groups, the legend entries would be
-\code{"Line: 1"} and \code{"Line: 2"}.
+The name of the legend entry is a combination of the \code{title_trace} and the
+number of determined subgroups. If \code{title_trace = "Line"} and the data has
+been split in two groups, the legend entries would be \code{"Line: 1"} and
+\code{"Line: 2"}.
 }
 \examples{
 # Vectors:

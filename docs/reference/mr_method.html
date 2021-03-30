@@ -41,8 +41,8 @@
 
 <meta property="og:title" content="Estimation of Failure Probabilities using Median Ranks — mr_method" />
 <meta property="og:description" content="
-mr_method() is no longer under active development, switching
-to estimate_cdf is recommended." />
+mr_method() is no longer under active development, switching to estimate_cdf
+is recommended." />
 
 
 
@@ -82,7 +82,7 @@ to estimate_cdf is recommended." />
       <ul class="nav navbar-nav">
         <li>
   <a href="../index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
+    <span class="fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -114,7 +114,7 @@ to estimate_cdf is recommended." />
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="https://github.com/Tim-TU/weibulltools/">
-    <span class="fab fa fab fa-github fa-lg"></span>
+    <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -137,9 +137,9 @@ to estimate_cdf is recommended." />
     </div>
 
     <div class="ref-description">
-    <p><img src='figures/lifecycle-soft-deprecated.svg' alt='Soft-deprecated lifecycle' /></p>
-<p><code>mr_method()</code> is no longer under active development, switching
-to <code><a href='estimate_cdf.html'>estimate_cdf</a></code> is recommended.</p>
+    <p><a href='https://lifecycle.r-lib.org/articles/stages.html#soft-deprecated'><img src='figures/lifecycle-soft-deprecated.svg' alt='[Soft-deprecated]' /></a></p>
+<p><code>mr_method()</code> is no longer under active development, switching to <a href='estimate_cdf.html'>estimate_cdf</a>
+is recommended.</p>
     </div>
 
     <pre class="usage"><span class='fu'>mr_method</span><span class='op'>(</span>
@@ -162,7 +162,7 @@ cycles.</p></td>
     </tr>
     <tr>
       <th>status</th>
-      <td><p>A vector of ones indicating that every unit <em>i</em> has failed.</p></td>
+      <td><p>A vector of ones indicating that every unit has failed.</p></td>
     </tr>
     <tr>
       <th>id</th>
@@ -170,24 +170,25 @@ cycles.</p></td>
     </tr>
     <tr>
       <th>method</th>
-      <td><p>Method for the estimation of the cdf. Can be "benard" (default)
-or "invbeta".</p></td>
+      <td><p>Method for the estimation of the cdf. Can be <code>"benard"</code> (default)
+or <code>"invbeta"</code>.</p></td>
     </tr>
     <tr>
       <th>ties.method</th>
-      <td><p>A character string specifying how ties are treated, default is "max".</p></td>
+      <td><p>A character string specifying how ties are treated,
+default is <code>"max"</code>.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A tibble with failed units containing the following columns:</p><ul>
+    <p>A tibble with only failed units containing the following columns:</p><ul>
 <li><p><code>id</code> : Identification for every unit.</p></li>
 <li><p><code>x</code> : Lifetime characteristic.</p></li>
 <li><p><code>status</code> : Status of failed units (always 1).</p></li>
-<li><p><code>rank</code> : The assigned ranks.</p></li>
+<li><p><code>rank</code> : Assigned ranks.</p></li>
 <li><p><code>prob</code> : Estimated failure probabilities.</p></li>
-<li><p><code>method</code> : Specified method for the estimation of failure
+<li><p><code>cdf_estimation_method</code> : Specified method for the estimation of failure
 probabilities (always 'mr').</p></li>
 </ul>
 
@@ -196,8 +197,8 @@ probabilities (always 'mr').</p></li>
     <p>This non-parametric approach (<em>Median Ranks</em>) is used to estimate the
 failure probabilities in terms of complete data. Two methods are available to
 estimate the cumulative distribution function <em>F(t)</em>:</p><ul>
-<li><p>"benard" : Benard's approximation for Median Ranks.</p></li>
-<li><p>"invbeta" : Exact Median Ranks using the inverse beta distribution.</p></li>
+<li><p><code>"benard"</code> : Benard's approximation for Median Ranks.</p></li>
+<li><p><code>"invbeta"</code> : Exact Median Ranks using the inverse beta distribution.</p></li>
 </ul>
 
 
@@ -215,18 +216,17 @@ estimate the cumulative distribution function <em>F(t)</em>:</p><ul>
   id <span class='op'>=</span> <span class='va'>uic</span>,
   method <span class='op'>=</span> <span class='st'>"benard"</span>
 <span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='warning'>Warning: `mr_method()` is deprecated as of lifecycle 2.0.0.</span>
-#&gt; <span class='warning'>Please use `estimate_cdf()` instead.</span>
-#&gt; <span class='warning'><span style='color: #555555;'>This warning is displayed once every 8 hours.</span><span></span>
-#&gt; <span class='warning'></span><span style='color: #555555;'>Call `lifecycle::last_warnings()` to see where this warning was generated.</span><span></span></div><div class='input'>
+</div><div class='output co'>#&gt; <span class='warning'>Warning: `mr_method()` was deprecated in weibulltools 2.0.0.</span>
+#&gt; <span class='warning'>Please use `estimate_cdf()` instead.</span></div><div class='input'>
 <span class='co'># Example 2 - Inverse beta distribution:</span>
 <span class='va'>tbl_mr_invbeta</span> <span class='op'>&lt;-</span> <span class='fu'>mr_method</span><span class='op'>(</span>
   x <span class='op'>=</span> <span class='va'>obs</span>,
   status <span class='op'>=</span> <span class='va'>state</span>,
   method <span class='op'>=</span> <span class='st'>"invbeta"</span>
 <span class='op'>)</span>
-
-</div></span></pre>
+</div><div class='output co'>#&gt; <span class='warning'>Warning: `mr_method()` was deprecated in weibulltools 2.0.0.</span>
+#&gt; <span class='warning'>Please use `estimate_cdf()` instead.</span></div><div class='input'>
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

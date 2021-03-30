@@ -5,33 +5,48 @@ test_that("ml_estimation remains stable", {
   ## log-location scale distributions (two-parametric):
   dists <- c("weibull", "lognormal", "loglogistic")
 
-  ml <- lapply(dists, ml_estimation, x = data, conf_level = 0.90)
+  ml <- purrr::map(
+    dists,
+    ml_estimation,
+    x = data,
+    conf_level = 0.90
+  )
 
-  expect_snapshot_output(lapply(ml, "[[", "coefficients"))
-  expect_snapshot_output(lapply(ml, "[[", "confint"))
-  expect_snapshot_output(lapply(ml, "[[", "varcov"))
-  expect_snapshot_output(lapply(ml, "[[", "logL"))
+  expect_snapshot_output(purrr::map(ml, "coefficients"))
+  expect_snapshot_output(purrr::map(ml, "confint"))
+  expect_snapshot_output(purrr::map(ml, "varcov"))
+  expect_snapshot_output(purrr::map(ml, "logL"))
 
-  ## log-location scale distributions (two-parametric):
-  dists <- c("sev", "normal", "logistic")
+  ## location-scale or scale distributions:
+  dists <- c("sev", "normal", "logistic", "exponential")
 
-  ml <- lapply(dists, ml_estimation, x = data, conf_level = 0.95)
+  ml <- purrr::map(
+    dists,
+    ml_estimation,
+    x = data,
+    conf_level = 0.95
+  )
 
-  expect_snapshot_output(lapply(ml, "[[", "coefficients"))
-  expect_snapshot_output(lapply(ml, "[[", "confint"))
-  expect_snapshot_output(lapply(ml, "[[", "varcov"))
-  expect_snapshot_output(lapply(ml, "[[", "logL"))
+  expect_snapshot_output(purrr::map(ml, "coefficients"))
+  expect_snapshot_output(purrr::map(ml, "confint"))
+  expect_snapshot_output(purrr::map(ml, "varcov"))
+  expect_snapshot_output(purrr::map(ml, "logL"))
 
   # Test with 'alloy':
   data <- reliability_data(data = alloy, x = cycles, status = status)
 
-  ## log-location scale distributions (three-parametric):
-  dists <- c("weibull3", "lognormal3", "loglogistic3")
+  ## log-location scale or scale distributions with threshold:
+  dists <- c("weibull3", "lognormal3", "loglogistic3", "exponential2")
 
-  ml <- lapply(dists, ml_estimation, x = data, conf_level = 0.99)
+  ml <- purrr::map(
+    dists,
+    ml_estimation,
+    x = data,
+    conf_level = 0.99
+  )
 
-  expect_snapshot_output(lapply(ml, "[[", "coefficients"))
-  expect_snapshot_output(lapply(ml, "[[", "confint"))
-  expect_snapshot_output(lapply(ml, "[[", "varcov"))
-  expect_snapshot_output(lapply(ml, "[[", "logL"))
+  expect_snapshot_output(purrr::map(ml, "coefficients"))
+  expect_snapshot_output(purrr::map(ml, "confint"))
+  expect_snapshot_output(purrr::map(ml, "varcov"))
+  expect_snapshot_output(purrr::map(ml, "logL"))
 })

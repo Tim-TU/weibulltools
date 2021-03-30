@@ -2,14 +2,15 @@ test_that("delta_method remains stable", {
   # Test with 'shock':
   data <- reliability_data(data = shock, x = distance, status = status)
 
-  ## two-parametric:
+  ## Distributions without threshold:
   dists <- c(
-    "weibull", "lognormal", "loglogistic", "sev", "normal", "logistic"
+    "weibull", "lognormal", "loglogistic",
+    "sev", "normal", "logistic", "exponential"
   )
 
   ml <- lapply(dists, ml_estimation, x = data, conf_level = 0.90)
-  dist_params <- lapply(ml, "[[", "coefficients")
-  dist_varcov <- lapply(ml, "[[", "varcov")
+  dist_params <- purrr::map(ml, "coefficients")
+  dist_varcov <- purrr::map(ml, "varcov")
 
   ## Direction 'y':
   dm <- purrr::pmap(
@@ -36,12 +37,12 @@ test_that("delta_method remains stable", {
   # Test with 'alloy':
   data <- reliability_data(data = alloy, x = cycles, status = status)
 
-  ## log-location scale distributions (three-parametric):
-  dists <- c("weibull3", "lognormal3", "loglogistic3")
+  ## Distributions with threshold:
+  dists <- c("weibull3", "lognormal3", "loglogistic3", "exponential2")
 
   ml <- lapply(dists, ml_estimation, x = data, conf_level = 0.90)
-  dist_params <- lapply(ml, "[[", "coefficients")
-  dist_varcov <- lapply(ml, "[[", "varcov")
+  dist_params <- purrr::map(ml, "coefficients")
+  dist_varcov <- purrr::map(ml, "varcov")
 
   ## Direction 'y':
   dm <- purrr::pmap(

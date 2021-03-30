@@ -82,7 +82,7 @@ regression line, the latter is provided as well." />
       <ul class="nav navbar-nav">
         <li>
   <a href="../index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
+    <span class="fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -114,7 +114,7 @@ regression line, the latter is provided as well." />
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="https://github.com/Tim-TU/weibulltools/">
-    <span class="fab fa fab fa-github fa-lg"></span>
+    <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -158,12 +158,12 @@ regression line, the latter is provided as well.</p>
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>p_obj</th>
-      <td><p>A plot object returned from <code><a href='plot_prob.html'>plot_prob</a></code>.</p></td>
+      <td><p>A plot object returned by <a href='plot_prob.html'>plot_prob</a>.</p></td>
     </tr>
     <tr>
       <th>x</th>
-      <td><p>Confidence interval as returned by <code><a href='confint_betabinom.html'>confint_betabinom</a></code>
-or <code><a href='confint_fisher.html'>confint_fisher</a></code>.</p></td>
+      <td><p>A tibble with class <code>wt_confint</code> returned by <a href='confint_betabinom.html'>confint_betabinom</a> or
+<a href='confint_fisher.html'>confint_fisher</a>.</p></td>
     </tr>
     <tr>
       <th>...</th>
@@ -171,25 +171,24 @@ or <code><a href='confint_fisher.html'>confint_fisher</a></code>.</p></td>
     </tr>
     <tr>
       <th>title_trace_mod</th>
-      <td><p>A character string which is assigned to the mod trace
+      <td><p>A character string which is assigned to the model trace
 in the legend.</p></td>
     </tr>
     <tr>
       <th>title_trace_conf</th>
-      <td><p>A character string which is assigned to the conf trace
-in the legend.</p></td>
+      <td><p>A character string which is assigned to the confidence
+trace in the legend.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>Returns a plot object containing the probability plot with
-  plotting positions, the estimated regression line and the estimated
-  confidence region(s).</p>
+    <p>A plot object containing the probability plot with plotting positions,
+the estimated regression line and the estimated confidence region(s).</p>
     <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
 
     <p>Meeker, William Q; Escobar, Luis A., Statistical methods for
-  reliability data, New York: Wiley series in probability and statistics, 1998</p>
+reliability data, New York: Wiley series in probability and statistics, 1998</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='co'># Reliability data:</span>
