@@ -23,7 +23,6 @@ knitr::opts_chunk$set(
   comment = "#>"
 )
 library(weibulltools)
-library(plotly)
 ```
 
 In contrast to point estimation procedures, interval estimation methods, e.g. the computation of confidence intervals, express the uncertainty which is associated with the use of a statistical estimator. 
@@ -232,7 +231,9 @@ conf_fisher
 The outputs of both functions contain the calculated bounds for the failure probabilities ranging from the minimum to the maximum observed failure. Between the observed range of failures an interpolation of quantiles is made for which the intervals of the probabilities are provided as well (supporting points).  
 
 In the function call of `confint_betabinom()` the default arguments of both functions are listed. With argument `b_lives`, confidence regions for selected probabilities are included, but only if they are in the range of the estimated failure probabilities.  
+
 The argument `bounds` is used for the specification of the bound(s) to be computed. It could be one of `c("two_sided", "lower", "upper")`.  
+
 If `direction = "y"`, confidence intervals for the probabilities are provided.  
 
 The visualization of the computed intervals is done with `plot_conf()`. 
@@ -273,7 +274,7 @@ As one can see, `plot_conf()` not only adds the confidence limits to an existing
 ### Confidence Intervals for Quantiles
 
 The computation and visualization of confidence for the lifetime characteristic is pretty similar to the presented procedure with regard to the probabilities. 
-The only difference is that one has to change the default of the argument `direction` to `"x"`. 
+The only difference is that one has to change the value of the argument `direction` to `"x"`. 
 
 ```{r, Confidence intervals for quantiles}
 # Computation of confidence intervals for quantiles: 
@@ -292,10 +293,20 @@ conf_fisher_x
 
 # Visualization: 
 ## Beta-Binomial confidence intervals: 
-weibull_conf_bb_x <- plot_conf(weibull_grid, conf_bb_x)
+weibull_conf_bb_x <- plot_conf(
+  weibull_grid,
+  conf_bb_x, 
+  title_trace_mod = "Rank Regression", 
+  title_trace_conf = "Beta-Binomial Bounds"
+)
 weibull_conf_bb_x
 
 ## Fisher's normal approximation confidence intervals:
-weibull_conf_fisher_x <- plot_conf(weibull_grid, conf_fisher_x)
+weibull_conf_fisher_x <- plot_conf(
+  weibull_grid, 
+  conf_fisher_x, 
+  title_trace_mod = "Maximum Likelihood", 
+  title_trace_conf = "Fisher's Confidence Intervals"
+)
 weibull_conf_fisher_x
 ```
