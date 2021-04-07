@@ -8,7 +8,7 @@ test_that("confint_betabinom remains stable", {
   ## Distributions without threshold:
   dists <- c(
     "weibull", "lognormal", "loglogistic",
-    "sev", "normal", "logistic", "exponential"
+    "sev", "normal", "logistic"
   )
 
   ## Rank Regression:
@@ -39,7 +39,7 @@ test_that("confint_betabinom remains stable", {
   prob_tbl <- estimate_cdf(x = data, methods = "johnson")
 
   ## Distributions with threshold:
-  dists <- c("weibull3", "lognormal3", "loglogistic3", "exponential2")
+  dists <- c("weibull3", "lognormal3", "loglogistic3")
 
   ## Rank Regression:
   rr <- purrr::map(dists, rank_regression, x = prob_tbl)
@@ -70,7 +70,7 @@ test_that("confint_fisher remains stable", {
   ## Distributions without threshold:
   dists <- c(
     "weibull", "lognormal", "loglogistic",
-    "sev", "normal", "logistic", "exponential"
+    "sev", "normal", "logistic"
   )
 
   ## ML estimation:
@@ -97,7 +97,9 @@ test_that("confint_fisher remains stable", {
   data <- reliability_data(data = alloy, x = cycles, status = status)
 
   ## Distributions with threshold:
-  dists <- c("weibull3", "lognormal3", "loglogistic3", "exponential2")
+  dists <- c(
+    "weibull3", "lognormal3", "loglogistic3"
+  )
 
   ## ML estimation:
   ml <- purrr::map(dists, ml_estimation, x = data, conf_level = 0.90)
