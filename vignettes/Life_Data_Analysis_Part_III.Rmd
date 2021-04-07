@@ -37,8 +37,7 @@ Confidence intervals can be calculated for every model parameter. For this, the 
 
 ### Rank Regression (RR)
 
-In *Rank Regression* a linear relationship between the lifetime characteristic and the failure probability is determined. The parameters of a simple linear regression model 
-are the intercept and the slope, which are the location parameter $\mu$ and the scale parameter $\sigma$ for the majority of lifetime distributions.  
+In *Rank Regression* a linear relationship between the lifetime characteristic and the failure probability is determined. The parameters of a simple linear regression model are the intercept and the slope, which are the location parameter $\mu$ and the scale parameter $\sigma$ for the majority of lifetime distributions.  
 
 An approximated two-sided interval for the true parameters on a $1 - \alpha$ confidence level can be obtained with the formulas  
 
@@ -47,6 +46,7 @@ $$\bigg[\hat{\mu}_{\text{lower}} \, ; \hat{\mu}_{\text{upper}} \bigg] = \bigg[\h
 For a given sample, $\hat{\mu}_{\text{RR}}$ and $\hat{\sigma}_{\text{RR}}$ are the least squares estimates and $\hat{se}^{\text{HC}}_{\hat{\mu}}$ and $\hat{se}^{\text{HC}}_{\hat{\sigma}}$ are the respective estimates of the standard deviations. The uncertainty that arises due to the unknown standard deviations must be taken into account by using the quantiles of Student's t-distribution.  
 
 When using *RR* in the context of reliability analysis, the assumption of homoscedastic error terms is often violated. Therefore, the computation of the standard errors is based on a heteroscedasticity-consistent (**HC**) variance-covariance matrix. Other assumptions of the classical linear regression model like the need of no serial correlation are questionable as well and have already been discussed in the literature [^note1].  
+
 Hence, the *Maximum Likelihood Estimation* procedure is recommended, which is described in the next section. 
 
 [^note1]: Genschel, U.; Meeker, W. Q.: _A Comparison of Maximum Likelihood and Median-Rank Regression for Weibull Estimation_, 
@@ -96,8 +96,7 @@ The resulting interval $\left[\hat{F}_{j, \, {\text{lower}}} \, ; \, \hat{F}_{j,
 
 ### Beta-Binomial Confidence Intervals for $t$
 
-Once the intervals of the failure probabilities are calculated, a two-sided confidence interval for the lifetime characteristic can be found with the 
-quantile function of the underlying lifetime distribution.  
+Once the intervals of the failure probabilities are calculated, a two-sided confidence interval for the lifetime characteristic can be found with the quantile function of the underlying lifetime distribution.  
 
 For the Weibull, the quantile function is given by the formula 
 
@@ -162,9 +161,7 @@ For the computation of the presented confidence intervals the `shock` dataset is
 [^note4]: Meeker, W. Q.; Escobar, L. A.: _Statistical Methods for Reliability Data_, 
           _New York, Wiley series in probability and statistics_, 1998, p. 630  
           
-For consistent handling of the data, {weibulltools} introduces the function `reliability_data()` 
-that converts the original dataset into a `wt_reliability_data` object. This formatted object 
-allows to easily apply the presented methods.  
+For consistent handling of the data, {weibulltools} introduces the function `reliability_data()` that converts the original dataset into a `wt_reliability_data` object. This formatted object allows to easily apply the presented methods.
 
 ```{r dataset_shock, message = FALSE}
 # Data:
@@ -209,8 +206,7 @@ ml_weibull_99$confint
 
 ### Confidence Intervals for Probabilities
 
-Confidence bounds for failure probabilities can be either determined with `confint_betabinom()` or `confint_fisher()`. 
-As explained in the theoretical part of this vignette the Beta-Binomial confidence bounds should be applied to the output of `rank_regression()` whereas Fisher's normal approximation confidence intervals are only applicable if the parameters and the variance-covariance matrix were estimated with `ml_estimation()`.
+Confidence bounds for failure probabilities can be either determined with `confint_betabinom()` or `confint_fisher()`. As explained in the theoretical part of this vignette the Beta-Binomial confidence bounds should be applied to the output of `rank_regression()` whereas Fisher's normal approximation confidence intervals are only applicable if the parameters and the variance-covariance matrix were estimated with `ml_estimation()`.
 
 ```{r, Confidence intervals for probabilities}
 # Beta-Binomial confidence bounds:

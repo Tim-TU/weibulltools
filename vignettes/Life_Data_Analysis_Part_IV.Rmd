@@ -25,37 +25,20 @@ knitr::opts_chunk$set(
 library(weibulltools)
 ```
 
-In this vignette two methods for the separation of mixture models are presented. 
-A mixture model can be assumed, if the points in a probability plot show one or 
-more changes in slope, depict one or several saddle points or follow an S-shape. 
-A mixed distribution often represents the combination of multiple failure modes 
-and thus must be split in its components to get reasonable results in further analyses. 
+In this vignette two methods for the separation of mixture models are presented. A mixture model can be assumed, if the points in a probability plot show one or more changes in slope, depict one or several saddle points or follow an S-shape. A mixed distribution often represents the combination of multiple failure modes and thus must be split in its components to get reasonable results in further analyses. 
 
-Segmented regression aims to detect breakpoints in the sample data from which a 
-split in subgroups can be made. The expectation-maximization (EM) algorithm is a 
-computation-intensive method that iteratively tries to maximize a likelihood function, 
-which is weighted by posterior probabilities. These are conditional probabilities 
-that an observation belongs to subgroup _k_.  
+Segmented regression aims to detect breakpoints in the sample data from which a split in subgroups can be made. The expectation-maximization (EM) algorithm is a computation-intensive method that iteratively tries to maximize a likelihood function, which is weighted by posterior probabilities. These are conditional probabilities that an observation belongs to subgroup _k_.  
 
-In the following, the focus is on the application of these methods and their 
-visualizations using the functions `mixmod_regression()`, `mixmod_em()`, 
-`plot_prob()` and `plot_mod()`. 
+In the following, the focus is on the application of these methods and their visualizations using the functions `mixmod_regression()`, `mixmod_em()`, `plot_prob()` and `plot_mod()`. 
 
 ## Data: Voltage Stress Test
 
-To apply the introduced methods the dataset `voltage` is used. The dataset contains 
-observations for units that were passed to a high voltage stress test. _hours_ 
-indicates the number of hours until a failure occurs or the number of hours until 
-a unit was taken out of the test and has not failed. _status_ is a flag variable 
-and describes the condition of a unit. If a unit has failed the flag is 1 and 0 
-otherwise. The dataset is taken from _Reliability Analysis by Failure Mode_ [^note1]. 
+To apply the introduced methods the dataset `voltage` is used. The dataset contains observations for units that were passed to a high voltage stress test. _hours_ indicates the number of hours until a failure occurs or the number of hours until a unit was taken out of the test and has not failed. _status_ is a flag variable and describes the condition of a unit. If a unit has failed the flag is 1 and 0 otherwise. The dataset is taken from _Reliability Analysis by Failure Mode_ [^note1]. 
 
 [^note1]: Doganaksoy, N.; Hahn, G.; Meeker, W. Q.: _Reliability Analysis by Failure Mode_, 
           Quality Progress, 35(6), 47-52, 2002  
           
-For consistent handling of the data, {weibulltools} introduces the function 
-`reliability_data()` that converts the original dataset into a `wt_reliability_data` 
-object. This formatted object allows to easily apply the presented methods.  
+For consistent handling of the data, {weibulltools} introduces the function `reliability_data()` that converts the original dataset into a `wt_reliability_data` object. This formatted object allows to easily apply the presented methods.  
 
 ```{r dataset_voltage, message = FALSE}
 voltage_tbl <- reliability_data(data = voltage, x = hours, status = status)
@@ -64,8 +47,7 @@ voltage_tbl
 
 ## Probability Plot for Voltage Stress Test Data
 
-To get an intuition whether one can assume the presence of a mixture model, a 
-Weibull probability plot is constructed. 
+To get an intuition whether one can assume the presence of a mixture model, a Weibull probability plot is constructed. 
 
 ```{r probability_plot_weibull, fig.cap = "Figure 1: Plotting positions in Weibull grid.", message = FALSE}
 # Estimating failure probabilities: 
@@ -86,16 +68,11 @@ weibull_plot
 ```
 
 <br>
-Since there is one obvious slope change in the Weibull probability plot of _Figure 1_, 
-the appearance of a mixture model consisting of two subgroups is strengthened.  
+Since there is one obvious slope change in the Weibull probability plot of _Figure 1_, the appearance of a mixture model consisting of two subgroups is strengthened.  
 
-## Segmented Regression with Package {weibulltools}
+## Segmented Regression with {weibulltools}
 
-The method of segmented regression is implemented in the function `mixmod_regression()`. 
-If a breakpoint was detected, the failure data is separated by that point. After 
-breakpoint detection the function `rank_regression()` is called inside `mixmod_regression()` 
-and is used to estimate the distribution parameters of the subgroups. The visualization 
-of the obtained results is done by functions `plot_prob()` and `plot_mod()`.  
+The method of segmented regression is implemented in the function `mixmod_regression()`. If a breakpoint was detected, the failure data is separated by that point. After breakpoint detection the function `rank_regression()` is called inside `mixmod_regression()` and is used to estimate the distribution parameters of the subgroups. The visualization of the obtained results is done by functions `plot_prob()` and `plot_mod()`.  
 
 ```{r segmented_weibull_I, fig.cap = "Figure 2: Subgroup-specific plotting positions using segmented regression.", message = FALSE}
 # Applying mixmod_regression(): 
@@ -134,22 +111,15 @@ mix_reg_lines
 ```
 
 <br>
-The method has separated the data into $k = 2$ subgroups. This can bee seen in 
-_Figure 2_ and _Figure 3_.  
-An upside of this function is that the segmentation is done in a comprehensible 
-manner.  
+The method has separated the data into $k = 2$ subgroups. This can bee seen in _Figure 2_ and _Figure 3_.  An upside of this function is that the segmentation is done in a comprehensible manner.  
 
-Furthermore, the segmentation process can be done automatically by setting `k = NULL`. 
-The danger here, however, is an overestimation of the breakpoints.  
+Furthermore, the segmentation process can be done automatically by setting `k = NULL`. The danger here, however, is an overestimation of the breakpoints.  
 
-To sum up, this function should give an intention of the existence of a mixture 
-model. An in-depth analysis should be done afterwards.  
+To sum up, this function should give an intention of the existence of a mixture model. An in-depth analysis should be done afterwards.  
 
-## EM Algorithm with Package {weibulltools}
+## EM Algorithm with {weibulltools}
 
-The EM algorithm can be applied through the usage of the function `mixmod_em()`. 
-In contrast to `mixmod_regression()`, this method does not support an automatic 
-separation routine and therefore _k_, the number of subgroups, must always be specified.  
+The EM algorithm can be applied through the usage of the function `mixmod_em()`. In contrast to `mixmod_regression()`, this method does not support an automatic separation routine and therefore _k_, the number of subgroups, must always be specified.  
 
 The obtained results can be also visualized by the functions `plot_prob()` and `plot_mod()`.  
 
@@ -189,7 +159,4 @@ mix_em_lines
 ```
 
 <br>
-One advantage over `mixmod_regression()` is, that the EM algorithm can also assign 
-censored items to a specific subgroup. Hence, an individual analysis of the mixing 
-components, depicted in _Figure 4_ and _Figure 5_, is possible.  
-In conclusion an analysis of a mixture model using `mixmod_em()` is statistically founded.
+One advantage over `mixmod_regression()` is, that the EM algorithm can also assign censored items to a specific subgroup. Hence, an individual analysis of the mixing components, depicted in _Figure 4_ and _Figure 5_, is possible.  In conclusion an analysis of a mixture model using `mixmod_em()` is statistically founded.

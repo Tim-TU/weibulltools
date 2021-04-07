@@ -25,54 +25,32 @@ knitr::opts_chunk$set(
 library(weibulltools)
 ```
 
-This document introduces two methods for the parameter estimation of lifetime 
-distributions. Whereas _Rank Regression (RR)_ fits a straight line through 
-transformed plotting positions (transformation is described precisely in 
-`vignette(topic = "Life_Data_Analysis_Part_I", package = "weibulltools")`), 
-_Maximum likelihood (ML)_ strives to maximize a function of the parameters given 
-the sample data. If the parameters are obtained, a cumulative distribution function 
-_(CDF)_ can be computed and added to a probability plot.  
+This document introduces two methods for the parameter estimation of lifetime distributions. Whereas _Rank Regression (RR)_ fits a straight line through transformed plotting positions (transformation is described precisely in `vignette(topic = "Life_Data_Analysis_Part_I", package = "weibulltools")`), _Maximum likelihood (ML)_ strives to maximize a function of the parameters given the sample data. If the parameters are obtained, a cumulative distribution function _(CDF)_ can be computed and added to a probability plot.  
 
-In the theoretical part of this vignette the focus is on the two-parameter Weibull 
-distribution. The second part is about the application of the provided estimation 
-methods in {weibulltools}. All implemented models can be found in the help pages 
-of `rank_regression()` and `ml_estimation()`.
+In the theoretical part of this vignette the focus is on the two-parameter Weibull distribution. The second part is about the application of the provided estimation methods in {weibulltools}. All implemented models can be found in the help pages of `rank_regression()` and `ml_estimation()`.
 
 ## The Weibull Distribution 
 
-The Weibull distribution is a continuous probability distribution, which is 
-specified by the location parameter $\mu$ and the scale parameter $\sigma$. Its _CDF_ 
-and _PDF (probability density function)_ are given by the following formulas: 
+The Weibull distribution is a continuous probability distribution, which is specified by the location parameter $\mu$ and the scale parameter $\sigma$. Its _CDF_ and _PDF (probability density function)_ are given by the following formulas: 
 
 $$F(t)=\Phi_{SEV}\left(\frac{\log(t) - \mu}{\sigma}\right)$$
 
 $$f(t)=\frac{1}{\sigma t}\;\phi_{SEV}\left(\frac{\log(t) - \mu}{\sigma}\right)$$
-The practical benefit of the Weibull in the field of lifetime analysis is that 
-the common profiles of failure rates, which are observed over the lifetime of a 
-large number of technical products, can be described using this statistical distribution.
+The practical benefit of the Weibull in the field of lifetime analysis is that the common profiles of failure rates, which are observed over the lifetime of a large number of technical products, can be described using this statistical distribution.
 
 In the following, the estimation of the specific parameters $\mu$ and $\sigma$ is explained.  
 
 ## Rank Regression (RR) 
 
-In _RR_ the _CDF_ is linearized such that the true, unknown population is estimated 
-by a straight line which is analytically placed among the plotting pairs. The 
-lifetime characteristic, entered on the x-axis, is displayed on a logarithmic scale. 
-A double-logarithmic representation of the estimated failure probabilities is used 
-for the y-axis. Ordinary Least Squares _(OLS)_ determines a best-fit line in order 
-that the sum of squared deviations between this fitted regression line and the 
-plotted points is minimized.  
+In _RR_ the _CDF_ is linearized such that the true, unknown population is estimated by a straight line which is analytically placed among the plotting pairs. The lifetime characteristic, entered on the x-axis, is displayed on a logarithmic scale. A double-logarithmic representation of the estimated failure probabilities is used for the y-axis. Ordinary Least Squares _(OLS)_ determines a best-fit line in order that the sum of squared deviations between this fitted regression line and the plotted points is minimized.  
 
-In reliability analysis, it became prevalent that the line is placed in the probability 
-plot in the way that the horizontal distances between the best-fit line and the 
-points are minimized [^note1]. This procedure is called __x on y__ rank regression.  
+In reliability analysis, it became prevalent that the line is placed in the probability plot in the way that the horizontal distances between the best-fit line and the points are minimized [^note1]. This procedure is called __x on y__ rank regression.  
 
 [^note1]: Berkson, J.: _Are There Two Regressions?_, 
           _Journal of the American Statistical Association 45 (250)_, 
           DOI: 10.2307/2280676, 1950, pp. 164-180  
           
-The formulas for estimating the slope and the intercept of the regression line 
-according to the described method are given below.  
+The formulas for estimating the slope and the intercept of the regression line according to the described method are given below.  
 
 Slope: 
 
@@ -89,8 +67,8 @@ $$x_i=\log(t_i)\;;\; \bar{x}=\frac{1}{n}\cdot\sum_{i=1}^{n}\log(t_i)\;;$$
 as well as  
 
 $$y_i=\Phi^{-1}_{SEV}\left[F(t)\right]=\log\left\{-\log\left[1-F(t_i)\right]\right\}\;and \; \bar{y}=\frac{1}{n}\cdot\sum_{i=1}^{n}\log\left\{-\log\left[1-F(t_i)\right]\right\}.$$  
-The estimates of the intercept and slope are equal to the Weibull parameters $\mu$ and 
-$\sigma$, i.e. 
+
+The estimates of the intercept and slope are equal to the Weibull parameters $\mu$ and $\sigma$, i.e. 
 
 $$\hat{\mu}=\hat{a}$$
 
@@ -98,8 +76,7 @@ and
 
 $$\hat{\sigma}=\hat{b}.$$
 
-In order to obtain the parameters of the shape-scale parameterization the intercept 
-and the slope need to be transformed [^note2].  
+In order to obtain the parameters of the shape-scale parameterization the intercept and the slope need to be transformed [^note2].  
 
 [^note2]: ReliaSoft Corporation: _Life Data Analysis Reference Book_, 
           online: [ReliaSoft](http://reliawiki.org/index.php/The_Weibull_Distribution), accessed 19 December 2020  
@@ -112,10 +89,7 @@ $$\hat{\beta}=\frac{1}{\hat{b}}=\frac{1}{\hat{\sigma}}.$$
 
 ## Maximum Likelihood (ML)
 
-The _ML_ method of Ronald A. Fisher estimates the parameters by maximizing the 
-likelihood function. Assuming a theoretical distribution, the idea of _ML_ is that 
-the specific parameters are chosen in such a way that the plausibility of obtaining 
-the present sample is maximized. The likelihood and log-likelihood are given by the following equations:  
+The _ML_ method of Ronald A. Fisher estimates the parameters by maximizing the likelihood function. Assuming a theoretical distribution, the idea of _ML_ is that the specific parameters are chosen in such a way that the plausibility of obtaining the present sample is maximized. The likelihood and log-likelihood are given by the following equations:  
 
 $$L = \prod_{i=1}^n\left\{\frac{1}{\sigma t_i}\;\phi_{SEV}\left(\frac{\log(t_i) - \mu}{\sigma}\right)\right\}$$ 
 
@@ -123,13 +97,9 @@ and
 
 $$\log L = \sum_{i=1}^n\log\left\{\frac{1}{\sigma t_i}\;\phi_{SEV}\left(\frac{\log(t_i) - \mu}{\sigma}\right)\right\}$$  
 
-Deriving and nullifying the log-likelihood function according to parameters results in two 
-formulas that have to be solved numerically in order to obtain the estimates.  
+Deriving and nullifying the log-likelihood function according to parameters results in two formulas that have to be solved numerically in order to obtain the estimates.  
 
-In large samples, ML estimators have optimality properties. In addition, the 
-simulation studies by _Genschel and Meeker_ [^note3] have shown that even in small 
-samples it is difficult to find an estimator that regularly has better properties 
-than ML estimators.
+In large samples, ML estimators have optimality properties. In addition, the simulation studies by _Genschel and Meeker_ [^note3] have shown that even in small samples it is difficult to find an estimator that regularly has better properties than ML estimators.
 
 [^note3]: Genschel, U.; Meeker, W. Q.: _A Comparison of Maximum Likelihood and Median-Rank Regression for Weibull Estimation_, 
           in: _Quality Engineering 22 (4)_, DOI: 10.1080/08982112.2010.503447, 2010, pp. 236-255
@@ -146,9 +116,7 @@ In this dataset kilometer-dependent problems that have occurred on shock absorbe
 [^note4]: Meeker, W. Q.; Escobar, L. A.: _Statistical Methods for Reliability Data_, 
           _New York, Wiley series in probability and statistics_, 1998, p. 630  
           
-For consistent handling of the data, {weibulltools} introduces the function `reliability_data()` 
-that converts the original dataset into a `wt_reliability_data` object. This formatted object 
-allows to easily apply the presented methods.  
+For consistent handling of the data, {weibulltools} introduces the function `reliability_data()` that converts the original dataset into a `wt_reliability_data` object. This formatted object allows to easily apply the presented methods.  
 
 ```{r dataset_shock, message = FALSE}
 shock_tbl <- reliability_data(data = shock, x = distance, status = status)
@@ -157,8 +125,7 @@ shock_tbl
 
 ### Alloy T7989
 
-The dataset `alloy` in which the cycles until a fatigue failure of a 
-special alloy occurs are inspected. The data is also taken from Meeker and Escobar [^note5]. 
+The dataset `alloy` in which the cycles until a fatigue failure of a special alloy occurs are inspected. The data is also taken from Meeker and Escobar [^note5]. 
 
 [^note5]: Meeker, W. Q.; Escobar, L. A.: _Statistical Methods for Reliability Data_, 
           _New York, Wiley series in probability and statistics_, 1998, p. 131  
@@ -171,11 +138,9 @@ alloy_tbl <- reliability_data(data = alloy, x = cycles, status = status)
 alloy_tbl
 ```
 
-## RR and ML with Package {weibulltools}
+## RR and ML with {weibulltools}
 
-`rank_regression()` and `ml_estimation()` can be applied to complete data as well 
-as failure and (multiple) right-censored data. Both methods can also deal with models 
-that have a threshold parameter $\gamma$.  
+`rank_regression()` and `ml_estimation()` can be applied to complete data as well as failure and (multiple) right-censored data. Both methods can also deal with models that have a threshold parameter $\gamma$.  
 
 In the following both methods are applied to the dataset `shock`.
 
@@ -233,8 +198,7 @@ weibull_plot2
 
 ### ML for two- and three-parameter log-normal distribution
 
-Finally, two- and three-parametric log-normal distributions are fitted to the 
-`alloy` data using maximum likelihood.  
+Finally, two- and three-parametric log-normal distributions are fitted to the `alloy` data using maximum likelihood.  
 
 ```{r ML_estimation_log-normal, message = FALSE}
 # Two-parameter log-normal:  
