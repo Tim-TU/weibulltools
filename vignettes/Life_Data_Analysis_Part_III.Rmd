@@ -1,6 +1,6 @@
 ---
 title: "Life Data Analysis Part III - Confidence Intervals"
-subtitle: "Estimation and visualization"
+subtitle: "For Model Parameters, Probabilities and Quantiles"
 author: 
   - "Tim-Gunnar Hensel" 
   - "David Barkemeyer"
@@ -26,35 +26,139 @@ library(weibulltools)
 library(plotly)
 ```
 
-Computing confidence intervals is a well-known measure to express the uncertainty associated with an estimation. In the context of the Weibull analysis, confidence intervals can be computed for the estimated parameters of the cumulative distribution function (*CDF*) and for the quantiles or failure probabilities of this respective *CDF*. 
+In contrast to point estimation procedures, interval estimation methods, e.g. the computation of confidence intervals, express the uncertainty which is associated with the use of a statistical estimator. 
 
-## Confidence intervals for estimated parameters
+In reliability analysis it is common practice to provide confidence regions for the parameters of a lifetime distribution as well as for quantities that depend on these model parameters.  
 
-For each estimated distribution parameter a confidence interval can be computed. The calculation formula depends on the estimation method.
+In this vignette, the determination of confidence intervals for model parameters, quantiles (lifetime characteristic) and failure probabilites (*CDF*) are presented.
 
-### Rank Regression
+## Confidence Intervals for Model Parameters
 
-Rank regression performs a linear regression model between the lifetime characteristic and the respective failure probabilities. For the Weibull and other (log)-location-scale distributions the location parameter $\mu$ corresponds to the intercept of the linear model, whereas the scale parameter $\sigma$ corresponds to the slope of the linear model. Confidence intervals for the estimated parameters $\hat{\mu}$ and $\hat{\sigma}$ can be calculated using the standard errors $\sigma_{\hat{\sigma}}$ and $\sigma_{\hat{\mu}}$:
+Confidence intervals can be calculated for every model parameter. For this, the (approximated) sampling distribution as well as an estimate of its standard deviation must be given. In the following, the formulas which strongly depend on the estimation methods, are provided for *Rank Regression* and *Maximum Likelihood Estimation*.  
 
-$$\mu_{\text{lower}/\text{upper}} = \hat{\mu} \pm z_{1 - \frac{\alpha}{2}} \sigma_{\hat{\mu}} \, , \qquad \sigma_{\text{lower}/\text{upper}} = \hat{\sigma} \pm z_{1 - \frac{\alpha}{2}} \sigma_{\hat{\sigma}}$$
+### Rank Regression (RR)
 
-$\sigma_{\hat{\mu}}$ and $\sigma_{\hat{\sigma}}$ are unknown and need to be estimated as well. This estimation is systematically skewed, but can be adjusted by using the quantiles of Student's t-distribution:
+In *Rank Regression* a linear relationship between the lifetime characteristic and the failure probability is determined. The parameters of a simple linear regression model 
+are the intercept and the slope, which are the location parameter $\mu$ and the scale parameter $\sigma$ for the majority of lifetime distributions.  
 
-$$\mu_{\text{lower}/\text{upper}} = \hat{\mu} \pm t_{1 - \frac{\alpha}{2}, \, n - 2} \, \hat{\sigma}_{\mu} \, , \qquad \sigma_{\text{lower}/\text{upper}} = \hat{\sigma} \pm t_{1 - \frac{\alpha}{2}, \, n - 2} \, \hat{\sigma}_{\sigma}$$
+An approximated two-sided interval for the true parameters on a $1 - \alpha$ confidence level can be obtained with the formulas  
 
-The estimated standard errors $\hat{\sigma}_{\mu}$ and $\hat{\sigma}_{\sigma}$ are taken from the covariance matrix. In the case of rank regression the heteroskedasticity-consistent estimation should be used.
+$$\bigg[\hat{\mu}_{\text{lower}} \, ; \hat{\mu}_{\text{upper}} \bigg] = \bigg[\hat{\mu}_{\text{RR}} \pm t_{1 - \frac{\alpha}{2}} \cdot \hat{se}^{\text{HC}}_{\hat{\mu}}\bigg] \qquad and \qquad \bigg[\hat{\sigma}_{\text{lower}} \, ;\hat{\sigma}_{\text{upper}} \bigg] = \bigg[\hat{\sigma}_{\text{RR}} \pm t_{1 - \frac{\alpha}{2}} \cdot \hat{se}^{\text{HC}}_{\hat{\sigma}}\bigg]. $$  
 
-### Maximum Likelihood Estimation
+For a given sample, $\hat{\mu}_{\text{RR}}$ and $\hat{\sigma}_{\text{RR}}$ are the least squares estimates and $\hat{se}^{\text{HC}}_{\hat{\mu}}$ and $\hat{se}^{\text{HC}}_{\hat{\sigma}}$ are the respective estimates of the standard deviations. The uncertainty that arises due to the unknown standard deviations must be taken into account by using the quantiles of Student's t-distribution.  
 
-Maximum Likelihood estimators are asymptotically normally distributed. Therefore confidence intervals can be approximated using the normal distribution. Let $\vartheta$ be an unknown distribution parameter and $\hat{\vartheta}_{\text{MLE}}$ be an Maximum Likelihood estimator for $\vartheta$ with estimated standard error $\sqrt{\hat{Var}(\hat{\vartheta})}$. Then 
-$$\bigg[\vartheta_{\text{lower}} = \hat{\vartheta}_{\text{MLE}} - z_{1 - \frac{\alpha}{2}} \sqrt{\hat{Var}(\hat{\vartheta}_{\text{MLE}})} \, ; \quad \vartheta_{\text{upper}} = \hat{\vartheta}_{\text{MLE}} + z_{1 - \frac{\alpha}{2}} \sqrt{\hat{Var}(\hat{\vartheta}_{\text{MLE}})} \bigg]$$
-is the approximated two-sided confidence interval for $\vartheta$, where $\alpha$ is the confidence level and $z_p$ is the $p$-quantile of the standard normal distribution.
+When using *RR* in the context of reliability analysis, the assumption of homoscedastic error terms is often violated. Therefore, the computation of the standard errors is based on a heteroscedasticity-consistent (**HC**) variance-covariance matrix. Other assumptions of the classical linear regression model like the need of no serial correlation are questionable as well and have already been discussed in the literature [^note1].  
+Hence, the *Maximum Likelihood Estimation* procedure is recommended, which is described in the next section. 
 
-## Confidence bounds for quantiles and failure probabilities
+[^note1]: Genschel, U.; Meeker, W. Q.: _A Comparison of Maximum Likelihood and Median-Rank Regression for Weibull Estimation_, 
+          in: _Quality Engineering 22 (4)_, DOI: 10.1080/08982112.2010.503447, 2010, pp. 236-255 
+
+### Maximum Likelihood Estimation (MLE)
+
+*ML* estimators are subject to a variety of restrictions but in return have many useful properties in contrast to other estimation techniques. One is that *ML* estimators converge in distribution to a normal distribution and for this reason, normal approximation confidence intervals for the model parameters can be calculated by theory.  
+
+Using the parameterization introduced above, a two-sided normal approximation confidence interval for the location parameter $\mu$ can be computed with the equation
+
+$$\bigg[\hat{\mu}_{\text{lower}} \, ; \, \hat{\mu}_{\text{upper}} \bigg] = \bigg[\hat{\mu}_{\text{MLE}} \pm z_{1 - \frac{\alpha}{2}} \cdot \hat{se}_{\hat{\mu}}\bigg].$$
+
+By definition, the scale parameter $\sigma$ is always positive and thus an alternative confidence interval is used [^note2]: 
+
+$$\bigg[\hat{\sigma}_{\text{lower}} \, ; \, \hat{\sigma}_{\text{upper}} \bigg] = \bigg[\frac{\hat{\sigma}_{\text{MLE}}}{w} \, ; \hat{\sigma}_{\text{MLE}} \cdot w \bigg]$$
+with 
+
+$$w = \exp\left[z_{1 - \frac{\alpha}{2}} \cdot \frac{\hat{se}_{\hat{\sigma}}}{\hat{\sigma}_{\text{MLE}}}\right].$$
+
+[^note2]: Meeker, W. Q.; Escobar, L. A.: _Statistical Methods for Reliability Data_, 
+          _New York, Wiley series in probability and statistics_, 1998, p. 188  
+          
+## Confidence Intervals for Probabilities and Quantiles
+
+In addition to the confidence regions for the distribution-specific parameters, intervals for the regression line are provided as well. These can be aligned according to the probability $F(t)$ or to the lifetime characteristic $t$.  
+
+Whereas the Beta-Binomial confidence bounds are often used in combination with *RR*, Fisher's normal approximation confidence intervals are only applicable in the case of *MLE*. 
+
+### Beta-Binomial Confidence Intervals for $F(t)$
+
+To obtain a two-sided non-parametric confidence interval for the failure probabilities at a given $1-\alpha$ level, a procedure similar to *Median Ranks (MR)* is used.  
+
+Instead of finding the probability $p_{\text{MR}}$ for the *j-th* rank at the $50\%$ level 
+
+$$0.5 = \sum^n_{k = j} \binom{n}{k} \cdot p_{\text{MR}}^k \cdot \left(1-p_{\text{MR}}\right)^{n-k}, $$
+
+the probability $p_{\text{lower}}$ must be determined for equation
+
+$$\frac{\alpha}{2} = \sum^n_{k = j} \binom{n}{k} \cdot p_{\text{lower}}^k \cdot \left(1-p_{\text{lower}}\right)^{n-k}$$
+
+and $p_{\text{upper}}$ for the expression
+
+$$1 - \frac{\alpha}{2} = \sum^n_{k = j} \binom{n}{k} \cdot p_{\text{upper}}^k \cdot \left(1-p_{\text{upper}}\right)^{n-k}.$$
+
+The resulting interval $\left[\hat{F}_{j, \, {\text{lower}}} \, ; \, \hat{F}_{j, \, {\text{upper}}}\right] = \left[\hat{p}_{{\text{lower}}} \, ; \, \hat{p}_{{\text{upper}}}\right]$ is the estimated confidence region for the true failure probability with respect to the *j-th* rank. 
+
+### Beta-Binomial Confidence Intervals for $t$
+
+Once the intervals of the failure probabilities are calculated, a two-sided confidence interval for the lifetime characteristic can be found with the 
+quantile function of the underlying lifetime distribution.  
+
+For the Weibull, the quantile function is given by the formula 
+
+$$t_{p} = F^{-1}(p) = \exp\left[\mu + \Phi^{-1}_{\text{SEV}}(p) \cdot \sigma\right],$$
+where $\Phi^{-1}_{\text{SEV}}$ is the quantile function of the standard smallest extreme value distribution.  
+
+The confidence interval for $t$ with respect to the estimated *RR* parameters as well as the lower and upper probability of the *j-th* rank is then computed by 
+
+$$\hat{t}_{j \, ; \, \text{lower}} = \exp\left[\hat{\mu}_{\text{RR}} + \Phi^{-1}_{\text{SEV}}(\hat{F}_{j, \, {\text{lower}}}) \cdot \hat{\sigma}_{\text{RR}}\right]$$
+and 
+
+$$\hat{t}_{j \, ; \, \text{upper}} = \exp\left[\hat{\mu}_{\text{RR}} + \Phi^{-1}_{\text{SEV}}(\hat{F}_{j, \, {\text{upper}}}) \cdot \hat{\sigma}_{\text{RR}}\right].$$
+
+### Fisher's Confidence Intervals for $F(t)$
+
+For a particular quantile $t$ and the *ML* parameter vector $\hat{\theta}_{MLE}$, a normal approximation confidence interval for the failure probability $F(t)$ can be obtained by 
+
+$$\bigg[\hat{F}_{\text{lower}}(t) \, ; \, \hat{F}_{\text{upper}}(t)\bigg] = \bigg[\hat{F}_{\text{MLE}}(t) \pm z_{1 - \frac{\alpha}{2}} \cdot \hat{se}_{\hat{F}(t)}\bigg].$$
+
+In order to guarantee that the realized confidence interval of $F(t)$ always is between 0 and 1, the so called *z-procedure* can be applied [^note3]. Using this technique, statistical inference is first done for the standardized quantile $z$ and afterwards entered in $F(t)$ to obtain the desired interval. 
+
+[^note3]: Hoang, Y.; Meeker, W. Q.; Escobar, L. A.: _The Relationship Between Confidence Intervals for Failure Probabilities and Life Time Quantiles_, 
+          in: _IEEE Transactions on Reliability 57, 2008, pp. 260-266
+          
+For the Weibull, the *ML* estimator of the standardized quantile function $z$ is 
+
+$$\hat{z}_{\text{MLE}} = \frac{log(t) - \hat{\mu}_{\text{MLE}}}{\hat{\sigma}_{\text{MLE}}}. $$
+
+First, an approximate confidence interval for $z$ is determined with the following formula: 
+
+$$\bigg[\hat{z}_{\text{lower}} \, ; \, \hat{z}_{\text{upper}}\bigg] = \bigg[\hat{z}_{\text{MLE}} \pm z_{1 - \frac{\alpha}{2}} \cdot \hat{se}_{\hat{z}}\bigg].$$
+
+An approximate formula for the standard error of the estimator $\hat{z}$ can be derived with the *delta method*: 
+
+$$\hat{se}_{\hat{z}} = \sqrt{\hat{Var}_{\hat{z}}} = \sqrt{\bigg(\frac{\partial{\hat{z}}}{\partial{\hat{\theta}_{\text{MLE}}}}\bigg)^{'}\; \hat{Var}(\hat{\theta}_{\text{MLE}})\; \frac{\partial{\hat{z}}}{\partial{\hat{\theta}_{\text{MLE}}}}} \; .$$
+
+Finally, the estimated bounds of $z$ are then plugged into the distribution-specific standard *CDF* to obtain the interval for $F(t)$, which is 
+
+$$\bigg[\hat{F}_{\text{lower}}(t) \, ; \, \hat{F}_{\text{upper}}(t)\bigg] = \bigg[\Phi_{\text{SEV}}(\hat{z}_{\text{lower}}) \, ; \, \Phi_{\text{SEV}}(\hat{z}_{\text{upper}}) \bigg].$$
+
+### Fisher's Confidence Intervals for $t$
+
+In reliability analysis the lifetime characteristic often is defined as a strictly positive quantity and hence, a normal approximation confidence interval for the quantile $t$ with respect to a particular probability $p$ and the *ML* parameter vector $\hat{\theta}_{MLE}$, can be calculated by 
+
+$$\bigg[\hat{t}_{\text{lower}}(p) \, ; \, \hat{t}_{\text{upper}}(p)\bigg] = \bigg[\frac{\hat{t}_{\text{MLE}}(p)}{w} \, ; \hat{t}_{\text{MLE}}(p) \cdot w \bigg], $$
+where $w$ is 
+
+$$w = \exp\left[z_{1 - \frac{\alpha}{2}} \cdot \frac{\hat{se}_{\hat{t}(p)}}{\hat{t}_{\text{MLE}}(p)}\right].$$
+
+For the Weibull, the *ML* equation for the quantile $t(p)$ is 
+
+$$\hat{t}_{\text{MLE}}(p) = \exp\left[\hat{\mu}_{\text{MLE}} + \Phi^{-1}_{\text{SEV}}(p) \cdot \hat{\sigma}_{\text{MLE}}\right]$$
+
+and again, through the use of the *delta method*, a formula for the standard error of $\hat{t}_p$ can be provided, which is 
+
+$$\hat{se}_{\hat{t}(p)} = \sqrt{\hat{Var}_{\hat{t}(p)}} = \sqrt{\bigg(\frac{\partial{\hat{t}(p)}}{\partial{\hat{\theta}_{\text{MLE}}}}\bigg)^{'}\; \hat{Var}(\hat{\theta}_{\text{MLE}})\; \frac{\partial{\hat{t}(p)}}{\partial{\hat{\theta}_{\text{MLE}}}}} \; .$$
 
 ## Data
 
-To calculate the introduced confidence intervals the `shock` dataset is used. In this dataset kilometer-dependent problems that have occurred on shock absorbers are reported. In addition to failed items the dataset also contains non-defective (*censored*) observations. The data can be found in _Statistical Methods for Reliability Data_ [^note4]. 
+For the computation of the presented confidence intervals the `shock` dataset is used. In this dataset kilometer-dependent problems that have occurred on shock absorbers are reported. In addition to failed items the dataset also contains non-defective (*censored*) observations. The data can be found in _Statistical Methods for Reliability Data_ [^note4]. 
 
 [^note4]: Meeker, W. Q.; Escobar, L. A.: _Statistical Methods for Reliability Data_, 
           _New York, Wiley series in probability and statistics_, 1998, p. 630  
@@ -64,69 +168,134 @@ that converts the original dataset into a `wt_reliability_data` object. This for
 allows to easily apply the presented methods.  
 
 ```{r dataset_shock, message = FALSE}
+# Data:
 shock_tbl <- reliability_data(data = shock, x = distance, status = status)
 shock_tbl
 ```       
 
-## Confidence intervals with {weibulltools}
+## Confidence Intervals with {weibulltools}
 
-Before calculating confidence intervals with {weibulltools} we need to conduct the basic steps of the Weibull analysis as described in the previous vignettes. 
+Before calculating confidence intervals with {weibulltools} one has to conduct the basic steps of the Weibull analysis which are described in the previous vignettes. 
 
-```{r}
-# Estimation of failure probabilities
+```{r, Parameter estimation procedures}
+# Estimation of failure probabilities:
 shock_cdf <- estimate_cdf(shock_tbl, methods = "johnson")
 
-# Rank Regression
-shock_rr <- rank_regression(shock_cdf, distribution = "weibull")
+# Rank Regression:
+rr_weibull <- rank_regression(shock_cdf, distribution = "weibull")
 
-# Maximum Likelihood Estimation 
-shock_mle <- ml_estimation(shock_tbl, distribution = "weibull")
+# Maximum Likelihood Estimation: 
+ml_weibull <- ml_estimation(shock_tbl, distribution = "weibull")
 ```
 
-### Confidence intervals for distribution parameters
+### Confidence Intervals for Model Parameters
 
-The confidence intervals for the estimated distribution parameters are included in the model output of `rank_regression()` and `ml_estimation()`, respectively.
+The confidence intervals for the distribution parameters are included in the model output of `rank_regression()` and `ml_estimation()`, respectively.
 
-```{r}
-shock_rr$confint
+```{r, Confidence intervals for model parameters}
+# Confidence intervals based on Rank Regression: 
+rr_weibull$confint
 
-shock_mle$confint
+# Confidence intervals based on Maximum Likelihood Estimation:
+ml_weibull$confint
 ```
 
-The `confint` element of the model output is a matrix with the parameter names as row names and the confidence bounds as column names. Different confidence levels can be specified using the argument `conf_level`.
+The `confint` element of the model output is a matrix with the parameter names as row names and the confidence level as column names. Different levels can be specified using the argument `conf_level`.
 
-```{r}
-shock_rr_99 <- rank_regression(shock_cdf, distribution = "weibull", conf_level = 0.99)
-shock_rr_99$confint
+```{r, Confidence level}
+# Confidence intervals based on another confidence level: 
+ml_weibull_99 <- ml_estimation(shock_tbl, distribution = "weibull", conf_level = 0.99)
+ml_weibull_99$confint
 ```
 
-### Calculating confidence bounds for failure probabilities
+### Confidence Intervals for Probabilities
 
-Confidence bounds for failure probabilities are calculated using either `confint_betabinom()` or `confint_fisher()`. As explained in the introduction of this vignette the betabinom confidence bounds are only applicable to the output of `rank_regression()` whereas the fisher confidence bounds are only applicable to the output of `ml_estimation()`.
+Confidence bounds for failure probabilities can be either determined with `confint_betabinom()` or `confint_fisher()`. 
+As explained in the theoretical part of this vignette the Beta-Binomial confidence bounds should be applied to the output of `rank_regression()` whereas Fisher's normal approximation confidence intervals are only applicable if the parameters and the variance-covariance matrix were estimated with `ml_estimation()`.
 
-```{r}
-conf_bb <- confint_betabinom(shock_rr)
+```{r, Confidence intervals for probabilities}
+# Beta-Binomial confidence bounds:
+conf_bb <- confint_betabinom(
+  x = rr_weibull, 
+  b_lives = c(0.01, 0.1, 0.5), 
+  bounds = "two_sided", 
+  conf_level = 0.95, 
+  direction = "y"
+)
 conf_bb
 
-conf_fisher <- confint_fisher(shock_mle)
+# Fisher's normal approximation confidence intervals:
+conf_fisher <- confint_fisher(x = ml_weibull)
 conf_fisher
 ```
 
-The outputs of both functions contain the calculated bounds for 100 equidistant quantiles ranging from the minimum to the maximum observed failure. In addition, confidence bounds for selected probabilities can be included by specifiying the argument `b_lives`.
+The outputs of both functions contain the calculated bounds for the failure probabilities ranging from the minimum to the maximum observed failure. Between the observed range of failures an interpolation of quantiles is made for which the intervals of the probabilities are provided as well (supporting points).  
 
-### Visualizing confidence bounds for failure probabilities
+In the function call of `confint_betabinom()` the default arguments of both functions are listed. With argument `b_lives`, confidence regions for selected probabilities are included, but only if they are in the range of the estimated failure probabilities.  
+The argument `bounds` is used for the specification of the bound(s) to be computed. It could be one of `c("two_sided", "lower", "upper")`.  
+If `direction = "y"`, confidence intervals for the probabilities are provided.  
 
-Confidence bounds for failure probabilities can be added to a probability plot with `plot_conf()`.
+The visualization of the computed intervals is done with `plot_conf()`. 
 
-```{r}
+```{r, Visualization of confidence intervals for failure probabilities}
 # Probability plot
-weibull_grid <- plot_prob(shock_cdf, distribution = "weibull")
+weibull_grid <- plot_prob(
+  shock_cdf,
+  distribution = "weibull", 
+  title_main = "Weibull Probability Plot", 
+  title_x = "Mileage in km", 
+  title_y = "Probability of Failure in %",
+  title_trace = "Defectives",
+  plot_method = "ggplot2"
+)
 
-weibull_conf_bb <- plot_conf(weibull_grid, conf_bb)
+# Beta-Binomial confidence intervals: 
+weibull_conf_bb <- plot_conf(
+  weibull_grid, 
+  conf_bb, 
+  title_trace_mod = "Rank Regression", 
+  title_trace_conf = "Beta-Binomial Bounds"
+)
 weibull_conf_bb
 
-weibull_conf_fisher <- plot_conf(weibull_grid, conf_fisher)
+# Fisher's normal approximation confidence intervals:
+weibull_conf_fisher <- plot_conf(
+  weibull_grid, 
+  conf_fisher, 
+  title_trace_mod = "Maximum Likelihood", 
+  title_trace_conf = "Fisher's Confidence Intervals"
+  )
 weibull_conf_fisher
 ```
 
-As you can see, `plot_conf()` not only adds the confidence limits to the probability plot, but also includes the estimated linearized CDF. There is no need to call `plot_mod()`. In fact, the same routines used by `plot_mod()` are called under the hood. This ensures that no confidence bounds are drawn without a model and model line is based on the same points as the confidence bounds.
+As one can see, `plot_conf()` not only adds the confidence limits to an existing probability plot, but also includes the estimated linearized CDF. There is no need for an additional call of `plot_mod()`. In fact, the same routines used by `plot_mod()` are called under the hood, which ensures that confidence bounds are not drawn without the regression line.
+
+### Confidence Intervals for Quantiles
+
+The computation and visualization of confidence for the lifetime characteristic is pretty similar to the presented procedure with regard to the probabilities. 
+The only difference is that one has to change the default of the argument `direction` to `"x"`. 
+
+```{r, Confidence intervals for quantiles}
+# Computation of confidence intervals for quantiles: 
+## Beta-Binomial confidence intervals: 
+conf_bb_x <- confint_betabinom(
+  x = rr_weibull, 
+  bounds = "upper", 
+  conf_level = 0.95, 
+  direction = "x"
+)
+conf_bb_x
+
+## Fisher's normal approximation confidence intervals:
+conf_fisher_x <- confint_fisher(x = ml_weibull, bounds = "lower", direction = "x")
+conf_fisher_x
+
+# Visualization: 
+## Beta-Binomial confidence intervals: 
+weibull_conf_bb_x <- plot_conf(weibull_grid, conf_bb_x)
+weibull_conf_bb_x
+
+## Fisher's normal approximation confidence intervals:
+weibull_conf_fisher_x <- plot_conf(weibull_grid, conf_fisher_x)
+weibull_conf_fisher_x
+```
