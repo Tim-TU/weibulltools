@@ -1284,8 +1284,20 @@ plot_conf.wt_confint <- function(p_obj,
         model_estimation$distribution
       )
 
+      if (!is.na(cdf_estimation_methods)) {
+        # Case: confint_betabinom
+        # Filter x by cdf_estimation_method, so that the corresponding x values
+        # can be passed to the plot_mod_helper in the next step
+        conf <- dplyr::filter(
+          x, .data$cdf_estimation_method == !!cdf_estimation_method
+        )
+      } else {
+        # Case: confint_fisher
+        conf <- x
+      }
+
       plot_mod_helper(
-        x = x$x, # x coordinates of confint guarantees consideration of b lives.
+        x = conf$x, # x coordinates of confint guarantees consideration of b lives.
         dist_params = model_estimation$coefficients,
         distribution = model_estimation$distribution,
         cdf_estimation_method = cdf_estimation_method
@@ -1294,13 +1306,6 @@ plot_conf.wt_confint <- function(p_obj,
   )
 
   tbl_conf <- plot_conf_helper_2(confint = x)
-
-  # if (inherits(p_obj, "plotly")) {
-  #   tbl_mod$hovertext <- hovertext_conf(
-  #     tbl_mod = tbl_mod,
-  #     tbl_conf = tbl_conf
-  #   )
-  # }
 
   bounds <- attr(x, "bounds", exact = TRUE)
 
