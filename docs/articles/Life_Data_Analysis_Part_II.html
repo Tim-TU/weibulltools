@@ -60,7 +60,10 @@
       <a href="../articles/Life_Data_Analysis_Part_II.html">Life Data Analysis Part II - Estimation Methods for Parametric Lifetime Models</a>
     </li>
     <li>
-      <a href="../articles/Life_Data_Analysis_Part_III.html">Life Data Analysis Part III - Mixture Models</a>
+      <a href="../articles/Life_Data_Analysis_Part_III.html">Life Data Analysis Part III - Confidence Intervals</a>
+    </li>
+    <li>
+      <a href="../articles/Life_Data_Analysis_Part_IV.html">Life Data Analysis Part IV - Mixture Models</a>
     </li>
   </ul>
 </li>
@@ -93,7 +96,7 @@
                         <h4 class="author">Tim-Gunnar Hensel</h4>
                         <h4 class="author">David Barkemeyer</h4>
             
-            <h4 class="date">2021-03-25</h4>
+            <h4 class="date">2021-04-12</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/Tim-TU/weibulltools/blob/master/vignettes/Life_Data_Analysis_Part_II.Rmd"><code>vignettes/Life_Data_Analysis_Part_II.Rmd</code></a></small>
       <div class="hidden name"><code>Life_Data_Analysis_Part_II.Rmd</code></div>
@@ -103,7 +106,7 @@
     
     
 <p>This document introduces two methods for the parameter estimation of lifetime distributions. Whereas <em>Rank Regression (RR)</em> fits a straight line through transformed plotting positions (transformation is described precisely in <code><a href="../articles/Life_Data_Analysis_Part_I.html">vignette(topic = "Life_Data_Analysis_Part_I", package = "weibulltools")</a></code>), <em>Maximum likelihood (ML)</em> strives to maximize a function of the parameters given the sample data. If the parameters are obtained, a cumulative distribution function <em>(CDF)</em> can be computed and added to a probability plot.</p>
-<p>In the theoretical part of this vignette the focus is on the two-parameter Weibull distribution. The second part is about the application of the provided estimation methods in <code>weibulltools</code>. All implemented models can be found in the help pages of <code><a href="../reference/rank_regression.html">rank_regression()</a></code> and <code><a href="../reference/ml_estimation.html">ml_estimation()</a></code>.</p>
+<p>In the theoretical part of this vignette the focus is on the two-parameter Weibull distribution. The second part is about the application of the provided estimation methods in {weibulltools}. All implemented models can be found in the help pages of <code><a href="../reference/rank_regression.html">rank_regression()</a></code> and <code><a href="../reference/ml_estimation.html">ml_estimation()</a></code>.</p>
 <div id="the-weibull-distribution" class="section level2">
 <h2 class="hasAnchor">
 <a href="#the-weibull-distribution" class="anchor"></a>The Weibull Distribution</h2>
@@ -125,8 +128,8 @@
 <p>With</p>
 <p><span class="math display">\[x_i=\log(t_i)\;;\; \bar{x}=\frac{1}{n}\cdot\sum_{i=1}^{n}\log(t_i)\;;\]</span></p>
 <p>as well as</p>
-<p><span class="math display">\[y_i=\Phi^{-1}_{SEV}\left[F(t)\right]=\log\left\{-\log\left[1-F(t_i)\right]\right\}\;and \; \bar{y}=\frac{1}{n}\cdot\sum_{i=1}^{n}\log\left\{-\log\left[1-F(t_i)\right]\right\}.\]</span><br>
-The estimates of the intercept and slope are equal to the Weibull parameters <span class="math inline">\(\mu\)</span> and <span class="math inline">\(\sigma\)</span>, i.e. </p>
+<p><span class="math display">\[y_i=\Phi^{-1}_{SEV}\left[F(t)\right]=\log\left\{-\log\left[1-F(t_i)\right]\right\}\;and \; \bar{y}=\frac{1}{n}\cdot\sum_{i=1}^{n}\log\left\{-\log\left[1-F(t_i)\right]\right\}.\]</span></p>
+<p>The estimates of the intercept and slope are equal to the Weibull parameters <span class="math inline">\(\mu\)</span> and <span class="math inline">\(\sigma\)</span>, i.e. </p>
 <p><span class="math display">\[\hat{\mu}=\hat{a}\]</span></p>
 <p>and</p>
 <p><span class="math display">\[\hat{\sigma}=\hat{b}.\]</span></p>
@@ -152,8 +155,8 @@ The estimates of the intercept and slope are equal to the Weibull parameters <sp
 <div id="shock-absorber" class="section level3">
 <h3 class="hasAnchor">
 <a href="#shock-absorber" class="anchor"></a>Shock Absorber</h3>
-<p>In this dataset kilometer-dependent problems that have occurred on shock absorbers are reported. In addition to failed items the dataset also contains non-defectives (<em>censored</em>) observations. The data can be found in <em>Statistical Methods for Reliability Data</em> <a href="#fn4" class="footnote-ref" id="fnref4"><sup>4</sup></a>.</p>
-<p>For consistent handling of the data, <code>weibulltools</code> introduces the function <code><a href="../reference/reliability_data.html">reliability_data()</a></code> that converts the original dataset into a <code>wt_reliability_data</code> object. This formatted object allows to easily apply the presented methods.</p>
+<p>In this dataset kilometer-dependent problems that have occurred on shock absorbers are reported. In addition to failed items the dataset also contains non-defective (<em>censored</em>) observations. The data can be found in <em>Statistical Methods for Reliability Data</em> <a href="#fn4" class="footnote-ref" id="fnref4"><sup>4</sup></a>.</p>
+<p>For consistent handling of the data, {weibulltools} introduces the function <code><a href="../reference/reliability_data.html">reliability_data()</a></code> that converts the original dataset into a <code>wt_reliability_data</code> object. This formatted object allows to easily apply the presented methods.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">shock_tbl</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/reliability_data.html">reliability_data</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">shock</span>, x <span class="op">=</span> <span class="va">distance</span>, status <span class="op">=</span> <span class="va">status</span><span class="op">)</span>
 <span class="va">shock_tbl</span>
@@ -199,10 +202,9 @@ The estimates of the intercept and slope are equal to the Weibull parameters <sp
 <span class="co">#&gt; # ... with 62 more rows</span></code></pre></div>
 </div>
 </div>
-<div id="rr-and-ml-with-package-weibulltools" class="section level2">
+<div id="rr-and-ml-with-weibulltools" class="section level2">
 <h2 class="hasAnchor">
-<a href="#rr-and-ml-with-package-weibulltools" class="anchor"></a>RR and ML with Package <code>weibulltools</code>
-</h2>
+<a href="#rr-and-ml-with-weibulltools" class="anchor"></a>RR and ML with {weibulltools}</h2>
 <p><code><a href="../reference/rank_regression.html">rank_regression()</a></code> and <code><a href="../reference/ml_estimation.html">ml_estimation()</a></code> can be applied to complete data as well as failure and (multiple) right-censored data. Both methods can also deal with models that have a threshold parameter <span class="math inline">\(\gamma\)</span>.</p>
 <p>In the following both methods are applied to the dataset <code>shock</code>.</p>
 <div id="rr-for-two-parameter-weibull-distribution" class="section level3">
