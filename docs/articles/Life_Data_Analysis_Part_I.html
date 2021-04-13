@@ -60,7 +60,10 @@
       <a href="../articles/Life_Data_Analysis_Part_II.html">Life Data Analysis Part II - Estimation Methods for Parametric Lifetime Models</a>
     </li>
     <li>
-      <a href="../articles/Life_Data_Analysis_Part_III.html">Life Data Analysis Part III - Mixture Models</a>
+      <a href="../articles/Life_Data_Analysis_Part_III.html">Life Data Analysis Part III - Confidence Intervals</a>
+    </li>
+    <li>
+      <a href="../articles/Life_Data_Analysis_Part_IV.html">Life Data Analysis Part IV - Mixture Models</a>
     </li>
   </ul>
 </li>
@@ -93,7 +96,7 @@
                         <h4 class="author">Tim-Gunnar Hensel</h4>
                         <h4 class="author">David Barkemeyer</h4>
             
-            <h4 class="date">2021-03-25</h4>
+            <h4 class="date">2021-04-12</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/Tim-TU/weibulltools/blob/master/vignettes/Life_Data_Analysis_Part_I.Rmd"><code>vignettes/Life_Data_Analysis_Part_I.Rmd</code></a></small>
       <div class="hidden name"><code>Life_Data_Analysis_Part_I.Rmd</code></div>
@@ -103,7 +106,7 @@
     
     
 <p>This document presents non-parametric estimation methods for the computation of failure probabilities of complete data (failures) taking (multiple) right-censored units into account. A unit can be either a single component, an assembly or an entire system.</p>
-<p>Further, the estimation results are presented in distribution-specific probability plots.</p>
+<p>Furthermore, the estimation results are presented in distribution-specific probability plots.</p>
 <div id="introduction-to-life-data-analysis" class="section level2">
 <h2 class="hasAnchor">
 <a href="#introduction-to-life-data-analysis" class="anchor"></a>Introduction to Life Data Analysis</h2>
@@ -149,7 +152,7 @@ Figure 1: Densities for different ranks i in samples of size n = 10.
 <p>Here, <span class="math inline">\(j_ {i-1}\)</span> is the adjusted rank of the previous failure, <span class="math inline">\(x_i\)</span> is the number of defectives at <span class="math inline">\(t_i\)</span> and <span class="math inline">\(I_i\)</span> is the increment that corrects the considered rank by the potential candidates.</p>
 <p><span class="math display">\[I_i=\frac{(n+1)-j_{i-1}}{1+(n-n_i)}\]</span></p>
 <p>The sample size is <span class="math inline">\(n\)</span> and <span class="math inline">\(n_i\)</span> is the number of units that have a lower <span class="math inline">\(t\)</span> than the <em>i</em>-th unit. Once the adjusted ranks are calculated, the <em>CDF</em> can be estimated according to <em>Benard’s</em> approximation.</p>
-<p>Other methods in <code>weibulltools</code> that can also handle (multiple) right-censored data are the <em>Kaplan-Meier</em> estimator (<code><a href="../reference/estimate_cdf.html">estimate_cdf(methods = "kaplan", ...)</a></code>) and the <em>Nelson-Aalen</em> estimator (<code><a href="../reference/estimate_cdf.html">estimate_cdf(methods = "nelson", ...)</a></code>).</p>
+<p>Other methods in {weibulltools} that can also handle (multiple) right-censored data are the <em>Kaplan-Meier</em> estimator (<code><a href="../reference/estimate_cdf.html">estimate_cdf(methods = "kaplan", ...)</a></code>) and the <em>Nelson-Aalen</em> estimator (<code><a href="../reference/estimate_cdf.html">estimate_cdf(methods = "nelson", ...)</a></code>).</p>
 </div>
 <div id="probability-plotting" class="section level3">
 <h3 class="hasAnchor">
@@ -186,7 +189,7 @@ Figure 1: Densities for different ranks i in samples of size n = 10.
 <h2 class="hasAnchor">
 <a href="#data-shock-absorber" class="anchor"></a>Data: Shock Absorber</h2>
 <p>To apply the introduced methods of non-parametric failure probability estimation and probability plotting the <code>shock</code> data is used. In this dataset kilometer-dependent problems that have occurred on shock absorbers are reported. In addition to failed items the dataset also contains non-defectives (<em>censored</em>) observations. The data can be found in <em>Statistical Methods for Reliability Data</em> <a href="#fn3" class="footnote-ref" id="fnref3"><sup>3</sup></a>.</p>
-<p>For consistent handling of the data, <code>weibulltools</code> introduces the function <code><a href="../reference/reliability_data.html">reliability_data()</a></code> that converts the original dataset into a <code>wt_reliability_data</code> object. This formatted object allows to easily apply the presented methods.</p>
+<p>For consistent handling of the data, {weibulltools} introduces the function <code><a href="../reference/reliability_data.html">reliability_data()</a></code> that converts the original dataset into a <code>wt_reliability_data</code> object. This formatted object allows to easily apply the presented methods.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">shock_tbl</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/reliability_data.html">reliability_data</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">shock</span>, x <span class="op">=</span> <span class="va">distance</span>, status <span class="op">=</span> <span class="va">status</span><span class="op">)</span>
 <span class="va">shock_tbl</span>
@@ -206,10 +209,9 @@ Figure 1: Densities for different ranks i in samples of size n = 10.
 <span class="co">#&gt; 10 11850      0 ID10 </span>
 <span class="co">#&gt; # ... with 28 more rows</span></code></pre></div>
 </div>
-<div id="estimation-of-failure-probabilities-with-package-weibulltools" class="section level2">
+<div id="estimation-of-failure-probabilities-with-weibulltools" class="section level2">
 <h2 class="hasAnchor">
-<a href="#estimation-of-failure-probabilities-with-package-weibulltools" class="anchor"></a>Estimation of Failure Probabilities with Package <code>weibulltools</code>
-</h2>
+<a href="#estimation-of-failure-probabilities-with-weibulltools" class="anchor"></a>Estimation of Failure Probabilities with {weibulltools}</h2>
 <p>First, we are interested in how censored observations influence the estimation of failure probabilities in comparison to the case where only failed units are considered. To deal with survived and failed units we will use <code><a href="../reference/estimate_cdf.html">estimate_cdf()</a></code> with <code>methods = "johnson"</code>, whereas <code>methods = "mr"</code> only considers failures.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Estimate CDF with both methods: </span>
@@ -256,10 +258,9 @@ Figure 1: Densities for different ranks i in samples of size n = 10.
 <p><br></p>
 <p>If we compare both outputs we can see that survivors reduce the probabilities. But this is just that what was expected since undamaged units with longer or equal lifetime characteristic <em>x</em> let us gain confidence in the product.</p>
 </div>
-<div id="probability-plotting-with-package-weibulltools" class="section level2">
+<div id="probability-plotting-with-weibulltools" class="section level2">
 <h2 class="hasAnchor">
-<a href="#probability-plotting-with-package-weibulltools" class="anchor"></a>Probability Plotting with Package <code>weibulltools</code>
-</h2>
+<a href="#probability-plotting-with-weibulltools" class="anchor"></a>Probability Plotting with {weibulltools}</h2>
 <p>The estimated probabilities should now be presented in a probability plot. With <code><a href="../reference/plot_prob.html">plot_prob()</a></code> probability plots for several lifetime distributions can be constructed and estimates of multiple methods can be displayed at once.</p>
 <div id="weibull-probability-plot" class="section level3">
 <h3 class="hasAnchor">

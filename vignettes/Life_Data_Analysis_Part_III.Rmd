@@ -234,7 +234,7 @@ If `direction = "y"`, confidence intervals for the probabilities are provided.
 
 The visualization of the computed intervals is done with `plot_conf()`. 
 
-```{r, Visualization of confidence intervals for failure probabilities}
+```{r, Preparation for visualization}
 # Probability plot
 weibull_grid <- plot_prob(
   shock_cdf,
@@ -245,7 +245,9 @@ weibull_grid <- plot_prob(
   title_trace = "Defectives",
   plot_method = "ggplot2"
 )
+```
 
+```{r, BBB on failure probabilities, fig.cap = "Figure 1: Beta-Binomial confidence bounds for failure probabilities.", message = FALSE}
 # Beta-Binomial confidence intervals: 
 weibull_conf_bb <- plot_conf(
   weibull_grid, 
@@ -254,7 +256,10 @@ weibull_conf_bb <- plot_conf(
   title_trace_conf = "Beta-Binomial Bounds"
 )
 weibull_conf_bb
+```
 
+
+```{r, FI on failure probabilities, fig.cap = "Figure 2: Fisher's normal approximation confidence intervals for failure probabilities.", message = FALSE}
 # Fisher's normal approximation confidence intervals:
 weibull_conf_fisher <- plot_conf(
   weibull_grid, 
@@ -286,7 +291,10 @@ conf_bb_x
 ## Fisher's normal approximation confidence intervals:
 conf_fisher_x <- confint_fisher(x = ml_weibull, bounds = "lower", direction = "x")
 conf_fisher_x
+```
 
+
+```{r, BBB on quantiles, fig.cap = "Figure 3: One-sided (upper) Beta-Binomial confidence bound for quantiles.", message = FALSE}
 # Visualization: 
 ## Beta-Binomial confidence intervals: 
 weibull_conf_bb_x <- plot_conf(
@@ -296,7 +304,10 @@ weibull_conf_bb_x <- plot_conf(
   title_trace_conf = "Beta-Binomial Bounds"
 )
 weibull_conf_bb_x
+```
 
+
+```{r, FI on quantiles, fig.cap = "Figure 4: One-sided (lower) normal approximation confidence interval for quantiles.", message = FALSE}
 ## Fisher's normal approximation confidence intervals:
 weibull_conf_fisher_x <- plot_conf(
   weibull_grid, 
