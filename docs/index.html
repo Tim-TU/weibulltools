@@ -46,6 +46,8 @@
 <![endif]-->
 </head>
 <body data-spy="scroll" data-target="#toc">
+    
+
     <div class="container template-home">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -58,23 +60,17 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">weibulltools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.0.0.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.0.0.9000</span>
       </span>
     </div>
 
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
 <li>
-  <a href="index.html">
-    <span class="fas fa-home fa-lg"></span>
-     
-  </a>
-</li>
-<li>
   <a href="reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
      
     <span class="caret"></span>
@@ -100,7 +96,7 @@
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
-  <a href="https://github.com/Tim-TU/weibulltools/">
+  <a href="https://github.com/Tim-TU/weibulltools/" class="external-link">
     <span class="fab fa-github fa-lg"></span>
      
   </a>
@@ -117,51 +113,63 @@
 
       </header><div class="row">
   <div class="contents col-md-9">
-<div id="weibulltools" class="section level1">
-<div class="page-header"><h1 class="hasAnchor">
-<a href="#weibulltools" class="anchor"></a>weibulltools</h1></div>
+<div class="section level1">
+<div class="page-header"><h1 id="weibulltools">weibulltools<a class="anchor" aria-label="anchor" href="#weibulltools"></a>
+</h1></div>
 <!-- badges: start -->
 
-<div id="overview" class="section level2">
-<h2 class="hasAnchor">
-<a href="#overview" class="anchor"></a>Overview</h2>
-<p>The <em>weibulltools</em> package focuses on statistical methods and visualizations that are often used in reliability engineering. It provides a compact and easily accessible set of methods and visualization tools that make the examination and adjustment as well as the analysis and interpretation of field data (and bench tests) as simple as possible.</p>
-<p>Besides the well-known Weibull analysis, the package supports multiple lifetime distributions and also contains Monte Carlo methods for the correction and completion of imprecisely recorded or unknown lifetime characteristics.</p>
-<p>Plots are created statically (<a href="https://ggplot2.tidyverse.org/">ggplot2</a>) or interactively (<a href="https://plotly.com/r/">plotly</a>) and can be customized with functions of the respective visualization package.</p>
+<div class="section level2">
+<h2 id="overview">Overview<a class="anchor" aria-label="anchor" href="#overview"></a>
+</h2>
+<p>The <em>weibulltools</em> package focuses on statistical methods and
+visualizations that are often used in reliability engineering. It
+provides a compact and easily accessible set of methods and
+visualization tools that make the examination and adjustment as well as
+the analysis and interpretation of field data (and bench tests) as
+simple as possible.</p>
+<p>Besides the well-known Weibull analysis, the package supports
+multiple lifetime distributions and also contains Monte Carlo methods
+for the correction and completion of imprecisely recorded or unknown
+lifetime characteristics.</p>
+<p>Plots are created statically (<a href="https://ggplot2.tidyverse.org/" class="external-link">ggplot2</a>) or interactively (<a href="https://plotly.com/r/" class="external-link">plotly</a>) and can be customized with
+functions of the respective visualization package.</p>
 </div>
-<div id="installation" class="section level2">
-<h2 class="hasAnchor">
-<a href="#installation" class="anchor"></a>Installation</h2>
-<p>The latest released version of <em>weibulltools</em> from <a href="https://CRAN.R-project.org/package=weibulltools">CRAN</a> can be installed with:</p>
+<div class="section level2">
+<h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
+</h2>
+<p>The latest released version of <em>weibulltools</em> from <a href="https://CRAN.R-project.org/package=weibulltools" class="external-link">CRAN</a> can be
+installed with:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span><span class="op">(</span><span class="st">"weibulltools"</span><span class="op">)</span></code></pre></div>
-<div id="development-version" class="section level3">
-<h3 class="hasAnchor">
-<a href="#development-version" class="anchor"></a>Development version</h3>
-<p>Install the development version of <em>weibulltools</em> from <a href="https://github.com/Tim-TU/weibulltools/">GitHub</a> to use new features or to get a bug fix.</p>
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"weibulltools"</span><span class="op">)</span></code></pre></div>
+<div class="section level3">
+<h3 id="development-version">Development version<a class="anchor" aria-label="anchor" href="#development-version"></a>
+</h3>
+<p>Install the development version of <em>weibulltools</em> from <a href="https://github.com/Tim-TU/weibulltools/" class="external-link">GitHub</a> to use new
+features or to get a bug fix.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># install.packages("devtools")</span>
-<span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://devtools.r-lib.org//reference/remote-reexports.html">install_github</a></span><span class="op">(</span><span class="st">"Tim-TU/weibulltools"</span><span class="op">)</span></code></pre></div>
+<span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://devtools.r-lib.org/reference/remote-reexports.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"Tim-TU/weibulltools"</span><span class="op">)</span></code></pre></div>
 </div>
 </div>
-<div id="usage" class="section level2">
-<h2 class="hasAnchor">
-<a href="#usage" class="anchor"></a>Usage</h2>
-<div id="getting-started" class="section level3">
-<h3 class="hasAnchor">
-<a href="#getting-started" class="anchor"></a>Getting started</h3>
+<div class="section level2">
+<h2 id="usage">Usage<a class="anchor" aria-label="anchor" href="#usage"></a>
+</h2>
+<div class="section level3">
+<h3 id="getting-started">Getting started<a class="anchor" aria-label="anchor" href="#getting-started"></a>
+</h3>
 <p>Create consistent reliability data with columns:</p>
 <ul>
 <li>
 <code>x</code> - lifetime characteristic<br>
 </li>
 <li>
-<code>status</code> - binary data (0 for censored units and 1 for failed units)</li>
+<code>status</code> - binary data (0 for censored units and 1 for
+failed units)</li>
 <li>
 <code>id</code> (optional) - identifier for units</li>
 </ul>
 <!-- end list --><div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://tim-tu.github.io/weibulltools/">weibulltools</a></span><span class="op">)</span>
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://tim-tu.github.io/weibulltools/" class="external-link">weibulltools</a></span><span class="op">)</span>
 
 <span class="va">rel_tbl</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/reliability_data.html">reliability_data</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">shock</span>, x <span class="op">=</span> <span class="va">distance</span>, status <span class="op">=</span> <span class="va">status</span><span class="op">)</span>
 <span class="va">rel_tbl</span>
@@ -176,12 +184,13 @@
 <span class="co">#&gt; 5  9120      1 ID5  </span>
 <span class="co">#&gt; # ... with 33 more rows</span></code></pre></div>
 </div>
-<div id="probability-estimation-and-visualization" class="section level3">
-<h3 class="hasAnchor">
-<a href="#probability-estimation-and-visualization" class="anchor"></a>Probability estimation and visualization</h3>
-<p>Estimation of failure probabilities using different non-parametric methods:</p>
+<div class="section level3">
+<h3 id="probability-estimation-and-visualization">Probability estimation and visualization<a class="anchor" aria-label="anchor" href="#probability-estimation-and-visualization"></a>
+</h3>
+<p>Estimation of failure probabilities using different non-parametric
+methods:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">prob_tbl</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/estimate_cdf.html">estimate_cdf</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">rel_tbl</span>, methods <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"mr"</span>, <span class="st">"kaplan"</span>, <span class="st">"johnson"</span>, <span class="st">"nelson"</span><span class="op">)</span><span class="op">)</span>
+<code class="sourceCode R"><span class="va">prob_tbl</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/estimate_cdf.html">estimate_cdf</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">rel_tbl</span>, methods <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"mr"</span>, <span class="st">"kaplan"</span>, <span class="st">"johnson"</span>, <span class="st">"nelson"</span><span class="op">)</span><span class="op">)</span>
 <span class="co">#&gt; The 'mr' method only considers failed units (status == 1) and does not retain intact units (status == 0).</span>
 <span class="va">prob_tbl</span>
 <span class="co">#&gt; CDF estimation for methods 'mr', 'kaplan', 'johnson', 'nelson':</span>
@@ -194,7 +203,8 @@
 <span class="co">#&gt; 4 ID15  13150      1     4 0.325  mr                   </span>
 <span class="co">#&gt; 5 ID19  14300      1     5 0.412  mr                   </span>
 <span class="co">#&gt; # ... with 120 more rows</span></code></pre></div>
-<p>Visualization of the obtained results in a distribution-specific probability plot:</p>
+<p>Visualization of the obtained results in a distribution-specific
+probability plot:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">prob_vis</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/plot_prob.html">plot_prob</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">prob_tbl</span>, distribution <span class="op">=</span> <span class="st">"weibull"</span>, 
                       title_main <span class="op">=</span> <span class="st">"Weibull Probability Plot"</span>, 
@@ -205,9 +215,9 @@
 <span class="va">prob_vis</span></code></pre></div>
 <p><img src="reference/figures/README-probability_visualization-1.png" width="100%"></p>
 </div>
-<div id="model-estimation-and-visualization" class="section level3">
-<h3 class="hasAnchor">
-<a href="#model-estimation-and-visualization" class="anchor"></a>Model estimation and visualization</h3>
+<div class="section level3">
+<h3 id="model-estimation-and-visualization">Model estimation and visualization<a class="anchor" aria-label="anchor" href="#model-estimation-and-visualization"></a>
+</h3>
 <p>Parametric model estimation with respect to the used methods:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">rr_list</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/rank_regression.html">rank_regression</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">prob_tbl</span>, distribution <span class="op">=</span> <span class="st">"weibull"</span><span class="op">)</span>
@@ -244,58 +254,71 @@
 <p><img src="reference/figures/README-model_visualization-1.png" width="100%"></p>
 </div>
 </div>
-<div id="getting-help" class="section level2">
-<h2 class="hasAnchor">
-<a href="#getting-help" class="anchor"></a>Getting help</h2>
-<p>If you notice a bug or have suggestions for improvements, please submit an issue with a minimal reproducible example on <a href="https://github.com/Tim-TU/weibulltools/issues">GitHub</a>. For further questions, please contact <a href="mailto:tim-gunnar.hensel@tu-berlin.de">Tim-Gunnar Hensel</a>.</p>
+<div class="section level2">
+<h2 id="getting-help">Getting help<a class="anchor" aria-label="anchor" href="#getting-help"></a>
+</h2>
+<p>If you notice a bug or have suggestions for improvements, please
+submit an issue with a minimal reproducible example on <a href="https://github.com/Tim-TU/weibulltools/issues" class="external-link">GitHub</a>. For
+further questions, please contact <a href="mailto:tim-gunnar.hensel@tu-berlin.de">Tim-Gunnar Hensel</a>.</p>
 </div>
 </div>
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <div class="links">
-<h2>Links</h2>
+<h2 data-toc-skip>Links</h2>
 <ul class="list-unstyled">
-<li>Download from CRAN at <br><a href="https://cloud.r-project.org/package=weibulltools">https://​cloud.r-project.org/​package=weibulltools</a>
-</li>
-<li>Browse source code at <br><a href="https://github.com/Tim-TU/weibulltools/">https://​github.com/​Tim-TU/​weibulltools/​</a>
-</li>
-<li>Report a bug at <br><a href="https://github.com/Tim-TU/weibulltools/issues">https://​github.com/​Tim-TU/​weibulltools/​issues</a>
-</li>
+<li><a href="https://cloud.r-project.org/package=weibulltools" class="external-link">View on CRAN</a></li>
+<li><a href="https://github.com/Tim-TU/weibulltools/" class="external-link">Browse source code</a></li>
+<li><a href="https://github.com/Tim-TU/weibulltools/issues" class="external-link">Report a bug</a></li>
 </ul>
 </div>
+
 <div class="license">
-<h2>License</h2>
+<h2 data-toc-skip>License</h2>
 <ul class="list-unstyled">
-<li><a href="https://www.r-project.org/Licenses/GPL-2">GPL-2</a></li>
+<li><a href="https://www.r-project.org/Licenses/GPL-2" class="external-link">GPL-2</a></li>
 </ul>
 </div>
+
+
+<div class="citation">
+<h2 data-toc-skip>Citation</h2>
+<ul class="list-unstyled">
+<li><a href="authors.html#citation">Citing weibulltools</a></li>
+</ul>
+</div>
+
 <div class="developers">
-<h2>Developers</h2>
+<h2 data-toc-skip>Developers</h2>
 <ul class="list-unstyled">
 <li>Tim-Gunnar Hensel <br><small class="roles"> Author, maintainer </small>  </li>
 <li>David Barkemeyer <br><small class="roles"> Author </small>  </li>
 </ul>
 </div>
 
-  <div class="dev-status">
-<h2>Dev status</h2>
+<div class="dev-status">
+<h2 data-toc-skip>Dev status</h2>
 <ul class="list-unstyled">
-<li><a href="https://www.tidyverse.org/lifecycle/#maturing"><img src="https://img.shields.io/badge/lifecycle-maturing-blue.svg" alt="Lifecycle: maturing"></a></li>
-<li><a href="https://CRAN.R-project.org/package=weibulltools"><img src="https://www.r-pkg.org/badges/version/weibulltools" alt="CRAN status"></a></li>
-<li><a href="https://github.com/Tim-TU/weibulltools/actions"><img src="https://github.com/Tim-TU/weibulltools/workflows/R-CMD-check/badge.svg" alt="R-CMD-check"></a></li>
+<li><a href="https://www.tidyverse.org/lifecycle/#maturing" class="external-link"><img src="https://img.shields.io/badge/lifecycle-maturing-blue.svg" alt="Lifecycle: maturing"></a></li>
+<li><a href="https://CRAN.R-project.org/package=weibulltools" class="external-link"><img src="https://www.r-pkg.org/badges/version/weibulltools" alt="CRAN status"></a></li>
+<li><a href="https://github.com/Tim-TU/weibulltools/actions" class="external-link"><img src="https://github.com/Tim-TU/weibulltools/workflows/R-CMD-check/badge.svg" alt="R-CMD-check"></a></li>
 </ul>
 </div>
-</div>
+
+  </div>
 </div>
 
 
       <footer><div class="copyright">
-  <p>Developed by Tim-Gunnar Hensel, David Barkemeyer.</p>
+  <p></p>
+<p>Developed by Tim-Gunnar Hensel, David Barkemeyer.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
+  <p></p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a>
+2.0.2.</p>
 </div>
 
       </footer>
@@ -303,6 +326,8 @@
 
   
 
+
+  
 
   </body>
 </html>
