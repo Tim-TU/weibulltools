@@ -19,6 +19,8 @@
 <![endif]-->
 </head>
 <body data-spy="scroll" data-target="#toc">
+    
+
     <div class="container template-article">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -31,23 +33,17 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">weibulltools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.0.0.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.0.0.9000</span>
       </span>
     </div>
 
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
 <li>
-  <a href="../index.html">
-    <span class="fas fa-home fa-lg"></span>
-     
-  </a>
-</li>
-<li>
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
      
     <span class="caret"></span>
@@ -73,7 +69,7 @@
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
-  <a href="https://github.com/Tim-TU/weibulltools/">
+  <a href="https://github.com/Tim-TU/weibulltools/" class="external-link">
     <span class="fab fa-github fa-lg"></span>
      
   </a>
@@ -88,183 +84,288 @@
 
       
 
-      </header><script src="Life_Data_Analysis_Part_I_files/header-attrs-2.7/header-attrs.js"></script><div class="row">
+      </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
-      <h1 data-toc-skip>Life Data Analysis Part I - Estimation of Failure Probabilities</h1>
-            <h3 class="subtitle">A Non-parametric Approach</h3>
-                        <h4 class="author">Tim-Gunnar Hensel</h4>
-                        <h4 class="author">David Barkemeyer</h4>
+      <h1 data-toc-skip>Life Data Analysis Part I - Estimation of
+Failure Probabilities</h1>
+            <h3 data-toc-skip class="subtitle">A Non-parametric
+Approach</h3>
+                        <h4 data-toc-skip class="author">Tim-Gunnar
+Hensel</h4>
+                        <h4 data-toc-skip class="author">David
+Barkemeyer</h4>
             
-            <h4 class="date">2021-04-12</h4>
+            <h4 data-toc-skip class="date">2022-03-30</h4>
       
-      <small class="dont-index">Source: <a href="https://github.com/Tim-TU/weibulltools/blob/master/vignettes/Life_Data_Analysis_Part_I.Rmd"><code>vignettes/Life_Data_Analysis_Part_I.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/Tim-TU/weibulltools/blob/HEAD/vignettes/Life_Data_Analysis_Part_I.Rmd" class="external-link"><code>vignettes/Life_Data_Analysis_Part_I.Rmd</code></a></small>
       <div class="hidden name"><code>Life_Data_Analysis_Part_I.Rmd</code></div>
 
     </div>
 
     
     
-<p>This document presents non-parametric estimation methods for the computation of failure probabilities of complete data (failures) taking (multiple) right-censored units into account. A unit can be either a single component, an assembly or an entire system.</p>
-<p>Furthermore, the estimation results are presented in distribution-specific probability plots.</p>
-<div id="introduction-to-life-data-analysis" class="section level2">
-<h2 class="hasAnchor">
-<a href="#introduction-to-life-data-analysis" class="anchor"></a>Introduction to Life Data Analysis</h2>
-<p>If the lifetime (or any other damage-equivalent quantity such as distance or load cycles) of a unit is considered to be a continuous random variable <em>T</em>, then the probability that a unit has failed at <em>t</em> is defined by its <em>CDF (cumulative distribution function)</em> <em>F(t)</em>.</p>
+<p>This document presents non-parametric estimation methods for the
+computation of failure probabilities of complete data (failures) taking
+(multiple) right-censored units into account. A unit can be either a
+single component, an assembly or an entire system.</p>
+<p>Furthermore, the estimation results are presented in
+distribution-specific probability plots.</p>
+<div class="section level2">
+<h2 id="introduction-to-life-data-analysis">Introduction to Life Data Analysis<a class="anchor" aria-label="anchor" href="#introduction-to-life-data-analysis"></a>
+</h2>
+<p>If the lifetime (or any other damage-equivalent quantity such as
+distance or load cycles) of a unit is considered to be a continuous
+random variable <em>T</em>, then the probability that a unit has failed
+at <em>t</em> is defined by its <em>CDF (cumulative distribution
+function)</em> <em>F(t)</em>.</p>
 <p><span class="math display">\[ P(T\leq t) = F(t) \]</span></p>
-<p>In order to obtain an estimate of the <em>CDF</em> for each observation <span class="math inline">\(t_1, t_2, ..., t_n\)</span> two approaches are possible. Using a parametric lifetime distribution requires that the underlying assumptions for the sample data are valid. If the distribution-specific assumptions are correct, the model parameters can be estimated and the <em>CDF</em> is computable. But if assumptions are not held, interpretations and derived conclusions are not reliable.</p>
-<p>A more general approach for the calculation of cumulative failure probabilities is to use non-parametric statistical estimators <span class="math inline">\(\hat{F}(t_1), \hat{F}(t_2), ..., \hat{F}(t_n)\)</span>. In comparison to a parametric distribution no general assumptions must be held. For non-parametric estimators, an ordered sample of size <span class="math inline">\(n\)</span> is needed. Starting at <span class="math inline">\(1\)</span>, the ranks <span class="math inline">\(i \in \{1, 2, ..., n \}\)</span> are assigned to the ascending sorted sample values. Since there is a known relationship between ranks and corresponding ranking probabilities a <em>CDF</em> can be determined.</p>
-<p>But rank distributions are systematically skewed distributions and thus the median value instead of the expected value <span class="math inline">\(E\left[F\left(t_i\right)\right] = \frac{i}{n + 1}\)</span> is used for the estimation <a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a>. This skewness is visualized in <em>Figure 1</em>.</p>
+<p>In order to obtain an estimate of the <em>CDF</em> for each
+observation <span class="math inline">\(t_1, t_2, ..., t_n\)</span> two
+approaches are possible. Using a parametric lifetime distribution
+requires that the underlying assumptions for the sample data are valid.
+If the distribution-specific assumptions are correct, the model
+parameters can be estimated and the <em>CDF</em> is computable. But if
+assumptions are not held, interpretations and derived conclusions are
+not reliable.</p>
+<p>A more general approach for the calculation of cumulative failure
+probabilities is to use non-parametric statistical estimators <span class="math inline">\(\hat{F}(t_1), \hat{F}(t_2), ...,
+\hat{F}(t_n)\)</span>. In comparison to a parametric distribution no
+general assumptions must be held. For non-parametric estimators, an
+ordered sample of size <span class="math inline">\(n\)</span> is needed.
+Starting at <span class="math inline">\(1\)</span>, the ranks <span class="math inline">\(i \in \{1, 2, ..., n \}\)</span> are assigned to
+the ascending sorted sample values. Since there is a known relationship
+between ranks and corresponding ranking probabilities a <em>CDF</em> can
+be determined.</p>
+<p>But rank distributions are systematically skewed distributions and
+thus the median value instead of the expected value <span class="math inline">\(E\left[F\left(t_i\right)\right] = \frac{i}{n +
+1}\)</span> is used for the estimation <a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a>. This skewness is
+visualized in <em>Figure 1</em>.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org">dplyr</a></span><span class="op">)</span> <span class="co"># data manipulation </span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org">ggplot2</a></span><span class="op">)</span> <span class="co"># visualization</span>
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span> <span class="co"># data manipulation </span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span> <span class="co"># visualization</span>
 
-<span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span>, length.out <span class="op">=</span> <span class="fl">100</span><span class="op">)</span> <span class="co"># CDF</span>
+<span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span>, length.out <span class="op">=</span> <span class="fl">100</span><span class="op">)</span> <span class="co"># CDF</span>
 <span class="va">n</span> <span class="op">&lt;-</span> <span class="fl">10</span> <span class="co"># sample size</span>
-<span class="va">i</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">3</span>, <span class="fl">5</span>, <span class="fl">7</span>, <span class="fl">9</span><span class="op">)</span> <span class="co"># ranks</span>
+<span class="va">i</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">3</span>, <span class="fl">5</span>, <span class="fl">7</span>, <span class="fl">9</span><span class="op">)</span> <span class="co"># ranks</span>
 <span class="va">r</span> <span class="op">&lt;-</span> <span class="va">n</span> <span class="op">-</span> <span class="va">i</span> <span class="op">+</span> <span class="fl">1</span> <span class="co"># inverse ranking</span>
 
-<span class="va">df_dens</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/expand.grid.html">expand.grid</a></span><span class="op">(</span>cdf <span class="op">=</span> <span class="va">x</span>, i <span class="op">=</span> <span class="va">i</span><span class="op">)</span> <span class="op">%&gt;%</span> 
-  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>n <span class="op">=</span> <span class="va">n</span>, r <span class="op">=</span> <span class="va">n</span> <span class="op">-</span> <span class="va">i</span> <span class="op">+</span> <span class="fl">1</span>, pdf <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Beta.html">dbeta</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">x</span>, shape1 <span class="op">=</span> <span class="va">i</span>, shape2 <span class="op">=</span> <span class="va">r</span><span class="op">)</span><span class="op">)</span>
+<span class="va">df_dens</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/expand.grid.html" class="external-link">expand.grid</a></span><span class="op">(</span>cdf <span class="op">=</span> <span class="va">x</span>, i <span class="op">=</span> <span class="va">i</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> 
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>n <span class="op">=</span> <span class="va">n</span>, r <span class="op">=</span> <span class="va">n</span> <span class="op">-</span> <span class="va">i</span> <span class="op">+</span> <span class="fl">1</span>, pdf <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Beta.html" class="external-link">dbeta</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">x</span>, shape1 <span class="op">=</span> <span class="va">i</span>, shape2 <span class="op">=</span> <span class="va">r</span><span class="op">)</span><span class="op">)</span>
 
-<span class="va">densplot</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">df_dens</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">cdf</span>, y <span class="op">=</span> <span class="va">pdf</span>, colour <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">as.factor</a></span><span class="op">(</span><span class="va">i</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> 
-  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html">geom_line</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> 
-  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_colour_discrete.html">scale_colour_discrete</a></span><span class="op">(</span>guide <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/guide_legend.html">guide_legend</a></span><span class="op">(</span>title <span class="op">=</span> <span class="st">"i"</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> 
-  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_bw</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> 
-  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">labs</a></span><span class="op">(</span>x <span class="op">=</span> <span class="st">"Failure Probability"</span>, y <span class="op">=</span> <span class="st">"Density"</span><span class="op">)</span>
+<span class="va">densplot</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">df_dens</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">cdf</span>, y <span class="op">=</span> <span class="va">pdf</span>, colour <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">as.factor</a></span><span class="op">(</span><span class="va">i</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> 
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> 
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_colour_discrete.html" class="external-link">scale_colour_discrete</a></span><span class="op">(</span>guide <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/guide_legend.html" class="external-link">guide_legend</a></span><span class="op">(</span>title <span class="op">=</span> <span class="st">"i"</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> 
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_bw</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> 
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>x <span class="op">=</span> <span class="st">"Failure Probability"</span>, y <span class="op">=</span> <span class="st">"Density"</span><span class="op">)</span>
 <span class="va">densplot</span></code></pre></div>
 <div class="figure">
 <img src="Life_Data_Analysis_Part_I_files/figure-html/rank_densities-1.png" alt="Figure 1: Densities for different ranks i in samples of size n = 10." width="700"><p class="caption">
 Figure 1: Densities for different ranks i in samples of size n = 10.
 </p>
 </div>
-<div id="failure-probability-estimation" class="section level3">
-<h3 class="hasAnchor">
-<a href="#failure-probability-estimation" class="anchor"></a>Failure Probability Estimation</h3>
-<p>In practice, a simplification for the calculation of the median value, also called median rank, is made. The formula of <em>Benard’s</em> approximation is given by</p>
-<p><span class="math display">\[\hat{F}(t_i) \approx \frac{i - 0,3}{n + 0,4} \]</span></p>
-<p>and is described in <em>The Plotting of Observations on Probability Paper</em> <a href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a>.</p>
-<p>However, this equation only provides valid estimates for failure probabilities if all units in the sample are defectives (<code><a href="../reference/estimate_cdf.html">estimate_cdf(methods = "mr", ...)</a></code>).</p>
-<p>In field data analysis, however, the sample mainly consists of intact units and only a small fraction of units failed. Units that have no damage at the point of analysis and also have not reached the operating time or mileage of units that have already failed, are potential candidates for future failures. As these, for example, still are likely to fail during a specific time span, like the guarantee period, the <em>CDF</em> must be adjusted upwards by these potential candidates.</p>
-<p>A commonly used method for correcting probabilities of (multiple) right-censored data is <em>Johnson’s</em> method (<code><a href="../reference/estimate_cdf.html">estimate_cdf(methods = "johnson", ...)</a></code>). By this method, all units that are included in the period looked at are sorted in an ascending order of their operating time (or any other damage-equivalent quantity). If there are units that have not failed before the <em>i</em>-th failure, an adjusted rank for the <em>i</em>-th failure is formed. This correction takes the potential candidates into account and increases the rank number. In consequence, a higher rank leads to a higher failure probability. This can be seen in <em>Figure 1</em>.</p>
+<div class="section level3">
+<h3 id="failure-probability-estimation">Failure Probability Estimation<a class="anchor" aria-label="anchor" href="#failure-probability-estimation"></a>
+</h3>
+<p>In practice, a simplification for the calculation of the median
+value, also called median rank, is made. The formula of
+<em>Benard’s</em> approximation is given by</p>
+<p><span class="math display">\[\hat{F}(t_i) \approx \frac{i - 0,3}{n +
+0,4} \]</span></p>
+<p>and is described in <em>The Plotting of Observations on Probability
+Paper</em> <a href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a>.</p>
+<p>However, this equation only provides valid estimates for failure
+probabilities if all units in the sample are defectives
+(<code>estimate_cdf(methods = "mr", ...)</code>).</p>
+<p>In field data analysis, however, the sample mainly consists of intact
+units and only a small fraction of units failed. Units that have no
+damage at the point of analysis and also have not reached the operating
+time or mileage of units that have already failed, are potential
+candidates for future failures. As these, for example, still are likely
+to fail during a specific time span, like the guarantee period, the
+<em>CDF</em> must be adjusted upwards by these potential candidates.</p>
+<p>A commonly used method for correcting probabilities of (multiple)
+right-censored data is <em>Johnson’s</em> method
+(<code>estimate_cdf(methods = "johnson", ...)</code>). By this method,
+all units that are included in the period looked at are sorted in an
+ascending order of their operating time (or any other damage-equivalent
+quantity). If there are units that have not failed before the
+<em>i</em>-th failure, an adjusted rank for the <em>i</em>-th failure is
+formed. This correction takes the potential candidates into account and
+increases the rank number. In consequence, a higher rank leads to a
+higher failure probability. This can be seen in <em>Figure 1</em>.</p>
 <p>The rank adjustment is determined with:</p>
-<p><span class="math display">\[j_i = j_{i-1} + x_i \cdot I_i, \;\; with \;\; j_0 = 0\]</span></p>
-<p>Here, <span class="math inline">\(j_ {i-1}\)</span> is the adjusted rank of the previous failure, <span class="math inline">\(x_i\)</span> is the number of defectives at <span class="math inline">\(t_i\)</span> and <span class="math inline">\(I_i\)</span> is the increment that corrects the considered rank by the potential candidates.</p>
+<p><span class="math display">\[j_i = j_{i-1} + x_i \cdot I_i, \;\; with
+\;\; j_0 = 0\]</span></p>
+<p>Here, <span class="math inline">\(j_ {i-1}\)</span> is the adjusted
+rank of the previous failure, <span class="math inline">\(x_i\)</span>
+is the number of defectives at <span class="math inline">\(t_i\)</span>
+and <span class="math inline">\(I_i\)</span> is the increment that
+corrects the considered rank by the potential candidates.</p>
 <p><span class="math display">\[I_i=\frac{(n+1)-j_{i-1}}{1+(n-n_i)}\]</span></p>
-<p>The sample size is <span class="math inline">\(n\)</span> and <span class="math inline">\(n_i\)</span> is the number of units that have a lower <span class="math inline">\(t\)</span> than the <em>i</em>-th unit. Once the adjusted ranks are calculated, the <em>CDF</em> can be estimated according to <em>Benard’s</em> approximation.</p>
-<p>Other methods in {weibulltools} that can also handle (multiple) right-censored data are the <em>Kaplan-Meier</em> estimator (<code><a href="../reference/estimate_cdf.html">estimate_cdf(methods = "kaplan", ...)</a></code>) and the <em>Nelson-Aalen</em> estimator (<code><a href="../reference/estimate_cdf.html">estimate_cdf(methods = "nelson", ...)</a></code>).</p>
+<p>The sample size is <span class="math inline">\(n\)</span> and <span class="math inline">\(n_i\)</span> is the number of units that have a
+lower <span class="math inline">\(t\)</span> than the <em>i</em>-th
+unit. Once the adjusted ranks are calculated, the <em>CDF</em> can be
+estimated according to <em>Benard’s</em> approximation.</p>
+<p>Other methods in {weibulltools} that can also handle (multiple)
+right-censored data are the <em>Kaplan-Meier</em> estimator
+(<code>estimate_cdf(methods = "kaplan", ...)</code>) and the
+<em>Nelson-Aalen</em> estimator
+(<code>estimate_cdf(methods = "nelson", ...)</code>).</p>
 </div>
-<div id="probability-plotting" class="section level3">
-<h3 class="hasAnchor">
-<a href="#probability-plotting" class="anchor"></a>Probability Plotting</h3>
-<p>After computing failure probabilities a method called <em>probability plotting</em> is applicable. It is a graphical <em>goodness of fit</em> technique that is used in assessing whether an assumed distribution is appropriate to model the sample data.</p>
-<p>The axes of a probability plot are transformed in such a way that the <em>CDF</em> of a specified model is represented through a straight line. If the plotted points (<code><a href="../reference/plot_prob.html">plot_prob()</a></code>) lie on an approximately straight line it can be said that the chosen distribution is adequate.</p>
-<p>The two-parameter Weibull distribution can be parameterized with parameters <span class="math inline">\(\mu\)</span> and <span class="math inline">\(\sigma\)</span> such that the <em>CDF</em> is characterized by the following equation:</p>
-<p><span class="math display">\[F(t)=\Phi_{SEV}\left(\frac{\log(t) - \mu}{\sigma}\right)\]</span></p>
-<p>The advantage of this representation is that the Weibull is part of the (log-)location-scale family. A linearized representation of this <em>CDF</em> is:</p>
-<p><span class="math display">\[\Phi^{-1}_{SEV}\left[F(t)\right]=\frac{1}{\sigma} \cdot \log(t) - \frac{\mu}{\sigma}\]</span></p>
+<div class="section level3">
+<h3 id="probability-plotting">Probability Plotting<a class="anchor" aria-label="anchor" href="#probability-plotting"></a>
+</h3>
+<p>After computing failure probabilities a method called <em>probability
+plotting</em> is applicable. It is a graphical <em>goodness of fit</em>
+technique that is used in assessing whether an assumed distribution is
+appropriate to model the sample data.</p>
+<p>The axes of a probability plot are transformed in such a way that the
+<em>CDF</em> of a specified model is represented through a straight
+line. If the plotted points (<code><a href="../reference/plot_prob.html">plot_prob()</a></code>) lie on an
+approximately straight line it can be said that the chosen distribution
+is adequate.</p>
+<p>The two-parameter Weibull distribution can be parameterized with
+parameters <span class="math inline">\(\mu\)</span> and <span class="math inline">\(\sigma\)</span> such that the <em>CDF</em> is
+characterized by the following equation:</p>
+<p><span class="math display">\[F(t)=\Phi_{SEV}\left(\frac{\log(t) -
+\mu}{\sigma}\right)\]</span></p>
+<p>The advantage of this representation is that the Weibull is part of
+the (log-)location-scale family. A linearized representation of this
+<em>CDF</em> is:</p>
+<p><span class="math display">\[\Phi^{-1}_{SEV}\left[F(t)\right]=\frac{1}{\sigma}
+\cdot \log(t) - \frac{\mu}{\sigma}\]</span></p>
 <p>This leads to the following transformations regarding the axes:</p>
 <ul>
 <li>Abscissa: <span class="math inline">\(x = \log(t)\)</span>
 </li>
-<li>Ordinate: <span class="math inline">\(y = \Phi^{-1}_{SEV}\left[F(t)\right]\)</span>, which is the quantile function of the SEV (<em>smallest extreme value</em>) distribution and can be written out with <span class="math inline">\(\log\left\{-\log\left[1-F(t)\right]\right\}\)</span>.</li>
+<li>Ordinate: <span class="math inline">\(y =
+\Phi^{-1}_{SEV}\left[F(t)\right]\)</span>, which is the quantile
+function of the SEV (<em>smallest extreme value</em>) distribution and
+can be written out with <span class="math inline">\(\log\left\{-\log\left[1-F(t)\right]\right\}\)</span>.</li>
 </ul>
-<p>Another version of the Weibull <em>CDF</em> with parameters <span class="math inline">\(\eta\)</span> and <span class="math inline">\(\beta\)</span> results in a <em>CDF</em> that is defined by the following equation:</p>
-<p><span class="math display">\[F(t)=1-\exp\left[ -\left(\frac{t}{\eta}\right)^{\beta}\right]\]</span></p>
+<p>Another version of the Weibull <em>CDF</em> with parameters <span class="math inline">\(\eta\)</span> and <span class="math inline">\(\beta\)</span> results in a <em>CDF</em> that is
+defined by the following equation:</p>
+<p><span class="math display">\[F(t)=1-\exp\left[
+-\left(\frac{t}{\eta}\right)^{\beta}\right]\]</span></p>
 <p>Then a linearized version of the CDF is:</p>
-<p><span class="math display">\[ \log\left\{-\log\left[1-F(t)\right]\right\} = \beta \cdot \log(t) - \beta \cdot \log(\eta)\]</span></p>
+<p><span class="math display">\[
+\log\left\{-\log\left[1-F(t)\right]\right\} = \beta \cdot \log(t) -
+\beta \cdot \log(\eta)\]</span></p>
 <p>Transformations regarding the axes are:</p>
 <ul>
 <li>Abscissa: <span class="math inline">\(x = \log(t)\)</span>
 </li>
-<li>Ordinate: <span class="math inline">\(y = \log\left\{-\log\left[1-F(t)\right]\right\}\)</span>.</li>
+<li>Ordinate: <span class="math inline">\(y =
+\log\left\{-\log\left[1-F(t)\right]\right\}\)</span>.</li>
 </ul>
-<p>It can be easily seen that the parameters can be converted into each other. The corresponding equations are:</p>
+<p>It can be easily seen that the parameters can be converted into each
+other. The corresponding equations are:</p>
 <p><span class="math display">\[\beta = \frac{1}{\sigma}\]</span></p>
 <p>and</p>
-<p><span class="math display">\[\eta = \exp\left(\mu\right).\]</span></p>
+<p><span class="math display">\[\eta =
+\exp\left(\mu\right).\]</span></p>
 </div>
 </div>
-<div id="data-shock-absorber" class="section level2">
-<h2 class="hasAnchor">
-<a href="#data-shock-absorber" class="anchor"></a>Data: Shock Absorber</h2>
-<p>To apply the introduced methods of non-parametric failure probability estimation and probability plotting the <code>shock</code> data is used. In this dataset kilometer-dependent problems that have occurred on shock absorbers are reported. In addition to failed items the dataset also contains non-defectives (<em>censored</em>) observations. The data can be found in <em>Statistical Methods for Reliability Data</em> <a href="#fn3" class="footnote-ref" id="fnref3"><sup>3</sup></a>.</p>
-<p>For consistent handling of the data, {weibulltools} introduces the function <code><a href="../reference/reliability_data.html">reliability_data()</a></code> that converts the original dataset into a <code>wt_reliability_data</code> object. This formatted object allows to easily apply the presented methods.</p>
+<div class="section level2">
+<h2 id="data-shock-absorber">Data: Shock Absorber<a class="anchor" aria-label="anchor" href="#data-shock-absorber"></a>
+</h2>
+<p>To apply the introduced methods of non-parametric failure probability
+estimation and probability plotting the <code>shock</code> data is used.
+In this dataset kilometer-dependent problems that have occurred on shock
+absorbers are reported. In addition to failed items the dataset also
+contains non-defectives (<em>censored</em>) observations. The data can
+be found in <em>Statistical Methods for Reliability Data</em> <a href="#fn3" class="footnote-ref" id="fnref3"><sup>3</sup></a>.</p>
+<p>For consistent handling of the data, {weibulltools} introduces the
+function <code><a href="../reference/reliability_data.html">reliability_data()</a></code> that converts the original
+dataset into a <code>wt_reliability_data</code> object. This formatted
+object allows to easily apply the presented methods.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">shock_tbl</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/reliability_data.html">reliability_data</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">shock</span>, x <span class="op">=</span> <span class="va">distance</span>, status <span class="op">=</span> <span class="va">status</span><span class="op">)</span>
 <span class="va">shock_tbl</span>
 <span class="co">#&gt; Reliability Data with characteristic x: 'distance':</span>
-<span class="co">#&gt; # A tibble: 38 x 3</span>
+<span class="co">#&gt; <span style="color: #949494;"># A tibble: 38 x 3</span></span>
 <span class="co">#&gt;        x status id   </span>
-<span class="co">#&gt;    &lt;int&gt;  &lt;dbl&gt; &lt;chr&gt;</span>
-<span class="co">#&gt;  1  6700      1 ID1  </span>
-<span class="co">#&gt;  2  6950      0 ID2  </span>
-<span class="co">#&gt;  3  7820      0 ID3  </span>
-<span class="co">#&gt;  4  8790      0 ID4  </span>
-<span class="co">#&gt;  5  9120      1 ID5  </span>
-<span class="co">#&gt;  6  9660      0 ID6  </span>
-<span class="co">#&gt;  7  9820      0 ID7  </span>
-<span class="co">#&gt;  8 11310      0 ID8  </span>
-<span class="co">#&gt;  9 11690      0 ID9  </span>
-<span class="co">#&gt; 10 11850      0 ID10 </span>
-<span class="co">#&gt; # ... with 28 more rows</span></code></pre></div>
+<span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span></span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span>  <span style="text-decoration: underline;">6</span>700      1 ID1  </span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span>  <span style="text-decoration: underline;">6</span>950      0 ID2  </span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span>  <span style="text-decoration: underline;">7</span>820      0 ID3  </span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span>  <span style="text-decoration: underline;">8</span>790      0 ID4  </span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span>  <span style="text-decoration: underline;">9</span>120      1 ID5  </span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span>  <span style="text-decoration: underline;">9</span>660      0 ID6  </span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span>  <span style="text-decoration: underline;">9</span>820      0 ID7  </span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> <span style="text-decoration: underline;">11</span>310      0 ID8  </span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> <span style="text-decoration: underline;">11</span>690      0 ID9  </span>
+<span class="co">#&gt; <span style="color: #BCBCBC;">10</span> <span style="text-decoration: underline;">11</span>850      0 ID10 </span>
+<span class="co">#&gt; <span style="color: #949494;"># ... with 28 more rows</span></span></code></pre></div>
 </div>
-<div id="estimation-of-failure-probabilities-with-weibulltools" class="section level2">
-<h2 class="hasAnchor">
-<a href="#estimation-of-failure-probabilities-with-weibulltools" class="anchor"></a>Estimation of Failure Probabilities with {weibulltools}</h2>
-<p>First, we are interested in how censored observations influence the estimation of failure probabilities in comparison to the case where only failed units are considered. To deal with survived and failed units we will use <code><a href="../reference/estimate_cdf.html">estimate_cdf()</a></code> with <code>methods = "johnson"</code>, whereas <code>methods = "mr"</code> only considers failures.</p>
+<div class="section level2">
+<h2 id="estimation-of-failure-probabilities-with-weibulltools">Estimation of Failure Probabilities with {weibulltools}<a class="anchor" aria-label="anchor" href="#estimation-of-failure-probabilities-with-weibulltools"></a>
+</h2>
+<p>First, we are interested in how censored observations influence the
+estimation of failure probabilities in comparison to the case where only
+failed units are considered. To deal with survived and failed units we
+will use <code><a href="../reference/estimate_cdf.html">estimate_cdf()</a></code> with
+<code>methods = "johnson"</code>, whereas <code>methods = "mr"</code>
+only considers failures.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Estimate CDF with both methods: </span>
-<span class="va">cdf_tbl</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/estimate_cdf.html">estimate_cdf</a></span><span class="op">(</span><span class="va">shock_tbl</span>, methods <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"mr"</span>, <span class="st">"johnson"</span><span class="op">)</span><span class="op">)</span>
+<span class="va">cdf_tbl</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/estimate_cdf.html">estimate_cdf</a></span><span class="op">(</span><span class="va">shock_tbl</span>, methods <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"mr"</span>, <span class="st">"johnson"</span><span class="op">)</span><span class="op">)</span>
 <span class="co">#&gt; The 'mr' method only considers failed units (status == 1) and does not retain intact units (status == 0).</span>
 
 <span class="co"># First case where only failed units are taken into account:</span>
-<span class="va">cdf_tbl_mr</span> <span class="op">&lt;-</span> <span class="va">cdf_tbl</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">cdf_estimation_method</span> <span class="op">==</span> <span class="st">"mr"</span><span class="op">)</span>
+<span class="va">cdf_tbl_mr</span> <span class="op">&lt;-</span> <span class="va">cdf_tbl</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">cdf_estimation_method</span> <span class="op">==</span> <span class="st">"mr"</span><span class="op">)</span>
 <span class="va">cdf_tbl_mr</span>
 <span class="co">#&gt; CDF estimation for method 'mr':</span>
-<span class="co">#&gt; # A tibble: 11 x 6</span>
+<span class="co">#&gt; <span style="color: #949494;"># A tibble: 11 x 6</span></span>
 <span class="co">#&gt;    id        x status  rank   prob cdf_estimation_method</span>
-<span class="co">#&gt;    &lt;chr&gt; &lt;int&gt;  &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt; &lt;chr&gt;                </span>
-<span class="co">#&gt;  1 ID1    6700      1     1 0.0614 mr                   </span>
-<span class="co">#&gt;  2 ID5    9120      1     2 0.149  mr                   </span>
-<span class="co">#&gt;  3 ID13  12200      1     3 0.237  mr                   </span>
-<span class="co">#&gt;  4 ID15  13150      1     4 0.325  mr                   </span>
-<span class="co">#&gt;  5 ID19  14300      1     5 0.412  mr                   </span>
-<span class="co">#&gt;  6 ID20  17520      1     6 0.5    mr                   </span>
-<span class="co">#&gt;  7 ID27  20100      1     7 0.588  mr                   </span>
-<span class="co">#&gt;  8 ID31  20900      1     8 0.675  mr                   </span>
-<span class="co">#&gt;  9 ID32  22700      1     9 0.763  mr                   </span>
-<span class="co">#&gt; 10 ID34  26510      1    10 0.851  mr                   </span>
-<span class="co">#&gt; 11 ID36  27490      1    11 0.939  mr</span>
+<span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                </span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> ID1    <span style="text-decoration: underline;">6</span>700      1     1 0.061<span style="text-decoration: underline;">4</span> mr                   </span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> ID5    <span style="text-decoration: underline;">9</span>120      1     2 0.149  mr                   </span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> ID13  <span style="text-decoration: underline;">12</span>200      1     3 0.237  mr                   </span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> ID15  <span style="text-decoration: underline;">13</span>150      1     4 0.325  mr                   </span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> ID19  <span style="text-decoration: underline;">14</span>300      1     5 0.412  mr                   </span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> ID20  <span style="text-decoration: underline;">17</span>520      1     6 0.5    mr                   </span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> ID27  <span style="text-decoration: underline;">20</span>100      1     7 0.588  mr                   </span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> ID31  <span style="text-decoration: underline;">20</span>900      1     8 0.675  mr                   </span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> ID32  <span style="text-decoration: underline;">22</span>700      1     9 0.763  mr                   </span>
+<span class="co">#&gt; <span style="color: #BCBCBC;">10</span> ID34  <span style="text-decoration: underline;">26</span>510      1    10 0.851  mr                   </span>
+<span class="co">#&gt; <span style="color: #BCBCBC;">11</span> ID36  <span style="text-decoration: underline;">27</span>490      1    11 0.939  mr</span>
 
 <span class="co"># Second case where both, survived and failed units are considered:</span>
-<span class="va">cdf_tbl_john</span> <span class="op">&lt;-</span> <span class="va">cdf_tbl</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">cdf_estimation_method</span> <span class="op">==</span> <span class="st">"johnson"</span><span class="op">)</span> 
+<span class="va">cdf_tbl_john</span> <span class="op">&lt;-</span> <span class="va">cdf_tbl</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">cdf_estimation_method</span> <span class="op">==</span> <span class="st">"johnson"</span><span class="op">)</span> 
 <span class="va">cdf_tbl_john</span>
 <span class="co">#&gt; CDF estimation for method 'johnson':</span>
-<span class="co">#&gt; # A tibble: 38 x 6</span>
+<span class="co">#&gt; <span style="color: #949494;"># A tibble: 38 x 6</span></span>
 <span class="co">#&gt;    id        x status  rank    prob cdf_estimation_method</span>
-<span class="co">#&gt;    &lt;chr&gt; &lt;int&gt;  &lt;dbl&gt; &lt;dbl&gt;   &lt;dbl&gt; &lt;chr&gt;                </span>
-<span class="co">#&gt;  1 ID1    6700      1  1     0.0182 johnson              </span>
-<span class="co">#&gt;  2 ID2    6950      0 NA    NA      johnson              </span>
-<span class="co">#&gt;  3 ID3    7820      0 NA    NA      johnson              </span>
-<span class="co">#&gt;  4 ID4    8790      0 NA    NA      johnson              </span>
-<span class="co">#&gt;  5 ID5    9120      1  2.09  0.0465 johnson              </span>
-<span class="co">#&gt;  6 ID6    9660      0 NA    NA      johnson              </span>
-<span class="co">#&gt;  7 ID7    9820      0 NA    NA      johnson              </span>
-<span class="co">#&gt;  8 ID8   11310      0 NA    NA      johnson              </span>
-<span class="co">#&gt;  9 ID9   11690      0 NA    NA      johnson              </span>
-<span class="co">#&gt; 10 ID10  11850      0 NA    NA      johnson              </span>
-<span class="co">#&gt; # ... with 28 more rows</span></code></pre></div>
+<span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                </span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> ID1    <span style="text-decoration: underline;">6</span>700      1  1     0.018<span style="text-decoration: underline;">2</span> johnson              </span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> ID2    <span style="text-decoration: underline;">6</span>950      0 <span style="color: #BB0000;">NA</span>    <span style="color: #BB0000;">NA</span>      johnson              </span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> ID3    <span style="text-decoration: underline;">7</span>820      0 <span style="color: #BB0000;">NA</span>    <span style="color: #BB0000;">NA</span>      johnson              </span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> ID4    <span style="text-decoration: underline;">8</span>790      0 <span style="color: #BB0000;">NA</span>    <span style="color: #BB0000;">NA</span>      johnson              </span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> ID5    <span style="text-decoration: underline;">9</span>120      1  2.09  0.046<span style="text-decoration: underline;">5</span> johnson              </span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> ID6    <span style="text-decoration: underline;">9</span>660      0 <span style="color: #BB0000;">NA</span>    <span style="color: #BB0000;">NA</span>      johnson              </span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> ID7    <span style="text-decoration: underline;">9</span>820      0 <span style="color: #BB0000;">NA</span>    <span style="color: #BB0000;">NA</span>      johnson              </span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> ID8   <span style="text-decoration: underline;">11</span>310      0 <span style="color: #BB0000;">NA</span>    <span style="color: #BB0000;">NA</span>      johnson              </span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> ID9   <span style="text-decoration: underline;">11</span>690      0 <span style="color: #BB0000;">NA</span>    <span style="color: #BB0000;">NA</span>      johnson              </span>
+<span class="co">#&gt; <span style="color: #BCBCBC;">10</span> ID10  <span style="text-decoration: underline;">11</span>850      0 <span style="color: #BB0000;">NA</span>    <span style="color: #BB0000;">NA</span>      johnson              </span>
+<span class="co">#&gt; <span style="color: #949494;"># ... with 28 more rows</span></span></code></pre></div>
 <p><br></p>
-<p>If we compare both outputs we can see that survivors reduce the probabilities. But this is just that what was expected since undamaged units with longer or equal lifetime characteristic <em>x</em> let us gain confidence in the product.</p>
+<p>If we compare both outputs we can see that survivors reduce the
+probabilities. But this is just that what was expected since undamaged
+units with longer or equal lifetime characteristic <em>x</em> let us
+gain confidence in the product.</p>
 </div>
-<div id="probability-plotting-with-weibulltools" class="section level2">
-<h2 class="hasAnchor">
-<a href="#probability-plotting-with-weibulltools" class="anchor"></a>Probability Plotting with {weibulltools}</h2>
-<p>The estimated probabilities should now be presented in a probability plot. With <code><a href="../reference/plot_prob.html">plot_prob()</a></code> probability plots for several lifetime distributions can be constructed and estimates of multiple methods can be displayed at once.</p>
-<div id="weibull-probability-plot" class="section level3">
-<h3 class="hasAnchor">
-<a href="#weibull-probability-plot" class="anchor"></a>Weibull Probability Plot</h3>
+<div class="section level2">
+<h2 id="probability-plotting-with-weibulltools">Probability Plotting with {weibulltools}<a class="anchor" aria-label="anchor" href="#probability-plotting-with-weibulltools"></a>
+</h2>
+<p>The estimated probabilities should now be presented in a probability
+plot. With <code><a href="../reference/plot_prob.html">plot_prob()</a></code> probability plots for several
+lifetime distributions can be constructed and estimates of multiple
+methods can be displayed at once.</p>
+<div class="section level3">
+<h3 id="weibull-probability-plot">Weibull Probability Plot<a class="anchor" aria-label="anchor" href="#weibull-probability-plot"></a>
+</h3>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Weibull grid for estimated probabilities: </span>
 <span class="va">weibull_grid</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plot_prob.html">plot_prob</a></span><span class="op">(</span>
@@ -284,12 +385,16 @@ Figure 3: Plotting positions in Weibull grid.
 </p>
 </div>
 <p><br></p>
-<p><em>Figure 3</em> shows that the consideration of survivors (orange points, <em>Method: johnson</em>) decreases the failure probability in comparison to the sole evaluation of failed items (green points, <em>Method: mr</em>).</p>
+<p><em>Figure 3</em> shows that the consideration of survivors (orange
+points, <em>Method: johnson</em>) decreases the failure probability in
+comparison to the sole evaluation of failed items (green points,
+<em>Method: mr</em>).</p>
 </div>
-<div id="log-normal-probability-plot" class="section level3">
-<h3 class="hasAnchor">
-<a href="#log-normal-probability-plot" class="anchor"></a>Log-normal Probability Plot</h3>
-<p>Finally, we want to use a log-normal probability plot to visualize the estimated failure probabilities.</p>
+<div class="section level3">
+<h3 id="log-normal-probability-plot">Log-normal Probability Plot<a class="anchor" aria-label="anchor" href="#log-normal-probability-plot"></a>
+</h3>
+<p>Finally, we want to use a log-normal probability plot to visualize
+the estimated failure probabilities.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Log-normal grid for estimated probabilities: </span>
 <span class="va">lognorm_grid</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plot_prob.html">plot_prob</a></span><span class="op">(</span>
@@ -309,15 +414,25 @@ Figure 4: Plotting positions in log-normal grid.
 </p>
 </div>
 <p><br></p>
-<p>On the basis of <em>Figure 3</em> and <em>Figure 4</em> we can subjectively assess the goodness of fit of Weibull and log-normal. It can be seen that in both grids, the plotted points roughly fall on a straight line. Hence one can say that the Weibull as well as the log-normal are good model candidates for the <code>shock</code> data.</p>
+<p>On the basis of <em>Figure 3</em> and <em>Figure 4</em> we can
+subjectively assess the goodness of fit of Weibull and log-normal. It
+can be seen that in both grids, the plotted points roughly fall on a
+straight line. Hence one can say that the Weibull as well as the
+log-normal are good model candidates for the <code>shock</code>
+data.</p>
 </div>
 </div>
-<div class="footnotes">
+<div class="footnotes footnotes-end-of-document">
 <hr>
 <ol>
-<li id="fn1"><p>Kapur, K. C.; Lamberson, L. R.: <em>Reliability in Engineering Design</em>, <em>New York: Wiley</em>, 1977, pp. 297-301<a href="#fnref1" class="footnote-back">↩︎</a></p></li>
-<li id="fn2"><p>Benard, A.; Bos-Levenbach, E. C.: <em>The Plotting of Observations on Probability Paper</em>, <em>Statistica Neerlandica 7 (3)</em>, 1953, pp. 163-173<a href="#fnref2" class="footnote-back">↩︎</a></p></li>
-<li id="fn3"><p>Meeker, W. Q.; Escobar, L. A.: <em>Statistical Methods for Reliability Data</em>, <em>New York, Wiley series in probability and statistics</em>, 1998, p. 630<a href="#fnref3" class="footnote-back">↩︎</a></p></li>
+<li id="fn1"><p>Kapur, K. C.; Lamberson, L. R.: <em>Reliability in
+Engineering Design</em>, <em>New York: Wiley</em>, 1977, pp. 297-301<a href="#fnref1" class="footnote-back">↩︎</a></p></li>
+<li id="fn2"><p>Benard, A.; Bos-Levenbach, E. C.: <em>The Plotting of
+Observations on Probability Paper</em>, <em>Statistica Neerlandica 7
+(3)</em>, 1953, pp. 163-173<a href="#fnref2" class="footnote-back">↩︎</a></p></li>
+<li id="fn3"><p>Meeker, W. Q.; Escobar, L. A.: <em>Statistical Methods
+for Reliability Data</em>, <em>New York, Wiley series in probability and
+statistics</em>, 1998, p. 630<a href="#fnref3" class="footnote-back">↩︎</a></p></li>
 </ol>
 </div>
   </div>
@@ -333,11 +448,14 @@ Figure 4: Plotting positions in log-normal grid.
 
 
       <footer><div class="copyright">
-  <p>Developed by Tim-Gunnar Hensel, David Barkemeyer.</p>
+  <p></p>
+<p>Developed by Tim-Gunnar Hensel, David Barkemeyer.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
+  <p></p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a>
+2.0.2.</p>
 </div>
 
       </footer>
@@ -345,6 +463,8 @@ Figure 4: Plotting positions in log-normal grid.
 
   
 
+
+  
 
   </body>
 </html>

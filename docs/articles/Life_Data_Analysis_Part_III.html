@@ -19,6 +19,8 @@
 <![endif]-->
 </head>
 <body data-spy="scroll" data-target="#toc">
+    
+
     <div class="container template-article">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -31,23 +33,17 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">weibulltools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.0.0.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.0.0.9000</span>
       </span>
     </div>
 
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
 <li>
-  <a href="../index.html">
-    <span class="fas fa-home fa-lg"></span>
-     
-  </a>
-</li>
-<li>
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
      
     <span class="caret"></span>
@@ -73,7 +69,7 @@
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
-  <a href="https://github.com/Tim-TU/weibulltools/">
+  <a href="https://github.com/Tim-TU/weibulltools/" class="external-link">
     <span class="fab fa-github fa-lg"></span>
      
   </a>
@@ -88,138 +84,270 @@
 
       
 
-      </header><script src="Life_Data_Analysis_Part_III_files/header-attrs-2.7/header-attrs.js"></script><div class="row">
+      </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
-      <h1 data-toc-skip>Life Data Analysis Part III - Confidence Intervals</h1>
-            <h3 class="subtitle">For Model Parameters, Probabilities and Quantiles</h3>
-                        <h4 class="author">Tim-Gunnar Hensel</h4>
-                        <h4 class="author">David Barkemeyer</h4>
+      <h1 data-toc-skip>Life Data Analysis Part III - Confidence
+Intervals</h1>
+            <h3 data-toc-skip class="subtitle">For Model Parameters,
+Probabilities and Quantiles</h3>
+                        <h4 data-toc-skip class="author">Tim-Gunnar
+Hensel</h4>
+                        <h4 data-toc-skip class="author">David
+Barkemeyer</h4>
             
-            <h4 class="date">2021-04-12</h4>
+            <h4 data-toc-skip class="date">2022-03-30</h4>
       
-      <small class="dont-index">Source: <a href="https://github.com/Tim-TU/weibulltools/blob/master/vignettes/Life_Data_Analysis_Part_III.Rmd"><code>vignettes/Life_Data_Analysis_Part_III.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/Tim-TU/weibulltools/blob/HEAD/vignettes/Life_Data_Analysis_Part_III.Rmd" class="external-link"><code>vignettes/Life_Data_Analysis_Part_III.Rmd</code></a></small>
       <div class="hidden name"><code>Life_Data_Analysis_Part_III.Rmd</code></div>
 
     </div>
 
     
     
-<p>In contrast to point estimation procedures, interval estimation methods, e.g. the computation of confidence intervals, express the uncertainty which is associated with the use of a statistical estimator.</p>
-<p>In reliability analysis it is common practice to provide confidence regions for the parameters of a lifetime distribution as well as for quantities that depend on these model parameters.</p>
-<p>In this vignette, the determination of confidence intervals for model parameters, quantiles (lifetime characteristic) and failure probabilites (<em>CDF</em>) is presented.</p>
-<div id="confidence-intervals-for-model-parameters" class="section level2">
-<h2 class="hasAnchor">
-<a href="#confidence-intervals-for-model-parameters" class="anchor"></a>Confidence Intervals for Model Parameters</h2>
-<p>Confidence intervals can be calculated for every model parameter. For this, the (approximated) sampling distribution as well as an estimate of its standard deviation must be given. In the following, the formulas which strongly depend on the estimation methods, are provided for <em>Rank Regression</em> and <em>Maximum Likelihood Estimation</em>.</p>
-<div id="rank-regression-rr" class="section level3">
-<h3 class="hasAnchor">
-<a href="#rank-regression-rr" class="anchor"></a>Rank Regression (RR)</h3>
-<p>In <em>Rank Regression</em> a linear relationship between the lifetime characteristic and the failure probability is determined. The parameters of a simple linear regression model are the intercept and the slope, which are the location parameter <span class="math inline">\(\mu\)</span> and the scale parameter <span class="math inline">\(\sigma\)</span> for the majority of lifetime distributions.</p>
-<p>An approximated two-sided interval for the true parameters on a <span class="math inline">\(1 - \alpha\)</span> confidence level can be obtained with the formulas</p>
-<p><span class="math display">\[\bigg[\hat{\mu}_{\text{lower}} \, ; \hat{\mu}_{\text{upper}} \bigg] = \bigg[\hat{\mu}_{\text{RR}} \pm t_{1 - \frac{\alpha}{2}} \cdot \hat{se}^{\text{HC}}_{\hat{\mu}}\bigg] \qquad and \qquad \bigg[\hat{\sigma}_{\text{lower}} \, ;\hat{\sigma}_{\text{upper}} \bigg] = \bigg[\hat{\sigma}_{\text{RR}} \pm t_{1 - \frac{\alpha}{2}} \cdot \hat{se}^{\text{HC}}_{\hat{\sigma}}\bigg]. \]</span></p>
-<p>For a given sample, <span class="math inline">\(\hat{\mu}_{\text{RR}}\)</span> and <span class="math inline">\(\hat{\sigma}_{\text{RR}}\)</span> are the least squares estimates and <span class="math inline">\(\hat{se}^{\text{HC}}_{\hat{\mu}}\)</span> and <span class="math inline">\(\hat{se}^{\text{HC}}_{\hat{\sigma}}\)</span> are the respective estimates of the standard deviations. The uncertainty that arises due to the unknown standard deviations must be taken into account by using the quantiles of Student’s t-distribution.</p>
-<p>When using <em>RR</em> in the context of reliability analysis, the assumption of homoscedastic error terms is often violated. Therefore, the computation of the standard errors is based on a heteroscedasticity-consistent (<strong>HC</strong>) variance-covariance matrix. Other assumptions of the classical linear regression model like the need of no serial correlation are questionable as well and have already been discussed in the literature <a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a>.</p>
-<p>Hence, the <em>Maximum Likelihood Estimation</em> procedure is recommended, which is described in the next section.</p>
-</div>
-<div id="maximum-likelihood-estimation-mle" class="section level3">
-<h3 class="hasAnchor">
-<a href="#maximum-likelihood-estimation-mle" class="anchor"></a>Maximum Likelihood Estimation (MLE)</h3>
-<p><em>ML</em> estimators are subject to a variety of restrictions but in return have many useful properties in contrast to other estimation techniques. One is that <em>ML</em> estimators converge in distribution to a normal distribution and for this reason, normal approximation confidence intervals for the model parameters can be calculated by theory.</p>
-<p>Using the parameterization introduced above, a two-sided normal approximation confidence interval for the location parameter <span class="math inline">\(\mu\)</span> can be computed with the equation</p>
-<p><span class="math display">\[\bigg[\hat{\mu}_{\text{lower}} \, ; \, \hat{\mu}_{\text{upper}} \bigg] = \bigg[\hat{\mu}_{\text{MLE}} \pm z_{1 - \frac{\alpha}{2}} \cdot \hat{se}_{\hat{\mu}}\bigg].\]</span></p>
-<p>By definition, the scale parameter <span class="math inline">\(\sigma\)</span> is always positive and thus an alternative confidence interval is used <a href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a>:</p>
-<p><span class="math display">\[\bigg[\hat{\sigma}_{\text{lower}} \, ; \, \hat{\sigma}_{\text{upper}} \bigg] = \bigg[\frac{\hat{\sigma}_{\text{MLE}}}{w} \, ; \hat{\sigma}_{\text{MLE}} \cdot w \bigg]\]</span> with</p>
-<p><span class="math display">\[w = \exp\left[z_{1 - \frac{\alpha}{2}} \cdot \frac{\hat{se}_{\hat{\sigma}}}{\hat{\sigma}_{\text{MLE}}}\right].\]</span></p>
-</div>
-</div>
-<div id="confidence-intervals-for-probabilities-and-quantiles" class="section level2">
-<h2 class="hasAnchor">
-<a href="#confidence-intervals-for-probabilities-and-quantiles" class="anchor"></a>Confidence Intervals for Probabilities and Quantiles</h2>
-<p>In addition to the confidence regions for the distribution-specific parameters, intervals for the regression line are provided as well. These can be aligned according to the probability <span class="math inline">\(F(t)\)</span> or to the lifetime characteristic <span class="math inline">\(t\)</span>.</p>
-<p>Whereas the Beta-Binomial confidence bounds are often used in combination with <em>RR</em>, Fisher’s normal approximation confidence intervals are only applicable in the case of <em>MLE</em>.</p>
-<div id="beta-binomial-confidence-intervals-for-ft" class="section level3">
-<h3 class="hasAnchor">
-<a href="#beta-binomial-confidence-intervals-for-ft" class="anchor"></a>Beta-Binomial Confidence Intervals for <span class="math inline">\(F(t)\)</span>
+<p>In contrast to point estimation procedures, interval estimation
+methods, e.g. the computation of confidence intervals, express the
+uncertainty which is associated with the use of a statistical
+estimator.</p>
+<p>In reliability analysis it is common practice to provide confidence
+regions for the parameters of a lifetime distribution as well as for
+quantities that depend on these model parameters.</p>
+<p>In this vignette, the determination of confidence intervals for model
+parameters, quantiles (lifetime characteristic) and failure probabilites
+(<em>CDF</em>) is presented.</p>
+<div class="section level2">
+<h2 id="confidence-intervals-for-model-parameters">Confidence Intervals for Model Parameters<a class="anchor" aria-label="anchor" href="#confidence-intervals-for-model-parameters"></a>
+</h2>
+<p>Confidence intervals can be calculated for every model parameter. For
+this, the (approximated) sampling distribution as well as an estimate of
+its standard deviation must be given. In the following, the formulas
+which strongly depend on the estimation methods, are provided for
+<em>Rank Regression</em> and <em>Maximum Likelihood Estimation</em>.</p>
+<div class="section level3">
+<h3 id="rank-regression-rr">Rank Regression (RR)<a class="anchor" aria-label="anchor" href="#rank-regression-rr"></a>
 </h3>
-<p>To obtain a two-sided non-parametric confidence interval for the failure probabilities at a given <span class="math inline">\(1-\alpha\)</span> level, a procedure similar to <em>Median Ranks (MR)</em> is used.</p>
-<p>Instead of finding the probability <span class="math inline">\(p_{\text{MR}}\)</span> for the <em>j-th</em> rank at the <span class="math inline">\(50\%\)</span> level</p>
-<p><span class="math display">\[0.5 = \sum^n_{k = j} \binom{n}{k} \cdot p_{\text{MR}}^k \cdot \left(1-p_{\text{MR}}\right)^{n-k}, \]</span></p>
-<p>the probability <span class="math inline">\(p_{\text{lower}}\)</span> must be determined for equation</p>
-<p><span class="math display">\[\frac{\alpha}{2} = \sum^n_{k = j} \binom{n}{k} \cdot p_{\text{lower}}^k \cdot \left(1-p_{\text{lower}}\right)^{n-k}\]</span></p>
-<p>and <span class="math inline">\(p_{\text{upper}}\)</span> for the expression</p>
-<p><span class="math display">\[1 - \frac{\alpha}{2} = \sum^n_{k = j} \binom{n}{k} \cdot p_{\text{upper}}^k \cdot \left(1-p_{\text{upper}}\right)^{n-k}.\]</span></p>
-<p>The resulting interval <span class="math inline">\(\left[\hat{F}_{j, \, {\text{lower}}} \, ; \, \hat{F}_{j, \, {\text{upper}}}\right] = \left[\hat{p}_{{\text{lower}}} \, ; \, \hat{p}_{{\text{upper}}}\right]\)</span> is the estimated confidence region for the true failure probability with respect to the <em>j-th</em> rank.</p>
+<p>In <em>Rank Regression</em> a linear relationship between the
+lifetime characteristic and the failure probability is determined. The
+parameters of a simple linear regression model are the intercept and the
+slope, which are the location parameter <span class="math inline">\(\mu\)</span> and the scale parameter <span class="math inline">\(\sigma\)</span> for the majority of lifetime
+distributions.</p>
+<p>An approximated two-sided interval for the true parameters on a <span class="math inline">\(1 - \alpha\)</span> confidence level can be
+obtained with the formulas</p>
+<p><span class="math display">\[\bigg[\hat{\mu}_{\text{lower}} \, ;
+\hat{\mu}_{\text{upper}} \bigg] = \bigg[\hat{\mu}_{\text{RR}} \pm t_{1 -
+\frac{\alpha}{2}} \cdot \hat{se}^{\text{HC}}_{\hat{\mu}}\bigg] \qquad
+and \qquad \bigg[\hat{\sigma}_{\text{lower}} \,
+;\hat{\sigma}_{\text{upper}} \bigg] = \bigg[\hat{\sigma}_{\text{RR}} \pm
+t_{1 - \frac{\alpha}{2}} \cdot
+\hat{se}^{\text{HC}}_{\hat{\sigma}}\bigg]. \]</span></p>
+<p>For a given sample, <span class="math inline">\(\hat{\mu}_{\text{RR}}\)</span> and <span class="math inline">\(\hat{\sigma}_{\text{RR}}\)</span> are the least
+squares estimates and <span class="math inline">\(\hat{se}^{\text{HC}}_{\hat{\mu}}\)</span> and
+<span class="math inline">\(\hat{se}^{\text{HC}}_{\hat{\sigma}}\)</span>
+are the respective estimates of the standard deviations. The uncertainty
+that arises due to the unknown standard deviations must be taken into
+account by using the quantiles of Student’s t-distribution.</p>
+<p>When using <em>RR</em> in the context of reliability analysis, the
+assumption of homoscedastic error terms is often violated. Therefore,
+the computation of the standard errors is based on a
+heteroscedasticity-consistent (<strong>HC</strong>) variance-covariance
+matrix. Other assumptions of the classical linear regression model like
+the need of no serial correlation are questionable as well and have
+already been discussed in the literature <a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a>.</p>
+<p>Hence, the <em>Maximum Likelihood Estimation</em> procedure is
+recommended, which is described in the next section.</p>
 </div>
-<div id="beta-binomial-confidence-intervals-for-t" class="section level3">
-<h3 class="hasAnchor">
-<a href="#beta-binomial-confidence-intervals-for-t" class="anchor"></a>Beta-Binomial Confidence Intervals for <span class="math inline">\(t\)</span>
+<div class="section level3">
+<h3 id="maximum-likelihood-estimation-mle">Maximum Likelihood Estimation (MLE)<a class="anchor" aria-label="anchor" href="#maximum-likelihood-estimation-mle"></a>
 </h3>
-<p>Once the intervals of the failure probabilities are calculated, a two-sided confidence interval for the lifetime characteristic can be found with the quantile function of the underlying lifetime distribution.</p>
+<p><em>ML</em> estimators are subject to a variety of restrictions but
+in return have many useful properties in contrast to other estimation
+techniques. One is that <em>ML</em> estimators converge in distribution
+to a normal distribution and for this reason, normal approximation
+confidence intervals for the model parameters can be calculated by
+theory.</p>
+<p>Using the parameterization introduced above, a two-sided normal
+approximation confidence interval for the location parameter <span class="math inline">\(\mu\)</span> can be computed with the equation</p>
+<p><span class="math display">\[\bigg[\hat{\mu}_{\text{lower}} \, ; \,
+\hat{\mu}_{\text{upper}} \bigg] = \bigg[\hat{\mu}_{\text{MLE}} \pm z_{1
+- \frac{\alpha}{2}} \cdot \hat{se}_{\hat{\mu}}\bigg].\]</span></p>
+<p>By definition, the scale parameter <span class="math inline">\(\sigma\)</span> is always positive and thus an
+alternative confidence interval is used <a href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a>:</p>
+<p><span class="math display">\[\bigg[\hat{\sigma}_{\text{lower}} \, ;
+\, \hat{\sigma}_{\text{upper}} \bigg] =
+\bigg[\frac{\hat{\sigma}_{\text{MLE}}}{w} \, ; \hat{\sigma}_{\text{MLE}}
+\cdot w \bigg]\]</span> with</p>
+<p><span class="math display">\[w = \exp\left[z_{1 - \frac{\alpha}{2}}
+\cdot
+\frac{\hat{se}_{\hat{\sigma}}}{\hat{\sigma}_{\text{MLE}}}\right].\]</span></p>
+</div>
+</div>
+<div class="section level2">
+<h2 id="confidence-intervals-for-probabilities-and-quantiles">Confidence Intervals for Probabilities and Quantiles<a class="anchor" aria-label="anchor" href="#confidence-intervals-for-probabilities-and-quantiles"></a>
+</h2>
+<p>In addition to the confidence regions for the distribution-specific
+parameters, intervals for the regression line are provided as well.
+These can be aligned according to the probability <span class="math inline">\(F(t)\)</span> or to the lifetime characteristic
+<span class="math inline">\(t\)</span>.</p>
+<p>Whereas the Beta-Binomial confidence bounds are often used in
+combination with <em>RR</em>, Fisher’s normal approximation confidence
+intervals are only applicable in the case of <em>MLE</em>.</p>
+<div class="section level3">
+<h3 id="beta-binomial-confidence-intervals-for-ft">Beta-Binomial Confidence Intervals for <span class="math inline">\(F(t)\)</span><a class="anchor" aria-label="anchor" href="#beta-binomial-confidence-intervals-for-ft"></a>
+</h3>
+<p>To obtain a two-sided non-parametric confidence interval for the
+failure probabilities at a given <span class="math inline">\(1-\alpha\)</span> level, a procedure similar to
+<em>Median Ranks (MR)</em> is used.</p>
+<p>Instead of finding the probability <span class="math inline">\(p_{\text{MR}}\)</span> for the <em>j-th</em> rank
+at the <span class="math inline">\(50\%\)</span> level</p>
+<p><span class="math display">\[0.5 = \sum^n_{k = j} \binom{n}{k} \cdot
+p_{\text{MR}}^k \cdot \left(1-p_{\text{MR}}\right)^{n-k}, \]</span></p>
+<p>the probability <span class="math inline">\(p_{\text{lower}}\)</span>
+must be determined for equation</p>
+<p><span class="math display">\[\frac{\alpha}{2} = \sum^n_{k = j}
+\binom{n}{k} \cdot p_{\text{lower}}^k \cdot
+\left(1-p_{\text{lower}}\right)^{n-k}\]</span></p>
+<p>and <span class="math inline">\(p_{\text{upper}}\)</span> for the
+expression</p>
+<p><span class="math display">\[1 - \frac{\alpha}{2} = \sum^n_{k = j}
+\binom{n}{k} \cdot p_{\text{upper}}^k \cdot
+\left(1-p_{\text{upper}}\right)^{n-k}.\]</span></p>
+<p>The resulting interval <span class="math inline">\(\left[\hat{F}_{j,
+\, {\text{lower}}} \, ; \, \hat{F}_{j, \, {\text{upper}}}\right] =
+\left[\hat{p}_{{\text{lower}}} \, ; \,
+\hat{p}_{{\text{upper}}}\right]\)</span> is the estimated confidence
+region for the true failure probability with respect to the
+<em>j-th</em> rank.</p>
+</div>
+<div class="section level3">
+<h3 id="beta-binomial-confidence-intervals-for-t">Beta-Binomial Confidence Intervals for <span class="math inline">\(t\)</span><a class="anchor" aria-label="anchor" href="#beta-binomial-confidence-intervals-for-t"></a>
+</h3>
+<p>Once the intervals of the failure probabilities are calculated, a
+two-sided confidence interval for the lifetime characteristic can be
+found with the quantile function of the underlying lifetime
+distribution.</p>
 <p>For the Weibull, the quantile function is given by the formula</p>
-<p><span class="math display">\[t_{p} = F^{-1}(p) = \exp\left[\mu + \Phi^{-1}_{\text{SEV}}(p) \cdot \sigma\right],\]</span> where <span class="math inline">\(\Phi^{-1}_{\text{SEV}}\)</span> is the quantile function of the standard smallest extreme value distribution.</p>
-<p>The confidence interval for <span class="math inline">\(t\)</span> with respect to the estimated <em>RR</em> parameters as well as the lower and upper probability of the <em>j-th</em> rank is then computed by</p>
-<p><span class="math display">\[\hat{t}_{j \, ; \, \text{lower}} = \exp\left[\hat{\mu}_{\text{RR}} + \Phi^{-1}_{\text{SEV}}(\hat{F}_{j, \, {\text{lower}}}) \cdot \hat{\sigma}_{\text{RR}}\right]\]</span> and</p>
-<p><span class="math display">\[\hat{t}_{j \, ; \, \text{upper}} = \exp\left[\hat{\mu}_{\text{RR}} + \Phi^{-1}_{\text{SEV}}(\hat{F}_{j, \, {\text{upper}}}) \cdot \hat{\sigma}_{\text{RR}}\right].\]</span></p>
+<p><span class="math display">\[t_{p} = F^{-1}(p) = \exp\left[\mu +
+\Phi^{-1}_{\text{SEV}}(p) \cdot \sigma\right],\]</span> where <span class="math inline">\(\Phi^{-1}_{\text{SEV}}\)</span> is the quantile
+function of the standard smallest extreme value distribution.</p>
+<p>The confidence interval for <span class="math inline">\(t\)</span>
+with respect to the estimated <em>RR</em> parameters as well as the
+lower and upper probability of the <em>j-th</em> rank is then computed
+by</p>
+<p><span class="math display">\[\hat{t}_{j \, ; \, \text{lower}} =
+\exp\left[\hat{\mu}_{\text{RR}} + \Phi^{-1}_{\text{SEV}}(\hat{F}_{j, \,
+{\text{lower}}}) \cdot \hat{\sigma}_{\text{RR}}\right]\]</span> and</p>
+<p><span class="math display">\[\hat{t}_{j \, ; \, \text{upper}} =
+\exp\left[\hat{\mu}_{\text{RR}} + \Phi^{-1}_{\text{SEV}}(\hat{F}_{j, \,
+{\text{upper}}}) \cdot \hat{\sigma}_{\text{RR}}\right].\]</span></p>
 </div>
-<div id="fishers-confidence-intervals-for-ft" class="section level3">
-<h3 class="hasAnchor">
-<a href="#fishers-confidence-intervals-for-ft" class="anchor"></a>Fisher’s Confidence Intervals for <span class="math inline">\(F(t)\)</span>
+<div class="section level3">
+<h3 id="fishers-confidence-intervals-for-ft">Fisher’s Confidence Intervals for <span class="math inline">\(F(t)\)</span><a class="anchor" aria-label="anchor" href="#fishers-confidence-intervals-for-ft"></a>
 </h3>
-<p>For a particular quantile <span class="math inline">\(t\)</span> and the vector of parameters <span class="math inline">\(\hat{\theta}_{MLE}\)</span>, a normal approximation confidence interval for the failure probability <span class="math inline">\(F(t)\)</span> can be obtained by</p>
-<p><span class="math display">\[\bigg[\hat{F}_{\text{lower}}(t) \, ; \, \hat{F}_{\text{upper}}(t)\bigg] = \bigg[\hat{F}_{\text{MLE}}(t) \pm z_{1 - \frac{\alpha}{2}} \cdot \hat{se}_{\hat{F}(t)}\bigg].\]</span></p>
-<p>In order to guarantee that the realized confidence interval of <span class="math inline">\(F(t)\)</span> always is between 0 and 1, the so called <em>z-procedure</em> can be applied <a href="#fn3" class="footnote-ref" id="fnref3"><sup>3</sup></a>. Using this technique, statistical inference is first done for the standardized quantile <span class="math inline">\(z\)</span> and afterwards entered in <span class="math inline">\(F(t)\)</span> to obtain the desired interval.</p>
-<p>For the Weibull, the <em>ML</em> estimator of the standardized quantile function <span class="math inline">\(z\)</span> is</p>
-<p><span class="math display">\[\hat{z}_{\text{MLE}} = \frac{log(t) - \hat{\mu}_{\text{MLE}}}{\hat{\sigma}_{\text{MLE}}}. \]</span></p>
-<p>First, an approximate confidence interval for <span class="math inline">\(z\)</span> is determined with the following formula:</p>
-<p><span class="math display">\[\bigg[\hat{z}_{\text{lower}} \, ; \, \hat{z}_{\text{upper}}\bigg] = \bigg[\hat{z}_{\text{MLE}} \pm z_{1 - \frac{\alpha}{2}} \cdot \hat{se}_{\hat{z}}\bigg].\]</span></p>
-<p>An approximate formula for the standard error of the estimator <span class="math inline">\(\hat{z}\)</span> can be derived with the <em>delta method</em>:</p>
-<p><span class="math display">\[\hat{se}_{\hat{z}} = \sqrt{\hat{Var}_{\hat{z}}} = \sqrt{\bigg(\frac{\partial{\hat{z}}}{\partial{\hat{\theta}_{\text{MLE}}}}\bigg)^{T}\; \hat{Var}(\hat{\theta}_{\text{MLE}})\; \frac{\partial{\hat{z}}}{\partial{\hat{\theta}_{\text{MLE}}}}} \; .\]</span></p>
-<p>Finally, the estimated bounds of <span class="math inline">\(z\)</span> are then plugged into the distribution-specific standard <em>CDF</em> to obtain the interval for <span class="math inline">\(F(t)\)</span>, which is</p>
-<p><span class="math display">\[\bigg[\hat{F}_{\text{lower}}(t) \, ; \, \hat{F}_{\text{upper}}(t)\bigg] = \bigg[\Phi_{\text{SEV}}(\hat{z}_{\text{lower}}) \, ; \, \Phi_{\text{SEV}}(\hat{z}_{\text{upper}}) \bigg].\]</span></p>
+<p>For a particular quantile <span class="math inline">\(t\)</span> and
+the vector of parameters <span class="math inline">\(\hat{\theta}_{MLE}\)</span>, a normal
+approximation confidence interval for the failure probability <span class="math inline">\(F(t)\)</span> can be obtained by</p>
+<p><span class="math display">\[\bigg[\hat{F}_{\text{lower}}(t) \, ; \,
+\hat{F}_{\text{upper}}(t)\bigg] = \bigg[\hat{F}_{\text{MLE}}(t) \pm z_{1
+- \frac{\alpha}{2}} \cdot \hat{se}_{\hat{F}(t)}\bigg].\]</span></p>
+<p>In order to guarantee that the realized confidence interval of <span class="math inline">\(F(t)\)</span> always is between 0 and 1, the so
+called <em>z-procedure</em> can be applied <a href="#fn3" class="footnote-ref" id="fnref3"><sup>3</sup></a>. Using this technique,
+statistical inference is first done for the standardized quantile <span class="math inline">\(z\)</span> and afterwards entered in <span class="math inline">\(F(t)\)</span> to obtain the desired interval.</p>
+<p>For the Weibull, the <em>ML</em> estimator of the standardized
+quantile function <span class="math inline">\(z\)</span> is</p>
+<p><span class="math display">\[\hat{z}_{\text{MLE}} = \frac{log(t) -
+\hat{\mu}_{\text{MLE}}}{\hat{\sigma}_{\text{MLE}}}. \]</span></p>
+<p>First, an approximate confidence interval for <span class="math inline">\(z\)</span> is determined with the following
+formula:</p>
+<p><span class="math display">\[\bigg[\hat{z}_{\text{lower}} \, ; \,
+\hat{z}_{\text{upper}}\bigg] = \bigg[\hat{z}_{\text{MLE}} \pm z_{1 -
+\frac{\alpha}{2}} \cdot \hat{se}_{\hat{z}}\bigg].\]</span></p>
+<p>An approximate formula for the standard error of the estimator <span class="math inline">\(\hat{z}\)</span> can be derived with the <em>delta
+method</em>:</p>
+<p><span class="math display">\[\hat{se}_{\hat{z}} =
+\sqrt{\hat{Var}_{\hat{z}}} =
+\sqrt{\bigg(\frac{\partial{\hat{z}}}{\partial{\hat{\theta}_{\text{MLE}}}}\bigg)^{T}\;
+\hat{Var}(\hat{\theta}_{\text{MLE}})\;
+\frac{\partial{\hat{z}}}{\partial{\hat{\theta}_{\text{MLE}}}}} \;
+.\]</span></p>
+<p>Finally, the estimated bounds of <span class="math inline">\(z\)</span> are then plugged into the
+distribution-specific standard <em>CDF</em> to obtain the interval for
+<span class="math inline">\(F(t)\)</span>, which is</p>
+<p><span class="math display">\[\bigg[\hat{F}_{\text{lower}}(t) \, ; \,
+\hat{F}_{\text{upper}}(t)\bigg] =
+\bigg[\Phi_{\text{SEV}}(\hat{z}_{\text{lower}}) \, ; \,
+\Phi_{\text{SEV}}(\hat{z}_{\text{upper}}) \bigg].\]</span></p>
 </div>
-<div id="fishers-confidence-intervals-for-t" class="section level3">
-<h3 class="hasAnchor">
-<a href="#fishers-confidence-intervals-for-t" class="anchor"></a>Fisher’s Confidence Intervals for <span class="math inline">\(t\)</span>
+<div class="section level3">
+<h3 id="fishers-confidence-intervals-for-t">Fisher’s Confidence Intervals for <span class="math inline">\(t\)</span><a class="anchor" aria-label="anchor" href="#fishers-confidence-intervals-for-t"></a>
 </h3>
-<p>In reliability analysis the lifetime characteristic often is defined as a strictly positive quantity and hence, a normal approximation confidence interval for the quantile <span class="math inline">\(t\)</span> with respect to a particular probability <span class="math inline">\(p\)</span> and the vector of parameters <span class="math inline">\(\hat{\theta}_{MLE}\)</span>, can be calculated by</p>
-<p><span class="math display">\[\bigg[\hat{t}_{\text{lower}}(p) \, ; \, \hat{t}_{\text{upper}}(p)\bigg] = \bigg[\frac{\hat{t}_{\text{MLE}}(p)}{w} \, ; \hat{t}_{\text{MLE}}(p) \cdot w \bigg], \]</span> where <span class="math inline">\(w\)</span> is</p>
-<p><span class="math display">\[w = \exp\left[z_{1 - \frac{\alpha}{2}} \cdot \frac{\hat{se}_{\hat{t}(p)}}{\hat{t}_{\text{MLE}}(p)}\right].\]</span></p>
+<p>In reliability analysis the lifetime characteristic often is defined
+as a strictly positive quantity and hence, a normal approximation
+confidence interval for the quantile <span class="math inline">\(t\)</span> with respect to a particular
+probability <span class="math inline">\(p\)</span> and the vector of
+parameters <span class="math inline">\(\hat{\theta}_{MLE}\)</span>, can
+be calculated by</p>
+<p><span class="math display">\[\bigg[\hat{t}_{\text{lower}}(p) \, ; \,
+\hat{t}_{\text{upper}}(p)\bigg] =
+\bigg[\frac{\hat{t}_{\text{MLE}}(p)}{w} \, ; \hat{t}_{\text{MLE}}(p)
+\cdot w \bigg], \]</span> where <span class="math inline">\(w\)</span>
+is</p>
+<p><span class="math display">\[w = \exp\left[z_{1 - \frac{\alpha}{2}}
+\cdot
+\frac{\hat{se}_{\hat{t}(p)}}{\hat{t}_{\text{MLE}}(p)}\right].\]</span></p>
 <p>For the Weibull, the <em>ML</em> equation for the quantile <span class="math inline">\(t(p)\)</span> is</p>
-<p><span class="math display">\[\hat{t}_{\text{MLE}}(p) = \exp\left[\hat{\mu}_{\text{MLE}} + \Phi^{-1}_{\text{SEV}}(p) \cdot \hat{\sigma}_{\text{MLE}}\right]\]</span></p>
-<p>and again, through the use of the <em>delta method</em>, a formula for the standard error of <span class="math inline">\(\hat{t}_p\)</span> can be provided, which is</p>
-<p><span class="math display">\[\hat{se}_{\hat{t}(p)} = \sqrt{\hat{Var}_{\hat{t}(p)}} = \sqrt{\bigg(\frac{\partial{\hat{t}(p)}}{\partial{\hat{\theta}_{\text{MLE}}}}\bigg)^{T}\; \hat{Var}(\hat{\theta}_{\text{MLE}})\; \frac{\partial{\hat{t}(p)}}{\partial{\hat{\theta}_{\text{MLE}}}}} \; .\]</span></p>
+<p><span class="math display">\[\hat{t}_{\text{MLE}}(p) =
+\exp\left[\hat{\mu}_{\text{MLE}} + \Phi^{-1}_{\text{SEV}}(p) \cdot
+\hat{\sigma}_{\text{MLE}}\right]\]</span></p>
+<p>and again, through the use of the <em>delta method</em>, a formula
+for the standard error of <span class="math inline">\(\hat{t}_p\)</span>
+can be provided, which is</p>
+<p><span class="math display">\[\hat{se}_{\hat{t}(p)} =
+\sqrt{\hat{Var}_{\hat{t}(p)}} =
+\sqrt{\bigg(\frac{\partial{\hat{t}(p)}}{\partial{\hat{\theta}_{\text{MLE}}}}\bigg)^{T}\;
+\hat{Var}(\hat{\theta}_{\text{MLE}})\;
+\frac{\partial{\hat{t}(p)}}{\partial{\hat{\theta}_{\text{MLE}}}}} \;
+.\]</span></p>
 </div>
 </div>
-<div id="data" class="section level2">
-<h2 class="hasAnchor">
-<a href="#data" class="anchor"></a>Data</h2>
-<p>For the computation of the presented confidence intervals the <code>shock</code> dataset is used. In this dataset kilometer-dependent problems that have occurred on shock absorbers are reported. In addition to failed items the dataset also contains non-defective (<em>censored</em>) observations. The data can be found in <em>Statistical Methods for Reliability Data</em> <a href="#fn4" class="footnote-ref" id="fnref4"><sup>4</sup></a>.</p>
-<p>For consistent handling of the data, {weibulltools} introduces the function <code><a href="../reference/reliability_data.html">reliability_data()</a></code> that converts the original dataset into a <code>wt_reliability_data</code> object. This formatted object allows to easily apply the presented methods.</p>
+<div class="section level2">
+<h2 id="data">Data<a class="anchor" aria-label="anchor" href="#data"></a>
+</h2>
+<p>For the computation of the presented confidence intervals the
+<code>shock</code> dataset is used. In this dataset kilometer-dependent
+problems that have occurred on shock absorbers are reported. In addition
+to failed items the dataset also contains non-defective
+(<em>censored</em>) observations. The data can be found in
+<em>Statistical Methods for Reliability Data</em> <a href="#fn4" class="footnote-ref" id="fnref4"><sup>4</sup></a>.</p>
+<p>For consistent handling of the data, {weibulltools} introduces the
+function <code><a href="../reference/reliability_data.html">reliability_data()</a></code> that converts the original
+dataset into a <code>wt_reliability_data</code> object. This formatted
+object allows to easily apply the presented methods.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Data:</span>
 <span class="va">shock_tbl</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/reliability_data.html">reliability_data</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">shock</span>, x <span class="op">=</span> <span class="va">distance</span>, status <span class="op">=</span> <span class="va">status</span><span class="op">)</span>
 <span class="va">shock_tbl</span>
 <span class="co">#&gt; Reliability Data with characteristic x: 'distance':</span>
-<span class="co">#&gt; # A tibble: 38 x 3</span>
+<span class="co">#&gt; <span style="color: #949494;"># A tibble: 38 x 3</span></span>
 <span class="co">#&gt;        x status id   </span>
-<span class="co">#&gt;    &lt;int&gt;  &lt;dbl&gt; &lt;chr&gt;</span>
-<span class="co">#&gt;  1  6700      1 ID1  </span>
-<span class="co">#&gt;  2  6950      0 ID2  </span>
-<span class="co">#&gt;  3  7820      0 ID3  </span>
-<span class="co">#&gt;  4  8790      0 ID4  </span>
-<span class="co">#&gt;  5  9120      1 ID5  </span>
-<span class="co">#&gt;  6  9660      0 ID6  </span>
-<span class="co">#&gt;  7  9820      0 ID7  </span>
-<span class="co">#&gt;  8 11310      0 ID8  </span>
-<span class="co">#&gt;  9 11690      0 ID9  </span>
-<span class="co">#&gt; 10 11850      0 ID10 </span>
-<span class="co">#&gt; # ... with 28 more rows</span></code></pre></div>
+<span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span></span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span>  <span style="text-decoration: underline;">6</span>700      1 ID1  </span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span>  <span style="text-decoration: underline;">6</span>950      0 ID2  </span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span>  <span style="text-decoration: underline;">7</span>820      0 ID3  </span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span>  <span style="text-decoration: underline;">8</span>790      0 ID4  </span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span>  <span style="text-decoration: underline;">9</span>120      1 ID5  </span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span>  <span style="text-decoration: underline;">9</span>660      0 ID6  </span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span>  <span style="text-decoration: underline;">9</span>820      0 ID7  </span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> <span style="text-decoration: underline;">11</span>310      0 ID8  </span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> <span style="text-decoration: underline;">11</span>690      0 ID9  </span>
+<span class="co">#&gt; <span style="color: #BCBCBC;">10</span> <span style="text-decoration: underline;">11</span>850      0 ID10 </span>
+<span class="co">#&gt; <span style="color: #949494;"># ... with 28 more rows</span></span></code></pre></div>
 </div>
-<div id="confidence-intervals-with-weibulltools" class="section level2">
-<h2 class="hasAnchor">
-<a href="#confidence-intervals-with-weibulltools" class="anchor"></a>Confidence Intervals with {weibulltools}</h2>
-<p>Before calculating confidence intervals with {weibulltools} one has to conduct the basic steps of the Weibull analysis which are described in the previous vignettes.</p>
+<div class="section level2">
+<h2 id="confidence-intervals-with-weibulltools">Confidence Intervals with {weibulltools}<a class="anchor" aria-label="anchor" href="#confidence-intervals-with-weibulltools"></a>
+</h2>
+<p>Before calculating confidence intervals with {weibulltools} one has
+to conduct the basic steps of the Weibull analysis which are described
+in the previous vignettes.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Estimation of failure probabilities:</span>
 <span class="va">shock_cdf</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/estimate_cdf.html">estimate_cdf</a></span><span class="op">(</span><span class="va">shock_tbl</span>, methods <span class="op">=</span> <span class="st">"johnson"</span><span class="op">)</span>
@@ -229,10 +357,12 @@
 
 <span class="co"># Maximum Likelihood Estimation: </span>
 <span class="va">ml_weibull</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ml_estimation.html">ml_estimation</a></span><span class="op">(</span><span class="va">shock_tbl</span>, distribution <span class="op">=</span> <span class="st">"weibull"</span><span class="op">)</span></code></pre></div>
-<div id="confidence-intervals-for-model-parameters-1" class="section level3">
-<h3 class="hasAnchor">
-<a href="#confidence-intervals-for-model-parameters-1" class="anchor"></a>Confidence Intervals for Model Parameters</h3>
-<p>The confidence intervals for the distribution parameters are included in the model output of <code><a href="../reference/rank_regression.html">rank_regression()</a></code> and <code><a href="../reference/ml_estimation.html">ml_estimation()</a></code>, respectively.</p>
+<div class="section level3">
+<h3 id="confidence-intervals-for-model-parameters-1">Confidence Intervals for Model Parameters<a class="anchor" aria-label="anchor" href="#confidence-intervals-for-model-parameters-1"></a>
+</h3>
+<p>The confidence intervals for the distribution parameters are included
+in the model output of <code><a href="../reference/rank_regression.html">rank_regression()</a></code> and
+<code><a href="../reference/ml_estimation.html">ml_estimation()</a></code>, respectively.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Confidence intervals based on Rank Regression: </span>
 <span class="va">rr_weibull</span><span class="op">$</span><span class="va">confint</span>
@@ -245,7 +375,10 @@
 <span class="co">#&gt;            2.5 %     97.5 %</span>
 <span class="co">#&gt; mu    10.0144824 10.4452437</span>
 <span class="co">#&gt; sigma  0.2011036  0.4978267</span></code></pre></div>
-<p>The <code>confint</code> element of the model output is a matrix with the parameter names as row names and the confidence level as column names. Different levels can be specified using the argument <code>conf_level</code>.</p>
+<p>The <code>confint</code> element of the model output is a matrix with
+the parameter names as row names and the confidence level as column
+names. Different levels can be specified using the argument
+<code>conf_level</code>.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Confidence intervals based on another confidence level: </span>
 <span class="va">ml_weibull_99</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ml_estimation.html">ml_estimation</a></span><span class="op">(</span><span class="va">shock_tbl</span>, distribution <span class="op">=</span> <span class="st">"weibull"</span>, conf_level <span class="op">=</span> <span class="fl">0.99</span><span class="op">)</span>
@@ -254,57 +387,76 @@
 <span class="co">#&gt; mu    9.9468049 10.5129212</span>
 <span class="co">#&gt; sigma 0.1744101  0.5740192</span></code></pre></div>
 </div>
-<div id="confidence-intervals-for-probabilities" class="section level3">
-<h3 class="hasAnchor">
-<a href="#confidence-intervals-for-probabilities" class="anchor"></a>Confidence Intervals for Probabilities</h3>
-<p>Confidence bounds for failure probabilities can be either determined with <code><a href="../reference/confint_betabinom.html">confint_betabinom()</a></code> or <code><a href="../reference/confint_fisher.html">confint_fisher()</a></code>. As explained in the theoretical part of this vignette the Beta-Binomial confidence bounds should be applied to the output of <code><a href="../reference/rank_regression.html">rank_regression()</a></code> whereas Fisher’s normal approximation confidence intervals are only applicable if the parameters and the variance-covariance matrix were estimated with <code><a href="../reference/ml_estimation.html">ml_estimation()</a></code>.</p>
+<div class="section level3">
+<h3 id="confidence-intervals-for-probabilities">Confidence Intervals for Probabilities<a class="anchor" aria-label="anchor" href="#confidence-intervals-for-probabilities"></a>
+</h3>
+<p>Confidence bounds for failure probabilities can be either determined
+with <code><a href="../reference/confint_betabinom.html">confint_betabinom()</a></code> or <code><a href="../reference/confint_fisher.html">confint_fisher()</a></code>.
+As explained in the theoretical part of this vignette the Beta-Binomial
+confidence bounds should be applied to the output of
+<code><a href="../reference/rank_regression.html">rank_regression()</a></code> whereas Fisher’s normal approximation
+confidence intervals are only applicable if the parameters and the
+variance-covariance matrix were estimated with
+<code><a href="../reference/ml_estimation.html">ml_estimation()</a></code>.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Beta-Binomial confidence bounds:</span>
 <span class="va">conf_bb</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/confint_betabinom.html">confint_betabinom</a></span><span class="op">(</span>
   x <span class="op">=</span> <span class="va">rr_weibull</span>, 
-  b_lives <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0.01</span>, <span class="fl">0.1</span>, <span class="fl">0.5</span><span class="op">)</span>, 
+  b_lives <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.01</span>, <span class="fl">0.1</span>, <span class="fl">0.5</span><span class="op">)</span>, 
   bounds <span class="op">=</span> <span class="st">"two_sided"</span>, 
   conf_level <span class="op">=</span> <span class="fl">0.95</span>, 
   direction <span class="op">=</span> <span class="st">"y"</span>
 <span class="op">)</span>
 <span class="va">conf_bb</span>
-<span class="co">#&gt; # A tibble: 102 x 6</span>
+<span class="co">#&gt; <span style="color: #949494;"># A tibble: 102 x 6</span></span>
 <span class="co">#&gt;        x  rank   prob lower_bound upper_bound cdf_estimation_method</span>
-<span class="co">#&gt;  * &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt;       &lt;dbl&gt;       &lt;dbl&gt; &lt;chr&gt;                </span>
-<span class="co">#&gt;  1 6700.  1.00 0.0183    0.000674      0.0927 johnson              </span>
-<span class="co">#&gt;  2 6910.  1.06 0.0199    0.000859      0.0958 johnson              </span>
-<span class="co">#&gt;  3 7120.  1.13 0.0216    0.00108       0.0990 johnson              </span>
-<span class="co">#&gt;  4 7330.  1.20 0.0234    0.00134       0.102  johnson              </span>
-<span class="co">#&gt;  5 7540.  1.27 0.0252    0.00165       0.106  johnson              </span>
-<span class="co">#&gt;  6 7750.  1.34 0.0272    0.00201       0.109  johnson              </span>
-<span class="co">#&gt;  7 7960.  1.42 0.0293    0.00242       0.113  johnson              </span>
-<span class="co">#&gt;  8 8170.  1.51 0.0314    0.00289       0.117  johnson              </span>
-<span class="co">#&gt;  9 8380   1.59 0.0336    0.00341       0.121  johnson              </span>
-<span class="co">#&gt; 10 8590.  1.68 0.0360    0.00401       0.124  johnson              </span>
-<span class="co">#&gt; # ... with 92 more rows</span>
+<span class="co">#&gt;  <span style="color: #BCBCBC;">*</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                </span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> <span style="text-decoration: underline;">6</span>700.  1.00 0.018<span style="text-decoration: underline;">3</span>    0.000<span style="text-decoration: underline;">674</span>      0.092<span style="text-decoration: underline;">7</span> johnson              </span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> <span style="text-decoration: underline;">6</span>910   1.06 0.019<span style="text-decoration: underline;">9</span>    0.000<span style="text-decoration: underline;">859</span>      0.095<span style="text-decoration: underline;">8</span> johnson              </span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> <span style="text-decoration: underline;">7</span>120.  1.13 0.021<span style="text-decoration: underline;">6</span>    0.001<span style="text-decoration: underline;">08</span>       0.099<span style="text-decoration: underline;">0</span> johnson              </span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> <span style="text-decoration: underline;">7</span>330.  1.20 0.023<span style="text-decoration: underline;">4</span>    0.001<span style="text-decoration: underline;">34</span>       0.102  johnson              </span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> <span style="text-decoration: underline;">7</span>540   1.27 0.025<span style="text-decoration: underline;">2</span>    0.001<span style="text-decoration: underline;">65</span>       0.106  johnson              </span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> <span style="text-decoration: underline;">7</span>750   1.34 0.027<span style="text-decoration: underline;">2</span>    0.002<span style="text-decoration: underline;">01</span>       0.109  johnson              </span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> <span style="text-decoration: underline;">7</span>960.  1.42 0.029<span style="text-decoration: underline;">3</span>    0.002<span style="text-decoration: underline;">42</span>       0.113  johnson              </span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> <span style="text-decoration: underline;">8</span>170   1.51 0.031<span style="text-decoration: underline;">4</span>    0.002<span style="text-decoration: underline;">89</span>       0.117  johnson              </span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> <span style="text-decoration: underline;">8</span>380   1.59 0.033<span style="text-decoration: underline;">6</span>    0.003<span style="text-decoration: underline;">41</span>       0.121  johnson              </span>
+<span class="co">#&gt; <span style="color: #BCBCBC;">10</span> <span style="text-decoration: underline;">8</span>590   1.68 0.036<span style="text-decoration: underline;">0</span>    0.004<span style="text-decoration: underline;">01</span>       0.124  johnson              </span>
+<span class="co">#&gt; <span style="color: #949494;"># ... with 92 more rows</span></span>
 
 <span class="co"># Fisher's normal approximation confidence intervals:</span>
 <span class="va">conf_fisher</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/confint_fisher.html">confint_fisher</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">ml_weibull</span><span class="op">)</span>
 <span class="va">conf_fisher</span>
-<span class="co">#&gt; # A tibble: 102 x 6</span>
+<span class="co">#&gt; <span style="color: #949494;"># A tibble: 102 x 6</span></span>
 <span class="co">#&gt;        x   prob std_err lower_bound upper_bound cdf_estimation_method</span>
-<span class="co">#&gt;  * &lt;dbl&gt;  &lt;dbl&gt;   &lt;dbl&gt;       &lt;dbl&gt;       &lt;dbl&gt; &lt;chr&gt;                </span>
-<span class="co">#&gt;  1 6700. 0.0112   0.916     0.00186      0.0655 &lt;NA&gt;                 </span>
-<span class="co">#&gt;  2 6910. 0.0123   0.895     0.00214      0.0691 &lt;NA&gt;                 </span>
-<span class="co">#&gt;  3 7120. 0.0135   0.875     0.00245      0.0729 &lt;NA&gt;                 </span>
-<span class="co">#&gt;  4 7330. 0.0148   0.855     0.00279      0.0767 &lt;NA&gt;                 </span>
-<span class="co">#&gt;  5 7540. 0.0162   0.835     0.00317      0.0805 &lt;NA&gt;                 </span>
-<span class="co">#&gt;  6 7750. 0.0177   0.817     0.00359      0.0845 &lt;NA&gt;                 </span>
-<span class="co">#&gt;  7 7960. 0.0192   0.799     0.00404      0.0886 &lt;NA&gt;                 </span>
-<span class="co">#&gt;  8 8170. 0.0208   0.781     0.00454      0.0927 &lt;NA&gt;                 </span>
-<span class="co">#&gt;  9 8380  0.0225   0.764     0.00509      0.0969 &lt;NA&gt;                 </span>
-<span class="co">#&gt; 10 8590. 0.0244   0.747     0.00568      0.101  &lt;NA&gt;                 </span>
-<span class="co">#&gt; # ... with 92 more rows</span></code></pre></div>
-<p>The outputs of both functions contain the calculated bounds for the failure probabilities ranging from the minimum to the maximum observed failure. Between the observed range of failures an interpolation of quantiles is made for which the intervals of the probabilities are provided as well (supporting points).</p>
-<p>In the function call of <code><a href="../reference/confint_betabinom.html">confint_betabinom()</a></code> the default arguments of both functions are listed. With the argument <code>b_lives</code>, confidence regions for selected probabilities are included, but only if they are in the range of the estimated failure probabilities.</p>
-<p>The argument <code>bounds</code> is used for the specification of the bound(s) to be computed. It could be one of <code><a href="https://rdrr.io/r/base/c.html">c("two_sided", "lower", "upper")</a></code>.</p>
-<p>If <code>direction = "y"</code>, confidence intervals for the probabilities are provided.</p>
-<p>The visualization of the computed intervals is done with <code><a href="../reference/plot_conf.html">plot_conf()</a></code>.</p>
+<span class="co">#&gt;  <span style="color: #BCBCBC;">*</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                </span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> <span style="text-decoration: underline;">6</span>700. 0.011<span style="text-decoration: underline;">2</span>   0.916     0.001<span style="text-decoration: underline;">86</span>      0.065<span style="text-decoration: underline;">5</span> <span style="color: #BB0000;">NA</span>                   </span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> <span style="text-decoration: underline;">6</span>910  0.012<span style="text-decoration: underline;">3</span>   0.895     0.002<span style="text-decoration: underline;">14</span>      0.069<span style="text-decoration: underline;">1</span> <span style="color: #BB0000;">NA</span>                   </span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> <span style="text-decoration: underline;">7</span>120. 0.013<span style="text-decoration: underline;">5</span>   0.875     0.002<span style="text-decoration: underline;">45</span>      0.072<span style="text-decoration: underline;">9</span> <span style="color: #BB0000;">NA</span>                   </span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> <span style="text-decoration: underline;">7</span>330. 0.014<span style="text-decoration: underline;">8</span>   0.855     0.002<span style="text-decoration: underline;">79</span>      0.076<span style="text-decoration: underline;">7</span> <span style="color: #BB0000;">NA</span>                   </span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> <span style="text-decoration: underline;">7</span>540  0.016<span style="text-decoration: underline;">2</span>   0.835     0.003<span style="text-decoration: underline;">17</span>      0.080<span style="text-decoration: underline;">5</span> <span style="color: #BB0000;">NA</span>                   </span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> <span style="text-decoration: underline;">7</span>750  0.017<span style="text-decoration: underline;">7</span>   0.817     0.003<span style="text-decoration: underline;">59</span>      0.084<span style="text-decoration: underline;">5</span> <span style="color: #BB0000;">NA</span>                   </span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> <span style="text-decoration: underline;">7</span>960. 0.019<span style="text-decoration: underline;">2</span>   0.799     0.004<span style="text-decoration: underline;">04</span>      0.088<span style="text-decoration: underline;">6</span> <span style="color: #BB0000;">NA</span>                   </span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> <span style="text-decoration: underline;">8</span>170  0.020<span style="text-decoration: underline;">8</span>   0.781     0.004<span style="text-decoration: underline;">54</span>      0.092<span style="text-decoration: underline;">7</span> <span style="color: #BB0000;">NA</span>                   </span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> <span style="text-decoration: underline;">8</span>380  0.022<span style="text-decoration: underline;">5</span>   0.764     0.005<span style="text-decoration: underline;">09</span>      0.096<span style="text-decoration: underline;">9</span> <span style="color: #BB0000;">NA</span>                   </span>
+<span class="co">#&gt; <span style="color: #BCBCBC;">10</span> <span style="text-decoration: underline;">8</span>590  0.024<span style="text-decoration: underline;">4</span>   0.747     0.005<span style="text-decoration: underline;">68</span>      0.101  <span style="color: #BB0000;">NA</span>                   </span>
+<span class="co">#&gt; <span style="color: #949494;"># ... with 92 more rows</span></span></code></pre></div>
+<p>The outputs of both functions contain the calculated bounds for the
+failure probabilities ranging from the minimum to the maximum observed
+failure. Between the observed range of failures an interpolation of
+quantiles is made for which the intervals of the probabilities are
+provided as well (supporting points).</p>
+<p>In the function call of <code><a href="../reference/confint_betabinom.html">confint_betabinom()</a></code> the default
+arguments of both functions are listed. With the argument
+<code>b_lives</code>, confidence regions for selected probabilities are
+included, but only if they are in the range of the estimated failure
+probabilities.</p>
+<p>The argument <code>bounds</code> is used for the specification of the
+bound(s) to be computed. It could be one of
+<code>c("two_sided", "lower", "upper")</code>.</p>
+<p>If <code>direction = "y"</code>, confidence intervals for the
+probabilities are provided.</p>
+<p>The visualization of the computed intervals is done with
+<code><a href="../reference/plot_conf.html">plot_conf()</a></code>.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Probability plot</span>
 <span class="va">weibull_grid</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plot_prob.html">plot_prob</a></span><span class="op">(</span>
@@ -341,15 +493,24 @@ Figure 1: Beta-Binomial confidence bounds for failure probabilities.
 <span class="va">weibull_conf_fisher</span></code></pre></div>
 <div class="figure">
 <img src="Life_Data_Analysis_Part_III_files/figure-html/FI%20on%20failure%20probabilities-1.png" alt="Figure 2: Fisher's normal approximation confidence intervals for failure probabilities." width="700"><p class="caption">
-Figure 2: Fisher’s normal approximation confidence intervals for failure probabilities.
+Figure 2: Fisher’s normal approximation confidence intervals for failure
+probabilities.
 </p>
 </div>
-<p>As one can see, <code><a href="../reference/plot_conf.html">plot_conf()</a></code> not only adds the confidence limits to an existing probability plot, but also includes the estimated linearized CDF. There is no need for an additional call of <code><a href="../reference/plot_mod.html">plot_mod()</a></code>. In fact, the same routines used by <code><a href="../reference/plot_mod.html">plot_mod()</a></code> are called under the hood, which ensures that confidence bounds are not drawn without the regression line.</p>
+<p>As one can see, <code><a href="../reference/plot_conf.html">plot_conf()</a></code> not only adds the confidence
+limits to an existing probability plot, but also includes the estimated
+linearized CDF. There is no need for an additional call of
+<code><a href="../reference/plot_mod.html">plot_mod()</a></code>. In fact, the same routines used by
+<code><a href="../reference/plot_mod.html">plot_mod()</a></code> are called under the hood, which ensures that
+confidence bounds are not drawn without the regression line.</p>
 </div>
-<div id="confidence-intervals-for-quantiles" class="section level3">
-<h3 class="hasAnchor">
-<a href="#confidence-intervals-for-quantiles" class="anchor"></a>Confidence Intervals for Quantiles</h3>
-<p>The computation and visualization of confidence for the lifetime characteristic is pretty similar to the presented procedure with regard to the probabilities. The only difference is that one has to change the value of the argument <code>direction</code> to <code>"x"</code>.</p>
+<div class="section level3">
+<h3 id="confidence-intervals-for-quantiles">Confidence Intervals for Quantiles<a class="anchor" aria-label="anchor" href="#confidence-intervals-for-quantiles"></a>
+</h3>
+<p>The computation and visualization of confidence for the lifetime
+characteristic is pretty similar to the presented procedure with regard
+to the probabilities. The only difference is that one has to change the
+value of the argument <code>direction</code> to <code>"x"</code>.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Computation of confidence intervals for quantiles: </span>
 <span class="co">## Beta-Binomial confidence intervals: </span>
@@ -360,38 +521,38 @@ Figure 2: Fisher’s normal approximation confidence intervals for failure proba
   direction <span class="op">=</span> <span class="st">"x"</span>
 <span class="op">)</span>
 <span class="va">conf_bb_x</span>
-<span class="co">#&gt; # A tibble: 102 x 5</span>
+<span class="co">#&gt; <span style="color: #949494;"># A tibble: 102 x 5</span></span>
 <span class="co">#&gt;        x  rank   prob upper_bound cdf_estimation_method</span>
-<span class="co">#&gt;  * &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt;       &lt;dbl&gt; &lt;chr&gt;                </span>
-<span class="co">#&gt;  1 6700.  1.00 0.0183      11357. johnson              </span>
-<span class="co">#&gt;  2 6910.  1.06 0.0199      11521. johnson              </span>
-<span class="co">#&gt;  3 7120.  1.13 0.0216      11687. johnson              </span>
-<span class="co">#&gt;  4 7330.  1.20 0.0234      11855. johnson              </span>
-<span class="co">#&gt;  5 7540.  1.27 0.0252      12024. johnson              </span>
-<span class="co">#&gt;  6 7750.  1.34 0.0272      12195. johnson              </span>
-<span class="co">#&gt;  7 7960.  1.42 0.0293      12367. johnson              </span>
-<span class="co">#&gt;  8 8170.  1.51 0.0314      12541. johnson              </span>
-<span class="co">#&gt;  9 8380   1.59 0.0336      12715. johnson              </span>
-<span class="co">#&gt; 10 8590.  1.68 0.0360      12891. johnson              </span>
-<span class="co">#&gt; # ... with 92 more rows</span>
+<span class="co">#&gt;  <span style="color: #BCBCBC;">*</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                </span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> <span style="text-decoration: underline;">6</span>700.  1.00 0.018<span style="text-decoration: underline;">3</span>      <span style="text-decoration: underline;">11</span>357. johnson              </span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> <span style="text-decoration: underline;">6</span>910   1.06 0.019<span style="text-decoration: underline;">9</span>      <span style="text-decoration: underline;">11</span>521. johnson              </span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> <span style="text-decoration: underline;">7</span>120.  1.13 0.021<span style="text-decoration: underline;">6</span>      <span style="text-decoration: underline;">11</span>687. johnson              </span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> <span style="text-decoration: underline;">7</span>330.  1.20 0.023<span style="text-decoration: underline;">4</span>      <span style="text-decoration: underline;">11</span>855. johnson              </span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> <span style="text-decoration: underline;">7</span>540   1.27 0.025<span style="text-decoration: underline;">2</span>      <span style="text-decoration: underline;">12</span>024. johnson              </span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> <span style="text-decoration: underline;">7</span>750   1.34 0.027<span style="text-decoration: underline;">2</span>      <span style="text-decoration: underline;">12</span>195. johnson              </span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> <span style="text-decoration: underline;">7</span>960.  1.42 0.029<span style="text-decoration: underline;">3</span>      <span style="text-decoration: underline;">12</span>367. johnson              </span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> <span style="text-decoration: underline;">8</span>170   1.51 0.031<span style="text-decoration: underline;">4</span>      <span style="text-decoration: underline;">12</span>541. johnson              </span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> <span style="text-decoration: underline;">8</span>380   1.59 0.033<span style="text-decoration: underline;">6</span>      <span style="text-decoration: underline;">12</span>715. johnson              </span>
+<span class="co">#&gt; <span style="color: #BCBCBC;">10</span> <span style="text-decoration: underline;">8</span>590   1.68 0.036<span style="text-decoration: underline;">0</span>      <span style="text-decoration: underline;">12</span>891. johnson              </span>
+<span class="co">#&gt; <span style="color: #949494;"># ... with 92 more rows</span></span>
 
 <span class="co">## Fisher's normal approximation confidence intervals:</span>
 <span class="va">conf_fisher_x</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/confint_fisher.html">confint_fisher</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">ml_weibull</span>, bounds <span class="op">=</span> <span class="st">"lower"</span>, direction <span class="op">=</span> <span class="st">"x"</span><span class="op">)</span>
 <span class="va">conf_fisher_x</span>
-<span class="co">#&gt; # A tibble: 102 x 5</span>
+<span class="co">#&gt; <span style="color: #949494;"># A tibble: 102 x 5</span></span>
 <span class="co">#&gt;        x   prob std_err lower_bound cdf_estimation_method</span>
-<span class="co">#&gt;  * &lt;dbl&gt;  &lt;dbl&gt;   &lt;dbl&gt;       &lt;dbl&gt; &lt;chr&gt;                </span>
-<span class="co">#&gt;  1 6700. 0.0112   1943.       4159. &lt;NA&gt;                 </span>
-<span class="co">#&gt;  2 6910. 0.0123   1957.       4337. &lt;NA&gt;                 </span>
-<span class="co">#&gt;  3 7120. 0.0135   1970.       4517. &lt;NA&gt;                 </span>
-<span class="co">#&gt;  4 7330. 0.0148   1982.       4698. &lt;NA&gt;                 </span>
-<span class="co">#&gt;  5 7540. 0.0162   1993.       4881. &lt;NA&gt;                 </span>
-<span class="co">#&gt;  6 7750. 0.0177   2003.       5067. &lt;NA&gt;                 </span>
-<span class="co">#&gt;  7 7960. 0.0192   2011.       5253. &lt;NA&gt;                 </span>
-<span class="co">#&gt;  8 8170. 0.0208   2019.       5441. &lt;NA&gt;                 </span>
-<span class="co">#&gt;  9 8380  0.0225   2025.       5631. &lt;NA&gt;                 </span>
-<span class="co">#&gt; 10 8590. 0.0244   2031.       5822. &lt;NA&gt;                 </span>
-<span class="co">#&gt; # ... with 92 more rows</span></code></pre></div>
+<span class="co">#&gt;  <span style="color: #BCBCBC;">*</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                </span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> <span style="text-decoration: underline;">6</span>700. 0.011<span style="text-decoration: underline;">2</span>   <span style="text-decoration: underline;">1</span>943.       <span style="text-decoration: underline;">4</span>159. <span style="color: #BB0000;">NA</span>                   </span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> <span style="text-decoration: underline;">6</span>910  0.012<span style="text-decoration: underline;">3</span>   <span style="text-decoration: underline;">1</span>957.       <span style="text-decoration: underline;">4</span>337. <span style="color: #BB0000;">NA</span>                   </span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> <span style="text-decoration: underline;">7</span>120. 0.013<span style="text-decoration: underline;">5</span>   <span style="text-decoration: underline;">1</span>970.       <span style="text-decoration: underline;">4</span>517. <span style="color: #BB0000;">NA</span>                   </span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> <span style="text-decoration: underline;">7</span>330. 0.014<span style="text-decoration: underline;">8</span>   <span style="text-decoration: underline;">1</span>982.       <span style="text-decoration: underline;">4</span>698. <span style="color: #BB0000;">NA</span>                   </span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> <span style="text-decoration: underline;">7</span>540  0.016<span style="text-decoration: underline;">2</span>   <span style="text-decoration: underline;">1</span>993.       <span style="text-decoration: underline;">4</span>881. <span style="color: #BB0000;">NA</span>                   </span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> <span style="text-decoration: underline;">7</span>750  0.017<span style="text-decoration: underline;">7</span>   <span style="text-decoration: underline;">2</span>003.       <span style="text-decoration: underline;">5</span>067. <span style="color: #BB0000;">NA</span>                   </span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> <span style="text-decoration: underline;">7</span>960. 0.019<span style="text-decoration: underline;">2</span>   <span style="text-decoration: underline;">2</span>011.       <span style="text-decoration: underline;">5</span>253. <span style="color: #BB0000;">NA</span>                   </span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> <span style="text-decoration: underline;">8</span>170  0.020<span style="text-decoration: underline;">8</span>   <span style="text-decoration: underline;">2</span>019.       <span style="text-decoration: underline;">5</span>441. <span style="color: #BB0000;">NA</span>                   </span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> <span style="text-decoration: underline;">8</span>380  0.022<span style="text-decoration: underline;">5</span>   <span style="text-decoration: underline;">2</span>025.       <span style="text-decoration: underline;">5</span>631. <span style="color: #BB0000;">NA</span>                   </span>
+<span class="co">#&gt; <span style="color: #BCBCBC;">10</span> <span style="text-decoration: underline;">8</span>590  0.024<span style="text-decoration: underline;">4</span>   <span style="text-decoration: underline;">2</span>031.       <span style="text-decoration: underline;">5</span>822. <span style="color: #BB0000;">NA</span>                   </span>
+<span class="co">#&gt; <span style="color: #949494;"># ... with 92 more rows</span></span></code></pre></div>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Visualization: </span>
 <span class="co">## Beta-Binomial confidence intervals: </span>
@@ -404,7 +565,8 @@ Figure 2: Fisher’s normal approximation confidence intervals for failure proba
 <span class="va">weibull_conf_bb_x</span></code></pre></div>
 <div class="figure">
 <img src="Life_Data_Analysis_Part_III_files/figure-html/BBB%20on%20quantiles-1.png" alt="Figure 3: One-sided (upper) Beta-Binomial confidence bound for quantiles." width="700"><p class="caption">
-Figure 3: One-sided (upper) Beta-Binomial confidence bound for quantiles.
+Figure 3: One-sided (upper) Beta-Binomial confidence bound for
+quantiles.
 </p>
 </div>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
@@ -418,18 +580,29 @@ Figure 3: One-sided (upper) Beta-Binomial confidence bound for quantiles.
 <span class="va">weibull_conf_fisher_x</span></code></pre></div>
 <div class="figure">
 <img src="Life_Data_Analysis_Part_III_files/figure-html/FI%20on%20quantiles-1.png" alt="Figure 4: One-sided (lower) normal approximation confidence interval for quantiles." width="700"><p class="caption">
-Figure 4: One-sided (lower) normal approximation confidence interval for quantiles.
+Figure 4: One-sided (lower) normal approximation confidence interval for
+quantiles.
 </p>
 </div>
 </div>
 </div>
-<div class="footnotes">
+<div class="footnotes footnotes-end-of-document">
 <hr>
 <ol>
-<li id="fn1"><p>Genschel, U.; Meeker, W. Q.: <em>A Comparison of Maximum Likelihood and Median-Rank Regression for Weibull Estimation</em>, in: <em>Quality Engineering 22 (4)</em>, DOI: 10.1080/08982112.2010.503447, 2010, pp. 236-255<a href="#fnref1" class="footnote-back">↩︎</a></p></li>
-<li id="fn2"><p>Meeker, W. Q.; Escobar, L. A.: <em>Statistical Methods for Reliability Data</em>, <em>New York, Wiley series in probability and statistics</em>, 1998, p. 188<a href="#fnref2" class="footnote-back">↩︎</a></p></li>
-<li id="fn3"><p>Hoang, Y.; Meeker, W. Q.; Escobar, L. A.: <em>The Relationship Between Confidence Intervals for Failure Probabilities and Life Time Quantiles</em>, in: _IEEE Transactions on Reliability 57, 2008, pp. 260-266<a href="#fnref3" class="footnote-back">↩︎</a></p></li>
-<li id="fn4"><p>Meeker, W. Q.; Escobar, L. A.: <em>Statistical Methods for Reliability Data</em>, <em>New York, Wiley series in probability and statistics</em>, 1998, p. 630<a href="#fnref4" class="footnote-back">↩︎</a></p></li>
+<li id="fn1"><p>Genschel, U.; Meeker, W. Q.: <em>A Comparison of Maximum
+Likelihood and Median-Rank Regression for Weibull Estimation</em>, in:
+<em>Quality Engineering 22 (4)</em>, DOI: 10.1080/08982112.2010.503447,
+2010, pp. 236-255<a href="#fnref1" class="footnote-back">↩︎</a></p></li>
+<li id="fn2"><p>Meeker, W. Q.; Escobar, L. A.: <em>Statistical Methods
+for Reliability Data</em>, <em>New York, Wiley series in probability and
+statistics</em>, 1998, p. 188<a href="#fnref2" class="footnote-back">↩︎</a></p></li>
+<li id="fn3"><p>Hoang, Y.; Meeker, W. Q.; Escobar, L. A.: <em>The
+Relationship Between Confidence Intervals for Failure Probabilities and
+Life Time Quantiles</em>, in: _IEEE Transactions on Reliability 57,
+2008, pp. 260-266<a href="#fnref3" class="footnote-back">↩︎</a></p></li>
+<li id="fn4"><p>Meeker, W. Q.; Escobar, L. A.: <em>Statistical Methods
+for Reliability Data</em>, <em>New York, Wiley series in probability and
+statistics</em>, 1998, p. 630<a href="#fnref4" class="footnote-back">↩︎</a></p></li>
 </ol>
 </div>
   </div>
@@ -445,11 +618,14 @@ Figure 4: One-sided (lower) normal approximation confidence interval for quantil
 
 
       <footer><div class="copyright">
-  <p>Developed by Tim-Gunnar Hensel, David Barkemeyer.</p>
+  <p></p>
+<p>Developed by Tim-Gunnar Hensel, David Barkemeyer.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
+  <p></p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a>
+2.0.2.</p>
 </div>
 
       </footer>
@@ -457,6 +633,8 @@ Figure 4: One-sided (lower) normal approximation confidence interval for quantil
 
   
 
+
+  
 
   </body>
 </html>

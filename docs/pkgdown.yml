@@ -1,10 +1,10 @@
-pandoc: 2.11.4
-pkgdown: 1.6.1
+pandoc: 2.17.1.1
+pkgdown: 2.0.2
 pkgdown_sha: ~
 articles:
   Life_Data_Analysis_Part_I: Life_Data_Analysis_Part_I.html
   Life_Data_Analysis_Part_II: Life_Data_Analysis_Part_II.html
   Life_Data_Analysis_Part_III: Life_Data_Analysis_Part_III.html
   Life_Data_Analysis_Part_IV: Life_Data_Analysis_Part_IV.html
-last_built: 2021-04-12T09:50Z
+last_built: 2022-03-30T07:47Z
 
