@@ -1,7 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# weibulltools
+# weibulltools <img src='man/figures/logo.ico' align="right" height="139" />
 
 <!-- badges: start -->
 
@@ -14,7 +14,7 @@ status](https://www.r-pkg.org/badges/version/weibulltools)](https://CRAN.R-proje
 
 ## Overview
 
-The *weibulltools* package focuses on statistical methods and
+The {weibulltools} package focuses on statistical methods and
 visualizations that are often used in reliability engineering. It
 provides a compact and easily accessible set of methods and
 visualization tools that make the examination and adjustment as well as
@@ -26,13 +26,13 @@ lifetime distributions and also contains Monte Carlo methods for the
 correction and completion of imprecisely recorded or unknown lifetime
 characteristics.
 
-Plots are created statically ([ggplot2](https://ggplot2.tidyverse.org/))
-or interactively ([plotly](https://plotly.com/r/)) and can be customized
+Plots are created statically {[ggplot2](https://ggplot2.tidyverse.org/)}
+or interactively {[plotly](https://plotly.com/r/)} and can be customized
 with functions of the respective visualization package.
 
 ## Installation
 
-The latest released version of *weibulltools* from
+The latest released version of {weibulltools} from
 [CRAN](https://CRAN.R-project.org/package=weibulltools) can be installed
 with:
 
@@ -42,7 +42,7 @@ install.packages("weibulltools")
 
 ### Development version
 
-Install the development version of *weibulltools* from
+Install the development version of {weibulltools} from
 [GitHub](https://github.com/Tim-TU/weibulltools/) to use new features or
 to get a bug fix.
 
@@ -57,18 +57,16 @@ devtools::install_github("Tim-TU/weibulltools")
 
 Create consistent reliability data with columns:
 
-  - `x` - lifetime characteristic  
-  - `status` - binary data (0 for censored units and 1 for failed units)
-  - `id` (optional) - identifier for units
-
-<!-- end list -->
+-   `x` - lifetime characteristic  
+-   `status` - binary data (0 for censored units and 1 for failed units)
+-   `id` (optional) - identifier for units
 
 ``` r
 library(weibulltools)
 
 rel_tbl <- reliability_data(data = shock, x = distance, status = status)
 rel_tbl
-#> Reliability Data:
+#> Reliability Data with characteristic x: 'distance':
 #> # A tibble: 38 x 3
 #>       x status id   
 #>   <int>  <dbl> <chr>

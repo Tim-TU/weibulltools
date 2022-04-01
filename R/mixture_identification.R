@@ -671,7 +671,7 @@ mixmod_em_ <- function(data,
     ),
     silent = TRUE
   )
-  if (class(ml) == "try-error") {
+  if (inherits(ml, "try-error")) {
     stop(
       paste(
         ml[1],
