@@ -9,7 +9,8 @@ plot_layout_vis.plotly <- function(p_obj, # An empty plotly object.
                                    ),
                                    title_main = "Probability Plot",
                                    title_x = "Characteristic",
-                                   title_y = "Unreliability"
+                                   title_y = "Unreliability",
+                                   ...
 ) {
 
   distribution <- match.arg(distribution)
@@ -138,7 +139,8 @@ plot_prob_vis.plotly <- function(p_obj,
                                  title_main = "Probability Plot",
                                  title_x = "Characteristic",
                                  title_y = "Unreliability",
-                                 title_trace = "Sample"
+                                 title_trace = "Sample",
+                                 ...
 ) {
 
   distribution <- match.arg(distribution)
@@ -185,7 +187,8 @@ plot_prob_vis.plotly <- function(p_obj,
 #' @export
 plot_mod_vis.plotly <- function(p_obj,
                                 tbl_mod,
-                                title_trace = "Fit"
+                                title_trace = "Fit",
+                                ...
 ) {
 
   x_mark <- unlist(strsplit(p_obj$x$layoutAttrs[[2]]$xaxis$title$text, " "))[1]
@@ -249,7 +252,8 @@ plot_mod_vis.plotly <- function(p_obj,
 #' @export
 plot_conf_vis.plotly <- function(p_obj,
                                  tbl_p,
-                                 title_trace
+                                 title_trace,
+                                 ...
 ) {
 
   # Get axis labels in hover:
@@ -286,7 +290,8 @@ plot_conf_vis.plotly <- function(p_obj,
 #' @export
 plot_pop_vis.plotly <- function(p_obj,
                                 tbl_pop,
-                                title_trace
+                                title_trace,
+                                ...
 ) {
 
   # Get axis labels in hover
