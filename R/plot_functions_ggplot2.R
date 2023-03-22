@@ -9,7 +9,8 @@ plot_layout_vis.ggplot <- function(p_obj, # An empty ggplot object.
                                    ),
                                    title_main = "Probability Plot",
                                    title_x = "Characteristic",
-                                   title_y = "Unreliability"
+                                   title_y = "Unreliability",
+                                   ...
 ) {
 
   distribution <- match.arg(distribution)
@@ -64,7 +65,8 @@ plot_prob_vis.ggplot <- function(p_obj,
                                  title_main = "Probability Plot",
                                  title_x = "Characteristic",
                                  title_y = "Unreliability",
-                                 title_trace = "Sample"
+                                 title_trace = "Sample",
+                                 ...
 ) {
 
   distribution <- match.arg(distribution)
@@ -114,7 +116,8 @@ plot_prob_vis.ggplot <- function(p_obj,
 #' @export
 plot_mod_vis.ggplot <- function(p_obj,
                                 tbl_mod,
-                                title_trace = "Fit"
+                                title_trace = "Fit",
+                                ...
 ) {
 
   n_method <- length(unique(tbl_mod$cdf_estimation_method))
@@ -167,7 +170,8 @@ plot_mod_vis.ggplot <- function(p_obj,
 #' @export
 plot_conf_vis.ggplot <- function(p_obj,
                                  tbl_p,
-                                 title_trace
+                                 title_trace,
+                                 ...
 ) {
 
   n_method <- length(unique(tbl_p$cdf_estimation_method))
@@ -203,7 +207,8 @@ plot_conf_vis.ggplot <- function(p_obj,
 #' @export
 plot_pop_vis.ggplot <- function(p_obj,
                                 tbl_pop,
-                                title_trace
+                                title_trace,
+                                ...
 ) {
   tbl_pop <- tbl_pop %>%
     dplyr::mutate(
