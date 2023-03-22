@@ -7,7 +7,7 @@ Authors@R:
       email = "tim-gunnar.hensel@tu-berlin.de", 
       role = c("aut", "cre")),
       person("David", "Barkemeyer",
-      email = "david.barkemeyer@campus.tu-berlin.de",
+      email = "david.barkemeyer@gmx.de",
       role = "aut")
     )
 Description: Provides statistical methods and visualizations that are often 
