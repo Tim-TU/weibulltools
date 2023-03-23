@@ -111,9 +111,6 @@ mix_mod_em_2 <- mixmod_em(
 \itemize{
 \item Doganaksoy, N.; Hahn, G.; Meeker, W. Q., Reliability Analysis by Failure Mode,
 Quality Progress, 35(6), 47-52, 2002
-\item Blog post by Stefan Gelissen:
-\href{https://blogs2.datall-analyse.nl/2016/02/18/rcode_mixture_distribution_censored/}{R code for fitting a mixture distribution to censored data} ;
-last accessed on 8th December 2020
 }
 }
 \seealso{
