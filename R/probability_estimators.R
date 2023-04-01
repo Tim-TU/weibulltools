@@ -352,8 +352,7 @@ mr_method_ <- function(data,
   tbl_out <- tbl_calc %>%
     dplyr::mutate(cdf_estimation_method = "mr") %>%
     dplyr::relocate(
-      .data$id, .data$x, .data$status, .data$rank, .data$prob,
-      .data$cdf_estimation_method
+      "id", "x", "status", "rank", "prob", "cdf_estimation_method"
     )
 
   tbl_out
@@ -494,8 +493,7 @@ johnson_method_ <- function(data, method = "benard") {
     ) %>%
     dplyr::mutate(cdf_estimation_method = "johnson") %>%
     dplyr::relocate(
-      .data$id, .data$x, .data$status, .data$rank, .data$prob,
-      .data$cdf_estimation_method
+      "id", "x", "status", "rank", "prob", "cdf_estimation_method"
     )
 
   tbl_out
@@ -639,8 +637,7 @@ kaplan_method_ <- function(data) {
       cdf_estimation_method = "kaplan"
     ) %>%
     dplyr::relocate(
-      .data$id, .data$x, .data$status, .data$rank, .data$prob,
-      .data$cdf_estimation_method
+      "id", "x", "status", "rank", "prob", "cdf_estimation_method"
     )
 
   tbl_out
@@ -757,8 +754,7 @@ nelson_method_ <- function(data) {
       cdf_estimation_method = "nelson"
     ) %>%
     dplyr::relocate(
-      .data$id, .data$x, .data$status, .data$rank, .data$prob,
-      .data$cdf_estimation_method
+      "id", "x", "status", "rank", "prob", "cdf_estimation_method"
     )
 
   tbl_out

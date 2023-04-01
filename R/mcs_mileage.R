@@ -212,7 +212,7 @@ mcs_mileage_ <- function(data = NULL,
     data_tbl <- dplyr::mutate(data, mileage = x)
   }
 
-  data_tbl <- dplyr::rename(data_tbl, x = .data$mileage)
+  data_tbl <- dplyr::rename(data_tbl, x = "mileage")
 
   ## Set class and attribute w.r.t status; remove class "wt_mcs_mileage_data":
   if ("status" %in% names(data_tbl)) {
