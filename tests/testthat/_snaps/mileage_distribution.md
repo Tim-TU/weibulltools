@@ -26,7 +26,7 @@
      8 18915.  1000      0 ID8  
      9 21737   1000      1 ID9  
     10 29870   1000      1 ID10 
-    # ... with 13 more rows
+    # i 13 more rows
 
 ---
 
@@ -43,5 +43,5 @@
      8       6904.
      9          0 
     10          0 
-    # ... with 13 more rows
+    # i 13 more rows
 
