@@ -24,7 +24,7 @@
      8 2014-03-07 <NA>       <NA>       <NA>        944.      0 ID8  
      9 2014-03-09 2015-04-25 2014-05-23 2015-05-28 1000       1 ID9  
     10 2014-04-13 2015-04-24 2014-05-09 2015-05-15 1000       1 ID10 
-    # ... with 13 more rows
+    # i 13 more rows
 
 ---
 
@@ -41,7 +41,7 @@
      8        32.2      23.5  
      9         0         0    
     10         0         0    
-    # ... with 13 more rows
+    # i 13 more rows
 
 # dist_delay_register remains stable
 

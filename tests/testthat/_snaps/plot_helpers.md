@@ -79,7 +79,7 @@
      8 ID70     99      1    NA 0.0556  kaplan                -2.86
      9 ID68    104      1     5 0.0649  johnson               -2.70
     10 ID68    104      1    NA 0.0694  kaplan                -2.63
-    # ... with 124 more rows
+    # i 124 more rows
 
 ---
 
@@ -97,7 +97,7 @@
      8 ID70     99      1    NA 0.0556  kaplan                -1.59
      9 ID68    104      1     5 0.0649  johnson               -1.51
     10 ID68    104      1    NA 0.0694  kaplan                -1.48
-    # ... with 124 more rows
+    # i 124 more rows
 
 # plot_mod_helper remains stable
 
@@ -114,7 +114,7 @@
      8 7415. 0.0241 <chr [3]> <chr [3]>   <NA>                  <NA>  -3.71
      9 7523. 0.0251 <chr [3]> <chr [3]>   <NA>                  <NA>  -3.67
     10 7633. 0.0261 <chr [3]> <chr [3]>   <NA>                  <NA>  -3.63
-    # ... with 90 more rows
+    # i 90 more rows
 
 # plot_mod_mix_helper remains stable
 
@@ -131,7 +131,7 @@
      8 7431. 0.0243 <chr [2]> <chr [2]>   johnson               group -3.71
      9 7536. 0.0252 <chr [2]> <chr [2]>   johnson               group -3.67
     10 7640. 0.0262 <chr [2]> <chr [2]>   johnson               group -3.63
-    # ... with 190 more rows
+    # i 190 more rows
 
 # plot_conf_helper_2 remains stable
 
@@ -149,7 +149,7 @@
      8 8170  0.117  Upper johnson               -2.09
      9 8380  0.121  Upper johnson               -2.05
     10 8590  0.124  Upper johnson               -2.02
-    # ... with 194 more rows
+    # i 194 more rows
 
 # plot_pop_helper remains stable
 
@@ -166,5 +166,5 @@
      8  8286. 0.339  -0.881  <chr [3]> <chr [3]>   1    
      9  9269. 0.371  -0.769  <chr [3]> <chr [3]>   1    
     10 55681. 0.938   1.02   <chr [3]> <chr [3]>   1    
-    # ... with 90 more rows
+    # i 90 more rows
 

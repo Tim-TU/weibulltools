@@ -58,11 +58,12 @@ Depends: R (>= 3.5.0)
 Language: en-US
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 7.1.2
+RoxygenNote: 7.2.3
 Suggests:
     knitr,
     rmarkdown,
-    testthat
+    testthat,
+    pillar (>= 1.9.0)
 VignetteBuilder: knitr
 Config/testthat/edition: 3
 RdMacros: lifecycle

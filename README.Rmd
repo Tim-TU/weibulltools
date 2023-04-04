@@ -17,7 +17,7 @@ options(tibble.print_min = 5, tibble.print_max = 5)
 # weibulltools <img src='man/figures/logo.ico' align="right" height="139" />
 
 <!-- badges: start -->
-[![Lifecycle: maturing](https://img.shields.io/badge/lifecycle-maturing-blue.svg)](https://www.tidyverse.org/lifecycle/#maturing)
+[![Lifecycle: stable](https://img.shields.io/badge/lifecycle-stable-brightgreen.svg)](https://lifecycle.r-lib.org/articles/stages.html#stable)
 [![CRAN status](https://www.r-pkg.org/badges/version/weibulltools)](https://CRAN.R-project.org/package=weibulltools)
 [![R-CMD-check](https://github.com/Tim-TU/weibulltools/workflows/R-CMD-check/badge.svg)](https://github.com/Tim-TU/weibulltools/actions)
 <!-- badges: end -->

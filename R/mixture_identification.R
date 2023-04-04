@@ -486,10 +486,6 @@ print.wt_mixmod_regression_list <- function(x,
 #'
 #' * Doganaksoy, N.; Hahn, G.; Meeker, W. Q., Reliability Analysis by Failure Mode,
 #'   Quality Progress, 35(6), 47-52, 2002
-#' * Blog post by Stefan Gelissen:
-#'   [R code for fitting a mixture distribution to censored
-#'   data](https://blogs2.datall-analyse.nl/2016/02/18/rcode_mixture_distribution_censored/) ;
-#'   last accessed on 8th December 2020
 #'
 #' @examples
 #' # Reliability data preparation:

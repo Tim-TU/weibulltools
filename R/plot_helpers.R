@@ -339,10 +339,7 @@ plot_pop_helper <- function(x,
       )
     ) %>%
     dplyr::ungroup() %>%
-    dplyr::select(
-      .data$x_s, .data$y_s, .data$q, .data$param_val, .data$param_label,
-      .data$group
-    ) %>%
+    dplyr::select("x_s", "y_s", "q", "param_val", "param_label", "group") %>%
     dplyr::filter(.data$y_s <= 1 - tol, .data$y_s >= tol)
 
   tbl_pop

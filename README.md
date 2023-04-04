@@ -6,7 +6,7 @@
 <!-- badges: start -->
 
 [![Lifecycle:
-maturing](https://img.shields.io/badge/lifecycle-maturing-blue.svg)](https://www.tidyverse.org/lifecycle/#maturing)
+stable](https://img.shields.io/badge/lifecycle-stable-brightgreen.svg)](https://lifecycle.r-lib.org/articles/stages.html#stable)
 [![CRAN
 status](https://www.r-pkg.org/badges/version/weibulltools)](https://CRAN.R-project.org/package=weibulltools)
 [![R-CMD-check](https://github.com/Tim-TU/weibulltools/workflows/R-CMD-check/badge.svg)](https://github.com/Tim-TU/weibulltools/actions)
@@ -57,9 +57,9 @@ devtools::install_github("Tim-TU/weibulltools")
 
 Create consistent reliability data with columns:
 
--   `x` - lifetime characteristic  
--   `status` - binary data (0 for censored units and 1 for failed units)
--   `id` (optional) - identifier for units
+- `x` - lifetime characteristic  
+- `status` - binary data (0 for censored units and 1 for failed units)
+- `id` (optional) - identifier for units
 
 ``` r
 library(weibulltools)
@@ -67,7 +67,7 @@ library(weibulltools)
 rel_tbl <- reliability_data(data = shock, x = distance, status = status)
 rel_tbl
 #> Reliability Data with characteristic x: 'distance':
-#> # A tibble: 38 x 3
+#> # A tibble: 38 × 3
 #>       x status id   
 #>   <int>  <dbl> <chr>
 #> 1  6700      1 ID1  
@@ -75,7 +75,7 @@ rel_tbl
 #> 3  7820      0 ID3  
 #> 4  8790      0 ID4  
 #> 5  9120      1 ID5  
-#> # ... with 33 more rows
+#> # … with 33 more rows
 ```
 
 ### Probability estimation and visualization
@@ -88,7 +88,7 @@ prob_tbl <- estimate_cdf(x = rel_tbl, methods = c("mr", "kaplan", "johnson", "ne
 #> The 'mr' method only considers failed units (status == 1) and does not retain intact units (status == 0).
 prob_tbl
 #> CDF estimation for methods 'mr', 'kaplan', 'johnson', 'nelson':
-#> # A tibble: 125 x 6
+#> # A tibble: 125 × 6
 #>   id        x status  rank   prob cdf_estimation_method
 #>   <chr> <int>  <dbl> <dbl>  <dbl> <chr>                
 #> 1 ID1    6700      1     1 0.0614 mr                   
@@ -96,7 +96,7 @@ prob_tbl
 #> 3 ID13  12200      1     3 0.237  mr                   
 #> 4 ID15  13150      1     4 0.325  mr                   
 #> 5 ID19  14300      1     5 0.412  mr                   
-#> # ... with 120 more rows
+#> # … with 120 more rows
 ```
 
 Visualization of the obtained results in a distribution-specific

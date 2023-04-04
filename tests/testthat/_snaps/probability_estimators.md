@@ -93,7 +93,7 @@
      8 X     30000      1    NA 0.413 kaplan               
      9 X     40000      1    NA 0.481 kaplan               
     10 X     50000      1    NA 0.580 kaplan               
-    # ... with 13 more rows
+    # i 13 more rows
 
 # snapshots: input with repeating characteristics
 
@@ -165,7 +165,7 @@
      8 ID8   11310      0 NA    NA      johnson               censored    
      9 ID9   11690      0 NA    NA      johnson               censored    
     10 ID10  11850      0 NA    NA      johnson               censored    
-    # ... with 28 more rows
+    # i 28 more rows
 
 ---
 
@@ -182,7 +182,7 @@
      8 ID8   11310      0    NA NA      kaplan                censored    
      9 ID9   11690      0    NA NA      kaplan                censored    
     10 ID10  11850      0    NA NA      kaplan                censored    
-    # ... with 28 more rows
+    # i 28 more rows
 
 ---
 
@@ -199,5 +199,5 @@
      8 ID8   11310      0    NA NA      nelson                censored    
      9 ID9   11690      0    NA NA      nelson                censored    
     10 ID10  11850      0    NA NA      nelson                censored    
-    # ... with 28 more rows
+    # i 28 more rows
 
