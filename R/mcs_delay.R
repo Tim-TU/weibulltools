@@ -315,7 +315,7 @@ mcs_delay_ <- function(data = NULL,
     data_tbl <- dplyr::mutate(data, time = times)
   }
 
-  data_tbl <- dplyr::rename(data_tbl, x = .data$time)
+  data_tbl <- dplyr::rename(data_tbl, x = "time")
 
   ## Set class and attribute w.r.t status; remove class "wt_mcs_delay_data":
   if ("status" %in% names(data_tbl)) {
